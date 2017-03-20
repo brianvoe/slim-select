@@ -1,5 +1,5 @@
 <script>
-  import SlimSelect from '../slim-select.js'
+  import SlimSelect from '../slim-select/index.js'
 
   export default {
     data () {

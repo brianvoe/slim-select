@@ -1,5 +1,5 @@
 <script>
-  import SlimSelect from '../slim-select.js'
+  import SlimSelect from '../slim-select/index.js'
 
   export default {
     data () {
@@ -25,7 +25,7 @@
   <div id="group-content">
     <select id="group">
       <optgroup v-for="food in foods" :label="food.label">
-        <option v-for="value in food.options" :value="value">{{value}}</option>
+        <option v-for="value in food.options" :value="value"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/79356-200.png" height="20" /> {{value}}</option>
       </optgroup>
     </select>
   </div>

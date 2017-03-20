@@ -19,10 +19,10 @@
   <div id="app">
     <div class="header">
       <div class="logo">
-        <img :src="logo" />ue-build
+        Slim Select
       </div>
       <div class="tagline">
-        
+        Modern slim vanilla javascript select dropdown
       </div>
     </div>
     <div class="main">

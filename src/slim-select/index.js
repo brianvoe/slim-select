@@ -1,3 +1,6 @@
+import {classes} from './config.js'
+import {hasClassInTree, filterValues} from './helper.js'
+
 export default class SlimSelect {
   constructor (info = {}) {
     this.select = document.querySelector(info.select)
@@ -8,7 +11,7 @@ export default class SlimSelect {
     this.contentDiv = null
     this.searchInput = null
     this.options = null
-    this.classes = this.setClasses()
+    this.classes = classes()
     this.selected = {}
     this.data = []
     this.filteredData = null
@@ -19,28 +22,14 @@ export default class SlimSelect {
     this.createSelect()
 
     // Add onChange listener to original select
-    this.select.onchange = (e) => {
+    this.select.addEventListener('change', (e) => {
       this.setSelected(e.target.value)
-    }
+    })
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e) => {
-      if (!this.hasClassInTree(e.target, this.classes.id)) { this.closeContent() }
+      if (!hasClassInTree(e.target, this.classes.id)) { this.closeContent() }
     })
-  }
-
-  setClasses () {
-    return {
-      id: 'ss-' + Math.floor(Math.random() * 100000),
-      main: 'ss-main',
-      selected: 'ss-selected',
-      content: 'ss-content',
-      search: 'ss-search',
-      options: 'ss-options',
-      optgroup: 'ss-optgroup',
-      optgroupLabel: 'ss-optgroup-label',
-      option: 'ss-option'
-    }
   }
 
   parseData () {
@@ -109,7 +98,7 @@ export default class SlimSelect {
   }
 
   updatePlaceholder () {
-    this.placeholder.innerHTML = this.selected.text
+    this.placeholder.innerHTML = this.selected.innerHTML
   }
 
   updateSelect () {
@@ -198,7 +187,7 @@ export default class SlimSelect {
   }
 
   search (value) {
-    this.filteredData = (value === '' ? null : this.filterValues(this.data, value))
+    this.filteredData = (value === '' ? null : filterValues(this.data, value))
     this.renderOptions()
   }
 
@@ -255,51 +244,4 @@ export default class SlimSelect {
     }
   }
 
-  filterValues (values, part) {
-    var valuesArray = values.slice(0)
-    part = part.toLowerCase()
-    var filtered = valuesArray.map(function (obj) {
-      // If optgroup
-      if (obj.options) {
-        let options = obj.options.filter(function (opt) {
-          return opt.text.toLowerCase().indexOf(part) !== -1
-        })
-        if (options.length !== 0) {
-          var optgroup = Object.assign({}, obj) // Break pointer
-          optgroup.options = options
-          return optgroup
-        }
-      }
-
-      // If single option
-      if (obj.text && obj.text.toLowerCase().indexOf(part) !== -1) { return obj }
-
-      return false
-    })
-
-    filtered = filtered.filter(function (info) { return info })
-
-    return filtered
-  }
-
-  hasClassInTree (element, className) {
-    function hasClass (element, className) {
-      if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
-        return element
-      }
-      return null
-    }
-
-    function parentByClass (childElement, className) {
-      if (!childElement || childElement === document) {
-        return null
-      } else if (hasClass(childElement, className)) {
-        return childElement
-      } else {
-        return parentByClass(childElement.parentNode, className)
-      }
-    }
-
-    return hasClass(element, className) || parentByClass(element, className)
-  }
 }
