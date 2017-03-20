@@ -1,0 +1,9 @@
+{
+  "name": "app",
+  "description": "Vue Build Application",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "vue-build": "^0.43.0"
+  }
+}
