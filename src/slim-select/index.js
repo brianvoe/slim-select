@@ -1,247 +1,80 @@
-import {classes} from './config.js'
-import {hasClassInTree, filterValues} from './helper.js'
+import config from './config.js'
+import {hasClassInTree} from './helper.js'
+import Data from './data.js'
+import Create from './create.js'
 
 export default class SlimSelect {
   constructor (info = {}) {
     this.select = document.querySelector(info.select)
+    this.select.tabIndex = -1
     // this.select.style.display = 'none'
-    this.container = null
-    this.selectedDiv = null
-    this.arrow = null
-    this.contentDiv = null
-    this.searchInput = null
-    this.options = null
-    this.classes = classes()
-    this.selected = {}
-    this.data = []
-    this.filteredData = null
-    this.open = false
 
-    this.parseData()
-    this.getSelected()
-    this.createSelect()
+    this.config = config()
+
+    this.data = new Data({
+      select: this.select,
+      hasSearch: info.hasSearch || true
+    })
+
+    this.slim = new Create({
+      config: this.config,
+      data: this.data,
+      placeholderClick: () => {
+        if (this.data.contentOpen) { this.close() } else { this.open() }
+      },
+      searchInputChange: (e) => { this.search(e.target.value) },
+      optionClick: (e) => {
+        this.set(e.target.dataset.id, 'id')
+      }
+    })
+    // Add after original select
+    this.select.after(this.slim.container)
 
     // Add onChange listener to original select
     this.select.addEventListener('change', (e) => {
-      this.setSelected(e.target.value)
+      this.set(e.target.value, 'value')
     })
+    // TODO: add mutationObserver
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e) => {
-      if (!hasClassInTree(e.target, this.classes.id)) { this.closeContent() }
+      if (!hasClassInTree(e.target, this.config.id)) { this.close() }
     })
   }
 
-  parseData () {
-    // Loop through nodes and create data
-    var nodes = this.select.childNodes
-    for (var i = 0; i < nodes.length; i++) {
-      if (nodes[i].nodeName === 'OPTGROUP') {
-        let optgroup = {
-          label: nodes[i].label,
-          options: []
-        }
-        let options = nodes[i].childNodes
-        for (var ii = 0; ii < options.length; ii++) {
-          optgroup.options.push({
-            value: options[ii].value,
-            text: options[ii].text,
-            innerHTML: options[ii].innerHTML,
-            data: options[ii].dataset
-          })
-        }
-        this.data.push(optgroup)
-      } else {
-        this.data.push({
-          value: nodes[i].value,
-          text: nodes[i].text,
-          innerHTML: nodes[i].innerHTML,
-          data: nodes[i].dataset
-        })
-      }
-    }
+  set (value, type = 'value') {
+    this.data.setSelected(value, type)
+
+    this.slim.selected.placeholder.innerHTML = this.data.selected.innerHTML
+    this.select.value = this.data.selected.value
+    this.close()
   }
 
-  getSelected () {
-    var selected = this.select.options[this.select.options.selectedIndex]
-    this.selected = {
-      value: selected.value,
-      text: selected.text
-    }
+  open () {
+    this.data.contentOpen = true
+    this.slim.search.input.focus()
+    this.slim.selected.container.classList.add('open')
+    this.slim.selected.arrowIcon.classList.remove('arrow-up')
+    this.slim.selected.arrowIcon.classList.add('arrow-down')
+    this.slim.content.classList.add('open')
   }
 
-  set (data) {
-    this.selected = data // Set selected value
-
-    this.updatePlaceholder()
-    this.updateSelect()
-    this.closeContent()
-
-    return this.selected
-  }
-
-  setSelected (value) {
-    for (var i = 0; i < this.data.length; i++) {
-      // If option check if value is the same
-      if (this.data[i].value && this.data[i].value === value) {
-        return this.set(this.data[i])
-      }
-      // If optgroup loop through options
-      if (this.data[i].label) {
-        for (var ii = 0; ii < this.data[i].options.length; ii++) {
-          if (this.data[i].options[ii].value === value) {
-            return this.set(this.data[i].options[ii])
-          }
-        }
-      }
-    }
-  }
-
-  updatePlaceholder () {
-    this.placeholder.innerHTML = this.selected.innerHTML
-  }
-
-  updateSelect () {
-    this.select.value = this.selected.value
-  }
-
-  createSelect () {
-    // Create main container
-    this.container = document.createElement('div')
-    this.container.classList.add(this.classes.id)
-    this.container.classList.add(this.classes.main)
-
-    // Append selector div
-    this.container.appendChild(this.createSelected())
-
-    // Create content section
-    this.contentDiv = document.createElement('div')
-    this.contentDiv.classList.add(this.classes.content)
-    this.contentDiv.appendChild(this.createSearch())
-    this.contentDiv.appendChild(this.createOptions())
-    this.container.appendChild(this.contentDiv)
-
-    // Add after original select
-    this.select.after(this.container)
-  }
-
-  createSelected () {
-    this.selectedDiv = document.createElement('div')
-    this.selectedDiv.classList.add(this.classes.selected)
-
-    // Placeholder
-    this.placeholder = document.createElement('span')
-    this.placeholder.classList.add('placeholder')
-    this.placeholder.innerHTML = this.selected.text
-
-    // Arrow
-    var arrowDiv = document.createElement('span')
-    arrowDiv.classList.add('arrow')
-    this.arrow = document.createElement('i')
-    this.arrow.classList.add('arrow-up')
-    arrowDiv.appendChild(this.arrow)
-
-    // Append placeholder an arrow
-    this.selectedDiv.appendChild(this.placeholder)
-    this.selectedDiv.appendChild(arrowDiv)
-
-    // Add onclick for main selector div
-    this.selectedDiv.onclick = () => {
-      if (this.open) { this.closeContent() } else { this.openContent() }
-    }
-    return this.selectedDiv
-  }
-
-  openContent () {
-    this.open = true
-    if (!this.contentDiv.classList.contains('open')) {
-      this.searchInput.focus()
-      this.selectedDiv.classList.add('open')
-      this.contentDiv.classList.add('open')
-      this.arrow.classList.remove('arrow-up')
-      this.arrow.classList.add('arrow-down')
-    }
-  }
-
-  closeContent () {
-    this.open = false
-    if (this.contentDiv.classList.contains('open')) {
-      this.searchInput.blur()
-      this.clearSearch()
-      this.selectedDiv.classList.remove('open')
-      this.contentDiv.classList.remove('open')
-      this.arrow.classList.add('arrow-up')
-      this.arrow.classList.remove('arrow-down')
-    }
-  }
-
-  createSearch () {
-    var div = document.createElement('div')
-    div.classList.add(this.classes.search)
-    this.searchInput = document.createElement('input')
-    this.searchInput.type = 'text'
-    this.searchInput.placeholder = 'Search'
-    this.searchInput.onkeyup = (e) => { this.search(e.target.value) }
-    div.appendChild(this.searchInput)
-    return div
+  close () {
+    this.data.contentOpen = false
+    this.slim.search.input.blur()
+    this.slim.selected.container.classList.remove('open')
+    this.slim.selected.arrowIcon.classList.add('arrow-up')
+    this.slim.selected.arrowIcon.classList.remove('arrow-down')
+    this.slim.content.classList.remove('open')
+    this.search('') // clear search
   }
 
   search (value) {
-    this.filteredData = (value === '' ? null : filterValues(this.data, value))
-    this.renderOptions()
+    this.data.search(value)
+    this.render()
   }
 
-  clearSearch () {
-    this.searchInput.value = ''
-    this.filteredData = null
-    this.renderOptions()
+  render () {
+    this.slim.options()
   }
-
-  createOptions () {
-    // Create main div container
-    this.options = document.createElement('div')
-    this.options.classList.add(this.classes.options)
-    this.renderOptions()
-
-    return this.options
-  }
-
-  // Create single option
-  createOption (data) {
-    var option = document.createElement('div')
-    option.classList.add(this.classes.option)
-    option.dataset.value = data.value
-    option.innerHTML = data.innerHTML
-    option.onclick = (e) => { this.setSelected(e.target.dataset.value) }
-    return option
-  }
-
-  renderOptions () {
-    var data = this.filteredData || this.data
-    this.options.innerHTML = ''
-
-    // Append individual options to div container
-    for (var i = 0; i < data.length; i++) {
-      // Create optgroup
-      if (data[i].label) {
-        let optgroup = document.createElement('div')
-        optgroup.classList.add(this.classes.optgroup)
-
-        // Create label
-        let optgroupLabel = document.createElement('div')
-        optgroupLabel.classList.add(this.classes.optgroupLabel)
-        optgroupLabel.innerHTML = data[i].label
-        optgroup.appendChild(optgroupLabel)
-
-        let options = data[i].options
-        for (var ii = 0; ii < options.length; ii++) {
-          optgroup.appendChild(this.createOption(options[ii]))
-        }
-        this.options.appendChild(optgroup)
-      } else {
-        this.options.appendChild(this.createOption(data[i]))
-      }
-    }
-  }
-
 }
