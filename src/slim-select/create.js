@@ -6,6 +6,7 @@ export default class create {
     this.placeholderClick = info.placeholderClick
     this.searchInputChange = info.searchInputChange
     this.optionClick = info.optionClick
+    this.close = info.close
 
     // Create elements in order of appending
     this.container = this.container()
@@ -13,10 +14,8 @@ export default class create {
     this.container.appendChild(this.selected.container)
     this.content = this.content()
     this.container.appendChild(this.content)
-    if (this.data.hasSearch) {
-      this.search = this.search()
-      this.content.appendChild(this.search.container)
-    }
+    this.search = this.search()
+    this.content.appendChild(this.search.container)
     this.list = this.list()
     this.options()
     this.content.appendChild(this.list)
@@ -71,11 +70,25 @@ export default class create {
   search () {
     var container = document.createElement('div')
     container.classList.add(this.config.classes.search)
+    if (!this.data.hasSearch) { container.style.display = 'none' }
 
     var input = document.createElement('input')
-    input.type = 'text'
+    input.type = 'search'
     input.placeholder = 'Search'
-    input.onkeyup = this.searchInputChange
+    input.tabIndex = 0
+    input.onkeyup = (e) => {
+      if (e.key === 'Enter') {
+        console.log(e.key)
+      } else if (e.key === 'ArrowUp') {
+        console.log(e.key)
+      } else if (e.key === 'ArrowDown') {
+        console.log(e.key)
+      } else if (e.key === 'Escape') {
+        this.close()
+      } else {
+        this.searchInputChange(e)
+      }
+    }
     container.appendChild(input)
 
     return {

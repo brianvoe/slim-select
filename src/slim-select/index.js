@@ -13,19 +13,16 @@ export default class SlimSelect {
 
     this.data = new Data({
       select: this.select,
-      hasSearch: info.hasSearch || true
+      hasSearch: (info.hasSearch !== undefined ? info.hasSearch : true)
     })
 
     this.slim = new Create({
       config: this.config,
       data: this.data,
-      placeholderClick: () => {
-        if (this.data.contentOpen) { this.close() } else { this.open() }
-      },
+      placeholderClick: () => { (this.data.contentOpen ? this.close() : this.open()) },
       searchInputChange: (e) => { this.search(e.target.value) },
-      optionClick: (e) => {
-        this.set(e.target.dataset.id, 'id')
-      }
+      optionClick: (e) => { this.set(e.target.dataset.id, 'id') },
+      close: () => { this.close() }
     })
     // Add after original select
     this.select.after(this.slim.container)
@@ -70,6 +67,7 @@ export default class SlimSelect {
   }
 
   search (value) {
+    this.slim.search.input.value = value
     this.data.search(value)
     this.render()
   }
