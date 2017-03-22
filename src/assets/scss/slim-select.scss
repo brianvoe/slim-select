@@ -31,6 +31,11 @@ $border-radius: 4px;
     .placeholder {
       flex: 1 1 50%;
       text-align: left;
+
+      * {
+        display: inline-block;
+        vertical-align: middle;
+      }
     }
 
     .arrow {
@@ -93,7 +98,7 @@ $border-radius: 4px;
       }
     }
 
-    .ss-options {
+    .ss-list {
       max-height: 200px;
       overflow-x: hidden;
       overflow-y: auto;
@@ -112,6 +117,11 @@ $border-radius: 4px;
         padding: 6px;
         cursor: pointer;
         user-select: none;
+
+        * {
+          display: inline-block;
+          vertical-align: middle;
+        }
 
         &:hover {
           color: $white;
