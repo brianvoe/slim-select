@@ -22,7 +22,7 @@
         Slim Select
       </div>
       <div class="tagline">
-        Modern slim vanilla javascript select dropdown
+        Slim vanilla javascript select dropdown
       </div>
     </div>
     <div class="main">
