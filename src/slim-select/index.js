@@ -31,11 +31,22 @@ export default class SlimSelect {
     this.select.addEventListener('change', (e) => {
       this.set(e.target.value, 'value')
     })
-    // TODO: add mutationObserver
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e) => {
       if (!hasClassInTree(e.target, this.config.id)) { this.close() }
+    })
+
+    // Add MutationObserver to select
+    new MutationObserver((mutations) => {
+      this.data.parseSelectData()
+      this.data.setSelectedFromSelect()
+      this.slim.options()
+      this.set(this.data.selected.id, 'id')
+    }).observe(this.select, {
+      attributes: true,
+      childList: true,
+      characterData: true
     })
   }
 

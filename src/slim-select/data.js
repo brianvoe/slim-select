@@ -15,6 +15,7 @@ export default class data {
 
   // From passed in select element pull optgroup and options into data
   parseSelectData () {
+    this.data = []
     // Loop through nodes and create data
     var nodes = this.select.childNodes
     for (var i = 0; i < nodes.length; i++) {
@@ -47,8 +48,10 @@ export default class data {
 
   // From select element get current selected and set selected
   setSelectedFromSelect () {
-    var value = this.select.options[this.select.options.selectedIndex].value
-    this.setSelected(value, 'value')
+    if (this.select.options.selectedIndex !== -1) {
+      var value = this.select.options[this.select.options.selectedIndex].value
+      this.setSelected(value, 'value')
+    }
   }
 
   // From value set the selected
