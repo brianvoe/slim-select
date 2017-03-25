@@ -6,6 +6,7 @@ export default class create {
     this.placeholderClick = info.placeholderClick
     this.searchInputChange = info.searchInputChange
     this.optionClick = info.optionClick
+    this.open = info.open
     this.close = info.close
 
     // Create elements in order of appending
@@ -89,6 +90,8 @@ export default class create {
         this.searchInputChange(e)
       }
     }
+    input.onfocus = () => { this.open() }
+    input.onblur = () => { this.close() }
     container.appendChild(input)
 
     return {

@@ -22,6 +22,7 @@ export default class SlimSelect {
       placeholderClick: () => { (this.data.contentOpen ? this.close() : this.open()) },
       searchInputChange: (e) => { this.search(e.target.value) },
       optionClick: (e) => { this.set(e.target.dataset.id, 'id') },
+      open: () => { this.open() },
       close: () => { this.close() }
     })
     // Add after original select
@@ -42,7 +43,7 @@ export default class SlimSelect {
       this.data.parseSelectData()
       this.data.setSelectedFromSelect()
       this.slim.options()
-      this.set(this.data.selected.id, 'id')
+      this.set(this.data.selected.id, 'id', false)
     }).observe(this.select, {
       attributes: true,
       childList: true,
@@ -50,12 +51,12 @@ export default class SlimSelect {
     })
   }
 
-  set (value, type = 'value') {
+  set (value, type = 'value', close = true) {
     this.data.setSelected(value, type)
 
     this.slim.selected.placeholder.innerHTML = this.data.selected.innerHTML
     this.select.value = this.data.selected.value
-    this.close()
+    if (close) { this.close() }
   }
 
   open () {
