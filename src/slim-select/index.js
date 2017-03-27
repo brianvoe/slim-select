@@ -1,18 +1,21 @@
 import config from './config.js'
 import {hasClassInTree} from './helper.js'
+import Select from './select.js'
 import Data from './data.js'
 import Create from './create.js'
 
 export default class SlimSelect {
   constructor (info = {}) {
-    this.select = document.querySelector(info.select)
-    this.select.tabIndex = -1
-    // this.select.style.display = 'none'
-
     this.config = config()
 
+    this.select = new Select({
+      select: info.select,
+      open: () => { this.open() },
+      close: () => { this.close() }
+    })
+
     this.data = new Data({
-      select: this.select,
+      select: this.select.element,
       hasSearch: (info.hasSearch !== undefined ? info.hasSearch : true)
     })
 
@@ -25,29 +28,12 @@ export default class SlimSelect {
       open: () => { this.open() },
       close: () => { this.close() }
     })
-    // Add after original select
-    this.select.after(this.slim.container)
-
-    // Add onChange listener to original select
-    this.select.addEventListener('change', (e) => {
-      this.set(e.target.value, 'value')
-    })
+    // Add after original select element
+    this.select.element.after(this.slim.container)
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e) => {
       if (!hasClassInTree(e.target, this.config.id)) { this.close() }
-    })
-
-    // Add MutationObserver to select
-    new MutationObserver((mutations) => {
-      this.data.parseSelectData()
-      this.data.setSelectedFromSelect()
-      this.slim.options()
-      this.set(this.data.selected.id, 'id', false)
-    }).observe(this.select, {
-      attributes: true,
-      childList: true,
-      characterData: true
     })
   }
 
@@ -55,7 +41,7 @@ export default class SlimSelect {
     this.data.setSelected(value, type)
 
     this.slim.selected.placeholder.innerHTML = this.data.selected.innerHTML
-    this.select.value = this.data.selected.value
+    this.select.element.value = this.data.selected.value
     if (close) { this.close() }
   }
 

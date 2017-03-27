@@ -70,7 +70,6 @@
 
 <template>
   <div id="simple-content">
-    <input type="text" />
     <select id="simple">
       <option v-for="value in states" :value="value.abv">{{value.state}}</option>
     </select>
