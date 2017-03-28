@@ -11,7 +11,8 @@ export default class SlimSelect {
     var selectElement = document.querySelector(info.select)
     this.select = new Select({
       select: selectElement,
-      main: this
+      main: this,
+      data: info.data || null
     })
 
     this.data = new Data({

@@ -1,5 +1,7 @@
 <script>
   import SlimSelect from '../slim-select/index.js'
+  import Chance from 'chance'
+  var chance = new Chance()
 
   export default {
     data () {
@@ -23,19 +25,19 @@
         let items = []
         for (var i = 0; i < 100; i++) {
           items.push({
-            value: Math.floor(Math.random() * 100000),
-            text: Math.random().toString(36).substring(7)
+            value: chance.integer({min: 0}),
+            text: chance.word({syllables: 3})
           })
         }
         this.items = items
 
         let groups = []
         for (var g = 0; g < 10; g++) {
-          let group = { label: Math.random().toString(36).substring(7), options: [] }
+          let group = { label: chance.word({syllables: 3}), options: [] }
           for (var gg = 0; gg < 10; gg++) {
             group.options.push({
-              value: Math.floor(Math.random() * 100000),
-              text: Math.random().toString(36).substring(7)
+              value: chance.integer({min: 0}),
+              text: chance.word({syllables: 3})
             })
           }
           groups.push(group)

@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "main": "dist/index.js",
   "devDependencies": {
+    "chance": "^1.0.6",
     "vue-build": "^0.43.0"
   }
 }
