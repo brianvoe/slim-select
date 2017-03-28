@@ -74,13 +74,18 @@ export default class create {
     input.placeholder = 'Search'
     input.tabIndex = 0
     input.onkeydown = (e) => {
-      if (e.key === 'Enter') {
-        var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
-        highlighted.click()
-      } else if (e.key === 'ArrowUp') {
+      if (e.key === 'ArrowUp') {
         this.highlightUp()
       } else if (e.key === 'ArrowDown') {
         this.highlightDown()
+      }
+    }
+    input.onkeyup = (e) => {
+      if (e.key === 'Enter') {
+        var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
+        highlighted.click()
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        // Cancel out to leave for onkeydown to handle
       } else if (e.key === 'Escape') {
         this.main.close()
       } else {
@@ -98,8 +103,16 @@ export default class create {
 
   highlightUp () {
     var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
-    var prev = highlighted.previousSibling
-    if (prev.classList.contains(this.main.config.classes.optgroupLabel)) { prev = null }
+    var prev = null
+    if (highlighted) {
+      prev = highlighted.previousSibling
+    } else {
+      var allOptions = this.list.querySelectorAll('.' + this.main.config.classes.option)
+      prev = allOptions[allOptions.length - 1]
+    }
+
+    // Do not select if optgroup label
+    if (prev && prev.classList.contains(this.main.config.classes.optgroupLabel)) { prev = null }
 
     // Check if parent is optgroup
     if (prev === null) {
@@ -113,7 +126,7 @@ export default class create {
 
     // If previous element exists highlight it
     if (prev) {
-      highlighted.classList.remove(this.main.config.classes.highlighted)
+      if (highlighted) { highlighted.classList.remove(this.main.config.classes.highlighted) }
       prev.classList.add(this.main.config.classes.highlighted)
       ensureElementInView(this.list, prev)
     }
@@ -121,7 +134,7 @@ export default class create {
 
   highlightDown () {
     var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
-    var next = highlighted.nextSibling
+    var next = (highlighted ? highlighted.nextSibling : this.list.querySelector('.' + this.main.config.classes.option))
 
     // Check if parent is optgroup
     if (next === null) {
@@ -135,7 +148,7 @@ export default class create {
 
     // If previous element exists highlight it
     if (next) {
-      highlighted.classList.remove(this.main.config.classes.highlighted)
+      if (highlighted) { highlighted.classList.remove(this.main.config.classes.highlighted) }
       next.classList.add(this.main.config.classes.highlighted)
       ensureElementInView(this.list, next)
     }
