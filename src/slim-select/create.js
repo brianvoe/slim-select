@@ -1,13 +1,9 @@
+import {ensureElementInView} from './helper.js'
+
 // Class is responsible for creating all the elements
 export default class create {
   constructor (info) {
-    this.config = info.config
-    this.data = info.data
-    this.placeholderClick = info.placeholderClick
-    this.searchInputChange = info.searchInputChange
-    this.optionClick = info.optionClick
-    this.open = info.open
-    this.close = info.close
+    this.main = info.main
 
     // Create elements in order of appending
     this.container = this.container()
@@ -26,20 +22,20 @@ export default class create {
   container () {
     // Create main container
     let container = document.createElement('div')
-    container.classList.add(this.config.id)
-    container.classList.add(this.config.classes.main)
+    container.classList.add(this.main.config.id)
+    container.classList.add(this.main.config.classes.main)
 
     return container
   }
 
   selected () {
     let container = document.createElement('div')
-    container.classList.add(this.config.classes.selected)
+    container.classList.add(this.main.config.classes.selected)
 
     // Placeholder text
     let placeholder = document.createElement('span')
     placeholder.classList.add('placeholder')
-    placeholder.innerHTML = this.data.selected.innerHTML
+    placeholder.innerHTML = this.main.data.selected.innerHTML
     container.appendChild(placeholder)
 
     // Arrow
@@ -51,7 +47,7 @@ export default class create {
     container.appendChild(arrowContainer)
 
     // Add onclick for main selector div
-    container.onclick = this.placeholderClick
+    container.onclick = () => { (this.main.data.contentOpen ? this.main.close() : this.main.open()) }
 
     return {
       container: container,
@@ -64,34 +60,34 @@ export default class create {
   // Create content container
   content () {
     let container = document.createElement('div')
-    container.classList.add(this.config.classes.content)
+    container.classList.add(this.main.config.classes.content)
     return container
   }
 
   search () {
     var container = document.createElement('div')
-    container.classList.add(this.config.classes.search)
-    if (!this.data.hasSearch) { container.style.display = 'none' }
+    container.classList.add(this.main.config.classes.search)
+    if (!this.main.data.hasSearch) { container.style.display = 'none' }
 
     var input = document.createElement('input')
     input.type = 'search'
     input.placeholder = 'Search'
     input.tabIndex = 0
-    input.onkeyup = (e) => {
+    input.onkeydown = (e) => {
       if (e.key === 'Enter') {
-        console.log(e.key)
+        var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
+        highlighted.click()
       } else if (e.key === 'ArrowUp') {
-        console.log(e.key)
+        this.highlightUp()
       } else if (e.key === 'ArrowDown') {
-        console.log(e.key)
+        this.highlightDown()
       } else if (e.key === 'Escape') {
-        this.close()
+        this.main.close()
       } else {
-        this.searchInputChange(e)
+        this.main.search(e.target.value)
       }
     }
-    input.onfocus = () => { this.open() }
-    input.onblur = () => { this.close() }
+    input.onfocus = () => { this.main.open() }
     container.appendChild(input)
 
     return {
@@ -100,16 +96,61 @@ export default class create {
     }
   }
 
+  highlightUp () {
+    var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
+    var prev = highlighted.previousSibling
+    if (prev.classList.contains(this.main.config.classes.optgroupLabel)) { prev = null }
+
+    // Check if parent is optgroup
+    if (prev === null) {
+      var parent = highlighted.parentNode
+      if (parent.classList.contains(this.main.config.classes.optgroup)) {
+        if (parent.previousSibling) {
+          prev = parent.previousSibling.childNodes[parent.previousSibling.childNodes.length - 1]
+        }
+      }
+    }
+
+    // If previous element exists highlight it
+    if (prev) {
+      highlighted.classList.remove(this.main.config.classes.highlighted)
+      prev.classList.add(this.main.config.classes.highlighted)
+      ensureElementInView(this.list, prev)
+    }
+  }
+
+  highlightDown () {
+    var highlighted = this.list.querySelector('.' + this.main.config.classes.highlighted)
+    var next = highlighted.nextSibling
+
+    // Check if parent is optgroup
+    if (next === null) {
+      var parent = highlighted.parentNode
+      if (parent.classList.contains(this.main.config.classes.optgroup)) {
+        if (parent.nextSibling) {
+          next = parent.nextSibling.querySelector('.' + this.main.config.classes.option)
+        }
+      }
+    }
+
+    // If previous element exists highlight it
+    if (next) {
+      highlighted.classList.remove(this.main.config.classes.highlighted)
+      next.classList.add(this.main.config.classes.highlighted)
+      ensureElementInView(this.list, next)
+    }
+  }
+
   // Create main container that options will reside
   list () {
     var list = document.createElement('div')
-    list.classList.add(this.config.classes.list)
+    list.classList.add(this.main.config.classes.list)
     return list
   }
 
   // Loop through data || filtered data and build options and append to list container
   options () {
-    var data = this.data.filtered || this.data.data
+    var data = this.main.data.filtered || this.main.data.data
     this.list.innerHTML = ''
 
     // Append individual options to div container
@@ -117,11 +158,11 @@ export default class create {
       // Create optgroup
       if (data[i].label) {
         let optgroup = document.createElement('div')
-        optgroup.classList.add(this.config.classes.optgroup)
+        optgroup.classList.add(this.main.config.classes.optgroup)
 
         // Create label
         let optgroupLabel = document.createElement('div')
-        optgroupLabel.classList.add(this.config.classes.optgroupLabel)
+        optgroupLabel.classList.add(this.main.config.classes.optgroupLabel)
         optgroupLabel.innerHTML = data[i].label
         optgroup.appendChild(optgroupLabel)
 
@@ -139,10 +180,15 @@ export default class create {
   // Create single option
   option (data) {
     var option = document.createElement('div')
-    option.classList.add(this.config.classes.option)
+    option.classList.add(this.main.config.classes.option)
+    if (this.main.data.selected.id === data.id) {
+      option.classList.add(this.main.config.classes.highlighted)
+    }
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
-    option.onclick = this.optionClick
+    option.onclick = (e) => {
+      this.main.set(e.target.dataset.id, 'id')
+    }
     return option
   }
 }

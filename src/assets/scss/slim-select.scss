@@ -132,7 +132,7 @@ $border-radius: 4px;
           vertical-align: middle;
         }
 
-        &:hover {
+        &:hover, &.ss-highlighted {
           color: $white;
           background-color:$font-hover;
         }

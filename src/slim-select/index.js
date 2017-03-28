@@ -8,10 +8,10 @@ export default class SlimSelect {
   constructor (info = {}) {
     this.config = config()
 
+    var selectElement = document.querySelector(info.select)
     this.select = new Select({
-      select: info.select,
-      open: () => { this.open() },
-      close: () => { this.close() }
+      select: selectElement,
+      main: this
     })
 
     this.data = new Data({
@@ -19,15 +19,7 @@ export default class SlimSelect {
       hasSearch: (info.hasSearch !== undefined ? info.hasSearch : true)
     })
 
-    this.slim = new Create({
-      config: this.config,
-      data: this.data,
-      placeholderClick: () => { (this.data.contentOpen ? this.close() : this.open()) },
-      searchInputChange: (e) => { this.search(e.target.value) },
-      optionClick: (e) => { this.set(e.target.dataset.id, 'id') },
-      open: () => { this.open() },
-      close: () => { this.close() }
-    })
+    this.slim = new Create({ main: this })
     // Add after original select element
     this.select.element.after(this.slim.container)
 

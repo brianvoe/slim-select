@@ -9,7 +9,8 @@ export default function () {
       list: 'ss-list',
       optgroup: 'ss-optgroup',
       optgroupLabel: 'ss-optgroup-label',
-      option: 'ss-option'
+      option: 'ss-option',
+      highlighted: 'ss-highlighted'
     }
   }
 }

@@ -18,3 +18,20 @@ export function hasClassInTree (element, className) {
 
   return hasClass(element, className) || parentByClass(element, className)
 }
+
+export function ensureElementInView (container, element) {
+  // Determine container top and bottom
+  let cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
+  let cBottom = cTop + container.clientHeight
+
+  // Determine element top and bottom
+  let eTop = element.offsetTop
+  let eBottom = eTop + element.clientHeight
+
+  // Check if out of view
+  if (eTop < cTop) {
+    container.scrollTop -= (cTop - eTop)
+  } else if (eBottom > cBottom) {
+    container.scrollTop += (eBottom - cBottom)
+  }
+}
