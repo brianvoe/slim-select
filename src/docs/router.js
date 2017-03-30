@@ -1,9 +1,9 @@
-import home from './components/home.vue'
-import simple from './components/simple.vue'
-import multiple from './components/multiple.vue'
-import group from './components/group.vue'
-import observer from './components/observer.vue'
-import data from './components/data.vue'
+import home from './pages/home.vue'
+import simple from './pages/simple.vue'
+import multiple from './pages/multiple.vue'
+import group from './pages/group.vue'
+import observer from './pages/observer.vue'
+import data from './pages/data.vue'
 
 export default {
   mode: 'history',

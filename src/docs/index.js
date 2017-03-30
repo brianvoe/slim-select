@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import app from 'src/app.vue'
-import routerList from './router'
+import app from 'docs/app.vue'
+import routerList from 'docs/router.js'
 
 import 'scss/docs.scss'
-import 'scss/slim-select.scss'
+import 'slim-select/index.scss'
 
 // Router setup
 Vue.use(VueRouter)

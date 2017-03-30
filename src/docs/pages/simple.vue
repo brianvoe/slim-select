@@ -1,5 +1,5 @@
 <script>
-  import SlimSelect from '../slim-select/index.ts'
+  import SlimSelect from 'slim-select/index.ts'
 
   export default {
     data () {
@@ -69,8 +69,8 @@
 </script>
 
 <template>
-  <div id="multiple-content">
-    <select id="multiple" multiple>
+  <div id="simple-content">
+    <select id="simple">
       <option v-for="value in states" :value="value.abv">{{value.state}}</option>
     </select>
   </div>

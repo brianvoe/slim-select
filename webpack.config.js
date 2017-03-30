@@ -3,22 +3,24 @@ var projectRoot = process.cwd()
 // Overriding default base webpack config
 var config = {
   entry: {
-    index: './docs.js'
+    index: './docs/index.js'
   },
   resolve: {
     // Aliases - Used for pointing to reusable parts of your app
     alias: {
       'src': projectRoot + '/src',
-      'images': projectRoot + '/src/assets/images',
-      'scss': projectRoot + '/src/assets/scss'
+      'docs': projectRoot + '/src/docs',
+      'images': projectRoot + '/src/docs/assets/images',
+      'scss': projectRoot + '/src/docs/assets/scss',
+      'slim-select': projectRoot + '/src/slim-select'
     }
   }
 }
 
 if (process.env.ENVIRONMENT === 'production') {
-  config.entry.index = './slim-select.js'
+  config.entry.index = './slim-select/index.ts'
   config.output = {
-    library: 'libraryNameHere', // replace this with the name of your library
+    library: 'slim-select',
     libraryTarget: 'umd'
   }
 }
