@@ -1,5 +1,5 @@
 <script>
-  import SlimSelect from '../slim-select/index.js'
+  import SlimSelect from '../slim-select/index.ts'
   import Chance from 'chance'
   var chance = new Chance()
 

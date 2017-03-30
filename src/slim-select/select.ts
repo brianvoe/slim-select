@@ -1,5 +1,17 @@
+import SlimSelect from './index'
+import {optgroup} from './data'
+
+interface Constructor {
+  select: HTMLSelectElement
+  main: SlimSelect
+  data: object[]
+}
+
 export default class select {
-  constructor (info = {}) {
+  element: HTMLSelectElement
+  main: SlimSelect
+  data: object[]
+  constructor (info: Constructor) {
     this.element = info.select
     this.main = info.main
 
@@ -18,8 +30,9 @@ export default class select {
 
   addEventListeners () {
     // Add onChange listener to original select
-    this.element.addEventListener('change', (e) => {
-      this.main.set(e.target.value, 'value')
+    this.element.addEventListener('change', (e: Event) => {
+      let target: HTMLSelectElement = <HTMLSelectElement>e.target
+      this.main.set(target.value, 'value')
     })
   }
 
@@ -37,25 +50,28 @@ export default class select {
     })
   }
 
-  create () {
+  // Create select element and optgroup/options
+  create (): void {
     // Clear out select
     this.element.innerHTML = ''
 
-    for (var i = 0; i < this.data.length; i++) {
-      if (this.data[i].options) {
-        var optgroup = document.createElement('optgroup')
-        optgroup.label = this.data[i].label
-        for (var o = 0; o < this.data[i].options.length; o++) {
-          optgroup.appendChild(this.createOption(this.data[i].options[o]))
+    let data = this.data || this.main.data.data
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].hasOwnProperty('options')) {
+        let optgroupObject = <optgroup>data[i]
+        let optgroup:HTMLOptGroupElement = <HTMLOptGroupElement>document.createElement('optgroup')
+        optgroup.label = optgroupObject.label
+        for (var o = 0; o < optgroupObject.options.length; o++) {
+          optgroup.appendChild(this.createOption(optgroupObject.options[o]))
         }
         this.element.appendChild(optgroup)
       } else {
-        this.element.appendChild(this.createOption(this.data[i]))
+        this.element.appendChild(this.createOption(data[i]))
       }
     }
   }
 
-  createOption (info) {
+  createOption (info): HTMLOptionElement {
     var option = document.createElement('option')
     option.value = info.value
     option.innerHTML = info.innerHTML || info.text

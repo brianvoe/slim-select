@@ -1,14 +1,23 @@
-import config from './config.js'
-import {hasClassInTree} from './helper.js'
-import Select from './select.js'
-import Data from './data.js'
-import Create from './create.js'
+import Config from './config'
+import {hasClassInTree} from './helper'
+import Select from './select'
+import Data from './data'
+import Create from './create'
+
+interface constructor {
+  select: string
+  data: object[]
+}
 
 export default class SlimSelect {
-  constructor (info = {}) {
-    this.config = config()
+  config: Config
+  select: Select
+  data: Data
+  slim: Create
+  constructor (info: constructor) {
+    this.config = new Config()
 
-    var selectElement = document.querySelector(info.select)
+    let selectElement: HTMLSelectElement = <HTMLSelectElement>document.querySelector(info.select)
     this.select = new Select({
       select: selectElement,
       main: this,
@@ -16,8 +25,7 @@ export default class SlimSelect {
     })
 
     this.data = new Data({
-      select: this.select.element,
-      hasSearch: (info.hasSearch !== undefined ? info.hasSearch : true)
+      main: this
     })
 
     this.slim = new Create({ main: this })
@@ -25,12 +33,12 @@ export default class SlimSelect {
     this.select.element.after(this.slim.container)
 
     // Add onclick listener to document to closeContent if clicked outside
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', (e: Event) => {
       if (!hasClassInTree(e.target, this.config.id)) { this.close() }
     })
   }
 
-  set (value, type = 'value', close = true) {
+  set (value: string, type: string = 'value', close: boolean = true) {
     this.data.setSelected(value, type)
 
     this.slim.selected.placeholder.innerHTML = this.data.selected.innerHTML
