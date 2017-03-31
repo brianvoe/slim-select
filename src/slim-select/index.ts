@@ -17,7 +17,7 @@ export default class SlimSelect {
   constructor (info: constructor) {
     this.config = new Config()
 
-    let selectElement: HTMLSelectElement = <HTMLSelectElement>document.querySelector(info.select)
+    let selectElement = <HTMLSelectElement>document.querySelector(info.select)
     this.select = new Select({
       select: selectElement,
       main: this,
