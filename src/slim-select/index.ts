@@ -15,6 +15,8 @@ export default class SlimSelect {
   data: Data
   slim: Create
   constructor (info: constructor) {
+    this.validate(info)
+
     this.config = new Config()
 
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
@@ -36,6 +38,12 @@ export default class SlimSelect {
     document.addEventListener('click', (e: Event) => {
       if (!hasClassInTree(e.target, this.config.id)) { this.close() }
     })
+  }
+
+  validate (info: constructor) {
+    let select = <HTMLSelectElement>document.querySelector(info.select)
+    if (!select) { throw new Error('Could not find select element') }
+    if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
   }
 
   set (value: string, type: string = 'value', close: boolean = true) {

@@ -23,7 +23,7 @@ export default class data {
   main: SlimSelect
   data: dataObject[]
   filtered: dataObject[]
-  selected: option
+  selected: option | option[]
   contentOpen: boolean = false
   constructor (info: constructor) {
     this.main = info.main

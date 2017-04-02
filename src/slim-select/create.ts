@@ -216,6 +216,7 @@ export default class create {
 
   // Create single option
   option (data): HTMLDivElement {
+    console.log(data)
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
     if (this.main.data.selected.id === data.id) {

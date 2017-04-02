@@ -62,7 +62,7 @@
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
-        select: '#simple'
+        select: '#multiple'
       })
     }
   }
