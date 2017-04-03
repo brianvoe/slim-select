@@ -1,6 +1,6 @@
 import SlimSelect from './index'
 import {ensureElementInView} from './helper'
-import {optgroup} from './data'
+import {option, optgroup} from './data'
 
 interface selected {
   container: HTMLDivElement
@@ -55,9 +55,16 @@ export default class create {
     // Placeholder text
     let placeholder:HTMLSpanElement = document.createElement('span')
     placeholder.classList.add('placeholder')
-    if (this.main.data.selected) {
-      placeholder.innerHTML = this.main.data.selected.innerHTML || this.main.data.selected.text
+
+    if (this.main.config.isMultiple) {
+
+    } else {
+      if (this.main.data.selected) {
+        let singleSelect = <option>this.main.data.selected
+        placeholder.innerHTML = singleSelect.innerHTML || singleSelect.text
+      }
     }
+
     container.appendChild(placeholder)
 
     // Arrow
@@ -216,12 +223,14 @@ export default class create {
 
   // Create single option
   option (data): HTMLDivElement {
-    console.log(data)
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
-    if (this.main.data.selected.id === data.id) {
+
+    let singleSelect = <option>this.main.data.selected
+    if (singleSelect.id === data.id) {
       option.classList.add(this.main.config.highlighted)
     }
+
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
     option.onclick = (e) => {

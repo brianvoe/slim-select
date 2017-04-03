@@ -29,7 +29,7 @@ export default class data {
     this.main = info.main
     this.data = []
     this.filtered = null
-    this.selected = null
+    this.selected = (this.main.config.isMultiple ? [] : null)
 
     this.parseSelectData()
     this.setSelectedFromSelect()
@@ -71,7 +71,7 @@ export default class data {
   }
 
   // From select element get current selected and set selected
-  setSelectedFromSelect () {
+  setSelectedFromSelect (): void {
     let options = this.main.select.element.options
     if (options.selectedIndex !== -1) {
       let option = <HTMLOptionElement>options[options.selectedIndex]
@@ -80,28 +80,39 @@ export default class data {
     }
   }
 
-  // From value set the selected
-  setSelected (value, type = 'id') {
+  // From value set the selected value
+  setSelected (value: string | string[], type = 'id'): void {
+    if (Array.isArray(value)) {
+      this.selected = []
+      for (var i = 0; i < value.length; i++) {
+        this.selected.push(this.getObjectFromData(value[i], type))
+      }
+    } else {
+      this.selected = this.getObjectFromData(value, type)
+    }
+  }
+
+  // Take in a value loop through the data till you find it and return it
+  getObjectFromData (value: string, type = 'id'): option {
     for (var i = 0; i < this.data.length; i++) {
       // If option check if value is the same
       if (this.data[i][type] && String(this.data[i][type]) === String(value)) {
-        this.selected = <option>this.data[i]
-        break
+        return <option>this.data[i]
       }
       // If optgroup loop through options
       if (this.data[i].hasOwnProperty('options')) {
         let optgroupObject = <optgroup>this.data[i]
         for (var ii = 0; ii < optgroupObject.options.length; ii++) {
           if (String(optgroupObject.options[ii][type]) === String(value)) {
-            this.selected = optgroupObject.options[ii]
-            break
+            return optgroupObject.options[ii]
           }
         }
       }
     }
   }
 
-  search (search) {
+  // Take in search string and return filtered list of values
+  search (search: string) {
     if (search.trim() === '') { this.filtered = null; return }
 
     var valuesArray = this.data.slice(0)

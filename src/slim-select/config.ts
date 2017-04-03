@@ -1,3 +1,7 @@
+interface constructor {
+  select: HTMLSelectElement
+}
+
 export default class config {
   id: string = ''
   readonly main: string = 'ss-main'
@@ -9,7 +13,11 @@ export default class config {
   readonly optgroupLabel: string = 'ss-optgroup-label'
   readonly option: string = 'ss-option'
   readonly highlighted: string = 'ss-highlighted'
-  constructor () {
+
+  isMultiple: boolean = false
+  constructor (info: constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
+
+    this.isMultiple = info.select.multiple
   }
 }

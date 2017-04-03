@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import {optgroup} from './data'
+import {option, optgroup} from './data'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -42,7 +42,15 @@ export default class select {
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()
       this.main.slim.options()
-      this.main.set(this.main.data.selected.id, 'id', false)
+      if (this.main.config.isMultiple) {
+        let multiSelect = <option[]>this.main.data.selected
+        let multiValues: string[] = []
+        for (var i = 0; i < multiSelect.length; i++) {multiValues.push(multiSelect[i].id)}
+        this.main.set(multiValues, 'id', false)
+      } else {
+        let singleSelect = <option>this.main.data.selected
+        this.main.set(singleSelect.id, 'id', false)
+      }
     }).observe(this.element, {
       attributes: true,
       childList: true,

@@ -1,7 +1,7 @@
 import Config from './config'
 import {hasClassInTree} from './helper'
 import Select from './select'
-import Data from './data'
+import Data, {option} from './data'
 import Create from './create'
 
 interface constructor {
@@ -16,10 +16,12 @@ export default class SlimSelect {
   slim: Create
   constructor (info: constructor) {
     this.validate(info)
-
-    this.config = new Config()
-
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
+
+    this.config = new Config({
+      select: selectElement
+    })
+
     this.select = new Select({
       select: selectElement,
       main: this,
@@ -46,15 +48,23 @@ export default class SlimSelect {
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
   }
 
-  set (value: string, type: string = 'value', close: boolean = true) {
+  set (value: string | string[], type: string = 'value', close: boolean = true) {
     this.data.setSelected(value, type)
 
-    this.slim.selected.placeholder.innerHTML = this.data.selected.innerHTML
-    this.select.element.value = this.data.selected.value
+    if (this.config.isMultiple) {
+      // If multi select, loop through values and update accordingly
+      
+    } else {
+      // If single select set placeholder
+      let selected = <option>this.data.selected
+      this.slim.selected.placeholder.innerHTML = selected.innerHTML
+      this.select.element.value = selected.value
+    }
     if (close) { this.close() }
   }
 
-  open () {
+  // Open content section
+  open (): void {
     this.data.contentOpen = true
     this.slim.search.input.focus()
     this.slim.selected.container.classList.add('open')
@@ -63,7 +73,8 @@ export default class SlimSelect {
     this.slim.content.classList.add('open')
   }
 
-  close () {
+  // Close content section
+  close (): void {
     this.data.contentOpen = false
     this.slim.search.input.blur()
     this.slim.selected.container.classList.remove('open')
@@ -73,13 +84,13 @@ export default class SlimSelect {
     this.search('') // clear search
   }
 
-  search (value) {
+  search (value: string): void {
     this.slim.search.input.value = value
     this.data.search(value)
     this.render()
   }
 
-  render () {
+  render (): void {
     this.slim.options()
   }
 }
