@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import {ensureElementInView} from './helper'
+import {ensureElementInView, isValueInArrayOfObjects} from './helper'
 import {option, optgroup} from './data'
 
 interface singleSelected {
@@ -14,16 +14,12 @@ interface singleSelected {
 interface multiSelected {
   container: HTMLDivElement
   values: HTMLDivElement
+  add: HTMLDivElement
 }
 
 interface search {
   container: HTMLDivElement
   input: HTMLInputElement
-}
-
-interface searchConstructor {
-  type: string
-  placeholder: string
 }
 
 // Class is responsible for creating all the elements
@@ -41,23 +37,17 @@ export default class create {
     // Create elements in order of appending
     this.container = this.containerDiv()
     this.content = this.contentDiv()
+    this.search = this.searchDiv()
     this.list = this.listDiv()
     this.options()
 
     if (this.main.config.isMultiple) {
-      this.search = this.searchObject({
-        type: 'text',
-        placeholder: ''
-      })
       this.multiSelected = this.multiSelectedDiv()
       this.container.appendChild(this.multiSelected.container)
       this.container.appendChild(this.content)
+      this.content.appendChild(this.search.container)
       this.content.appendChild(this.list)
     } else {
-      this.search = this.searchObject({
-        type: 'search',
-        placeholder: 'Search'
-      })
       this.singleSelected = this.singleSelectedDiv()
       this.container.appendChild(this.singleSelected.container)
       this.container.appendChild(this.content)
@@ -116,10 +106,18 @@ export default class create {
   multiSelectedDiv (): multiSelected {
     let container = document.createElement('div')
     container.classList.add(this.main.config.multiSelected)
+
     let values = document.createElement('div')
     values.classList.add(this.main.config.values)
     container.appendChild(values)
-    container.appendChild(this.search.container)
+
+    let add = document.createElement('div')
+    add.classList.add(this.main.config.add)
+    let plus = document.createElement('span')
+    plus.classList.add(this.main.config.plus)
+    plus.innerHTML = '+'
+    add.appendChild(plus)
+    container.appendChild(add)
 
     container.onclick = (e) => {
       let target = <Element>e.target
@@ -132,19 +130,51 @@ export default class create {
 
     return {
       container: container,
-      values: values
+      values: values,
+      add: add
     }
   }
 
   // Get selected values and append to multiSelected values container
+  // and remove those who
   values (): void {
     if (this.main.config.isMultiple) {
-      // Clear out values div
-      this.multiSelected.values.innerHTML = ''
-
+      let currentNodes = this.multiSelected.values.childNodes
       let selected = <option[]>this.main.data.selected
-      for (var i = 0; i < selected.length; i++) {
-        this.multiSelected.values.appendChild(this.valueDiv(selected[i]))
+      let exists
+
+      // Add values that dont currently exist
+      for (var s = 0; s < selected.length; s++) {
+        exists = false
+        for (var c = 0; c < currentNodes.length; c++) {
+          let node = <HTMLDivElement>currentNodes[c]
+          if (selected[s].id === node.dataset.id) {
+            exists = true
+          }
+        }
+
+        if (!exists) {
+          this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
+        }
+      }
+
+      // Remove nodes that shouldnt be there
+      for (var c = 0; c < currentNodes.length; c++) {
+        exists = true
+        let node = <HTMLDivElement>currentNodes[c]
+        for (var s = 0; s < selected.length; s++) {
+          if (String(selected[s].id) === String(node.dataset.id)) {
+            exists = false
+          }
+        }
+
+        if (exists) {
+          let node = <HTMLDivElement>currentNodes[c]
+          node.classList.add('ss-out')
+          setTimeout(() => {
+            this.multiSelected.values.removeChild(node)
+          }, 200)
+        }
       }
 
     }
@@ -153,6 +183,7 @@ export default class create {
   valueDiv (option: option): HTMLDivElement {
     let value = document.createElement('div')
     value.classList.add(this.main.config.value)
+    value.dataset.id = option.id
 
     let text = document.createElement('span')
     text.classList.add(this.main.config.valueText)
@@ -180,13 +211,13 @@ export default class create {
     return container
   }
 
-  searchObject (info: searchConstructor): search {
+  searchDiv (): search {
     var container = document.createElement('div')
     container.classList.add(this.main.config.search)
 
     var input = document.createElement('input')
-    input.type = info.type
-    input.placeholder = info.placeholder
+    input.type = 'search'
+    input.placeholder = 'Search'
     input.tabIndex = 0
     input.onclick = (e) => {
       setTimeout(() => {
@@ -227,12 +258,12 @@ export default class create {
   }
 
   highlightUp (): void {
-    var highlighted = this.list.querySelector('.' + this.main.config.highlighted)
+    var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
     var prev = null
     if (highlighted) {
       prev = highlighted.previousSibling
     } else {
-      var allOptions = this.list.querySelectorAll('.' + this.main.config.option)
+      var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
       prev = allOptions[allOptions.length - 1]
     }
 
@@ -259,7 +290,11 @@ export default class create {
 
   highlightDown (): void {
     var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-    var next:HTMLDivElement = (highlighted ? <HTMLDivElement>highlighted.nextSibling : <HTMLDivElement>this.list.querySelector('.' + this.main.config.option))
+    var next = (
+      highlighted ?
+      <HTMLDivElement>highlighted.nextSibling :
+      <HTMLDivElement>this.list.querySelector('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+    )
 
     // Check if parent is optgroup
     if (next === null) {
@@ -267,7 +302,7 @@ export default class create {
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.nextSibling) {
           let sibling = <HTMLDivElement>parent.nextSibling
-          next = <HTMLDivElement>sibling.querySelector('.' + this.main.config.option)
+          next = <HTMLDivElement>sibling.querySelector('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
         }
       }
     }
@@ -334,7 +369,7 @@ export default class create {
       this.main.set(target.dataset.id, 'id')
     }
 
-    if (data.disabled) {
+    if (data.disabled || isValueInArrayOfObjects(this.main.data.selected, 'id', data.id)) {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }

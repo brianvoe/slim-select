@@ -61,7 +61,7 @@
     },
     mounted () {
       /* eslint-disable no-new */
-      let slim = new SlimSelect({
+      new SlimSelect({
         select: '#simple'
       })
     }

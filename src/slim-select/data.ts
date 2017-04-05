@@ -130,7 +130,7 @@ export default class data {
   getObjectFromData (value: string, type = 'id'): option {
     for (var i = 0; i < this.data.length; i++) {
       // If option check if value is the same
-      if (this.data[i][type] && String(this.data[i][type]) === String(value)) {
+      if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
         return <option>this.data[i]
       }
       // If optgroup loop through options
@@ -143,6 +143,8 @@ export default class data {
         }
       }
     }
+
+    return null
   }
 
   // Take in search string and return filtered list of values

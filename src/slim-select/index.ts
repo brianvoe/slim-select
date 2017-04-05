@@ -25,7 +25,7 @@ export default class SlimSelect {
     this.select = new Select({
       select: selectElement,
       main: this,
-      data: info.data || null
+      data: (info.data ? JSON.parse(JSON.stringify(info.data)): false) || null
     })
 
     this.data = new Data({
@@ -34,7 +34,7 @@ export default class SlimSelect {
 
     this.slim = new Create({ main: this })
     // Add after original select element
-    this.select.element.after(this.slim.container)
+    this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
 
     // Do an initial render on startup
     this.render()

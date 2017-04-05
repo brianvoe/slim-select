@@ -35,3 +35,17 @@ export function ensureElementInView (container, element) {
     container.scrollTop += (eBottom - cBottom)
   }
 }
+
+export function isValueInArrayOfObjects (selected, key, value) {
+  if (!Array.isArray(selected)) {
+    return selected[key] === value
+  }
+
+  for (var i = 0; i < selected.length; i++) {
+    if (selected[i] && selected[i][key] && selected[i][key] === value) {
+      return true
+    }
+  }
+
+  return false
+}

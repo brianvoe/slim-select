@@ -64,27 +64,33 @@ $border-radius: 4px;
 
   .ss-multi-selected {
     display: flex;
+    flex-direction: row;
     cursor: pointer;
     width: 100%;
-    height: 30px;
-    padding: 4px 6px;
+    padding: 0 0 0 3px;
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $white;
     outline: 0;
     box-sizing: border-box;
 
-    @keyframes valueBounceIn {
-      0% {transform: scale(0);}
-      100% {transform: scale(1);}
-    }
-    @keyframes valueBounceOut {
-      0% {transform: scale(1);}
-      100% {transform: scale(0);}
+    &.ss-open {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
     }
 
     .ss-values {
       display: inline-block;
+      flex: 1 1 auto;
+
+      @keyframes scaleIn {
+        0% {transform: scale(0); opacity: 0;}
+        100% {transform: scale(1); opacity: 1;}
+      }
+      @keyframes scaleOut {
+        0% {transform: scale(1); opacity: 1;}
+        100% {transform: scale(0); opacity: 0;}
+      }
 
       .ss-value {
         display: inline-block;
@@ -92,16 +98,18 @@ $border-radius: 4px;
         cursor: default;
         font-size: 12px;
         padding: 3px 5px;
-        margin: 0 5px 0 0;
+        margin: 3px 5px 3px 0;
         color: $white;
         background-color: $font-hover;
         border-radius: $border-radius;
-        transform-origin: center center;
-        transition: transform .2s, opacity .2s;
-        animation: .3s ease-out 0s 1 valueBounceIn;
+        animation-name: scaleIn;
+        animation-duration: .2s;
+        animation-timing-function: ease-out;
 
         &.ss-out {
-
+          animation-name: scaleOut;
+          animation-duration: .2s;
+          animation-timing-function: ease-out;
         }
 
         .ss-value-delete {
@@ -109,20 +117,24 @@ $border-radius: 4px;
           cursor: pointer;
         }
       }
-
     }
 
-    .ss-search {
-      display: inline-block;
-      input {
-        padding: 0;
-        margin: 0;
-        border: none;
-        display: inline-block;
-        font-size: inherit;
-        outline: 0;
+    .ss-add {
+      display: flex;
+      flex: 0 1 auto;
+      margin: 4px 4px 0 5px;
+
+      .ss-plus {
+        line-height: 16px;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 24px;
+        height: 20px;
+        width: 20px;
+        font-weight: bold;
       }
     }
+
   }
 
   .ss-content {
