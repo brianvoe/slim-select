@@ -5,6 +5,6 @@
   "main": "dist/index.js",
   "devDependencies": {
     "chance": "^1.0.6",
-    "vue-build": "^0.44.0"
+    "vue-build": "^0.45.0"
   }
 }

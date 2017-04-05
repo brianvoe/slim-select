@@ -2,11 +2,18 @@ import SlimSelect from './index'
 import {ensureElementInView} from './helper'
 import {option, optgroup} from './data'
 
-interface selected {
+interface singleSelected {
   container: HTMLDivElement
   placeholder: HTMLSpanElement
-  arrowContainer: HTMLSpanElement
-  arrowIcon: HTMLSpanElement
+  arrowIcon: {
+    container: HTMLSpanElement
+    arrow: HTMLSpanElement
+  }
+}
+
+interface multiSelected {
+  container: HTMLDivElement
+  values: HTMLDivElement
 }
 
 interface search {
@@ -14,11 +21,17 @@ interface search {
   input: HTMLInputElement
 }
 
+interface searchConstructor {
+  type: string
+  placeholder: string
+}
+
 // Class is responsible for creating all the elements
 export default class create {
   main: SlimSelect
   container: HTMLDivElement
-  selected: selected
+  singleSelected: singleSelected
+  multiSelected: multiSelected
   content: HTMLDivElement
   search: search
   list: HTMLDivElement
@@ -27,15 +40,30 @@ export default class create {
 
     // Create elements in order of appending
     this.container = this.containerDiv()
-    this.selected = this.selectedObject()
-    this.container.appendChild(this.selected.container)
     this.content = this.contentDiv()
-    this.container.appendChild(this.content)
-    this.search = this.searchObject()
-    this.content.appendChild(this.search.container)
     this.list = this.listDiv()
     this.options()
-    this.content.appendChild(this.list)
+
+    if (this.main.config.isMultiple) {
+      this.search = this.searchObject({
+        type: 'text',
+        placeholder: ''
+      })
+      this.multiSelected = this.multiSelectedDiv()
+      this.container.appendChild(this.multiSelected.container)
+      this.container.appendChild(this.content)
+      this.content.appendChild(this.list)
+    } else {
+      this.search = this.searchObject({
+        type: 'search',
+        placeholder: 'Search'
+      })
+      this.singleSelected = this.singleSelectedDiv()
+      this.container.appendChild(this.singleSelected.container)
+      this.container.appendChild(this.content)
+      this.content.appendChild(this.search.container)
+      this.content.appendChild(this.list)
+    }
   }
 
   // Create main container
@@ -48,28 +76,19 @@ export default class create {
     return container
   }
 
-  selectedObject (): selected {
+  singleSelectedDiv (): singleSelected {
     let container:HTMLDivElement = document.createElement('div')
-    container.classList.add(this.main.config.selected)
+    container.classList.add(this.main.config.singleSelected)
 
     // Placeholder text
     let placeholder:HTMLSpanElement = document.createElement('span')
     placeholder.classList.add('placeholder')
-
-    if (this.main.config.isMultiple) {
-
-    } else {
-      if (this.main.data.selected) {
-        let singleSelect = <option>this.main.data.selected
-        placeholder.innerHTML = singleSelect.innerHTML || singleSelect.text
-      }
-    }
-
+    let singleSelect = <option>this.main.data.selected
     container.appendChild(placeholder)
 
     // Arrow
     var arrowContainer:HTMLSpanElement = document.createElement('span')
-    arrowContainer.classList.add('arrow')
+    arrowContainer.classList.add(this.main.config.arrow)
     let arrowIcon = document.createElement('span')
     arrowIcon.classList.add('arrow-up')
     arrowContainer.appendChild(arrowIcon)
@@ -81,9 +100,77 @@ export default class create {
     return {
       container: container,
       placeholder: placeholder,
-      arrowContainer: arrowContainer,
-      arrowIcon: arrowIcon
+      arrowIcon: {
+        container: arrowContainer,
+        arrow: arrowIcon
+      }
     }
+  }
+
+  // Based upon current selection set placeholder text
+  placeholder (): void {
+    let selected = <option>this.main.data.selected
+    this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: '')
+  }
+
+  multiSelectedDiv (): multiSelected {
+    let container = document.createElement('div')
+    container.classList.add(this.main.config.multiSelected)
+    let values = document.createElement('div')
+    values.classList.add(this.main.config.values)
+    container.appendChild(values)
+    container.appendChild(this.search.container)
+
+    container.onclick = (e) => {
+      let target = <Element>e.target
+
+      // Open only if you are not clicking on x text
+      if (!target.classList.contains(this.main.config.valueDelete)) {
+        this.main.open()
+      }
+    }
+
+    return {
+      container: container,
+      values: values
+    }
+  }
+
+  // Get selected values and append to multiSelected values container
+  values (): void {
+    if (this.main.config.isMultiple) {
+      // Clear out values div
+      this.multiSelected.values.innerHTML = ''
+
+      let selected = <option[]>this.main.data.selected
+      for (var i = 0; i < selected.length; i++) {
+        this.multiSelected.values.appendChild(this.valueDiv(selected[i]))
+      }
+
+    }
+  }
+
+  valueDiv (option: option): HTMLDivElement {
+    let value = document.createElement('div')
+    value.classList.add(this.main.config.value)
+
+    let text = document.createElement('span')
+    text.classList.add(this.main.config.valueText)
+    text.innerHTML = option.text
+    value.appendChild(text)
+
+    let deleteSpan = document.createElement('span')
+    deleteSpan.classList.add(this.main.config.valueDelete)
+    deleteSpan.innerHTML = 'x'
+    deleteSpan.onclick = (e) => {
+      this.main.data.removeFromSelected(option.id, 'id')
+      this.main.render()
+      this.main.select.setValue()
+      e.preventDefault()
+    }
+    value.appendChild(deleteSpan)
+
+    return value
   }
 
   // Create content container
@@ -93,19 +180,21 @@ export default class create {
     return container
   }
 
-  searchObject (): search {
+  searchObject (info: searchConstructor): search {
     var container = document.createElement('div')
     container.classList.add(this.main.config.search)
 
     var input = document.createElement('input')
-    input.type = 'search'
-    input.placeholder = 'Search'
+    input.type = info.type
+    input.placeholder = info.placeholder
     input.tabIndex = 0
     input.onkeydown = (e) => {
       if (e.key === 'ArrowUp') {
         this.highlightUp()
+        e.preventDefault()
       } else if (e.key === 'ArrowDown') {
         this.highlightDown()
+        e.preventDefault()
       }
     }
     input.onkeyup = (e) => {
@@ -120,6 +209,7 @@ export default class create {
       } else {
         this.main.search(target.value)
       }
+      e.preventDefault()
     }
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)

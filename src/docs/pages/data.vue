@@ -26,9 +26,14 @@
           var lastName = chance.last()
           let group = { label: lastName, options: [] }
           for (var gg = 0; gg < 10; gg++) {
+            var firstName = chance.first()
             group.options.push({
               value: chance.integer({min: 0}),
-              text: chance.first() + ' ' + lastName
+              text: firstName + ' ' + lastName,
+              data: {
+                firstName: firstName,
+                lastName: lastName
+              }
             })
           }
           groups.push(group)

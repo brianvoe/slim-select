@@ -11,7 +11,7 @@ export interface optgroup {
 }
 
 export interface option {
-  id: string // option.dataset.id || Math.floor(Math.random() * 100000000)
+  id: string
   value: string
   text: string
   innerHTML: string
@@ -21,12 +21,14 @@ export interface option {
 // Class is responsible for managing the data
 export default class data {
   main: SlimSelect
+  searchValue: string
   data: dataObject[]
   filtered: dataObject[]
   selected: option | option[]
   contentOpen: boolean = false
   constructor (info: constructor) {
     this.main = info.main
+    this.searchValue = ''
     this.data = []
     this.filtered = null
     this.selected = (this.main.config.isMultiple ? [] : null)
@@ -51,7 +53,7 @@ export default class data {
         let options = nodes[i].childNodes
         for (var ii = 0; ii < options.length; ii++) {
           optgroup.options.push(this.pullOptionData(<HTMLOptionElement>options[ii]))
-        }0
+        }
         this.data.push(optgroup)
       } else {
         this.data.push(this.pullOptionData(<HTMLOptionElement>nodes[i]))
@@ -73,10 +75,21 @@ export default class data {
   // From select element get current selected and set selected
   setSelectedFromSelect (): void {
     let options = this.main.select.element.options
-    if (options.selectedIndex !== -1) {
-      let option = <HTMLOptionElement>options[options.selectedIndex]
-      let value = option.value
-      this.setSelected(value, 'value')
+    if (this.main.config.isMultiple) {
+      this.selected = []
+      for (var i = 0; i < options.length; i++) {
+        let option = <HTMLOptionElement>options[i]
+        if (option.selected) {
+          this.addToSelected(this.getObjectFromData(option.value, 'value').id, 'id')
+        }
+      }
+    } else {
+      // Single select element
+      if (options.selectedIndex !== -1) {
+        let option = <HTMLOptionElement>options[options.selectedIndex]
+        let value = option.value
+        this.setSelected(value, 'value')
+      }
     }
   }
 
@@ -89,6 +102,25 @@ export default class data {
       }
     } else {
       this.selected = this.getObjectFromData(value, type)
+    }
+  }
+
+  // If select type is multiple
+  addToSelected (value: string, type = 'id') {
+    if (this.main.config.isMultiple) {
+      let selected = <option[]>this.selected
+      selected.push(this.getObjectFromData(value, type))
+    }
+  }
+
+  removeFromSelected (value: string, type = 'id') {
+    if (this.main.config.isMultiple) {
+      let selected = <option[]>this.selected
+      for (var i = 0; i < selected.length; i++) {
+        if (String(selected[i][type]) === String(value)) {
+          selected.splice(i, 1)
+        }
+      }
     }
   }
 
@@ -113,6 +145,7 @@ export default class data {
 
   // Take in search string and return filtered list of values
   search (search: string) {
+    this.searchValue = search
     if (search.trim() === '') { this.filtered = null; return }
 
     var valuesArray = this.data.slice(0)
@@ -142,5 +175,30 @@ export default class data {
 
     // Filter out false values
     this.filtered = filtered.filter(function (info) { return info })
+  }
+}
+
+export function validateData (data: optgroup[] | option[]) {
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].hasOwnProperty('label')) {
+      if (data[i].hasOwnProperty('options')) {
+        let optgroup = <optgroup>data[i]
+        let options = optgroup.options
+        for (var i = 0; i < options.length; i++) {
+          validateOption(options[i])
+        }
+      }
+    } else {
+      let option = <option>data[i]
+      validateOption(option)
+    }
+
+
+  }
+}
+
+export function validateOption (option: option) {
+  if (!option.text || !option.value) {
+    throw new Error('Data object option must have at least a text and value')
   }
 }

@@ -9,7 +9,7 @@
           {abv: 'AK', state: 'Alaska'},
           {abv: 'AZ', state: 'Arizona'},
           {abv: 'AR', state: 'Arkansas'},
-          {abv: 'CA', state: 'California'},
+          {abv: 'CA', state: 'California', selected: true},
           {abv: 'CO', state: 'Colorado'},
           {abv: 'CT', state: 'Connecticut'},
           {abv: 'DE', state: 'Delaware'},
@@ -18,8 +18,8 @@
           {abv: 'GA', state: 'Georgia'},
           {abv: 'HI', state: 'Hawaii'},
           {abv: 'ID', state: 'Idaho'},
-          {abv: 'IL', state: 'Illinois'},
-          {abv: 'IN', state: 'Indiana'},
+          {abv: 'IL', state: 'Illinois', selected: true},
+          {abv: 'IN', state: 'Indiana', selected: true},
           {abv: 'IA', state: 'Iowa'},
           {abv: 'KS', state: 'Kansas'},
           {abv: 'KY', state: 'Kentucky'},
@@ -71,7 +71,7 @@
 <template>
   <div id="multiple-content">
     <select id="multiple" multiple>
-      <option v-for="value in states" :value="value.abv">{{value.state}}</option>
+      <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
     </select>
   </div>
 </template>
