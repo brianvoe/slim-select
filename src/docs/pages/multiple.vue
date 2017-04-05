@@ -7,7 +7,7 @@
         states: [
           {abv: 'AL', state: 'Alabama'},
           {abv: 'AK', state: 'Alaska'},
-          {abv: 'AZ', state: 'Arizona'},
+          {abv: 'AZ', state: 'Arizona', disabled: true},
           {abv: 'AR', state: 'Arkansas'},
           {abv: 'CA', state: 'California', selected: true},
           {abv: 'CO', state: 'Colorado'},
@@ -71,7 +71,11 @@
 <template>
   <div id="multiple-content">
     <select id="multiple" multiple>
-      <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
+      <option v-for="value in states"
+        :value="value.abv"
+        :selected="value.selected"
+        :disabled="value.disabled"
+        >{{value.state}}</option>
     </select>
   </div>
 </template>

@@ -15,6 +15,7 @@ export interface option {
   value: string
   text: string
   innerHTML: string
+  disabled: boolean
   data: object
 }
 
@@ -68,6 +69,7 @@ export default class data {
       value: option.value,
       text: option.text,
       innerHTML: option.innerHTML,
+      disabled: option.disabled,
       data: option.dataset
     }
   }

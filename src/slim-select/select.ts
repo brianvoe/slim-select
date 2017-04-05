@@ -98,6 +98,7 @@ export default class select {
     var option = document.createElement('option')
     option.value = info.value
     option.innerHTML = info.innerHTML || info.text
+    if (info.disabled) { option.disabled = true }
     if (info.data && typeof info.data === 'object') {
       Object.keys(info.data).forEach(function(key) {
         option.setAttribute('data-' + key, info.data[key])

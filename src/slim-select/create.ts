@@ -188,6 +188,12 @@ export default class create {
     input.type = info.type
     input.placeholder = info.placeholder
     input.tabIndex = 0
+    input.onclick = (e) => {
+      setTimeout(() => {
+        let target = <HTMLInputElement>e.target
+        if (target.value === '') { this.main.search('') }
+      }, 10)
+    }
     input.onkeydown = (e) => {
       if (e.key === 'ArrowUp') {
         this.highlightUp()
@@ -201,7 +207,7 @@ export default class create {
       let target = <HTMLInputElement>e.target
       if (e.key === 'Enter') {
         var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-        highlighted.click()
+        if (highlighted) { highlighted.click() }
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle
       } else if (e.key === 'Escape') {
@@ -327,6 +333,12 @@ export default class create {
       let target = <HTMLDivElement>e.target
       this.main.set(target.dataset.id, 'id')
     }
+
+    if (data.disabled) {
+      option.onclick = null
+      option.classList.add(this.main.config.disabled)
+    }
+
     return option
   }
 }

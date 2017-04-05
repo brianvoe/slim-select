@@ -74,8 +74,18 @@ $border-radius: 4px;
     outline: 0;
     box-sizing: border-box;
 
+    @keyframes valueBounceIn {
+      0% {transform: scale(0);}
+      100% {transform: scale(1);}
+    }
+    @keyframes valueBounceOut {
+      0% {transform: scale(1);}
+      100% {transform: scale(0);}
+    }
+
     .ss-values {
       display: inline-block;
+
       .ss-value {
         display: inline-block;
         user-select: none;
@@ -86,11 +96,20 @@ $border-radius: 4px;
         color: $white;
         background-color: $font-hover;
         border-radius: $border-radius;
+        transform-origin: center center;
+        transition: transform .2s, opacity .2s;
+        animation: .3s ease-out 0s 1 valueBounceIn;
+
+        &.ss-out {
+
+        }
+
+        .ss-value-delete {
+          margin: 0 0 0 5px;
+          cursor: pointer;
+        }
       }
-      .ss-value-delete {
-        margin: 0 0 0 5px;
-        cursor: pointer;
-      }
+
     }
 
     .ss-search {
@@ -179,6 +198,12 @@ $border-radius: 4px;
         &:hover, &.ss-highlighted {
           color: $white;
           background-color:$font-hover;
+        }
+
+        &.ss-disabled {
+          cursor: default;
+          color: $border-color;
+          background-color: $white;
         }
       }
     }

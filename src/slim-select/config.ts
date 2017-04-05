@@ -20,6 +20,7 @@ export default class config {
   readonly optgroupLabel: string = 'ss-optgroup-label'
   readonly option: string = 'ss-option'
   readonly highlighted: string = 'ss-highlighted'
+  readonly disabled: string = 'ss-disabled'
 
   isMultiple: boolean = false
   constructor (info: constructor) {
