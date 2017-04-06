@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "slim-select",
   "description": "Vue Build Application",
   "version": "0.1.0",
   "main": "dist/index.js",
