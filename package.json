@@ -3,8 +3,13 @@
   "description": "Vue Build Application",
   "version": "0.1.0",
   "main": "dist/index.js",
+  "style": "dist/index.css",
+  "scripts": {
+    "prod": "vue-build prod",
+    "docs": "DOCS=true vue-build prod"
+  },
   "devDependencies": {
     "chance": "^1.0.6",
-    "vue-build": "^0.45.0"
+    "vue-build": "^0.46.0"
   }
 }
