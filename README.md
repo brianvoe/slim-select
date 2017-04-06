@@ -8,10 +8,11 @@ See the [docs](http://slim-select.com) for more details
 
 ## Features
 - No Dependencies
-- Light Css
 - Single Select
 - Multi Select
 - Search Capability
+- Light Css
+- Clean animations
 - Performant
 
 ## Browsers
