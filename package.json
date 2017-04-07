@@ -1,7 +1,7 @@
 {
-  "name": "app",
+  "name": "slim-select",
   "description": "Vue Build Application",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "style": "dist/index.css",
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "chance": "^1.0.6",
-    "vue-build": "^0.46.0"
+    "highlightjs": "^9.10.0",
+    "vue-build": "^0.46.1"
   }
 }

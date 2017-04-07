@@ -4,7 +4,8 @@ interface constructor {
   main: SlimSelect
 }
 
-type dataObject = optgroup | option
+export type dataArray = dataObject[]
+export type dataObject = optgroup | option
 export interface optgroup {
   label: string
   options: option[]
@@ -56,7 +57,7 @@ export default class data {
           optgroup.options.push(this.pullOptionData(<HTMLOptionElement>options[ii]))
         }
         this.data.push(optgroup)
-      } else {
+      } else if (nodes[i].nodeName === 'OPTION') {
         this.data.push(this.pullOptionData(<HTMLOptionElement>nodes[i]))
       }
     }
@@ -78,13 +79,14 @@ export default class data {
   setSelectedFromSelect (): void {
     let options = this.main.select.element.options
     if (this.main.config.isMultiple) {
-      this.selected = []
+      let newSelected = []
       for (var i = 0; i < options.length; i++) {
         let option = <HTMLOptionElement>options[i]
         if (option.selected) {
-          this.addToSelected(this.getObjectFromData(option.value, 'value').id, 'id')
+          newSelected.push(this.getObjectFromData(option.value, 'value').id)
         }
       }
+      this.setSelected(newSelected, 'id')
     } else {
       // Single select element
       if (options.selectedIndex !== -1) {
@@ -105,6 +107,8 @@ export default class data {
     } else {
       this.selected = this.getObjectFromData(value, type)
     }
+
+    this.onDataChange()
   }
 
   // If select type is multiple
@@ -112,9 +116,12 @@ export default class data {
     if (this.main.config.isMultiple) {
       let selected = <option[]>this.selected
       selected.push(this.getObjectFromData(value, type))
+
+      this.onDataChange()
     }
   }
 
+  // Remove object from selected
   removeFromSelected (value: string, type = 'id') {
     if (this.main.config.isMultiple) {
       let selected = <option[]>this.selected
@@ -123,6 +130,25 @@ export default class data {
           selected.splice(i, 1)
         }
       }
+
+      this.onDataChange()
+    }
+  }
+
+  // Trigger onChange callback
+  onDataChange (): void {
+    if (this.main.onChange) {
+      let value
+      if (this.main.config.isMultiple) {
+        value = []
+        for (var i = 0; i < (<option[]>this.selected).length; i++) {
+          value.push((<option>this.selected[i]).value)
+        }
+      } else {
+        value = (<option>this.selected).value
+      }
+
+      this.main.onChange(value)
     }
   }
 
@@ -182,7 +208,9 @@ export default class data {
   }
 }
 
-export function validateData (data: optgroup[] | option[]) {
+export function validateData (data: dataArray) {
+  if (!data) { throw new Error('Data must be an array of objects') }
+
   for (var i = 0; i < data.length; i++) {
     if (data[i].hasOwnProperty('label')) {
       if (data[i].hasOwnProperty('options')) {
@@ -202,7 +230,7 @@ export function validateData (data: optgroup[] | option[]) {
 }
 
 export function validateOption (option: option) {
-  if (!option.text || !option.value) {
-    throw new Error('Data object option must have at least a text and value')
+  if (!option.text) {
+    throw new Error('Data object option must have at least a text')
   }
 }

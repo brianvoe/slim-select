@@ -1,30 +1,27 @@
 import SlimSelect from './index'
-import {option, optgroup} from './data'
+import {option, optgroup, dataArray} from './data'
 
 interface Constructor {
   select: HTMLSelectElement
   main: SlimSelect
-  data: object[]
 }
 
 export default class select {
   element: HTMLSelectElement
   main: SlimSelect
-  data: object[]
   mutationObserver: MutationObserver
   constructor (info: Constructor) {
     this.element = info.select
     this.main = info.main
-
-    // If they passed in just data create select
-    if (info.data) { this.data = info.data; this.create() }
 
     this.addAttributes()
     this.addEventListeners()
     this.mutationObserver = this.addMutationObserver()
   }
 
-  setValue () {
+  setValue (): void {
+    if (!this.main.data.selected) {return}
+
     if (this.main.config.isMultiple) {
       let selected = <option[]>this.main.data.selected
       let options = this.element.options
@@ -46,7 +43,7 @@ export default class select {
 
   addAttributes () {
     this.element.tabIndex = -1
-    //this.element.style.display = 'none'
+    this.element.style.display = 'none'
   }
 
   // Add onChange listener to original select
@@ -74,11 +71,10 @@ export default class select {
   }
 
   // Create select element and optgroup/options
-  create (): void {
+  create (data: dataArray): void {
     // Clear out select
     this.element.innerHTML = ''
 
-    let data = this.data || this.main.data.data
     for (var i = 0; i < data.length; i++) {
       if (data[i].hasOwnProperty('options')) {
         let optgroupObject = <optgroup>data[i]

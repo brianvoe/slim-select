@@ -5,9 +5,11 @@
 
   export default {
     mounted () {
-      /* eslint-disable no-new */
-      new SlimSelect({ select: '#data', data: this.randomizeSingle() })
-      new SlimSelect({ select: '#data-groups', data: this.randomizeGroup() })
+      this.dataSingle = new SlimSelect({ select: '#data-single' })
+      this.dataSingle.setData(this.randomizeSingle())
+
+      this.dataGroup = new SlimSelect({ select: '#data-groups' })
+      this.dataGroup.setData(this.randomizeGroup())
     },
     methods: {
       randomizeSingle () {
@@ -18,7 +20,9 @@
             value: chance.integer({min: 0}),
             text: firstName + ' ' + chance.last()
           }
-          if (firstName.toLowerCase() === 'kyle' || firstName.charAt(0) === 'K') { info.disabled = true }
+          if (firstName === 'Kyle' || firstName.charAt(0) === 'K') {
+            info.disabled = true
+          }
           items.push(info)
         }
         return items
@@ -38,7 +42,9 @@
                 lastName: lastName
               }
             }
-            if (firstName.toLowerCase() === 'kyle' || firstName.charAt(0) === 'K') { info.disabled = true }
+            if (firstName === 'Kyle' || firstName.charAt(0) === 'K') {
+              info.disabled = true
+            }
             group.options.push(info)
           }
           groups.push(group)
@@ -51,7 +57,7 @@
 
 <template>
   <div id="data-content">
-    <select id="data"></select>
+    <select id="data-single"></select>
     <select id="data-groups"></select>
   </div>
 </template>
