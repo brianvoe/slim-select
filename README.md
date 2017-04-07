@@ -23,8 +23,17 @@ See the [docs](http://slimselectjs.com) for more details
 - FireFox 25+
 
 ## Installation
-```javascript
+```bash
 npm install slim-select
+```
+
+## Usage
+```javascript
+import SlimSelect from 'slim-select'
+
+new SlimSelect({
+  select: '#slim-select'
+})
 ```
 
 ## Roadmap
@@ -32,9 +41,10 @@ npm install slim-select
 - Obtain classes from original select
 - Content div auto detect to go above or below
 - Refining search
+- No results text
 - Doc updates
 
 ## Testing
 Browser testing has been provided by
 
-<img src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png" style="width: 300px; margin: -50px 0 0 0;"/>
+<img src="https://digitalscientists.com/system/images/1448/original/logo-browserstack.png" width="300" />
