@@ -8,6 +8,7 @@ See the [docs](http://slim-select.com) for more details
 
 ## Features
 - No Dependencies
+- 15kb
 - Single Select
 - Multi Select
 - Search Capability
@@ -29,6 +30,8 @@ npm install slim-select
 ```
 
 ## Roadmap
+- Obtain styles from original select
+- Obtain classes from original select
 - onChange Callback
 - Refining search
 - Doc updates
