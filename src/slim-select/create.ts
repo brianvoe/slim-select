@@ -232,6 +232,8 @@ export default class create {
       } else if (e.key === 'ArrowDown') {
         this.highlightDown()
         e.preventDefault()
+      } else if (e.key === 'Tab') {
+        this.main.close()
       }
     }
     input.onkeyup = (e) => {
@@ -365,8 +367,11 @@ export default class create {
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
     option.onclick = (e) => {
-      let target = <HTMLDivElement>e.target
-      this.main.set(target.dataset.id, 'id')
+      if (this.main.beforeOnChange) {
+
+      } else {
+        this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
+      }
     }
 
     if (data.disabled || isValueInArrayOfObjects(this.main.data.selected, 'id', data.id)) {
