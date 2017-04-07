@@ -57,7 +57,7 @@ export default class data {
           optgroup.options.push(this.pullOptionData(<HTMLOptionElement>options[ii]))
         }
         this.data.push(optgroup)
-      } else {
+      } else if (nodes[i].nodeName === 'OPTION') {
         this.data.push(this.pullOptionData(<HTMLOptionElement>nodes[i]))
       }
     }
