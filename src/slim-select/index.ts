@@ -6,6 +6,9 @@ import Create from './create'
 
 interface constructor {
   select: string
+
+  // Events
+  beforeOnChange: Function
   onChange: Function
 }
 
@@ -14,11 +17,13 @@ export default class SlimSelect {
   select: Select
   data: Data
   slim: Create
+  beforeOnChange: Function = null
   onChange: Function = null
   constructor (info: constructor) {
     this.validate(info)
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
 
+    if (info.beforeOnChange) {this.beforeOnChange = info.beforeOnChange}
     if (info.onChange) {this.onChange = info.onChange}
 
     this.config = new Config({
