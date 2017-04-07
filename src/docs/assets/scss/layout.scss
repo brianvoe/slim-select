@@ -1,32 +1,9 @@
-$app-width: 600px;
-$primary-color: #5897fb;
-$secondary-color: #666666;
-$border-color: #dcdee2;
-$white: #ffffff;
-
 html {
   height: 100%;
 }
 
 body {
   font-family: helvetica;
-}
-
-a {
-  color: $primary-color;
-
-  &:hover {
-    color: $secondary-color;
-  }
-}
-
-h1, h2, h3, h4, h5 { margin: 0 0 10px 0; }
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s ease-in-out;
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
 }
 
 #app {
