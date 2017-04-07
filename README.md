@@ -4,7 +4,7 @@ Slim vanilla javascript select dropdown
 [![Build Status](https://travis-ci.org/brianvoe/slim-select.svg?branch=master)](https://travis-ci.org/brianvoe/slim-select)
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
 
-See the [docs](http://slim-select.com) for more details
+See the [docs](http://slimselectjs.com) for more details
 
 ## Features
 - No Dependencies
