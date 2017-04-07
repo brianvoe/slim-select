@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
-  - "7"
+  - '7'
 before_install:
   - export CHROME_BIN=/usr/bin/google-chrome
   - export DISPLAY=:99.0
@@ -13,3 +13,8 @@ before_install:
   - sudo dpkg -i google-chrome*.deb
 before_script:
   - npm link
+addons:
+  browserstack:
+    username: "brianvoelker1"
+  access_key:
+    secure: "RvfnzTJ3oDlX1ps5NTNTeEmpUJ9Z4oI62NrDPNG2gboC0JQTLbFiouLzr5oI2KFHfiHeJ5E9beEN4dgkokPBvF+gPIdhcIYPwc1Zh/NI0dikxw4tVndjzVyszlYXF8YsyaIWawh3KJEqEzjHdhw5M+aDV1186zgYBHj2gLYcNAQaSNx/UmbxINZbWGMR9EPin0bgC2ZmG6lc5IVRvNhHrUIG8JHWafv4+bp11rGQQvWqWAYB5vIsp9fRIUNphY69DUGiP0oyHky5IlsSzYcy2xNed2+i9OKFa+6YYCGgkYpYHqYL0Fa2gAs/M7qXGKumZZg6eyThVTLRc5/TCd1D/M+EFbBfuMO9SlBqms2Pf0sa7JQXKlVP3HCKP96UTpdawohyBAL9Il/jowyh/E3c3cYLYmdS1a8NC6kkoFP20bmrBR3l8AYzoySQNMriGHOYGToxa+ugNwazuIaV7fCQIuDUcnv5PSFMfRBB6230mVuIF0+HW+z5Iub5X62wKEl6f6aTwwcIE8UbGGKAMPKW/dCe9AOn2IAQW/UZAE/UOu/uBHjo8TW2WSwPCZbiU8y3KyVChkIXuZDmWaPVlVSYvcnRFyNzfamfJ9KwsLq5GQh5E8deLoZvKjRXx8SpA8+2t9oJhpohfZffjKRzS/6rTOQ9SUBd7qL22/N/Hq1Eyjk="
