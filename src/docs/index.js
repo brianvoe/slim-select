@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import app from 'docs/app.vue'
 import routerList from 'docs/router.js'
 
+import './google-analytics.js'
+
 import 'scss/docs.scss'
 import 'slim-select/index.scss'
 

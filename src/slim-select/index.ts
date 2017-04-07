@@ -1,12 +1,12 @@
 import Config from './config'
 import {hasClassInTree} from './helper'
 import Select from './select'
-import Data, {optgroup, option, validateData} from './data'
+import Data, {dataArray, optgroup, option, validateData} from './data'
 import Create from './create'
 
 interface constructor {
   select: string
-  data: optgroup[] | option[]
+  onChange: Function
 }
 
 export default class SlimSelect {
@@ -14,9 +14,12 @@ export default class SlimSelect {
   select: Select
   data: Data
   slim: Create
+  onChange: Function = null
   constructor (info: constructor) {
     this.validate(info)
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
+
+    if (info.onChange) {this.onChange = info.onChange}
 
     this.config = new Config({
       select: selectElement
@@ -24,8 +27,7 @@ export default class SlimSelect {
 
     this.select = new Select({
       select: selectElement,
-      main: this,
-      data: (info.data ? JSON.parse(JSON.stringify(info.data)): false) || null
+      main: this
     })
 
     this.data = new Data({
@@ -49,12 +51,6 @@ export default class SlimSelect {
     let select = <HTMLSelectElement>document.querySelector(info.select)
     if (!select) { throw new Error('Could not find select element') }
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
-
-    // Validate data if passed in
-    if (info.data) {
-      if (!Array.isArray(info.data)) { throw new Error('Data must be an array of objects') }
-      validateData(info.data)
-    }
   }
 
   // Sets value of the select, adds it to data and original select
@@ -67,6 +63,16 @@ export default class SlimSelect {
     this.render()
     this.select.setValue()
     if (close) { this.close() }
+  }
+
+  setData (data: dataArray) {
+    // Validate data if passed in
+    validateData(data)
+
+    let newData = JSON.parse(JSON.stringify(data))
+    this.select.create(newData)
+    this.render()
+    this.select.setValue()
   }
 
   // Open content section

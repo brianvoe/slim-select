@@ -1,6 +1,6 @@
 $white: #ffffff;
 $font-color: #666666;
-$font-hover: #5897fb;
+$primary-color: #5897fb;
 $border-color: #dcdee2;
 $border-radius: 4px;
 
@@ -29,7 +29,7 @@ $border-radius: 4px;
     }
 
     .placeholder {
-      flex: 1 1 50%;
+      flex: 1 1 auto;
       text-align: left;
 
       * {
@@ -42,7 +42,9 @@ $border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      flex: 1 1 50%;
+      flex: 0 1 auto;
+      margin: 0 4px 0 5px;
+
       span {
         border: solid $font-color;
         border-width: 0 3px 3px 0;
@@ -100,7 +102,7 @@ $border-radius: 4px;
         padding: 3px 5px;
         margin: 3px 5px 3px 0;
         color: $white;
-        background-color: $font-hover;
+        background-color: $primary-color;
         border-radius: $border-radius;
         animation-name: scaleIn;
         animation-duration: .2s;
@@ -128,10 +130,9 @@ $border-radius: 4px;
         line-height: 16px;
         text-align: center;
         vertical-align: middle;
-        font-size: 24px;
+        font-size: 22px;
         height: 20px;
         width: 20px;
-        font-weight: bold;
       }
     }
 
@@ -160,6 +161,7 @@ $border-radius: 4px;
 
     .ss-search {
       padding: 0 0 6px 0;
+
       input {
         display: block;
         font-size: inherit;
@@ -177,7 +179,7 @@ $border-radius: 4px;
         }
 
         &:focus {
-          box-shadow: 0 0 5px $font-hover;
+          box-shadow: 0 0 5px $primary-color;
         }
       }
     }
@@ -186,6 +188,7 @@ $border-radius: 4px;
       max-height: 200px;
       overflow-x: hidden;
       overflow-y: auto;
+      text-align: left;
 
       .ss-optgroup {
         .ss-optgroup-label {
@@ -209,7 +212,7 @@ $border-radius: 4px;
 
         &:hover, &.ss-highlighted {
           color: $white;
-          background-color:$font-hover;
+          background-color: $primary-color;
         }
 
         &.ss-disabled {

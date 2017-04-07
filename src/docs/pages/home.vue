@@ -1,3 +1,6 @@
+<script>
+</script>
+
 <template>
   <div id="home-content">
     Home page

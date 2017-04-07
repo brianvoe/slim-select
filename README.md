@@ -21,6 +21,8 @@ See the [docs](http://slim-select.com) for more details
 - Chrome 30+
 - FireFox 25+
 
+Browser testing has been provided by BrowserStack
+
 ## Installation
 ```javascript
 npm install slim-select
