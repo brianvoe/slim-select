@@ -1,18 +1,15 @@
 <script>
   import SlimSelect from '../slim-select/index.ts'
-  import logo from 'images/logo.png'
 
   export default {
     data () {
+      let path = this.$route.path
       return {
-        logo,
+        year: new Date().getFullYear(),
         navData: [
-          {text: 'Home', value: '/'},
-          {text: 'Simple', value: 'simple'},
-          {text: 'Multiple', value: 'multiple'},
-          {text: 'Group', value: 'group'},
-          {text: 'Observer', value: 'observer'},
-          {text: 'Data', value: 'data'}
+          {text: 'Home', value: '/', selected: (path === '/')},
+          {text: 'Select Types', value: 'selects', selected: (path === '/selects')},
+          {text: 'Options', value: 'options', selected: (path === '/options')}
         ]
       }
     },
@@ -36,13 +33,21 @@
 <template>
   <div id="app">
     <div class="header">
-      <div class="logo">
-        Slim Select
-      </div>
-      <div class="tagline">
-        Slim vanilla javascript select dropdown
+      <div class="text">
+        <div class="logo">
+          Slim Select
+        </div>
+        <div class="tagline">
+          Slim vanilla javascript select dropdown
+        </div>
       </div>
       <div class="select-nav">
+        <a href="https://github.com/brianvoe/slim-select" target="_blank">
+          <img src="~images/github.png" />
+        </a>
+        <a href="https://www.npmjs.com/package/slim-select" target="_blank">
+          <img src="~images/npm.png" />
+        </a>
         <select id="select-nav"></select>
       </div>
     </div>
@@ -52,6 +57,9 @@
           <router-view></router-view>
         </transition>
       </div>
+    </div>
+    <div class="footer">
+      © {{year}} <a href="http://webiswhatido.com" target="_blank">Brian Voelker</a>. Slim Select is licensed under the MIT license.
     </div>
   </div>
 </template>

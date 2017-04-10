@@ -18,7 +18,7 @@
           {abv: 'GA', state: 'Georgia'},
           {abv: 'HI', state: 'Hawaii'},
           {abv: 'ID', state: 'Idaho'},
-          {abv: 'IL', state: 'Illinois'},
+          {abv: 'IL', state: 'Illinois', selected: true},
           {abv: 'IN', state: 'Indiana'},
           {abv: 'IA', state: 'Iowa'},
           {abv: 'KS', state: 'Kansas'},
@@ -62,7 +62,11 @@
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
-        select: '#simple'
+        select: '#single'
+      })
+
+      new SlimSelect({
+        select: '#multiple'
       })
     }
   }
@@ -70,8 +74,52 @@
 
 <template>
   <div id="simple-content">
-    <select id="simple">
-      <option v-for="value in states" :value="value.abv">{{value.state}}</option>
+    <h2>Single</h2>
+    <p>
+      Basic single select usage with Slim Select is extremely easy.
+      Just set the select value to your select element.
+    </p>
+    <select id="single">
+      <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
     </select>
+
+    <pre v-highlightjs><code class="javascript">
+    new SlimSelect({
+      select: '#simple-select'
+    })
+    </code></pre>
+
+    <pre v-highlightjs><code class="html">
+    &lt;select id="simple-select"&gt;
+      &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
+      &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
+      &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
+    &lt;/select&gt;
+    </code></pre>
+
+    <br /><br />
+
+    <h2>Multiple</h2>
+    <p>
+      Basic single select usage with Slim Select is extremely easy.
+      Just set the select value to your select element.
+    </p>
+    <select id="multiple" multiple>
+      <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
+    </select>
+
+    <pre v-highlightjs><code class="javascript">
+    new SlimSelect({
+      select: '#multiple'
+    })
+    </code></pre>
+
+    <pre v-highlightjs><code class="html">
+    &lt;select id="multiple" multiple&gt;
+      &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
+      &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
+      &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
+    &lt;/select&gt;
+    </code></pre>
   </div>
 </template>
