@@ -10,7 +10,7 @@
           {text: 'Home', value: '/', selected: (path === '/')},
           {text: 'Select Types', value: 'selects', selected: (path === '/selects')},
           {text: 'Options', value: 'options', selected: (path === '/options')},
-          {text: 'Events', value: 'events', selected: (path === '/events')}
+          {text: 'Methods', value: 'methods', selected: (path === '/methods')}
         ]
       }
     },

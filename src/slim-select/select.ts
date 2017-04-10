@@ -43,7 +43,7 @@ export default class select {
 
   addAttributes () {
     this.element.tabIndex = -1
-    this.element.style.display = 'none'
+    // this.element.style.display = 'none'
   }
 
   // Add onChange listener to original select
@@ -94,7 +94,7 @@ export default class select {
     var option = document.createElement('option')
     option.value = info.value || info.text
     option.innerHTML = info.innerHTML || info.text
-    if (info.selected) {option.selected = info.selected}
+    if (info.selected) { option.selected = info.selected }
     if (info.disabled) { option.disabled = true }
     if (info.data && typeof info.data === 'object') {
       Object.keys(info.data).forEach(function(key) {

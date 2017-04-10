@@ -141,6 +141,7 @@ export default class create {
     if (this.main.config.isMultiple) {
       let currentNodes = this.multiSelected.values.childNodes
       let selected = <option[]>this.main.data.selected
+      console.log(selected)
       let exists
 
       // Add values that dont currently exist
