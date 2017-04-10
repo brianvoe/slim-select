@@ -393,7 +393,24 @@ export default class create {
     option.innerHTML = data.innerHTML
     option.onclick = (e) => {
       if (this.main.beforeOnChange) {
+        let value
+        let objectInfo = this.main.data.getObjectFromData((<HTMLDivElement>e.target).dataset.id)
 
+        if (this.main.config.isMultiple) {
+          value = []
+          let selected = <option[]>this.main.data.selected
+          for (var i = 0; i < selected.length; i++) {
+            value.push(selected[i].value)
+          }
+          value.push(objectInfo.value)
+        } else {
+          value = objectInfo.value
+        }
+
+        let beforeOnchange = this.main.beforeOnChange(value)
+        if (beforeOnchange !== false) {
+          this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
+        }
       } else {
         this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
       }
