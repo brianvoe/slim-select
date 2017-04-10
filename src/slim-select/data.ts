@@ -54,7 +54,9 @@ export default class data {
         }
         let options = nodes[i].childNodes
         for (var ii = 0; ii < options.length; ii++) {
-          optgroup.options.push(this.pullOptionData(<HTMLOptionElement>options[ii]))
+          if (options[ii].nodeName === 'OPTION') {
+            optgroup.options.push(this.pullOptionData(<HTMLOptionElement>options[ii]))
+          }
         }
         this.data.push(optgroup)
       } else if (nodes[i].nodeName === 'OPTION') {
@@ -66,7 +68,7 @@ export default class data {
   // From passed in option pull pieces of usable information
   pullOptionData (option: HTMLOptionElement): option {
     return {
-      id: option.dataset.id || String(Math.floor(Math.random() * 100000000)),
+      id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
       value: option.value,
       text: option.text,
       innerHTML: option.innerHTML,
@@ -188,7 +190,7 @@ export default class data {
           return opt.text.toLowerCase().indexOf(search) !== -1
         })
         if (options.length !== 0) {
-          var optgroup = Object.assign({}, optgroupObj) // Break pointer
+          var optgroup = (<any>Object).assign({}, optgroupObj) // Break pointer
           optgroup.options = options
           return optgroup
         }
