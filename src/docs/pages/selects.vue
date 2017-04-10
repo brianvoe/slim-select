@@ -68,6 +68,10 @@
       new SlimSelect({
         select: '#multiple'
       })
+
+      new SlimSelect({
+        select: '#group'
+      })
     }
   }
 </script>
@@ -101,8 +105,8 @@
 
     <h2>Multiple</h2>
     <p>
-      Basic single select usage with Slim Select is extremely easy.
-      Just set the select value to your select element.
+      Multi selects work just the same as a single select.
+      The only difference is setting the multiple attribute on your select.
     </p>
     <select id="multiple" multiple>
       <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
@@ -119,6 +123,47 @@
       &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
       &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
       &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
+    &lt;/select&gt;
+    </code></pre>
+
+    <br /><br />
+
+    <h2>Group</h2>
+    <p>
+      Basic single select usage with Slim Select is extremely easy.
+      Just set the select value to your select element.
+    </p>
+    <select id="group">
+      <optgroup label="Label 1">
+        <option value="value 11">Value 1</option>
+        <option value="value 12">Value 2</option>
+        <option value="value 13">Value 3</option>
+      </optgroup>
+      <optgroup label="Label 2">
+        <option value="value 21">Value 1</option>
+        <option value="value 22">Value 2</option>
+        <option value="value 23">Value 3</option>
+      </optgroup>
+    </select>
+
+    <pre v-highlightjs><code class="javascript">
+    new SlimSelect({
+      select: '#group'
+    })
+    </code></pre>
+
+    <pre v-highlightjs><code class="html">
+    &lt;select id="group"&gt;
+      &lt;optgroup label="Label 1"&gt;
+        &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
+        &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
+        &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
+      &lt;/optgroup&gt;
+      &lt;optgroup label="Label 2"&gt;
+        &lt;option value="value 21"&gt;Value 1&lt;/option&gt;
+        &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
+        &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
+      &lt;/optgroup&gt;
     &lt;/select&gt;
     </code></pre>
   </div>
