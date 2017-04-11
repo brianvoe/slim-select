@@ -7,7 +7,11 @@ export default {
     data () {
       return {
         setSingle: null,
-        setMultiple: null
+        setMultiple: null,
+        setDataSingle: null,
+        setDataMultiple: null,
+        setSearchSingle: null,
+        setSearchMultiple: null
       }
     },
     mounted () {
@@ -26,8 +30,15 @@ export default {
       this.setDataMultiple = new SlimSelect({
         select: '#setDataMultiple'
       })
-
       this.setData()
+
+      // Search
+      this.setSearchSingle = new SlimSelect({
+        select: '#setSearchSingle'
+      })
+      this.setSearchMultiple = new SlimSelect({
+        select: '#setSearchMultiple'
+      })
     },
     methods: {
       setValue () {
@@ -44,6 +55,14 @@ export default {
         }
         this.setDataSingle.setData(values)
         this.setDataMultiple.setData(values)
+      },
+      setSearch (e) {
+        setTimeout(() => {
+          this.setSearchSingle.open()
+          this.setSearchSingle.search('value 2')
+          this.setSearchMultiple.open()
+          this.setSearchMultiple.search('value 2')
+        }, 100)
       }
     }
   }
@@ -73,7 +92,7 @@ export default {
     </p>
 
     <div class="set-content">
-      <div class="btn" @click="setValue">Set value</div>
+      <div class="btn" @click="setValue">Set Value</div>
       <select id="setSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
@@ -131,5 +150,33 @@ export default {
       disabled: false // Optional - default if false
     }
     </code></pre>
+
+    <br /><br /><br />
+
+    <h2>search</h2>
+    <p>
+      The search method will update the search input field and search the data with the given value.
+    </p>
+
+    <div class="set-content">
+      <div class="btn" @click="setSearch">Set Search</div>
+      <select id="setSearchSingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+      </select>
+      <select id="setSearchMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+    <pre v-highlightjs><code class="javascript">
+    var select = new SlimSelect({
+      select: '#select'
+    })
+    select.search('value')
+    </code></pre>
+
+    <br /><br /><br />
   </div>
 </template>
