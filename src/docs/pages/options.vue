@@ -88,8 +88,8 @@
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
       select: '#beforeOnChange',
-      beforeOnChange: (value) => {
-        console.log(value)
+      beforeOnChange: (info) => {
+        console.log(info)
         return false // this will stop propagation
       }
     })
@@ -123,8 +123,8 @@
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
       select: '#onChange',
-      onChange: (value) => {
-        console.log(value)
+      onChange: (info) => {
+        console.log(info)
       }
     })
     </code></pre>

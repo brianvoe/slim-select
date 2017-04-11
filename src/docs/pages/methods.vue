@@ -156,6 +156,7 @@ export default {
     ])
     </code></pre>
 
+    <h4>Data Types</h4>
     <pre v-highlightjs><code class="javascript">
     var optgroup = {
       label: 'label', // Required
