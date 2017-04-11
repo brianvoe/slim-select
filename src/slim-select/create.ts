@@ -141,7 +141,6 @@ export default class create {
     if (this.main.config.isMultiple) {
       let currentNodes = this.multiSelected.values.childNodes
       let selected = <option[]>this.main.data.selected
-      console.log(selected)
       let exists
 
       // Add values that dont currently exist
@@ -172,9 +171,7 @@ export default class create {
         if (exists) {
           let node = <HTMLDivElement>currentNodes[c]
           node.classList.add('ss-out')
-          setTimeout(() => {
-            this.multiSelected.values.removeChild(node)
-          }, 200)
+          this.multiSelected.values.removeChild(node)
         }
       }
 
@@ -386,7 +383,7 @@ export default class create {
     option.classList.add(this.main.config.option)
 
     let singleSelect = <option>this.main.data.selected
-    if (singleSelect.id === data.id) {
+    if (singleSelect && singleSelect.id === data.id) {
       option.classList.add(this.main.config.highlighted)
     }
 
@@ -417,7 +414,7 @@ export default class create {
       }
     }
 
-    if (data.disabled || isValueInArrayOfObjects(this.main.data.selected, 'id', data.id)) {
+    if (data.disabled || (this.main.data.selected && isValueInArrayOfObjects(this.main.data.selected, 'id', data.id))) {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }
