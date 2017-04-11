@@ -43,7 +43,7 @@ export default class select {
 
   addAttributes () {
     this.element.tabIndex = -1
-    // this.element.style.display = 'none'
+    this.element.style.display = 'none'
   }
 
   // Add onChange listener to original select
