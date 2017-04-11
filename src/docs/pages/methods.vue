@@ -11,7 +11,9 @@ export default {
         setDataSingle: null,
         setDataMultiple: null,
         setSearchSingle: null,
-        setSearchMultiple: null
+        setSearchMultiple: null,
+        setOpenCloseSingle: null,
+        setOpenCloseMultiple: null
       }
     },
     mounted () {
@@ -39,6 +41,14 @@ export default {
       this.setSearchMultiple = new SlimSelect({
         select: '#setSearchMultiple'
       })
+
+      // Open Close
+      this.setOpenCloseSingle = new SlimSelect({
+        select: '#setOpenCloseSingle'
+      })
+      this.setOpenCloseMultiple = new SlimSelect({
+        select: '#setOpenCloseMultiple'
+      })
     },
     methods: {
       setValue () {
@@ -63,6 +73,14 @@ export default {
           this.setSearchMultiple.open()
           this.setSearchMultiple.search('value 2')
         }, 100)
+      },
+      setOpenClose () {
+        if (!this.setOpenCloseSingle.data.contentOpen) {
+          setTimeout(() => {
+            this.setOpenCloseSingle.open()
+            this.setOpenCloseMultiple.open()
+          }, 100)
+        }
       }
     }
   }
@@ -96,6 +114,7 @@ export default {
       <select id="setSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
       </select>
       <select id="setMultiple" multiple>
         <option value="value1">Value 1</option>
@@ -163,6 +182,7 @@ export default {
       <select id="setSearchSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
       </select>
       <select id="setSearchMultiple" multiple>
         <option value="value1">Value 1</option>
@@ -178,5 +198,32 @@ export default {
     </code></pre>
 
     <br /><br /><br />
+
+    <h2>open / close</h2>
+    <p>
+      The open/close methods will do just that.
+    </p>
+
+    <div class="set-content">
+      <div class="btn" @click="setOpenClose">Open/Close</div>
+      <select id="setOpenCloseSingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="setOpenCloseMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+    <pre v-highlightjs><code class="javascript">
+    var select = new SlimSelect({
+      select: '#select'
+    })
+    select.open()
+    // or
+    select.close()
+    </code></pre>
   </div>
 </template>
