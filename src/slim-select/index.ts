@@ -6,6 +6,7 @@ import Create from './create'
 
 interface constructor {
   select: string
+  showSearch: boolean
 
   // Events
   beforeOnChange: Function
@@ -24,7 +25,8 @@ export default class SlimSelect {
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
 
     this.config = new Config({
-      select: selectElement
+      select: selectElement,
+      showSearch: info.showSearch
     })
 
     this.select = new Select({

@@ -1,11 +1,13 @@
 interface constructor {
   select: HTMLSelectElement
+  showSearch: boolean
 }
 
 export default class config {
   id: string = ''
   placeholder: string = ''
   isMultiple: boolean = false
+  showSearch: boolean = true
 
   // Classes
   readonly main: string = 'ss-main'
@@ -32,5 +34,6 @@ export default class config {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
 
     this.isMultiple = info.select.multiple
+    this.showSearch = (info.showSearch === false ? false : true)
   }
 }

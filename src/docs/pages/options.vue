@@ -13,6 +13,11 @@
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
+        select: '#search',
+        showSearch: false
+      })
+
+      new SlimSelect({
         select: '#beforeOnChangeSingle',
         beforeOnChange: (value) => {
           this.beforeOnChangeSingle = value
@@ -54,6 +59,27 @@
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
       select: '.element .you #want'
+    })
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>showSearch</h2>
+    <p>
+      Boolean value that will decide whether or not to show the search.
+      Default is true.
+    </p>
+
+    <select id="search">
+      <option value="value1">Value 1</option>
+      <option value="value2">Value 2</option>
+      <option value="value3">Value 3</option>
+    </select>
+
+    <pre v-highlightjs><code class="javascript">
+    new SlimSelect({
+      select: '#search',
+      showSearch: false
     })
     </code></pre>
 

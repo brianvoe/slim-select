@@ -211,6 +211,7 @@ export default class create {
   searchDiv (): search {
     var container = document.createElement('div')
     container.classList.add(this.main.config.search)
+    if (!this.main.config.showSearch) {container.style.display = 'none'}
 
     var input = document.createElement('input')
     input.type = 'search'
