@@ -26,10 +26,8 @@ export default {
       this.setDataMultiple = new SlimSelect({
         select: '#setDataMultiple'
       })
+
       this.setData()
-      setInterval(() => {
-        this.setData()
-      }, 2000)
     },
     methods: {
       setValue () {
@@ -104,6 +102,7 @@ export default {
     </p>
 
     <div class="set-content">
+      <div class="btn" @click="setData">Set Data</div>
       <select id="setDataSingle"></select>
       <select id="setDataMultiple" multiple></select>
     </div>
