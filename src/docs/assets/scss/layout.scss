@@ -1,51 +1,87 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700');
+
 html {
   height: 100%;
+  padding: 0;
+  margin: 0;
+  background: linear-gradient(to bottom, #5897fb 0%,#7db9e8 100%);
+  background-attachment: fixed;
 }
 
 body {
-  font-family: helvetica;
-}
-
-#app {
   display: flex;
-  flex-direction: column;
-  width: $app-width;
-  margin: 0 auto;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif, Helvetica;
+  padding: 0;
+  margin: 0;
+  color: $font-color;
 
-  .header {
-    margin: 0;
-    text-align: center;
-    padding: 15px 0 15px 0;
-    border-bottom: solid 1px $border-color;
+  #app {
+    display: flex;
+    flex-direction: column;
+    width: $app-width;
 
-    .logo {
-      font-size: 40px;
-      font-weight: bold;
+    > .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex: 0 1 auto;
+      color: #ffffff;
+      margin: 0;
+      padding: 15px 0 15px 0;
 
-      img {
-        height: 60px;
+      .text {
+        flex: 1 1 auto;
+        .logo {
+          font-size: 40px;
+          font-weight: 300;
+        }
+
+        .tagline {
+          font-size: 18px;
+        }
+      }
+
+      .select-nav {
+        display: flex;
+        flex: 0 1 300px;
+        color: #666666;
+        margin: 0 auto;
+        padding: 8px 0 0 0;
+
+        a, img {
+          height: 30px;
+        }
+
+        > * {
+          flex: 0 1 auto;
+          padding: 0 0 0 8px;
+        }
       }
     }
 
-    .tagline {
-      font-size: 18px;
+    .main {
+      flex: 0 1 auto;
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+      box-shadow: 0px 0px 5px 6px rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+
+      .content {
+        flex: 1 1 auto;
+        padding: 20px;
+      }
     }
 
-    .select-nav {
-      width: 150px;
-      margin: 0 auto;
-      padding: 8px 0 0 0;
-    }
-  }
-
-  .main {
-    display: flex;
-    flex-direction: row;
-
-    .content {
-      flex: 1 1 auto;
-      background-color: $white;
-      padding: 20px;
+    .footer {
+      color: #ffffff;
+      font-size: 13px;
+      padding: 12px 0 12px 0;
+      text-align: center;
+      a {
+        color: #666666;
+      }
     }
   }
 }

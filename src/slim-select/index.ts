@@ -23,9 +23,6 @@ export default class SlimSelect {
     this.validate(info)
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
 
-    if (info.beforeOnChange) {this.beforeOnChange = info.beforeOnChange}
-    if (info.onChange) {this.onChange = info.onChange}
-
     this.config = new Config({
       select: selectElement
     })
@@ -50,6 +47,10 @@ export default class SlimSelect {
     document.addEventListener('click', (e: Event) => {
       if (!hasClassInTree(e.target, this.config.id)) { this.close() }
     })
+
+    // Add event callbacks after everthing has been created
+    if (info.beforeOnChange) {this.beforeOnChange = info.beforeOnChange}
+    if (info.onChange) {this.onChange = info.onChange}
   }
 
   validate (info: constructor) {
@@ -76,8 +77,9 @@ export default class SlimSelect {
 
     let newData = JSON.parse(JSON.stringify(data))
     this.select.create(newData)
+    this.data.parseSelectData()
+    this.data.setSelectedFromSelect()
     this.render()
-    this.select.setValue()
   }
 
   // Open content section

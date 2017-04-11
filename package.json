@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Vue Build Application",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "main": "dist/index.js",
   "style": "dist/index.css",
   "scripts": {

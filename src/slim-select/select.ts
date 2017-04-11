@@ -94,6 +94,7 @@ export default class select {
     var option = document.createElement('option')
     option.value = info.value || info.text
     option.innerHTML = info.innerHTML || info.text
+    if (info.selected) { option.selected = info.selected }
     if (info.disabled) { option.disabled = true }
     if (info.data && typeof info.data === 'object') {
       Object.keys(info.data).forEach(function(key) {

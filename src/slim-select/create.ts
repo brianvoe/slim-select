@@ -171,9 +171,7 @@ export default class create {
         if (exists) {
           let node = <HTMLDivElement>currentNodes[c]
           node.classList.add('ss-out')
-          setTimeout(() => {
-            this.multiSelected.values.removeChild(node)
-          }, 200)
+          this.multiSelected.values.removeChild(node)
         }
       }
 
@@ -321,6 +319,31 @@ export default class create {
   listDiv (): HTMLDivElement {
     var list = document.createElement('div')
     list.classList.add(this.main.config.list)
+    list.onmousewheel = (e) => {
+      var scrollTop = list.scrollTop,
+        scrollHeight = list.scrollHeight,
+        height = list.offsetHeight,
+        delta = (e.type == 'DOMMouseScroll' ? e.detail * -40 : e.wheelDelta),
+        up = delta > 0;
+
+      var prevent = function() {
+        e.stopPropagation();
+        e.preventDefault();
+        e.returnValue = false;
+        return false;
+      }
+
+      if (!up && -delta > scrollHeight - height - scrollTop) {
+        // Scrolling down, but this will take us past the bottom.
+        list.scrollTop = scrollHeight;
+        return prevent();
+      } else if (up && delta > scrollTop) {
+        // Scrolling up, but this will take us past the top.
+        list.scrollTop = 0;
+        return prevent();
+      }
+    }
+
     return list
   }
 
@@ -360,7 +383,7 @@ export default class create {
     option.classList.add(this.main.config.option)
 
     let singleSelect = <option>this.main.data.selected
-    if (singleSelect.id === data.id) {
+    if (singleSelect && singleSelect.id === data.id) {
       option.classList.add(this.main.config.highlighted)
     }
 
@@ -368,13 +391,30 @@ export default class create {
     option.innerHTML = data.innerHTML
     option.onclick = (e) => {
       if (this.main.beforeOnChange) {
+        let value
+        let objectInfo = this.main.data.getObjectFromData((<HTMLDivElement>e.target).dataset.id)
 
+        if (this.main.config.isMultiple) {
+          value = []
+          let selected = <option[]>this.main.data.selected
+          for (var i = 0; i < selected.length; i++) {
+            value.push(selected[i].value)
+          }
+          value.push(objectInfo.value)
+        } else {
+          value = objectInfo.value
+        }
+
+        let beforeOnchange = this.main.beforeOnChange(value)
+        if (beforeOnchange !== false) {
+          this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
+        }
       } else {
         this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
       }
     }
 
-    if (data.disabled || isValueInArrayOfObjects(this.main.data.selected, 'id', data.id)) {
+    if (data.disabled || (this.main.data.selected && isValueInArrayOfObjects(this.main.data.selected, 'id', data.id))) {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }
