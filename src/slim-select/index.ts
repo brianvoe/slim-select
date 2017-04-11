@@ -77,8 +77,9 @@ export default class SlimSelect {
 
     let newData = JSON.parse(JSON.stringify(data))
     this.select.create(newData)
+    this.data.parseSelectData()
+    this.data.setSelectedFromSelect()
     this.render()
-    this.select.setValue()
   }
 
   // Open content section
