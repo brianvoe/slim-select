@@ -37,6 +37,11 @@ $border-radius: 4px;
         display: inline-block;
         vertical-align: middle;
       }
+
+      .ss-disabled {
+        cursor: pointer;
+        color: $border-color;
+      }
     }
 
     .ss-arrow {
@@ -86,6 +91,13 @@ $border-radius: 4px;
     .ss-values {
       display: inline-block;
       flex: 1 1 auto;
+
+      .ss-disabled {
+        display: inline-block;
+        cursor: pointer;
+        color: $border-color;
+        padding: 4px 5px;
+      }
 
       @keyframes scaleIn {
         0% {transform: scale(0); opacity: 0;}
@@ -223,6 +235,8 @@ $border-radius: 4px;
           color: $border-color;
           background-color: $white;
         }
+
+        &.ss-hide { display: none; }
       }
     }
   }

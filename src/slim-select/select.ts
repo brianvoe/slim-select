@@ -20,12 +20,12 @@ export default class select {
   }
 
   setValue (): void {
-    if (!this.main.data.selected) {return}
+    if (!this.main.data.getSelected()) {return}
 
     if (this.main.config.isMultiple) {
-      let selected = <option[]>this.main.data.selected
+      // If multiple loop through options and set selected
+      let selected = <option[]>this.main.data.getSelected()
       let options = this.element.options
-      let selectedValues = []
       for (var o = 0; o < options.length; o++) {
         let option = <HTMLOptionElement>options[o]
         option.selected = false
@@ -36,8 +36,9 @@ export default class select {
         }
       }
     } else {
-      let selected = <option>this.main.data.selected
-      this.element.value = selected.value
+      // If single select simply set value
+      let selected = <option>this.main.data.getSelected()
+      this.element.value = (selected ? selected.value : '')
     }
   }
 
@@ -91,6 +92,8 @@ export default class select {
   }
 
   createOption (info): HTMLOptionElement {
+    if (info.placeholder && info.placeholder !== '') {return null}
+
     var option = document.createElement('option')
     option.value = info.value || info.text
     option.innerHTML = info.innerHTML || info.text

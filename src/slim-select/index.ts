@@ -6,6 +6,8 @@ import Create from './create'
 
 interface constructor {
   select: string
+  showSearch: boolean
+  placeholder: string
 
   // Events
   beforeOnChange: Function
@@ -24,7 +26,9 @@ export default class SlimSelect {
     let selectElement = <HTMLSelectElement>document.querySelector(info.select)
 
     this.config = new Config({
-      select: selectElement
+      select: selectElement,
+      showSearch: info.showSearch,
+      placeholder: info.placeholder
     })
 
     this.select = new Select({
@@ -119,6 +123,7 @@ export default class SlimSelect {
     this.search('') // Clear search
   }
 
+  // Take in string value and search current options
   search (value: string): void {
     // Only filter data and rerender if value has changed
     if (this.data.searchValue !== value) {

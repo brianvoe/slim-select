@@ -73,7 +73,6 @@ export default class create {
     // Placeholder text
     let placeholder:HTMLSpanElement = document.createElement('span')
     placeholder.classList.add('placeholder')
-    let singleSelect = <option>this.main.data.selected
     container.appendChild(placeholder)
 
     // Arrow
@@ -99,8 +98,17 @@ export default class create {
 
   // Based upon current selection set placeholder text
   placeholder (): void {
-    let selected = <option>this.main.data.selected
-    this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: '')
+    let selected = <option>this.main.data.getSelected()
+
+    // Placeholder display
+    if (selected && selected.placeholder) {
+      let placeholder = document.createElement('span')
+      placeholder.classList.add(this.main.config.disabled)
+      placeholder.innerHTML = this.main.config.placeholder
+      this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
+    } else {
+      this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: '')
+    }
   }
 
   multiSelectedDiv (): multiSelected {
@@ -140,10 +148,10 @@ export default class create {
   values (): void {
     if (this.main.config.isMultiple) {
       let currentNodes = this.multiSelected.values.childNodes
-      let selected = <option[]>this.main.data.selected
-      let exists
+      let selected = <option[]>this.main.data.getSelected()
 
       // Add values that dont currently exist
+      let exists
       for (var s = 0; s < selected.length; s++) {
         exists = false
         for (var c = 0; c < currentNodes.length; c++) {
@@ -175,6 +183,13 @@ export default class create {
         }
       }
 
+      // If there are no values set placeholder
+      if (selected.length === 0) {
+        let placeholder = document.createElement('span')
+        placeholder.classList.add(this.main.config.disabled)
+        placeholder.innerHTML = this.main.config.placeholder
+        this.multiSelected.values.innerHTML = placeholder.outerHTML
+      }
     }
   }
 
@@ -212,6 +227,7 @@ export default class create {
   searchDiv (): search {
     var container = document.createElement('div')
     container.classList.add(this.main.config.search)
+    if (!this.main.config.showSearch) {container.style.display = 'none'}
 
     var input = document.createElement('input')
     input.type = 'search'
@@ -379,30 +395,32 @@ export default class create {
 
   // Create single option
   option (data): HTMLDivElement {
+    // Add hidden placeholder
+    if (data.placeholder) {
+      let placeholder = document.createElement('div')
+      placeholder.classList.add(this.main.config.option)
+      placeholder.classList.add(this.main.config.hide)
+      return placeholder
+    }
+
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
 
-    let singleSelect = <option>this.main.data.selected
-    if (singleSelect && singleSelect.id === data.id) {
-      option.classList.add(this.main.config.highlighted)
-    }
+    let selected = <option>this.main.data.getSelected()
 
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
     option.onclick = (e) => {
       if (this.main.beforeOnChange) {
         let value
-        let objectInfo = this.main.data.getObjectFromData((<HTMLDivElement>e.target).dataset.id)
+        let objectInfo = JSON.parse(JSON.stringify(this.main.data.getObjectFromData((<HTMLDivElement>e.target).dataset.id)))
+        objectInfo.selected = true
 
         if (this.main.config.isMultiple) {
-          value = []
-          let selected = <option[]>this.main.data.selected
-          for (var i = 0; i < selected.length; i++) {
-            value.push(selected[i].value)
-          }
-          value.push(objectInfo.value)
+          value = JSON.parse(JSON.stringify(selected))
+          value.push(objectInfo)
         } else {
-          value = objectInfo.value
+          value = JSON.parse(JSON.stringify(objectInfo))
         }
 
         let beforeOnchange = this.main.beforeOnChange(value)
@@ -414,7 +432,7 @@ export default class create {
       }
     }
 
-    if (data.disabled || (this.main.data.selected && isValueInArrayOfObjects(this.main.data.selected, 'id', data.id))) {
+    if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', data.id))) {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }

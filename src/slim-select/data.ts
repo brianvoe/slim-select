@@ -16,7 +16,9 @@ export interface option {
   value: string
   text: string
   innerHTML: string
+  selected: boolean
   disabled: boolean
+  placeholder: string
   data: object
 }
 
@@ -26,14 +28,12 @@ export default class data {
   searchValue: string
   data: dataObject[]
   filtered: dataObject[]
-  selected: option | option[]
   contentOpen: boolean = false
   constructor (info: constructor) {
     this.main = info.main
     this.searchValue = ''
     this.data = []
     this.filtered = null
-    this.selected = (this.main.config.isMultiple ? [] : null)
 
     this.parseSelectData()
     this.setSelectedFromSelect()
@@ -72,7 +72,9 @@ export default class data {
       value: option.value,
       text: option.text,
       innerHTML: option.innerHTML,
+      selected: option.selected,
       disabled: option.disabled,
+      placeholder: option.dataset.placeholder || null,
       data: option.dataset
     }
   }
@@ -101,56 +103,110 @@ export default class data {
 
   // From value set the selected value
   setSelected (value: string | string[], type = 'id'): void {
-    if (Array.isArray(value)) {
-      this.selected = []
-      for (var i = 0; i < value.length; i++) {
-        this.selected.push(this.getObjectFromData(value[i], type))
+    // Loop through data and set selected values
+    for (var i = 0; i < this.data.length; i++) {
+      // Deal with optgroups
+      if (this.data[i].hasOwnProperty('label')) {
+        if (this.data[i].hasOwnProperty('options')) {
+          let options = (<optgroup>this.data[i]).options
+          for (var o = 0; o < options.length; o++) {
+            options[o].selected = this.shouldBeSelected(options[o], value, type)
+          }
+        }
+      } else {
+        (<option>this.data[i]).selected = this.shouldBeSelected((<option>this.data[i]), value, type)
       }
-    } else {
-      this.selected = this.getObjectFromData(value, type)
     }
 
     this.onDataChange()
   }
 
-  // If select type is multiple
+  // Determines whether or not passed in option should be selected based upon possible values
+  shouldBeSelected (option: option, value: string | string [], type = 'id'): boolean {
+    if (Array.isArray(value)) {
+      for (var i = 0; i < value.length; i++) {
+        if (String(option[type]) === String(value[i])) {
+          return true
+        }
+      }
+    } else {
+      if (String(option[type]) === String(value)) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  // From data get option | option[] of selected values
+  // If single select return last selected value
+  getSelected (): option | option[] {
+    var value = null
+    var values = []
+    for (var i = 0; i < this.data.length; i++) {
+      // Deal with optgroups
+      if (this.data[i].hasOwnProperty('label')) {
+        if (this.data[i].hasOwnProperty('options')) {
+          let options = (<optgroup>this.data[i]).options
+          for (var o = 0; o < options.length; o++) {
+            if (options[o].selected) {
+              // If single return option
+              if (!this.main.config.isMultiple) {value = options[o]}
+
+              // Else push to multiple array
+              values.push(options[o])
+            }
+          }
+        }
+      } else {
+        // Push options to array
+        if ((<option>this.data[i]).selected) {
+          // If single return option
+          if (!this.main.config.isMultiple) {value = this.data[i]}
+
+          // Else push to multiple array
+          values.push(this.data[i])
+        }
+      }
+    }
+
+    // Either return array or object or null
+    return (this.main.config.isMultiple ? values : value)
+  }
+
+  // If select type is multiple append value and set selected
   addToSelected (value: string, type = 'id') {
     if (this.main.config.isMultiple) {
-      let selected = <option[]>this.selected
-      selected.push(this.getObjectFromData(value, type))
+      let values = []
+      let selected = <option[]>this.getSelected()
+      for (var i = 0; i < selected.length; i++) {
+        values.push(selected[i][type])
+      }
+      values.push(value)
 
-      this.onDataChange()
+      this.setSelected(values, type)
     }
   }
 
   // Remove object from selected
   removeFromSelected (value: string, type = 'id') {
     if (this.main.config.isMultiple) {
-      let selected = <option[]>this.selected
+      let values = []
+      let selected = <option[]>this.getSelected()
       for (var i = 0; i < selected.length; i++) {
-        if (String(selected[i][type]) === String(value)) {
-          selected.splice(i, 1)
+        if (String(selected[i][type]) !== String(value)) {
+          values.push(selected[i][type])
         }
       }
 
-      this.onDataChange()
+      this.setSelected(values, type)
     }
   }
 
   // Trigger onChange callback
   onDataChange (): void {
     if (this.main.onChange) {
-      let value
-      if (this.main.config.isMultiple) {
-        value = []
-        for (var i = 0; i < (<option[]>this.selected).length; i++) {
-          value.push((<option>this.selected[i]).value)
-        }
-      } else {
-        value = (<option>this.selected).value
-      }
-
-      this.main.onChange(value)
+      this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())))
     }
   }
 
