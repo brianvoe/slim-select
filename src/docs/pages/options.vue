@@ -18,7 +18,12 @@
       })
 
       new SlimSelect({
-        select: '#placeholder',
+        select: '#placeholderSingle',
+        placeholder: 'Placeholder Text Here'
+      })
+
+      new SlimSelect({
+        select: '#placeholderMultiple',
         placeholder: 'Placeholder Text Here'
       })
 
@@ -53,8 +58,22 @@
   }
 </script>
 
+<style lang="scss">
+  #options-content {
+    .set-content {
+      display: flex;
+      > * {
+        margin: 0 5px 0 5px;
+
+        &:first-child { margin: 0 5px 0 0; }
+        &:last-child { margin: 0 0 0 5px; }
+      }
+    }
+  }
+</style>
+
 <template>
-  <div id="events-content">
+  <div id="options-content">
     <h2>select</h2>
     <p>
       The select option is used to identify the select element that will be used to
@@ -71,25 +90,26 @@
 
     <h2>placeholder</h2>
     <p>
-      In order to show a placeholder you can
-      Default is "Select Value".
+      Placeholders consists of setting the placeholder option value.
+      The only difference is single selects require an empty option with data-placeholder set to true.
+      Default value is "Select Value".
     </p>
 
-    <select id="placeholder" multiple="">
-      <option value="value1">Value 1</option>
-      <option value="value2">Value 2</option>
-      <option value="value3">Value 3</option>
-    </select>
+    <div class="set-content">
+      <select id="placeholderSingle">
+        <option data-placeholder="true"></option>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="placeholderMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
 
-    <h4></h4>
     <pre v-highlightjs><code class="javascript">
-    // Single
-    new SlimSelect({
-      select: '#placeholder',
-      placeholder: 'Placeholder Text Here'
-    })
-
-    // Multiple
     new SlimSelect({
       select: '#placeholder',
       placeholder: 'Placeholder Text Here'

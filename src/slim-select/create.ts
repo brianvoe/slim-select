@@ -99,10 +99,16 @@ export default class create {
   // Based upon current selection set placeholder text
   placeholder (): void {
     let selected = <option>this.main.data.getSelected()
-    let placeholder = document.createElement('span')
-    placeholder.classList.add(this.main.config.disabled)
-    placeholder.innerHTML = this.main.config.placeholder
-    this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: placeholder.outerHTML)
+
+    // Placeholder display
+    if (selected && selected.placeholder) {
+      let placeholder = document.createElement('span')
+      placeholder.classList.add(this.main.config.disabled)
+      placeholder.innerHTML = this.main.config.placeholder
+      this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
+    } else {
+      this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: '')
+    }
   }
 
   multiSelectedDiv (): multiSelected {
@@ -389,6 +395,14 @@ export default class create {
 
   // Create single option
   option (data): HTMLDivElement {
+    // Add hidden placeholder
+    if (data.placeholder) {
+      let placeholder = document.createElement('div')
+      placeholder.classList.add(this.main.config.option)
+      placeholder.classList.add(this.main.config.hide)
+      return placeholder
+    }
+
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
 

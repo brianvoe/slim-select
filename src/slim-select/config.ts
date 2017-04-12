@@ -30,6 +30,7 @@ export default class config {
   readonly option: string = 'ss-option'
   readonly highlighted: string = 'ss-highlighted'
   readonly disabled: string = 'ss-disabled'
+  readonly hide: string = 'ss-hide'
 
   constructor (info: constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)

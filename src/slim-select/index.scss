@@ -37,8 +37,9 @@ $border-radius: 4px;
         display: inline-block;
         vertical-align: middle;
       }
-      &.ss-disabled {
-        cursor: default;
+
+      .ss-disabled {
+        cursor: pointer;
         color: $border-color;
       }
     }
@@ -96,7 +97,6 @@ $border-radius: 4px;
         cursor: pointer;
         color: $border-color;
         padding: 4px 5px;
-        margin: 3px 5px 3px 0;
       }
 
       @keyframes scaleIn {
@@ -235,6 +235,8 @@ $border-radius: 4px;
           color: $border-color;
           background-color: $white;
         }
+
+        &.ss-hide { display: none; }
       }
     }
   }
