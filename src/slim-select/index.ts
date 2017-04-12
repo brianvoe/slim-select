@@ -7,6 +7,7 @@ import Create from './create'
 interface constructor {
   select: string
   showSearch: boolean
+  searchText: string
   placeholder: string
 
   // Events
@@ -28,7 +29,8 @@ export default class SlimSelect {
     this.config = new Config({
       select: selectElement,
       showSearch: info.showSearch,
-      placeholder: info.placeholder
+      searchText: info.searchText,
+      placeholderText: info.placeholder
     })
 
     this.select = new Select({

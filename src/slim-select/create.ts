@@ -62,6 +62,7 @@ export default class create {
     let container = document.createElement('div')
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
+    container.style.cssText = this.main.config.style
 
     return container
   }
@@ -104,7 +105,7 @@ export default class create {
     if (selected && selected.placeholder) {
       let placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
-      placeholder.innerHTML = this.main.config.placeholder
+      placeholder.innerHTML = this.main.config.placeholderText
       this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
     } else {
       this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: '')
@@ -187,7 +188,7 @@ export default class create {
       if (selected.length === 0) {
         let placeholder = document.createElement('span')
         placeholder.classList.add(this.main.config.disabled)
-        placeholder.innerHTML = this.main.config.placeholder
+        placeholder.innerHTML = this.main.config.placeholderText
         this.multiSelected.values.innerHTML = placeholder.outerHTML
       }
     }
@@ -367,6 +368,16 @@ export default class create {
   options (): void {
     var data = this.main.data.filtered || this.main.data.data
     this.list.innerHTML = ''
+
+    // If no results show no results text
+    if (data.length === 0) {
+      let noResults = document.createElement('div')
+      noResults.classList.add(this.main.config.option)
+      noResults.classList.add(this.main.config.disabled)
+      noResults.innerHTML = this.main.config.searchText
+      this.list.appendChild(noResults)
+      return
+    }
 
     // Append individual options to div container
     for (var i = 0; i < data.length; i++) {

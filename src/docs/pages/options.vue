@@ -13,8 +13,13 @@
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
-        select: '#search',
+        select: '#showSearch',
         showSearch: false
+      })
+
+      new SlimSelect({
+        select: '#searchText',
+        searchText: 'Sorry nothing to see here'
       })
 
       new SlimSelect({
@@ -62,7 +67,10 @@
   #options-content {
     .set-content {
       display: flex;
+
       > * {
+        flex: 0 1 50%;
+        width: 48%;
         margin: 0 5px 0 5px;
 
         &:first-child { margin: 0 5px 0 0; }
@@ -116,24 +124,46 @@
     })
     </code></pre>
 
+    <pre v-highlightjs><code class="html">
+    &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
+    &lt;select id="placeholderSingle"&gt;
+      &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+      &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+      &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+      &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+    &lt;/select&gt;
+    </code></pre>
+
     <br /><br /><br />
 
-    <h2>showSearch</h2>
+    <h2>showSearch / searchText</h2>
     <p>
-      Boolean value that will decide whether or not to show the search.
+      showSearch is a boolean value that will decide whether or not to show the search.
       Default is true.
     </p>
+    <p>
+      searchText is a string value that will show in the event there are no results.
+      Default is 'No Results'.
+    </p>
 
-    <select id="search">
-      <option value="value1">Value 1</option>
-      <option value="value2">Value 2</option>
-      <option value="value3">Value 3</option>
-    </select>
+    <div class="set-content">
+      <select id="showSearch">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="searchText">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
 
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
       select: '#search',
-      showSearch: false
+      showSearch: false,
+      searchText: 'Sorry couldnt find anything'
     })
     </code></pre>
 
