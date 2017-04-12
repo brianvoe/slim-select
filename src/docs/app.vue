@@ -22,6 +22,7 @@
 
       let slim = new SlimSelect({
         select: '#select-nav',
+        showSearch: false,
         onChange: (info) => {
           this.$router.push({ path: info.value })
         }

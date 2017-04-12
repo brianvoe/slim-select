@@ -37,6 +37,10 @@ $border-radius: 4px;
         display: inline-block;
         vertical-align: middle;
       }
+      &.ss-disabled {
+        cursor: default;
+        color: $border-color;
+      }
     }
 
     .ss-arrow {
@@ -86,6 +90,14 @@ $border-radius: 4px;
     .ss-values {
       display: inline-block;
       flex: 1 1 auto;
+
+      .ss-disabled {
+        display: inline-block;
+        cursor: pointer;
+        color: $border-color;
+        padding: 4px 5px;
+        margin: 3px 5px 3px 0;
+      }
 
       @keyframes scaleIn {
         0% {transform: scale(0); opacity: 0;}

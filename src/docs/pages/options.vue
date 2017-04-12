@@ -18,6 +18,11 @@
       })
 
       new SlimSelect({
+        select: '#placeholder',
+        placeholder: 'Placeholder Text Here'
+      })
+
+      new SlimSelect({
         select: '#beforeOnChangeSingle',
         beforeOnChange: (value) => {
           this.beforeOnChangeSingle = value
@@ -59,6 +64,35 @@
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
       select: '.element .you #want'
+    })
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>placeholder</h2>
+    <p>
+      In order to show a placeholder you can
+      Default is "Select Value".
+    </p>
+
+    <select id="placeholder" multiple="">
+      <option value="value1">Value 1</option>
+      <option value="value2">Value 2</option>
+      <option value="value3">Value 3</option>
+    </select>
+
+    <h4></h4>
+    <pre v-highlightjs><code class="javascript">
+    // Single
+    new SlimSelect({
+      select: '#placeholder',
+      placeholder: 'Placeholder Text Here'
+    })
+
+    // Multiple
+    new SlimSelect({
+      select: '#placeholder',
+      placeholder: 'Placeholder Text Here'
     })
     </code></pre>
 
