@@ -8,10 +8,11 @@ See the [docs](http://slimselectjs.com) for more details
 
 ## Features
 - No Dependencies
-- 15kb
+- 18kb - 8kb gzip
 - Single Select
 - Multi Select
-- Search Capability
+- Placeholder
+- Search
 - Light Css
 - Clean animations
 - Performant
