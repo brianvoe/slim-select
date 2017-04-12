@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Slim vanilla javascript select dropdown",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
