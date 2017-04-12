@@ -37,12 +37,8 @@ new SlimSelect({
 ```
 
 ## Roadmap
-- Obtain styles from original select
-- Obtain classes from original select
 - Content div auto detect to go above or below
 - Refining search
-- No results text
-- Doc updates
 
 ## Testing
 Browser testing has been provided by
