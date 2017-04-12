@@ -194,7 +194,7 @@ export default class data {
       let values = []
       let selected = <option[]>this.getSelected()
       for (var i = 0; i < selected.length; i++) {
-        if (String(selected[type]) !== String(value)) {
+        if (String(selected[i][type]) !== String(value)) {
           values.push(selected[i][type])
         }
       }
