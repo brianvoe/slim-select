@@ -1,14 +1,17 @@
 interface constructor {
   select: HTMLSelectElement
   showSearch: boolean
-  placeholder: string
+  searchText: string
+  placeholderText: string
 }
 
 export default class config {
   id: string = ''
+  style: string
   isMultiple: boolean = false
   showSearch: boolean = true
-  placeholder: string = 'Select Value'
+  searchText: string = 'No Results'
+  placeholderText: string = 'Select Value'
 
   // Classes
   readonly main: string = 'ss-main'
@@ -34,9 +37,11 @@ export default class config {
 
   constructor (info: constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
+    this.style = info.select.style.cssText
 
     this.isMultiple = info.select.multiple
     this.showSearch = (info.showSearch === false ? false : true)
-    if (info.placeholder) {this.placeholder = info.placeholder}
+    if (info.searchText) {this.searchText = info.searchText}
+    if (info.placeholderText) {this.placeholderText = info.placeholderText}
   }
 }

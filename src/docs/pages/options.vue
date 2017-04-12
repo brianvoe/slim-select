@@ -13,8 +13,13 @@
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
-        select: '#search',
+        select: '#showSearch',
         showSearch: false
+      })
+
+      new SlimSelect({
+        select: '#searchText',
+        searchText: 'Sorry nothing to see here'
       })
 
       new SlimSelect({
@@ -131,22 +136,34 @@
 
     <br /><br /><br />
 
-    <h2>showSearch</h2>
+    <h2>showSearch / searchText</h2>
     <p>
-      Boolean value that will decide whether or not to show the search.
+      showSearch is a boolean value that will decide whether or not to show the search.
       Default is true.
     </p>
+    <p>
+      searchText is a string value that will show in the event there are no results.
+      Default is 'No Results'.
+    </p>
 
-    <select id="search">
-      <option value="value1">Value 1</option>
-      <option value="value2">Value 2</option>
-      <option value="value3">Value 3</option>
-    </select>
+    <div class="set-content">
+      <select id="showSearch">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="searchText">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
 
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
       select: '#search',
-      showSearch: false
+      showSearch: false,
+      searchText: 'Sorry couldnt find anything'
     })
     </code></pre>
 
