@@ -62,7 +62,10 @@
   #options-content {
     .set-content {
       display: flex;
+
       > * {
+        flex: 0 1 50%;
+        width: 48%;
         margin: 0 5px 0 5px;
 
         &:first-child { margin: 0 5px 0 0; }
@@ -114,6 +117,16 @@
       select: '#placeholder',
       placeholder: 'Placeholder Text Here'
     })
+    </code></pre>
+
+    <pre v-highlightjs><code class="html">
+    &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
+    &lt;select id="placeholderSingle"&gt;
+      &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+      &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+      &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+      &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+    &lt;/select&gt;
     </code></pre>
 
     <br /><br /><br />

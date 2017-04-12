@@ -30,12 +30,17 @@ $border-radius: 4px;
     }
 
     .placeholder {
-      flex: 1 1 auto;
+      flex: 1 1 100%;
       text-align: left;
+      width: calc(100% - 30px);
 
       * {
         display: inline-block;
         vertical-align: middle;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
       }
 
       .ss-disabled {
@@ -90,13 +95,19 @@ $border-radius: 4px;
 
     .ss-values {
       display: inline-block;
-      flex: 1 1 auto;
+      flex: 1 1 100%;
+      width: calc(100% - 30px);
 
       .ss-disabled {
         display: inline-block;
+        box-sizing: border-box;
+        width: 100%;
         cursor: pointer;
         color: $border-color;
         padding: 4px 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       @keyframes scaleIn {
