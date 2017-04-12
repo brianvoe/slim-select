@@ -17,11 +17,11 @@
 <style lang="scss">
   #home-content {
     .install-code {
-      width: 250px;
+      width: 225px;
       margin: 0 auto;
     }
     .example-code {
-      width: 355px;
+      width: 330px;
       margin: 0 auto;
     }
 
@@ -57,9 +57,9 @@
 <template>
   <div id="home-content">
     <div class="install-code">
-      <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
-      npm install slim-select
-      </code></pre>
+    <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
+    npm install slim-select
+    </code></pre>
     </div>
 
     <div class="samples">
@@ -80,13 +80,13 @@
     </div>
 
     <div class="example-code">
-      <pre v-highlightjs><code class="javascript">
-      import SlimSelect from 'slim-select'
+    <pre v-highlightjs><code class="javascript">
+    import SlimSelect from 'slim-select'
 
-      new SlimSelect({
-        select: '#slim-select'
-      })
-      </code></pre>
+    new SlimSelect({
+      select: '#slim-select'
+    })
+    </code></pre>
     </div>
 
     <div class="callouts">
