@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "module": "es2015",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
     "lib": ["dom", "es2017"]
-  }
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
