@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Slim vanilla javascript select dropdown",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
@@ -13,6 +13,7 @@
   },
   "main": "dist/index.js",
   "style": "dist/index.css",
+  "sass": "src/slim-select/index.scss",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
