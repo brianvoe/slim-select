@@ -25,10 +25,7 @@ if (process.env.DOCS) {
     publicPath: '/'
   }
 } else if (process.env.ENVIRONMENT === 'production') {
-  config.entry.index = [
-    './slim-select/index.ts',
-    './slim-select/index.scss'
-  ]
+  config.entry.index = './slim-select/index.ts'
   config.output = {
     library: 'slim-select',
     libraryTarget: 'umd'

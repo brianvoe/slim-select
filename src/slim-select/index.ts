@@ -1,3 +1,5 @@
+import './index.scss'
+
 import Config from './config'
 import {hasClassInTree} from './helper'
 import Select from './select'
