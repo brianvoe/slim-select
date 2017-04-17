@@ -1,9 +1,9 @@
-$height: 30px;
-$white: #ffffff;
-$font-color: #666666;
-$primary-color: #5897fb;
-$border-color: #dcdee2;
-$border-radius: 4px;
+$height: 30px !default;
+$white: #ffffff !default;
+$font-color: #666666 !default;
+$primary-color: #5897fb !default;
+$border-color: #dcdee2 !default;
+$border-radius: 4px !default;
 
 .ss-main {
   position: relative;
