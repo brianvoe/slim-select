@@ -23,7 +23,7 @@
       })
 
       new SlimSelect({
-        select: '#placeholderSingle',
+        select: document.querySelector('#placeholderSingle'),
         placeholder: 'Placeholder Text Here'
       })
 
@@ -85,12 +85,15 @@
     <h2>select</h2>
     <p>
       The select option is used to identify the select element that will be used to
-      create slim select. You can any value you normally would in a querySelector.
+      create slim select. You can any value you normally would in a querySelector
+      or pass the element directly.
     </p>
 
     <pre v-highlightjs><code class="javascript">
     new SlimSelect({
-      select: '.element .you #want'
+      select: '.element .you #want',
+      // or
+      select: document.querySelector('.element .you #want')
     })
     </code></pre>
 

@@ -7,7 +7,7 @@ import Data, {dataArray, optgroup, option, validateData} from './data'
 import Create from './create'
 
 interface constructor {
-  select: string
+  select: string | Element
   showSearch: boolean
   searchText: string
   placeholder: string
@@ -26,7 +26,7 @@ export default class SlimSelect {
   onChange: Function = null
   constructor (info: constructor) {
     this.validate(info)
-    let selectElement = <HTMLSelectElement>document.querySelector(info.select)
+    let selectElement = <HTMLSelectElement>(typeof info.select === 'string' ? <HTMLSelectElement>document.querySelector(info.select) : info.select)
 
     this.config = new Config({
       select: selectElement,
@@ -62,7 +62,7 @@ export default class SlimSelect {
   }
 
   validate (info: constructor) {
-    let select = <HTMLSelectElement>document.querySelector(info.select)
+    let select = <HTMLSelectElement>(typeof info.select === 'string' ? <HTMLSelectElement>document.querySelector(info.select) : info.select)
     if (!select) { throw new Error('Could not find select element') }
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
   }
