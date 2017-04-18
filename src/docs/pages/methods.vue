@@ -12,8 +12,12 @@ export default {
         setDataMultiple: null,
         setSearchSingle: null,
         setSearchMultiple: null,
+        setEnableSingle: null,
+        setEnableMultiple: null,
         setOpenCloseSingle: null,
-        setOpenCloseMultiple: null
+        setOpenCloseMultiple: null,
+        setDestroySingle: null,
+        setDestroyMultiple: null
       }
     },
     mounted () {
@@ -42,12 +46,30 @@ export default {
         select: '#setSearchMultiple'
       })
 
-      // Open Close
+      // Enable / Disable
+      this.setEnableSingle = new SlimSelect({
+        select: '#setEnableSingle'
+      })
+      this.setEnableSingle.disable()
+      this.setEnableMultiple = new SlimSelect({
+        select: '#setEnableMultiple'
+      })
+      this.setEnableMultiple.disable()
+
+      // Open / Close
       this.setOpenCloseSingle = new SlimSelect({
         select: '#setOpenCloseSingle'
       })
       this.setOpenCloseMultiple = new SlimSelect({
         select: '#setOpenCloseMultiple'
+      })
+
+      // Destroy
+      this.setDestroySingle = new SlimSelect({
+        select: '#setDestroySingle'
+      })
+      this.setDestroyMultiple = new SlimSelect({
+        select: '#setDestroyMultiple'
       })
     },
     methods: {
@@ -74,6 +96,14 @@ export default {
           this.setSearchMultiple.search('value 2')
         }, 100)
       },
+      setEnable () {
+        this.setEnableSingle.enable()
+        this.setEnableMultiple.enable()
+      },
+      setDisable () {
+        this.setEnableSingle.disable()
+        this.setEnableMultiple.disable()
+      },
       setOpenClose () {
         if (!this.setOpenCloseSingle.data.contentOpen) {
           setTimeout(() => {
@@ -81,6 +111,10 @@ export default {
             this.setOpenCloseMultiple.open()
           }, 100)
         }
+      },
+      setDestroy () {
+        this.setDestroySingle.destroy()
+        this.setDestroyMultiple.destroy()
       }
     }
   }
@@ -200,6 +234,39 @@ export default {
 
     <br /><br /><br />
 
+    <h2>disable / enable</h2>
+    <p>
+      These methods will enable or disable the select dropdown.
+      <br />
+      You may also set disabled on your original select and slim-select will pick that up.
+    </p>
+
+    <div class="set-content">
+      <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
+      <div class="btn" @click="setDisable" v-else>Disable</div>
+
+      <select id="setEnableSingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="setEnableMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+    <pre v-highlightjs><code class="javascript">
+    var select = new SlimSelect({
+      select: '#select'
+    })
+    select.enable()
+    // or
+    select.disable()
+    </code></pre>
+
+    <br /><br /><br />
+
     <h2>open / close</h2>
     <p>
       The open/close methods will do just that.
@@ -225,6 +292,33 @@ export default {
     select.open()
     // or
     select.close()
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>destroy</h2>
+    <p>
+      The destroy method will remove slim-select and display your original select.
+    </p>
+
+    <div class="set-content">
+      <div class="btn" @click="setDestroy">Destroy</div>
+      <select id="setDestroySingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="setDestroyMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+    <pre v-highlightjs><code class="javascript">
+    var select = new SlimSelect({
+      select: '#select'
+    })
+    select.destroy()
     </code></pre>
   </div>
 </template>

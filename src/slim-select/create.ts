@@ -15,6 +15,7 @@ interface multiSelected {
   container: HTMLDivElement
   values: HTMLDivElement
   add: HTMLDivElement
+  plus: HTMLSpanElement
 }
 
 interface search {
@@ -62,7 +63,12 @@ export default class create {
     let container = document.createElement('div')
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
+
+    // Add style and classes
     container.style.cssText = this.main.config.style
+    for (var i = 0; i < this.main.config.class.length; i++) {
+      container.classList.add(this.main.config.class[i])
+    }
 
     return container
   }
@@ -80,12 +86,16 @@ export default class create {
     var arrowContainer:HTMLSpanElement = document.createElement('span')
     arrowContainer.classList.add(this.main.config.arrow)
     let arrowIcon = document.createElement('span')
-    arrowIcon.classList.add('arrow-up')
+    arrowIcon.classList.add('arrow-down')
     arrowContainer.appendChild(arrowIcon)
     container.appendChild(arrowContainer)
 
     // Add onclick for main selector div
-    container.onclick = () => { (this.main.data.contentOpen ? this.main.close() : this.main.open()) }
+    container.onclick = () => {
+      if (!this.main.config.isEnabled) { return }
+
+      this.main.data.contentOpen ? this.main.close() : this.main.open()
+    }
 
     return {
       container: container,
@@ -124,14 +134,20 @@ export default class create {
     add.classList.add(this.main.config.add)
     let plus = document.createElement('span')
     plus.classList.add(this.main.config.plus)
-    plus.innerHTML = '+'
+    plus.onclick = (e) => {
+      if (this.main.data.contentOpen) {
+        this.main.close()
+        e.stopPropagation()
+      }
+    }
     add.appendChild(plus)
     container.appendChild(add)
 
     container.onclick = (e) => {
-      let target = <Element>e.target
+      if (!this.main.config.isEnabled) { return }
 
       // Open only if you are not clicking on x text
+      let target = <Element>e.target
       if (!target.classList.contains(this.main.config.valueDelete)) {
         this.main.open()
       }
@@ -140,7 +156,8 @@ export default class create {
     return {
       container: container,
       values: values,
-      add: add
+      add: add,
+      plus: plus
     }
   }
 
@@ -208,6 +225,8 @@ export default class create {
     deleteSpan.classList.add(this.main.config.valueDelete)
     deleteSpan.innerHTML = 'x'
     deleteSpan.onclick = (e) => {
+      if (!this.main.config.isEnabled) { return }
+
       this.main.data.removeFromSelected(option.id, 'id')
       this.main.render()
       this.main.select.setValue()
