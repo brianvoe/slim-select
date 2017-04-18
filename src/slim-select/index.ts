@@ -11,6 +11,7 @@ interface constructor {
   showSearch: boolean
   searchText: string
   placeholder: string
+  isEnabled: boolean
 
   // Events
   beforeOnChange: Function
@@ -32,7 +33,8 @@ export default class SlimSelect {
       select: selectElement,
       showSearch: info.showSearch,
       searchText: info.searchText,
-      placeholderText: info.placeholder
+      placeholderText: info.placeholder,
+      isEnabled: info.isEnabled
     })
 
     this.select = new Select({
@@ -127,6 +129,36 @@ export default class SlimSelect {
     this.slim.content.classList.remove(this.config.open)
 
     this.search('') // Clear search
+  }
+
+  // Set to enabled, remove disabled classes and removed disabled from original select
+  enable (): void {
+    this.config.isEnabled = true
+    if (this.config.isMultiple) {
+      this.slim.multiSelected.container.classList.remove(this.config.disabled)
+    } else {
+      this.slim.singleSelected.container.classList.remove(this.config.disabled)
+    }
+
+    // Disable original select but dont trigger observer
+    this.select.disconnectMutationObserver()
+    this.select.element.disabled = false
+    this.select.observeMutationObserver()
+  }
+
+  // Set to disabled, add disabled classes and add disabled to original select
+  disable (): void {
+    this.config.isEnabled = false
+    if (this.config.isMultiple) {
+      this.slim.multiSelected.container.classList.add(this.config.disabled)
+    } else {
+      this.slim.singleSelected.container.classList.add(this.config.disabled)
+    }
+
+    // Enable original select but dont trigger observer
+    this.select.disconnectMutationObserver()
+    this.select.element.disabled = true
+    this.select.observeMutationObserver()
   }
 
   // Take in string value and search current options

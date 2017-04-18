@@ -14,9 +14,12 @@ export default class select {
     this.element = info.select
     this.main = info.main
 
+    // If original select is set to disabled lets make sure slim is too
+    if (this.element.disabled) {this.main.config.isEnabled = false}
+
     this.addAttributes()
     this.addEventListeners()
-    this.mutationObserver = this.addMutationObserver()
+    this.addMutationObserver()
   }
 
   setValue (): void {
@@ -56,19 +59,26 @@ export default class select {
   }
 
   // Add MutationObserver to select
-  addMutationObserver (): MutationObserver {
-    let mutation = new MutationObserver((mutations) => {
+  addMutationObserver (): void {
+    this.mutationObserver = new MutationObserver((mutations) => {
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()
       this.main.render()
     })
-    mutation.observe(this.element, {
+
+    this.observeMutationObserver()
+  }
+
+  observeMutationObserver (): void {
+    this.mutationObserver.observe(this.element, {
       attributes: true,
       childList: true,
       characterData: true
     })
+  }
 
-    return mutation
+  disconnectMutationObserver (): void {
+    this.mutationObserver.disconnect()
   }
 
   // Create select element and optgroup/options

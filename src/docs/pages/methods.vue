@@ -12,6 +12,8 @@ export default {
         setDataMultiple: null,
         setSearchSingle: null,
         setSearchMultiple: null,
+        setEnableSingle: null,
+        setEnableMultiple: null,
         setOpenCloseSingle: null,
         setOpenCloseMultiple: null
       }
@@ -42,7 +44,17 @@ export default {
         select: '#setSearchMultiple'
       })
 
-      // Open Close
+      // Enable / Disable
+      this.setEnableSingle = new SlimSelect({
+        select: '#setEnableSingle'
+      })
+      this.setEnableSingle.disable()
+      this.setEnableMultiple = new SlimSelect({
+        select: '#setEnableMultiple'
+      })
+      this.setEnableMultiple.disable()
+
+      // Open / Close
       this.setOpenCloseSingle = new SlimSelect({
         select: '#setOpenCloseSingle'
       })
@@ -73,6 +85,14 @@ export default {
           this.setSearchMultiple.open()
           this.setSearchMultiple.search('value 2')
         }, 100)
+      },
+      setEnable () {
+        this.setEnableSingle.enable()
+        this.setEnableMultiple.enable()
+      },
+      setDisable () {
+        this.setEnableSingle.disable()
+        this.setEnableMultiple.disable()
       },
       setOpenClose () {
         if (!this.setOpenCloseSingle.data.contentOpen) {
@@ -196,6 +216,39 @@ export default {
       select: '#select'
     })
     select.search('value')
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>disable / enable</h2>
+    <p>
+      These methods will enable or disable the select dropdown.
+      <br />
+      You may also set disabled on your original select and slim-select will pick that up.
+    </p>
+
+    <div class="set-content">
+      <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
+      <div class="btn" @click="setDisable" v-else>Disable</div>
+
+      <select id="setEnableSingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="setEnableMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+    <pre v-highlightjs><code class="javascript">
+    var select = new SlimSelect({
+      select: '#select'
+    })
+    select.enable()
+    // or
+    select.disable()
     </code></pre>
 
     <br /><br /><br />

@@ -86,7 +86,11 @@ export default class create {
     container.appendChild(arrowContainer)
 
     // Add onclick for main selector div
-    container.onclick = () => { (this.main.data.contentOpen ? this.main.close() : this.main.open()) }
+    container.onclick = () => {
+      if (!this.main.config.isEnabled) { return }
+
+      this.main.data.contentOpen ? this.main.close() : this.main.open()
+    }
 
     return {
       container: container,
@@ -135,9 +139,10 @@ export default class create {
     container.appendChild(add)
 
     container.onclick = (e) => {
-      let target = <Element>e.target
+      if (!this.main.config.isEnabled) { return }
 
       // Open only if you are not clicking on x text
+      let target = <Element>e.target
       if (!target.classList.contains(this.main.config.valueDelete)) {
         this.main.open()
       }
@@ -215,6 +220,8 @@ export default class create {
     deleteSpan.classList.add(this.main.config.valueDelete)
     deleteSpan.innerHTML = 'x'
     deleteSpan.onclick = (e) => {
+      if (!this.main.config.isEnabled) { return }
+      
       this.main.data.removeFromSelected(option.id, 'id')
       this.main.render()
       this.main.select.setValue()

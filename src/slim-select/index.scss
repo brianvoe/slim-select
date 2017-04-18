@@ -23,6 +23,12 @@ $border-radius: 4px !default;
     background-color: $white;
     outline: 0;
     box-sizing: border-box;
+    transition: background-color .3s;
+
+    &.ss-disabled {
+      background-color: $border-color;
+      cursor: not-allowed;
+    }
 
     &.ss-open {
       border-bottom-left-radius: 0px;
@@ -90,6 +96,24 @@ $border-radius: 4px !default;
     background-color: $white;
     outline: 0;
     box-sizing: border-box;
+    transition: background-color .3s;
+
+    &.ss-disabled {
+      background-color: $border-color;
+      cursor: not-allowed;
+
+      .ss-values {
+        .ss-disabled {
+          color: $font-color;
+        }
+
+        .ss-value {
+          .ss-value-delete {
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
 
     &.ss-open {
       border-bottom-left-radius: 0px;
@@ -110,7 +134,6 @@ $border-radius: 4px !default;
         line-height: 1em;
         align-items: center;
         width: 100%;
-        cursor: pointer;
         color: $border-color;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -130,7 +153,6 @@ $border-radius: 4px !default;
         display: flex;
         user-select: none;
         align-items: center;
-        cursor: default;
         font-size: 12px;
         padding: 3px 5px;
         margin: 3px 5px 3px 0px;
