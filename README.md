@@ -8,13 +8,18 @@ See the [docs](http://slimselectjs.com) for more details
 
 ## Features
 - No Dependencies
-- 18kb - 8kb gzip
+- 20kb - 5kb gzip
 - Single Select
 - Multi Select
+- Settable Data
+- Callback Events
 - Placeholder
 - Search
-- Light Css
-- Clean animations
+- Disable Option
+- Light CSS
+- Light Color Scheme
+- Style and Class Inheritance
+- Clean Animations
 - Performant
 
 ## Browsers
