@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Slim vanilla javascript select dropdown",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
@@ -18,7 +18,12 @@
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
   },
-  "keywords": ["select", "vanilla", "dropdown", "search"],
+  "keywords": [
+    "select",
+    "vanilla",
+    "dropdown",
+    "search"
+  ],
   "scripts": {
     "prod": "vue-build prod",
     "docs": "DOCS=true vue-build prod"
