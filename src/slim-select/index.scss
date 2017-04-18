@@ -57,13 +57,13 @@ $border-radius: 4px !default;
       align-items: center;
       justify-content: flex-end;
       flex: 0 1 auto;
-      margin: 0 4px 0 5px;
+      margin: -1px 4px 0 5px;
 
       span {
         border: solid $font-color;
-        border-width: 0 3px 3px 0;
+        border-width: 0 2px 2px 0;
         display: inline-block;
-        padding: 2px;
+        padding: 3px;
         transition: transform .2s, margin .2s;
 
         &.arrow-up {
@@ -157,17 +157,32 @@ $border-radius: 4px !default;
 
     .ss-add {
       display: flex;
-      flex: 0 1 auto;
-      margin: 4px 4px 0 5px;
+      flex: 0 1 3px;
+      margin: 9px 12px 0 5px;
 
       .ss-plus {
         display: flex;
         justify-content: center;
         align-items: center;
-        line-height: 1em;
-        font-size: 22px;
-        height: 20px;
-        width: 20px;
+        background: $font-color;
+        position: relative;
+        height: 10px;
+        width: 2px;
+        transition: transform .2s;
+
+        &:after {
+          background: $font-color;
+          content: "";
+          position: absolute;
+          height: 2px;
+          width: 10px;
+          left: -4px;
+          top: 4px;
+        }
+
+        &.ss-cross {
+          transform: rotate(45deg);
+        }
       }
     }
 

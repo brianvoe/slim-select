@@ -15,6 +15,7 @@ interface multiSelected {
   container: HTMLDivElement
   values: HTMLDivElement
   add: HTMLDivElement
+  plus: HTMLSpanElement
 }
 
 interface search {
@@ -80,7 +81,7 @@ export default class create {
     var arrowContainer:HTMLSpanElement = document.createElement('span')
     arrowContainer.classList.add(this.main.config.arrow)
     let arrowIcon = document.createElement('span')
-    arrowIcon.classList.add('arrow-up')
+    arrowIcon.classList.add('arrow-down')
     arrowContainer.appendChild(arrowIcon)
     container.appendChild(arrowContainer)
 
@@ -124,7 +125,12 @@ export default class create {
     add.classList.add(this.main.config.add)
     let plus = document.createElement('span')
     plus.classList.add(this.main.config.plus)
-    plus.innerHTML = '+'
+    plus.onclick = (e) => {
+      if (this.main.data.contentOpen) {
+        this.main.close()
+        e.stopPropagation()
+      }
+    }
     add.appendChild(plus)
     container.appendChild(add)
 
@@ -140,7 +146,8 @@ export default class create {
     return {
       container: container,
       values: values,
-      add: add
+      add: add,
+      plus: plus
     }
   }
 

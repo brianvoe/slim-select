@@ -100,10 +100,11 @@ export default class SlimSelect {
     this.data.contentOpen = true
     if (this.config.isMultiple) {
       this.slim.multiSelected.container.classList.add(this.config.open)
+      this.slim.multiSelected.plus.classList.add('ss-cross')
     } else {
       this.slim.singleSelected.container.classList.add(this.config.open)
-      this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up')
-      this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down')
+      this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down')
+      this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
     this.slim.content.classList.add(this.config.open)
   }
@@ -117,10 +118,11 @@ export default class SlimSelect {
     this.slim.search.input.blur()
     if (this.config.isMultiple) {
       this.slim.multiSelected.container.classList.remove(this.config.open)
+      this.slim.multiSelected.plus.classList.remove('ss-cross')
     } else {
       this.slim.singleSelected.container.classList.remove(this.config.open)
-      this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
-      this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down')
+      this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down')
+      this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up')
     }
     this.slim.content.classList.remove(this.config.open)
 
