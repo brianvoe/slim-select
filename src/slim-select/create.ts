@@ -63,7 +63,12 @@ export default class create {
     let container = document.createElement('div')
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
+
+    // Add style and classes
     container.style.cssText = this.main.config.style
+    for (var i = 0; i < this.main.config.class.length; i++) {
+      container.classList.add(this.main.config.class[i])
+    }
 
     return container
   }
@@ -221,7 +226,7 @@ export default class create {
     deleteSpan.innerHTML = 'x'
     deleteSpan.onclick = (e) => {
       if (!this.main.config.isEnabled) { return }
-      
+
       this.main.data.removeFromSelected(option.id, 'id')
       this.main.render()
       this.main.select.setValue()

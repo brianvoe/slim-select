@@ -23,6 +23,10 @@
       })
 
       new SlimSelect({
+        select: '#select-class'
+      })
+
+      new SlimSelect({
         select: document.querySelector('#placeholderSingle'),
         placeholder: 'Placeholder Text Here'
       })
@@ -75,6 +79,13 @@
 
         &:first-child { margin: 0 5px 0 0; }
         &:last-child { margin: 0 0 0 5px; }
+      }
+    }
+
+    .select-class {
+      .ss-single-selected {
+        background-color: blue;
+        color: white;
       }
     }
   }
@@ -131,6 +142,29 @@
     &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
     &lt;select id="placeholderSingle"&gt;
       &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+      &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+      &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+      &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+    &lt;/select&gt;
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>css / class</h2>
+    <p>
+      Slim select will inherit any styles and classes that were added to the original select element.
+    </p>
+
+    <div class="set-content">
+      <select id="select-class" class="select-class">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+
+    <pre v-highlightjs><code class="html">
+    &lt;select id="select-class" class="classItems"&gt;
       &lt;option value="value1"&gt;Value 1&lt;/option&gt;
       &lt;option value="value2"&gt;Value 2&lt;/option&gt;
       &lt;option value="value3"&gt;Value 3&lt;/option&gt;

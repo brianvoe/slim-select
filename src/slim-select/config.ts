@@ -9,6 +9,7 @@ interface constructor {
 export default class config {
   id: string = ''
   style: string
+  class: DOMTokenList
   isMultiple: boolean = false
   showSearch: boolean = true
   searchText: string = 'No Results'
@@ -40,6 +41,7 @@ export default class config {
   constructor (info: constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
     this.style = info.select.style.cssText
+    this.class = info.select.classList
 
     this.isMultiple = info.select.multiple
     this.showSearch = (info.showSearch === false ? false : true)
