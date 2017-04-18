@@ -15,7 +15,9 @@ export default {
         setEnableSingle: null,
         setEnableMultiple: null,
         setOpenCloseSingle: null,
-        setOpenCloseMultiple: null
+        setOpenCloseMultiple: null,
+        setDestroySingle: null,
+        setDestroyMultiple: null
       }
     },
     mounted () {
@@ -61,6 +63,14 @@ export default {
       this.setOpenCloseMultiple = new SlimSelect({
         select: '#setOpenCloseMultiple'
       })
+
+      // Destroy
+      this.setDestroySingle = new SlimSelect({
+        select: '#setDestroySingle'
+      })
+      this.setDestroyMultiple = new SlimSelect({
+        select: '#setDestroyMultiple'
+      })
     },
     methods: {
       setValue () {
@@ -101,6 +111,10 @@ export default {
             this.setOpenCloseMultiple.open()
           }, 100)
         }
+      },
+      setDestroy () {
+        this.setDestroySingle.destroy()
+        this.setDestroyMultiple.destroy()
       }
     }
   }
@@ -278,6 +292,33 @@ export default {
     select.open()
     // or
     select.close()
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>destroy</h2>
+    <p>
+      The destroy method will remove slim-select and display your original select.
+    </p>
+
+    <div class="set-content">
+      <div class="btn" @click="setDestroy">Destroy</div>
+      <select id="setDestroySingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select id="setDestroyMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+    <pre v-highlightjs><code class="javascript">
+    var select = new SlimSelect({
+      select: '#select'
+    })
+    select.destroy()
     </code></pre>
   </div>
 </template>

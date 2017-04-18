@@ -183,7 +183,7 @@ export default class SlimSelect {
   // Display original select again and remove slim
   destroy (): void {
     // Show original select
-    this.select.element.removeAttribute('style')
+    this.select.element.style.display = 'inline-block'
 
     // Destroy slim select
     this.slim.container.parentElement.removeChild(this.slim.container)
