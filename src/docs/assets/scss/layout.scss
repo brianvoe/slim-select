@@ -12,6 +12,7 @@ body {
   display: flex;
   justify-content: center;
   font-family: 'Montserrat', sans-serif, Helvetica;
+  font-size: 13px;
   padding: 0;
   margin: 0;
   color: $font-color;
@@ -19,7 +20,9 @@ body {
   #app {
     display: flex;
     flex-direction: column;
-    width: $app-width;
+    min-width: $min-width;
+    width: 100%;
+    max-width: $max-width;
 
     > .header {
       display: flex;
@@ -30,8 +33,16 @@ body {
       margin: 0;
       padding: 15px 0 15px 0;
 
+      @media screen and (max-width: $max-width) {
+        padding: $spacing-half;
+      }
+      @media screen and (max-width: 600px) {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
       .text {
-        flex: 1 1 auto;
+        flex: 1 1 100%;
         .logo {
           font-size: 40px;
           font-weight: 300;
@@ -44,7 +55,8 @@ body {
 
       .select-nav {
         display: flex;
-        flex: 0 1 300px;
+        flex: 0 1 100%;
+        width: 100%;
         color: #666666;
         margin: 0 auto;
         padding: 8px 0 0 0;
@@ -56,6 +68,12 @@ body {
         > * {
           flex: 0 1 auto;
           padding: 0 0 0 8px;
+
+          @media screen and (max-width: $max-width) {
+            &:first-child {
+              padding: 0 0 0 0;
+            }
+          }
         }
       }
     }
@@ -67,6 +85,12 @@ body {
       background-color: #ffffff;
       box-shadow: 0px 0px 5px 6px rgba(0, 0, 0, 0.2);
       border-radius: 4px;
+      overflow: auto;
+
+      @media screen and (max-width: $max-width) {
+        box-shadow: none;
+        border-radius: 0px;
+      }
 
       .content {
         flex: 1 1 auto;
@@ -79,6 +103,11 @@ body {
       font-size: 13px;
       padding: 12px 0 12px 0;
       text-align: center;
+
+      @media screen and (max-width: $max-width) {
+        padding: $spacing-half;
+      }
+
       a {
         color: #666666;
       }

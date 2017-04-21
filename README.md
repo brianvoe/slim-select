@@ -11,11 +11,12 @@ See the [docs](http://slimselectjs.com) for more details
 - 20kb - 5kb gzip
 - Single Select
 - Multi Select
+- Html Options
 - Settable Data
 - Callback Events
-- Placeholder
+- Placeholders
 - Search
-- Disable Option
+- Disable Options
 - Light CSS
 - Light Color Scheme
 - Style and Class Inheritance
@@ -27,6 +28,8 @@ See the [docs](http://slimselectjs.com) for more details
 - Edge 13+
 - Chrome 30+
 - FireFox 25+
+- Opera 25+
+- Safari 9+
 
 ## Installation
 ```bash

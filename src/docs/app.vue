@@ -61,7 +61,7 @@
       </div>
     </div>
     <div class="footer">
-      © {{year}} <a href="http://webiswhatido.com" target="_blank">Brian Voelker</a>. Slim Select is licensed under the MIT license.
+      © {{year}} <a href="http://webiswhatido.com" target="_blank">Brian Voelker</a>. Slim Select is under the MIT license.
     </div>
   </div>
 </template>
