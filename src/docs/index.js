@@ -15,24 +15,24 @@ Vue.directive('highlightjs', {
   bind: function (el, binding) {
     // on first bind, highlight all targets
     let targets = el.querySelectorAll('code')
-    targets.forEach((target) => {
+    for (var i = 0; i < targets.length; i++) {
       // if a value is directly assigned to the directive, use this
       // instead of the element content.
       if (binding.value) {
-        target.innerHTML = binding.value
+        targets[i].innerHTML = binding.value
       }
-      hljs.highlightBlock(target)
-    })
+      hljs.highlightBlock(targets[i])
+    }
   },
   componentUpdated: function (el, binding) {
     // after an update, re-fill the content and then highlight
     let targets = el.querySelectorAll('code')
-    targets.forEach((target) => {
+    for (var i = 0; i < targets.length; i++) {
       if (binding.value) {
-        target.innerHTML = binding.value
-        hljs.highlightBlock(target)
+        targets[i].innerHTML = binding.value
+        hljs.highlightBlock(targets[i])
       }
-    })
+    }
   }
 })
 
