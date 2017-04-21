@@ -17,24 +17,36 @@
 <style lang="scss">
   #home-content {
     .install-code {
-      width: 225px;
+      max-width: 225px;
       margin: 0 auto;
     }
     .example-code {
-      width: 330px;
+      max-width: 330px;
       margin: 0 auto;
     }
 
     .samples {
       display: flex;
       justify-content: space-between;
+
+      @media screen and (max-width: 600px) {
+        flex-direction: column;
+      }
       .single {
         flex: 1 1 50%;
         padding: 0 10px 0 0;
+
+        @media screen and (max-width: 600px) {
+          padding: 0 0 10px 0;
+        }
       }
       .multi {
         flex: 1 1 50%;
         padding: 0 0 0 10px;
+
+        @media screen and (max-width: 600px) {
+          padding: 0 0 0 0;
+        }
       }
     }
 
@@ -92,23 +104,21 @@
     <div class="callouts">
       <div class="features">
         <div class="header"><h2>Features</h2></div>
+
         <ul class="list">
           <li>No Dependencies</li>
-          <li>Small File Size 15kb</li>
+          <li>20kb - 5kb gzip</li>
           <li>Single Select</li>
           <li>Multiple Select</li>
           <li>Html Options</li>
-          <li>Searching</li>
-        </ul>
-      </div>
-
-      <div>
-        <div class="header"><h2>&nbsp;</h2></div>
-        <ul class="list">
+          <li>Settable Data</li>
+          <li>Callback Events</li>
           <li>Placeholders</li>
-          <li>Options Via Data</li>
-          <li>Event Callbacks</li>
+          <li>Search</li>
+          <li>Disable Options</li>
           <li>Light Css</li>
+          <li>Light Color Scheme</li>
+          <li>Style and Class Inheritance</li>
           <li>Clean Animations</li>
           <li>Performant</li>
         </ul>
@@ -121,6 +131,8 @@
           <li>Edge 13+</li>
           <li>Chrome 30+</li>
           <li>FireFox 25+</li>
+          <li>Opera 25+</li>
+          <li>Safari 9+</li>
         </ul>
       </div>
     </div>
