@@ -18,7 +18,7 @@ interface constructor {
   onChange: Function
 }
 
-export default class SlimSelect {
+class SlimSelect {
   config: Config
   select: Select
   data: Data
@@ -189,3 +189,7 @@ export default class SlimSelect {
     this.slim.container.parentElement.removeChild(this.slim.container)
   }
 }
+
+export default SlimSelect
+declare var module: any;
+(module).exports = SlimSelect
