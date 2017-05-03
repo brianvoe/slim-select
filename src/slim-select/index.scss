@@ -30,7 +30,11 @@ $border-radius: 4px !default;
       cursor: not-allowed;
     }
 
-    &.ss-open {
+    &.ss-open-above {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+    &.ss-open-below {
       border-bottom-left-radius: 0px;
       border-bottom-right-radius: 0px;
     }
@@ -115,7 +119,11 @@ $border-radius: 4px !default;
       }
     }
 
-    &.ss-open {
+    &.ss-open-above {
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+    &.ss-open-below {
       border-bottom-left-radius: 0px;
       border-bottom-right-radius: 0px;
     }
@@ -213,12 +221,11 @@ $border-radius: 4px !default;
   .ss-content {
     position: absolute;
     width: 100%;
+    margin: -1px 0 0 0;
     box-sizing: border-box;
     border: solid 1px $border-color;
-    border-top: 0;
     z-index: 1010;
     background-color: $white;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
     transform-origin: center top;
     transition: transform .2s, opacity .2s;
     opacity: 0;
@@ -231,7 +238,7 @@ $border-radius: 4px !default;
     }
 
     .ss-search {
-      padding: 6px 10px 6px 10px;
+      padding: 8px 10px 8px 10px;
 
       input {
         display: block;

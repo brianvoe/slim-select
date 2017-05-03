@@ -29,6 +29,8 @@ export default class config {
   readonly valueDelete: string = 'ss-value-delete'
   readonly content: string = 'ss-content'
   readonly open: string = 'ss-open'
+  readonly openAbove: string = 'ss-open-above'
+  readonly openBelow: string = 'ss-open-below'
   readonly search: string = 'ss-search'
   readonly list: string = 'ss-list'
   readonly optgroup: string = 'ss-optgroup'

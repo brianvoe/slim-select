@@ -46,7 +46,6 @@ new SlimSelect({
 ```
 
 ## Roadmap
-- Content div auto detect to go above or below
 - Refining search
 
 ## Testing

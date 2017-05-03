@@ -29,6 +29,7 @@ export default class data {
   data: dataObject[]
   filtered: dataObject[]
   contentOpen: boolean = false
+  contentPosition: string = 'below'
   constructor (info: constructor) {
     this.main = info.main
     this.searchValue = ''
