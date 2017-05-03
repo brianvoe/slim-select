@@ -1,7 +1,7 @@
 import './index.scss'
 
 import Config from './config'
-import {hasClassInTree} from './helper'
+import {hasClassInTree, isElementInWindow, debounce} from './helper'
 import Select from './select'
 import Data, {dataArray, optgroup, option, validateData} from './data'
 import Create from './create'
@@ -58,6 +58,16 @@ class SlimSelect {
       if (!hasClassInTree(e.target, this.config.id)) { this.close() }
     })
 
+    window.addEventListener('scroll', debounce((e: Event) => {
+      if (this.data.contentOpen) {
+        if(!isElementInWindow(this.slim.content)) {
+          this.slim.content.classList.add(this.config.contentAbove)
+        } else if(this.slim.content.classList.contains(this.config.contentAbove)) {
+          this.slim.content.classList.remove(this.config.contentAbove)
+        }
+      }
+    }), false)
+
     // Add event callbacks after everthing has been created
     if (info.beforeOnChange) {this.beforeOnChange = info.beforeOnChange}
     if (info.onChange) {this.onChange = info.onChange}
@@ -109,6 +119,11 @@ class SlimSelect {
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
     this.slim.content.classList.add(this.config.open)
+    setTimeout(() => {
+      if(!isElementInWindow(this.slim.content)) {
+        this.slim.content.classList.add(this.config.contentAbove)
+      }
+    }, 200)
   }
 
   // Close content section
@@ -127,6 +142,7 @@ class SlimSelect {
       this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up')
     }
     this.slim.content.classList.remove(this.config.open)
+    this.slim.content.classList.remove(this.config.contentAbove)
 
     this.search('') // Clear search
   }

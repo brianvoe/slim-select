@@ -224,6 +224,10 @@ $border-radius: 4px !default;
     opacity: 0;
     transform: scaleY(0);
 
+    &.ss-content-above {
+      margin: -300px 0 0 0;
+    }
+
     &.ss-open {
       display: block;
       opacity: 1;
