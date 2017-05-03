@@ -36,15 +36,18 @@ export function ensureElementInView (container, element) {
   }
 }
 
-export function isElementInWindow (el) {
-  var elemTop = el.getBoundingClientRect().top
-  var elemBottom = el.getBoundingClientRect().bottom
+export function putContent (el, currentPosition, isOpen): string {
+  let height = el.offsetHeight
+  var rect = el.getBoundingClientRect()
+  var elemTop = (isOpen ? rect.top : rect.top - height)
+  var elemBottom = (isOpen ? rect.bottom : rect.bottom + height)
 
-  var isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight)
-  return isVisible
+  if (elemTop <= 0) { return 'below' }
+  if (elemBottom >= window.innerHeight) { return 'above'}
+  return (isOpen ? currentPosition : 'below')
 }
 
-export function debounce (func, wait = 250, immediate = false) {
+export function debounce (func, wait = 100, immediate = false) {
 	var timeout
 	return function() {
 		var context = this, args = arguments
