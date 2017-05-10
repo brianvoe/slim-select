@@ -201,7 +201,8 @@ export default {
       text: 'text', // Required
       value: 'value', // Optional - value will be set by text if not set
       innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
-      disabled: false // Optional - default if false
+      disabled: false, // Optional - default is false
+      placeholder: false // Optional - default is false
     }
     </code></pre>
 
