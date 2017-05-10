@@ -102,13 +102,12 @@ export default class select {
   }
 
   createOption (info): HTMLOptionElement {
-    if (info.placeholder && info.placeholder !== '') {return null}
-
     var option = document.createElement('option')
     option.value = info.value || info.text
     option.innerHTML = info.innerHTML || info.text
     if (info.selected) { option.selected = info.selected }
     if (info.disabled) { option.disabled = true }
+    if (info.placeholder) { option.setAttribute('data-placeholder', 'true') }
     if (info.data && typeof info.data === 'object') {
       Object.keys(info.data).forEach(function(key) {
         option.setAttribute('data-' + key, info.data[key])
