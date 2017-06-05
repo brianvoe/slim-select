@@ -290,6 +290,6 @@ export function validateData (data: dataArray) {
 
 export function validateOption (option: option) {
   if (option.text === undefined) {
-    throw new Error('Data object option must have at least have a text value')
+    throw new Error('Data object option must have at least have a text value. Check object: '+JSON.stringify(option))
   }
 }

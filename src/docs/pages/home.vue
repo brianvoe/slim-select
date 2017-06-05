@@ -2,6 +2,11 @@
   import SlimSelect from 'slim-select/index.ts'
 
   export default {
+    data: () => {
+      return {
+        version: false
+      }
+    },
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
@@ -9,6 +14,15 @@
       })
       new SlimSelect({
         select: '#slim-multi-select'
+      })
+
+      fetch('https://api.github.com/repos/brianvoe/slim-select/git/refs').then((response) => {
+        return response.json()
+      }).then((json) => {
+        var values = json[json.length - 1].ref.split('v')
+        if (values[1]) {
+          this.version = values[1]
+        }
       })
     }
   }
@@ -18,6 +32,10 @@
   #home-content {
     .install-code {
       max-width: 225px;
+      margin: 0 auto;
+    }
+    .install-code-cdn {
+      max-width: 735px;
       margin: 0 auto;
     }
     .example-code {
@@ -50,6 +68,12 @@
       }
     }
 
+    .or {
+      text-align: center;
+      font-weight: bold;
+      padding: 0 0 10px 0;
+    }
+
     .callouts {
       padding: 20px 0 0 0;
       display: flex;
@@ -71,6 +95,14 @@
     <div class="install-code">
     <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
     npm install slim-select
+    </code></pre>
+    </div>
+
+    <div class="or">Or</div>
+
+    <div class="install-code-cdn" v-if="version">
+    <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/index.js"&gt;&lt;/script&gt;
     </code></pre>
     </div>
 
