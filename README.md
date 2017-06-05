@@ -34,6 +34,10 @@ See the [docs](http://slimselectjs.com) for more details
 ## Installation
 ```bash
 npm install slim-select
+
+// or
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/index.js"></script>
 ```
 
 ## Usage
