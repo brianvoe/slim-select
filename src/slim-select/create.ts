@@ -268,6 +268,8 @@ export default class create {
         e.preventDefault()
       } else if (e.key === 'Tab') {
         this.main.close()
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
       }
     }
     input.onkeyup = (e) => {
@@ -275,6 +277,7 @@ export default class create {
       if (e.key === 'Enter') {
         var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
         if (highlighted) { highlighted.click() }
+        e.preventDefault()
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle
       } else if (e.key === 'Escape') {
