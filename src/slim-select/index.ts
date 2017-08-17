@@ -104,6 +104,8 @@ class SlimSelect {
 
   // Open content section
   open (): void {
+    // Dont open if disabled
+    if (!this.config.isEnabled) {return}
     this.slim.search.input.focus()
 
     // Dont do anything if the content is already open
@@ -181,6 +183,7 @@ class SlimSelect {
     // Disable original select but dont trigger observer
     this.select.disconnectMutationObserver()
     this.select.element.disabled = false
+    this.slim.search.input.disabled = false
     this.select.observeMutationObserver()
   }
 
@@ -196,6 +199,7 @@ class SlimSelect {
     // Enable original select but dont trigger observer
     this.select.disconnectMutationObserver()
     this.select.element.disabled = true
+    this.slim.search.input.disabled = true
     this.select.observeMutationObserver()
   }
 
