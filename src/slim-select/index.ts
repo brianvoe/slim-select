@@ -132,7 +132,7 @@ class SlimSelect {
     // Dont do anything if the content is already closed
     if (!this.data.contentOpen) {return}
 
-    this.slim.search.input.blur()
+    // this.slim.search.input.blur() // Removed due to safari quirk
     if (this.config.isMultiple) {
       this.slim.multiSelected.container.classList.remove(this.config.openAbove)
       this.slim.multiSelected.container.classList.remove(this.config.openBelow)
