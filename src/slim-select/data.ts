@@ -152,10 +152,12 @@ export default class data {
           for (var o = 0; o < options.length; o++) {
             if (options[o].selected) {
               // If single return option
-              if (!this.main.config.isMultiple) {value = options[o]}
-
-              // Else push to multiple array
-              values.push(options[o])
+              if (!this.main.config.isMultiple) {
+                value = options[o]
+              } else {
+                // Push to multiple array
+                values.push(options[o])
+              }
             }
           }
         }
@@ -163,16 +165,21 @@ export default class data {
         // Push options to array
         if ((<option>this.data[i]).selected) {
           // If single return option
-          if (!this.main.config.isMultiple) {value = this.data[i]}
-
-          // Else push to multiple array
-          values.push(this.data[i])
+          if (!this.main.config.isMultiple) {
+            value = this.data[i]
+          } else {
+            // Push to multiple array
+            values.push(this.data[i])
+          }
         }
       }
     }
 
     // Either return array or object or null
-    return (this.main.config.isMultiple ? values : value)
+    if (this.main.config.isMultiple) {
+      return values
+    }
+    return value
   }
 
   // If select type is multiple append value and set selected

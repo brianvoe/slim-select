@@ -168,23 +168,8 @@ export default class create {
       let currentNodes = this.multiSelected.values.childNodes
       let selected = <option[]>this.main.data.getSelected()
 
-      // Add values that dont currently exist
-      let exists
-      for (var s = 0; s < selected.length; s++) {
-        exists = false
-        for (var c = 0; c < currentNodes.length; c++) {
-          let node = <HTMLDivElement>currentNodes[c]
-          if (selected[s].id === node.dataset.id) {
-            exists = true
-          }
-        }
-
-        if (!exists) {
-          this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
-        }
-      }
-
       // Remove nodes that shouldnt be there
+      let exists
       for (var c = 0; c < currentNodes.length; c++) {
         exists = true
         let node = <HTMLDivElement>currentNodes[c]
@@ -198,6 +183,27 @@ export default class create {
           let node = <HTMLDivElement>currentNodes[c]
           node.classList.add('ss-out')
           this.multiSelected.values.removeChild(node)
+        }
+      }
+
+      // Add values that dont currently exist
+      for (var s = 0; s < selected.length; s++) {
+        exists = false
+        for (var c = 0; c < currentNodes.length; c++) {
+          let node = <HTMLDivElement>currentNodes[c]
+          if (selected[s].id === node.dataset.id) {
+            exists = true
+          }
+        }
+
+        if (!exists) {
+          if (currentNodes.length === 0) {
+            this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
+          } else if (s === 0) {
+            this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (<any>currentNodes[s]))
+          } else {
+            (<any>currentNodes[s-1]).after(this.valueDiv(selected[s]))
+          }
         }
       }
 
@@ -227,9 +233,29 @@ export default class create {
     deleteSpan.onclick = (e) => {
       if (!this.main.config.isEnabled) { return }
 
-      this.main.data.removeFromSelected(option.id, 'id')
-      this.main.render()
-      this.main.select.setValue()
+      if (this.main.beforeOnChange) {
+        let selected = <option>this.main.data.getSelected()
+        let currentValues = JSON.parse(JSON.stringify(selected))
+
+        // Remove from current selection
+        for (var i = 0; i < currentValues.length; i++) {
+          if (currentValues[i].id === option.id) {
+            currentValues.splice(i, 1)
+          }
+        }
+
+        let beforeOnchange = this.main.beforeOnChange(currentValues)
+        if (beforeOnchange !== false) {
+          this.main.data.removeFromSelected(option.id, 'id')
+          this.main.render()
+          this.main.select.setValue()
+        }
+      } else {
+        this.main.data.removeFromSelected(option.id, 'id')
+        this.main.render()
+        this.main.select.setValue()
+      }
+
       e.preventDefault()
     }
     value.appendChild(deleteSpan)
