@@ -45,8 +45,8 @@
 
       new SlimSelect({
         select: '#beforeOnChangeMultiple',
-        beforeOnChange: (value) => {
-          this.beforeOnChangeMultiple = value
+        beforeOnChange: (values) => {
+          this.beforeOnChangeMultiple = values
         }
       })
 

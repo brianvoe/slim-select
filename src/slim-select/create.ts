@@ -227,9 +227,29 @@ export default class create {
     deleteSpan.onclick = (e) => {
       if (!this.main.config.isEnabled) { return }
 
-      this.main.data.removeFromSelected(option.id, 'id')
-      this.main.render()
-      this.main.select.setValue()
+      if (this.main.beforeOnChange) {
+        let selected = <option>this.main.data.getSelected()
+        let currentValues = JSON.parse(JSON.stringify(selected))
+
+        // Remove from current selection
+        for (var i = 0; i < currentValues.length; i++) {
+          if (currentValues[i].id === option.id) {
+            currentValues.splice(i, 1)
+          }
+        }
+
+        let beforeOnchange = this.main.beforeOnChange(currentValues)
+        if (beforeOnchange !== false) {
+          this.main.data.removeFromSelected(option.id, 'id')
+          this.main.render()
+          this.main.select.setValue()
+        }
+      } else {
+        this.main.data.removeFromSelected(option.id, 'id')
+        this.main.render()
+        this.main.select.setValue()
+      }
+
       e.preventDefault()
     }
     value.appendChild(deleteSpan)
