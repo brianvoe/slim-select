@@ -31,6 +31,6 @@
   "devDependencies": {
     "chance": "^1.0.8",
     "highlightjs": "^9.10.0",
-    "vue-build": "^0.48.2"
+    "vue-build": "^0.52.0"
   }
 }
