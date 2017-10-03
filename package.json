@@ -29,7 +29,7 @@
     "docs": "DOCS=true vue-build prod"
   },
   "devDependencies": {
-    "chance": "^1.0.8",
+    "chance": "^1.0.11",
     "highlightjs": "^9.10.0",
     "vue-build": "^0.52.0"
   }
