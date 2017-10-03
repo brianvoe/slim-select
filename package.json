@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Slim vanilla javascript select dropdown",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
@@ -29,7 +29,7 @@
     "docs": "DOCS=true vue-build prod"
   },
   "devDependencies": {
-    "chance": "^1.0.8",
+    "chance": "^1.0.11",
     "highlightjs": "^9.10.0",
     "vue-build": "^0.52.0"
   }
