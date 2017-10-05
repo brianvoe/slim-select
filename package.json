@@ -9,7 +9,7 @@
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "main": "dist/index.js",
   "style": "dist/index.css",
