@@ -23,6 +23,11 @@ interface search {
   input: HTMLInputElement
 }
 
+interface searchAdd {
+  container: HTMLDivElement
+  input: HTMLInputElement
+}
+
 // Class is responsible for creating all the elements
 export default class create {
   main: SlimSelect
@@ -31,6 +36,7 @@ export default class create {
   multiSelected: multiSelected
   content: HTMLDivElement
   search: search
+  seatchAdd: searchAdd
   list: HTMLDivElement
   constructor (info: {main: SlimSelect}) {
     this.main = info.main
@@ -38,7 +44,11 @@ export default class create {
     // Create elements in order of appending
     this.container = this.containerDiv()
     this.content = this.contentDiv()
-    this.search = this.searchDiv()
+    if (this.main.config.addable) {
+      this.search = this.searcAddDiv()
+    } else {
+      this.search = this.searchDiv()
+    }
     this.list = this.listDiv()
     this.options()
 
@@ -303,6 +313,63 @@ export default class create {
       if (e.key === 'Enter') {
         var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
         if (highlighted) { highlighted.click() }
+        e.preventDefault()
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        // Cancel out to leave for onkeydown to handle
+      } else if (e.key === 'Escape') {
+        this.main.close()
+      } else {
+        this.main.search(target.value)
+      }
+      e.preventDefault()
+    }
+    input.onfocus = () => { this.main.open() }
+    container.appendChild(input)
+
+    return {
+      container: container,
+      input: input
+    }
+  }
+
+  searcAddDiv (): searchAdd {
+    var container = document.createElement('div')
+    container.classList.add(this.main.config.search)
+    if (!this.main.config.showSearch) {container.style.display = 'none'}
+
+    var input = document.createElement('input')
+    input.type = 'search or add'
+    input.placeholder = 'Search or add'
+    input.tabIndex = 0
+    input.onclick = (e) => {
+      setTimeout(() => {
+        let target = <HTMLInputElement>e.target
+        if (target.value === '') { this.main.search('') }
+      }, 10)
+    }
+    input.onkeydown = (e) => {
+      if (e.key === 'ArrowUp') {
+        this.highlightUp()
+        e.preventDefault()
+      } else if (e.key === 'ArrowDown') {
+        this.highlightDown()
+        e.preventDefault()
+      } else if (e.key === 'Tab') {
+        this.main.close()
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+      }
+    }
+    input.onkeyup = (e) => {
+      let target = <HTMLInputElement>e.target
+      if (e.key === 'Enter') {
+        var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
+        if (highlighted) { highlighted.click() }
+        else {
+          this.main.addOption(target.value)
+          console.log("close")
+          this.main.close()
+        }
         e.preventDefault()
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle

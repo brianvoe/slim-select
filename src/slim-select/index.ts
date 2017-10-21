@@ -12,7 +12,7 @@ interface constructor {
   searchText: string
   placeholder: string
   isEnabled: boolean
-
+  addable: boolean
   // Events
   beforeOnChange: Function
   onChange: Function
@@ -34,8 +34,10 @@ class SlimSelect {
       showSearch: info.showSearch,
       searchText: info.searchText,
       placeholderText: info.placeholder,
-      isEnabled: info.isEnabled
+      isEnabled: info.isEnabled,
+      addable: info.addable
     })
+
 
     this.select = new Select({
       select: selectElement,
@@ -100,6 +102,13 @@ class SlimSelect {
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
     this.render()
+  }
+
+  addData (option: option) {
+    this.select.addOption(this.select.createOption(option))
+    this.data.parseSelectData()
+    this.data.setSelectedFromSelect()
+    //this.data.getObjectFromData(option.value).id = String(Math.floor(Math.random() * 100000000))
   }
 
   // Open content section
@@ -213,6 +222,20 @@ class SlimSelect {
     }
   }
 
+  addOption(value: string): void {
+    //this is ugly
+    this.addData({
+      value: value,
+      text: value,
+      id: String(Math.floor(Math.random() * 100000000)),
+      innerHTML: value,
+      selected: true,
+      placeholder: "",
+      disabled: false,
+      data: {}
+    })
+  }
+
   render (): void {
     if (this.config.isMultiple) {
       this.slim.values()
@@ -230,6 +253,7 @@ class SlimSelect {
     // Destroy slim select
     this.slim.container.parentElement.removeChild(this.slim.container)
   }
+
 }
 
 export default SlimSelect
