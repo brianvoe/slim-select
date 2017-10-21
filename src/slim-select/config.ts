@@ -4,6 +4,7 @@ interface constructor {
   searchText: string
   placeholderText: string
   isEnabled: boolean
+  addable: boolean
 }
 
 export default class config {
@@ -15,6 +16,7 @@ export default class config {
   searchText: string = 'No Results'
   placeholderText: string = 'Select Value'
   isEnabled: boolean = true
+  addable: boolean = false
 
   // Classes
   readonly main: string = 'ss-main'
@@ -48,6 +50,7 @@ export default class config {
     this.isMultiple = info.select.multiple
     this.showSearch = (info.showSearch === false ? false : true)
     this.isEnabled = (info.isEnabled === false ? false : true)
+    this.addable = (info.addable === false && this.isMultiple ? false : true)
     if (info.searchText) {this.searchText = info.searchText}
     if (info.placeholderText) {this.placeholderText = info.placeholderText}
   }

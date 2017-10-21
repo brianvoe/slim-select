@@ -117,4 +117,9 @@ export default class select {
 
     return option
   }
+
+  addOption (option: HTMLOptionElement) {
+    this.element.appendChild(option)
+    this.element.dispatchEvent(new Event('change'))
+  }
 }
