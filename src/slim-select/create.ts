@@ -202,7 +202,7 @@ export default class create {
           } else if (s === 0) {
             this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (<any>currentNodes[s]))
           } else {
-            (<any>currentNodes[s-1]).after(this.valueDiv(selected[s]))
+            (<any>currentNodes[s-1]).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
           }
         }
       }

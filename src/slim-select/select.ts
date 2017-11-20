@@ -43,7 +43,8 @@ export default class select {
       let selected = <option>this.main.data.getSelected()
       this.element.value = (selected ? selected.value : '')
     }
-    this.element.dispatchEvent(new Event('change'))
+
+    this.element.dispatchEvent(new CustomEvent('change'))
   }
 
   addAttributes () {
