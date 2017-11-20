@@ -109,14 +109,14 @@
       <div>
         <h4>Options</h4>
         <select id="single">
-          <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
+          <option v-for="value in states" :key="value.abv" :value="value.abv" :selected="value.selected">{{value.state}}</option>
         </select>
       </div>
       <div>
         <h4>Optgroups</h4>
         <select id="single-group">
-          <optgroup v-for="food in foods" :label="food.label">
-            <option v-for="option in food.options" :value="option">{{option}}</option>
+          <optgroup v-for="food in foods" :key="food.label" :label="food.label">
+            <option v-for="option in food.options" :key="option" :value="option">{{option}}</option>
           </optgroup>
         </select>
       </div>
@@ -162,14 +162,14 @@
       <div>
         <h4>Options</h4>
         <select id="multiple" multiple>
-          <option v-for="value in states" :value="value.abv" :selected="value.selected">{{value.state}}</option>
+          <option v-for="value in states" :value="value.abv" :key="value.abv" :selected="value.selected">{{value.state}}</option>
         </select>
       </div>
       <div>
         <h4>Optgroups</h4>
         <select id="multiple-group" multiple>
-          <optgroup v-for="food in foods" :label="food.label">
-            <option v-for="option in food.options" :value="option">{{option}}</option>
+          <optgroup v-for="food in foods" :key="food.label" :label="food.label">
+            <option v-for="option in food.options" :key="option" :value="option">{{option}}</option>
           </optgroup>
         </select>
       </div>
