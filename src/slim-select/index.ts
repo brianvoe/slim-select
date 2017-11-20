@@ -1,5 +1,7 @@
 import './index.scss'
 
+import 'custom-event-polyfill' // Needed for IE to use custom events
+
 import Config from './config'
 import {hasClassInTree, putContent, debounce} from './helper'
 import Select from './select'

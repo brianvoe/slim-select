@@ -124,6 +124,7 @@ export default {
   #methods-content {
     .set-content {
       display: flex;
+
       > * {
         margin: 0 5px 0 5px;
 
