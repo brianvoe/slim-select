@@ -46,6 +46,7 @@ $border-radius: 4px !default;
       text-align: left;
       width: calc(100% - 30px);
       line-height: 1em;
+      user-select: none;
 
       * {
         display: flex;
