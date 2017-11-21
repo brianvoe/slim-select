@@ -94,8 +94,13 @@
 
     .select-class {
       .ss-single-selected {
-        background-color: blue;
+        background-color: #5897fb;
         color: white;
+        border: none;
+
+        .ss-arrow * {
+          border-color: white;
+        }
       }
     }
   }
