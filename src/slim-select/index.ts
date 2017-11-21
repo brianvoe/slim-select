@@ -10,8 +10,10 @@ import Create from './create'
 
 interface constructor {
   select: string | Element
+  data: dataArray
   showSearch: boolean
   searchText: string
+  showContent: string
   placeholder: string
   isEnabled: boolean
 
@@ -35,6 +37,7 @@ class SlimSelect {
       select: selectElement,
       showSearch: info.showSearch,
       searchText: info.searchText,
+      showContent: info.showContent,
       placeholderText: info.placeholder,
       isEnabled: info.isEnabled
     })
@@ -52,8 +55,14 @@ class SlimSelect {
     // Add after original select element
     this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
 
-    // Do an initial render on startup
-    this.render()
+    // If data is passed in lets set it
+    // and thus will start the render
+    if (info.data) {
+      this.setData(info.data)
+    } else {
+      // Do an initial render on startup
+      this.render()
+    }
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e: Event) => {
@@ -61,7 +70,7 @@ class SlimSelect {
     })
 
     window.addEventListener('scroll', debounce((e: Event) => {
-      if (this.data.contentOpen) {
+      if (this.data.contentOpen && this.config.showContent === 'auto') {
         if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
           this.moveContentAbove()
         } else {
@@ -95,7 +104,8 @@ class SlimSelect {
 
   setData (data: dataArray) {
     // Validate data if passed in
-    validateData(data)
+    let isValid = validateData(data)
+    if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
 
     let newData = JSON.parse(JSON.stringify(data))
     this.select.create(newData)
@@ -121,10 +131,19 @@ class SlimSelect {
     }
     this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove: this.config.openBelow))
     this.slim.content.classList.add(this.config.open)
-    if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+
+    // Check showContent to see if they want to specifically show in a certain direction
+    if (this.config.showContent.toLowerCase() === 'up') {
       this.moveContentAbove()
-    } else {
+    } else if (this.config.showContent.toLowerCase() === 'down') {
       this.moveContentBelow()
+    } else {
+      // Auto identify where to put it
+      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+        this.moveContentAbove()
+      } else {
+        this.moveContentBelow()
+      }
     }
     this.data.contentOpen = true
   }
@@ -149,6 +168,14 @@ class SlimSelect {
     this.data.contentOpen = false
 
     this.search('') // Clear search
+
+    // Reset the content below
+    setTimeout(() => {
+      this.slim.content.removeAttribute('style')
+      this.data.contentPosition = 'below'
+      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
+      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
+    }, 300)
   }
 
   moveContentAbove (): void {
@@ -158,19 +185,15 @@ class SlimSelect {
     this.slim.content.style.margin = '-' + height + 'px 0 0 0'
     this.slim.content.style['transform-origin'] = 'center bottom'
     this.data.contentPosition = 'above'
-    if (this.data.contentOpen) {
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openAbove)
-    }
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openAbove)
   }
 
   moveContentBelow (): void {
     this.slim.content.removeAttribute('style')
     this.data.contentPosition = 'below'
-    if (this.data.contentOpen) {
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openBelow)
-    }
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openBelow)
   }
 
   // Set to enabled, remove disabled classes and removed disabled from original select

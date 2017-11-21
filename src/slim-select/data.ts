@@ -274,8 +274,10 @@ export default class data {
   }
 }
 
-export function validateData (data: dataArray) {
-  if (!data) { throw new Error('Data must be an array of objects') }
+export function validateData (data: dataArray): boolean {
+  if (!data) { console.error('Data must be an array of objects'); return }
+  let isValid = false
+  let errorCount = 0
 
   for (var i = 0; i < data.length; i++) {
     if (data[i].hasOwnProperty('label')) {
@@ -283,20 +285,24 @@ export function validateData (data: dataArray) {
         let optgroup = <optgroup>data[i]
         let options = optgroup.options
         for (var i = 0; i < options.length; i++) {
-          validateOption(options[i])
+          isValid = validateOption(options[i])
+          if (!isValid) { errorCount++ }
         }
       }
     } else {
       let option = <option>data[i]
-      validateOption(option)
+      isValid = validateOption(option)
+      if (!isValid) { errorCount++ }
     }
-
-
   }
+
+  return errorCount === 0
 }
 
-export function validateOption (option: option) {
+export function validateOption (option: option): boolean {
   if (option.text === undefined) {
-    throw new Error('Data object option must have at least have a text value. Check object: '+JSON.stringify(option))
+    console.error('Data object option must have at least have a text value. Check object: '+JSON.stringify(option))
+    return false
   }
+  return true
 }
