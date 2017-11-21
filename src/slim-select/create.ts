@@ -469,25 +469,28 @@ export default class create {
 
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
-    option.onclick = (e) => {
-      if (this.main.beforeOnChange) {
+    let master = this
+    option.onclick = function () {
+      let element = this
+      let elementID = element.dataset.id
+      if (master.main.beforeOnChange) {
         let value
-        let objectInfo = JSON.parse(JSON.stringify(this.main.data.getObjectFromData((<HTMLDivElement>e.target).dataset.id)))
+        let objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID)))
         objectInfo.selected = true
 
-        if (this.main.config.isMultiple) {
+        if (master.main.config.isMultiple) {
           value = JSON.parse(JSON.stringify(selected))
           value.push(objectInfo)
         } else {
           value = JSON.parse(JSON.stringify(objectInfo))
         }
 
-        let beforeOnchange = this.main.beforeOnChange(value)
+        let beforeOnchange = master.main.beforeOnChange(value)
         if (beforeOnchange !== false) {
-          this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
+          master.main.set(elementID, 'id')
         }
       } else {
-        this.main.set((<HTMLDivElement>e.target).dataset.id, 'id')
+        master.main.set(elementID, 'id')
       }
     }
 

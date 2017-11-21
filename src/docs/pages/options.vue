@@ -25,6 +25,16 @@
       new SlimSelect({
         select: '#select-class'
       })
+
+      let innerHTML = new SlimSelect({
+        select: '#select-innerHTML',
+        data: [
+          {innerHTML: '<img height="30" width="30" src="http://lorempixel.com/30/30" />&nbsp;&nbsp;Image', text: 'Image', value: 'image'},
+          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
+          {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
+        ]
+      })
       
       new SlimSelect({
         select: '#showSearch',
@@ -184,6 +194,34 @@
       &lt;option value="value2"&gt;Value 2&lt;/option&gt;
       &lt;option value="value3"&gt;Value 3&lt;/option&gt;
     &lt;/select&gt;
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>innerHTML</h2>
+    <p>
+      Slim select has the ability to set custom html in content in the select option.
+    </p>
+    <p>
+      Due to html spec we cant do this directly on the select dropdown, but we can pass them as data values to slim select
+    </p>
+
+    <div class="set-content">
+      <select id="select-innerHTML"></select>
+    </div>
+
+    <pre v-highlightjs><code class="javascript">
+    &lt;select id="select-innerHTML"&gt;&lt;/select&gt;
+
+    var select = new SlimSelect({
+      select: '#select-innerHTML',
+      data: [
+        {innerHTML: '&lt;img height="30" width="30" src="http://lorempixel.com/30/30" /&gt;&nbsp;Image', text: 'Image', value: 'image'},
+        {innerHTML: '&lt;i&gt;Bold Text&lt;/i&gt;', text: 'Bold Text', value: 'bold text'},
+        {innerHTML: '&lt;div style="border: solid 1px #666666;"&gt;Border&lt;/div&gt;', text: 'Border', value: 'border'},
+        {innerHTML: '&lt;i&gt;Slim Select you are awesome&lt;/i&gt;', text: 'Slim Select awesome'}
+      ]
+    })
     </code></pre>
 
     <br /><br /><br />

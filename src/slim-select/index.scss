@@ -41,8 +41,11 @@ $border-radius: 4px !default;
 
     .placeholder {
       display: flex;
-      align-items: center;
       flex: 1 1 100%;
+      align-items: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       text-align: left;
       width: calc(100% - 30px);
       line-height: 1em;
@@ -57,7 +60,7 @@ $border-radius: 4px !default;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        width: 100%;
+        width: auto;
       }
 
       .ss-disabled {
