@@ -36,7 +36,7 @@ export function ensureElementInView (container, element) {
   }
 }
 
-export function putContent (el, currentPosition, isOpen): string {
+export function putContent (el, currentPosition: string, isOpen: boolean): string {
   let height = el.offsetHeight
   var rect = el.getBoundingClientRect()
   var elemTop = (isOpen ? rect.top : rect.top - height)

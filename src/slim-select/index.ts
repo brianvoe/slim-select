@@ -160,6 +160,14 @@ class SlimSelect {
     this.data.contentOpen = false
 
     this.search('') // Clear search
+
+    // Reset the content below
+    setTimeout(() => {
+      this.slim.content.removeAttribute('style')
+      this.data.contentPosition = 'below'
+      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
+      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
+    }, 300)
   }
 
   moveContentAbove (): void {
@@ -169,19 +177,15 @@ class SlimSelect {
     this.slim.content.style.margin = '-' + height + 'px 0 0 0'
     this.slim.content.style['transform-origin'] = 'center bottom'
     this.data.contentPosition = 'above'
-    if (this.data.contentOpen) {
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openAbove)
-    }
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openAbove)
   }
 
   moveContentBelow (): void {
     this.slim.content.removeAttribute('style')
     this.data.contentPosition = 'below'
-    if (this.data.contentOpen) {
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openBelow)
-    }
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
+    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openBelow)
   }
 
   // Set to enabled, remove disabled classes and removed disabled from original select
