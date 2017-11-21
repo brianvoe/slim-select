@@ -12,6 +12,7 @@ interface constructor {
   select: string | Element
   showSearch: boolean
   searchText: string
+  showContent: string
   placeholder: string
   isEnabled: boolean
 
@@ -35,6 +36,7 @@ class SlimSelect {
       select: selectElement,
       showSearch: info.showSearch,
       searchText: info.searchText,
+      showContent: info.showContent,
       placeholderText: info.placeholder,
       isEnabled: info.isEnabled
     })
@@ -61,7 +63,7 @@ class SlimSelect {
     })
 
     window.addEventListener('scroll', debounce((e: Event) => {
-      if (this.data.contentOpen) {
+      if (this.data.contentOpen && this.config.showContent === 'auto') {
         if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
           this.moveContentAbove()
         } else {
@@ -121,10 +123,19 @@ class SlimSelect {
     }
     this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove: this.config.openBelow))
     this.slim.content.classList.add(this.config.open)
-    if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+
+    // Check showContent to see if they want to specifically show in a certain direction
+    if (this.config.showContent.toLowerCase() === 'up') {
       this.moveContentAbove()
-    } else {
+    } else if (this.config.showContent.toLowerCase() === 'down') {
       this.moveContentBelow()
+    } else {
+      // Auto identify where to put it
+      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+        this.moveContentAbove()
+      } else {
+        this.moveContentBelow()
+      }
     }
     this.data.contentOpen = true
   }

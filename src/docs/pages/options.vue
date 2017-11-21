@@ -13,6 +13,20 @@
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
+        select: '#placeholderSingle',
+        placeholder: 'Placeholder Text Here'
+      })
+
+      new SlimSelect({
+        select: '#placeholderMultiple',
+        placeholder: 'Placeholder Text Here'
+      })
+
+      new SlimSelect({
+        select: '#select-class'
+      })
+      
+      new SlimSelect({
         select: '#showSearch',
         showSearch: false
       })
@@ -23,17 +37,13 @@
       })
 
       new SlimSelect({
-        select: '#select-class'
+        select: '#showContentUp',
+        showContent: 'up'
       })
 
       new SlimSelect({
-        select: document.querySelector('#placeholderSingle'),
-        placeholder: 'Placeholder Text Here'
-      })
-
-      new SlimSelect({
-        select: '#placeholderMultiple',
-        placeholder: 'Placeholder Text Here'
+        select: '#showContentDown',
+        showContent: 'down'
       })
 
       new SlimSelect({
@@ -200,7 +210,39 @@
     new SlimSelect({
       select: '#search',
       showSearch: false,
-      searchText: 'Sorry couldnt find anything'
+      searchText: 'Sorry nothing to see here'
+    })
+    </code></pre>
+
+    <br /><br /><br />
+
+    <h2>showContent</h2>
+    <p>
+      showContent is a string value that will decide where to show your content when it comes out. 
+      By default slim select will try to put the content where it can without going off screen. 
+      But you may want to always show it in one direction.
+    </p>
+    <p>
+      Possible Options: <b>'auto', 'up' or 'down'</b>. Default is <b>'auto'</b>
+    </p>
+
+    <div class="set-content">
+      <select id="showContentUp">
+        <option value="up1">Up 1</option>
+        <option value="up2">Up 2</option>
+        <option value="up3">Up 3</option>
+      </select>
+      <select id="showContentDown">
+        <option value="down1">Down 1</option>
+        <option value="down2">Down 2</option>
+        <option value="down3">Down 3</option>
+      </select>
+    </div>
+
+    <pre v-highlightjs><code class="javascript">
+    new SlimSelect({
+      select: '#showContent',
+      showContent: 'auto' // 'auto', 'up' or 'down'
     })
     </code></pre>
 
