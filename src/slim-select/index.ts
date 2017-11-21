@@ -10,6 +10,7 @@ import Create from './create'
 
 interface constructor {
   select: string | Element
+  data: dataArray
   showSearch: boolean
   searchText: string
   showContent: string
@@ -54,8 +55,14 @@ class SlimSelect {
     // Add after original select element
     this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
 
-    // Do an initial render on startup
-    this.render()
+    // If data is passed in lets set it
+    // and thus will start the render
+    if (info.data) {
+      this.setData(info.data)
+    } else {
+      // Do an initial render on startup
+      this.render()
+    }
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e: Event) => {
@@ -97,7 +104,8 @@ class SlimSelect {
 
   setData (data: dataArray) {
     // Validate data if passed in
-    validateData(data)
+    let isValid = validateData(data)
+    if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
 
     let newData = JSON.parse(JSON.stringify(data))
     this.select.create(newData)
