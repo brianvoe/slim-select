@@ -4,7 +4,7 @@ html {
   height: 100%;
   padding: 0;
   margin: 0;
-  background: linear-gradient(to bottom, #5897fb 0%,#7db9e8 100%);
+  background: radial-gradient(circle at 47% 9%, #7db9e8, #5897fb);
   background-attachment: fixed;
 }
 
@@ -67,11 +67,11 @@ body {
 
         > * {
           flex: 0 1 auto;
-          padding: 0 0 0 8px;
+          margin: 0 0 0 8px;
 
           @media screen and (max-width: $max-width) {
             &:first-child {
-              padding: 0 0 0 0;
+              margin: 0 0 0 0;
             }
           }
         }
@@ -82,19 +82,24 @@ body {
       flex: 0 1 auto;
       display: flex;
       flex-direction: column;
-      background-color: #ffffff;
-      box-shadow: 0px 0px 5px 6px rgba(0, 0, 0, 0.2);
-      border-radius: 4px;
-      overflow: auto;
-
-      @media screen and (max-width: $max-width) {
-        box-shadow: none;
-        border-radius: 0px;
-      }
 
       .content {
         flex: 1 1 auto;
         padding: 20px;
+        margin: 0 0 20px 0;
+        background-color: #ffffff;
+        box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+
+        @media screen and (max-width: $max-width) {
+          box-shadow: none;
+          border-radius: 0px;
+        }
+
+        > :last-child {
+          padding-bottom: 0px;
+          margin-bottom: 0px;
+        }
       }
     }
 

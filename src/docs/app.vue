@@ -32,6 +32,29 @@
   }
 </script>
 
+<style lang="scss">
+  #app {
+    .select-nav {
+      .ss-single-selected {
+        position: relative;
+        z-index: 2000;
+
+        .placeholder {
+          font-weight: bold;
+        }
+      }
+
+      .ss-content {
+        box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+
+        .ss-option {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+</style>
+
 <template>
   <div id="app">
     <div class="header">
@@ -54,11 +77,9 @@
       </div>
     </div>
     <div class="main">
-      <div class="content">
-        <transition name="fade" mode="out-in" appear>
-          <router-view></router-view>
-        </transition>
-      </div>
+      <transition name="fade" mode="out-in" appear>
+        <router-view></router-view>
+      </transition>
     </div>
     <div class="footer">
       © {{year}} <a href="http://webiswhatido.com" target="_blank">Brian Voelker</a>. Slim Select is under the MIT license.

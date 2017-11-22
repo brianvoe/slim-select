@@ -137,190 +137,192 @@ export default {
 
 <template>
   <div id="methods-content">
-    <h2>set</h2>
-    <p>
-      The set method will take a value and update the original select as well
-      slim select. The value can either be a string or an array of strings
-      depending on if its a single or multi select.
-    </p>
+    <div class="content">
+      <h2 class="header">set</h2>
+      <p>
+        The set method will take a value and update the original select as well
+        slim select. The value can either be a string or an array of strings
+        depending on if its a single or multi select.
+      </p>
 
-    <div class="set-content">
-      <div class="btn" @click="setValue">Set Value</div>
-      <select id="setSingle">
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
-      <select id="setMultiple" multiple>
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
+      <div class="set-content">
+        <div class="btn" @click="setValue">Set Value</div>
+        <select id="setSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="setMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <pre v-highlightjs><code class="javascript">
+      var select = new SlimSelect({
+        select: '#select'
+      })
+      select.set('value')
+      // or
+      select.set(['value1', 'value2'])
+      </code></pre>
     </div>
-    <pre v-highlightjs><code class="javascript">
-    var select = new SlimSelect({
-      select: '#select'
-    })
-    select.set('value')
-    // or
-    select.set(['value1', 'value2'])
-    </code></pre>
 
-    <br /><br /><br />
+    <div class="content">
+      <h2 class="header">setData</h2>
+      <p>
+        The setData method can take in an array of objects. This will set the options
+        of the original select and rerender slim select.
+      </p>
 
-    <h2>setData</h2>
-    <p>
-      The setData method can take in an array of objects. This will set the options
-      of the original select and rerender slim select.
-    </p>
+      <div class="set-content">
+        <div class="btn" @click="setData">Set Data</div>
+        <select id="setDataSingle"></select>
+        <select id="setDataMultiple" multiple></select>
+      </div>
+      <pre v-highlightjs><code class="javascript">
+      var select = new SlimSelect({
+        select: '#select'
+      })
 
-    <div class="set-content">
-      <div class="btn" @click="setData">Set Data</div>
-      <select id="setDataSingle"></select>
-      <select id="setDataMultiple" multiple></select>
+      // Array of objects - Must have at least text value
+      select.setData([
+        {text: 'value1'},
+        {text: 'value2'}
+      ])
+      </code></pre>
+
+      <h4>Data Types</h4>
+      <pre v-highlightjs><code class="javascript">
+      var optgroup = {
+        label: 'label', // Required
+        options: [] // Required - value is an array of options
+      }
+
+      var option = {
+        text: 'text', // Required
+        value: 'value', // Optional - value will be set by text if not set
+        innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
+        disabled: false, // Optional - default is false
+        placeholder: false // Optional - default is false
+      }
+      </code></pre>
     </div>
-    <pre v-highlightjs><code class="javascript">
-    var select = new SlimSelect({
-      select: '#select'
-    })
 
-    // Array of objects - Must have at least text value
-    select.setData([
-      {text: 'value1'},
-      {text: 'value2'}
-    ])
-    </code></pre>
+    <div class="content">
+      <h2 class="header">search</h2>
+      <p>
+        The search method will update the search input field and search the data with the given value.
+      </p>
 
-    <h4>Data Types</h4>
-    <pre v-highlightjs><code class="javascript">
-    var optgroup = {
-      label: 'label', // Required
-      options: [] // Required - value is an array of options
-    }
-
-    var option = {
-      text: 'text', // Required
-      value: 'value', // Optional - value will be set by text if not set
-      innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
-      disabled: false, // Optional - default is false
-      placeholder: false // Optional - default is false
-    }
-    </code></pre>
-
-    <br /><br /><br />
-
-    <h2>search</h2>
-    <p>
-      The search method will update the search input field and search the data with the given value.
-    </p>
-
-    <div class="set-content">
-      <div class="btn" @click="setSearch">Set Search</div>
-      <select id="setSearchSingle">
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
-      <select id="setSearchMultiple" multiple>
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
+      <div class="set-content">
+        <div class="btn" @click="setSearch">Set Search</div>
+        <select id="setSearchSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="setSearchMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <pre v-highlightjs><code class="javascript">
+      var select = new SlimSelect({
+        select: '#select'
+      })
+      select.search('value')
+      </code></pre>
     </div>
-    <pre v-highlightjs><code class="javascript">
-    var select = new SlimSelect({
-      select: '#select'
-    })
-    select.search('value')
-    </code></pre>
 
-    <br /><br /><br />
+    <div class="content">
+      <h2 class="header">disable / enable</h2>
+      <p>
+        These methods will enable or disable the select dropdown.
+        <br />
+        You may also set disabled on your original select and slim-select will pick that up.
+      </p>
 
-    <h2>disable / enable</h2>
-    <p>
-      These methods will enable or disable the select dropdown.
-      <br />
-      You may also set disabled on your original select and slim-select will pick that up.
-    </p>
+      <div class="set-content">
+        <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
+        <div class="btn" @click="setDisable" v-else>Disable</div>
 
-    <div class="set-content">
-      <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
-      <div class="btn" @click="setDisable" v-else>Disable</div>
-
-      <select id="setEnableSingle">
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
-      <select id="setEnableMultiple" multiple>
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
+        <select id="setEnableSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="setEnableMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <pre v-highlightjs><code class="javascript">
+      var select = new SlimSelect({
+        select: '#select'
+      })
+      select.enable()
+      // or
+      select.disable()
+      </code></pre>
     </div>
-    <pre v-highlightjs><code class="javascript">
-    var select = new SlimSelect({
-      select: '#select'
-    })
-    select.enable()
-    // or
-    select.disable()
-    </code></pre>
 
-    <br /><br /><br />
+    <div class="content">
+      <h2 class="header">open / close</h2>
+      <p>
+        The open/close methods will do just that.
+      </p>
 
-    <h2>open / close</h2>
-    <p>
-      The open/close methods will do just that.
-    </p>
-
-    <div class="set-content">
-      <div class="btn" @click="setOpenClose">Open/Close</div>
-      <select id="setOpenCloseSingle">
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
-      <select id="setOpenCloseMultiple" multiple>
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
+      <div class="set-content">
+        <div class="btn" @click="setOpenClose">Open/Close</div>
+        <select id="setOpenCloseSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="setOpenCloseMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <pre v-highlightjs><code class="javascript">
+      var select = new SlimSelect({
+        select: '#select'
+      })
+      select.open()
+      // or
+      select.close()
+      </code></pre>
     </div>
-    <pre v-highlightjs><code class="javascript">
-    var select = new SlimSelect({
-      select: '#select'
-    })
-    select.open()
-    // or
-    select.close()
-    </code></pre>
 
-    <br /><br /><br />
+    <div class="content">
+      <h2 class="header">destroy</h2>
+      <p>
+        The destroy method will remove slim-select and display your original select.
+      </p>
 
-    <h2>destroy</h2>
-    <p>
-      The destroy method will remove slim-select and display your original select.
-    </p>
-
-    <div class="set-content">
-      <div class="btn" @click="setDestroy">Destroy</div>
-      <select id="setDestroySingle">
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
-      <select id="setDestroyMultiple" multiple>
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
+      <div class="set-content">
+        <div class="btn" @click="setDestroy">Destroy</div>
+        <select id="setDestroySingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="setDestroyMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <pre v-highlightjs><code class="javascript">
+      var select = new SlimSelect({
+        select: '#select'
+      })
+      select.destroy()
+      </code></pre>
     </div>
-    <pre v-highlightjs><code class="javascript">
-    var select = new SlimSelect({
-      select: '#select'
-    })
-    select.destroy()
-    </code></pre>
   </div>
 </template>

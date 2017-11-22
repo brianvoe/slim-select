@@ -100,109 +100,112 @@
 
 <template>
   <div id="selects-content">
-    <h2>Single</h2>
-    <p>
-      Basic single select usage with Slim Select is extremely easy.
-      Just set the select value to your select element.
-    </p>
-    <div class="select-split">
-      <div>
-        <h4>Options</h4>
-        <select id="single">
-          <option v-for="value in states" :key="value.abv" :value="value.abv" :selected="value.selected">{{value.state}}</option>
-        </select>
+
+    <div class="content">
+      <h2 class="header">Single</h2>
+      <p>
+        Basic single select usage with Slim Select is extremely easy.
+        Just set the select value to your select element.
+      </p>
+      <div class="select-split">
+        <div>
+          <h4>Options</h4>
+          <select id="single">
+            <option v-for="value in states" :key="value.abv" :value="value.abv" :selected="value.selected">{{value.state}}</option>
+          </select>
+        </div>
+        <div>
+          <h4>Optgroups</h4>
+          <select id="single-group">
+            <optgroup v-for="food in foods" :key="food.label" :label="food.label">
+              <option v-for="option in food.options" :key="option" :value="option">{{option}}</option>
+            </optgroup>
+          </select>
+        </div>
       </div>
-      <div>
-        <h4>Optgroups</h4>
-        <select id="single-group">
-          <optgroup v-for="food in foods" :key="food.label" :label="food.label">
-            <option v-for="option in food.options" :key="option" :value="option">{{option}}</option>
-          </optgroup>
-        </select>
-      </div>
-    </div>
 
-    <pre v-highlightjs><code class="javascript">
-    new SlimSelect({
-      select: '#single'
-    })
-    </code></pre>
+      <pre v-highlightjs><code class="javascript">
+      new SlimSelect({
+        select: '#single'
+      })
+      </code></pre>
 
-    <pre v-highlightjs><code class="html">
-    &lt;!-- Options --&gt;
-    &lt;select id="single"&gt;
-      &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
-      &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
-      &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
-    &lt;/select&gt;
-
-    &lt;!-- Optgroups --&gt;
-    &lt;select id="single-optgroups"&gt;
-      &lt;optgroup label="Label 1"&gt;
+      <pre v-highlightjs><code class="html">
+      &lt;!-- Options --&gt;
+      &lt;select id="single"&gt;
         &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
         &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
         &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
-      &lt;/optgroup&gt;
-      &lt;optgroup label="Label 2"&gt;
-        &lt;option value="value 21"&gt;Value 1&lt;/option&gt;
-        &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
-        &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
-      &lt;/optgroup&gt;
-    &lt;/select&gt;
-    </code></pre>
+      &lt;/select&gt;
 
-    <br /><br />
-
-    <h2>Multiple</h2>
-    <p>
-      Multi selects work just the same as a single select.
-      The only difference is setting the multiple attribute on your select.
-    </p>
-    <div class="select-split">
-      <div>
-        <h4>Options</h4>
-        <select id="multiple" multiple>
-          <option v-for="value in states" :value="value.abv" :key="value.abv" :selected="value.selected">{{value.state}}</option>
-        </select>
-      </div>
-      <div>
-        <h4>Optgroups</h4>
-        <select id="multiple-group" multiple>
-          <optgroup v-for="food in foods" :key="food.label" :label="food.label">
-            <option v-for="option in food.options" :key="option" :value="option">{{option}}</option>
-          </optgroup>
-        </select>
-      </div>
+      &lt;!-- Optgroups --&gt;
+      &lt;select id="single-optgroups"&gt;
+        &lt;optgroup label="Label 1"&gt;
+          &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
+          &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
+          &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
+        &lt;/optgroup&gt;
+        &lt;optgroup label="Label 2"&gt;
+          &lt;option value="value 21"&gt;Value 1&lt;/option&gt;
+          &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
+          &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
+        &lt;/optgroup&gt;
+      &lt;/select&gt;
+      </code></pre>
     </div>
+    
+    <div class="content">
+      <h2 class="header">Multiple</h2>
+      <p>
+        Multi selects work just the same as a single select.
+        The only difference is setting the multiple attribute on your select.
+      </p>
+      <div class="select-split">
+        <div>
+          <h4>Options</h4>
+          <select id="multiple" multiple>
+            <option v-for="value in states" :value="value.abv" :key="value.abv" :selected="value.selected">{{value.state}}</option>
+          </select>
+        </div>
+        <div>
+          <h4>Optgroups</h4>
+          <select id="multiple-group" multiple>
+            <optgroup v-for="food in foods" :key="food.label" :label="food.label">
+              <option v-for="option in food.options" :key="option" :value="option">{{option}}</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
 
-    <pre v-highlightjs><code class="javascript">
-    new SlimSelect({
-      select: '#multiple'
-    })
-    </code></pre>
+      <pre v-highlightjs><code class="javascript">
+      new SlimSelect({
+        select: '#multiple'
+      })
+      </code></pre>
 
-    <pre v-highlightjs><code class="html">
-    &lt;!-- Options --&gt;
-    &lt;select id="multiple" multiple&gt;
-      &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
-      &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
-      &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
-    &lt;/select&gt;
-
-    &lt;!-- Optgroups --&gt;
-    &lt;select id="multiple-optgroups" multiple&gt;
-      &lt;optgroup label="Label 1"&gt;
+      <pre v-highlightjs><code class="html">
+      &lt;!-- Options --&gt;
+      &lt;select id="multiple" multiple&gt;
         &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
         &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
         &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
-      &lt;/optgroup&gt;
-      &lt;optgroup label="Label 2"&gt;
-        &lt;option value="value 21"&gt;Value 1&lt;/option&gt;
-        &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
-        &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
-      &lt;/optgroup&gt;
-    &lt;/select&gt;
-    </code></pre>
+      &lt;/select&gt;
+
+      &lt;!-- Optgroups --&gt;
+      &lt;select id="multiple-optgroups" multiple&gt;
+        &lt;optgroup label="Label 1"&gt;
+          &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
+          &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
+          &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
+        &lt;/optgroup&gt;
+        &lt;optgroup label="Label 2"&gt;
+          &lt;option value="value 21"&gt;Value 1&lt;/option&gt;
+          &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
+          &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
+        &lt;/optgroup&gt;
+      &lt;/select&gt;
+      </code></pre>
+    </div>
 
   </div>
 </template>

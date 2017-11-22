@@ -91,7 +91,7 @@
 </style>
 
 <template>
-  <div id="home-content">
+  <div id="home-content" class="content">
     <div class="install-code">
     <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
     npm install slim-select
