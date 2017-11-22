@@ -138,7 +138,7 @@ export default {
 <template>
   <div id="methods-content">
     <div class="content">
-      <h2>set</h2>
+      <h2 class="header">set</h2>
       <p>
         The set method will take a value and update the original select as well
         slim select. The value can either be a string or an array of strings
@@ -169,7 +169,7 @@ export default {
     </div>
 
     <div class="content">
-      <h2>setData</h2>
+      <h2 class="header">setData</h2>
       <p>
         The setData method can take in an array of objects. This will set the options
         of the original select and rerender slim select.
@@ -210,7 +210,7 @@ export default {
     </div>
 
     <div class="content">
-      <h2>search</h2>
+      <h2 class="header">search</h2>
       <p>
         The search method will update the search input field and search the data with the given value.
       </p>
@@ -237,7 +237,7 @@ export default {
     </div>
 
     <div class="content">
-      <h2>disable / enable</h2>
+      <h2 class="header">disable / enable</h2>
       <p>
         These methods will enable or disable the select dropdown.
         <br />
@@ -270,7 +270,7 @@ export default {
     </div>
 
     <div class="content">
-      <h2>open / close</h2>
+      <h2 class="header">open / close</h2>
       <p>
         The open/close methods will do just that.
       </p>
@@ -299,7 +299,7 @@ export default {
     </div>
 
     <div class="content">
-      <h2>destroy</h2>
+      <h2 class="header">destroy</h2>
       <p>
         The destroy method will remove slim-select and display your original select.
       </p>

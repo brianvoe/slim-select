@@ -102,7 +102,7 @@
   <div id="selects-content">
 
     <div class="content">
-      <h2>Single</h2>
+      <h2 class="header">Single</h2>
       <p>
         Basic single select usage with Slim Select is extremely easy.
         Just set the select value to your select element.
@@ -155,7 +155,7 @@
     </div>
     
     <div class="content">
-      <h2>Multiple</h2>
+      <h2 class="header">Multiple</h2>
       <p>
         Multi selects work just the same as a single select.
         The only difference is setting the multiple attribute on your select.

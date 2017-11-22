@@ -119,7 +119,7 @@
 <template>
   <div id="options-content">
     <div class="content">
-      <h2>select</h2>
+      <h2 class="header">select</h2>
       <p>
         The select option is used to identify the select element that will be used to
         create slim select. You can any value you normally would in a querySelector
@@ -136,7 +136,7 @@
     </div>
 
     <div class="content">
-      <h2>placeholder</h2>
+      <h2 class="header">placeholder</h2>
       <p>
         Placeholders consists of setting the placeholder option value.
         The only difference is single selects require an empty option with data-placeholder set to true.
@@ -176,7 +176,7 @@
     </div>
 
     <div class="content">
-      <h2>css / class</h2>
+      <h2 class="header">css / class</h2>
       <p>
         Slim select will inherit any styles and classes that were added to the original select element.
       </p>
@@ -199,7 +199,7 @@
     </div>
 
     <div class="content">
-      <h2>innerHTML</h2>
+      <h2 class="header">innerHTML</h2>
       <p>
         Slim select has the ability to set custom html in content in the select option.
       </p>
@@ -227,7 +227,7 @@
     </div>
 
     <div class="content">
-      <h2>showSearch / searchText</h2>
+      <h2 class="header">showSearch / searchText</h2>
       <p>
         showSearch is a boolean value that will decide whether or not to show the search.
         Default is true.
@@ -260,7 +260,7 @@
     </div>
 
     <div class="content">
-      <h2>showContent</h2>
+      <h2 class="header">showContent</h2>
       <p>
         showContent is a string value that will decide where to show your content when it comes out. 
         By default slim select will try to put the content where it can without going off screen. 
@@ -292,7 +292,7 @@
     </div>
 
     <div class="content">
-      <h2>beforeOnChange</h2>
+      <h2 class="header">beforeOnChange</h2>
       <p>
         beforeOnChange will trigger a callback on an option click and will allow
         you the ability to halt if the value it produces isnt to your liking.
@@ -330,7 +330,7 @@
     </div>
 
     <div class="content">
-      <h2>onChange</h2>
+      <h2 class="header">onChange</h2>
       <p>
         onChange will trigger a callback after the value of the select dropdown has changed.
       </p>
