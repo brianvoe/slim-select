@@ -44,7 +44,10 @@ export default class select {
       this.element.value = (selected ? selected.value : '')
     }
 
+    // Do not trigger onChange callbacks for this event listener
+    this.main.data.isOnChangeEnabled = false
     this.element.dispatchEvent(new CustomEvent('change'))
+    this.main.data.isOnChangeEnabled = true
   }
 
   addAttributes () {
