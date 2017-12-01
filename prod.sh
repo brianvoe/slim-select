@@ -8,3 +8,7 @@ mv ./dist/slimselect.css ./dist/slimselect.min.css
 
 # Build non minified
 vue-build prod -u=false
+
+# Delete index.js and index.css
+rm ./dist/index.js
+rm ./dist/index.css
