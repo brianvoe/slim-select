@@ -287,9 +287,11 @@ export default class create {
     }
     input.onkeydown = (e) => {
       if (e.key === 'ArrowUp') {
+        this.main.open()
         this.highlightUp()
         e.preventDefault()
       } else if (e.key === 'ArrowDown') {
+        this.main.open()
         this.highlightDown()
         e.preventDefault()
       } else if (e.key === 'Tab') {
@@ -326,7 +328,15 @@ export default class create {
     var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
     var prev = null
     if (highlighted) {
-      prev = highlighted.previousSibling
+      prev = <HTMLDivElement>highlighted.previousSibling
+      while (prev !== null) {
+        if (prev.classList.contains(this.main.config.disabled)) {
+          prev = <HTMLDivElement>prev.previousSibling
+          continue
+        } else {
+          break
+        }
+      }
     } else {
       var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
       prev = allOptions[allOptions.length - 1]
@@ -340,7 +350,10 @@ export default class create {
       var parent = <HTMLDivElement>highlighted.parentNode
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.previousSibling) {
-          prev = parent.previousSibling.childNodes[parent.previousSibling.childNodes.length - 1]
+          let prevNodes = (<HTMLDivElement>parent.previousSibling).querySelectorAll('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+          if (prevNodes.length) {
+            prev = prevNodes[prevNodes.length - 1]
+          }
         }
       }
     }
@@ -355,14 +368,24 @@ export default class create {
 
   highlightDown (): void {
     var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-    var next = (
-      highlighted ?
-      <HTMLDivElement>highlighted.nextSibling :
-      <HTMLDivElement>this.list.querySelector('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
-    )
+    var next = null
+
+    if (highlighted) {
+      next = <HTMLDivElement>highlighted.nextSibling
+      while (next !== null) {
+        if (next.classList.contains(this.main.config.disabled)) {
+          next = <HTMLDivElement>next.nextSibling
+          continue
+        } else {
+          break
+        }
+      }
+    } else {
+      next = <HTMLDivElement>this.list.querySelector('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+    }
 
     // Check if parent is optgroup
-    if (next === null) {
+    if (next === null && highlighted !== null) {
       var parent = <HTMLDivElement>highlighted.parentNode
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.nextSibling) {
