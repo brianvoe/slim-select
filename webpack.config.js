@@ -25,7 +25,8 @@ if (process.env.DOCS) {
     publicPath: '/'
   }
 } else if (process.env.ENVIRONMENT === 'production') {
-  config.entry.index = './slim-select/index.ts'
+  config.entry.index = './slim-select/index.ts' // Only used because otherwise vue-build yells at me
+  config.entry.slimselect = './slim-select/index.ts'
   config.output = {
     library: 'SlimSelect',
     libraryTarget: 'umd'

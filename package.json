@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Slim vanilla javascript select dropdown",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
@@ -11,9 +11,9 @@
   "engines": {
     "node": ">=8"
   },
-  "main": "dist/index.js",
-  "style": "dist/index.css",
-  "sass": "src/slim-select/index.scss",
+  "main": "dist/slimselect.min.js",
+  "style": "dist/slimselect.min.css",
+  "sass": "src/slim-select/slimselect.scss",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
@@ -25,8 +25,7 @@
     "search"
   ],
   "scripts": {
-    "prod": "vue-build prod",
-    "docs": "DOCS=true vue-build prod"
+    "prod": "sh prod.sh"
   },
   "devDependencies": {
     "chance": "^1.0.12",

@@ -30,6 +30,7 @@ export default class data {
   filtered: dataObject[]
   contentOpen: boolean = false
   contentPosition: string = 'below'
+  isOnChangeEnabled: boolean = true
   constructor (info: constructor) {
     this.main = info.main
     this.searchValue = ''
@@ -119,7 +120,9 @@ export default class data {
       }
     }
 
-    this.onDataChange()
+    if (this.isOnChangeEnabled) {
+      this.onDataChange()
+    }
   }
 
   // Determines whether or not passed in option should be selected based upon possible values

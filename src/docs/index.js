@@ -8,7 +8,7 @@ import hljs from 'highlightjs'
 import './google-analytics.js'
 
 import 'scss/index.scss'
-import 'slim-select/index.scss'
+import 'slim-select/slimselect.scss'
 
 Vue.directive('highlightjs', {
   deep: true,
