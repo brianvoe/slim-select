@@ -12,3 +12,6 @@ vue-build prod -u=false
 # Delete index.js and index.css
 rm ./dist/index.js
 rm ./dist/index.css
+rm ./dist/autotrack.js
+rm ./dist/favicon.ico
+rm ./dist/index.html
