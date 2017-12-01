@@ -102,7 +102,7 @@
 
     <div class="install-code-cdn" v-if="version">
     <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
-    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/index.js"&gt;&lt;/script&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
     </code></pre>
     </div>
 
