@@ -1,4 +1,4 @@
-import './index.scss'
+import './slimselect.scss'
 
 import 'custom-event-polyfill' // Needed for IE to use custom events
 
