@@ -11,8 +11,8 @@
   "engines": {
     "node": ">=8"
   },
-  "main": "dist/slimselect.js",
-  "style": "dist/slimselect.css",
+  "main": "dist/slimselect.min.js",
+  "style": "dist/slimselect.min.css",
   "sass": "src/slim-select/slimselect.scss",
   "repository": {
     "type": "git",
