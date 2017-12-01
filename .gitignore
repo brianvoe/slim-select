@@ -2,7 +2,3 @@ node_modules
 
 npm-debug.log
 bundle-analyzer.html
-
-dist/favicon.ico
-dist/index.html
-dist/autotrack.js
