@@ -11,9 +11,9 @@
   "engines": {
     "node": ">=8"
   },
-  "main": "dist/index.js",
-  "style": "dist/index.css",
-  "sass": "src/slim-select/index.scss",
+  "main": "dist/slimselect.js",
+  "style": "dist/slimselect.css",
+  "sass": "src/slim-select/slimselect.scss",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
@@ -25,8 +25,7 @@
     "search"
   ],
   "scripts": {
-    "prod": "vue-build prod",
-    "docs": "DOCS=true vue-build prod"
+    "prod": "sh prod.sh"
   },
   "devDependencies": {
     "chance": "^1.0.12",
