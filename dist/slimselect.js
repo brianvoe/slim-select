@@ -1184,8 +1184,12 @@ var create = /** @class */ (function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.search);
+        // We still want the search to be tabable but not shown
         if (!this.main.config.showSearch) {
-            container.style.display = 'none';
+            container.style.height = '0px';
+            container.style.opacity = '0';
+            container.style.padding = '0px 0px 0px 0px';
+            container.style.margin = '0px 0px 0px 0px';
         }
         var input = document.createElement('input');
         input.type = 'search';

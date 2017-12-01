@@ -63,7 +63,7 @@
           Slim Select
         </div>
         <div class="tagline">
-          Slim vanilla javascript select dropdown
+          Slim advanced select dropdown
         </div>
       </div>
       <div class="select-nav">
@@ -82,7 +82,7 @@
       </transition>
     </div>
     <div class="footer">
-      © {{year}} <a href="http://webiswhatido.com" target="_blank">Brian Voelker</a>. Slim Select is under the MIT license.
+      © {{year}} <a href="http://webiswhatido.com" style="color: #ffffff;" target="_blank">Brian Voelker</a>. Slim Select is under the MIT license.
     </div>
   </div>
 </template>
