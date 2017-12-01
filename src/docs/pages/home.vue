@@ -16,7 +16,7 @@
         select: '#slim-multi-select'
       })
 
-      fetch('https://api.github.com/repos/brianvoe/slim-select/git/refs').then((response) => {
+      fetch('https://api.github.com/repos/brianvoe/slim-select/git/refs/tags').then((response) => {
         return response.json()
       }).then((json) => {
         var values = json[json.length - 1].ref.split('v')
