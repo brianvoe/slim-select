@@ -1,5 +1,5 @@
 # Slim Select
-Slim vanilla javascript select dropdown
+Slim advanced select dropdown
 
 [![Build Status](https://travis-ci.org/brianvoe/slim-select.svg?branch=master)](https://travis-ci.org/brianvoe/slim-select)
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
@@ -37,7 +37,8 @@ npm install slim-select
 
 // or
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/slimselect.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/slimselect.min.css"> 
 ```
 
 ## Usage
