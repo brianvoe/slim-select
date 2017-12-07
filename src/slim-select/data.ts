@@ -287,8 +287,8 @@ export function validateData (data: dataArray): boolean {
       if (data[i].hasOwnProperty('options')) {
         let optgroup = <optgroup>data[i]
         let options = optgroup.options
-        for (var i = 0; i < options.length; i++) {
-          isValid = validateOption(options[i])
+        for (var j = 0; j < options.length; j++) {
+          isValid = validateOption(options[j])
           if (!isValid) { errorCount++ }
         }
       }
