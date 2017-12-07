@@ -99,6 +99,8 @@ class SlimSelect {
     }
     this.render()
     this.select.setValue()
+    this.data.onDataChange() // Trigger on change callback
+    
     if (close) { this.close() }
   }
 
