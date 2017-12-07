@@ -257,6 +257,7 @@ var SlimSelect = /** @class */ (function () {
         }
         this.render();
         this.select.setValue();
+        this.data.onDataChange(); // Trigger on change callback
         if (close) {
             this.close();
         }
@@ -757,9 +758,6 @@ var data = /** @class */ (function () {
                 this.data[i].selected = this.shouldBeSelected(this.data[i], value, type);
             }
         }
-        if (this.isOnChangeEnabled) {
-            this.onDataChange();
-        }
     };
     // Determines whether or not passed in option should be selected based upon possible values
     data.prototype.shouldBeSelected = function (option, value, type) {
@@ -851,7 +849,7 @@ var data = /** @class */ (function () {
     };
     // Trigger onChange callback
     data.prototype.onDataChange = function () {
-        if (this.main.onChange) {
+        if (this.main.onChange && this.isOnChangeEnabled) {
             this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())));
         }
     };
@@ -924,8 +922,8 @@ function validateData(data) {
             if (data[i].hasOwnProperty('options')) {
                 var optgroup = data[i];
                 var options = optgroup.options;
-                for (var i = 0; i < options.length; i++) {
-                    isValid = validateOption(options[i]);
+                for (var j = 0; j < options.length; j++) {
+                    isValid = validateOption(options[j]);
                     if (!isValid) {
                         errorCount++;
                     }
@@ -1168,6 +1166,7 @@ var create = /** @class */ (function () {
                 _this.main.data.removeFromSelected(option.id, 'id');
                 _this.main.render();
                 _this.main.select.setValue();
+                _this.main.data.onDataChange(); // Trigger on change callback
             }
             e.preventDefault();
         };
