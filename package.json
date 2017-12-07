@@ -31,6 +31,6 @@
     "chance": "^1.0.12",
     "custom-event-polyfill": "^0.3.0",
     "highlightjs": "^9.10.0",
-    "vue-build": "^2.1.2"
+    "vue-build": "^2.2.0"
   }
 }
