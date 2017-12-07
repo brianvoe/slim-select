@@ -254,6 +254,7 @@ export default class create {
         this.main.data.removeFromSelected(option.id, 'id')
         this.main.render()
         this.main.select.setValue()
+        this.main.data.onDataChange() // Trigger on change callback
       }
 
       e.preventDefault()

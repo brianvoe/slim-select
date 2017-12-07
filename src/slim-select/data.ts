@@ -119,10 +119,6 @@ export default class data {
         (<option>this.data[i]).selected = this.shouldBeSelected((<option>this.data[i]), value, type)
       }
     }
-
-    if (this.isOnChangeEnabled) {
-      this.onDataChange()
-    }
   }
 
   // Determines whether or not passed in option should be selected based upon possible values
@@ -216,7 +212,7 @@ export default class data {
 
   // Trigger onChange callback
   onDataChange (): void {
-    if (this.main.onChange) {
+    if (this.main.onChange && this.isOnChangeEnabled) {
       this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())))
     }
   }
@@ -287,8 +283,8 @@ export function validateData (data: dataArray): boolean {
       if (data[i].hasOwnProperty('options')) {
         let optgroup = <optgroup>data[i]
         let options = optgroup.options
-        for (var i = 0; i < options.length; i++) {
-          isValid = validateOption(options[i])
+        for (var j = 0; j < options.length; j++) {
+          isValid = validateOption(options[j])
           if (!isValid) { errorCount++ }
         }
       }

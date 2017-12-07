@@ -29,7 +29,6 @@
       let innerHTML = new SlimSelect({
         select: '#select-innerHTML',
         data: [
-          {innerHTML: '<img height="30" width="30" src="http://lorempixel.com/30/30" />&nbsp;&nbsp;Image', text: 'Image', value: 'image'},
           {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
           {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
           {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
@@ -299,7 +298,6 @@
         In order to stop propagation just return false on the callback.
         Returning nothing or true will allow it to continue as normal.
       </p>
-      <br />
 
       <div v-if="beforeOnChangeSingle"><strong>Before on change: {{beforeOnChangeSingle}}</strong></div>
 
@@ -334,7 +332,6 @@
       <p>
         onChange will trigger a callback after the value of the select dropdown has changed.
       </p>
-      <br />
 
       <div v-if="onChangeSingle"><strong>On change: {{onChangeSingle}}</strong></div>
 
