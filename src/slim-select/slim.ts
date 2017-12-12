@@ -233,7 +233,7 @@ export default class slim {
     deleteSpan.onclick = (e) => {
       e.preventDefault()
       e.stopPropagation()
-      
+
       if (!this.main.config.isEnabled) { return }
 
       if (this.main.beforeOnChange) {
@@ -259,8 +259,6 @@ export default class slim {
         this.main.select.setValue()
         this.main.data.onDataChange() // Trigger on change callback
       }
-
-      e.preventDefault()
     }
     value.appendChild(deleteSpan)
 
