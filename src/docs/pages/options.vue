@@ -184,6 +184,27 @@
     </div>
 
     <div class="content">
+      <h2 class="header"></h2>
+      <p>
+        Slim select has the ability to dynamically add options
+      </p>
+
+      <div class="set-content">
+        <select id="select-dynamic-add">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre v-highlightjs><code class="javascript">
+      new SlimSelect({
+        select: '.element .you #want',
+      })
+      </code></pre>
+    </div>
+
+    <div class="content">
       <h2 class="header">css / class</h2>
       <p>
         Slim select will inherit any styles and classes that were added to the original select element.
