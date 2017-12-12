@@ -46,6 +46,16 @@
       })
 
       new SlimSelect({
+        select: '#closeOnSelectSingle',
+        closeOnSelect: false
+      })
+
+      new SlimSelect({
+        select: '#closeOnSelectMultiple',
+        closeOnSelect: false
+      })
+
+      new SlimSelect({
         select: '#showContentUp',
         showContent: 'up'
       })
@@ -94,10 +104,9 @@
       > * {
         flex: 0 1 50%;
         width: 48%;
-        margin: 0 5px 0 5px;
+        margin: 0 5px 0 0;
 
-        &:first-child { margin: 0 5px 0 0; }
-        &:last-child { margin: 0 0 0 5px; }
+        &:last-child { margin: 0 0 0 0; }
       }
     }
 
@@ -254,6 +263,34 @@
         select: '#search',
         showSearch: false,
         searchText: 'Sorry nothing to see here'
+      })
+      </code></pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">closeOnSelect</h2>
+      <p>
+        closeOnSelect is a boolean value in which determines whether or not to 
+        close the content area upon selecting a value. 
+      </p>
+
+      <div class="set-content">
+        <select id="closeOnSelectSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="closeOnSelectMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre v-highlightjs><code class="javascript">
+      new SlimSelect({
+        select: '#search',
+        closeOnSelect: false
       })
       </code></pre>
     </div>

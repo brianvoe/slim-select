@@ -2,6 +2,7 @@ interface constructor {
   select: HTMLSelectElement
   showSearch: boolean
   searchText: string
+  closeOnSelect: boolean
   showContent: string
   placeholderText: string
   isEnabled: boolean
@@ -13,6 +14,7 @@ export default class config {
   class: DOMTokenList
   isMultiple: boolean = false
   showSearch: boolean = true
+  closeOnSelect: boolean = true
   showContent: string = 'auto' // options: auto, up, down
   searchText: string = 'No Results'
   placeholderText: string = 'Select Value'
@@ -49,6 +51,7 @@ export default class config {
 
     this.isMultiple = info.select.multiple
     this.showSearch = (info.showSearch === false ? false : true)
+    this.closeOnSelect = (info.closeOnSelect === false ? false : true)
     if (info.showContent) {this.showContent = info.showContent}
     this.isEnabled = (info.isEnabled === false ? false : true)
     if (info.searchText) {this.searchText = info.searchText}

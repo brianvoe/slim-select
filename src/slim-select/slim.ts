@@ -24,7 +24,7 @@ interface search {
 }
 
 // Class is responsible for creating all the elements
-export default class create {
+export default class slim {
   main: SlimSelect
   container: HTMLDivElement
   singleSelected: singleSelected
@@ -231,6 +231,9 @@ export default class create {
     deleteSpan.classList.add(this.main.config.valueDelete)
     deleteSpan.innerHTML = 'x'
     deleteSpan.onclick = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      
       if (!this.main.config.isEnabled) { return }
 
       if (this.main.beforeOnChange) {
@@ -501,7 +504,10 @@ export default class create {
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
     let master = this
-    option.onclick = function () {
+    option.onclick = function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+
       let element = this
       let elementID = element.dataset.id
       if (master.main.beforeOnChange) {
@@ -518,10 +524,10 @@ export default class create {
 
         let beforeOnchange = master.main.beforeOnChange(value)
         if (beforeOnchange !== false) {
-          master.main.set(elementID, 'id')
+          master.main.set(elementID, 'id', master.main.config.closeOnSelect)
         }
       } else {
-        master.main.set(elementID, 'id')
+        master.main.set(elementID, 'id', master.main.config.closeOnSelect)
       }
     }
 
@@ -529,6 +535,10 @@ export default class create {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }
+
+    // if (!) {
+
+    // }
 
     return option
   }
