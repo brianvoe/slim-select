@@ -249,6 +249,20 @@ $border-radius: 4px !default;
       flex-direction: row;
       padding: 8px 10px 8px 10px;
 
+      &.ss-hide {
+        height: 0px;
+        opacity: 0;
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+
+        input {
+          height: 0px;
+          opacity: 0;
+          padding: 0px 0px 0px 0px;
+          margin: 0px 0px 0px 0px;
+        }
+      }
+
       input {
         display: inline-flex;
         font-size: inherit;

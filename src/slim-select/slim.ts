@@ -276,10 +276,7 @@ export default class slim {
 
     // We still want the search to be tabable but not shown
     if (!this.main.config.showSearch) {
-      container.style.height = '0px'
-      container.style.opacity = '0'
-      container.style.padding = '0px 0px 0px 0px'
-      container.style.margin = '0px 0px 0px 0px'
+      container.classList.add(this.main.config.hide)
     }
 
     var input = document.createElement('input')
