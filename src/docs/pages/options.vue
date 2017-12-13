@@ -23,6 +23,20 @@
       })
 
       new SlimSelect({
+        select: '#addableSingle',
+        addable: (value) => {
+          return value
+        }
+      })
+
+      new SlimSelect({
+        select: '#addableMultiple',
+        addable: (value) => {
+          return value
+        }
+      })
+
+      new SlimSelect({
         select: '#select-class'
       })
 
@@ -184,13 +198,22 @@
     </div>
 
     <div class="content">
-      <h2 class="header"></h2>
+      <h2 class="header">addable</h2>
       <p>
-        Slim select has the ability to dynamically add options
+        Slim select has the ability to dynamically add options via an input field
+      </p>
+      <p>
+        addable is a callback which takes a function parameter.
+        The return value is the string of the value you want added.
       </p>
 
       <div class="set-content">
-        <select id="select-dynamic-add">
+        <select id="addableSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="addableMultiple" multiple>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
@@ -200,6 +223,11 @@
       <pre v-highlightjs><code class="javascript">
       new SlimSelect({
         select: '.element .you #want',
+        // Optional - In the event you want to alter/validate it as a return value
+        addable: function (value) {
+          console.log(value)
+          return value
+        }
       })
       </code></pre>
     </div>

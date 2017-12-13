@@ -36,6 +36,7 @@ export default class config {
   readonly openAbove: string = 'ss-open-above'
   readonly openBelow: string = 'ss-open-below'
   readonly search: string = 'ss-search'
+  readonly addable: string = 'ss-addable'
   readonly list: string = 'ss-list'
   readonly optgroup: string = 'ss-optgroup'
   readonly optgroupLabel: string = 'ss-optgroup-label'

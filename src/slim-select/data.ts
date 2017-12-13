@@ -41,6 +41,35 @@ export default class data {
     this.setSelectedFromSelect()
   }
 
+  newOption (info: any): option {
+    return {
+      id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
+      value: (info.value ? info.value : ''),
+      text: (info.text ? info.text : ''),
+      innerHTML: (info.innerHTML ? info.innerHTML : ''),
+      selected: (info.selected ? info.selected : false),
+      disabled: (info.disabled ? info.disabled : false),
+      placeholder: (info.placeholder ? info.placeholder : ''),
+      data: (info.data ? info.data : {}),
+    }
+  }
+
+  // Add to the current data array
+  add (data: option) {
+    let dataObject: option = {
+      id: String(Math.floor(Math.random() * 100000000)),
+      value: data.value,
+      text: data.text,
+      innerHTML: '',
+      selected: false,
+      disabled: false,
+      placeholder: '',
+      data: {}
+    }
+
+    this.data.push(dataObject)
+  }
+
   // From passed in select element pull optgroup and options into data
   parseSelectData () {
     this.data = []

@@ -1,6 +1,6 @@
 import SlimSelect from './index'
 import {ensureElementInView, isValueInArrayOfObjects} from './helper'
-import {option, optgroup} from './data'
+import {option, optgroup, dataObject} from './data'
 
 interface singleSelected {
   container: HTMLDivElement
@@ -21,6 +21,7 @@ interface multiSelected {
 interface search {
   container: HTMLDivElement
   input: HTMLInputElement
+  addable: HTMLDivElement
 }
 
 // Class is responsible for creating all the elements
@@ -45,16 +46,13 @@ export default class slim {
     if (this.main.config.isMultiple) {
       this.multiSelected = this.multiSelectedDiv()
       this.container.appendChild(this.multiSelected.container)
-      this.container.appendChild(this.content)
-      this.content.appendChild(this.search.container)
-      this.content.appendChild(this.list)
     } else {
       this.singleSelected = this.singleSelectedDiv()
       this.container.appendChild(this.singleSelected.container)
-      this.container.appendChild(this.content)
-      this.content.appendChild(this.search.container)
-      this.content.appendChild(this.list)
     }
+    this.container.appendChild(this.content)
+    this.content.appendChild(this.search.container)
+    this.content.appendChild(this.list)
   }
 
   // Create main container
@@ -327,9 +325,34 @@ export default class slim {
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)
 
+    var addable = document.createElement('div')
+    addable.classList.add(this.main.config.addable)
+    addable.innerHTML = '+'
+    addable.onclick = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      let value = this.search.input.value
+      if (value.trim() === '') {return}
+
+      let info = this.main.data.newOption({
+        text: value,
+        value: value
+      })
+      this.main.addData(info)
+
+      this.main.search('')
+      this.main.set(value, 'value', false)
+      setTimeout(() => {
+        this.main.close()
+      }, 100)
+    }
+    container.appendChild(addable)
+
     return {
       container: container,
-      input: input
+      input: input,
+      addable: addable
     }
   }
 
@@ -533,10 +556,6 @@ export default class slim {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }
-
-    // if (!) {
-
-    // }
 
     return option
   }

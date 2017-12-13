@@ -5,7 +5,7 @@ import 'custom-event-polyfill' // Needed for IE to use custom events
 import Config from './config'
 import {hasClassInTree, putContent, debounce} from './helper'
 import Select from './select'
-import Data, {dataArray, optgroup, option, validateData} from './data'
+import Data, {dataArray, dataObject, optgroup, option, validateData} from './data'
 import Slim from './slim'
 import select from './select';
 
@@ -14,6 +14,7 @@ interface constructor {
   data: dataArray
   showSearch: boolean
   searchText: string
+  addable: Function
   closeOnSelect: boolean
   showContent: string
   placeholder: string
@@ -29,6 +30,7 @@ class SlimSelect {
   select: Select
   data: Data
   slim: Slim
+  addable: Function = null
   beforeOnChange: Function = null
   onChange: Function = null
   constructor (info: constructor) {
@@ -37,6 +39,9 @@ class SlimSelect {
 
     // If select already has a slim select id on it lets destroy it first
     if (selectElement.dataset.ssid) { this.destroy(selectElement.dataset.ssid) }
+
+    // Add addable if option is passed in
+    if (info.addable) {this.addable = info.addable}
 
     this.config = new Config({
       select: selectElement,
@@ -125,11 +130,26 @@ class SlimSelect {
     this.render()
   }
 
+  // addData will append to the current data set
+  addData (data: option) {
+    // Validate data if passed in
+    let isValid = validateData([data])
+    if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
+
+    let option = this.data.newOption(data)
+    this.data.add(option)
+    this.select.create(this.data.data)
+    this.data.parseSelectData()
+    this.data.setSelectedFromSelect()
+    this.render()
+  }
+
   // Open content section
   open (): void {
     // Dont open if disabled
     if (!this.config.isEnabled) {return}
     this.slim.search.input.focus()
+    console.log('open')
 
     // Dont do anything if the content is already open
     if (this.data.contentOpen) {return}
@@ -163,6 +183,7 @@ class SlimSelect {
   close (): void {
     // Dont do anything if the content is already closed
     if (!this.data.contentOpen) {return}
+    console.log('close')
 
     // this.slim.search.input.blur() // Removed due to safari quirk
     if (this.config.isMultiple) {

@@ -245,13 +245,16 @@ $border-radius: 4px !default;
     }
 
     .ss-search {
+      display: flex;
+      flex-direction: row;
       padding: 8px 10px 8px 10px;
 
       input {
-        display: block;
+        display: inline-flex;
         font-size: inherit;
         font-family: inherit;
         line-height: inherit;
+        flex: 1 1 auto;
         width: 100%;
         height: 30px;
         padding: 5px 10px;
@@ -273,6 +276,24 @@ $border-radius: 4px !default;
           box-shadow: 0 0 5px $primary-color;
         }
       }
+
+      .ss-addable {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        flex: 0 0 30px;
+        height: 30px;
+        margin: 0 0 0 8px;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+      }
+    }
+
+    .ss-addable {
+      padding-top: 0px;
     }
 
     .ss-list {
