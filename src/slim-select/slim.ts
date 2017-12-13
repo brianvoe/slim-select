@@ -325,29 +325,37 @@ export default class slim {
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)
 
-    var addable = document.createElement('div')
-    addable.classList.add(this.main.config.addable)
-    addable.innerHTML = '+'
-    addable.onclick = (e) => {
-      e.preventDefault()
-      e.stopPropagation()
+    if (this.main.addable) {
+      var addable = document.createElement('div')
+      addable.classList.add(this.main.config.addable)
+      addable.innerHTML = '+'
+      addable.onclick = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
 
-      let value = this.search.input.value
-      if (value.trim() === '') {return}
+        let inputValue = this.search.input.value
+        if (inputValue.trim() === '') {this.search.input.focus(); return}
 
-      let info = this.main.data.newOption({
-        text: value,
-        value: value
-      })
-      this.main.addData(info)
+        let addableValue = this.main.addable(inputValue)
+        if (!addableValue) {return}
+        let info = this.main.data.newOption({
+          text: addableValue,
+          value: addableValue
+        })
+        this.main.addData(info)
 
-      this.main.search('')
-      this.main.set(value, 'value', false)
-      setTimeout(() => {
-        this.main.close()
-      }, 100)
+        this.main.search('')
+        this.main.set(addableValue, 'value', false)
+
+        // Close it only if closeOnSelect = true
+        if (this.main.config.closeOnSelect) {
+          setTimeout(() => {
+            this.main.close()
+          }, 100)
+        }
+      }
+      container.appendChild(addable)
     }
-    container.appendChild(addable)
 
     return {
       container: container,
