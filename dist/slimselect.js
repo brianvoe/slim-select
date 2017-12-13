@@ -80,8 +80,15 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 exports.__esModule = true;
-function hasClassInTree(element, className) {
+function hasClassInTree(element, className, output) {
+    if (output === void 0) { output = false; }
+    if (output) {
+        console.log(className);
+    }
     function hasClass(element, className) {
+        if (output) {
+            console.log(element);
+        }
         if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
             return element;
         }
@@ -177,18 +184,28 @@ var config_1 = __webpack_require__(4);
 var helper_1 = __webpack_require__(0);
 var select_1 = __webpack_require__(5);
 var data_1 = __webpack_require__(6);
-var create_1 = __webpack_require__(7);
+var slim_1 = __webpack_require__(7);
 var SlimSelect = /** @class */ (function () {
     function SlimSelect(info) {
         var _this = this;
+        this.addable = null;
         this.beforeOnChange = null;
         this.onChange = null;
         this.validate(info);
         var selectElement = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
+        // If select already has a slim select id on it lets destroy it first
+        if (selectElement.dataset.ssid) {
+            this.destroy(selectElement.dataset.ssid);
+        }
+        // Add addable if option is passed in
+        if (info.addable) {
+            this.addable = info.addable;
+        }
         this.config = new config_1["default"]({
             select: selectElement,
             showSearch: info.showSearch,
             searchText: info.searchText,
+            closeOnSelect: info.closeOnSelect,
             showContent: info.showContent,
             placeholderText: info.placeholder,
             isEnabled: info.isEnabled
@@ -200,7 +217,7 @@ var SlimSelect = /** @class */ (function () {
         this.data = new data_1["default"]({
             main: this
         });
-        this.slim = new create_1["default"]({ main: this });
+        this.slim = new slim_1["default"]({ main: this });
         // Add after original select element
         this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
         // If data is passed in lets set it
@@ -215,6 +232,7 @@ var SlimSelect = /** @class */ (function () {
         // Add onclick listener to document to closeContent if clicked outside
         document.addEventListener('click', function (e) {
             if (!helper_1.hasClassInTree(e.target, _this.config.id)) {
+                // console.log(hasClassInTree(e.target, this.config.id, !this.config.closeOnSelect))
                 _this.close();
             }
         });
@@ -271,6 +289,21 @@ var SlimSelect = /** @class */ (function () {
         } // If data passed in is not valid DO NOT parse, set and render
         var newData = JSON.parse(JSON.stringify(data));
         this.select.create(newData);
+        this.data.parseSelectData();
+        this.data.setSelectedFromSelect();
+        this.render();
+    };
+    // addData will append to the current data set
+    SlimSelect.prototype.addData = function (data) {
+        // Validate data if passed in
+        var isValid = data_1.validateData([data]);
+        if (!isValid) {
+            console.error('Validation problem on: #' + this.select.element.id);
+            return;
+        } // If data passed in is not valid DO NOT parse, set and render
+        var option = this.data.newOption(data);
+        this.data.add(option);
+        this.select.create(this.data.data);
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
         this.render();
@@ -408,11 +441,21 @@ var SlimSelect = /** @class */ (function () {
         this.slim.options();
     };
     // Display original select again and remove slim
-    SlimSelect.prototype.destroy = function () {
+    SlimSelect.prototype.destroy = function (id) {
+        if (id === void 0) { id = null; }
+        var slim = (id ? document.querySelector('.' + id) : this.slim.container);
+        var select = (id ? document.querySelector("[data-ssid=" + id + "]") : this.select.element);
+        // If there is no slim dont do anything
+        if (!slim || !select) {
+            return;
+        }
         // Show original select
-        this.select.element.style.display = 'inline-block';
-        // Destroy slim select
-        this.slim.container.parentElement.removeChild(this.slim.container);
+        select.style.display = null;
+        delete select.dataset.ssid;
+        // Remove slim select
+        if (slim.parentElement) {
+            slim.parentElement.removeChild(slim);
+        }
     };
     return SlimSelect;
 }());
@@ -488,6 +531,7 @@ var config = /** @class */ (function () {
         this.id = '';
         this.isMultiple = false;
         this.showSearch = true;
+        this.closeOnSelect = true;
         this.showContent = 'auto'; // options: auto, up, down
         this.searchText = 'No Results';
         this.placeholderText = 'Select Value';
@@ -508,6 +552,7 @@ var config = /** @class */ (function () {
         this.openAbove = 'ss-open-above';
         this.openBelow = 'ss-open-below';
         this.search = 'ss-search';
+        this.addable = 'ss-addable';
         this.list = 'ss-list';
         this.optgroup = 'ss-optgroup';
         this.optgroupLabel = 'ss-optgroup-label';
@@ -520,6 +565,7 @@ var config = /** @class */ (function () {
         this["class"] = info.select.classList;
         this.isMultiple = info.select.multiple;
         this.showSearch = (info.showSearch === false ? false : true);
+        this.closeOnSelect = (info.closeOnSelect === false ? false : true);
         if (info.showContent) {
             this.showContent = info.showContent;
         }
@@ -586,6 +632,8 @@ var select = /** @class */ (function () {
     select.prototype.addAttributes = function () {
         this.element.tabIndex = -1;
         this.element.style.display = 'none';
+        // Add slim select id
+        this.element.dataset.ssid = this.main.config.id;
     };
     // Add onChange listener to original select
     select.prototype.addEventListeners = function () {
@@ -679,6 +727,32 @@ var data = /** @class */ (function () {
         this.parseSelectData();
         this.setSelectedFromSelect();
     }
+    data.prototype.newOption = function (info) {
+        return {
+            id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
+            value: (info.value ? info.value : ''),
+            text: (info.text ? info.text : ''),
+            innerHTML: (info.innerHTML ? info.innerHTML : ''),
+            selected: (info.selected ? info.selected : false),
+            disabled: (info.disabled ? info.disabled : false),
+            placeholder: (info.placeholder ? info.placeholder : ''),
+            data: (info.data ? info.data : {})
+        };
+    };
+    // Add to the current data array
+    data.prototype.add = function (data) {
+        var dataObject = {
+            id: String(Math.floor(Math.random() * 100000000)),
+            value: data.value,
+            text: data.text,
+            innerHTML: '',
+            selected: false,
+            disabled: false,
+            placeholder: '',
+            data: {}
+        };
+        this.data.push(dataObject);
+    };
     // From passed in select element pull optgroup and options into data
     data.prototype.parseSelectData = function () {
         this.data = [];
@@ -960,8 +1034,8 @@ exports.validateOption = validateOption;
 exports.__esModule = true;
 var helper_1 = __webpack_require__(0);
 // Class is responsible for creating all the elements
-var create = /** @class */ (function () {
-    function create(info) {
+var slim = /** @class */ (function () {
+    function slim(info) {
         this.main = info.main;
         // Create elements in order of appending
         this.container = this.containerDiv();
@@ -972,20 +1046,17 @@ var create = /** @class */ (function () {
         if (this.main.config.isMultiple) {
             this.multiSelected = this.multiSelectedDiv();
             this.container.appendChild(this.multiSelected.container);
-            this.container.appendChild(this.content);
-            this.content.appendChild(this.search.container);
-            this.content.appendChild(this.list);
         }
         else {
             this.singleSelected = this.singleSelectedDiv();
             this.container.appendChild(this.singleSelected.container);
-            this.container.appendChild(this.content);
-            this.content.appendChild(this.search.container);
-            this.content.appendChild(this.list);
         }
+        this.container.appendChild(this.content);
+        this.content.appendChild(this.search.container);
+        this.content.appendChild(this.list);
     }
     // Create main container
-    create.prototype.containerDiv = function () {
+    slim.prototype.containerDiv = function () {
         // Create main container
         var container = document.createElement('div');
         container.classList.add(this.main.config.id);
@@ -997,7 +1068,7 @@ var create = /** @class */ (function () {
         }
         return container;
     };
-    create.prototype.singleSelectedDiv = function () {
+    slim.prototype.singleSelectedDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.singleSelected);
@@ -1029,7 +1100,7 @@ var create = /** @class */ (function () {
         };
     };
     // Based upon current selection set placeholder text
-    create.prototype.placeholder = function () {
+    slim.prototype.placeholder = function () {
         var selected = this.main.data.getSelected();
         // Placeholder display
         if (selected && selected.placeholder) {
@@ -1042,7 +1113,7 @@ var create = /** @class */ (function () {
             this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text : '');
         }
     };
-    create.prototype.multiSelectedDiv = function () {
+    slim.prototype.multiSelectedDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.multiSelected);
@@ -1080,7 +1151,7 @@ var create = /** @class */ (function () {
     };
     // Get selected values and append to multiSelected values container
     // and remove those who
-    create.prototype.values = function () {
+    slim.prototype.values = function () {
         if (this.main.config.isMultiple) {
             var currentNodes = this.multiSelected.values.childNodes;
             var selected = this.main.data.getSelected();
@@ -1130,7 +1201,7 @@ var create = /** @class */ (function () {
             }
         }
     };
-    create.prototype.valueDiv = function (option) {
+    slim.prototype.valueDiv = function (option) {
         var _this = this;
         var value = document.createElement('div');
         value.classList.add(this.main.config.value);
@@ -1143,6 +1214,8 @@ var create = /** @class */ (function () {
         deleteSpan.classList.add(this.main.config.valueDelete);
         deleteSpan.innerHTML = 'x';
         deleteSpan.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             if (!_this.main.config.isEnabled) {
                 return;
             }
@@ -1168,27 +1241,23 @@ var create = /** @class */ (function () {
                 _this.main.select.setValue();
                 _this.main.data.onDataChange(); // Trigger on change callback
             }
-            e.preventDefault();
         };
         value.appendChild(deleteSpan);
         return value;
     };
     // Create content container
-    create.prototype.contentDiv = function () {
+    slim.prototype.contentDiv = function () {
         var container = document.createElement('div');
         container.classList.add(this.main.config.content);
         return container;
     };
-    create.prototype.searchDiv = function () {
+    slim.prototype.searchDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.search);
         // We still want the search to be tabable but not shown
         if (!this.main.config.showSearch) {
-            container.style.height = '0px';
-            container.style.opacity = '0';
-            container.style.padding = '0px 0px 0px 0px';
-            container.style.margin = '0px 0px 0px 0px';
+            container.classList.add(this.main.config.hide);
         }
         var input = document.createElement('input');
         input.type = 'search';
@@ -1242,12 +1311,45 @@ var create = /** @class */ (function () {
         };
         input.onfocus = function () { _this.main.open(); };
         container.appendChild(input);
+        if (this.main.addable) {
+            var addable = document.createElement('div');
+            addable.classList.add(this.main.config.addable);
+            addable.innerHTML = '+';
+            addable.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var inputValue = _this.search.input.value;
+                if (inputValue.trim() === '') {
+                    _this.search.input.focus();
+                    return;
+                }
+                var addableValue = _this.main.addable(inputValue);
+                if (!addableValue) {
+                    return;
+                }
+                var info = _this.main.data.newOption({
+                    text: addableValue,
+                    value: addableValue
+                });
+                _this.main.addData(info);
+                _this.main.search('');
+                _this.main.set(addableValue, 'value', false);
+                // Close it only if closeOnSelect = true
+                if (_this.main.config.closeOnSelect) {
+                    setTimeout(function () {
+                        _this.main.close();
+                    }, 100);
+                }
+            };
+            container.appendChild(addable);
+        }
         return {
             container: container,
-            input: input
+            input: input,
+            addable: addable
         };
     };
-    create.prototype.highlightUp = function () {
+    slim.prototype.highlightUp = function () {
         var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
         var prev = null;
         if (highlighted) {
@@ -1291,7 +1393,7 @@ var create = /** @class */ (function () {
             helper_1.ensureElementInView(this.list, prev);
         }
     };
-    create.prototype.highlightDown = function () {
+    slim.prototype.highlightDown = function () {
         var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
         var next = null;
         if (highlighted) {
@@ -1329,7 +1431,7 @@ var create = /** @class */ (function () {
         }
     };
     // Create main container that options will reside
-    create.prototype.listDiv = function () {
+    slim.prototype.listDiv = function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
         list.onmousewheel = function (e) {
@@ -1354,7 +1456,7 @@ var create = /** @class */ (function () {
         return list;
     };
     // Loop through data || filtered data and build options and append to list container
-    create.prototype.options = function () {
+    slim.prototype.options = function () {
         var data = this.main.data.filtered || this.main.data.data;
         this.list.innerHTML = '';
         // If no results show no results text
@@ -1390,7 +1492,7 @@ var create = /** @class */ (function () {
         }
     };
     // Create single option
-    create.prototype.option = function (data) {
+    slim.prototype.option = function (data) {
         // Add hidden placeholder
         if (data.placeholder) {
             var placeholder = document.createElement('div');
@@ -1404,7 +1506,9 @@ var create = /** @class */ (function () {
         option.dataset.id = data.id;
         option.innerHTML = data.innerHTML;
         var master = this;
-        option.onclick = function () {
+        option.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             var element = this;
             var elementID = element.dataset.id;
             if (master.main.beforeOnChange) {
@@ -1420,11 +1524,11 @@ var create = /** @class */ (function () {
                 }
                 var beforeOnchange = master.main.beforeOnChange(value);
                 if (beforeOnchange !== false) {
-                    master.main.set(elementID, 'id');
+                    master.main.set(elementID, 'id', master.main.config.closeOnSelect);
                 }
             }
             else {
-                master.main.set(elementID, 'id');
+                master.main.set(elementID, 'id', master.main.config.closeOnSelect);
             }
         };
         if (data.disabled || (selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id))) {
@@ -1433,9 +1537,9 @@ var create = /** @class */ (function () {
         }
         return option;
     };
-    return create;
+    return slim;
 }());
-exports["default"] = create;
+exports["default"] = slim;
 
 
 /***/ })

@@ -30,19 +30,6 @@
 
 <style lang="scss">
   #home-content {
-    .install-code {
-      max-width: 225px;
-      margin: 0 auto;
-    }
-    .install-code-cdn {
-      max-width: 735px;
-      margin: 0 auto;
-    }
-    .example-code {
-      max-width: 330px;
-      margin: 0 auto;
-    }
-
     .samples {
       display: flex;
       justify-content: space-between;
@@ -68,12 +55,6 @@
       }
     }
 
-    .or {
-      text-align: center;
-      font-weight: bold;
-      padding: 0 0 10px 0;
-    }
-
     .callouts {
       padding: 20px 0 0 0;
       display: flex;
@@ -92,20 +73,6 @@
 
 <template>
   <div id="home-content" class="content">
-    <div class="install-code">
-    <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
-    npm install slim-select
-    </code></pre>
-    </div>
-
-    <div class="or">Or</div>
-
-    <div class="install-code-cdn" v-if="version">
-    <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
-    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
-    </code></pre>
-    </div>
-
     <div class="samples">
       <div class="single">
         <select id="slim-single-select">
@@ -123,16 +90,6 @@
       </div>
     </div>
 
-    <div class="example-code">
-    <pre v-highlightjs><code class="javascript">
-    import SlimSelect from 'slim-select'
-
-    new SlimSelect({
-      select: '#slim-select'
-    })
-    </code></pre>
-    </div>
-
     <div class="callouts">
       <div class="features">
         <div class="header"><h2>Features</h2></div>
@@ -142,6 +99,7 @@
           <li>20kb - 5kb gzip</li>
           <li>Single Select</li>
           <li>Multiple Select</li>
+          <li>User Addable Options</li>
           <li>Html Options</li>
           <li>Settable Data</li>
           <li>Callback Events</li>

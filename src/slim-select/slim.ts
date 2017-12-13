@@ -1,6 +1,6 @@
 import SlimSelect from './index'
 import {ensureElementInView, isValueInArrayOfObjects} from './helper'
-import {option, optgroup} from './data'
+import {option, optgroup, dataObject} from './data'
 
 interface singleSelected {
   container: HTMLDivElement
@@ -21,10 +21,11 @@ interface multiSelected {
 interface search {
   container: HTMLDivElement
   input: HTMLInputElement
+  addable: HTMLDivElement
 }
 
 // Class is responsible for creating all the elements
-export default class create {
+export default class slim {
   main: SlimSelect
   container: HTMLDivElement
   singleSelected: singleSelected
@@ -45,16 +46,13 @@ export default class create {
     if (this.main.config.isMultiple) {
       this.multiSelected = this.multiSelectedDiv()
       this.container.appendChild(this.multiSelected.container)
-      this.container.appendChild(this.content)
-      this.content.appendChild(this.search.container)
-      this.content.appendChild(this.list)
     } else {
       this.singleSelected = this.singleSelectedDiv()
       this.container.appendChild(this.singleSelected.container)
-      this.container.appendChild(this.content)
-      this.content.appendChild(this.search.container)
-      this.content.appendChild(this.list)
     }
+    this.container.appendChild(this.content)
+    this.content.appendChild(this.search.container)
+    this.content.appendChild(this.list)
   }
 
   // Create main container
@@ -231,6 +229,9 @@ export default class create {
     deleteSpan.classList.add(this.main.config.valueDelete)
     deleteSpan.innerHTML = 'x'
     deleteSpan.onclick = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+
       if (!this.main.config.isEnabled) { return }
 
       if (this.main.beforeOnChange) {
@@ -256,8 +257,6 @@ export default class create {
         this.main.select.setValue()
         this.main.data.onDataChange() // Trigger on change callback
       }
-
-      e.preventDefault()
     }
     value.appendChild(deleteSpan)
 
@@ -277,10 +276,7 @@ export default class create {
 
     // We still want the search to be tabable but not shown
     if (!this.main.config.showSearch) {
-      container.style.height = '0px'
-      container.style.opacity = '0'
-      container.style.padding = '0px 0px 0px 0px'
-      container.style.margin = '0px 0px 0px 0px'
+      container.classList.add(this.main.config.hide)
     }
 
     var input = document.createElement('input')
@@ -326,9 +322,42 @@ export default class create {
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)
 
+    if (this.main.addable) {
+      var addable = document.createElement('div')
+      addable.classList.add(this.main.config.addable)
+      addable.innerHTML = '+'
+      addable.onclick = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        let inputValue = this.search.input.value
+        if (inputValue.trim() === '') {this.search.input.focus(); return}
+
+        let addableValue = this.main.addable(inputValue)
+        if (!addableValue) {return}
+        let info = this.main.data.newOption({
+          text: addableValue,
+          value: addableValue
+        })
+        this.main.addData(info)
+
+        this.main.search('')
+        this.main.set(addableValue, 'value', false)
+
+        // Close it only if closeOnSelect = true
+        if (this.main.config.closeOnSelect) {
+          setTimeout(() => {
+            this.main.close()
+          }, 100)
+        }
+      }
+      container.appendChild(addable)
+    }
+
     return {
       container: container,
-      input: input
+      input: input,
+      addable: addable
     }
   }
 
@@ -501,7 +530,10 @@ export default class create {
     option.dataset.id = data.id
     option.innerHTML = data.innerHTML
     let master = this
-    option.onclick = function () {
+    option.onclick = function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+
       let element = this
       let elementID = element.dataset.id
       if (master.main.beforeOnChange) {
@@ -518,10 +550,10 @@ export default class create {
 
         let beforeOnchange = master.main.beforeOnChange(value)
         if (beforeOnchange !== false) {
-          master.main.set(elementID, 'id')
+          master.main.set(elementID, 'id', master.main.config.closeOnSelect)
         }
       } else {
-        master.main.set(elementID, 'id')
+        master.main.set(elementID, 'id', master.main.config.closeOnSelect)
       }
     }
 

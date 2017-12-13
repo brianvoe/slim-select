@@ -23,6 +23,20 @@
       })
 
       new SlimSelect({
+        select: '#addableSingle',
+        addable: (value) => {
+          return value
+        }
+      })
+
+      new SlimSelect({
+        select: '#addableMultiple',
+        addable: (value) => {
+          return value
+        }
+      })
+
+      new SlimSelect({
         select: '#select-class'
       })
 
@@ -43,6 +57,16 @@
       new SlimSelect({
         select: '#searchText',
         searchText: 'Sorry nothing to see here'
+      })
+
+      new SlimSelect({
+        select: '#closeOnSelectSingle',
+        closeOnSelect: false
+      })
+
+      new SlimSelect({
+        select: '#closeOnSelectMultiple',
+        closeOnSelect: false
       })
 
       new SlimSelect({
@@ -94,10 +118,9 @@
       > * {
         flex: 0 1 50%;
         width: 48%;
-        margin: 0 5px 0 5px;
+        margin: 0 5px 0 0;
 
-        &:first-child { margin: 0 5px 0 0; }
-        &:last-child { margin: 0 0 0 5px; }
+        &:last-child { margin: 0 0 0 0; }
       }
     }
 
@@ -171,6 +194,44 @@
         &lt;option value="value2"&gt;Value 2&lt;/option&gt;
         &lt;option value="value3"&gt;Value 3&lt;/option&gt;
       &lt;/select&gt;
+      </code></pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">addable</h2>
+      <p>
+        Slim select has the ability to dynamically add options via the search input field
+      </p>
+      <p>
+        addable is a callback which takes a function parameter.
+        The return value is the string of the value you want added.
+      </p>
+
+      <div class="set-content">
+        <select id="addableSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="addableMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre v-highlightjs><code class="javascript">
+      new SlimSelect({
+        select: '.element .you #want',
+        // Optional - In the event you want to alter/validate it as a return value
+        addable: function (value) {
+          // return false or null if you do not want to allow value to be submitted
+          if (value === 'bad') {return false}
+
+          // Return the value you want to add
+          return value // Optional - value alteration // ex: value.toLowerCase()
+        }
+      })
       </code></pre>
     </div>
 
@@ -254,6 +315,34 @@
         select: '#search',
         showSearch: false,
         searchText: 'Sorry nothing to see here'
+      })
+      </code></pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">closeOnSelect</h2>
+      <p>
+        closeOnSelect is a boolean value in which determines whether or not to 
+        close the content area upon selecting a value. 
+      </p>
+
+      <div class="set-content">
+        <select id="closeOnSelectSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="closeOnSelectMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre v-highlightjs><code class="javascript">
+      new SlimSelect({
+        select: '#search',
+        closeOnSelect: false
       })
       </code></pre>
     </div>

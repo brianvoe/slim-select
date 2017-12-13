@@ -1,5 +1,7 @@
-export function hasClassInTree (element, className) {
+export function hasClassInTree (element, className, output = false) {
+  if (output) {console.log(className)}
   function hasClass (element, className) {
+    if (output) {console.log(element)}
     if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
       return element
     }

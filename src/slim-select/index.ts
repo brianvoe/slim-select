@@ -5,14 +5,17 @@ import 'custom-event-polyfill' // Needed for IE to use custom events
 import Config from './config'
 import {hasClassInTree, putContent, debounce} from './helper'
 import Select from './select'
-import Data, {dataArray, optgroup, option, validateData} from './data'
-import Create from './create'
+import Data, {dataArray, dataObject, optgroup, option, validateData} from './data'
+import Slim from './slim'
+import select from './select';
 
 interface constructor {
   select: string | Element
   data: dataArray
   showSearch: boolean
   searchText: string
+  addable: Function
+  closeOnSelect: boolean
   showContent: string
   placeholder: string
   isEnabled: boolean
@@ -26,17 +29,25 @@ class SlimSelect {
   config: Config
   select: Select
   data: Data
-  slim: Create
+  slim: Slim
+  addable: Function = null
   beforeOnChange: Function = null
   onChange: Function = null
   constructor (info: constructor) {
     this.validate(info)
     let selectElement = <HTMLSelectElement>(typeof info.select === 'string' ? <HTMLSelectElement>document.querySelector(info.select) : info.select)
 
+    // If select already has a slim select id on it lets destroy it first
+    if (selectElement.dataset.ssid) { this.destroy(selectElement.dataset.ssid) }
+
+    // Add addable if option is passed in
+    if (info.addable) {this.addable = info.addable}
+
     this.config = new Config({
       select: selectElement,
       showSearch: info.showSearch,
       searchText: info.searchText,
+      closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
       placeholderText: info.placeholder,
       isEnabled: info.isEnabled
@@ -51,7 +62,7 @@ class SlimSelect {
       main: this
     })
 
-    this.slim = new Create({ main: this })
+    this.slim = new Slim({ main: this })
     // Add after original select element
     this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
 
@@ -66,7 +77,10 @@ class SlimSelect {
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e: Event) => {
-      if (!hasClassInTree(e.target, this.config.id)) { this.close() }
+      if (!hasClassInTree(e.target, this.config.id)) {
+        // console.log(hasClassInTree(e.target, this.config.id, !this.config.closeOnSelect))
+        this.close()
+      }
     })
 
     window.addEventListener('scroll', debounce((e: Event) => {
@@ -111,6 +125,20 @@ class SlimSelect {
 
     let newData = JSON.parse(JSON.stringify(data))
     this.select.create(newData)
+    this.data.parseSelectData()
+    this.data.setSelectedFromSelect()
+    this.render()
+  }
+
+  // addData will append to the current data set
+  addData (data: option) {
+    // Validate data if passed in
+    let isValid = validateData([data])
+    if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
+
+    let option = this.data.newOption(data)
+    this.data.add(option)
+    this.select.create(this.data.data)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
     this.render()
@@ -250,12 +278,20 @@ class SlimSelect {
   }
 
   // Display original select again and remove slim
-  destroy (): void {
-    // Show original select
-    this.select.element.style.display = 'inline-block'
+  destroy (id = null): void {
+    let slim = (id ? document.querySelector('.'+id) : this.slim.container)
+    let select = (id ? <HTMLSelectElement>document.querySelector(`[data-ssid=${id}]`) : this.select.element)
+    // If there is no slim dont do anything
+    if (!slim || !select) {return}
 
-    // Destroy slim select
-    this.slim.container.parentElement.removeChild(this.slim.container)
+    // Show original select
+    select.style.display = null
+    delete select.dataset.ssid
+
+    // Remove slim select
+    if (slim.parentElement) {
+      slim.parentElement.removeChild(slim)
+    }
   }
 }
 

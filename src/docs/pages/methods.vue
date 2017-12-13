@@ -112,6 +112,14 @@ export default {
           }, 100)
         }
       },
+      setCreate () {
+        this.setDestroySingle = new SlimSelect({
+          select: '#setDestroySingle'
+        })
+        this.setDestroyMultiple = new SlimSelect({
+          select: '#setDestroyMultiple'
+        })
+      },
       setDestroy () {
         this.setDestroySingle.destroy()
         this.setDestroyMultiple.destroy()
@@ -126,9 +134,8 @@ export default {
       display: flex;
 
       > * {
-        margin: 0 5px 0 5px;
+        margin: 0 5px 0 0;
 
-        &:first-child { margin: 0 5px 0 0; }
         &:last-child { margin: 0 0 0 5px; }
       }
     }
@@ -305,6 +312,7 @@ export default {
       </p>
 
       <div class="set-content">
+        <div class="btn" @click="setCreate">Create</div>
         <div class="btn" @click="setDestroy">Destroy</div>
         <select id="setDestroySingle">
           <option value="value1">Value 1</option>
