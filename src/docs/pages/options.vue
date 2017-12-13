@@ -200,7 +200,7 @@
     <div class="content">
       <h2 class="header">addable</h2>
       <p>
-        Slim select has the ability to dynamically add options via an input field
+        Slim select has the ability to dynamically add options via the search input field
       </p>
       <p>
         addable is a callback which takes a function parameter.
@@ -225,8 +225,11 @@
         select: '.element .you #want',
         // Optional - In the event you want to alter/validate it as a return value
         addable: function (value) {
-          console.log(value)
-          return value
+          // return false or null if you do not want to allow value to be submitted
+          if (value === 'bad') {return false}
+
+          // Return the value you want to add
+          return value // Optional - value alteration // ex: value.toLowerCase()
         }
       })
       </code></pre>
