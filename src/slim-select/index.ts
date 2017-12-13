@@ -149,7 +149,6 @@ class SlimSelect {
     // Dont open if disabled
     if (!this.config.isEnabled) {return}
     this.slim.search.input.focus()
-    console.log('open')
 
     // Dont do anything if the content is already open
     if (this.data.contentOpen) {return}
@@ -183,7 +182,6 @@ class SlimSelect {
   close (): void {
     // Dont do anything if the content is already closed
     if (!this.data.contentOpen) {return}
-    console.log('close')
 
     // this.slim.search.input.blur() // Removed due to safari quirk
     if (this.config.isMultiple) {
