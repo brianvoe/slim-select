@@ -8,6 +8,7 @@
         year: new Date().getFullYear(),
         navData: [
           {text: 'Home', value: '/', selected: (path === '/')},
+          {text: 'Installation', value: 'install', selected: (path === '/install')},
           {text: 'Select Types', value: 'selects', selected: (path === '/selects')},
           {text: 'Options', value: 'options', selected: (path === '/options')},
           {text: 'Methods', value: 'methods', selected: (path === '/methods')}
