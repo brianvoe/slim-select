@@ -11,6 +11,7 @@ See the [docs](http://slimselectjs.com) for more details
 - 20kb - 5kb gzip
 - Single Select
 - Multi Select
+- User Addable Options
 - Html Options
 - Settable Data
 - Callback Events

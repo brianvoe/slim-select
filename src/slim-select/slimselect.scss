@@ -303,6 +303,7 @@ $border-radius: 4px !default;
         margin: 0 0 0 8px;
         border: 1px solid $border-color;
         border-radius: $border-radius;
+        box-sizing: border-box;
       }
     }
 

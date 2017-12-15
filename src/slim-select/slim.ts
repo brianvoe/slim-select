@@ -1,6 +1,7 @@
 import SlimSelect from './index'
 import {ensureElementInView, isValueInArrayOfObjects} from './helper'
 import {option, optgroup, dataObject} from './data'
+import select from './select';
 
 interface singleSelected {
   container: HTMLDivElement
@@ -160,58 +161,57 @@ export default class slim {
   }
 
   // Get selected values and append to multiSelected values container
-  // and remove those who
+  // and remove those who shouldnt exist
   values (): void {
-    if (this.main.config.isMultiple) {
-      let currentNodes = this.multiSelected.values.childNodes
-      let selected = <option[]>this.main.data.getSelected()
+    if (!this.main.config.isMultiple) {return}
+    let currentNodes = this.multiSelected.values.childNodes
+    let selected = <option[]>this.main.data.getSelected()
 
-      // Remove nodes that shouldnt be there
-      let exists
-      for (var c = 0; c < currentNodes.length; c++) {
-        exists = true
-        let node = <HTMLDivElement>currentNodes[c]
-        for (var s = 0; s < selected.length; s++) {
-          if (String(selected[s].id) === String(node.dataset.id)) {
-            exists = false
-          }
-        }
-
-        if (exists) {
-          let node = <HTMLDivElement>currentNodes[c]
-          node.classList.add('ss-out')
-          this.multiSelected.values.removeChild(node)
-        }
-      }
-
-      // Add values that dont currently exist
+    // Remove nodes that shouldnt be there
+    let exists
+    for (var c = 0; c < currentNodes.length; c++) {
+      exists = true
+      let node = <HTMLDivElement>currentNodes[c]
       for (var s = 0; s < selected.length; s++) {
-        exists = false
-        for (var c = 0; c < currentNodes.length; c++) {
-          let node = <HTMLDivElement>currentNodes[c]
-          if (selected[s].id === node.dataset.id) {
-            exists = true
-          }
-        }
-
-        if (!exists) {
-          if (currentNodes.length === 0) {
-            this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
-          } else if (s === 0) {
-            this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (<any>currentNodes[s]))
-          } else {
-            (<any>currentNodes[s-1]).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
-          }
+        if (String(selected[s].id) === String(node.dataset.id)) {
+          exists = false
         }
       }
 
-      // If there are no values set placeholder
-      if (selected.length === 0) {
-        let placeholder = document.createElement('span')
-        placeholder.classList.add(this.main.config.disabled)
-        placeholder.innerHTML = this.main.config.placeholderText
-        this.multiSelected.values.innerHTML = placeholder.outerHTML
+      if (exists) {
+        let node = <HTMLDivElement>currentNodes[c]
+        node.classList.add('ss-out')
+        this.multiSelected.values.removeChild(node)
       }
+    }
+
+    // Add values that dont currently exist
+    for (var s = 0; s < selected.length; s++) {
+      exists = false
+      for (var c = 0; c < currentNodes.length; c++) {
+        let node = <HTMLDivElement>currentNodes[c]
+        if (selected[s].id === node.dataset.id) {
+          exists = true
+        }
+      }
+
+      if (!exists) {
+        if (currentNodes.length === 0) {
+          this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
+        } else if (s === 0) {
+          this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (<any>currentNodes[s]))
+        } else {
+          (<any>currentNodes[s-1]).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
+        }
+      }
+    }
+
+    // If there are no values set placeholder
+    if (selected.length === 0) {
+      let placeholder = document.createElement('span')
+      placeholder.classList.add(this.main.config.disabled)
+      placeholder.innerHTML = this.main.config.placeholderText
+      this.multiSelected.values.innerHTML = placeholder.outerHTML
     }
   }
 
@@ -307,9 +307,14 @@ export default class slim {
     input.onkeyup = (e) => {
       let target = <HTMLInputElement>e.target
       if (e.key === 'Enter') {
+        if (this.main.addable && e.ctrlKey) {
+          addable.click()
+          e.preventDefault()
+          e.stopPropagation()
+          return
+        }
         var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
         if (highlighted) { highlighted.click() }
-        e.preventDefault()
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle
       } else if (e.key === 'Escape') {
@@ -318,6 +323,7 @@ export default class slim {
         this.main.search(target.value)
       }
       e.preventDefault()
+      e.stopPropagation()
     }
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)
@@ -342,11 +348,13 @@ export default class slim {
         this.main.addData(info)
 
         this.main.search('')
-        this.main.set(addableValue, 'value', false)
+        setTimeout(() => { // Temp fix to solve multi render issue
+          this.main.set(addableValue, 'value', false, false)
+        }, 100)
 
         // Close it only if closeOnSelect = true
         if (this.main.config.closeOnSelect) {
-          setTimeout(() => {
+          setTimeout(() => { // Give it a little padding for a better looking animation
             this.main.close()
           }, 100)
         }

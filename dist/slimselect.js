@@ -264,18 +264,19 @@ var SlimSelect = /** @class */ (function () {
         }
     };
     // Sets value of the select, adds it to data and original select
-    SlimSelect.prototype.set = function (value, type, close) {
+    SlimSelect.prototype.set = function (value, type, close, render) {
         if (type === void 0) { type = 'value'; }
         if (close === void 0) { close = true; }
+        if (render === void 0) { render = true; }
         if (this.config.isMultiple && !Array.isArray(value)) {
             this.data.addToSelected(value, type);
         }
         else {
             this.data.setSelected(value, type);
         }
-        this.render();
         this.select.setValue();
         this.data.onDataChange(); // Trigger on change callback
+        this.render();
         if (close) {
             this.close();
         }
@@ -1150,55 +1151,56 @@ var slim = /** @class */ (function () {
         };
     };
     // Get selected values and append to multiSelected values container
-    // and remove those who
+    // and remove those who shouldnt exist
     slim.prototype.values = function () {
-        if (this.main.config.isMultiple) {
-            var currentNodes = this.multiSelected.values.childNodes;
-            var selected = this.main.data.getSelected();
-            // Remove nodes that shouldnt be there
-            var exists = void 0;
-            for (var c = 0; c < currentNodes.length; c++) {
-                exists = true;
-                var node = currentNodes[c];
-                for (var s = 0; s < selected.length; s++) {
-                    if (String(selected[s].id) === String(node.dataset.id)) {
-                        exists = false;
-                    }
-                }
-                if (exists) {
-                    var node_1 = currentNodes[c];
-                    node_1.classList.add('ss-out');
-                    this.multiSelected.values.removeChild(node_1);
-                }
-            }
-            // Add values that dont currently exist
+        if (!this.main.config.isMultiple) {
+            return;
+        }
+        var currentNodes = this.multiSelected.values.childNodes;
+        var selected = this.main.data.getSelected();
+        // Remove nodes that shouldnt be there
+        var exists;
+        for (var c = 0; c < currentNodes.length; c++) {
+            exists = true;
+            var node = currentNodes[c];
             for (var s = 0; s < selected.length; s++) {
-                exists = false;
-                for (var c = 0; c < currentNodes.length; c++) {
-                    var node = currentNodes[c];
-                    if (selected[s].id === node.dataset.id) {
-                        exists = true;
-                    }
-                }
-                if (!exists) {
-                    if (currentNodes.length === 0) {
-                        this.multiSelected.values.appendChild(this.valueDiv(selected[s]));
-                    }
-                    else if (s === 0) {
-                        this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), currentNodes[s]);
-                    }
-                    else {
-                        currentNodes[s - 1].insertAdjacentElement('afterend', this.valueDiv(selected[s]));
-                    }
+                if (String(selected[s].id) === String(node.dataset.id)) {
+                    exists = false;
                 }
             }
-            // If there are no values set placeholder
-            if (selected.length === 0) {
-                var placeholder = document.createElement('span');
-                placeholder.classList.add(this.main.config.disabled);
-                placeholder.innerHTML = this.main.config.placeholderText;
-                this.multiSelected.values.innerHTML = placeholder.outerHTML;
+            if (exists) {
+                var node_1 = currentNodes[c];
+                node_1.classList.add('ss-out');
+                this.multiSelected.values.removeChild(node_1);
             }
+        }
+        // Add values that dont currently exist
+        for (var s = 0; s < selected.length; s++) {
+            exists = false;
+            for (var c = 0; c < currentNodes.length; c++) {
+                var node = currentNodes[c];
+                if (selected[s].id === node.dataset.id) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                if (currentNodes.length === 0) {
+                    this.multiSelected.values.appendChild(this.valueDiv(selected[s]));
+                }
+                else if (s === 0) {
+                    this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), currentNodes[s]);
+                }
+                else {
+                    currentNodes[s - 1].insertAdjacentElement('afterend', this.valueDiv(selected[s]));
+                }
+            }
+        }
+        // If there are no values set placeholder
+        if (selected.length === 0) {
+            var placeholder = document.createElement('span');
+            placeholder.classList.add(this.main.config.disabled);
+            placeholder.innerHTML = this.main.config.placeholderText;
+            this.multiSelected.values.innerHTML = placeholder.outerHTML;
         }
     };
     slim.prototype.valueDiv = function (option) {
@@ -1292,11 +1294,16 @@ var slim = /** @class */ (function () {
         input.onkeyup = function (e) {
             var target = e.target;
             if (e.key === 'Enter') {
+                if (_this.main.addable && e.ctrlKey) {
+                    addable.click();
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
                 var highlighted = _this.list.querySelector('.' + _this.main.config.highlighted);
                 if (highlighted) {
                     highlighted.click();
                 }
-                e.preventDefault();
             }
             else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                 // Cancel out to leave for onkeydown to handle
@@ -1308,6 +1315,7 @@ var slim = /** @class */ (function () {
                 _this.main.search(target.value);
             }
             e.preventDefault();
+            e.stopPropagation();
         };
         input.onfocus = function () { _this.main.open(); };
         container.appendChild(input);
@@ -1333,7 +1341,9 @@ var slim = /** @class */ (function () {
                 });
                 _this.main.addData(info);
                 _this.main.search('');
-                _this.main.set(addableValue, 'value', false);
+                setTimeout(function () {
+                    _this.main.set(addableValue, 'value', false, false);
+                }, 100);
                 // Close it only if closeOnSelect = true
                 if (_this.main.config.closeOnSelect) {
                     setTimeout(function () {
