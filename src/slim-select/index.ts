@@ -105,15 +105,15 @@ class SlimSelect {
   }
 
   // Sets value of the select, adds it to data and original select
-  set (value: string | string[], type: string = 'value', close: boolean = true) {
+  set (value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
     if (this.config.isMultiple && !Array.isArray(value)) {
       this.data.addToSelected(value, type)
     } else {
       this.data.setSelected(value, type)
     }
-    this.render()
     this.select.setValue()
     this.data.onDataChange() // Trigger on change callback
+    this.render()
     
     if (close) { this.close() }
   }
