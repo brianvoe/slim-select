@@ -22,7 +22,8 @@
     "select",
     "vanilla",
     "dropdown",
-    "search"
+    "search",
+    "multiselect"
   ],
   "scripts": {
     "prod": "sh prod.sh"
