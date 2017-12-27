@@ -3,36 +3,28 @@ import VueRouter from 'vue-router'
 
 import app from 'docs/app.vue'
 import routerList from 'docs/router.js'
+import Prism from 'prismjs'
+import Normalizer from 'prismjs/plugins/normalize-whitespace/prism-normalize-whitespace'
+import 'prismjs/plugins/toolbar/prism-toolbar'
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard'
 
-import hljs from 'highlightjs'
 import './google-analytics.js'
 
 import 'scss/index.scss'
 import 'slim-select/slimselect.scss'
 
-Vue.directive('highlightjs', {
-  deep: true,
-  bind: function (el, binding) {
-    // on first bind, highlight all targets
-    let targets = el.querySelectorAll('code')
-    for (var i = 0; i < targets.length; i++) {
-      // if a value is directly assigned to the directive, use this
-      // instead of the element content.
-      if (binding.value) {
-        targets[i].innerHTML = binding.value
-      }
-      hljs.highlightBlock(targets[i])
-    }
-  },
-  componentUpdated: function (el, binding) {
-    // after an update, re-fill the content and then highlight
-    let targets = el.querySelectorAll('code')
-    for (var i = 0; i < targets.length; i++) {
-      if (binding.value) {
-        targets[i].innerHTML = binding.value
-        hljs.highlightBlock(targets[i])
-      }
-    }
+/* eslint-disable no-new */
+new Normalizer({
+  'remove-trailing': true,
+  'remove-indent': true,
+  'left-trim': true,
+  'right-trim': true
+})
+// new Copy()
+
+Vue.mixin({
+  updated () {
+    Prism.highlightAll()
   }
 })
 
@@ -40,7 +32,6 @@ Vue.directive('highlightjs', {
 Vue.use(VueRouter)
 const router = new VueRouter(routerList)
 
-/* eslint-disable no-new */
 new Vue({
   router,
   render: (h) => h(app)

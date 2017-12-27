@@ -1,73 +1,78 @@
 <script>
   import SlimSelect from 'slim-select/index.ts'
+  import packageJson from 'src/../package.json'
 
   export default {
     data: () => {
       return {
-        version: false
+        version: packageJson.version
       }
-    },
-    mounted () {
-      fetch('https://api.github.com/repos/brianvoe/slim-select/git/refs/tags').then((response) => {
-        return response.json()
-      }).then((json) => {
-        var values = json[json.length - 1].ref.split('v')
-        if (values[1]) {
-          this.version = values[1]
-        }
-      })
     }
   }
 </script>
 
 <style lang="scss">
   #install-content {
-    .install-code {
-      max-width: 225px;
-      margin: 0 auto;
-    }
-    .install-code-cdn {
-      max-width: 735px;
-      margin: 0 auto;
-    }
-    .example-code {
-      max-width: 330px;
-      margin: 0 auto;
+    .npm-content {
+      .install-code {
+        max-width: 180px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .example-code {
+        max-width: 310px;
+        margin: 0 auto;
+      }
     }
 
-    .or {
-      text-align: center;
-      font-weight: bold;
-      padding: 0 0 10px 0;
+    .cdn-content {
+      .example-code {
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
   }
 </style>
 
 <template>
   <div id="install-content" class="content">
-    <div class="install-code">
-    <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
-    npm install slim-select
-    </code></pre>
+
+    <div class="npm-content">
+      <h2>Npm</h2>
+      <pre class="install-code">
+        <code class="language-bash">
+          npm install slim-select
+        </code>
+      </pre>
+
+      <pre class="example-code">
+        <code class="language-javascript">
+          import SlimSelect from 'slim-select'
+
+          new SlimSelect({
+            select: '#slim-select'
+          })
+        </code>
+      </pre>
     </div>
 
-    <div class="or">Or</div>
+    <div class="cdn-content">
+      <h2>Cdn</h2>
+      <pre class="install-code">
+        <code class="language-html">
+          &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
+          &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.css" rel="stylesheet"&gt;&lt;/link&gt;
+        </code>
+      </pre>
 
-    <div class="install-code-cdn" v-if="version">
-    <pre v-highlightjs style="margin-top: 0px;"><code class="bash">
-    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
-    &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.css" rel="stylesheet"&gt;&lt;/link&gt;
-    </code></pre>
-    </div>
-
-    <div class="example-code">
-    <pre v-highlightjs><code class="javascript">
-    import SlimSelect from 'slim-select'
-
-    new SlimSelect({
-      select: '#slim-select'
-    })
-    </code></pre>
+      <pre class="example-code">
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#slim-select'
+          })
+        </code>
+      </pre>
     </div>
 
   </div>

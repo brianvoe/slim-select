@@ -30,8 +30,9 @@
   },
   "devDependencies": {
     "chance": "^1.0.12",
+    "clipboard": "^1.7.1",
     "custom-event-polyfill": "^0.3.0",
-    "highlightjs": "^9.10.0",
+    "prismjs": "^1.9.0",
     "vue-build": "^2.2.0"
   }
 }

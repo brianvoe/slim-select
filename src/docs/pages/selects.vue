@@ -124,34 +124,38 @@
         </div>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#single'
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#single'
+          })
+        </code>
+      </pre>
 
-      <pre v-highlightjs><code class="html">
-      &lt;!-- Options --&gt;
-      &lt;select id="single"&gt;
-        &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
-        &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
-        &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
-      &lt;/select&gt;
+      <pre class="language-markup">
+        <code class="language-markup">
+          <!-- Options -->
+          <select id="single">
+            <option value="value 1">Value 1</option>
+            <option value="value 2">Value 2</option>
+            <option value="value 3">Value 3</option>
+          </select>
 
-      &lt;!-- Optgroups --&gt;
-      &lt;select id="single-optgroups"&gt;
-        &lt;optgroup label="Label 1"&gt;
-          &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
-          &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
-          &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
-        &lt;/optgroup&gt;
-        &lt;optgroup label="Label 2"&gt;
-          &lt;option value="value 21"&gt;Value 1&lt;/option&gt;
-          &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
-          &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
-        &lt;/optgroup&gt;
-      &lt;/select&gt;
-      </code></pre>
+          <!-- Optgroups -->
+          <select id="single-optgroups">
+            <optgroup label="Label 1">
+              <option value="value 1">Value 1</option>
+              <option value="value 2">Value 2</option>
+              <option value="value 3">Value 3</option>
+            </optgroup>
+            <optgroup label="Label 2">
+              <option value="value 21">Value 1</option>
+              <option value="value 22">Value 2</option>
+              <option value="value 23">Value 3</option>
+            </optgroup>
+          </select>
+        </code>
+      </pre>
     </div>
     
     <div class="content">
