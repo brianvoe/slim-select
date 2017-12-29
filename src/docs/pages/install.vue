@@ -14,6 +14,8 @@
 <style lang="scss">
   #install-content {
     .npm-content {
+      padding: 0 0 30px 0;
+
       .install-code {
         max-width: 180px;
         margin-left: auto;

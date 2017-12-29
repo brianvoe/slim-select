@@ -51,9 +51,6 @@ new SlimSelect({
 })
 ```
 
-## Roadmap
-- Refining search
-
 ## Testing
 Browser testing has been provided by
 
