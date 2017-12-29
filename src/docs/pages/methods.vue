@@ -165,14 +165,16 @@ export default {
           <option value="value3">Value 3</option>
         </select>
       </div>
-      <pre v-highlightjs><code class="javascript">
-      var select = new SlimSelect({
-        select: '#select'
-      })
-      select.set('value')
-      // or
-      select.set(['value1', 'value2'])
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.set('value')
+          // or
+          select.set(['value1', 'value2'])
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -187,33 +189,37 @@ export default {
         <select id="setDataSingle"></select>
         <select id="setDataMultiple" multiple></select>
       </div>
-      <pre v-highlightjs><code class="javascript">
-      var select = new SlimSelect({
-        select: '#select'
-      })
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
 
-      // Array of objects - Must have at least text value
-      select.setData([
-        {text: 'value1'},
-        {text: 'value2'}
-      ])
-      </code></pre>
+          // Array of objects - Must have at least text value
+          select.setData([
+            {text: 'value1'},
+            {text: 'value2'}
+          ])
+        </code>
+      </pre>
 
       <h4>Data Types</h4>
-      <pre v-highlightjs><code class="javascript">
-      var optgroup = {
-        label: 'label', // Required
-        options: [] // Required - value is an array of options
-      }
+      <pre>
+        <code class="language-javascript">
+          var optgroup = {
+            label: 'label', // Required
+            options: [] // Required - value is an array of options
+          }
 
-      var option = {
-        text: 'text', // Required
-        value: 'value', // Optional - value will be set by text if not set
-        innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
-        disabled: false, // Optional - default is false
-        placeholder: false // Optional - default is false
-      }
-      </code></pre>
+          var option = {
+            text: 'text', // Required
+            value: 'value', // Optional - value will be set by text if not set
+            innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
+            disabled: false, // Optional - default is false
+            placeholder: false // Optional - default is false
+          }
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -235,12 +241,14 @@ export default {
           <option value="value3">Value 3</option>
         </select>
       </div>
-      <pre v-highlightjs><code class="javascript">
-      var select = new SlimSelect({
-        select: '#select'
-      })
-      select.search('value')
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.search('value')
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -266,14 +274,16 @@ export default {
           <option value="value3">Value 3</option>
         </select>
       </div>
-      <pre v-highlightjs><code class="javascript">
-      var select = new SlimSelect({
-        select: '#select'
-      })
-      select.enable()
-      // or
-      select.disable()
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.enable()
+          // or
+          select.disable()
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -295,14 +305,16 @@ export default {
           <option value="value3">Value 3</option>
         </select>
       </div>
-      <pre v-highlightjs><code class="javascript">
-      var select = new SlimSelect({
-        select: '#select'
-      })
-      select.open()
-      // or
-      select.close()
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.open()
+          // or
+          select.close()
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -325,12 +337,14 @@ export default {
           <option value="value3">Value 3</option>
         </select>
       </div>
-      <pre v-highlightjs><code class="javascript">
-      var select = new SlimSelect({
-        select: '#select'
-      })
-      select.destroy()
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.destroy()
+        </code>
+      </pre>
     </div>
   </div>
 </template>

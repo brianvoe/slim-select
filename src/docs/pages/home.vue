@@ -3,9 +3,7 @@
 
   export default {
     data: () => {
-      return {
-        version: false
-      }
+      return {}
     },
     mounted () {
       /* eslint-disable no-new */
@@ -14,15 +12,6 @@
       })
       new SlimSelect({
         select: '#slim-multi-select'
-      })
-
-      fetch('https://api.github.com/repos/brianvoe/slim-select/git/refs/tags').then((response) => {
-        return response.json()
-      }).then((json) => {
-        var values = json[json.length - 1].ref.split('v')
-        if (values[1]) {
-          this.version = values[1]
-        }
       })
     }
   }

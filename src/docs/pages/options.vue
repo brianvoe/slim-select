@@ -148,13 +148,15 @@
         or pass the element directly.
       </p>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '.element .you #want',
-        // or
-        select: document.querySelector('.element .you #want')
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            // or
+            select: document.querySelector('.element .you #want')
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -179,22 +181,26 @@
         </select>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#placeholder',
-        placeholder: 'Placeholder Text Here'
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#placeholder',
+            placeholder: 'Placeholder Text Here'
+          })
+        </code>
+      </pre>
 
-      <pre v-highlightjs><code class="html">
-      &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
-      &lt;select id="placeholderSingle"&gt;
-        &lt;option data-placeholder="true"&gt;&lt;/option&gt;
-        &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-        &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-        &lt;option value="value3"&gt;Value 3&lt;/option&gt;
-      &lt;/select&gt;
-      </code></pre>
+      <pre>
+        <code class="language-html">
+          &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
+          &lt;select id="placeholderSingle"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -220,19 +226,21 @@
         </select>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '.element .you #want',
-        // Optional - In the event you want to alter/validate it as a return value
-        addable: function (value) {
-          // return false or null if you do not want to allow value to be submitted
-          if (value === 'bad') {return false}
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            // Optional - In the event you want to alter/validate it as a return value
+            addable: function (value) {
+              // return false or null if you do not want to allow value to be submitted
+              if (value === 'bad') {return false}
 
-          // Return the value you want to add
-          return value // Optional - value alteration // ex: value.toLowerCase()
-        }
-      })
-      </code></pre>
+              // Return the value you want to add
+              return value // Optional - value alteration // ex: value.toLowerCase()
+            }
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -249,13 +257,15 @@
         </select>
       </div>
 
-      <pre v-highlightjs><code class="html">
-      &lt;select id="select-class" class="classItems"&gt;
-        &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-        &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-        &lt;option value="value3"&gt;Value 3&lt;/option&gt;
-      &lt;/select&gt;
-      </code></pre>
+      <pre>
+        <code class="language-html">
+          &lt;select id="select-class" class="classItems"&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -271,19 +281,21 @@
         <select id="select-innerHTML"></select>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      &lt;select id="select-innerHTML"&gt;&lt;/select&gt;
+      <pre>
+        <code class="language-javascript">
+          &lt;select id="select-innerHTML"&gt;&lt;/select&gt;
 
-      var select = new SlimSelect({
-        select: '#select-innerHTML',
-        data: [
-          {innerHTML: '&lt;img height="30" width="30" src="http://lorempixel.com/30/30" /&gt;&nbsp;Image', text: 'Image', value: 'image'},
-          {innerHTML: '&lt;i&gt;Bold Text&lt;/i&gt;', text: 'Bold Text', value: 'bold text'},
-          {innerHTML: '&lt;div style="border: solid 1px #666666;"&gt;Border&lt;/div&gt;', text: 'Border', value: 'border'},
-          {innerHTML: '&lt;i&gt;Slim Select you are awesome&lt;/i&gt;', text: 'Slim Select awesome'}
-        ]
-      })
-      </code></pre>
+          var select = new SlimSelect({
+            select: '#select-innerHTML',
+            data: [
+              {innerHTML: '&lt;img height="30" width="30" src="http://lorempixel.com/30/30" /&gt;&nbsp;Image', text: 'Image', value: 'image'},
+              {innerHTML: '&lt;i&gt;Bold Text&lt;/i&gt;', text: 'Bold Text', value: 'bold text'},
+              {innerHTML: '&lt;div style="border: solid 1px #666666;"&gt;Border&lt;/div&gt;', text: 'Border', value: 'border'},
+              {innerHTML: '&lt;i&gt;Slim Select you are awesome&lt;/i&gt;', text: 'Slim Select awesome'}
+            ]
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -310,13 +322,15 @@
         </select>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#search',
-        showSearch: false,
-        searchText: 'Sorry nothing to see here'
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#search',
+            showSearch: false,
+            searchText: 'Sorry nothing to see here'
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -339,12 +353,14 @@
         </select>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#search',
-        closeOnSelect: false
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#search',
+            closeOnSelect: false
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -371,12 +387,14 @@
         </select>
       </div>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#showContent',
-        showContent: 'auto' // 'auto', 'up' or 'down'
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#showContent',
+            showContent: 'auto' // 'auto', 'up' or 'down'
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -405,15 +423,17 @@
         <option value="value3">Value 3</option>
       </select>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#beforeOnChange',
-        beforeOnChange: (info) => {
-          console.log(info)
-          return false // this will stop propagation
-        }
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#beforeOnChange',
+            beforeOnChange: (info) => {
+              console.log(info)
+              return false // this will stop propagation
+            }
+          })
+        </code>
+      </pre>
     </div>
 
     <div class="content">
@@ -439,14 +459,16 @@
         <option value="value3">Value 3</option>
       </select>
 
-      <pre v-highlightjs><code class="javascript">
-      new SlimSelect({
-        select: '#onChange',
-        onChange: (info) => {
-          console.log(info)
-        }
-      })
-      </code></pre>
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#onChange',
+            onChange: (info) => {
+              console.log(info)
+            }
+          })
+        </code>
+      </pre>
     </div>
   </div>
 </template>
