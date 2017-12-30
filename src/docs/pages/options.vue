@@ -60,6 +60,11 @@
       })
 
       new SlimSelect({
+        select: '#searchHighlight',
+        searchHighlight: true
+      })
+
+      new SlimSelect({
         select: '#closeOnSelectSingle',
         closeOnSelect: false
       })
@@ -299,7 +304,7 @@
     </div>
 
     <div class="content">
-      <h2 class="header">showSearch / searchText</h2>
+      <h2 class="header">showSearch / searchText / searchHighlight</h2>
       <p>
         showSearch is a boolean value that will decide whether or not to show the search.
         Default is true.
@@ -308,17 +313,26 @@
         searchText is a string value that will show in the event there are no results.
         Default is 'No Results'.
       </p>
+      <p>
+        searchHighlight is a boolean value that will highlight search results.
+        Default is false.
+      </p>
 
       <div class="set-content">
         <select id="showSearch">
-          <option value="value1">Value 1</option>
-          <option value="value2">Value 2</option>
-          <option value="value3">Value 3</option>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
         </select>
         <select id="searchText">
-          <option value="value1">Value 1</option>
-          <option value="value2">Value 2</option>
-          <option value="value3">Value 3</option>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
+        <select id="searchHighlight">
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
         </select>
       </div>
 
@@ -327,7 +341,8 @@
           new SlimSelect({
             select: '#search',
             showSearch: false,
-            searchText: 'Sorry nothing to see here'
+            searchText: 'Sorry nothing to see here',
+            searchHighlight: true
           })
         </code>
       </pre>

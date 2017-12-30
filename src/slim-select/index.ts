@@ -14,13 +14,14 @@ interface constructor {
   data: dataArray
   showSearch: boolean
   searchText: string
-  addable: Function
+  searchHighlight: boolean
   closeOnSelect: boolean
   showContent: string
   placeholder: string
   isEnabled: boolean
-
+  
   // Events
+  addable: Function
   beforeOnChange: Function
   onChange: Function
 }
@@ -47,6 +48,7 @@ class SlimSelect {
       select: selectElement,
       showSearch: info.showSearch,
       searchText: info.searchText,
+      searchHighlight: info.searchHighlight,
       closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
       placeholderText: info.placeholder,

@@ -3,6 +3,7 @@ $white: #ffffff !default;
 $font-color: #666666 !default;
 $primary-color: #5897fb !default;
 $border-color: #dcdee2 !default;
+$search-highlight-color: #fff70062 !default;
 $border-radius: 4px !default;
 
 .ss-main {
@@ -334,7 +335,6 @@ $border-radius: 4px !default;
 
         * {
           display: inline-block;
-          vertical-align: middle;
         }
 
         &:hover, &.ss-highlighted {
@@ -349,6 +349,10 @@ $border-radius: 4px !default;
         }
 
         &.ss-hide { display: none; }
+
+        .ss-search-highlight {
+          background-color: $search-highlight-color;
+        }
       }
     }
   }
