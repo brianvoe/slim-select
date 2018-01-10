@@ -271,6 +271,7 @@ $border-radius: 4px !default;
         line-height: inherit;
         flex: 1 1 auto;
         width: 100%;
+        min-width: 0px;
         height: 30px;
         padding: 5px 10px;
         margin: 0;
