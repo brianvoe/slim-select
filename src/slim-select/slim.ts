@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import {ensureElementInView, isValueInArrayOfObjects} from './helper'
+import {ensureElementInView, isValueInArrayOfObjects, highlight} from './helper'
 import {option, optgroup, dataObject} from './data'
 import select from './select';
 
@@ -320,7 +320,11 @@ export default class slim {
       } else if (e.key === 'Escape') {
         this.main.close()
       } else {
-        this.main.search(target.value)
+        if (this.main.config.showSearch) {
+          this.main.search(target.value)
+        } else {
+          input.value = ''
+        }
       }
       e.preventDefault()
       e.stopPropagation()
@@ -536,7 +540,11 @@ export default class slim {
     let selected = <option>this.main.data.getSelected()
 
     option.dataset.id = data.id
-    option.innerHTML = data.innerHTML
+    if (this.main.config.searchHighlight && this.main.slim && this.main.slim.search.input.value.trim() !== '') {
+      option.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter)
+    } else {
+      option.innerHTML = data.innerHTML
+    }
     let master = this
     option.onclick = function (e) {
       e.preventDefault()

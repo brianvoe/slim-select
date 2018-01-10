@@ -77,3 +77,15 @@ export function isValueInArrayOfObjects (selected, key, value) {
 
   return false
 }
+
+export function highlight (text: string, search: string, className: string): string {
+  text = text.trim()
+  let textLower = text.trim().toLowerCase()
+  search = search.trim().toLowerCase()
+  let index = textLower.indexOf(search)
+  if (index >= 0) { 
+    text = text.substring(0, index) + `<span class="${className}">` + text.substring(index, index + search.length) + '</span>' + text.substring(index + search.length)
+  }
+
+  return text
+}

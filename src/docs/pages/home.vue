@@ -2,11 +2,6 @@
   import SlimSelect from 'slim-select/index.ts'
 
   export default {
-    data: () => {
-      return {
-        version: false
-      }
-    },
     mounted () {
       /* eslint-disable no-new */
       new SlimSelect({
@@ -14,15 +9,6 @@
       })
       new SlimSelect({
         select: '#slim-multi-select'
-      })
-
-      fetch('https://api.github.com/repos/brianvoe/slim-select/git/refs/tags').then((response) => {
-        return response.json()
-      }).then((json) => {
-        var values = json[json.length - 1].ref.split('v')
-        if (values[1]) {
-          this.version = values[1]
-        }
       })
     }
   }
@@ -60,11 +46,59 @@
       display: flex;
       justify-content: space-around;
 
-      > div {
-        flex: 0 1 auto;
+      .features {
+        flex: 0 1 50%;
 
         .list {
-          line-height: 20px;
+          display: flex;
+          flex-direction: column;
+          list-style: none;
+          padding: 0px;
+          width: 200px;
+          margin: 0 auto;
+
+          li {
+            display: flex;
+            align-items: center;
+            padding: 0 0 5px 0;
+            font-weight: bold;
+            font-size: 16px;
+
+            img {
+              width: 20px;
+              padding: 0 8px 0 0;
+            }
+          }
+        }
+      }
+
+      .browsers {
+        flex: 0 1 50%;
+
+        .list {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+
+          .browser {
+            display: flex;
+            flex-direction: column;
+            width: 80px;
+            padding: 0 16px 0 16px;
+
+            img {
+              height: 80px;
+              width: 80px;
+              margin: 0 auto;
+              padding: 0 0 8px 0;
+            }
+            .version {
+              text-align: center;
+              font-size: 22px;
+              font-weight: bold;
+            }
+          }
         }
       }
     }
@@ -75,6 +109,7 @@
   <div id="home-content" class="content">
     <div class="samples">
       <div class="single">
+        <h2>Single Select</h2>
         <select id="slim-single-select">
           <option value="best">Best</option>
           <option value="select" selected="true">Select</option>
@@ -82,6 +117,7 @@
         </select>
       </div>
       <div class="multi">
+        <h2>Multi Select</h2>
         <select id="slim-multi-select" multiple>
           <option value="best">Best</option>
           <option value="select" selected="true">Select</option>
@@ -93,37 +129,50 @@
     <div class="callouts">
       <div class="features">
         <div class="header"><h2>Features</h2></div>
-
         <ul class="list">
-          <li>No Dependencies</li>
-          <li>20kb - 5kb gzip</li>
-          <li>Single Select</li>
-          <li>Multiple Select</li>
-          <li>User Addable Options</li>
-          <li>Html Options</li>
-          <li>Settable Data</li>
-          <li>Callback Events</li>
-          <li>Placeholders</li>
-          <li>Search</li>
-          <li>Disable Options</li>
-          <li>Light Css</li>
-          <li>Light Color Scheme</li>
-          <li>Style and Class Inheritance</li>
-          <li>Clean Animations</li>
-          <li>Performant</li>
+          <li><img src="~images/check-mark.svg" /> No Dependencies</li>
+          <li><img src="~images/check-mark.svg" /> 20kb - 5kb gzip</li>
+          <li><img src="~images/check-mark.svg" /> Single Select</li>
+          <li><img src="~images/check-mark.svg" /> Multiple Select</li>
+          <li><img src="~images/check-mark.svg" /> Addable Options</li>
+          <li><img src="~images/check-mark.svg" /> Html Options</li>
+          <li><img src="~images/check-mark.svg" /> Settable Data</li>
+          <li><img src="~images/check-mark.svg" /> Callback Events</li>
+          <li><img src="~images/check-mark.svg" /> Placeholders</li>
+          <li><img src="~images/check-mark.svg" /> Search</li>
+          <li><img src="~images/check-mark.svg" /> Disable Options</li>
+          <li><img src="~images/check-mark.svg" /> Light Css</li>
+          <li><img src="~images/check-mark.svg" /> Light Color Scheme</li>
+          <li><img src="~images/check-mark.svg" /> Style Inheritance</li>
+          <li><img src="~images/check-mark.svg" /> Clean Animations</li>
+          <li><img src="~images/check-mark.svg" /> Performant</li>
         </ul>
       </div>
 
       <div class="browsers">
-        <div class="header"><h2>Browsers</h2></div>
-        <ul class="list">
-          <li>IE 11+</li>
-          <li>Edge 13+</li>
-          <li>Chrome 30+</li>
-          <li>FireFox 25+</li>
-          <li>Opera 25+</li>
-          <li>Safari 9+</li>
-        </ul>
+        <div class="header"><h2>Support</h2></div>
+        <div class="list">
+          <div class="browser">
+            <img src="~images/ie.svg" />
+            <div class="version">11+</div>
+          </div>
+          <div class="browser">
+            <img src="~images/chrome.svg" />
+            <div class="version">30+</div>
+          </div>
+          <div class="browser">
+            <img src="~images/firefox.svg" />
+            <div class="version">25+</div>
+          </div>
+          <div class="browser">
+            <img src="~images/opera.svg" />
+            <div class="version">25+</div>
+          </div>
+          <div class="browser">
+            <img src="~images/safari.svg" />
+            <div class="version">9+</div>
+          </div>
+        </div>
       </div>
     </div>
 

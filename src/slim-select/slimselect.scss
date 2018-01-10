@@ -3,6 +3,7 @@ $white: #ffffff !default;
 $font-color: #666666 !default;
 $primary-color: #5897fb !default;
 $border-color: #dcdee2 !default;
+$search-highlight-color: #fff70062 !default;
 $border-radius: 4px !default;
 
 .ss-main {
@@ -270,6 +271,7 @@ $border-radius: 4px !default;
         line-height: inherit;
         flex: 1 1 auto;
         width: 100%;
+        min-width: 0px;
         height: 30px;
         padding: 5px 10px;
         margin: 0;
@@ -334,7 +336,6 @@ $border-radius: 4px !default;
 
         * {
           display: inline-block;
-          vertical-align: middle;
         }
 
         &:hover, &.ss-highlighted {
@@ -349,6 +350,10 @@ $border-radius: 4px !default;
         }
 
         &.ss-hide { display: none; }
+
+        .ss-search-highlight {
+          background-color: $search-highlight-color;
+        }
       }
     }
   }

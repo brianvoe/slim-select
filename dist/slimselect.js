@@ -169,6 +169,17 @@ function isValueInArrayOfObjects(selected, key, value) {
     return false;
 }
 exports.isValueInArrayOfObjects = isValueInArrayOfObjects;
+function highlight(text, search, className) {
+    text = text.trim();
+    var textLower = text.trim().toLowerCase();
+    search = search.trim().toLowerCase();
+    var index = textLower.indexOf(search);
+    if (index >= 0) {
+        text = text.substring(0, index) + ("<span class=\"" + className + "\">") + text.substring(index, index + search.length) + '</span>' + text.substring(index + search.length);
+    }
+    return text;
+}
+exports.highlight = highlight;
 
 
 /***/ }),
@@ -205,6 +216,7 @@ var SlimSelect = /** @class */ (function () {
             select: selectElement,
             showSearch: info.showSearch,
             searchText: info.searchText,
+            searchHighlight: info.searchHighlight,
             closeOnSelect: info.closeOnSelect,
             showContent: info.showContent,
             placeholderText: info.placeholder,
@@ -532,6 +544,7 @@ var config = /** @class */ (function () {
         this.id = '';
         this.isMultiple = false;
         this.showSearch = true;
+        this.searchHighlight = false;
         this.closeOnSelect = true;
         this.showContent = 'auto'; // options: auto, up, down
         this.searchText = 'No Results';
@@ -553,6 +566,7 @@ var config = /** @class */ (function () {
         this.openAbove = 'ss-open-above';
         this.openBelow = 'ss-open-below';
         this.search = 'ss-search';
+        this.searchHighlighter = 'ss-search-highlight';
         this.addable = 'ss-addable';
         this.list = 'ss-list';
         this.optgroup = 'ss-optgroup';
@@ -566,6 +580,7 @@ var config = /** @class */ (function () {
         this["class"] = info.select.classList;
         this.isMultiple = info.select.multiple;
         this.showSearch = (info.showSearch === false ? false : true);
+        this.searchHighlight = (info.searchHighlight === true ? true : false);
         this.closeOnSelect = (info.closeOnSelect === false ? false : true);
         if (info.showContent) {
             this.showContent = info.showContent;
@@ -1312,7 +1327,12 @@ var slim = /** @class */ (function () {
                 _this.main.close();
             }
             else {
-                _this.main.search(target.value);
+                if (_this.main.config.showSearch) {
+                    _this.main.search(target.value);
+                }
+                else {
+                    input.value = '';
+                }
             }
             e.preventDefault();
             e.stopPropagation();
@@ -1514,7 +1534,12 @@ var slim = /** @class */ (function () {
         option.classList.add(this.main.config.option);
         var selected = this.main.data.getSelected();
         option.dataset.id = data.id;
-        option.innerHTML = data.innerHTML;
+        if (this.main.config.searchHighlight && this.main.slim && this.main.slim.search.input.value.trim() !== '') {
+            option.innerHTML = helper_1.highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
+        }
+        else {
+            option.innerHTML = data.innerHTML;
+        }
         var master = this;
         option.onclick = function (e) {
             e.preventDefault();
