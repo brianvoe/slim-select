@@ -32,7 +32,7 @@
     "chance": "^1.0.13",
     "clipboard": "^1.7.1",
     "custom-event-polyfill": "^0.3.0",
-    "prismjs": "^1.9.0",
-    "vue-build": "^2.2.0"
+    "prismjs": "^1.10.0",
+    "vue-build": "^2.3.0"
   }
 }
