@@ -202,6 +202,10 @@ var SlimSelect = /** @class */ (function () {
         this.addable = null;
         this.beforeOnChange = null;
         this.onChange = null;
+        this.beforeOpen = null;
+        this.afterOpen = null;
+        this.beforeClose = null;
+        this.afterClose = null;
         this.validate(info);
         var selectElement = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
         // If select already has a slim select id on it lets destroy it first
@@ -265,6 +269,18 @@ var SlimSelect = /** @class */ (function () {
         if (info.onChange) {
             this.onChange = info.onChange;
         }
+        if (info.beforeOpen) {
+            this.beforeOpen = info.beforeOpen;
+        }
+        if (info.afterOpen) {
+            this.afterOpen = info.afterOpen;
+        }
+        if (info.beforeClose) {
+            this.beforeClose = info.beforeClose;
+        }
+        if (info.afterClose) {
+            this.afterClose = info.afterClose;
+        }
     }
     SlimSelect.prototype.validate = function (info) {
         var select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
@@ -323,6 +339,7 @@ var SlimSelect = /** @class */ (function () {
     };
     // Open content section
     SlimSelect.prototype.open = function () {
+        var _this = this;
         // Dont open if disabled
         if (!this.config.isEnabled) {
             return;
@@ -331,6 +348,10 @@ var SlimSelect = /** @class */ (function () {
         // Dont do anything if the content is already open
         if (this.data.contentOpen) {
             return;
+        }
+        // Run beforeOpen callback
+        if (this.beforeOpen) {
+            this.beforeOpen();
         }
         if (this.config.isMultiple) {
             this.slim.multiSelected.plus.classList.add('ss-cross');
@@ -358,6 +379,11 @@ var SlimSelect = /** @class */ (function () {
             }
         }
         this.data.contentOpen = true;
+        // Run afterOpen callback
+        if (this.afterOpen) {
+            // setTimeout is for animation completion
+            setTimeout(function () { _this.afterOpen(); }, 300);
+        }
     };
     // Close content section
     SlimSelect.prototype.close = function () {
@@ -365,6 +391,10 @@ var SlimSelect = /** @class */ (function () {
         // Dont do anything if the content is already closed
         if (!this.data.contentOpen) {
             return;
+        }
+        // Run beforeClose calback
+        if (this.beforeClose) {
+            this.beforeClose();
         }
         // this.slim.search.input.blur() // Removed due to safari quirk
         if (this.config.isMultiple) {
@@ -387,6 +417,10 @@ var SlimSelect = /** @class */ (function () {
             _this.data.contentPosition = 'below';
             _this.slim[(_this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(_this.config.openAbove);
             _this.slim[(_this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(_this.config.openBelow);
+            // Run afterClose callback
+            if (_this.afterClose) {
+                _this.afterClose();
+            }
         }, 300);
     };
     SlimSelect.prototype.moveContentAbove = function () {
