@@ -7,7 +7,7 @@ import {hasClassInTree, putContent, debounce} from './helper'
 import Select from './select'
 import Data, {dataArray, dataObject, optgroup, option, validateData} from './data'
 import Slim from './slim'
-import select from './select';
+import select from './select'
 
 interface constructor {
   select: string | Element
@@ -24,6 +24,10 @@ interface constructor {
   addable: Function
   beforeOnChange: Function
   onChange: Function
+  beforeOpen: Function
+  afterOpen: Function
+  beforeClose: Function
+  afterClose: Function
 }
 
 class SlimSelect {
@@ -34,6 +38,10 @@ class SlimSelect {
   addable: Function = null
   beforeOnChange: Function = null
   onChange: Function = null
+  beforeOpen: Function = null
+  afterOpen: Function = null
+  beforeClose: Function = null
+  afterClose: Function = null
   constructor (info: constructor) {
     this.validate(info)
     let selectElement = <HTMLSelectElement>(typeof info.select === 'string' ? <HTMLSelectElement>document.querySelector(info.select) : info.select)
@@ -98,6 +106,10 @@ class SlimSelect {
     // Add event callbacks after everthing has been created
     if (info.beforeOnChange) {this.beforeOnChange = info.beforeOnChange}
     if (info.onChange) {this.onChange = info.onChange}
+    if (info.beforeOpen) {this.beforeOpen = info.beforeOpen}
+    if (info.afterOpen) {this.afterOpen = info.afterOpen}
+    if (info.beforeClose) {this.beforeClose = info.beforeClose}
+    if (info.afterClose) {this.afterClose = info.afterClose}
   }
 
   validate (info: constructor) {
@@ -155,6 +167,9 @@ class SlimSelect {
     // Dont do anything if the content is already open
     if (this.data.contentOpen) {return}
 
+    // Run beforeOpen callback
+    if (this.beforeOpen) {this.beforeOpen()}
+
     if (this.config.isMultiple) {
       this.slim.multiSelected.plus.classList.add('ss-cross')
     } else {
@@ -178,12 +193,21 @@ class SlimSelect {
       }
     }
     this.data.contentOpen = true
+
+    // Run afterOpen callback
+    if (this.afterOpen) {
+      // setTimeout is for animation completion
+      setTimeout(() => {this.afterOpen()}, 300)
+    }
   }
 
   // Close content section
   close (): void {
     // Dont do anything if the content is already closed
     if (!this.data.contentOpen) {return}
+
+    // Run beforeClose calback
+    if (this.beforeClose) {this.beforeClose()}
 
     // this.slim.search.input.blur() // Removed due to safari quirk
     if (this.config.isMultiple) {
@@ -207,6 +231,9 @@ class SlimSelect {
       this.data.contentPosition = 'below'
       this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
       this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
+
+      // Run afterClose callback
+      if (this.afterClose) {this.afterClose()}
     }, 300)
   }
 

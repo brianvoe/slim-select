@@ -58,10 +58,20 @@ export default {
 
       // Open / Close
       this.setOpenCloseSingle = new SlimSelect({
-        select: '#setOpenCloseSingle'
+        select: '#setOpenCloseSingle',
+        // Optional callbacks
+        beforeOpen: function () { console.log('beforeOpen')},
+        afterOpen: function () { console.log('afterOpen')},
+        beforeClose: function () { console.log('beforeClose')},
+        afterClose: function () { console.log('afterClose')}
       })
       this.setOpenCloseMultiple = new SlimSelect({
-        select: '#setOpenCloseMultiple'
+        select: '#setOpenCloseMultiple',
+        // Optional callbacks
+        beforeOpen: function () { console.log('beforeOpen')},
+        afterOpen: function () { console.log('afterOpen')},
+        beforeClose: function () { console.log('beforeClose')},
+        afterClose: function () { console.log('afterClose')}
       })
 
       // Destroy
@@ -308,7 +318,13 @@ export default {
       <pre>
         <code class="language-javascript">
           var select = new SlimSelect({
-            select: '#select'
+            select: '#select',
+
+            // Optional callbacks
+            beforeOpen: function () { console.log('beforeOpen')},
+            afterOpen: function () { console.log('afterOpen')},
+            beforeClose: function () { console.log('beforeClose')},
+            afterClose: function () { console.log('afterClose')}
           })
           select.open()
           // or
