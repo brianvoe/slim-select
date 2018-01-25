@@ -117,7 +117,10 @@ export default class slim {
       placeholder.innerHTML = this.main.config.placeholderText
       this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
     } else {
-      let selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
+      let selectedValue = ''
+      if (selected) {
+        selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
+      }
       this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
     }
   }
