@@ -117,7 +117,11 @@ export default class slim {
       placeholder.innerHTML = this.main.config.placeholderText
       this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
     } else {
-      this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text: '')
+      let selectedValue = ''
+      if (selected) {
+        selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
+      }
+      this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
     }
   }
 
@@ -222,7 +226,7 @@ export default class slim {
 
     let text = document.createElement('span')
     text.classList.add(this.main.config.valueText)
-    text.innerHTML = option.text
+    text.innerHTML = (option.innerHTML && this.main.config.valuesUseText !== true ? option.innerHTML : option.text)
     value.appendChild(text)
 
     let deleteSpan = document.createElement('span')

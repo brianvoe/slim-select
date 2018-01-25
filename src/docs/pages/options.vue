@@ -40,8 +40,37 @@
         select: '#select-class'
       })
 
-      let innerHTML = new SlimSelect({
-        select: '#select-innerHTML',
+      new SlimSelect({
+        select: '#selectInnerHTMLSingle',
+        data: [
+          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
+          {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
+        ]
+      })
+
+      new SlimSelect({
+        select: '#selectInnerHTMLMulti',
+        data: [
+          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
+          {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
+        ]
+      })
+
+      new SlimSelect({
+        select: '#selectInnerHTMLSingleText',
+        valuesUseText: true,
+        data: [
+          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
+          {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
+        ]
+      })
+
+      new SlimSelect({
+        select: '#selectInnerHTMLMultiText',
+        valuesUseText: true,
         data: [
           {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
           {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
@@ -283,7 +312,15 @@
       </p>
 
       <div class="set-content">
-        <select id="select-innerHTML"></select>
+        <select id="selectInnerHTMLSingle"></select>
+        <select id="selectInnerHTMLMulti" multiple></select>
+      </div>
+      <div class="set-content" style="padding: 16px 0 0 0;">
+        <h4>Use text for selected values</h4>
+      </div>
+      <div class="set-content">
+        <select id="selectInnerHTMLSingleText"></select>
+        <select id="selectInnerHTMLMultiText" multiple></select>
       </div>
 
       <pre>
@@ -292,6 +329,7 @@
 
           var select = new SlimSelect({
             select: '#select-innerHTML',
+            valuesUseText: false, // Use text instead of innerHTML for selected values - default false
             data: [
               {innerHTML: '&lt;img height="30" width="30" src="http://lorempixel.com/30/30" /&gt;&nbsp;Image', text: 'Image', value: 'image'},
               {innerHTML: '&lt;i&gt;Bold Text&lt;/i&gt;', text: 'Bold Text', value: 'bold text'},
