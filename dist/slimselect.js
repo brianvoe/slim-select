@@ -224,7 +224,8 @@ var SlimSelect = /** @class */ (function () {
             closeOnSelect: info.closeOnSelect,
             showContent: info.showContent,
             placeholderText: info.placeholder,
-            isEnabled: info.isEnabled
+            isEnabled: info.isEnabled,
+            valuesUseText: info.valuesUseText
         });
         this.select = new select_1["default"]({
             select: selectElement,
@@ -584,6 +585,7 @@ var config = /** @class */ (function () {
         this.searchText = 'No Results';
         this.placeholderText = 'Select Value';
         this.isEnabled = true;
+        this.valuesUseText = false;
         // Classes
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
@@ -625,6 +627,9 @@ var config = /** @class */ (function () {
         }
         if (info.placeholderText) {
             this.placeholderText = info.placeholderText;
+        }
+        if (info.valuesUseText) {
+            this.valuesUseText = info.valuesUseText;
         }
     }
     return config;
@@ -1160,7 +1165,11 @@ var slim = /** @class */ (function () {
             this.singleSelected.placeholder.innerHTML = placeholder.outerHTML;
         }
         else {
-            this.singleSelected.placeholder.innerHTML = (selected ? selected.innerHTML || selected.text : '');
+            var selectedValue = '';
+            if (selected) {
+                selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text;
+            }
+            this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '');
         }
     };
     slim.prototype.multiSelectedDiv = function () {
@@ -1259,7 +1268,7 @@ var slim = /** @class */ (function () {
         value.dataset.id = option.id;
         var text = document.createElement('span');
         text.classList.add(this.main.config.valueText);
-        text.innerHTML = option.text;
+        text.innerHTML = (option.innerHTML && this.main.config.valuesUseText !== true ? option.innerHTML : option.text);
         value.appendChild(text);
         var deleteSpan = document.createElement('span');
         deleteSpan.classList.add(this.main.config.valueDelete);
