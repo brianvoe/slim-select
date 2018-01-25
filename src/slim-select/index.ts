@@ -19,6 +19,7 @@ interface constructor {
   showContent: string
   placeholder: string
   isEnabled: boolean
+  valuesUseText: boolean // Use text value when showing selected value
   
   // Events
   addable: Function
@@ -60,7 +61,8 @@ class SlimSelect {
       closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
       placeholderText: info.placeholder,
-      isEnabled: info.isEnabled
+      isEnabled: info.isEnabled,
+      valuesUseText: info.valuesUseText
     })
 
     this.select = new Select({

@@ -7,6 +7,7 @@ interface constructor {
   showContent: string
   placeholderText: string
   isEnabled: boolean
+  valuesUseText: boolean
 }
 
 export default class config {
@@ -21,6 +22,7 @@ export default class config {
   searchText: string = 'No Results'
   placeholderText: string = 'Select Value'
   isEnabled: boolean = true
+  valuesUseText: boolean = false
 
   // Classes
   readonly main: string = 'ss-main'
@@ -61,5 +63,6 @@ export default class config {
     this.isEnabled = (info.isEnabled === false ? false : true)
     if (info.searchText) {this.searchText = info.searchText}
     if (info.placeholderText) {this.placeholderText = info.placeholderText}
+    if (info.valuesUseText) {this.valuesUseText = info.valuesUseText}
   }
 }
