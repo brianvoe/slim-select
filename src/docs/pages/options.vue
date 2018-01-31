@@ -43,7 +43,7 @@
       new SlimSelect({
         select: '#selectInnerHTMLSingle',
         data: [
-          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<b>Bold Text</b>', text: 'Bold Text', value: 'bold text'},
           {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
           {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
         ]
@@ -52,7 +52,7 @@
       new SlimSelect({
         select: '#selectInnerHTMLMulti',
         data: [
-          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<b>Bold Text</b>', text: 'Bold Text', value: 'bold text'},
           {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
           {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
         ]
@@ -62,7 +62,7 @@
         select: '#selectInnerHTMLSingleText',
         valuesUseText: true,
         data: [
-          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<b>Bold Text</b>', text: 'Bold Text', value: 'bold text'},
           {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
           {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
         ]
@@ -72,7 +72,7 @@
         select: '#selectInnerHTMLMultiText',
         valuesUseText: true,
         data: [
-          {innerHTML: '<i>Bold Text</i>', text: 'Bold Text', value: 'bold text'},
+          {innerHTML: '<b>Bold Text</b>', text: 'Bold Text', value: 'bold text'},
           {innerHTML: '<i>Slim Select you are awesome</i>', text: 'Slim Select awesome'},
           {innerHTML: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'}
         ]
@@ -332,7 +332,7 @@
             valuesUseText: false, // Use text instead of innerHTML for selected values - default false
             data: [
               {innerHTML: '&lt;img height="30" width="30" src="http://lorempixel.com/30/30" /&gt;&nbsp;Image', text: 'Image', value: 'image'},
-              {innerHTML: '&lt;i&gt;Bold Text&lt;/i&gt;', text: 'Bold Text', value: 'bold text'},
+              {innerHTML: '&lt;b&gt;Bold Text&lt;/b&gt;', text: 'Bold Text', value: 'bold text'},
               {innerHTML: '&lt;div style="border: solid 1px #666666;"&gt;Border&lt;/div&gt;', text: 'Border', value: 'border'},
               {innerHTML: '&lt;i&gt;Slim Select you are awesome&lt;/i&gt;', text: 'Slim Select awesome'}
             ]

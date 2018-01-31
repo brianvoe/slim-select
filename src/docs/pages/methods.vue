@@ -6,6 +6,10 @@
 export default {
     data () {
       return {
+        selectedSingle: null,
+        selectedSingleValue: '',
+        selectedMultiple: null,
+        selectedMultipleValue: '',
         setSingle: null,
         setMultiple: null,
         setDataSingle: null,
@@ -21,6 +25,14 @@ export default {
       }
     },
     mounted () {
+      // Selected
+      this.selectedSingle = new SlimSelect({
+        select: '#selectedSingle'
+      })
+      this.selectedMultiple = new SlimSelect({
+        select: '#selectedMultiple'
+      })
+
       // Set
       this.setSingle = new SlimSelect({
         select: '#setSingle'
@@ -83,6 +95,10 @@ export default {
       })
     },
     methods: {
+      getSelected () {
+        this.selectedSingleValue = this.selectedSingle.selected()
+        this.selectedMultipleValue = this.selectedMultiple.selected()
+      },
       setValue () {
         this.setSingle.set('value2')
         this.setMultiple.set(['value2', 'value3'])
@@ -154,6 +170,39 @@ export default {
 
 <template>
   <div id="methods-content">
+    <div class="content selectedSelects">
+      <h2 class="header">selected</h2>
+      <p>
+        The selected method will return a string or array of the currently selected values
+      </p>
+
+      <div class="set-content">
+        <div class="btn" @click="getSelected">Get Selected</div>
+        <select id="selectedSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="selectedMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <div v-if="selectedSingleValue !== ''" style="padding: 8px 0 8px 0;">
+        <div><b>Single Select Value:</b> {{selectedSingleValue}}</div>
+        <div><b>Multi Select Value:</b> {{selectedMultipleValue}}</div>
+      </div>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.selected() // Will return a string or an array of string values
+        </code>
+      </pre>
+    </div>
+
     <div class="content">
       <h2 class="header">set</h2>
       <p>
