@@ -292,6 +292,19 @@ var SlimSelect = /** @class */ (function () {
             throw new Error('Element isnt of type select');
         }
     };
+    SlimSelect.prototype.selected = function () {
+        if (this.config.isMultiple) {
+            var selected = this.data.getSelected();
+            var outputSelected = [];
+            for (var i = 0; i < selected.length; i++) {
+                outputSelected.push(selected[i].value);
+            }
+            return outputSelected;
+        }
+        else {
+            return this.data.getSelected().value;
+        }
+    };
     // Sets value of the select, adds it to data and original select
     SlimSelect.prototype.set = function (value, type, close, render) {
         if (type === void 0) { type = 'value'; }
