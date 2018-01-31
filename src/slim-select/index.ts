@@ -120,6 +120,19 @@ class SlimSelect {
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
   }
 
+  selected (): string | string[] {
+    if (this.config.isMultiple) {
+      let selected = this.data.getSelected() as option[]
+      let outputSelected = []
+      for (let i = 0; i < selected.length; i++) {
+        outputSelected.push(selected[i].value)
+      }
+      return outputSelected
+    } else {
+      return (this.data.getSelected() as option).value
+    }
+  }
+
   // Sets value of the select, adds it to data and original select
   set (value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
     if (this.config.isMultiple && !Array.isArray(value)) {
