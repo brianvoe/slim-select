@@ -70,12 +70,26 @@ $border-radius: 4px !default;
       }
     }
 
+    .ss-deselect {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 0 1 auto;
+      margin: 0 5px 0 5px;
+      font-weight: bold;
+      font-family: Arial, Helvetica, sans-serif;
+
+      &.ss-hide {
+        display: none;
+      }
+    }
+
     .ss-arrow {
       display: flex;
       align-items: center;
       justify-content: flex-end;
       flex: 0 1 auto;
-      margin: -1px 4px 0 5px;
+      margin: 0 5px 0 5px;
 
       span {
         border: solid $font-color;

@@ -6,6 +6,7 @@ import select from './select';
 interface singleSelected {
   container: HTMLDivElement
   placeholder: HTMLSpanElement
+  deselect: HTMLSpanElement
   arrowIcon: {
     container: HTMLSpanElement
     arrow: HTMLSpanElement
@@ -81,6 +82,17 @@ export default class slim {
     placeholder.classList.add('placeholder')
     container.appendChild(placeholder)
 
+    // Deselect
+    let deselect:HTMLSpanElement = null
+    deselect = document.createElement('span')
+    deselect.innerHTML = 'X'
+    deselect.classList.add('ss-deselect')
+    deselect.onclick = (e) => {
+      this.main.set('')
+      e.stopPropagation()
+    }
+    container.appendChild(deselect)
+
     // Arrow
     var arrowContainer:HTMLSpanElement = document.createElement('span')
     arrowContainer.classList.add(this.main.config.arrow)
@@ -99,6 +111,7 @@ export default class slim {
     return {
       container: container,
       placeholder: placeholder,
+      deselect: deselect,
       arrowIcon: {
         container: arrowContainer,
         arrow: arrowIcon
@@ -122,6 +135,21 @@ export default class slim {
         selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
       }
       this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
+    }
+  }
+
+  // Based upon current selection/settings hide/show deselect
+  deselect (): void {
+    // if allowDeselect is false just hide it
+    if (!this.main.config.allowDeselect) {
+      this.singleSelected.deselect.classList.add('ss-hide')
+      return 
+    }
+
+    if (this.main.selected() === '') {
+      this.singleSelected.deselect.classList.add('ss-hide')
+    } else {
+      this.singleSelected.deselect.classList.remove('ss-hide')
     }
   }
 
