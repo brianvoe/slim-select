@@ -23,6 +23,11 @@
       })
 
       new SlimSelect({
+        select: '#allowDeselect',
+        allowDeselect: true
+      })
+
+      new SlimSelect({
         select: '#addableSingle',
         addable: (value) => {
           return value
@@ -228,6 +233,43 @@
         <code class="language-html">
           &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
           &lt;select id="placeholderSingle"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">allowDeselect</h2>
+      <p>
+        This will allow you to deselect a value on a single select dropdown.<br />
+        Be sure to have an empty option data placeholder so slim select has an empty string value to select.
+      </p>
+
+      <div class="set-content">
+        <select id="allowDeselect">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            allowDeselect: true
+          })
+        </code>
+      </pre>
+      <pre>
+        <code class="language-html">
+          &lt;!-- Requires emtpy data-placeholder option --&gt;
+          &lt;select id="allowDeselect"&gt;
             &lt;option data-placeholder="true"&gt;&lt;/option&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;

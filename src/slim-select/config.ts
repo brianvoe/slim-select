@@ -6,6 +6,7 @@ interface constructor {
   closeOnSelect: boolean
   showContent: string
   placeholderText: string
+  allowDeselect: boolean
   isEnabled: boolean
   valuesUseText: boolean
 }
@@ -21,6 +22,7 @@ export default class config {
   showContent: string = 'auto' // options: auto, up, down
   searchText: string = 'No Results'
   placeholderText: string = 'Select Value'
+  allowDeselect: boolean = false
   isEnabled: boolean = true
   valuesUseText: boolean = false
 
@@ -63,6 +65,7 @@ export default class config {
     this.isEnabled = (info.isEnabled === false ? false : true)
     if (info.searchText) {this.searchText = info.searchText}
     if (info.placeholderText) {this.placeholderText = info.placeholderText}
+    this.allowDeselect = (info.allowDeselect === true ? true : false)
     if (info.valuesUseText) {this.valuesUseText = info.valuesUseText}
   }
 }

@@ -18,6 +18,7 @@ interface constructor {
   closeOnSelect: boolean
   showContent: string
   placeholder: string
+  allowDeselect: boolean
   isEnabled: boolean
   valuesUseText: boolean // Use text value when showing selected value
   
@@ -61,6 +62,7 @@ class SlimSelect {
       closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
       placeholderText: info.placeholder,
+      allowDeselect: info.allowDeselect,
       isEnabled: info.isEnabled,
       valuesUseText: info.valuesUseText
     })
@@ -317,6 +319,7 @@ class SlimSelect {
       this.slim.values()
     } else {
       this.slim.placeholder()
+      this.slim.deselect()
     }
     this.slim.options()
   }

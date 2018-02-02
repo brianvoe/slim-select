@@ -224,6 +224,7 @@ var SlimSelect = /** @class */ (function () {
             closeOnSelect: info.closeOnSelect,
             showContent: info.showContent,
             placeholderText: info.placeholder,
+            allowDeselect: info.allowDeselect,
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText
         });
@@ -498,6 +499,7 @@ var SlimSelect = /** @class */ (function () {
         }
         else {
             this.slim.placeholder();
+            this.slim.deselect();
         }
         this.slim.options();
     };
@@ -597,6 +599,7 @@ var config = /** @class */ (function () {
         this.showContent = 'auto'; // options: auto, up, down
         this.searchText = 'No Results';
         this.placeholderText = 'Select Value';
+        this.allowDeselect = false;
         this.isEnabled = true;
         this.valuesUseText = false;
         // Classes
@@ -641,6 +644,7 @@ var config = /** @class */ (function () {
         if (info.placeholderText) {
             this.placeholderText = info.placeholderText;
         }
+        this.allowDeselect = (info.allowDeselect === true ? true : false);
         if (info.valuesUseText) {
             this.valuesUseText = info.valuesUseText;
         }
@@ -1144,6 +1148,16 @@ var slim = /** @class */ (function () {
         var placeholder = document.createElement('span');
         placeholder.classList.add('placeholder');
         container.appendChild(placeholder);
+        // Deselect
+        var deselect = null;
+        deselect = document.createElement('span');
+        deselect.innerHTML = 'X';
+        deselect.classList.add('ss-deselect');
+        deselect.onclick = function (e) {
+            _this.main.set('');
+            e.stopPropagation();
+        };
+        container.appendChild(deselect);
         // Arrow
         var arrowContainer = document.createElement('span');
         arrowContainer.classList.add(this.main.config.arrow);
@@ -1161,6 +1175,7 @@ var slim = /** @class */ (function () {
         return {
             container: container,
             placeholder: placeholder,
+            deselect: deselect,
             arrowIcon: {
                 container: arrowContainer,
                 arrow: arrowIcon
@@ -1183,6 +1198,20 @@ var slim = /** @class */ (function () {
                 selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text;
             }
             this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '');
+        }
+    };
+    // Based upon current selection/settings hide/show deselect
+    slim.prototype.deselect = function () {
+        // if allowDeselect is false just hide it
+        if (!this.main.config.allowDeselect) {
+            this.singleSelected.deselect.classList.add('ss-hide');
+            return;
+        }
+        if (this.main.selected() === '') {
+            this.singleSelected.deselect.classList.add('ss-hide');
+        }
+        else {
+            this.singleSelected.deselect.classList.remove('ss-hide');
         }
     };
     slim.prototype.multiSelectedDiv = function () {
