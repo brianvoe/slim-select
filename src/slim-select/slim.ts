@@ -352,7 +352,7 @@ export default class slim {
       } else if (e.key === 'Escape') {
         this.main.close()
       } else {
-        if (this.main.config.showSearch) {
+        if (this.main.config.showSearch && this.main.data.contentOpen) {
           this.main.search(target.value)
         } else {
           input.value = ''

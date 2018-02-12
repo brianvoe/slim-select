@@ -258,6 +258,9 @@ class SlimSelect {
       this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
       this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
 
+      // After content is closed lets blur on the input field
+      this.slim.search.input.blur()
+
       // Run afterClose callback
       if (this.afterClose) {this.afterClose()}
     }, 300)
