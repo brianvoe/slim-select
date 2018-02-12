@@ -394,6 +394,14 @@ var SlimSelect = /** @class */ (function () {
             }
         }
         this.data.contentOpen = true;
+        // Move to selected option for single option
+        if (!this.config.isMultiple) {
+            var selectedId = this.data.getSelected().id;
+            var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
+            if (selectedOption) {
+                helper_1.ensureElementInView(this.slim.list, selectedOption);
+            }
+        }
         // Run afterOpen callback
         if (this.afterOpen) {
             // setTimeout is for animation completion
