@@ -440,6 +440,8 @@ var SlimSelect = /** @class */ (function () {
             _this.data.contentPosition = 'below';
             _this.slim[(_this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(_this.config.openAbove);
             _this.slim[(_this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(_this.config.openBelow);
+            // After content is closed lets blur on the input field
+            _this.slim.search.input.blur();
             // Run afterClose callback
             if (_this.afterClose) {
                 _this.afterClose();
@@ -1420,7 +1422,7 @@ var slim = /** @class */ (function () {
                 _this.main.close();
             }
             else {
-                if (_this.main.config.showSearch) {
+                if (_this.main.config.showSearch && _this.main.data.contentOpen) {
                     _this.main.search(target.value);
                 }
                 else {
