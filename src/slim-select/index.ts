@@ -3,7 +3,7 @@ import './slimselect.scss'
 import 'custom-event-polyfill' // Needed for IE to use custom events
 
 import Config from './config'
-import {hasClassInTree, putContent, debounce} from './helper'
+import {hasClassInTree, putContent, debounce, ensureElementInView} from './helper'
 import Select from './select'
 import Data, {dataArray, dataObject, optgroup, option, validateData} from './data'
 import Slim from './slim'
@@ -210,6 +210,15 @@ class SlimSelect {
       }
     }
     this.data.contentOpen = true
+
+    // Move to selected option for single option
+    if (!this.config.isMultiple) {
+      let selectedId = (this.data.getSelected() as option).id
+      let selectedOption = this.slim.list.querySelector('[data-id="'+selectedId+'"]')
+      if (selectedOption) {
+        ensureElementInView(this.slim.list, selectedOption)
+      }
+    }
 
     // Run afterOpen callback
     if (this.afterOpen) {
