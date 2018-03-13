@@ -158,7 +158,6 @@ class SlimSelect {
     this.select.create(newData)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
-    this.render()
   }
 
   // addData will append to the current data set

@@ -335,7 +335,6 @@ var SlimSelect = /** @class */ (function () {
         this.select.create(newData);
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
-        this.render();
     };
     // addData will append to the current data set
     SlimSelect.prototype.addData = function (data) {
@@ -1270,6 +1269,7 @@ var slim = /** @class */ (function () {
         var selected = this.main.data.getSelected();
         // Remove nodes that shouldnt be there
         var exists;
+        var nodesToRemove = [];
         for (var c = 0; c < currentNodes.length; c++) {
             exists = true;
             var node = currentNodes[c];
@@ -1279,12 +1279,15 @@ var slim = /** @class */ (function () {
                 }
             }
             if (exists) {
-                var node_1 = currentNodes[c];
-                node_1.classList.add('ss-out');
-                this.multiSelected.values.removeChild(node_1);
+                nodesToRemove.push(node);
             }
         }
+        for (var i = 0; i < nodesToRemove.length; i++) {
+            nodesToRemove[i].classList.add('ss-out');
+            this.multiSelected.values.removeChild(nodesToRemove[i]);
+        }
         // Add values that dont currently exist
+        currentNodes = this.multiSelected.values.childNodes;
         for (var s = 0; s < selected.length; s++) {
             exists = false;
             for (var c = 0; c < currentNodes.length; c++) {
