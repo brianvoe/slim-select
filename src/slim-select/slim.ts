@@ -198,9 +198,10 @@ export default class slim {
     if (!this.main.config.isMultiple) {return}
     let currentNodes = this.multiSelected.values.childNodes
     let selected = <option[]>this.main.data.getSelected()
-
+    
     // Remove nodes that shouldnt be there
     let exists
+    let nodesToRemove = []
     for (var c = 0; c < currentNodes.length; c++) {
       exists = true
       let node = <HTMLDivElement>currentNodes[c]
@@ -211,13 +212,17 @@ export default class slim {
       }
 
       if (exists) {
-        let node = <HTMLDivElement>currentNodes[c]
-        node.classList.add('ss-out')
-        this.multiSelected.values.removeChild(node)
+        nodesToRemove.push(node)
       }
     }
 
+    for (let i = 0; i < nodesToRemove.length; i++) {
+      nodesToRemove[i].classList.add('ss-out')
+      this.multiSelected.values.removeChild(nodesToRemove[i])
+    }
+
     // Add values that dont currently exist
+    currentNodes = this.multiSelected.values.childNodes
     for (var s = 0; s < selected.length; s++) {
       exists = false
       for (var c = 0; c < currentNodes.length; c++) {
