@@ -17,6 +17,7 @@ export interface option {
   text: string
   innerHTML: string
   selected: boolean
+  display?: boolean
   disabled: boolean
   placeholder: string
   data: object
@@ -48,6 +49,7 @@ export default class data {
       text: (info.text ? info.text : ''),
       innerHTML: (info.innerHTML ? info.innerHTML : ''),
       selected: (info.selected ? info.selected : false),
+      display: (info.display ? info.display : true),
       disabled: (info.disabled ? info.disabled : false),
       placeholder: (info.placeholder ? info.placeholder : ''),
       data: (info.data ? info.data : {}),
@@ -62,6 +64,7 @@ export default class data {
       text: data.text,
       innerHTML: '',
       selected: false,
+      display: true,
       disabled: false,
       placeholder: '',
       data: {}

@@ -52,7 +52,7 @@ export default class select {
 
   addAttributes () {
     this.element.tabIndex = -1
-    this.element.style.display = 'none'
+    // this.element.style.display = 'none'
 
     // Add slim select id
     this.element.dataset.ssid = this.main.config.id
@@ -68,6 +68,9 @@ export default class select {
 
   // Add MutationObserver to select
   addMutationObserver (): void {
+    // Only add if not in ajax mode
+    if (this.main.config.isAjax) {return}
+
     this.mutationObserver = new MutationObserver((mutations) => {
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()

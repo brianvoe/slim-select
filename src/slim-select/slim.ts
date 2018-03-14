@@ -124,7 +124,7 @@ export default class slim {
     let selected = <option>this.main.data.getSelected()
 
     // Placeholder display
-    if (selected && selected.placeholder) {
+    if (selected === null || (selected && selected.placeholder)) {
       let placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
       placeholder.innerHTML = this.main.config.placeholderText
@@ -198,6 +198,8 @@ export default class slim {
     if (!this.main.config.isMultiple) {return}
     let currentNodes = this.multiSelected.values.childNodes
     let selected = <option[]>this.main.data.getSelected()
+    console.log('selected', selected)
+    console.log('nodes', currentNodes)
     
     // Remove nodes that shouldnt be there
     let exists
@@ -211,9 +213,7 @@ export default class slim {
         }
       }
 
-      if (exists) {
-        nodesToRemove.push(node)
-      }
+      if (exists) { nodesToRemove.push(node) }
     }
 
     for (let i = 0; i < nodesToRemove.length; i++) {
@@ -227,7 +227,7 @@ export default class slim {
       exists = false
       for (var c = 0; c < currentNodes.length; c++) {
         let node = <HTMLDivElement>currentNodes[c]
-        if (selected[s].id === node.dataset.id) {
+        if (String(selected[s].id) === String(node.dataset.id)) {
           exists = true
         }
       }
@@ -351,6 +351,7 @@ export default class slim {
           return
         }
         var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
+        console.log(highlighted)
         if (highlighted) { highlighted.click() }
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle

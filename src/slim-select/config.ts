@@ -1,5 +1,6 @@
 interface constructor {
   select: HTMLSelectElement
+  isAjax: boolean
   showSearch: boolean
   searchText: string
   searchHighlight: boolean
@@ -16,6 +17,7 @@ export default class config {
   style: string
   class: DOMTokenList
   isMultiple: boolean = false
+  isAjax: boolean = false
   showSearch: boolean = true
   searchHighlight: boolean = false
   closeOnSelect: boolean = true
@@ -58,6 +60,7 @@ export default class config {
     this.class = info.select.classList
 
     this.isMultiple = info.select.multiple
+    this.isAjax = info.isAjax
     this.showSearch = (info.showSearch === false ? false : true)
     this.searchHighlight = (info.searchHighlight === true ? true : false)
     this.closeOnSelect = (info.closeOnSelect === false ? false : true)
