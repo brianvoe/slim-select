@@ -303,7 +303,8 @@ var SlimSelect = /** @class */ (function () {
             return outputSelected;
         }
         else {
-            return this.data.getSelected().value;
+            var selected = this.data.getSelected();
+            return (selected ? selected.value : '');
         }
     };
     // Sets value of the select, adds it to data and original select
@@ -395,7 +396,8 @@ var SlimSelect = /** @class */ (function () {
         this.data.contentOpen = true;
         // Move to selected option for single option
         if (!this.config.isMultiple) {
-            var selectedId = this.data.getSelected().id;
+            var selected = this.data.getSelected();
+            var selectedId = (selected ? selected.id : '');
             var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
             if (selectedOption) {
                 helper_1.ensureElementInView(this.slim.list, selectedOption);

@@ -21,7 +21,7 @@ interface constructor {
   allowDeselect: boolean
   isEnabled: boolean
   valuesUseText: boolean // Use text value when showing selected value
-  
+
   // Events
   addable: Function
   beforeOnChange: Function
@@ -131,7 +131,8 @@ class SlimSelect {
       }
       return outputSelected
     } else {
-      return (this.data.getSelected() as option).value
+      let selected = <option>this.data.getSelected()
+      return (selected ? selected.value : '')
     }
   }
 
@@ -145,7 +146,7 @@ class SlimSelect {
     this.select.setValue()
     this.data.onDataChange() // Trigger on change callback
     this.render()
-    
+
     if (close) { this.close() }
   }
 
@@ -212,7 +213,8 @@ class SlimSelect {
 
     // Move to selected option for single option
     if (!this.config.isMultiple) {
-      let selectedId = (this.data.getSelected() as option).id
+      let selected = <option>this.data.getSelected()
+      let selectedId = (selected ? selected.id : '')
       let selectedOption = this.slim.list.querySelector('[data-id="'+selectedId+'"]')
       if (selectedOption) {
         ensureElementInView(this.slim.list, selectedOption)
