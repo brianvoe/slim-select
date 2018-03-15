@@ -23,6 +23,7 @@ interface constructor {
   valuesUseText: boolean // Use text value when showing selected value
 
   // Events
+  ajax: Function
   addable: Function
   beforeOnChange: Function
   onChange: Function
@@ -37,6 +38,7 @@ class SlimSelect {
   select: Select
   data: Data
   slim: Slim
+  ajax: Function = null
   addable: Function = null
   beforeOnChange: Function = null
   onChange: Function = null
@@ -51,11 +53,15 @@ class SlimSelect {
     // If select already has a slim select id on it lets destroy it first
     if (selectElement.dataset.ssid) { this.destroy(selectElement.dataset.ssid) }
 
+    // Set ajax function if passed in
+    if (info.ajax) {this.ajax = info.ajax}
+
     // Add addable if option is passed in
     if (info.addable) {this.addable = info.addable}
 
     this.config = new Config({
       select: selectElement,
+      isAjax: (info.ajax ? true : false),
       showSearch: info.showSearch,
       searchText: info.searchText,
       searchHighlight: info.searchHighlight,
@@ -72,9 +78,7 @@ class SlimSelect {
       main: this
     })
 
-    this.data = new Data({
-      main: this
-    })
+    this.data = new Data({ main: this })
 
     this.slim = new Slim({ main: this })
     // Add after original select element
@@ -156,6 +160,24 @@ class SlimSelect {
     if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
 
     let newData = JSON.parse(JSON.stringify(data))
+    let selected = this.data.getSelected()
+
+    // If its an ajax type keep selected values
+    if (this.config.isAjax && selected) {
+      if (this.config.isMultiple) {
+        let reverseSelected = (selected as option[]).reverse()
+        for (let i = 0; i < reverseSelected.length; i++) {
+          newData.unshift(reverseSelected[i])
+        }
+      } else {
+        newData.unshift(this.data.getSelected())
+        newData.unshift({
+          text: '',
+          placeholder: true
+        })
+      }
+    }
+
     this.select.create(newData)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
@@ -179,10 +201,12 @@ class SlimSelect {
   open (): void {
     // Dont open if disabled
     if (!this.config.isEnabled) {return}
-    this.slim.search.input.focus()
-
+    
     // Dont do anything if the content is already open
     if (this.data.contentOpen) {return}
+    
+    // Focus on input field
+    this.slim.search.input.focus()
 
     // Run beforeOpen callback
     if (this.beforeOpen) {this.beforeOpen()}
@@ -213,11 +237,13 @@ class SlimSelect {
 
     // Move to selected option for single option
     if (!this.config.isMultiple) {
-      let selected = <option>this.data.getSelected()
-      let selectedId = (selected ? selected.id : '')
-      let selectedOption = this.slim.list.querySelector('[data-id="'+selectedId+'"]')
-      if (selectedOption) {
-        ensureElementInView(this.slim.list, selectedOption)
+      let selected = this.data.getSelected() as option
+      if (selected) {
+        let selectedId = selected.id
+        let selectedOption = this.slim.list.querySelector('[data-id="'+selectedId+'"]')
+        if (selectedOption) {
+          ensureElementInView(this.slim.list, selectedOption)
+        }
       }
     }
 
@@ -322,8 +348,26 @@ class SlimSelect {
     // Only filter data and rerender if value has changed
     if (this.data.searchValue !== value) {
       this.slim.search.input.value = value
-      this.data.search(value)
-      this.render()
+      if (this.config.isAjax) {
+        if (value.trim() === '') {
+          this.setData([])
+          this.data.search('')
+          this.render()
+        } else {
+          let master = this
+          this.ajax(value, function (info) {
+            // Only process if return callback is not false
+            if (info) {
+              master.setData(info)
+              master.data.search(value)
+              master.render()
+            }
+          })
+        }
+      } else {
+        this.data.search(value)
+        this.render()
+      }
     }
   }
 
