@@ -21,7 +21,7 @@ interface constructor {
   allowDeselect: boolean
   isEnabled: boolean
   valuesUseText: boolean // Use text value when showing selected value
-  
+
   // Events
   ajax: Function
   addable: Function
@@ -135,7 +135,8 @@ class SlimSelect {
       }
       return outputSelected
     } else {
-      return (this.data.getSelected() as option).value
+      let selected = <option>this.data.getSelected()
+      return (selected ? selected.value : '')
     }
   }
 
@@ -149,7 +150,7 @@ class SlimSelect {
     this.select.setValue()
     this.data.onDataChange() // Trigger on change callback
     this.render()
-    
+
     if (close) { this.close() }
   }
 
