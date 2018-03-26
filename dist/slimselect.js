@@ -80,15 +80,8 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 exports.__esModule = true;
-function hasClassInTree(element, className, output) {
-    if (output === void 0) { output = false; }
-    if (output) {
-        console.log(className);
-    }
+function hasClassInTree(element, className) {
     function hasClass(element, className) {
-        if (output) {
-            console.log(element);
-        }
         if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
             return element;
         }
@@ -199,6 +192,7 @@ var slim_1 = __webpack_require__(7);
 var SlimSelect = /** @class */ (function () {
     function SlimSelect(info) {
         var _this = this;
+        this.ajax = null;
         this.addable = null;
         this.beforeOnChange = null;
         this.onChange = null;
@@ -212,12 +206,17 @@ var SlimSelect = /** @class */ (function () {
         if (selectElement.dataset.ssid) {
             this.destroy(selectElement.dataset.ssid);
         }
+        // Set ajax function if passed in
+        if (info.ajax) {
+            this.ajax = info.ajax;
+        }
         // Add addable if option is passed in
         if (info.addable) {
             this.addable = info.addable;
         }
         this.config = new config_1["default"]({
             select: selectElement,
+            isAjax: (info.ajax ? true : false),
             showSearch: info.showSearch,
             searchText: info.searchText,
             searchHighlight: info.searchHighlight,
@@ -232,9 +231,7 @@ var SlimSelect = /** @class */ (function () {
             select: selectElement,
             main: this
         });
-        this.data = new data_1["default"]({
-            main: this
-        });
+        this.data = new data_1["default"]({ main: this });
         this.slim = new slim_1["default"]({ main: this });
         // Add after original select element
         this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
@@ -250,7 +247,6 @@ var SlimSelect = /** @class */ (function () {
         // Add onclick listener to document to closeContent if clicked outside
         document.addEventListener('click', function (e) {
             if (!helper_1.hasClassInTree(e.target, _this.config.id)) {
-                // console.log(hasClassInTree(e.target, this.config.id, !this.config.closeOnSelect))
                 _this.close();
             }
         });
@@ -303,7 +299,8 @@ var SlimSelect = /** @class */ (function () {
             return outputSelected;
         }
         else {
-            return this.data.getSelected().value;
+            var selected = this.data.getSelected();
+            return (selected ? selected.value : '');
         }
     };
     // Sets value of the select, adds it to data and original select
@@ -332,6 +329,23 @@ var SlimSelect = /** @class */ (function () {
             return;
         } // If data passed in is not valid DO NOT parse, set and render
         var newData = JSON.parse(JSON.stringify(data));
+        var selected = this.data.getSelected();
+        // If its an ajax type keep selected values
+        if (this.config.isAjax && selected) {
+            if (this.config.isMultiple) {
+                var reverseSelected = selected.reverse();
+                for (var i = 0; i < reverseSelected.length; i++) {
+                    newData.unshift(reverseSelected[i]);
+                }
+            }
+            else {
+                newData.unshift(this.data.getSelected());
+                newData.unshift({
+                    text: '',
+                    placeholder: true
+                });
+            }
+        }
         this.select.create(newData);
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
@@ -358,11 +372,12 @@ var SlimSelect = /** @class */ (function () {
         if (!this.config.isEnabled) {
             return;
         }
-        this.slim.search.input.focus();
         // Dont do anything if the content is already open
         if (this.data.contentOpen) {
             return;
         }
+        // Focus on input field
+        this.slim.search.input.focus();
         // Run beforeOpen callback
         if (this.beforeOpen) {
             this.beforeOpen();
@@ -395,10 +410,13 @@ var SlimSelect = /** @class */ (function () {
         this.data.contentOpen = true;
         // Move to selected option for single option
         if (!this.config.isMultiple) {
-            var selectedId = this.data.getSelected().id;
-            var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
-            if (selectedOption) {
-                helper_1.ensureElementInView(this.slim.list, selectedOption);
+            var selected = this.data.getSelected();
+            if (selected) {
+                var selectedId = selected.id;
+                var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
+                if (selectedOption) {
+                    helper_1.ensureElementInView(this.slim.list, selectedOption);
+                }
             }
         }
         // Run afterOpen callback
@@ -498,9 +516,42 @@ var SlimSelect = /** @class */ (function () {
         // Only filter data and rerender if value has changed
         if (this.data.searchValue !== value) {
             this.slim.search.input.value = value;
-            this.data.search(value);
-            this.render();
+            if (this.config.isAjax) {
+                if (value.trim() === '') {
+                    this.setData([]);
+                    this.data.search('');
+                    this.render();
+                }
+                else {
+                    var master_1 = this;
+                    this.config.isSearching = true;
+                    this.render();
+                    this.ajax(value, function (info) {
+                        // Only process if return callback is not false
+                        master_1.config.isSearching = false;
+                        if (Array.isArray(info)) {
+                            info.unshift({ text: '', placeholder: true });
+                            master_1.setData(info);
+                            master_1.data.search(value);
+                            master_1.render();
+                        }
+                        else if (typeof info === 'string') {
+                            master_1.slim.options(info);
+                        }
+                        else {
+                            master_1.render();
+                        }
+                    });
+                }
+            }
+            else {
+                this.data.search(value);
+                this.render();
+            }
         }
+    };
+    SlimSelect.prototype.setSearchText = function (text) {
+        this.config.searchText = text;
     };
     SlimSelect.prototype.render = function () {
         if (this.config.isMultiple) {
@@ -602,6 +653,8 @@ var config = /** @class */ (function () {
     function config(info) {
         this.id = '';
         this.isMultiple = false;
+        this.isAjax = false;
+        this.isSearching = false;
         this.showSearch = true;
         this.searchHighlight = false;
         this.closeOnSelect = true;
@@ -640,6 +693,7 @@ var config = /** @class */ (function () {
         this.style = info.select.style.cssText;
         this["class"] = info.select.classList;
         this.isMultiple = info.select.multiple;
+        this.isAjax = info.isAjax;
         this.showSearch = (info.showSearch === false ? false : true);
         this.searchHighlight = (info.searchHighlight === true ? true : false);
         this.closeOnSelect = (info.closeOnSelect === false ? false : true);
@@ -727,6 +781,10 @@ var select = /** @class */ (function () {
     // Add MutationObserver to select
     select.prototype.addMutationObserver = function () {
         var _this = this;
+        // Only add if not in ajax mode
+        if (this.main.config.isAjax) {
+            return;
+        }
         this.mutationObserver = new MutationObserver(function (mutations) {
             _this.main.data.parseSelectData();
             _this.main.data.setSelectedFromSelect();
@@ -815,6 +873,7 @@ var data = /** @class */ (function () {
             text: (info.text ? info.text : ''),
             innerHTML: (info.innerHTML ? info.innerHTML : ''),
             selected: (info.selected ? info.selected : false),
+            display: (info.display ? info.display : true),
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : ''),
             data: (info.data ? info.data : {})
@@ -828,6 +887,7 @@ var data = /** @class */ (function () {
             text: data.text,
             innerHTML: '',
             selected: false,
+            display: true,
             disabled: false,
             placeholder: '',
             data: {}
@@ -1195,7 +1255,7 @@ var slim = /** @class */ (function () {
     slim.prototype.placeholder = function () {
         var selected = this.main.data.getSelected();
         // Placeholder display
-        if (selected && selected.placeholder) {
+        if (selected === null || (selected && selected.placeholder)) {
             var placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
             placeholder.innerHTML = this.main.config.placeholderText;
@@ -1292,7 +1352,7 @@ var slim = /** @class */ (function () {
             exists = false;
             for (var c = 0; c < currentNodes.length; c++) {
                 var node = currentNodes[c];
-                if (selected[s].id === node.dataset.id) {
+                if (String(selected[s].id) === String(node.dataset.id)) {
                     exists = true;
                 }
             }
@@ -1584,9 +1644,29 @@ var slim = /** @class */ (function () {
         return list;
     };
     // Loop through data || filtered data and build options and append to list container
-    slim.prototype.options = function () {
+    slim.prototype.options = function (content) {
+        if (content === void 0) { content = ''; }
         var data = this.main.data.filtered || this.main.data.data;
+        // Clear out innerHtml
         this.list.innerHTML = '';
+        // If content is being passed just use that text
+        if (content !== '') {
+            var searching = document.createElement('div');
+            searching.classList.add(this.main.config.option);
+            searching.classList.add(this.main.config.disabled);
+            searching.innerHTML = content;
+            this.list.appendChild(searching);
+            return;
+        }
+        // If ajax and isSearching
+        if (this.main.config.isAjax && this.main.config.isSearching) {
+            var searching = document.createElement('div');
+            searching.classList.add(this.main.config.option);
+            searching.classList.add(this.main.config.disabled);
+            searching.innerHTML = 'Searching...';
+            this.list.appendChild(searching);
+            return;
+        }
         // If no results show no results text
         if (data.length === 0) {
             var noResults = document.createElement('div');

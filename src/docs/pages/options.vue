@@ -12,6 +12,58 @@
     },
     mounted () {
       /* eslint-disable no-new */
+      let ajaxSingle = new SlimSelect({
+        select: '#ajaxSingle',
+        ajax: function (search, callback) {
+          if (search.length < 3) {
+            callback('Need 3 characters')
+            return
+          }
+
+          fetch('https://jsonplaceholder.typicode.com/users')
+          .then(function (response) {
+            return response.json()
+          })
+          .then(function (json) {
+            let data = []
+            for (let i = 0; i < json.length; i++) {
+              data.push({text: json[i].name})
+            }
+
+            setTimeout(() => {
+              callback(data)
+            }, 1000)
+          })
+          .catch(function(error) {
+            callback(false)
+          })
+        }
+      })
+
+      new SlimSelect({
+        select: '#ajaxMultiple',
+        ajax: function (search, callback) {
+          fetch('https://jsonplaceholder.typicode.com/users')
+          .then(function (response) {
+            return response.json()
+          })
+          .then(function (json) {
+            let data = []
+            for (let i = 0; i < json.length; i++) {
+              data.push({text: json[i].name})
+            }
+            
+            setTimeout(() => {
+              ajaxSingle.setSearchText('Sorry No Results.')
+              callback(data)
+            }, 1000)
+          })
+          .catch(function(error) {
+            callback(false)
+          })
+        }
+      })
+
       new SlimSelect({
         select: '#placeholderSingle',
         placeholder: 'Placeholder Text Here'
@@ -199,6 +251,55 @@
     </div>
 
     <div class="content">
+      <h2 class="header">ajax</h2>
+      <p>
+        Slim select allows you to syncronize result values from your ajax requests.<br />
+        Call callback() method with slimselect data, false or string with specific string.
+      </p>
+
+      <div class="set-content">
+        <select id="ajaxSingle"></select>
+        <select id="ajaxMultiple" multiple></select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#placeholder',
+            ajax: function (search, callback) {
+              // Check search value. If you dont like it callback(false) or callback('Message String')
+              if (search.length < 3) {
+                callback('Need 3 characters')
+                return
+              }
+
+              // Perform your own ajax request here
+              fetch('https://jsonplaceholder.typicode.com/users')
+              .then(function (response) {
+                return response.json()
+              })
+              .then(function (json) {
+                let data = []
+                for (let i = 0; i < json.length; i++) {
+                  data.push({text: json[i].name})
+                }
+                
+                // Upon successful fetch send data to callback function.
+                // Be sure to send data back in the proper format.
+                // Refer to the method setData for examples of proper format.
+                callback(data)
+              })
+              .catch(function(error) {
+                // If any erros happened send false back through the callback
+                callback(false)
+              })
+            }
+          })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
       <h2 class="header">placeholder</h2>
       <p>
         Placeholders consists of setting the placeholder option value.
@@ -231,7 +332,8 @@
 
       <pre>
         <code class="language-html">
-          &lt;!-- Single Selects require emtpy data-placeholder option --&gt;
+          &lt;!-- Set empty option with data-placeholder if you to have placeholder --&gt;
+          &lt;!-- text for single select, otherwise first option will be selected --&gt;
           &lt;select id="placeholderSingle"&gt;
             &lt;option data-placeholder="true"&gt;&lt;/option&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
@@ -418,12 +520,15 @@
 
       <pre>
         <code class="language-javascript">
-          new SlimSelect({
+          let slim = new SlimSelect({
             select: '#search',
             showSearch: false,
             searchText: 'Sorry nothing to see here',
             searchHighlight: true
           })
+
+          // You can also set search text via method
+          slim.setSearchText('Searching...')
         </code>
       </pre>
     </div>

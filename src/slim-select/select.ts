@@ -68,6 +68,9 @@ export default class select {
 
   // Add MutationObserver to select
   addMutationObserver (): void {
+    // Only add if not in ajax mode
+    if (this.main.config.isAjax) {return}
+
     this.mutationObserver = new MutationObserver((mutations) => {
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()

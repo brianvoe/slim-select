@@ -124,7 +124,7 @@ export default class slim {
     let selected = <option>this.main.data.getSelected()
 
     // Placeholder display
-    if (selected && selected.placeholder) {
+    if (selected === null || (selected && selected.placeholder)) {
       let placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
       placeholder.innerHTML = this.main.config.placeholderText
@@ -211,9 +211,7 @@ export default class slim {
         }
       }
 
-      if (exists) {
-        nodesToRemove.push(node)
-      }
+      if (exists) { nodesToRemove.push(node) }
     }
 
     for (let i = 0; i < nodesToRemove.length; i++) {
@@ -227,7 +225,7 @@ export default class slim {
       exists = false
       for (var c = 0; c < currentNodes.length; c++) {
         let node = <HTMLDivElement>currentNodes[c]
-        if (selected[s].id === node.dataset.id) {
+        if (String(selected[s].id) === String(node.dataset.id)) {
           exists = true
         }
       }
@@ -522,9 +520,31 @@ export default class slim {
   }
 
   // Loop through data || filtered data and build options and append to list container
-  options (): void {
+  options (content: string = ''): void {
     var data = this.main.data.filtered || this.main.data.data
+
+    // Clear out innerHtml
     this.list.innerHTML = ''
+
+    // If content is being passed just use that text
+    if (content !== '') {
+      let searching = document.createElement('div')
+      searching.classList.add(this.main.config.option)
+      searching.classList.add(this.main.config.disabled)
+      searching.innerHTML = content
+      this.list.appendChild(searching)
+      return
+    }
+
+    // If ajax and isSearching
+    if (this.main.config.isAjax && this.main.config.isSearching) {
+      let searching = document.createElement('div')
+      searching.classList.add(this.main.config.option)
+      searching.classList.add(this.main.config.disabled)
+      searching.innerHTML = 'Searching...'
+      this.list.appendChild(searching)
+      return
+    }
 
     // If no results show no results text
     if (data.length === 0) {
