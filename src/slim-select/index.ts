@@ -358,6 +358,7 @@ class SlimSelect {
           this.ajax(value, function (info) {
             // Only process if return callback is not false
             if (info) {
+              info.unshift({ text: '', placeholder: true })
               master.setData(info)
               master.data.search(value)
               master.render()
