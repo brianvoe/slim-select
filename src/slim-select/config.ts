@@ -18,6 +18,7 @@ export default class config {
   class: DOMTokenList
   isMultiple: boolean = false
   isAjax: boolean = false
+  isSearching: boolean = false
   showSearch: boolean = true
   searchHighlight: boolean = false
   closeOnSelect: boolean = true

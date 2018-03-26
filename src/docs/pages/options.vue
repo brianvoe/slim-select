@@ -12,9 +12,14 @@
     },
     mounted () {
       /* eslint-disable no-new */
-      new SlimSelect({
+      let ajaxSingle = new SlimSelect({
         select: '#ajaxSingle',
         ajax: function (search, callback) {
+          if (search.length < 3) {
+            callback('Need 3 characters')
+            return
+          }
+
           fetch('https://jsonplaceholder.typicode.com/users')
           .then(function (response) {
             return response.json()
@@ -24,7 +29,10 @@
             for (let i = 0; i < json.length; i++) {
               data.push({text: json[i].name})
             }
-            callback(data)
+
+            setTimeout(() => {
+              callback(data)
+            }, 1000)
           })
           .catch(function(error) {
             callback(false)
@@ -44,7 +52,11 @@
             for (let i = 0; i < json.length; i++) {
               data.push({text: json[i].name})
             }
-            callback(data)
+            
+            setTimeout(() => {
+              ajaxSingle.setSearchText('Sorry No Results.')
+              callback(data)
+            }, 1000)
           })
           .catch(function(error) {
             callback(false)
@@ -241,7 +253,8 @@
     <div class="content">
       <h2 class="header">ajax</h2>
       <p>
-        Slim select allows you to syncronize result values from your ajax requests.
+        Slim select allows you to syncronize result values from your ajax requests.<br />
+        Call callback() method with slimselect data, false or string with specific string.
       </p>
 
       <div class="set-content">
@@ -254,6 +267,12 @@
           new SlimSelect({
             select: '#placeholder',
             ajax: function (search, callback) {
+              // Check search value. If you dont like it callback(false) or callback('Message String')
+              if (search.length < 3) {
+                callback('Need 3 characters')
+                return
+              }
+
               // Perform your own ajax request here
               fetch('https://jsonplaceholder.typicode.com/users')
               .then(function (response) {
@@ -501,12 +520,15 @@
 
       <pre>
         <code class="language-javascript">
-          new SlimSelect({
+          let slim = new SlimSelect({
             select: '#search',
             showSearch: false,
             searchText: 'Sorry nothing to see here',
             searchHighlight: true
           })
+
+          // You can also set search text via method
+          slim.setSearchText('Searching...')
         </code>
       </pre>
     </div>

@@ -96,7 +96,6 @@ class SlimSelect {
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e: Event) => {
       if (!hasClassInTree(e.target, this.config.id)) {
-        // console.log(hasClassInTree(e.target, this.config.id, !this.config.closeOnSelect))
         this.close()
       }
     })
@@ -355,12 +354,19 @@ class SlimSelect {
           this.render()
         } else {
           let master = this
+          this.config.isSearching = true
+          this.render()
           this.ajax(value, function (info) {
             // Only process if return callback is not false
-            if (info) {
+            master.config.isSearching = false
+            if (Array.isArray(info)) {
               info.unshift({ text: '', placeholder: true })
               master.setData(info)
               master.data.search(value)
+              master.render()
+            } else if (typeof info === 'string') {
+              master.slim.options(info)
+            } else {
               master.render()
             }
           })
@@ -370,6 +376,10 @@ class SlimSelect {
         this.render()
       }
     }
+  }
+
+  setSearchText (text: string): void {
+    this.config.searchText = text
   }
 
   render (): void {

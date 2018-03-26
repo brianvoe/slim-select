@@ -58,6 +58,12 @@ export default {
         select: '#setSearchMultiple'
       })
 
+      // setSearchText
+      this.setSearchTextSingle = new SlimSelect({
+        select: '#setSearchTextSingle'
+      })
+      this.setSearchTextSingle.setSearchText('Sorry No Results Here!!!')
+
       // Enable / Disable
       this.setEnableSingle = new SlimSelect({
         select: '#setEnableSingle'
@@ -306,6 +312,29 @@ export default {
             select: '#select'
           })
           select.search('value')
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">setSearchText</h2>
+      <p>
+        The setSearchText method will update the search text value.
+      </p>
+
+      <div class="set-content">
+        <select id="setSearchTextSingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+      <pre>
+        <code class="language-javascript">
+          var select = new SlimSelect({
+            select: '#select'
+          })
+          select.setSearch('Sorry No Results Here!!!')
         </code>
       </pre>
     </div>

@@ -198,8 +198,6 @@ export default class slim {
     if (!this.main.config.isMultiple) {return}
     let currentNodes = this.multiSelected.values.childNodes
     let selected = <option[]>this.main.data.getSelected()
-    console.log('selected', selected)
-    console.log('nodes', currentNodes)
     
     // Remove nodes that shouldnt be there
     let exists
@@ -351,7 +349,6 @@ export default class slim {
           return
         }
         var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-        console.log(highlighted)
         if (highlighted) { highlighted.click() }
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle
@@ -523,9 +520,31 @@ export default class slim {
   }
 
   // Loop through data || filtered data and build options and append to list container
-  options (): void {
+  options (content: string = ''): void {
     var data = this.main.data.filtered || this.main.data.data
+
+    // Clear out innerHtml
     this.list.innerHTML = ''
+
+    // If content is being passed just use that text
+    if (content !== '') {
+      let searching = document.createElement('div')
+      searching.classList.add(this.main.config.option)
+      searching.classList.add(this.main.config.disabled)
+      searching.innerHTML = content
+      this.list.appendChild(searching)
+      return
+    }
+
+    // If ajax and isSearching
+    if (this.main.config.isAjax && this.main.config.isSearching) {
+      let searching = document.createElement('div')
+      searching.classList.add(this.main.config.option)
+      searching.classList.add(this.main.config.disabled)
+      searching.innerHTML = 'Searching...'
+      this.list.appendChild(searching)
+      return
+    }
 
     // If no results show no results text
     if (data.length === 0) {
