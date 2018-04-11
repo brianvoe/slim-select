@@ -470,6 +470,7 @@ var SlimSelect = /** @class */ (function () {
         var contentHeight = this.slim.content.offsetHeight;
         var height = selectHeight + contentHeight - 1;
         this.slim.content.style.margin = '-' + height + 'px 0 0 0';
+        this.slim.content.style.height = (height - selectHeight + 1) + 'px';
         this.slim.content.style['transform-origin'] = 'center bottom';
         this.data.contentPosition = 'above';
         this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow);
