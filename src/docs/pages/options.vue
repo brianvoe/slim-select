@@ -419,7 +419,7 @@
               // Return the value string
               return value // Optional - value alteration // ex: value.toLowerCase()
 
-              // Optional - Return a valid data object. See methods/setDat for list of valid options
+              // Optional - Return a valid data object. See methods/setData for list of valid options
               return {
                 text: value,
                 value: value.toLowerCase()
