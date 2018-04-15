@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -182,12 +182,332 @@ exports.highlight = highlight;
 "use strict";
 
 exports.__esModule = true;
-__webpack_require__(2);
-__webpack_require__(3); // Needed for IE to use custom events
-var config_1 = __webpack_require__(4);
+// Class is responsible for managing the data
+var data = /** @class */ (function () {
+    function data(info) {
+        this.contentOpen = false;
+        this.contentPosition = 'below';
+        this.isOnChangeEnabled = true;
+        this.main = info.main;
+        this.searchValue = '';
+        this.data = [];
+        this.filtered = null;
+        this.parseSelectData();
+        this.setSelectedFromSelect();
+    }
+    data.prototype.newOption = function (info) {
+        return {
+            id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
+            value: (info.value ? info.value : ''),
+            text: (info.text ? info.text : ''),
+            innerHTML: (info.innerHTML ? info.innerHTML : ''),
+            selected: (info.selected ? info.selected : false),
+            display: (info.display ? info.display : true),
+            disabled: (info.disabled ? info.disabled : false),
+            placeholder: (info.placeholder ? info.placeholder : ''),
+            data: (info.data ? info.data : {})
+        };
+    };
+    // Add to the current data array
+    data.prototype.add = function (data) {
+        var dataObject = {
+            id: String(Math.floor(Math.random() * 100000000)),
+            value: data.value,
+            text: data.text,
+            innerHTML: '',
+            selected: false,
+            display: true,
+            disabled: false,
+            placeholder: '',
+            data: {}
+        };
+        this.data.push(dataObject);
+    };
+    // From passed in select element pull optgroup and options into data
+    data.prototype.parseSelectData = function () {
+        this.data = [];
+        // Loop through nodes and create data
+        var element = this.main.select.element;
+        var nodes = element.childNodes;
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].nodeName === 'OPTGROUP') {
+                var node = nodes[i];
+                var optgroup = {
+                    label: node.label,
+                    options: []
+                };
+                var options = nodes[i].childNodes;
+                for (var ii = 0; ii < options.length; ii++) {
+                    if (options[ii].nodeName === 'OPTION') {
+                        optgroup.options.push(this.pullOptionData(options[ii]));
+                    }
+                }
+                this.data.push(optgroup);
+            }
+            else if (nodes[i].nodeName === 'OPTION') {
+                this.data.push(this.pullOptionData(nodes[i]));
+            }
+        }
+    };
+    // From passed in option pull pieces of usable information
+    data.prototype.pullOptionData = function (option) {
+        return {
+            id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
+            value: option.value,
+            text: option.text,
+            innerHTML: option.innerHTML,
+            selected: option.selected,
+            disabled: option.disabled,
+            placeholder: option.dataset.placeholder || null,
+            data: option.dataset
+        };
+    };
+    // From select element get current selected and set selected
+    data.prototype.setSelectedFromSelect = function () {
+        var options = this.main.select.element.options;
+        if (this.main.config.isMultiple) {
+            var newSelected = [];
+            for (var i = 0; i < options.length; i++) {
+                var option = options[i];
+                if (option.selected) {
+                    newSelected.push(this.getObjectFromData(option.value, 'value').id);
+                }
+            }
+            this.setSelected(newSelected, 'id');
+        }
+        else {
+            // Single select element
+            if (options.selectedIndex !== -1) {
+                var option = options[options.selectedIndex];
+                var value = option.value;
+                this.setSelected(value, 'value');
+            }
+        }
+    };
+    // From value set the selected value
+    data.prototype.setSelected = function (value, type) {
+        if (type === void 0) { type = 'id'; }
+        // Loop through data and set selected values
+        for (var i = 0; i < this.data.length; i++) {
+            // Deal with optgroups
+            if (this.data[i].hasOwnProperty('label')) {
+                if (this.data[i].hasOwnProperty('options')) {
+                    var options = this.data[i].options;
+                    for (var o = 0; o < options.length; o++) {
+                        options[o].selected = this.shouldBeSelected(options[o], value, type);
+                    }
+                }
+            }
+            else {
+                this.data[i].selected = this.shouldBeSelected(this.data[i], value, type);
+            }
+        }
+    };
+    // Determines whether or not passed in option should be selected based upon possible values
+    data.prototype.shouldBeSelected = function (option, value, type) {
+        if (type === void 0) { type = 'id'; }
+        if (Array.isArray(value)) {
+            for (var i = 0; i < value.length; i++) {
+                if (String(option[type]) === String(value[i])) {
+                    return true;
+                }
+            }
+        }
+        else {
+            if (String(option[type]) === String(value)) {
+                return true;
+            }
+        }
+        return false;
+    };
+    // From data get option | option[] of selected values
+    // If single select return last selected value
+    data.prototype.getSelected = function () {
+        var value = null;
+        var values = [];
+        for (var i = 0; i < this.data.length; i++) {
+            // Deal with optgroups
+            if (this.data[i].hasOwnProperty('label')) {
+                if (this.data[i].hasOwnProperty('options')) {
+                    var options = this.data[i].options;
+                    for (var o = 0; o < options.length; o++) {
+                        if (options[o].selected) {
+                            // If single return option
+                            if (!this.main.config.isMultiple) {
+                                value = options[o];
+                            }
+                            else {
+                                // Push to multiple array
+                                values.push(options[o]);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                // Push options to array
+                if (this.data[i].selected) {
+                    // If single return option
+                    if (!this.main.config.isMultiple) {
+                        value = this.data[i];
+                    }
+                    else {
+                        // Push to multiple array
+                        values.push(this.data[i]);
+                    }
+                }
+            }
+        }
+        // Either return array or object or null
+        if (this.main.config.isMultiple) {
+            return values;
+        }
+        return value;
+    };
+    // If select type is multiple append value and set selected
+    data.prototype.addToSelected = function (value, type) {
+        if (type === void 0) { type = 'id'; }
+        if (this.main.config.isMultiple) {
+            var values = [];
+            var selected = this.getSelected();
+            for (var i = 0; i < selected.length; i++) {
+                values.push(selected[i][type]);
+            }
+            values.push(value);
+            this.setSelected(values, type);
+        }
+    };
+    // Remove object from selected
+    data.prototype.removeFromSelected = function (value, type) {
+        if (type === void 0) { type = 'id'; }
+        if (this.main.config.isMultiple) {
+            var values = [];
+            var selected = this.getSelected();
+            for (var i = 0; i < selected.length; i++) {
+                if (String(selected[i][type]) !== String(value)) {
+                    values.push(selected[i][type]);
+                }
+            }
+            this.setSelected(values, type);
+        }
+    };
+    // Trigger onChange callback
+    data.prototype.onDataChange = function () {
+        if (this.main.onChange && this.isOnChangeEnabled) {
+            this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())));
+        }
+    };
+    // Take in a value loop through the data till you find it and return it
+    data.prototype.getObjectFromData = function (value, type) {
+        if (type === void 0) { type = 'id'; }
+        for (var i = 0; i < this.data.length; i++) {
+            // If option check if value is the same
+            if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
+                return this.data[i];
+            }
+            // If optgroup loop through options
+            if (this.data[i].hasOwnProperty('options')) {
+                var optgroupObject = this.data[i];
+                for (var ii = 0; ii < optgroupObject.options.length; ii++) {
+                    if (String(optgroupObject.options[ii][type]) === String(value)) {
+                        return optgroupObject.options[ii];
+                    }
+                }
+            }
+        }
+        return null;
+    };
+    // Take in search string and return filtered list of values
+    data.prototype.search = function (search) {
+        this.searchValue = search;
+        if (search.trim() === '') {
+            this.filtered = null;
+            return;
+        }
+        var valuesArray = this.data.slice(0);
+        search = search.trim().toLowerCase();
+        var filtered = valuesArray.map(function (obj) {
+            // If optgroup
+            if (obj.hasOwnProperty('options')) {
+                var optgroupObj = obj;
+                var options = optgroupObj.options.filter(function (opt) {
+                    return opt.text.toLowerCase().indexOf(search) !== -1;
+                });
+                if (options.length !== 0) {
+                    var optgroup = Object.assign({}, optgroupObj); // Break pointer
+                    optgroup.options = options;
+                    return optgroup;
+                }
+            }
+            // If single option
+            if (obj.hasOwnProperty('text')) {
+                var optionObj = obj;
+                if (optionObj.text.toLowerCase().indexOf(search) !== -1) {
+                    return obj;
+                }
+            }
+            return null;
+        });
+        // Filter out false values
+        this.filtered = filtered.filter(function (info) { return info; });
+    };
+    return data;
+}());
+exports["default"] = data;
+function validateData(data) {
+    if (!data) {
+        console.error('Data must be an array of objects');
+        return;
+    }
+    var isValid = false;
+    var errorCount = 0;
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].hasOwnProperty('label')) {
+            if (data[i].hasOwnProperty('options')) {
+                var optgroup = data[i];
+                var options = optgroup.options;
+                for (var j = 0; j < options.length; j++) {
+                    isValid = validateOption(options[j]);
+                    if (!isValid) {
+                        errorCount++;
+                    }
+                }
+            }
+        }
+        else {
+            var option = data[i];
+            isValid = validateOption(option);
+            if (!isValid) {
+                errorCount++;
+            }
+        }
+    }
+    return errorCount === 0;
+}
+exports.validateData = validateData;
+function validateOption(option) {
+    if (option.text === undefined) {
+        console.error('Data object option must have at least have a text value. Check object: ' + JSON.stringify(option));
+        return false;
+    }
+    return true;
+}
+exports.validateOption = validateOption;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
+__webpack_require__(3);
+__webpack_require__(4); // Needed for IE to use custom events
+var config_1 = __webpack_require__(5);
 var helper_1 = __webpack_require__(0);
-var select_1 = __webpack_require__(5);
-var data_1 = __webpack_require__(6);
+var select_1 = __webpack_require__(6);
+var data_1 = __webpack_require__(1);
 var slim_1 = __webpack_require__(7);
 var SlimSelect = /** @class */ (function () {
     function SlimSelect(info) {
@@ -588,13 +908,13 @@ exports["default"] = SlimSelect;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // Polyfill for creating CustomEvents on IE9/10/11
@@ -644,7 +964,7 @@ try {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -719,7 +1039,7 @@ exports["default"] = config;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -848,326 +1168,6 @@ exports["default"] = select;
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
-// Class is responsible for managing the data
-var data = /** @class */ (function () {
-    function data(info) {
-        this.contentOpen = false;
-        this.contentPosition = 'below';
-        this.isOnChangeEnabled = true;
-        this.main = info.main;
-        this.searchValue = '';
-        this.data = [];
-        this.filtered = null;
-        this.parseSelectData();
-        this.setSelectedFromSelect();
-    }
-    data.prototype.newOption = function (info) {
-        return {
-            id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
-            value: (info.value ? info.value : ''),
-            text: (info.text ? info.text : ''),
-            innerHTML: (info.innerHTML ? info.innerHTML : ''),
-            selected: (info.selected ? info.selected : false),
-            display: (info.display ? info.display : true),
-            disabled: (info.disabled ? info.disabled : false),
-            placeholder: (info.placeholder ? info.placeholder : ''),
-            data: (info.data ? info.data : {})
-        };
-    };
-    // Add to the current data array
-    data.prototype.add = function (data) {
-        var dataObject = {
-            id: String(Math.floor(Math.random() * 100000000)),
-            value: data.value,
-            text: data.text,
-            innerHTML: '',
-            selected: false,
-            display: true,
-            disabled: false,
-            placeholder: '',
-            data: {}
-        };
-        this.data.push(dataObject);
-    };
-    // From passed in select element pull optgroup and options into data
-    data.prototype.parseSelectData = function () {
-        this.data = [];
-        // Loop through nodes and create data
-        var element = this.main.select.element;
-        var nodes = element.childNodes;
-        for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i].nodeName === 'OPTGROUP') {
-                var node = nodes[i];
-                var optgroup = {
-                    label: node.label,
-                    options: []
-                };
-                var options = nodes[i].childNodes;
-                for (var ii = 0; ii < options.length; ii++) {
-                    if (options[ii].nodeName === 'OPTION') {
-                        optgroup.options.push(this.pullOptionData(options[ii]));
-                    }
-                }
-                this.data.push(optgroup);
-            }
-            else if (nodes[i].nodeName === 'OPTION') {
-                this.data.push(this.pullOptionData(nodes[i]));
-            }
-        }
-    };
-    // From passed in option pull pieces of usable information
-    data.prototype.pullOptionData = function (option) {
-        return {
-            id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
-            value: option.value,
-            text: option.text,
-            innerHTML: option.innerHTML,
-            selected: option.selected,
-            disabled: option.disabled,
-            placeholder: option.dataset.placeholder || null,
-            data: option.dataset
-        };
-    };
-    // From select element get current selected and set selected
-    data.prototype.setSelectedFromSelect = function () {
-        var options = this.main.select.element.options;
-        if (this.main.config.isMultiple) {
-            var newSelected = [];
-            for (var i = 0; i < options.length; i++) {
-                var option = options[i];
-                if (option.selected) {
-                    newSelected.push(this.getObjectFromData(option.value, 'value').id);
-                }
-            }
-            this.setSelected(newSelected, 'id');
-        }
-        else {
-            // Single select element
-            if (options.selectedIndex !== -1) {
-                var option = options[options.selectedIndex];
-                var value = option.value;
-                this.setSelected(value, 'value');
-            }
-        }
-    };
-    // From value set the selected value
-    data.prototype.setSelected = function (value, type) {
-        if (type === void 0) { type = 'id'; }
-        // Loop through data and set selected values
-        for (var i = 0; i < this.data.length; i++) {
-            // Deal with optgroups
-            if (this.data[i].hasOwnProperty('label')) {
-                if (this.data[i].hasOwnProperty('options')) {
-                    var options = this.data[i].options;
-                    for (var o = 0; o < options.length; o++) {
-                        options[o].selected = this.shouldBeSelected(options[o], value, type);
-                    }
-                }
-            }
-            else {
-                this.data[i].selected = this.shouldBeSelected(this.data[i], value, type);
-            }
-        }
-    };
-    // Determines whether or not passed in option should be selected based upon possible values
-    data.prototype.shouldBeSelected = function (option, value, type) {
-        if (type === void 0) { type = 'id'; }
-        if (Array.isArray(value)) {
-            for (var i = 0; i < value.length; i++) {
-                if (String(option[type]) === String(value[i])) {
-                    return true;
-                }
-            }
-        }
-        else {
-            if (String(option[type]) === String(value)) {
-                return true;
-            }
-        }
-        return false;
-    };
-    // From data get option | option[] of selected values
-    // If single select return last selected value
-    data.prototype.getSelected = function () {
-        var value = null;
-        var values = [];
-        for (var i = 0; i < this.data.length; i++) {
-            // Deal with optgroups
-            if (this.data[i].hasOwnProperty('label')) {
-                if (this.data[i].hasOwnProperty('options')) {
-                    var options = this.data[i].options;
-                    for (var o = 0; o < options.length; o++) {
-                        if (options[o].selected) {
-                            // If single return option
-                            if (!this.main.config.isMultiple) {
-                                value = options[o];
-                            }
-                            else {
-                                // Push to multiple array
-                                values.push(options[o]);
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                // Push options to array
-                if (this.data[i].selected) {
-                    // If single return option
-                    if (!this.main.config.isMultiple) {
-                        value = this.data[i];
-                    }
-                    else {
-                        // Push to multiple array
-                        values.push(this.data[i]);
-                    }
-                }
-            }
-        }
-        // Either return array or object or null
-        if (this.main.config.isMultiple) {
-            return values;
-        }
-        return value;
-    };
-    // If select type is multiple append value and set selected
-    data.prototype.addToSelected = function (value, type) {
-        if (type === void 0) { type = 'id'; }
-        if (this.main.config.isMultiple) {
-            var values = [];
-            var selected = this.getSelected();
-            for (var i = 0; i < selected.length; i++) {
-                values.push(selected[i][type]);
-            }
-            values.push(value);
-            this.setSelected(values, type);
-        }
-    };
-    // Remove object from selected
-    data.prototype.removeFromSelected = function (value, type) {
-        if (type === void 0) { type = 'id'; }
-        if (this.main.config.isMultiple) {
-            var values = [];
-            var selected = this.getSelected();
-            for (var i = 0; i < selected.length; i++) {
-                if (String(selected[i][type]) !== String(value)) {
-                    values.push(selected[i][type]);
-                }
-            }
-            this.setSelected(values, type);
-        }
-    };
-    // Trigger onChange callback
-    data.prototype.onDataChange = function () {
-        if (this.main.onChange && this.isOnChangeEnabled) {
-            this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())));
-        }
-    };
-    // Take in a value loop through the data till you find it and return it
-    data.prototype.getObjectFromData = function (value, type) {
-        if (type === void 0) { type = 'id'; }
-        for (var i = 0; i < this.data.length; i++) {
-            // If option check if value is the same
-            if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
-                return this.data[i];
-            }
-            // If optgroup loop through options
-            if (this.data[i].hasOwnProperty('options')) {
-                var optgroupObject = this.data[i];
-                for (var ii = 0; ii < optgroupObject.options.length; ii++) {
-                    if (String(optgroupObject.options[ii][type]) === String(value)) {
-                        return optgroupObject.options[ii];
-                    }
-                }
-            }
-        }
-        return null;
-    };
-    // Take in search string and return filtered list of values
-    data.prototype.search = function (search) {
-        this.searchValue = search;
-        if (search.trim() === '') {
-            this.filtered = null;
-            return;
-        }
-        var valuesArray = this.data.slice(0);
-        search = search.trim().toLowerCase();
-        var filtered = valuesArray.map(function (obj) {
-            // If optgroup
-            if (obj.hasOwnProperty('options')) {
-                var optgroupObj = obj;
-                var options = optgroupObj.options.filter(function (opt) {
-                    return opt.text.toLowerCase().indexOf(search) !== -1;
-                });
-                if (options.length !== 0) {
-                    var optgroup = Object.assign({}, optgroupObj); // Break pointer
-                    optgroup.options = options;
-                    return optgroup;
-                }
-            }
-            // If single option
-            if (obj.hasOwnProperty('text')) {
-                var optionObj = obj;
-                if (optionObj.text.toLowerCase().indexOf(search) !== -1) {
-                    return obj;
-                }
-            }
-            return null;
-        });
-        // Filter out false values
-        this.filtered = filtered.filter(function (info) { return info; });
-    };
-    return data;
-}());
-exports["default"] = data;
-function validateData(data) {
-    if (!data) {
-        console.error('Data must be an array of objects');
-        return;
-    }
-    var isValid = false;
-    var errorCount = 0;
-    for (var i = 0; i < data.length; i++) {
-        if (data[i].hasOwnProperty('label')) {
-            if (data[i].hasOwnProperty('options')) {
-                var optgroup = data[i];
-                var options = optgroup.options;
-                for (var j = 0; j < options.length; j++) {
-                    isValid = validateOption(options[j]);
-                    if (!isValid) {
-                        errorCount++;
-                    }
-                }
-            }
-        }
-        else {
-            var option = data[i];
-            isValid = validateOption(option);
-            if (!isValid) {
-                errorCount++;
-            }
-        }
-    }
-    return errorCount === 0;
-}
-exports.validateData = validateData;
-function validateOption(option) {
-    if (option.text === undefined) {
-        console.error('Data object option must have at least have a text value. Check object: ' + JSON.stringify(option));
-        return false;
-    }
-    return true;
-}
-exports.validateOption = validateOption;
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1175,6 +1175,7 @@ exports.validateOption = validateOption;
 
 exports.__esModule = true;
 var helper_1 = __webpack_require__(0);
+var data_1 = __webpack_require__(1);
 // Class is responsible for creating all the elements
 var slim = /** @class */ (function () {
     function slim(info) {
@@ -1511,17 +1512,27 @@ var slim = /** @class */ (function () {
                     return;
                 }
                 var addableValue = _this.main.addable(inputValue);
+                var addableValueStr = '';
                 if (!addableValue) {
                     return;
                 }
-                var info = _this.main.data.newOption({
-                    text: addableValue,
-                    value: addableValue
-                });
-                _this.main.addData(info);
+                if (typeof addableValue == 'object') {
+                    var validValue = data_1.validateOption(addableValue);
+                    if (validValue) {
+                        _this.main.addData(addableValue);
+                        addableValueStr = (addableValue.value ? addableValue.value : addableValue.text);
+                    }
+                }
+                else {
+                    _this.main.addData(_this.main.data.newOption({
+                        text: addableValue,
+                        value: addableValue
+                    }));
+                    addableValueStr = addableValue;
+                }
                 _this.main.search('');
                 setTimeout(function () {
-                    _this.main.set(addableValue, 'value', false, false);
+                    _this.main.set(addableValueStr, 'value', false, false);
                 }, 100);
                 // Close it only if closeOnSelect = true
                 if (_this.main.config.closeOnSelect) {
