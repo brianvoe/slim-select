@@ -307,14 +307,15 @@ export default class slim {
 
   searchDiv (): search {
     var container = document.createElement('div')
+    var input = document.createElement('input')
     container.classList.add(this.main.config.search)
 
     // We still want the search to be tabable but not shown
     if (!this.main.config.showSearch) {
       container.classList.add(this.main.config.hide)
+      input.readOnly = true
     }
 
-    var input = document.createElement('input')
     input.type = 'search'
     input.placeholder = 'Search'
     input.tabIndex = 0
