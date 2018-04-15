@@ -89,7 +89,10 @@
       new SlimSelect({
         select: '#addableMultiple',
         addable: (value) => {
-          return value
+          return {
+            text: value,
+            value: value.toLowerCase()
+          }
         }
       })
 
@@ -413,8 +416,14 @@
               // return false or null if you do not want to allow value to be submitted
               if (value === 'bad') {return false}
 
-              // Return the value you want to add
+              // Return the value string
               return value // Optional - value alteration // ex: value.toLowerCase()
+
+              // Optional - Return a valid data object. See methods/setDat for list of valid options
+              return {
+                text: value,
+                value: value.toLowerCase()
+              }
             }
           })
         </code>
