@@ -1,6 +1,6 @@
 import SlimSelect from './index'
 import {ensureElementInView, isValueInArrayOfObjects, highlight} from './helper'
-import {option, optgroup, dataObject} from './data'
+import {option, optgroup, dataObject, validateOption} from './data'
 import select from './select';
 
 interface singleSelected {
@@ -379,16 +379,26 @@ export default class slim {
         if (inputValue.trim() === '') {this.search.input.focus(); return}
 
         let addableValue = this.main.addable(inputValue)
+        let addableValueStr = ''
         if (!addableValue) {return}
-        let info = this.main.data.newOption({
-          text: addableValue,
-          value: addableValue
-        })
-        this.main.addData(info)
+
+        if (typeof addableValue == 'object') {
+          let validValue = validateOption(addableValue)
+          if (validValue) {
+            this.main.addData(addableValue)
+            addableValueStr = (addableValue.value ? addableValue.value : addableValue.text)
+          }
+        } else {
+          this.main.addData(this.main.data.newOption({
+            text: addableValue,
+            value: addableValue
+          }))
+          addableValueStr = addableValue
+        }
 
         this.main.search('')
         setTimeout(() => { // Temp fix to solve multi render issue
-          this.main.set(addableValue, 'value', false, false)
+          this.main.set(addableValueStr, 'value', false, false)
         }, 100)
 
         // Close it only if closeOnSelect = true
