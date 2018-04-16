@@ -3,9 +3,9 @@ import './slimselect.scss'
 import 'custom-event-polyfill' // Needed for IE to use custom events
 
 import Config from './config'
-import {hasClassInTree, putContent, debounce, ensureElementInView} from './helper'
+import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
-import Data, {dataArray, dataObject, optgroup, option, validateData} from './data'
+import Data, { dataArray, dataObject, optgroup, option, validateData } from './data'
 import Slim from './slim'
 import select from './select'
 
@@ -13,6 +13,7 @@ interface constructor {
   select: string | Element
   data: dataArray
   showSearch: boolean
+  searchPlaceholder: string
   searchText: string
   searchHighlight: boolean
   closeOnSelect: boolean
@@ -46,7 +47,7 @@ class SlimSelect {
   afterOpen: Function = null
   beforeClose: Function = null
   afterClose: Function = null
-  constructor (info: constructor) {
+  constructor(info: constructor) {
     this.validate(info)
     let selectElement = <HTMLSelectElement>(typeof info.select === 'string' ? <HTMLSelectElement>document.querySelector(info.select) : info.select)
 
@@ -54,15 +55,16 @@ class SlimSelect {
     if (selectElement.dataset.ssid) { this.destroy(selectElement.dataset.ssid) }
 
     // Set ajax function if passed in
-    if (info.ajax) {this.ajax = info.ajax}
+    if (info.ajax) { this.ajax = info.ajax }
 
     // Add addable if option is passed in
-    if (info.addable) {this.addable = info.addable}
+    if (info.addable) { this.addable = info.addable }
 
     this.config = new Config({
       select: selectElement,
       isAjax: (info.ajax ? true : false),
       showSearch: info.showSearch,
+      searchPlaceholder: info.searchPlaceholder,
       searchText: info.searchText,
       searchHighlight: info.searchHighlight,
       closeOnSelect: info.closeOnSelect,
@@ -111,21 +113,21 @@ class SlimSelect {
     }), false)
 
     // Add event callbacks after everthing has been created
-    if (info.beforeOnChange) {this.beforeOnChange = info.beforeOnChange}
-    if (info.onChange) {this.onChange = info.onChange}
-    if (info.beforeOpen) {this.beforeOpen = info.beforeOpen}
-    if (info.afterOpen) {this.afterOpen = info.afterOpen}
-    if (info.beforeClose) {this.beforeClose = info.beforeClose}
-    if (info.afterClose) {this.afterClose = info.afterClose}
+    if (info.beforeOnChange) { this.beforeOnChange = info.beforeOnChange }
+    if (info.onChange) { this.onChange = info.onChange }
+    if (info.beforeOpen) { this.beforeOpen = info.beforeOpen }
+    if (info.afterOpen) { this.afterOpen = info.afterOpen }
+    if (info.beforeClose) { this.beforeClose = info.beforeClose }
+    if (info.afterClose) { this.afterClose = info.afterClose }
   }
 
-  validate (info: constructor) {
+  validate(info: constructor) {
     let select = <HTMLSelectElement>(typeof info.select === 'string' ? <HTMLSelectElement>document.querySelector(info.select) : info.select)
     if (!select) { throw new Error('Could not find select element') }
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
   }
 
-  selected (): string | string[] {
+  selected(): string | string[] {
     if (this.config.isMultiple) {
       let selected = this.data.getSelected() as option[]
       let outputSelected = []
@@ -140,7 +142,7 @@ class SlimSelect {
   }
 
   // Sets value of the select, adds it to data and original select
-  set (value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
+  set(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
     if (this.config.isMultiple && !Array.isArray(value)) {
       this.data.addToSelected(value, type)
     } else {
@@ -153,10 +155,10 @@ class SlimSelect {
     if (close) { this.close() }
   }
 
-  setData (data: dataArray) {
+  setData(data: dataArray) {
     // Validate data if passed in
     let isValid = validateData(data)
-    if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
+    if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
 
     let newData = JSON.parse(JSON.stringify(data))
     let selected = this.data.getSelected()
@@ -183,10 +185,10 @@ class SlimSelect {
   }
 
   // addData will append to the current data set
-  addData (data: option) {
+  addData(data: option) {
     // Validate data if passed in
     let isValid = validateData([data])
-    if (!isValid) { console.error('Validation problem on: #'+this.select.element.id); return} // If data passed in is not valid DO NOT parse, set and render
+    if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
 
     let option = this.data.newOption(data)
     this.data.add(option)
@@ -197,18 +199,18 @@ class SlimSelect {
   }
 
   // Open content section
-  open (): void {
+  open(): void {
     // Dont open if disabled
-    if (!this.config.isEnabled) {return}
-    
+    if (!this.config.isEnabled) { return }
+
     // Dont do anything if the content is already open
-    if (this.data.contentOpen) {return}
-    
+    if (this.data.contentOpen) { return }
+
     // Focus on input field
     this.slim.search.input.focus()
 
     // Run beforeOpen callback
-    if (this.beforeOpen) {this.beforeOpen()}
+    if (this.beforeOpen) { this.beforeOpen() }
 
     if (this.config.isMultiple) {
       this.slim.multiSelected.plus.classList.add('ss-cross')
@@ -216,7 +218,7 @@ class SlimSelect {
       this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down')
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
-    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove: this.config.openBelow))
+    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow))
     this.slim.content.classList.add(this.config.open)
 
     // Check showContent to see if they want to specifically show in a certain direction
@@ -232,25 +234,25 @@ class SlimSelect {
         this.moveContentBelow()
       }
     }
-    
+
 
     // Move to selected option for single option
     if (!this.config.isMultiple) {
       let selected = this.data.getSelected() as option
       if (selected) {
         let selectedId = selected.id
-        let selectedOption = this.slim.list.querySelector('[data-id="'+selectedId+'"]')
+        let selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]')
         if (selectedOption) {
           ensureElementInView(this.slim.list, selectedOption)
         }
       }
     }
 
-    
+
     // setTimeout is for animation completion
     setTimeout(() => {
       this.data.contentOpen = true
-      
+
       // Run afterOpen callback
       if (this.afterOpen) {
         this.afterOpen()
@@ -259,12 +261,12 @@ class SlimSelect {
   }
 
   // Close content section
-  close (): void {
+  close(): void {
     // Dont do anything if the content is already closed
-    if (!this.data.contentOpen) {return}
+    if (!this.data.contentOpen) { return }
 
     // Run beforeClose calback
-    if (this.beforeClose) {this.beforeClose()}
+    if (this.beforeClose) { this.beforeClose() }
 
     // this.slim.search.input.blur() // Removed due to safari quirk
     if (this.config.isMultiple) {
@@ -286,38 +288,38 @@ class SlimSelect {
     setTimeout(() => {
       this.slim.content.removeAttribute('style')
       this.data.contentPosition = 'below'
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
-      this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
+      this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openAbove)
+      this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow)
 
       // After content is closed lets blur on the input field
       this.slim.search.input.blur()
 
       // Run afterClose callback
-      if (this.afterClose) {this.afterClose()}
+      if (this.afterClose) { this.afterClose() }
     }, 300)
   }
 
-  moveContentAbove (): void {
-    let selectHeight = (this.config.isMultiple ? this.slim.multiSelected.container.offsetHeight: this.slim.singleSelected.container.offsetHeight)
+  moveContentAbove(): void {
+    let selectHeight = (this.config.isMultiple ? this.slim.multiSelected.container.offsetHeight : this.slim.singleSelected.container.offsetHeight)
     let contentHeight = this.slim.content.offsetHeight
     let height = selectHeight + contentHeight - 1
     this.slim.content.style.margin = '-' + height + 'px 0 0 0'
     this.slim.content.style.height = (height - selectHeight + 1) + 'px'
     this.slim.content.style['transform-origin'] = 'center bottom'
     this.data.contentPosition = 'above'
-    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openBelow)
-    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openAbove)
+    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow)
+    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openAbove)
   }
 
-  moveContentBelow (): void {
+  moveContentBelow(): void {
     this.slim.content.removeAttribute('style')
     this.data.contentPosition = 'below'
-    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.remove(this.config.openAbove)
-    this.slim[(this.config.isMultiple ? 'multiSelected': 'singleSelected')].container.classList.add(this.config.openBelow)
+    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openAbove)
+    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openBelow)
   }
 
   // Set to enabled, remove disabled classes and removed disabled from original select
-  enable (): void {
+  enable(): void {
     this.config.isEnabled = true
     if (this.config.isMultiple) {
       this.slim.multiSelected.container.classList.remove(this.config.disabled)
@@ -333,7 +335,7 @@ class SlimSelect {
   }
 
   // Set to disabled, add disabled classes and add disabled to original select
-  disable (): void {
+  disable(): void {
     this.config.isEnabled = false
     if (this.config.isMultiple) {
       this.slim.multiSelected.container.classList.add(this.config.disabled)
@@ -349,7 +351,7 @@ class SlimSelect {
   }
 
   // Take in string value and search current options
-  search (value: string): void {
+  search(value: string): void {
     // Only filter data and rerender if value has changed
     if (this.data.searchValue !== value) {
       this.slim.search.input.value = value
@@ -384,11 +386,11 @@ class SlimSelect {
     }
   }
 
-  setSearchText (text: string): void {
+  setSearchText(text: string): void {
     this.config.searchText = text
   }
 
-  render (): void {
+  render(): void {
     if (this.config.isMultiple) {
       this.slim.values()
     } else {
@@ -399,11 +401,11 @@ class SlimSelect {
   }
 
   // Display original select again and remove slim
-  destroy (id = null): void {
-    let slim = (id ? document.querySelector('.'+id) : this.slim.container)
+  destroy(id = null): void {
+    let slim = (id ? document.querySelector('.' + id) : this.slim.container)
     let select = (id ? <HTMLSelectElement>document.querySelector(`[data-ssid=${id}]`) : this.select.element)
     // If there is no slim dont do anything
-    if (!slim || !select) {return}
+    if (!slim || !select) { return }
 
     // Show original select
     select.style.display = null
