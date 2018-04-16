@@ -249,6 +249,11 @@
             // or
             select: document.querySelector('.element .you #want')
           })
+
+          // If you already have a created slim select you can select your div
+          // and continue to use slim select off of the element
+          let el = document.querySelector('.element .you #want')
+          el.slim.open()
         </code>
       </pre>
     </div>

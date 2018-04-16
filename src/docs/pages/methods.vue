@@ -138,10 +138,8 @@ export default {
       },
       setOpenClose () {
         if (!this.setOpenCloseSingle.data.contentOpen) {
-          setTimeout(() => {
-            this.setOpenCloseSingle.open()
-            this.setOpenCloseMultiple.open()
-          }, 100)
+          this.setOpenCloseSingle.open()
+          this.setOpenCloseMultiple.open()
         }
       },
       setCreate () {

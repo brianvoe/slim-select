@@ -3,6 +3,9 @@ import {ensureElementInView, isValueInArrayOfObjects, highlight} from './helper'
 import {option, optgroup, dataObject, validateOption} from './data'
 import select from './select';
 
+interface ContainerElement extends HTMLDivElement {
+  slim: SlimSelect
+}
 interface singleSelected {
   container: HTMLDivElement
   placeholder: HTMLSpanElement
@@ -29,7 +32,7 @@ interface search {
 // Class is responsible for creating all the elements
 export default class slim {
   main: SlimSelect
-  container: HTMLDivElement
+  container: ContainerElement
   singleSelected: singleSelected
   multiSelected: multiSelected
   content: HTMLDivElement
@@ -40,6 +43,7 @@ export default class slim {
 
     // Create elements in order of appending
     this.container = this.containerDiv()
+    this.container.slim = info.main
     this.content = this.contentDiv()
     this.search = this.searchDiv()
     this.list = this.listDiv()
@@ -58,9 +62,9 @@ export default class slim {
   }
 
   // Create main container
-  containerDiv (): HTMLDivElement {
+  containerDiv (): ContainerElement {
     // Create main container
-    let container = document.createElement('div')
+    let container = document.createElement('div') as ContainerElement
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
 
