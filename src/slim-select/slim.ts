@@ -1,6 +1,6 @@
 import SlimSelect from './index'
-import {ensureElementInView, isValueInArrayOfObjects, highlight} from './helper'
-import {option, optgroup, dataObject, validateOption} from './data'
+import { ensureElementInView, isValueInArrayOfObjects, highlight } from './helper'
+import { option, optgroup, dataObject, validateOption } from './data'
 import select from './select';
 
 interface ContainerElement extends HTMLDivElement {
@@ -38,7 +38,7 @@ export default class slim {
   content: HTMLDivElement
   search: search
   list: HTMLDivElement
-  constructor (info: {main: SlimSelect}) {
+  constructor(info: { main: SlimSelect }) {
     this.main = info.main
 
     // Create elements in order of appending
@@ -62,7 +62,7 @@ export default class slim {
   }
 
   // Create main container
-  containerDiv (): ContainerElement {
+  containerDiv(): ContainerElement {
     // Create main container
     let container = document.createElement('div') as ContainerElement
     container.classList.add(this.main.config.id)
@@ -77,17 +77,17 @@ export default class slim {
     return container
   }
 
-  singleSelectedDiv (): singleSelected {
-    let container:HTMLDivElement = document.createElement('div')
+  singleSelectedDiv(): singleSelected {
+    let container: HTMLDivElement = document.createElement('div')
     container.classList.add(this.main.config.singleSelected)
 
     // Placeholder text
-    let placeholder:HTMLSpanElement = document.createElement('span')
+    let placeholder: HTMLSpanElement = document.createElement('span')
     placeholder.classList.add('placeholder')
     container.appendChild(placeholder)
 
     // Deselect
-    let deselect:HTMLSpanElement = null
+    let deselect: HTMLSpanElement = null
     deselect = document.createElement('span')
     deselect.innerHTML = 'X'
     deselect.classList.add('ss-deselect')
@@ -98,7 +98,7 @@ export default class slim {
     container.appendChild(deselect)
 
     // Arrow
-    var arrowContainer:HTMLSpanElement = document.createElement('span')
+    var arrowContainer: HTMLSpanElement = document.createElement('span')
     arrowContainer.classList.add(this.main.config.arrow)
     let arrowIcon = document.createElement('span')
     arrowIcon.classList.add('arrow-down')
@@ -124,7 +124,7 @@ export default class slim {
   }
 
   // Based upon current selection set placeholder text
-  placeholder (): void {
+  placeholder(): void {
     let selected = <option>this.main.data.getSelected()
 
     // Placeholder display
@@ -143,11 +143,11 @@ export default class slim {
   }
 
   // Based upon current selection/settings hide/show deselect
-  deselect (): void {
+  deselect(): void {
     // if allowDeselect is false just hide it
     if (!this.main.config.allowDeselect) {
       this.singleSelected.deselect.classList.add('ss-hide')
-      return 
+      return
     }
 
     if (this.main.selected() === '') {
@@ -157,7 +157,7 @@ export default class slim {
     }
   }
 
-  multiSelectedDiv (): multiSelected {
+  multiSelectedDiv(): multiSelected {
     let container = document.createElement('div')
     container.classList.add(this.main.config.multiSelected)
 
@@ -198,11 +198,11 @@ export default class slim {
 
   // Get selected values and append to multiSelected values container
   // and remove those who shouldnt exist
-  values (): void {
-    if (!this.main.config.isMultiple) {return}
+  values(): void {
+    if (!this.main.config.isMultiple) { return }
     let currentNodes = this.multiSelected.values.childNodes
     let selected = <option[]>this.main.data.getSelected()
-    
+
     // Remove nodes that shouldnt be there
     let exists
     let nodesToRemove = []
@@ -240,7 +240,7 @@ export default class slim {
         } else if (s === 0) {
           this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (<any>currentNodes[s]))
         } else {
-          (<any>currentNodes[s-1]).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
+          (<any>currentNodes[s - 1]).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
         }
       }
     }
@@ -254,7 +254,7 @@ export default class slim {
     }
   }
 
-  valueDiv (option: option): HTMLDivElement {
+  valueDiv(option: option): HTMLDivElement {
     let value = document.createElement('div')
     value.classList.add(this.main.config.value)
     value.dataset.id = option.id
@@ -303,13 +303,13 @@ export default class slim {
   }
 
   // Create content container
-  contentDiv (): HTMLDivElement {
+  contentDiv(): HTMLDivElement {
     let container = document.createElement('div')
     container.classList.add(this.main.config.content)
     return container
   }
 
-  searchDiv (): search {
+  searchDiv(): search {
     var container = document.createElement('div')
     var input = document.createElement('input')
     container.classList.add(this.main.config.search)
@@ -321,7 +321,7 @@ export default class slim {
     }
 
     input.type = 'search'
-    input.placeholder = 'Search'
+    input.placeholder = this.main.config.searchPlaceholder
     input.tabIndex = 0
     input.onclick = (e) => {
       setTimeout(() => {
@@ -381,11 +381,11 @@ export default class slim {
         e.stopPropagation()
 
         let inputValue = this.search.input.value
-        if (inputValue.trim() === '') {this.search.input.focus(); return}
+        if (inputValue.trim() === '') { this.search.input.focus(); return }
 
         let addableValue = this.main.addable(inputValue)
         let addableValueStr = ''
-        if (!addableValue) {return}
+        if (!addableValue) { return }
 
         if (typeof addableValue == 'object') {
           let validValue = validateOption(addableValue)
@@ -423,7 +423,7 @@ export default class slim {
     }
   }
 
-  highlightUp (): void {
+  highlightUp(): void {
     var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
     var prev = null
     if (highlighted) {
@@ -437,7 +437,7 @@ export default class slim {
         }
       }
     } else {
-      var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+      var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
       prev = allOptions[allOptions.length - 1]
     }
 
@@ -449,7 +449,7 @@ export default class slim {
       var parent = <HTMLDivElement>highlighted.parentNode
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.previousSibling) {
-          let prevNodes = (<HTMLDivElement>parent.previousSibling).querySelectorAll('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+          let prevNodes = (<HTMLDivElement>parent.previousSibling).querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
           if (prevNodes.length) {
             prev = prevNodes[prevNodes.length - 1]
           }
@@ -465,7 +465,7 @@ export default class slim {
     }
   }
 
-  highlightDown (): void {
+  highlightDown(): void {
     var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
     var next = null
 
@@ -480,7 +480,7 @@ export default class slim {
         }
       }
     } else {
-      next = <HTMLDivElement>this.list.querySelector('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+      next = <HTMLDivElement>this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
     }
 
     // Check if parent is optgroup
@@ -489,7 +489,7 @@ export default class slim {
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.nextSibling) {
           let sibling = <HTMLDivElement>parent.nextSibling
-          next = <HTMLDivElement>sibling.querySelector('.' + this.main.config.option + ':not(.'+this.main.config.disabled+')')
+          next = <HTMLDivElement>sibling.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
         }
       }
     }
@@ -503,7 +503,7 @@ export default class slim {
   }
 
   // Create main container that options will reside
-  listDiv (): HTMLDivElement {
+  listDiv(): HTMLDivElement {
     var list = document.createElement('div')
     list.classList.add(this.main.config.list)
     list.onmousewheel = (e) => {
@@ -513,7 +513,7 @@ export default class slim {
         delta = (e.type == 'DOMMouseScroll' ? e.detail * -40 : e.wheelDelta),
         up = delta > 0;
 
-      var prevent = function() {
+      var prevent = function () {
         e.stopPropagation();
         e.preventDefault();
         e.returnValue = false;
@@ -535,7 +535,7 @@ export default class slim {
   }
 
   // Loop through data || filtered data and build options and append to list container
-  options (content: string = ''): void {
+  options(content: string = ''): void {
     var data = this.main.data.filtered || this.main.data.data
 
     // Clear out innerHtml
@@ -597,7 +597,7 @@ export default class slim {
   }
 
   // Create single option
-  option (data): HTMLDivElement {
+  option(data): HTMLDivElement {
     // Add hidden placeholder
     if (data.placeholder) {
       let placeholder = document.createElement('div')

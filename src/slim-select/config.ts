@@ -2,6 +2,7 @@ interface constructor {
   select: HTMLSelectElement
   isAjax: boolean
   showSearch: boolean
+  searchPlaceholder: string
   searchText: string
   searchHighlight: boolean
   closeOnSelect: boolean
@@ -23,6 +24,7 @@ export default class config {
   searchHighlight: boolean = false
   closeOnSelect: boolean = true
   showContent: string = 'auto' // options: auto, up, down
+  searchPlaceholder: string = 'Search'
   searchText: string = 'No Results'
   placeholderText: string = 'Select Value'
   allowDeselect: boolean = false
@@ -55,7 +57,7 @@ export default class config {
   readonly disabled: string = 'ss-disabled'
   readonly hide: string = 'ss-hide'
 
-  constructor (info: constructor) {
+  constructor(info: constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
     this.style = info.select.style.cssText
     this.class = info.select.classList
@@ -65,11 +67,12 @@ export default class config {
     this.showSearch = (info.showSearch === false ? false : true)
     this.searchHighlight = (info.searchHighlight === true ? true : false)
     this.closeOnSelect = (info.closeOnSelect === false ? false : true)
-    if (info.showContent) {this.showContent = info.showContent}
+    if (info.showContent) { this.showContent = info.showContent }
     this.isEnabled = (info.isEnabled === false ? false : true)
-    if (info.searchText) {this.searchText = info.searchText}
-    if (info.placeholderText) {this.placeholderText = info.placeholderText}
+    if (info.searchPlaceholder) { this.searchPlaceholder = info.searchPlaceholder }
+    if (info.searchText) { this.searchText = info.searchText }
+    if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
-    if (info.valuesUseText) {this.valuesUseText = info.valuesUseText}
+    if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
   }
 }
