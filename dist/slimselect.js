@@ -538,6 +538,7 @@ var SlimSelect = /** @class */ (function () {
             select: selectElement,
             isAjax: (info.ajax ? true : false),
             showSearch: info.showSearch,
+            searchPlaceholder: info.searchPlaceholder,
             searchText: info.searchText,
             searchHighlight: info.searchHighlight,
             closeOnSelect: info.closeOnSelect,
@@ -982,6 +983,7 @@ var config = /** @class */ (function () {
         this.searchHighlight = false;
         this.closeOnSelect = true;
         this.showContent = 'auto'; // options: auto, up, down
+        this.searchPlaceholder = 'Search';
         this.searchText = 'No Results';
         this.placeholderText = 'Select Value';
         this.allowDeselect = false;
@@ -1024,6 +1026,9 @@ var config = /** @class */ (function () {
             this.showContent = info.showContent;
         }
         this.isEnabled = (info.isEnabled === false ? false : true);
+        if (info.searchPlaceholder) {
+            this.searchPlaceholder = info.searchPlaceholder;
+        }
         if (info.searchText) {
             this.searchText = info.searchText;
         }
@@ -1442,7 +1447,7 @@ var slim = /** @class */ (function () {
             input.readOnly = true;
         }
         input.type = 'search';
-        input.placeholder = 'Search';
+        input.placeholder = this.main.config.searchPlaceholder;
         input.tabIndex = 0;
         input.onclick = function (e) {
             setTimeout(function () {
