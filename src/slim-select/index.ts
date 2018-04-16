@@ -79,8 +79,8 @@ class SlimSelect {
     })
 
     this.data = new Data({ main: this })
-
     this.slim = new Slim({ main: this })
+
     // Add after original select element
     this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
 
@@ -232,7 +232,7 @@ class SlimSelect {
         this.moveContentBelow()
       }
     }
-    this.data.contentOpen = true
+    
 
     // Move to selected option for single option
     if (!this.config.isMultiple) {
@@ -246,11 +246,16 @@ class SlimSelect {
       }
     }
 
-    // Run afterOpen callback
-    if (this.afterOpen) {
-      // setTimeout is for animation completion
-      setTimeout(() => {this.afterOpen()}, 300)
-    }
+    
+    // setTimeout is for animation completion
+    setTimeout(() => {
+      this.data.contentOpen = true
+      
+      // Run afterOpen callback
+      if (this.afterOpen) {
+        this.afterOpen()
+      }
+    }, 300)
   }
 
   // Close content section

@@ -727,7 +727,6 @@ var SlimSelect = /** @class */ (function () {
                 this.moveContentBelow();
             }
         }
-        this.data.contentOpen = true;
         // Move to selected option for single option
         if (!this.config.isMultiple) {
             var selected = this.data.getSelected();
@@ -739,11 +738,14 @@ var SlimSelect = /** @class */ (function () {
                 }
             }
         }
-        // Run afterOpen callback
-        if (this.afterOpen) {
-            // setTimeout is for animation completion
-            setTimeout(function () { _this.afterOpen(); }, 300);
-        }
+        // setTimeout is for animation completion
+        setTimeout(function () {
+            _this.data.contentOpen = true;
+            // Run afterOpen callback
+            if (_this.afterOpen) {
+                _this.afterOpen();
+            }
+        }, 300);
     };
     // Close content section
     SlimSelect.prototype.close = function () {
@@ -1182,6 +1184,7 @@ var slim = /** @class */ (function () {
         this.main = info.main;
         // Create elements in order of appending
         this.container = this.containerDiv();
+        this.container.slim = info.main;
         this.content = this.contentDiv();
         this.search = this.searchDiv();
         this.list = this.listDiv();
@@ -1431,12 +1434,13 @@ var slim = /** @class */ (function () {
     slim.prototype.searchDiv = function () {
         var _this = this;
         var container = document.createElement('div');
+        var input = document.createElement('input');
         container.classList.add(this.main.config.search);
         // We still want the search to be tabable but not shown
         if (!this.main.config.showSearch) {
             container.classList.add(this.main.config.hide);
+            input.readOnly = true;
         }
-        var input = document.createElement('input');
         input.type = 'search';
         input.placeholder = 'Search';
         input.tabIndex = 0;

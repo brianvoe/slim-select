@@ -249,6 +249,11 @@
             // or
             select: document.querySelector('.element .you #want')
           })
+
+          // If you already have a created slim select you can select your div
+          // and continue to use slim select off of the element using the .slim data value
+          let el = document.querySelector('.element .you #want')
+          el.slim.open() // Or any other options/methods
         </code>
       </pre>
     </div>
@@ -419,7 +424,7 @@
               // Return the value string
               return value // Optional - value alteration // ex: value.toLowerCase()
 
-              // Optional - Return a valid data object. See methods/setDat for list of valid options
+              // Optional - Return a valid data object. See methods/setData for list of valid options
               return {
                 text: value,
                 value: value.toLowerCase()
