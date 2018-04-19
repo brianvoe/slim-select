@@ -89,7 +89,9 @@ export default class select {
   }
 
   disconnectMutationObserver (): void {
-    this.mutationObserver.disconnect()
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect()
+    }
   }
 
   // Create select element and optgroup/options

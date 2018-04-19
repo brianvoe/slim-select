@@ -1128,7 +1128,9 @@ var select = /** @class */ (function () {
         });
     };
     select.prototype.disconnectMutationObserver = function () {
-        this.mutationObserver.disconnect();
+        if (this.mutationObserver) {
+            this.mutationObserver.disconnect();
+        }
     };
     // Create select element and optgroup/options
     select.prototype.create = function (data) {
