@@ -38,9 +38,11 @@ For documentation and examples on all features see: http://slimselectjs.com
 ## Installation
 ```bash
 npm install slim-select
+```
 
-// or
+### or
 
+```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/slimselect.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/slimselect.min.css"> 
 ```
