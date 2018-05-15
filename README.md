@@ -1,4 +1,5 @@
-# Slim Select
+# Slim Select 
+## slimselectjs.com
 Slim advanced select dropdown
 
 [![Build Status](https://travis-ci.org/brianvoe/slim-select.svg?branch=master)](https://travis-ci.org/brianvoe/slim-select)
@@ -6,7 +7,7 @@ Slim advanced select dropdown
 
 <a href="https://www.buymeacoffee.com/brianvoe" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
-See the [docs](http://slimselectjs.com) for more details
+For documentation and examples on all features see: http://slimselectjs.com
 
 ## Features
 - No Dependencies
