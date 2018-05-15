@@ -4,6 +4,8 @@ Slim advanced select dropdown
 [![Build Status](https://travis-ci.org/brianvoe/slim-select.svg?branch=master)](https://travis-ci.org/brianvoe/slim-select)
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
 
+<a href="https://www.buymeacoffee.com/brianvoe" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 See the [docs](http://slimselectjs.com) for more details
 
 ## Features
