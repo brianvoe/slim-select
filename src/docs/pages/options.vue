@@ -327,7 +327,7 @@ export default {
             select: '#placeholder',
             ajax: function (search, callback) {
               // Check search value. If you dont like it callback(false) or callback('Message String')
-              if (search.length < 3) {
+              if (search.length &lt; 3) {
                 callback('Need 3 characters')
                 return
               }
@@ -339,7 +339,7 @@ export default {
               })
               .then(function (json) {
                 let data = []
-                for (let i = 0; i < json.length; i++) {
+                for (let i = 0; i &lt; json.length; i++) {
                   data.push({text: json[i].name})
                 }
                 
