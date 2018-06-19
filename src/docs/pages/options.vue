@@ -102,6 +102,7 @@ export default {
 
     new SlimSelect({
       select: "#selectInnerHTMLSingle",
+      searchHighlight: true,
       data: [
         {
           innerHTML: "<b>Bold Text</b>",
