@@ -1,8 +1,6 @@
 import SlimSelect from './index'
 
-interface constructor {
-  main: SlimSelect
-}
+interface constructor { main: SlimSelect }
 
 export type dataArray = dataObject[]
 export type dataObject = optgroup | option

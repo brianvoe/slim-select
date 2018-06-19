@@ -1,13 +1,10 @@
 import './slimselect.scss'
-
 import 'custom-event-polyfill' // Needed for IE to use custom events
-
 import Config from './config'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
-import Data, { dataArray, dataObject, optgroup, option, validateData } from './data'
+import Data, { dataArray, option, validateData } from './data'
 import Slim from './slim'
-import select from './select'
 
 interface constructor {
   select: string | Element

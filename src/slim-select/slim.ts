@@ -1,7 +1,6 @@
 import SlimSelect from './index'
 import { ensureElementInView, isValueInArrayOfObjects, highlight } from './helper'
-import { option, optgroup, dataObject, validateOption } from './data'
-import select from './select';
+import { option, optgroup, validateOption } from './data'
 
 interface ContainerElement extends HTMLDivElement {
   slim: SlimSelect
