@@ -152,6 +152,11 @@ class SlimSelect {
     if (close) { this.close() }
   }
 
+  // setSelected is just mapped to the set method 
+  setSelected(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
+    this.set(value, type, close, render)
+  }
+
   setData(data: dataArray) {
     // Validate data if passed in
     let isValid = validateData(data)
