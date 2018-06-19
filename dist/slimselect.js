@@ -163,14 +163,9 @@ function isValueInArrayOfObjects(selected, key, value) {
 }
 exports.isValueInArrayOfObjects = isValueInArrayOfObjects;
 function highlight(text, search, className) {
-    text = text.trim();
-    var textLower = text.trim().toLowerCase();
-    search = search.trim().toLowerCase();
-    var index = textLower.indexOf(search);
-    if (index >= 0) {
-        text = text.substring(0, index) + ("<span class=\"" + className + "\">") + text.substring(index, index + search.length) + '</span>' + text.substring(index + search.length);
-    }
-    return text;
+    var pattern = new RegExp('(>[^<.]*)(' + search.trim() + ')([^<.]*)', 'gi');
+    var replaceWith = '$1<span ' + (className ? 'class="' + className + '"' : '') + '">$2</span>$3';
+    return text.replace(pattern, replaceWith);
 }
 exports.highlight = highlight;
 
@@ -642,6 +637,13 @@ var SlimSelect = /** @class */ (function () {
             this.close();
         }
     };
+    // setSelected is just mapped to the set method 
+    SlimSelect.prototype.setSelected = function (value, type, close, render) {
+        if (type === void 0) { type = 'value'; }
+        if (close === void 0) { close = true; }
+        if (render === void 0) { render = true; }
+        this.set(value, type, close, render);
+    };
     SlimSelect.prototype.setData = function (data) {
         // Validate data if passed in
         var isValid = data_1.validateData(data);
@@ -1063,6 +1065,8 @@ var select = /** @class */ (function () {
         this.addAttributes();
         this.addEventListeners();
         this.addMutationObserver();
+        // Add slim to original select dropdown
+        this.element.slim = info.main;
     }
     select.prototype.setValue = function () {
         if (!this.main.data.getSelected()) {
@@ -1191,7 +1195,6 @@ var slim = /** @class */ (function () {
         this.main = info.main;
         // Create elements in order of appending
         this.container = this.containerDiv();
-        this.container.slim = info.main;
         this.content = this.contentDiv();
         this.search = this.searchDiv();
         this.list = this.listDiv();

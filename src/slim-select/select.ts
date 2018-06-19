@@ -20,6 +20,9 @@ export default class select {
     this.addAttributes()
     this.addEventListeners()
     this.addMutationObserver()
+
+    // Add slim to original select dropdown
+    this.element.slim = info.main
   }
 
   setValue (): void {

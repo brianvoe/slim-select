@@ -1,13 +1,10 @@
 import './slimselect.scss'
-
 import 'custom-event-polyfill' // Needed for IE to use custom events
-
 import Config from './config'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
-import Data, { dataArray, dataObject, optgroup, option, validateData } from './data'
+import Data, { dataArray, option, validateData } from './data'
 import Slim from './slim'
-import select from './select'
 
 interface constructor {
   select: string | Element
@@ -153,6 +150,11 @@ class SlimSelect {
     this.render()
 
     if (close) { this.close() }
+  }
+
+  // setSelected is just mapped to the set method 
+  setSelected(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
+    this.set(value, type, close, render)
   }
 
   setData(data: dataArray) {
