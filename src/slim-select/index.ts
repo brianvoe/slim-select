@@ -413,6 +413,9 @@ class SlimSelect {
     select.style.display = null
     delete select.dataset.ssid
 
+    // Remove slim from original select dropdown
+    this.select.element.slim = null
+
     // Remove slim select
     if (slim.parentElement) {
       slim.parentElement.removeChild(slim)
