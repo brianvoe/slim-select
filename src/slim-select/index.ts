@@ -19,7 +19,8 @@ interface constructor {
   allowDeselect: boolean
   isEnabled: boolean
   valuesUseText: boolean // Use text value when showing selected value
-
+  showOptionTooltips: boolean
+  
   // Events
   ajax: Function
   addable: Function
@@ -69,7 +70,8 @@ class SlimSelect {
       placeholderText: info.placeholder,
       allowDeselect: info.allowDeselect,
       isEnabled: info.isEnabled,
-      valuesUseText: info.valuesUseText
+      valuesUseText: info.valuesUseText,
+      showOptionTooltips: info.showOptionTooltips
     })
 
     this.select = new Select({

@@ -11,6 +11,7 @@ interface constructor {
   allowDeselect: boolean
   isEnabled: boolean
   valuesUseText: boolean
+  showOptionTooltips: boolean
 }
 
 export default class config {
@@ -30,6 +31,7 @@ export default class config {
   allowDeselect: boolean = false
   isEnabled: boolean = true
   valuesUseText: boolean = false
+  showOptionTooltips: boolean = false
 
   // Classes
   readonly main: string = 'ss-main'
@@ -74,5 +76,6 @@ export default class config {
     if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
+    if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
   }
 }
