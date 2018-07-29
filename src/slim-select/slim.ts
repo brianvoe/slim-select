@@ -612,6 +612,9 @@ export default class slim {
     } else {
       option.innerHTML = data.innerHTML
     }
+    if (this.main.config.showOptionTooltips) {
+      option.setAttribute('title', option.textContent)
+    }
     let master = this
     option.onclick = function (e) {
       e.preventDefault()

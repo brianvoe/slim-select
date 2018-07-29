@@ -541,7 +541,8 @@ var SlimSelect = /** @class */ (function () {
             placeholderText: info.placeholder,
             allowDeselect: info.allowDeselect,
             isEnabled: info.isEnabled,
-            valuesUseText: info.valuesUseText
+            valuesUseText: info.valuesUseText,
+            showOptionTooltips: info.showOptionTooltips
         });
         this.select = new select_1["default"]({
             select: selectElement,
@@ -901,6 +902,8 @@ var SlimSelect = /** @class */ (function () {
         // Show original select
         select.style.display = null;
         delete select.dataset.ssid;
+        // Remove slim from original select dropdown
+        this.select.element.slim = null;
         // Remove slim select
         if (slim.parentElement) {
             slim.parentElement.removeChild(slim);
@@ -991,6 +994,7 @@ var config = /** @class */ (function () {
         this.allowDeselect = false;
         this.isEnabled = true;
         this.valuesUseText = false;
+        this.showOptionTooltips = false;
         // Classes
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
@@ -1040,6 +1044,9 @@ var config = /** @class */ (function () {
         this.allowDeselect = (info.allowDeselect === true ? true : false);
         if (info.valuesUseText) {
             this.valuesUseText = info.valuesUseText;
+        }
+        if (info.showOptionTooltips) {
+            this.showOptionTooltips = info.showOptionTooltips;
         }
     }
     return config;
@@ -1743,6 +1750,9 @@ var slim = /** @class */ (function () {
         }
         else {
             option.innerHTML = data.innerHTML;
+        }
+        if (this.main.config.showOptionTooltips) {
+            option.setAttribute('title', option.textContent);
         }
         var master = this;
         option.onclick = function (e) {

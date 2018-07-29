@@ -250,6 +250,11 @@ export default {
         this.onChangeMultiple = value;
       }
     });
+    
+    new SlimSelect({
+      select: "#showOptionTooltips",
+      showOptionTooltips: true
+    });
   }
 };
 </script>
@@ -742,6 +747,31 @@ export default {
             onChange: (info) => {
               console.log(info)
             }
+          })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">showOptionTooltips</h2>
+      <p>
+        showOptionTooltips option is used to active displaying the on-hover tooltips for select options.
+        The tooltip text is equal to the option text content. 
+      </p>
+
+      <div v-if="showOptionTooltips"><strong>Show option tooltips: {{showOptionTooltips}}</strong></div>
+
+      <select id="showOptionTooltips">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#showOptionTooltips',
+            showOptionTooltips: true
           })
         </code>
       </pre>
