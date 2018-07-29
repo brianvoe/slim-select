@@ -751,9 +751,8 @@ export default {
         </code>
       </pre>
     </div>
-  </div>
-  
-  <div class="content">
+
+    <div class="content">
       <h2 class="header">showOptionTooltips</h2>
       <p>
         showOptionTooltips option is used to active displaying the on-hover tooltips for select options.
@@ -776,6 +775,6 @@ export default {
           })
         </code>
       </pre>
+    </div>
   </div>
-    
 </template>
