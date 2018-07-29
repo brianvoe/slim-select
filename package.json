@@ -26,6 +26,7 @@
     "multiselect"
   ],
   "scripts": {
+    "dev": "vue-build dev",
     "prod": "sh prod.sh"
   },
   "devDependencies": {
