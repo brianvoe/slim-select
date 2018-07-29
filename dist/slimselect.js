@@ -7,7 +7,7 @@
 		exports["SlimSelect"] = factory();
 	else
 		root["SlimSelect"] = factory();
-})(window, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -46,32 +46,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
 /******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -88,7 +68,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "/";
-/******/
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 2);
@@ -519,12 +498,12 @@ exports.validateOption = validateOption;
 
 exports.__esModule = true;
 __webpack_require__(3);
-__webpack_require__(5); // Needed for IE to use custom events
-var config_1 = __webpack_require__(6);
+__webpack_require__(4); // Needed for IE to use custom events
+var config_1 = __webpack_require__(5);
 var helper_1 = __webpack_require__(0);
-var select_1 = __webpack_require__(7);
+var select_1 = __webpack_require__(6);
 var data_1 = __webpack_require__(1);
-var slim_1 = __webpack_require__(8);
+var slim_1 = __webpack_require__(7);
 var SlimSelect = /** @class */ (function () {
     function SlimSelect(info) {
         var _this = this;
@@ -923,6 +902,8 @@ var SlimSelect = /** @class */ (function () {
         // Show original select
         select.style.display = null;
         delete select.dataset.ssid;
+        // Remove slim from original select dropdown
+        this.select.element.slim = null;
         // Remove slim select
         if (slim.parentElement) {
             slim.parentElement.removeChild(slim);
@@ -936,13 +917,12 @@ exports["default"] = SlimSelect;
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-// extracted by mini-css-extract-plugin
+// removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 4 */,
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // Polyfill for creating CustomEvents on IE9/10/11
@@ -992,7 +972,7 @@ try {
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1075,7 +1055,7 @@ exports["default"] = config;
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1208,7 +1188,7 @@ exports["default"] = select;
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
