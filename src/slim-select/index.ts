@@ -1,4 +1,4 @@
-import './slimselect.scss'
+// import './slimselect.scss'
 import 'custom-event-polyfill' // Needed for IE to use custom events
 import Config from './config'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
@@ -429,5 +429,3 @@ class SlimSelect {
 }
 
 export default SlimSelect
-declare var module: any;
-(module).exports = SlimSelect
