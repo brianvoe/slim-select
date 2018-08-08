@@ -9,7 +9,7 @@ interface Constructor {
 export default class select {
   element: HTMLSelectElement
   main: SlimSelect
-  mutationObserver: MutationObserver
+  mutationObserver: MutationObserver | null
   constructor (info: Constructor) {
     this.element = info.select
     this.main = info.main
@@ -19,10 +19,12 @@ export default class select {
 
     this.addAttributes()
     this.addEventListeners()
+    this.mutationObserver = null
     this.addMutationObserver()
 
     // Add slim to original select dropdown
-    this.element.slim = info.main
+    let el = this.element as any
+    el.slim = info.main
   }
 
   setValue (): void {
@@ -84,6 +86,8 @@ export default class select {
   }
 
   observeMutationObserver (): void {
+    if (!this.mutationObserver) {return}
+
     this.mutationObserver.observe(this.element, {
       attributes: true,
       childList: true,
@@ -117,7 +121,7 @@ export default class select {
     }
   }
 
-  createOption (info): HTMLOptionElement {
+  createOption (info: any): HTMLOptionElement {
     var option = document.createElement('option')
     option.value = info.value || info.text
     option.innerHTML = info.innerHTML || info.text

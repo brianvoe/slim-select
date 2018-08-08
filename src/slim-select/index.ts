@@ -83,7 +83,9 @@ class SlimSelect {
     this.slim = new Slim({ main: this })
 
     // Add after original select element
-    this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
+    if (this.select.element.parentNode) {
+      this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
+    }
 
     // If data is passed in lets set it
     // and thus will start the render
@@ -309,7 +311,7 @@ class SlimSelect {
     let height = selectHeight + contentHeight - 1
     this.slim.content.style.margin = '-' + height + 'px 0 0 0'
     this.slim.content.style.height = (height - selectHeight + 1) + 'px'
-    this.slim.content.style['transform-origin'] = 'center bottom'
+    this.slim.content.style.transformOrigin = 'center bottom'
     this.data.contentPosition = 'above'
     this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow)
     this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openAbove)
@@ -368,7 +370,7 @@ class SlimSelect {
           let master = this
           this.config.isSearching = true
           this.render()
-          this.ajax(value, function (info) {
+          this.ajax(value, function (info: any) {
             // Only process if return callback is not false
             master.config.isSearching = false
             if (Array.isArray(info)) {
@@ -405,7 +407,7 @@ class SlimSelect {
   }
 
   // Display original select again and remove slim
-  destroy(id = null): void {
+  destroy(id: string | null = null): void {
     let slim = (id ? document.querySelector('.' + id) : this.slim.container)
     let select = (id ? <HTMLSelectElement>document.querySelector(`[data-ssid=${id}]`) : this.select.element)
     // If there is no slim dont do anything
@@ -416,7 +418,8 @@ class SlimSelect {
     delete select.dataset.ssid
 
     // Remove slim from original select dropdown
-    this.select.element.slim = null
+    let el = this.select.element as any
+    el.slim = null
 
     // Remove slim select
     if (slim.parentElement) {
