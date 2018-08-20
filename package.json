@@ -14,6 +14,7 @@
   "main": "dist/slimselect.min.js",
   "style": "dist/slimselect.min.css",
   "sass": "src/slim-select/slimselect.scss",
+  "types": "dist/slimselect.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
@@ -26,14 +27,26 @@
     "multiselect"
   ],
   "scripts": {
-    "dev": "vue-build dev",
-    "prod": "sh prod.sh"
+    "dev": "vue-cli-service serve",
+    "build": "sh prod.sh",
+    "lint": "vue-cli-service lint"
   },
   "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.1",
+    "@vue/cli-plugin-typescript": "^3.0.1",
+    "@vue/cli-service": "^3.0.1",
+    "ajv": "^6.5.3",
     "chance": "^1.0.16",
     "clipboard": "^2.0.1",
-    "custom-event-polyfill": "^0.3.0",
+    "custom-event-polyfill": "^1.0.6",
+    "node-sass": "^4.9.0",
     "prismjs": "^1.15.0",
-    "vue-build": "^2.3.1"
+    "sass-loader": "^7.0.1",
+    "typescript": "^3.0.0",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.17",
+    "vuex": "^3.0.1",
+    "webpack-cli": "^3.1.0"
   }
 }

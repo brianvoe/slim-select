@@ -1,27 +1,29 @@
-<script>
-  import SlimSelect from 'slim-select/index.ts'
+<script lang="ts">
+  import Vue from 'vue'
+  import SlimSelect from '@/slim-select'
   import Chance from 'chance'
   let chance = new Chance()
 
-export default {
+  export default Vue.extend({
     data () {
       return {
-        selectedSingle: null,
+        selectedSingle: null as any,
         selectedSingleValue: '',
-        selectedMultiple: null,
+        selectedMultiple: null as any,
         selectedMultipleValue: '',
-        setSingle: null,
-        setMultiple: null,
-        setDataSingle: null,
-        setDataMultiple: null,
-        setSearchSingle: null,
-        setSearchMultiple: null,
-        setEnableSingle: null,
-        setEnableMultiple: null,
-        setOpenCloseSingle: null,
-        setOpenCloseMultiple: null,
-        setDestroySingle: null,
-        setDestroyMultiple: null
+        setSingle: null as any,
+        setMultiple: null as any,
+        setDataSingle: null as any,
+        setDataMultiple: null as any,
+        setSearchSingle: null as any,
+        setSearchMultiple: null as any,
+        setSearchTextSingle: null as any,
+        setEnableSingle: null as any,
+        setEnableMultiple: null as any,
+        setOpenCloseSingle: null as any,
+        setOpenCloseMultiple: null as any,
+        setDestroySingle: null as any,
+        setDestroyMultiple: null as any
       }
     },
     mounted () {
@@ -120,7 +122,7 @@ export default {
         this.setDataSingle.setData(values)
         this.setDataMultiple.setData(values)
       },
-      setSearch (e) {
+      setSearch () {
         setTimeout(() => {
           this.setSearchSingle.open()
           this.setSearchSingle.search('value 2')
@@ -155,7 +157,7 @@ export default {
         this.setDestroyMultiple.destroy()
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss">

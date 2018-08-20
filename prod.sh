@@ -1,17 +1,12 @@
+# Clear dist and docs folder
+rm -r dist
+rm -r docs
+
 # Build docs
-DOCS=true vue-build prod
+vue-cli-service build
 
 # Build minified
-vue-build prod
-mv ./dist/slimselect.js ./dist/slimselect.min.js
-mv ./dist/slimselect.css ./dist/slimselect.min.css
+# cd src/slim-select && webpack
 
 # Build non minified
-vue-build prod -u=false
-
-# Delete index.js and index.css
-rm ./dist/index.js
-rm ./dist/index.css
-rm ./dist/autotrack.js
-rm ./dist/favicon.ico
-rm ./dist/index.html
+# vue-build prod -u=false

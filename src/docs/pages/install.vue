@@ -1,6 +1,6 @@
 <script>
-  import SlimSelect from 'slim-select/index.ts'
-  import packageJson from 'src/../package.json'
+  import SlimSelect from '@/slim-select'
+  import packageJson from '../../../package.json'
 
   export default {
     data: () => {

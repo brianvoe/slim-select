@@ -1,13 +1,13 @@
-export function hasClassInTree (element, className) {
-  function hasClass (element, className) {
+export function hasClassInTree (element: HTMLElement, className: string) {
+  function hasClass (element: HTMLElement, className: string) {
     if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
       return element
     }
     return null
   }
 
-  function parentByClass (childElement, className) {
-    if (!childElement || childElement === document) {
+  function parentByClass (childElement: any, className: string): any {
+    if (!childElement || childElement === document as any) {
       return null
     } else if (hasClass(childElement, className)) {
       return childElement
@@ -19,7 +19,7 @@ export function hasClassInTree (element, className) {
   return hasClass(element, className) || parentByClass(element, className)
 }
 
-export function ensureElementInView (container, element) {
+export function ensureElementInView (container: HTMLElement, element: HTMLElement): void {
   // Determine container top and bottom
   let cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
   let cBottom = cTop + container.clientHeight
@@ -36,7 +36,7 @@ export function ensureElementInView (container, element) {
   }
 }
 
-export function putContent (el, currentPosition: string, isOpen: boolean): string {
+export function putContent (el: HTMLElement, currentPosition: string, isOpen: boolean): string {
   let height = el.offsetHeight
   var rect = el.getBoundingClientRect()
   var elemTop = (isOpen ? rect.top : rect.top - height)
@@ -47,11 +47,12 @@ export function putContent (el, currentPosition: string, isOpen: boolean): strin
   return (isOpen ? currentPosition : 'below')
 }
 
-export function debounce (func, wait = 100, immediate = false) {
-	var timeout
+export function debounce (func: Function, wait = 100, immediate = false): () => void {
+	var timeout: any
 	return function() {
-		var context = this, args = arguments
-		var later = function() {
+    var context = self
+    var args = arguments
+		var later = () => {
 			timeout = null
 			if (!immediate) func.apply(context, args)
 		}
@@ -62,7 +63,7 @@ export function debounce (func, wait = 100, immediate = false) {
 	}
 }
 
-export function isValueInArrayOfObjects (selected, key, value) {
+export function isValueInArrayOfObjects (selected: any, key: string, value: string): boolean {
   if (!Array.isArray(selected)) {
     return selected[key] === value
   }

@@ -6,19 +6,19 @@ export type dataArray = dataObject[]
 export type dataObject = optgroup | option
 export interface optgroup {
   label: string
-  options: option[]
+  options?: option[]
 }
 
 export interface option {
-  id: string
-  value: string
+  id?: string
+  value?: string
   text: string
-  innerHTML: string
-  selected: boolean
+  innerHTML?: string
+  selected?: boolean
   display?: boolean
-  disabled: boolean
-  placeholder: string
-  data: object
+  disabled?: boolean
+  placeholder?: string
+  data?: object
 }
 
 // Class is responsible for managing the data
@@ -34,7 +34,7 @@ export default class data {
     this.main = info.main
     this.searchValue = ''
     this.data = []
-    this.filtered = null
+    this.filtered = []
 
     this.parseSelectData()
     this.setSelectedFromSelect()
@@ -82,7 +82,7 @@ export default class data {
         let node = <HTMLOptGroupElement>nodes[i]
         let optgroup = {
           label: node.label,
-          options: []
+          options: [] as option[]
         }
         let options = nodes[i].childNodes
         for (var ii = 0; ii < options.length; ii++) {
@@ -106,7 +106,7 @@ export default class data {
       innerHTML: option.innerHTML,
       selected: option.selected,
       disabled: option.disabled,
-      placeholder: option.dataset.placeholder || null,
+      placeholder: option.dataset.placeholder || '',
       data: option.dataset
     }
   }
@@ -115,11 +115,14 @@ export default class data {
   setSelectedFromSelect (): void {
     let options = this.main.select.element.options
     if (this.main.config.isMultiple) {
-      let newSelected = []
+      let newSelected: string[] = []
       for (var i = 0; i < options.length; i++) {
         let option = <HTMLOptionElement>options[i]
         if (option.selected) {
-          newSelected.push(this.getObjectFromData(option.value, 'value').id)
+          let newOption = this.getObjectFromData(option.value, 'value')
+          if (newOption && newOption.id) {
+            newSelected.push(newOption.id)
+          }
         }
       }
       this.setSelected(newSelected, 'id')
@@ -141,8 +144,10 @@ export default class data {
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
           let options = (<optgroup>this.data[i]).options
-          for (var o = 0; o < options.length; o++) {
-            options[o].selected = this.shouldBeSelected(options[o], value, type)
+          if (options) {
+            for (var o = 0; o < options.length; o++) {
+              options[o].selected = this.shouldBeSelected(options[o], value, type)
+            }
           }
         }
       } else {
@@ -152,15 +157,15 @@ export default class data {
   }
 
   // Determines whether or not passed in option should be selected based upon possible values
-  shouldBeSelected (option: option, value: string | string [], type = 'id'): boolean {
+  shouldBeSelected (option: option, value: string | string [], type: string = 'id'): boolean {
     if (Array.isArray(value)) {
       for (var i = 0; i < value.length; i++) {
-        if (String(option[type]) === String(value[i])) {
+        if (type in option && String((option as any)[type]) === String(value[i])) {
           return true
         }
       }
     } else {
-      if (String(option[type]) === String(value)) {
+      if (type in option && String((option as any)[type]) === String(value)) {
         return true
       }
     }
@@ -172,20 +177,22 @@ export default class data {
   // If single select return last selected value
   getSelected (): option | option[] {
     var value = null
-    var values = []
+    var values: option[] = []
     for (var i = 0; i < this.data.length; i++) {
       // Deal with optgroups
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
           let options = (<optgroup>this.data[i]).options
-          for (var o = 0; o < options.length; o++) {
-            if (options[o].selected) {
-              // If single return option
-              if (!this.main.config.isMultiple) {
-                value = options[o]
-              } else {
-                // Push to multiple array
-                values.push(options[o])
+          if (options) {
+            for (var o = 0; o < options.length; o++) {
+              if (options[o].selected) {
+                // If single return option
+                if (!this.main.config.isMultiple) {
+                  value = options[o]
+                } else {
+                  // Push to multiple array
+                  values.push(options[o])
+                }
               }
             }
           }
@@ -248,7 +255,7 @@ export default class data {
   }
 
   // Take in a value loop through the data till you find it and return it
-  getObjectFromData (value: string, type = 'id'): option {
+  getObjectFromData (value: string, type = 'id'): option | null {
     for (var i = 0; i < this.data.length; i++) {
       // If option check if value is the same
       if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
@@ -271,7 +278,7 @@ export default class data {
   // Take in search string and return filtered list of values
   search (search: string) {
     this.searchValue = search
-    if (search.trim() === '') { this.filtered = null; return }
+    if (search.trim() === '') { !this.filtered.length; return }
 
     var valuesArray = this.data.slice(0)
     search = search.trim().toLowerCase()

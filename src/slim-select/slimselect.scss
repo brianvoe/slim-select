@@ -3,7 +3,7 @@ $white: #ffffff !default;
 $font-color: #666666 !default;
 $primary-color: #5897fb !default;
 $border-color: #dcdee2 !default;
-$search-highlight-color: #fff70062 !default;
+$search-highlight-color: unquote('#fff70062') !default;
 $border-radius: 4px !default;
 
 .ss-main {

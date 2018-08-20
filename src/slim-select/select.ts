@@ -45,7 +45,7 @@ export default class select {
       }
     } else {
       // If single select simply set value
-      let selected = <option>this.main.data.getSelected()
+      let selected = this.main.data.getSelected() as any
       this.element.value = (selected ? selected.value : '')
     }
 
@@ -111,8 +111,10 @@ export default class select {
         let optgroupObject = <optgroup>data[i]
         let optgroup = <HTMLOptGroupElement>document.createElement('optgroup')
         optgroup.label = optgroupObject.label
-        for (var o = 0; o < optgroupObject.options.length; o++) {
-          optgroup.appendChild(this.createOption(optgroupObject.options[o]))
+        if (optgroupObject.options) {
+          for (var o = 0; o < optgroupObject.options.length; o++) {
+            optgroup.appendChild(this.createOption(optgroupObject.options[o]))
+          }
         }
         this.element.appendChild(optgroup)
       } else {

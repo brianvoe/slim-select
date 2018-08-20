@@ -1,262 +1,262 @@
-<script>
-import SlimSelect from "slim-select/index.ts";
+<script lang="ts">
+import Vue from 'vue'
+import SlimSelect from '@/slim-select'
 
-export default {
+export default Vue.extend({
   data() {
     return {
       beforeOnChangeSingle: null,
       beforeOnChangeMultiple: null,
       onChangeSingle: null,
       onChangeMultiple: null
-    };
+    }
   },
   mounted() {
-    /* eslint-disable no-new */
-    let ajaxSingle = new SlimSelect({
-      select: "#ajaxSingle",
-      ajax: function(search, callback) {
+    const ajaxSingle = new SlimSelect({
+      select: '#ajaxSingle',
+      ajax(search: any, callback: any) {
         if (search.length < 3) {
-          callback("Need 3 characters");
-          return;
+          callback('Need 3 characters')
+          return
         }
 
-        fetch("https://jsonplaceholder.typicode.com/users")
+        fetch('https://jsonplaceholder.typicode.com/users')
           .then(function(response) {
-            return response.json();
+            return response.json()
           })
           .then(function(json) {
-            let data = [];
+            const data = [] as any
             for (let i = 0; i < json.length; i++) {
-              data.push({ text: json[i].name });
+              data.push({ text: json[i].name })
             }
 
             setTimeout(() => {
-              callback(data);
-            }, 1000);
+              callback(data)
+            }, 1000)
           })
           .catch(function(error) {
-            callback(false);
-          });
+            callback(false)
+          })
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#ajaxMultiple",
-      ajax: function(search, callback) {
-        fetch("https://jsonplaceholder.typicode.com/users")
+      select: '#ajaxMultiple',
+      ajax(search: any, callback: any) {
+        fetch('https://jsonplaceholder.typicode.com/users')
           .then(function(response) {
-            return response.json();
+            return response.json()
           })
           .then(function(json) {
-            let data = [];
+            const data = [] as any
             for (let i = 0; i < json.length; i++) {
-              data.push({ text: json[i].name });
+              data.push({ text: json[i].name })
             }
 
             setTimeout(() => {
-              ajaxSingle.setSearchText("Sorry No Results.");
-              callback(data);
-            }, 1000);
+              ajaxSingle.setSearchText('Sorry No Results.')
+              callback(data)
+            }, 1000)
           })
           .catch(function(error) {
-            callback(false);
-          });
+            callback(false)
+          })
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#placeholderSingle",
-      placeholder: "Placeholder Text Here"
-    });
+      select: '#placeholderSingle',
+      placeholder: 'Placeholder Text Here'
+    })
 
     new SlimSelect({
-      select: "#placeholderMultiple",
-      placeholder: "Placeholder Text Here"
-    });
+      select: '#placeholderMultiple',
+      placeholder: 'Placeholder Text Here'
+    })
 
     new SlimSelect({
-      select: "#allowDeselect",
+      select: '#allowDeselect',
       allowDeselect: true
-    });
+    })
 
     new SlimSelect({
-      select: "#addableSingle",
-      addable: value => {
-        return value;
+      select: '#addableSingle',
+      addable: (value: string) => {
+        return value
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#addableMultiple",
-      addable: value => {
+      select: '#addableMultiple',
+      addable: (value: string) => {
         return {
           text: value,
           value: value.toLowerCase()
-        };
+        }
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#select-class"
-    });
+      select: '#select-class'
+    })
 
     new SlimSelect({
-      select: "#selectInnerHTMLSingle",
+      select: '#selectInnerHTMLSingle',
       searchHighlight: true,
       data: [
         {
-          innerHTML: "<b>Bold Text</b>",
-          text: "Bold Text",
-          value: "bold text"
+          innerHTML: '<b>Bold Text</b>',
+          text: 'Bold Text',
+          value: 'bold text'
         },
         {
-          innerHTML: "<i>Slim Select you are awesome</i>",
-          text: "Slim Select awesome"
+          innerHTML: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome'
         },
         {
           innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
-          text: "Border",
-          value: "border"
+          text: 'Border',
+          value: 'border'
         }
       ]
-    });
+    })
 
     new SlimSelect({
-      select: "#selectInnerHTMLMulti",
+      select: '#selectInnerHTMLMulti',
       data: [
         {
-          innerHTML: "<b>Bold Text</b>",
-          text: "Bold Text",
-          value: "bold text"
+          innerHTML: '<b>Bold Text</b>',
+          text: 'Bold Text',
+          value: 'bold text'
         },
         {
-          innerHTML: "<i>Slim Select you are awesome</i>",
-          text: "Slim Select awesome"
+          innerHTML: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome'
         },
         {
           innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
-          text: "Border",
-          value: "border"
+          text: 'Border',
+          value: 'border'
         }
       ]
-    });
+    })
 
     new SlimSelect({
-      select: "#selectInnerHTMLSingleText",
+      select: '#selectInnerHTMLSingleText',
       valuesUseText: true,
       data: [
         {
-          innerHTML: "<b>Bold Text</b>",
-          text: "Bold Text",
-          value: "bold text"
+          innerHTML: '<b>Bold Text</b>',
+          text: 'Bold Text',
+          value: 'bold text'
         },
         {
-          innerHTML: "<i>Slim Select you are awesome</i>",
-          text: "Slim Select awesome"
+          innerHTML: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome'
         },
         {
           innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
-          text: "Border",
-          value: "border"
+          text: 'Border',
+          value: 'border'
         }
       ]
-    });
+    })
 
     new SlimSelect({
-      select: "#selectInnerHTMLMultiText",
+      select: '#selectInnerHTMLMultiText',
       valuesUseText: true,
       data: [
         {
-          innerHTML: "<b>Bold Text</b>",
-          text: "Bold Text",
-          value: "bold text"
+          innerHTML: '<b>Bold Text</b>',
+          text: 'Bold Text',
+          value: 'bold text'
         },
         {
-          innerHTML: "<i>Slim Select you are awesome</i>",
-          text: "Slim Select awesome"
+          innerHTML: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome'
         },
         {
           innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
-          text: "Border",
-          value: "border"
+          text: 'Border',
+          value: 'border'
         }
       ]
-    });
+    })
 
     new SlimSelect({
-      select: "#showSearch",
+      select: '#showSearch',
       showSearch: false
-    });
+    })
 
     new SlimSelect({
-      select: "#searchText",
-      searchText: "Sorry nothing to see here"
-    });
+      select: '#searchText',
+      searchText: 'Sorry nothing to see here'
+    })
 
     new SlimSelect({
-      select: "#searchPlaceholder",
-      searchPlaceholder: "Search for the good stuff!"
-    });
+      select: '#searchPlaceholder',
+      searchPlaceholder: 'Search for the good stuff!'
+    })
 
     new SlimSelect({
-      select: "#searchHighlight",
+      select: '#searchHighlight',
       searchHighlight: true
-    });
+    })
 
     new SlimSelect({
-      select: "#closeOnSelectSingle",
+      select: '#closeOnSelectSingle',
       closeOnSelect: false
-    });
+    })
 
     new SlimSelect({
-      select: "#closeOnSelectMultiple",
+      select: '#closeOnSelectMultiple',
       closeOnSelect: false
-    });
+    })
 
     new SlimSelect({
-      select: "#showContentUp",
-      showContent: "up"
-    });
+      select: '#showContentUp',
+      showContent: 'up'
+    })
 
     new SlimSelect({
-      select: "#showContentDown",
-      showContent: "down"
-    });
+      select: '#showContentDown',
+      showContent: 'down'
+    })
 
     new SlimSelect({
-      select: "#beforeOnChangeSingle",
-      beforeOnChange: value => {
-        this.beforeOnChangeSingle = value;
+      select: '#beforeOnChangeSingle',
+      beforeOnChange: (value: any) => {
+        this.beforeOnChangeSingle = value
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#beforeOnChangeMultiple",
-      beforeOnChange: values => {
-        this.beforeOnChangeMultiple = values;
+      select: '#beforeOnChangeMultiple',
+      beforeOnChange: (values: any) => {
+        this.beforeOnChangeMultiple = values
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#onChangeSingle",
-      onChange: value => {
-        this.onChangeSingle = value;
+      select: '#onChangeSingle',
+      onChange: (value: any) => {
+        this.onChangeSingle = value
       }
-    });
+    })
 
     new SlimSelect({
-      select: "#onChangeMultiple",
-      onChange: value => {
-        this.onChangeMultiple = value;
+      select: '#onChangeMultiple',
+      onChange: (value: any) => {
+        this.onChangeMultiple = value
       }
-    });
-    
+    })
+
     new SlimSelect({
-      select: "#showOptionTooltips",
+      select: '#showOptionTooltips',
       showOptionTooltips: true
-    });
+    })
   }
-};
+})
 </script>
 
 <style lang="scss">
@@ -758,8 +758,6 @@ export default {
         showOptionTooltips option is used to active displaying the on-hover tooltips for select options.
         The tooltip text is equal to the option text content. 
       </p>
-
-      <div v-if="showOptionTooltips"><strong>Show option tooltips: {{showOptionTooltips}}</strong></div>
 
       <select id="showOptionTooltips">
         <option value="value1">Value 1</option>
