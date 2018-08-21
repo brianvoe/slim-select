@@ -22,15 +22,15 @@ interface multiSelected {
 interface search {
   container: HTMLDivElement
   input: HTMLInputElement
-  addable: HTMLDivElement
+  addable?: HTMLDivElement
 }
 
 // Class is responsible for creating all the elements
 export default class slim {
   main: SlimSelect
   container: HTMLDivElement
-  singleSelected: singleSelected
-  multiSelected: multiSelected
+  singleSelected: singleSelected | null
+  multiSelected: multiSelected |  null
   content: HTMLDivElement
   search: search
   list: HTMLDivElement
@@ -44,6 +44,8 @@ export default class slim {
     this.list = this.listDiv()
     this.options()
 
+    this.singleSelected = null
+    this.multiSelected = null
     if (this.main.config.isMultiple) {
       this.multiSelected = this.multiSelectedDiv()
       this.container.appendChild(this.multiSelected.container)
@@ -82,8 +84,7 @@ export default class slim {
     container.appendChild(placeholder)
 
     // Deselect
-    let deselect: HTMLSpanElement = null
-    deselect = document.createElement('span')
+    let deselect = document.createElement('span')
     deselect.innerHTML = 'X'
     deselect.classList.add('ss-deselect')
     deselect.onclick = (e) => {
@@ -127,28 +128,34 @@ export default class slim {
       let placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
       placeholder.innerHTML = this.main.config.placeholderText
-      this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
+      if (this.singleSelected) {
+        this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
+      }
     } else {
       let selectedValue = ''
       if (selected) {
         selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
       }
-      this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
+      if (this.singleSelected) {
+        this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
+      }
     }
   }
 
   // Based upon current selection/settings hide/show deselect
   deselect(): void {
-    // if allowDeselect is false just hide it
-    if (!this.main.config.allowDeselect) {
-      this.singleSelected.deselect.classList.add('ss-hide')
-      return
-    }
+    if (this.singleSelected) {
+      // if allowDeselect is false just hide it
+      if (!this.main.config.allowDeselect) {
+        this.singleSelected.deselect.classList.add('ss-hide')
+        return
+      }
 
-    if (this.main.selected() === '') {
-      this.singleSelected.deselect.classList.add('ss-hide')
-    } else {
-      this.singleSelected.deselect.classList.remove('ss-hide')
+      if (this.main.selected() === '') {
+        this.singleSelected.deselect.classList.add('ss-hide')
+      } else {
+        this.singleSelected.deselect.classList.remove('ss-hide')
+      }
     }
   }
 
@@ -194,7 +201,7 @@ export default class slim {
   // Get selected values and append to multiSelected values container
   // and remove those who shouldnt exist
   values(): void {
-    if (!this.main.config.isMultiple) { return }
+    if (!this.multiSelected) { return }
     let currentNodes = this.multiSelected.values.childNodes
     let selected = <option[]>this.main.data.getSelected()
 
@@ -281,12 +288,12 @@ export default class slim {
 
         let beforeOnchange = this.main.beforeOnChange(currentValues)
         if (beforeOnchange !== false) {
-          this.main.data.removeFromSelected(option.id, 'id')
+          this.main.data.removeFromSelected((option.id as any), 'id')
           this.main.render()
           this.main.select.setValue()
         }
       } else {
-        this.main.data.removeFromSelected(option.id, 'id')
+        this.main.data.removeFromSelected((option.id as any), 'id')
         this.main.render()
         this.main.select.setValue()
         this.main.data.onDataChange() // Trigger on change callback
@@ -367,6 +374,12 @@ export default class slim {
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)
 
+    // Setup search return object
+    let searchReturn: search = {
+      container: container,
+      input: input
+    }
+
     if (this.main.addable) {
       var addable = document.createElement('div')
       addable.classList.add(this.main.config.addable)
@@ -409,23 +422,21 @@ export default class slim {
         }
       }
       container.appendChild(addable)
+
+      searchReturn.addable = addable
     }
 
-    return {
-      container: container,
-      input: input,
-      addable: addable
-    }
+    return searchReturn
   }
 
   highlightUp(): void {
     var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-    var prev = null
+    var prev: HTMLDivElement | null = null
     if (highlighted) {
-      prev = <HTMLDivElement>highlighted.previousSibling
+      prev = highlighted.previousSibling as HTMLDivElement
       while (prev !== null) {
         if (prev.classList.contains(this.main.config.disabled)) {
-          prev = <HTMLDivElement>prev.previousSibling
+          prev = prev.previousSibling as HTMLDivElement
           continue
         } else {
           break
@@ -433,7 +444,7 @@ export default class slim {
       }
     } else {
       var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
-      prev = allOptions[allOptions.length - 1]
+      prev = allOptions[allOptions.length - 1] as HTMLDivElement
     }
 
     // Do not select if optgroup label
@@ -446,7 +457,7 @@ export default class slim {
         if (parent.previousSibling) {
           let prevNodes = (<HTMLDivElement>parent.previousSibling).querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
           if (prevNodes.length) {
-            prev = prevNodes[prevNodes.length - 1]
+            prev = prevNodes[prevNodes.length - 1] as HTMLDivElement
           }
         }
       }
@@ -581,18 +592,20 @@ export default class slim {
         optgroup.appendChild(optgroupLabel)
 
         let options = item.options
-        for (var ii = 0; ii < options.length; ii++) {
-          optgroup.appendChild(this.option(options[ii]))
+        if (options) {
+          for (var ii = 0; ii < options.length; ii++) {
+            optgroup.appendChild(this.option(options[ii]))
+          }
         }
         this.list.appendChild(optgroup)
       } else {
-        this.list.appendChild(this.option(data[i]))
+        this.list.appendChild(this.option(data[i] as option))
       }
     }
   }
 
   // Create single option
-  option(data): HTMLDivElement {
+  option(data: option): HTMLDivElement {
     // Add hidden placeholder
     if (data.placeholder) {
       let placeholder = document.createElement('div')
@@ -607,12 +620,12 @@ export default class slim {
     let selected = <option>this.main.data.getSelected()
 
     option.dataset.id = data.id
-    if (this.main.config.searchHighlight && this.main.slim && this.main.slim.search.input.value.trim() !== '') {
+    if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
       option.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter)
-    } else {
+    } else if (data.innerHTML) {
       option.innerHTML = data.innerHTML
     }
-    if (this.main.config.showOptionTooltips) {
+    if (this.main.config.showOptionTooltips && option.textContent) {
       option.setAttribute('title', option.textContent)
     }
     let master = this
@@ -624,7 +637,7 @@ export default class slim {
       let elementID = element.dataset.id
       if (master.main.beforeOnChange) {
         let value
-        let objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID)))
+        let objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID as string)))
         objectInfo.selected = true
 
         if (master.main.config.isMultiple) {
@@ -636,14 +649,14 @@ export default class slim {
 
         let beforeOnchange = master.main.beforeOnChange(value)
         if (beforeOnchange !== false) {
-          master.main.set(elementID, 'id', master.main.config.closeOnSelect)
+          master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
         }
       } else {
-        master.main.set(elementID, 'id', master.main.config.closeOnSelect)
+        master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
       }
     }
 
-    if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', data.id))) {
+    if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', (data.id as string)))) {
       option.onclick = null
       option.classList.add(this.main.config.disabled)
     }

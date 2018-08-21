@@ -97,7 +97,7 @@ export default class SlimSelect {
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', (e: Event) => {
-      if (!hasClassInTree(e.target, this.config.id)) {
+      if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
         this.close()
       }
     })
@@ -130,14 +130,14 @@ export default class SlimSelect {
   public selected(): string | string[] {
     if (this.config.isMultiple) {
       const selected = this.data.getSelected() as option[]
-      const outputSelected = []
+      const outputSelected: string[] = []
       for (let i = 0; i < selected.length; i++) {
-        outputSelected.push(selected[i].value)
+        outputSelected.push(selected[i].value as string)
       }
       return outputSelected
     } else {
       const selected = this.data.getSelected() as option
-      return (selected ? selected.value : '')
+      return (selected ? selected.value as string : '')
     }
   }
 
@@ -217,13 +217,13 @@ export default class SlimSelect {
     // Run beforeOpen callback
     if (this.beforeOpen) { this.beforeOpen() }
 
-    if (this.config.isMultiple) {
+    if (this.config.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.plus.classList.add('ss-cross')
-    } else {
+    } else if (this.slim.singleSelected) {
       this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down')
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
-    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow))
+    (this.slim as any)[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow))
     this.slim.content.classList.add(this.config.open)
 
     // Check showContent to see if they want to specifically show in a certain direction
@@ -246,7 +246,7 @@ export default class SlimSelect {
       const selected = this.data.getSelected() as option
       if (selected) {
         const selectedId = selected.id
-        const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]')
+        const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
         if (selectedOption) {
           ensureElementInView(this.slim.list, selectedOption)
         }
@@ -274,11 +274,11 @@ export default class SlimSelect {
     if (this.beforeClose) { this.beforeClose() }
 
     // this.slim.search.input.blur() // Removed due to safari quirk
-    if (this.config.isMultiple) {
+    if (this.config.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.container.classList.remove(this.config.openAbove)
       this.slim.multiSelected.container.classList.remove(this.config.openBelow)
       this.slim.multiSelected.plus.classList.remove('ss-cross')
-    } else {
+    } else if (this.slim.singleSelected) {
       this.slim.singleSelected.container.classList.remove(this.config.openAbove)
       this.slim.singleSelected.container.classList.remove(this.config.openBelow)
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down')

@@ -176,13 +176,13 @@ export default class data {
   // From data get option | option[] of selected values
   // If single select return last selected value
   getSelected (): option | option[] {
-    var value = null
+    var value: option = {text: ''}
     var values: option[] = []
     for (var i = 0; i < this.data.length; i++) {
       // Deal with optgroups
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
-          let options = (<optgroup>this.data[i]).options
+          let options = (this.data[i] as optgroup).options
           if (options) {
             for (var o = 0; o < options.length; o++) {
               if (options[o].selected) {
@@ -202,10 +202,10 @@ export default class data {
         if ((<option>this.data[i]).selected) {
           // If single return option
           if (!this.main.config.isMultiple) {
-            value = this.data[i]
+            value = this.data[i] as option
           } else {
             // Push to multiple array
-            values.push(this.data[i])
+            values.push(this.data[i] as option)
           }
         }
       }
@@ -222,9 +222,11 @@ export default class data {
   addToSelected (value: string, type = 'id') {
     if (this.main.config.isMultiple) {
       let values = []
-      let selected = <option[]>this.getSelected()
-      for (var i = 0; i < selected.length; i++) {
-        values.push(selected[i][type])
+      let selected = this.getSelected()
+      if (Array.isArray(selected)) {
+        for (var i = 0; i < selected.length; i++) {
+          values.push((selected[i] as any)[type])
+        }
       }
       values.push(value)
 
@@ -236,10 +238,10 @@ export default class data {
   removeFromSelected (value: string, type = 'id') {
     if (this.main.config.isMultiple) {
       let values = []
-      let selected = <option[]>this.getSelected()
+      let selected = this.getSelected() as option[]
       for (var i = 0; i < selected.length; i++) {
-        if (String(selected[i][type]) !== String(value)) {
-          values.push(selected[i][type])
+        if (String((selected[i] as any)[type]) !== String(value)) {
+          values.push((selected[i] as any)[type])
         }
       }
 
@@ -258,15 +260,17 @@ export default class data {
   getObjectFromData (value: string, type = 'id'): option | null {
     for (var i = 0; i < this.data.length; i++) {
       // If option check if value is the same
-      if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
-        return <option>this.data[i]
+      if (type in this.data[i] && String((this.data[i] as any)[type]) === String(value)) {
+        return this.data[i] as option
       }
       // If optgroup loop through options
       if (this.data[i].hasOwnProperty('options')) {
-        let optgroupObject = <optgroup>this.data[i]
-        for (var ii = 0; ii < optgroupObject.options.length; ii++) {
-          if (String(optgroupObject.options[ii][type]) === String(value)) {
-            return optgroupObject.options[ii]
+        let optgroupObject = this.data[i] as optgroup
+        if (optgroupObject.options) {
+          for (var ii = 0; ii < optgroupObject.options.length; ii++) {
+            if (String((optgroupObject.options[ii] as any)[type]) === String(value)) {
+              return optgroupObject.options[ii]
+            }
           }
         }
       }
@@ -285,10 +289,13 @@ export default class data {
     var filtered = valuesArray.map(function (obj) {
       // If optgroup
       if (obj.hasOwnProperty('options')) {
-        let optgroupObj = <optgroup>obj
-        let options = optgroupObj.options.filter(function (opt) {
-          return opt.text.toLowerCase().indexOf(search) !== -1
-        })
+        let optgroupObj = obj as optgroup
+        let options: option[] = []
+        if (optgroupObj.options) {
+          options = optgroupObj.options.filter(function (opt) {
+            return opt.text.toLowerCase().indexOf(search) !== -1
+          })
+        }
         if (options.length !== 0) {
           var optgroup = (<any>Object).assign({}, optgroupObj) // Break pointer
           optgroup.options = options
@@ -311,7 +318,7 @@ export default class data {
 }
 
 export function validateData (data: dataArray): boolean {
-  if (!data) { console.error('Data must be an array of objects'); return }
+  if (!data) { console.error('Data must be an array of objects'); return false }
   let isValid = false
   let errorCount = 0
 
@@ -320,9 +327,11 @@ export function validateData (data: dataArray): boolean {
       if (data[i].hasOwnProperty('options')) {
         let optgroup = <optgroup>data[i]
         let options = optgroup.options
-        for (var j = 0; j < options.length; j++) {
-          isValid = validateOption(options[j])
-          if (!isValid) { errorCount++ }
+        if (options) {
+          for (var j = 0; j < options.length; j++) {
+            isValid = validateOption(options[j])
+            if (!isValid) { errorCount++ }
+          }
         }
       }
     } else {
