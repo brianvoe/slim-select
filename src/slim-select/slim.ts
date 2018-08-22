@@ -385,40 +385,42 @@ export default class slim {
       addable.classList.add(this.main.config.addable)
       addable.innerHTML = '+'
       addable.onclick = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
+        if (this.main.addable) {
+          e.preventDefault()
+          e.stopPropagation()
 
-        let inputValue = this.search.input.value
-        if (inputValue.trim() === '') { this.search.input.focus(); return }
+          let inputValue = this.search.input.value
+          if (inputValue.trim() === '') { this.search.input.focus(); return }
 
-        let addableValue = this.main.addable(inputValue)
-        let addableValueStr = ''
-        if (!addableValue) { return }
+          let addableValue = this.main.addable(inputValue)
+          let addableValueStr = ''
+          if (!addableValue) { return }
 
-        if (typeof addableValue == 'object') {
-          let validValue = validateOption(addableValue)
-          if (validValue) {
-            this.main.addData(addableValue)
-            addableValueStr = (addableValue.value ? addableValue.value : addableValue.text)
+          if (typeof addableValue == 'object') {
+            let validValue = validateOption(addableValue)
+            if (validValue) {
+              this.main.addData(addableValue)
+              addableValueStr = (addableValue.value ? addableValue.value : addableValue.text)
+            }
+          } else {
+            this.main.addData(this.main.data.newOption({
+              text: addableValue,
+              value: addableValue
+            }))
+            addableValueStr = addableValue
           }
-        } else {
-          this.main.addData(this.main.data.newOption({
-            text: addableValue,
-            value: addableValue
-          }))
-          addableValueStr = addableValue
-        }
 
-        this.main.search('')
-        setTimeout(() => { // Temp fix to solve multi render issue
-          this.main.set(addableValueStr, 'value', false, false)
-        }, 100)
-
-        // Close it only if closeOnSelect = true
-        if (this.main.config.closeOnSelect) {
-          setTimeout(() => { // Give it a little padding for a better looking animation
-            this.main.close()
+          this.main.search('')
+          setTimeout(() => { // Temp fix to solve multi render issue
+            this.main.set(addableValueStr, 'value', false, false)
           }, 100)
+
+          // Close it only if closeOnSelect = true
+          if (this.main.config.closeOnSelect) {
+            setTimeout(() => { // Give it a little padding for a better looking animation
+              this.main.close()
+            }, 100)
+          }
         }
       }
       container.appendChild(addable)

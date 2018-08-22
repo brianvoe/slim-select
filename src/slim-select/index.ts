@@ -36,14 +36,14 @@ export default class SlimSelect {
   public select: Select
   public data: Data
   public slim: Slim
-  public ajax: Function = null
-  public addable: Function = null
-  public beforeOnChange: Function = null
-  public onChange: Function = null
-  public beforeOpen: Function = null
-  public afterOpen: Function = null
-  public beforeClose: Function = null
-  public afterClose: Function = null
+  public ajax: Function | null = null
+  public addable: Function | null = null
+  public beforeOnChange: Function | null = null
+  public onChange: Function | null = null
+  public beforeOpen: Function | null = null
+  public afterOpen: Function | null = null
+  public beforeClose: Function | null = null
+  public afterClose: Function | null = null
   constructor(info: constructor) {
     this.validate(info)
     const selectElement = (typeof info.select === 'string' ? document.querySelector(info.select) as HTMLSelectElement : info.select) as HTMLSelectElement
@@ -293,8 +293,14 @@ export default class SlimSelect {
     setTimeout(() => {
       this.slim.content.removeAttribute('style')
       this.data.contentPosition = 'below'
-      this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openAbove)
-      this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow)
+
+      if (this.config.isMultiple && this.slim.multiSelected) {
+        this.slim.multiSelected.container.classList.remove(this.config.openAbove)
+        this.slim.multiSelected.container.classList.remove(this.config.openBelow)
+      } else if (this.slim.singleSelected) {
+        this.slim.singleSelected.container.classList.remove(this.config.openAbove)
+        this.slim.singleSelected.container.classList.remove(this.config.openBelow)
+      }
 
       // After content is closed lets blur on the input field
       this.slim.search.input.blur()
@@ -305,30 +311,47 @@ export default class SlimSelect {
   }
 
   public moveContentAbove(): void {
-    const selectHeight = (this.config.isMultiple ? this.slim.multiSelected.container.offsetHeight : this.slim.singleSelected.container.offsetHeight)
+    const selectHeight: number = 0
+    if (this.config.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.offsetHeight
+    }  else if (this.slim.singleSelected) {
+      this.slim.singleSelected.container.offsetHeight
+    }
     const contentHeight = this.slim.content.offsetHeight
     const height = selectHeight + contentHeight - 1
     this.slim.content.style.margin = '-' + height + 'px 0 0 0'
     this.slim.content.style.height = (height - selectHeight + 1) + 'px'
     this.slim.content.style.transformOrigin = 'center bottom'
     this.data.contentPosition = 'above'
-    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow)
-    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openAbove)
+
+    if (this.config.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.remove(this.config.openBelow)
+      this.slim.multiSelected.container.classList.add(this.config.openAbove)
+    } else if (this.slim.singleSelected) {
+      this.slim.singleSelected.container.classList.remove(this.config.openBelow)
+      this.slim.singleSelected.container.classList.add(this.config.openAbove)
+    }
   }
 
   public moveContentBelow(): void {
     this.slim.content.removeAttribute('style')
     this.data.contentPosition = 'below'
-    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openAbove)
-    this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openBelow)
+
+    if (this.config.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.remove(this.config.openAbove)
+      this.slim.multiSelected.container.classList.add(this.config.openBelow)
+    } else if (this.slim.singleSelected) {
+      this.slim.singleSelected.container.classList.remove(this.config.openAbove)
+      this.slim.singleSelected.container.classList.add(this.config.openBelow)
+    }
   }
 
   // Set to enabled, remove disabled classes and removed disabled from original select
   public enable(): void {
     this.config.isEnabled = true
-    if (this.config.isMultiple) {
+    if (this.config.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.container.classList.remove(this.config.disabled)
-    } else {
+    } else if (this.slim.singleSelected) {
       this.slim.singleSelected.container.classList.remove(this.config.disabled)
     }
 
@@ -342,9 +365,9 @@ export default class SlimSelect {
   // Set to disabled, add disabled classes and add disabled to original select
   public disable(): void {
     this.config.isEnabled = false
-    if (this.config.isMultiple) {
+    if (this.config.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.container.classList.add(this.config.disabled)
-    } else {
+    } else if (this.slim.singleSelected) {
       this.slim.singleSelected.container.classList.add(this.config.disabled)
     }
 
@@ -360,7 +383,7 @@ export default class SlimSelect {
     // Only filter data and rerender if value has changed
     if (this.data.searchValue !== value) {
       this.slim.search.input.value = value
-      if (this.config.isAjax) {
+      if (this.config.isAjax && this.ajax) {
         if (value.trim() === '') {
           this.setData([])
           this.data.search('')

@@ -1,17 +1,17 @@
 interface constructor {
   select: HTMLSelectElement
   isAjax: boolean
-  showSearch: boolean
-  searchPlaceholder: string
-  searchText: string
-  searchHighlight: boolean
-  closeOnSelect: boolean
-  showContent: string
-  placeholderText: string
-  allowDeselect: boolean
-  isEnabled: boolean
-  valuesUseText: boolean
-  showOptionTooltips: boolean
+  showSearch?: boolean
+  searchPlaceholder?: string
+  searchText?: string
+  searchHighlight?: boolean
+  closeOnSelect?: boolean
+  showContent?: string
+  placeholderText?: string
+  allowDeselect?: boolean
+  isEnabled?: boolean
+  valuesUseText?: boolean
+  showOptionTooltips?: boolean
 }
 
 export default class config {
