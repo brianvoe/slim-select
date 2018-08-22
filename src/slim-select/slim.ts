@@ -184,7 +184,7 @@ export default class slim {
       if (!this.main.config.isEnabled) { return }
 
       // Open only if you are not clicking on x text
-      let target = <Element>e.target
+      let target = e.target as Element
       if (!target.classList.contains(this.main.config.valueDelete)) {
         this.main.open()
       }
@@ -203,14 +203,15 @@ export default class slim {
   values(): void {
     if (!this.multiSelected) { return }
     let currentNodes = this.multiSelected.values.childNodes
-    let selected = <option[]>this.main.data.getSelected()
+    let selected = this.main.data.getSelected() as option[]
+    console.log(selected)
 
     // Remove nodes that shouldnt be there
     let exists
     let nodesToRemove = []
     for (var c = 0; c < currentNodes.length; c++) {
       exists = true
-      let node = <HTMLDivElement>currentNodes[c]
+      let node = currentNodes[c] as HTMLDivElement
       for (var s = 0; s < selected.length; s++) {
         if (String(selected[s].id) === String(node.dataset.id)) {
           exists = false
@@ -230,7 +231,7 @@ export default class slim {
     for (var s = 0; s < selected.length; s++) {
       exists = false
       for (var c = 0; c < currentNodes.length; c++) {
-        let node = <HTMLDivElement>currentNodes[c]
+        let node = currentNodes[c] as HTMLDivElement
         if (String(selected[s].id) === String(node.dataset.id)) {
           exists = true
         }
@@ -240,9 +241,9 @@ export default class slim {
         if (currentNodes.length === 0) {
           this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
         } else if (s === 0) {
-          this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (<any>currentNodes[s]))
+          this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (currentNodes[s] as any))
         } else {
-          (<any>currentNodes[s - 1]).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
+          (currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
         }
       }
     }

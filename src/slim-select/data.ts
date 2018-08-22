@@ -95,6 +95,8 @@ export default class data {
         this.data.push(this.pullOptionData(<HTMLOptionElement>nodes[i]))
       }
     }
+
+    console.log(this.data)
   }
 
   // From passed in option pull pieces of usable information
@@ -176,7 +178,7 @@ export default class data {
   // From data get option | option[] of selected values
   // If single select return last selected value
   getSelected (): option | option[] {
-    var value: option = {text: ''}
+    var value: option = {text: ''} // Dont worry about setting this(make typescript happy). If single a value will be selected
     var values: option[] = []
     for (var i = 0; i < this.data.length; i++) {
       // Deal with optgroups
@@ -199,7 +201,7 @@ export default class data {
         }
       } else {
         // Push options to array
-        if ((<option>this.data[i]).selected) {
+        if ((this.data[i] as option).selected) {
           // If single return option
           if (!this.main.config.isMultiple) {
             value = this.data[i] as option
