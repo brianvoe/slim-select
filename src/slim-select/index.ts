@@ -1,4 +1,4 @@
-import 'custom-event-polyfill' // Needed for IE to use custom events
+// import 'custom-event-polyfill' // Needed for IE to use custom events
 import Config from './config'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
@@ -383,7 +383,7 @@ export default class SlimSelect {
     // Only filter data and rerender if value has changed
     if (this.data.searchValue !== value) {
       this.slim.search.input.value = value
-      if (this.config.isAjax && this.ajax) {
+      if (this.config.isAjax) {
         if (value.trim() === '') {
           this.setData([])
           this.data.search('')
@@ -392,20 +392,22 @@ export default class SlimSelect {
           const master = this
           this.config.isSearching = true
           this.render()
-          this.ajax(value, function(info: any) {
-            // Only process if return callback is not false
-            master.config.isSearching = false
-            if (Array.isArray(info)) {
-              info.unshift({ text: '', placeholder: true })
-              master.setData(info)
-              master.data.search(value)
-              master.render()
-            } else if (typeof info === 'string') {
-              master.slim.options(info)
-            } else {
-              master.render()
-            }
-          })
+          if (this.ajax) {
+            this.ajax(value, function(info: any) {
+              // Only process if return callback is not false
+              master.config.isSearching = false
+              if (Array.isArray(info)) {
+                info.unshift({ text: '', placeholder: true })
+                master.setData(info)
+                master.data.search(value)
+                master.render()
+              } else if (typeof info === 'string') {
+                master.slim.options(info)
+              } else {
+                master.render()
+              }
+            })
+          }
         }
       } else {
         this.data.search(value)

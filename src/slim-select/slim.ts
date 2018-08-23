@@ -204,7 +204,6 @@ export default class slim {
     if (!this.multiSelected) { return }
     let currentNodes = this.multiSelected.values.childNodes
     let selected = this.main.data.getSelected() as option[]
-    console.log(selected)
 
     // Remove nodes that shouldnt be there
     let exists
@@ -584,7 +583,7 @@ export default class slim {
     for (var i = 0; i < data.length; i++) {
       // Create optgroup
       if (data[i].hasOwnProperty('label')) {
-        let item = <optgroup>data[i]
+        let item = data[i] as optgroup
         let optgroup = document.createElement('div')
         optgroup.classList.add(this.main.config.optgroup)
 
@@ -620,7 +619,7 @@ export default class slim {
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
 
-    let selected = <option>this.main.data.getSelected()
+    let selected = this.main.data.getSelected() as option
 
     option.dataset.id = data.id
     if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {

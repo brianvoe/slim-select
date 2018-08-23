@@ -26,7 +26,7 @@ export default class data {
   main: SlimSelect
   searchValue: string
   data: dataObject[]
-  filtered: dataObject[]
+  filtered: dataObject[] | null
   contentOpen: boolean = false
   contentPosition: string = 'below'
   isOnChangeEnabled: boolean = true
@@ -34,7 +34,7 @@ export default class data {
     this.main = info.main
     this.searchValue = ''
     this.data = []
-    this.filtered = []
+    this.filtered = null
 
     this.parseSelectData()
     this.setSelectedFromSelect()
@@ -79,7 +79,7 @@ export default class data {
     var nodes = element.childNodes
     for (var i = 0; i < nodes.length; i++) {
       if (nodes[i].nodeName === 'OPTGROUP') {
-        let node = <HTMLOptGroupElement>nodes[i]
+        let node = nodes[i] as HTMLOptGroupElement
         let optgroup = {
           label: node.label,
           options: [] as option[]
@@ -87,16 +87,14 @@ export default class data {
         let options = nodes[i].childNodes
         for (var ii = 0; ii < options.length; ii++) {
           if (options[ii].nodeName === 'OPTION') {
-            optgroup.options.push(this.pullOptionData(<HTMLOptionElement>options[ii]))
+            optgroup.options.push(this.pullOptionData(options[ii] as HTMLOptionElement))
           }
         }
         this.data.push(optgroup)
       } else if (nodes[i].nodeName === 'OPTION') {
-        this.data.push(this.pullOptionData(<HTMLOptionElement>nodes[i]))
+        this.data.push(this.pullOptionData(nodes[i] as HTMLOptionElement))
       }
     }
-
-    console.log(this.data)
   }
 
   // From passed in option pull pieces of usable information
@@ -284,7 +282,7 @@ export default class data {
   // Take in search string and return filtered list of values
   search (search: string) {
     this.searchValue = search
-    if (search.trim() === '') { !this.filtered.length; return }
+    if (search.trim() === '') { this.filtered = null; return }
 
     var valuesArray = this.data.slice(0)
     search = search.trim().toLowerCase()
