@@ -1,0 +1,69 @@
+{
+	"extends": "tslint:recommended",
+	"rulesDirectory": [
+		"./src/"
+	],
+	"rules": {
+		"space-before-function-paren": false,
+		"class-name": false,
+		"prefer-for-of": false,
+		"no-unused-expression": true,
+		"unified-signatures": false,
+		"whitespace": [
+			true,
+			"check-branch",
+			"check-operator"
+		],
+		"indent": [
+			true,
+			"tabs",
+			2
+		],
+		"quotemark": [
+			true,
+			"single",
+			"avoid-escape",
+			"avoid-template"
+		],
+		"max-line-length": false,
+		"trailing-comma": [
+			true,
+			{
+				"multiline": "never",
+				"singleline": "never"
+			}
+		],
+		"variable-name": [
+			true,
+			"ban-keywords",
+			"check-format",
+			"allow-leading-underscore",
+			"allow-snake-case"
+		],
+		"interface-name": false,
+		"object-literal-key-quotes": [
+			true,
+			"as-needed"
+		],
+		"no-bitwise": false,
+		"no-empty": false,
+		"align": [
+			true,
+			"elements",
+			"members",
+			"statements"
+		],
+		"new-parens": true,
+		"no-arg": true,
+		"no-conditional-assignment": true,
+		"no-consecutive-blank-lines": false,
+		"no-console": false
+	},
+	"jsRules": {
+		"max-line-length": {
+			"options": [
+				120
+			]
+		}
+	}
+}

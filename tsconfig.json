@@ -1,8 +1,23 @@
 {
-  "compilerOptions": {
-    "lib": ["dom", "es2017"]
-  },
-  "exclude": [
-    "node_modules"
-  ]
+	"include": [
+		"./src/"
+	],
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "esnext",
+		"declaration": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": false,
+		"alwaysStrict": true,
+		"rootDir": "./src/",
+		"outDir": "./dist",
+		"lib": [
+			"dom",
+			"esnext"
+		]
+	}
 }
