@@ -14,6 +14,7 @@ export default Vue.extend({
   mounted() {
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
+      placeholder: 'Search "Graham"',
       ajax(search: any, callback: any) {
         if (search.length < 3) {
           callback('Need 3 characters')
@@ -42,6 +43,7 @@ export default Vue.extend({
 
     new SlimSelect({
       select: '#ajaxMultiple',
+      placeholder: 'Search "Dennis"',
       ajax(search: any, callback: any) {
         fetch('https://jsonplaceholder.typicode.com/users')
           .then(function(response) {
@@ -323,14 +325,16 @@ export default Vue.extend({
       </p>
 
       <div class="set-content">
-        <select id="ajaxSingle"></select>
+        <select id="ajaxSingle">
+          <option data-placeholder="true"></option>
+        </select>
         <select id="ajaxMultiple" multiple></select>
       </div>
 
       <pre>
         <code class="language-javascript">
           new SlimSelect({
-            select: '#placeholder',
+            select: '#ajax',
             ajax: function (search, callback) {
               // Check search value. If you dont like it callback(false) or callback('Message String')
               if (search.length &lt; 3) {
