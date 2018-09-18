@@ -6,6 +6,9 @@ $primary-color: #5897fb !default;
 $border-color: #dcdee2 !default;
 $search-highlight-color: unquote('#fff70062') !default;
 $border-radius: 4px !default;
+$spacing-l: 8px !default;
+$spacing-m: 6px !default;
+$spacing-s: 4px !default;
 
 .ss-main {
   position: relative;
@@ -19,7 +22,7 @@ $border-radius: 4px !default;
     cursor: pointer;
     width: 100%;
     height: $height;
-    padding: 6px;
+    padding: $spacing-m;
     border: 1px solid $border-color;
     border-radius: $border-radius;
     background-color: $white;
@@ -76,9 +79,8 @@ $border-radius: 4px !default;
       align-items: center;
       justify-content: flex-end;
       flex: 0 1 auto;
-      margin: 0 5px 0 5px;
+      margin: 0 $spacing-m 0 $spacing-m;
       font-weight: bold;
-      font-family: Arial, Helvetica, sans-serif;
 
       &.ss-hide {
         display: none;
@@ -90,7 +92,7 @@ $border-radius: 4px !default;
       align-items: center;
       justify-content: flex-end;
       flex: 0 1 auto;
-      margin: 0 5px 0 5px;
+      margin: 0 $spacing-m 0 $spacing-m;
 
       span {
         border: solid $font-color;
@@ -263,7 +265,7 @@ $border-radius: 4px !default;
     .ss-search {
       display: flex;
       flex-direction: row;
-      padding: 8px 10px 8px 10px;
+      padding: $spacing-l $spacing-l $spacing-m $spacing-l;
 
       &.ss-hide {
         height: 0px;
@@ -282,13 +284,12 @@ $border-radius: 4px !default;
       input {
         display: inline-flex;
         font-size: inherit;
-        font-family: inherit;
         line-height: inherit;
         flex: 1 1 auto;
         width: 100%;
         min-width: 0px;
         height: 30px;
-        padding: 5px 10px;
+        padding: $spacing-m $spacing-l;
         margin: 0;
         border: 1px solid $border-color;
         border-radius: $border-radius;
@@ -298,9 +299,10 @@ $border-radius: 4px !default;
         box-sizing: border-box;
         -webkit-box-sizing: border-box;
         -webkit-appearance: textfield;
-
+        
         &::placeholder {
-          color: $font-placeholder-color;
+          color: lighten($font-placeholder-color, 20);
+          vertical-align: middle;
         }
 
         &:focus {
@@ -360,7 +362,7 @@ $border-radius: 4px !default;
 
         &.ss-disabled {
           cursor: default;
-          color: lighten($font-placeholder-color, 30);
+          color: lighten($font-placeholder-color, 20);
           background-color: $white;
         }
 
