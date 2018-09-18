@@ -77,8 +77,18 @@ export function isValueInArrayOfObjects (selected: any, key: string, value: stri
   return false
 }
 
-export function highlight(text: string, search: string, className: string): string {
-  var pattern = new RegExp('(>[^<.]*)(' + search.trim() + ')([^<.]*)', 'gi')
-  var replaceWith = '$1<span ' + ( className ? 'class="' + className + '"' : '' ) + '">$2</span>$3'
-  return text.replace(pattern, replaceWith)
+export function highlight(str: string, search: any, className: string) {
+  // the completed string will be itself if already set, otherwise, the string that was passed in
+  var completedString: any = completedString || str
+  var regex = new RegExp("(" + search.trim() + ")(?![^<]*>[^<>]*</)", "i")
+  
+  // If the regex doesn't match the string just exit
+  if (!str.match(regex)) {return str}
+
+  // Otherwise, get to highlighting
+  var matchStartPosition = (str.match(regex) as any).index
+  var matchEndPosition = matchStartPosition + (str.match(regex) as any)[0].toString().length
+  var originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition)
+  completedString = completedString.replace(regex, `<mark class="${className}">${originalTextFoundByRegex}</mark>`)
+  return completedString
 }
