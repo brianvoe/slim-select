@@ -148,6 +148,7 @@
         this.setDestroySingle = new SlimSelect({
           select: '#setDestroySingle'
         })
+
         this.setDestroyMultiple = new SlimSelect({
           select: '#setDestroyMultiple'
         })
@@ -155,6 +156,7 @@
       setDestroy () {
         this.setDestroySingle.destroy()
         this.setDestroyMultiple.destroy()
+
       }
     }
   })
