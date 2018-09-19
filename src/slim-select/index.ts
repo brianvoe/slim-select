@@ -45,8 +45,7 @@ export default class SlimSelect {
   public beforeClose: Function | null = null
   public afterClose: Function | null = null
   constructor(info: constructor) {
-    this.validate(info)
-    const selectElement = (typeof info.select === 'string' ? document.querySelector(info.select) as HTMLSelectElement : info.select) as HTMLSelectElement
+    const selectElement = this.validate(info)
 
     // If select already has a slim select id on it lets destroy it first
     if (selectElement.dataset.ssid) { this.destroy(selectElement.dataset.ssid) }
@@ -122,9 +121,10 @@ export default class SlimSelect {
   }
 
   public validate(info: constructor) {
-    const select = (typeof info.select === 'string' ? document.querySelector(info.select) as HTMLSelectElement : info.select) as HTMLSelectElement
+    const select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select) as HTMLSelectElement
     if (!select) { throw new Error('Could not find select element') }
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
+    return select
   }
 
   public selected(): string | string[] {
@@ -442,7 +442,7 @@ export default class SlimSelect {
     delete select.dataset.ssid
 
     // Remove slim from original select dropdown
-    const el = this.select.element as any
+    const el = select as any
     el.slim = null
 
     // Remove slim select
