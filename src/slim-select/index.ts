@@ -311,11 +311,11 @@ export default class SlimSelect {
   }
 
   public moveContentAbove(): void {
-    const selectHeight: number = 0
+    let selectHeight: number = 0
     if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.offsetHeight
+      selectHeight = this.slim.multiSelected.container.offsetHeight
     }  else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.offsetHeight
+      selectHeight = this.slim.singleSelected.container.offsetHeight
     }
     const contentHeight = this.slim.content.offsetHeight
     const height = selectHeight + contentHeight - 1
