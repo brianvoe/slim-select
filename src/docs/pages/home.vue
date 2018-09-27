@@ -162,7 +162,7 @@
           </div>
           <div class="browser">
             <img src="images/firefox.svg" />
-            <div class="version">48+</div>
+            <div class="version">25+</div>
           </div>
           <div class="browser">
             <img src="images/opera.svg" />

@@ -31,7 +31,7 @@ For documentation and examples on all features see: http://slimselectjs.com
 - IE 11+
 - Edge 13+
 - Chrome 30+
-- FireFox 48+
+- FireFox 25+
 - Opera 25+
 - Safari 9+
 

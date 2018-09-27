@@ -237,7 +237,7 @@ export default class slim {
       }
 
       if (!exists) {
-        if (currentNodes.length === 0) {
+        if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
           this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
         } else if (s === 0) {
           this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (currentNodes[s] as any))
