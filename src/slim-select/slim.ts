@@ -62,16 +62,29 @@ export default class slim {
   containerDiv(): HTMLDivElement {
     // Create main container
     let container = document.createElement('div') as HTMLDivElement
-    container.classList.add(this.main.config.id)
-    container.classList.add(this.main.config.main)
 
     // Add style and classes
     container.style.cssText = this.main.config.style
+
+    this.updateContainerDivClass(container)
+
+    return container
+  }
+
+  // Will look at the original select and pull classes from it
+  updateContainerDivClass(container: HTMLDivElement) {
+    // Set config class
+    this.main.config.class = this.main.select.element.classList
+
+    // Clear out classlist
+    container.className = ''
+
+    // Loop through config class and add
+    container.classList.add(this.main.config.id)
+    container.classList.add(this.main.config.main)
     for (var i = 0; i < this.main.config.class.length; i++) {
       container.classList.add(this.main.config.class[i])
     }
-
-    return container
   }
 
   singleSelectedDiv(): singleSelected {

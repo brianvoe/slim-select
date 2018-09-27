@@ -80,6 +80,12 @@ export default class select {
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()
       this.main.render()
+
+      mutations.forEach(mutation => {
+        if (mutation.attributeName === 'class') {
+          this.main.slim.updateContainerDivClass(this.main.slim.container)
+        }
+      })
     })
 
     this.observeMutationObserver()
