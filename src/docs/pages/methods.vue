@@ -267,6 +267,9 @@
             {text: 'value1'},
             {text: 'value2'}
           ])
+
+          // If you want to set a placeholder set the first object placeholder to true 
+          {'placeholder': true, 'text': 'placeholder text'}
         </code>
       </pre>
 
