@@ -70,11 +70,9 @@
       this.setEnableSingle = new SlimSelect({
         select: '#setEnableSingle'
       })
-      this.setEnableSingle.disable()
       this.setEnableMultiple = new SlimSelect({
         select: '#setEnableMultiple'
       })
-      this.setEnableMultiple.disable()
 
       // Open / Close
       this.setOpenCloseSingle = new SlimSelect({
@@ -356,12 +354,12 @@
         <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
         <div class="btn" @click="setDisable" v-else>Disable</div>
 
-        <select id="setEnableSingle">
+        <select id="setEnableSingle" disabled>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
-        <select id="setEnableMultiple" multiple>
+        <select id="setEnableMultiple" multiple disabled>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>

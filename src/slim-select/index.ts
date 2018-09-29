@@ -118,6 +118,9 @@ export default class SlimSelect {
     if (info.afterOpen) { this.afterOpen = info.afterOpen }
     if (info.beforeClose) { this.beforeClose = info.beforeClose }
     if (info.afterClose) { this.afterClose = info.afterClose }
+
+    // If disabled lets call it
+    if (!this.config.isEnabled) { this.disable() }
   }
 
   public validate(info: constructor) {
@@ -177,10 +180,7 @@ export default class SlimSelect {
         }
       } else {
         newData.unshift(this.data.getSelected())
-        newData.unshift({
-          text: '',
-          placeholder: true
-        })
+        newData.unshift({ text: '', placeholder: true })
       }
     }
 
