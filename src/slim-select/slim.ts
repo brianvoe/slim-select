@@ -577,7 +577,7 @@ export default class slim {
       let searching = document.createElement('div')
       searching.classList.add(this.main.config.option)
       searching.classList.add(this.main.config.disabled)
-      searching.innerHTML = 'Searching...'
+      searching.innerHTML = this.main.config.searchingText
       this.list.appendChild(searching)
       return
     }

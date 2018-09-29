@@ -15,6 +15,7 @@ export default Vue.extend({
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
       placeholder: 'Search "Graham"',
+      searchingText: 'Searching Users...',
       ajax(search: any, callback: any) {
         if (search.length < 3) {
           callback('Need 3 characters')
@@ -335,6 +336,7 @@ export default Vue.extend({
         <code class="language-javascript">
           new SlimSelect({
             select: '#ajax',
+            searchingText: 'Searching...', // Optional - Will show during ajax request
             ajax: function (search, callback) {
               // Check search value. If you dont like it callback(false) or callback('Message String')
               if (search.length &lt; 3) {
@@ -569,6 +571,10 @@ export default Vue.extend({
       <p>
         searchText is a string value that will show in the event there are no results.
         Default is 'No Results'.
+      </p>
+      <p>
+        searchingText is a string value that will show during an ajax request.
+        Default is 'Searching...'.
       </p>
       <p>
         searchPlaceholder is a string value that will set the value of the input search placeholder text.

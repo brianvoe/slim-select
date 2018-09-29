@@ -11,6 +11,7 @@ interface constructor {
   showSearch?: boolean
   searchPlaceholder?: string
   searchText?: string
+  searchingText?: string
   searchHighlight?: boolean
   closeOnSelect?: boolean
   showContent?: string
@@ -62,6 +63,7 @@ export default class SlimSelect {
       showSearch: info.showSearch,
       searchPlaceholder: info.searchPlaceholder,
       searchText: info.searchText,
+      searchingText: info.searchingText,
       searchHighlight: info.searchHighlight,
       closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
