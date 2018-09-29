@@ -100,6 +100,11 @@ export default Vue.extend({
     })
 
     new SlimSelect({
+      select: '#selectMultiLimit',
+      limit: 2
+    })
+
+    new SlimSelect({
       select: '#select-class'
     })
 
@@ -499,6 +504,38 @@ export default Vue.extend({
     </div>
 
     <div class="content">
+      <h2 class="header">Multi Select Limit</h2>
+      <p>When using multi select you can set a limit on the amount of selections you can have.</p>
+
+      <div class="set-content">
+        <select id="selectMultiLimit" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          let slim = new SlimSelect({
+            select: '#selectMultiLimit',
+            limit: 2
+          })
+        </code>
+      </pre>
+
+      <pre>
+        <code class="language-html">
+          &lt;select id="selectMultiLimit" multiple&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
       <h2 class="header">css / class</h2>
       <p>
         Slim select will inherit any styles and classes that were added to the original select element.
@@ -563,7 +600,7 @@ export default Vue.extend({
     </div>
 
     <div class="content">
-      <h2 class="header">showSearch / searchText / searchHighlight</h2>
+      <h2 class="header">showSearch / searchText / searchingText / searchHighlight</h2>
       <p>
         showSearch is a boolean value that will decide whether or not to show the search.
         Default is true.

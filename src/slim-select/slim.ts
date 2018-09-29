@@ -648,6 +648,9 @@ export default class slim {
       e.preventDefault()
       e.stopPropagation()
 
+      // Check if hit limit
+      if(master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) { return }
+
       let element = this
       let elementID = element.dataset.id
       if (master.main.beforeOnChange) {
