@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import {option, optgroup, dataArray} from './data'
+import { option, optgroup, dataArray } from './data'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -10,12 +10,12 @@ export default class select {
   element: HTMLSelectElement
   main: SlimSelect
   mutationObserver: MutationObserver | null
-  constructor (info: Constructor) {
+  constructor(info: Constructor) {
     this.element = info.select
     this.main = info.main
 
     // If original select is set to disabled lets make sure slim is too
-    if (this.element.disabled) {this.main.config.isEnabled = false}
+    if (this.element.disabled) { this.main.config.isEnabled = false }
 
     this.addAttributes()
     this.addEventListeners()
@@ -27,8 +27,8 @@ export default class select {
     el.slim = info.main
   }
 
-  setValue (): void {
-    if (!this.main.data.getSelected()) {return}
+  setValue(): void {
+    if (!this.main.data.getSelected()) { return }
 
     if (this.main.config.isMultiple) {
       // If multiple loop through options and set selected
@@ -51,11 +51,11 @@ export default class select {
 
     // Do not trigger onChange callbacks for this event listener
     this.main.data.isOnChangeEnabled = false
-    this.element.dispatchEvent(new CustomEvent('change'))
+    this.element.dispatchEvent(new CustomEvent('change', { bubbles: true }))
     this.main.data.isOnChangeEnabled = true
   }
 
-  addAttributes () {
+  addAttributes() {
     this.element.tabIndex = -1
     this.element.style.display = 'none'
 
@@ -64,7 +64,7 @@ export default class select {
   }
 
   // Add onChange listener to original select
-  addEventListeners () {
+  addEventListeners() {
     this.element.addEventListener('change', (e: Event) => {
       this.main.data.setSelectedFromSelect()
       this.main.render()
@@ -72,9 +72,9 @@ export default class select {
   }
 
   // Add MutationObserver to select
-  addMutationObserver (): void {
+  addMutationObserver(): void {
     // Only add if not in ajax mode
-    if (this.main.config.isAjax) {return}
+    if (this.main.config.isAjax) { return }
 
     this.mutationObserver = new MutationObserver((mutations) => {
       this.main.data.parseSelectData()
@@ -91,8 +91,8 @@ export default class select {
     this.observeMutationObserver()
   }
 
-  observeMutationObserver (): void {
-    if (!this.mutationObserver) {return}
+  observeMutationObserver(): void {
+    if (!this.mutationObserver) { return }
 
     this.mutationObserver.observe(this.element, {
       attributes: true,
@@ -101,14 +101,14 @@ export default class select {
     })
   }
 
-  disconnectMutationObserver (): void {
+  disconnectMutationObserver(): void {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect()
     }
   }
 
   // Create select element and optgroup/options
-  create (data: dataArray): void {
+  create(data: dataArray): void {
     // Clear out select
     this.element.innerHTML = ''
 
@@ -129,7 +129,7 @@ export default class select {
     }
   }
 
-  createOption (info: any): HTMLOptionElement {
+  createOption(info: any): HTMLOptionElement {
     var option = document.createElement('option')
     option.value = info.value || info.text
     option.innerHTML = info.innerHTML || info.text
@@ -137,7 +137,7 @@ export default class select {
     if (info.disabled) { option.disabled = true }
     if (info.placeholder) { option.setAttribute('data-placeholder', 'true') }
     if (info.data && typeof info.data === 'object') {
-      Object.keys(info.data).forEach(function(key) {
+      Object.keys(info.data).forEach(function (key) {
         option.setAttribute('data-' + key, info.data[key])
       })
     }
