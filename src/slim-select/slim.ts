@@ -527,7 +527,7 @@ export default class slim {
   listDiv(): HTMLDivElement {
     var list = document.createElement('div')
     list.classList.add(this.main.config.list)
-    list.onmousewheel = (e) => {
+    list.addEventListener('wheel', (e: WheelEvent) => {
       var scrollTop = list.scrollTop,
         scrollHeight = list.scrollHeight,
         height = list.offsetHeight,
@@ -550,7 +550,7 @@ export default class slim {
         list.scrollTop = 0;
         return prevent();
       }
-    }
+    })
 
     return list
   }
@@ -644,7 +644,7 @@ export default class slim {
       option.setAttribute('title', option.textContent)
     }
     let master = this
-    option.onclick = function (e) {
+    option.addEventListener('click', function (e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
 
@@ -672,7 +672,7 @@ export default class slim {
       } else {
         master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
       }
-    }
+    })
 
     if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', (data.id as string)))) {
       option.onclick = null
