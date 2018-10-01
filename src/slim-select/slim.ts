@@ -30,7 +30,7 @@ export default class slim {
   main: SlimSelect
   container: HTMLDivElement
   singleSelected: singleSelected | null
-  multiSelected: multiSelected |  null
+  multiSelected: multiSelected | null
   content: HTMLDivElement
   search: search
   list: HTMLDivElement
@@ -649,7 +649,7 @@ export default class slim {
       e.stopPropagation()
 
       // Check if hit limit
-      if(master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) { return }
+      if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) { return }
 
       let element = this
       let elementID = element.dataset.id

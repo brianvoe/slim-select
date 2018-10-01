@@ -318,7 +318,7 @@ export default class SlimSelect {
     let selectHeight: number = 0
     if (this.config.isMultiple && this.slim.multiSelected) {
       selectHeight = this.slim.multiSelected.container.offsetHeight
-    }  else if (this.slim.singleSelected) {
+    } else if (this.slim.singleSelected) {
       selectHeight = this.slim.singleSelected.container.offsetHeight
     }
     const contentHeight = this.slim.content.offsetHeight
@@ -392,7 +392,7 @@ export default class SlimSelect {
         this.config.isSearching = true
         this.render()
         if (this.ajax) {
-          this.ajax(value, function(info: any) {
+          this.ajax(value, function (info: any) {
             // Only process if return callback is not false
             master.config.isSearching = false
             if (Array.isArray(info)) {

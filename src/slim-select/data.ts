@@ -30,7 +30,7 @@ export default class data {
   contentOpen: boolean = false
   contentPosition: string = 'below'
   isOnChangeEnabled: boolean = true
-  constructor (info: constructor) {
+  constructor(info: constructor) {
     this.main = info.main
     this.searchValue = ''
     this.data = []
@@ -40,7 +40,7 @@ export default class data {
     this.setSelectedFromSelect()
   }
 
-  newOption (info: any): option {
+  newOption(info: any): option {
     return {
       id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
       value: (info.value ? info.value : ''),
@@ -55,7 +55,7 @@ export default class data {
   }
 
   // Add to the current data array
-  add (data: option) {
+  add(data: option) {
     let dataObject: option = {
       id: String(Math.floor(Math.random() * 100000000)),
       value: data.value,
@@ -72,7 +72,7 @@ export default class data {
   }
 
   // From passed in select element pull optgroup and options into data
-  parseSelectData () {
+  parseSelectData() {
     this.data = []
     // Loop through nodes and create data
     var element: HTMLSelectElement = this.main.select.element
@@ -98,7 +98,7 @@ export default class data {
   }
 
   // From passed in option pull pieces of usable information
-  pullOptionData (option: HTMLOptionElement): option {
+  pullOptionData(option: HTMLOptionElement): option {
     return {
       id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
       value: option.value,
@@ -112,7 +112,7 @@ export default class data {
   }
 
   // From select element get current selected and set selected
-  setSelectedFromSelect (): void {
+  setSelectedFromSelect(): void {
     let options = this.main.select.element.options
     if (this.main.config.isMultiple) {
       let newSelected: string[] = []
@@ -137,7 +137,7 @@ export default class data {
   }
 
   // From value set the selected value
-  setSelected (value: string | string[], type = 'id'): void {
+  setSelected(value: string | string[], type = 'id'): void {
     // Loop through data and set selected values
     for (var i = 0; i < this.data.length; i++) {
       // Deal with optgroups
@@ -157,7 +157,7 @@ export default class data {
   }
 
   // Determines whether or not passed in option should be selected based upon possible values
-  shouldBeSelected (option: option, value: string | string [], type: string = 'id'): boolean {
+  shouldBeSelected(option: option, value: string | string[], type: string = 'id'): boolean {
     if (Array.isArray(value)) {
       for (var i = 0; i < value.length; i++) {
         if (type in option && String((option as any)[type]) === String(value[i])) {
@@ -175,8 +175,8 @@ export default class data {
 
   // From data get option | option[] of selected values
   // If single select return last selected value
-  getSelected (): option | option[] {
-    var value: option = {text: ''} // Dont worry about setting this(make typescript happy). If single a value will be selected
+  getSelected(): option | option[] {
+    var value: option = { text: '' } // Dont worry about setting this(make typescript happy). If single a value will be selected
     var values: option[] = []
     for (var i = 0; i < this.data.length; i++) {
       // Deal with optgroups
@@ -219,7 +219,7 @@ export default class data {
   }
 
   // If select type is multiple append value and set selected
-  addToSelected (value: string, type = 'id') {
+  addToSelected(value: string, type = 'id') {
     if (this.main.config.isMultiple) {
       let values = []
       let selected = this.getSelected()
@@ -235,7 +235,7 @@ export default class data {
   }
 
   // Remove object from selected
-  removeFromSelected (value: string, type = 'id') {
+  removeFromSelected(value: string, type = 'id') {
     if (this.main.config.isMultiple) {
       let values = []
       let selected = this.getSelected() as option[]
@@ -250,14 +250,14 @@ export default class data {
   }
 
   // Trigger onChange callback
-  onDataChange (): void {
+  onDataChange(): void {
     if (this.main.onChange && this.isOnChangeEnabled) {
       this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())))
     }
   }
 
   // Take in a value loop through the data till you find it and return it
-  getObjectFromData (value: string, type = 'id'): option | null {
+  getObjectFromData(value: string, type = 'id'): option | null {
     for (var i = 0; i < this.data.length; i++) {
       // If option check if value is the same
       if (type in this.data[i] && String((this.data[i] as any)[type]) === String(value)) {
@@ -280,7 +280,7 @@ export default class data {
   }
 
   // Take in search string and return filtered list of values
-  search (search: string) {
+  search(search: string) {
     this.searchValue = search
     if (search.trim() === '') { this.filtered = null; return }
 
@@ -317,7 +317,7 @@ export default class data {
   }
 }
 
-export function validateData (data: dataArray): boolean {
+export function validateData(data: dataArray): boolean {
   if (!data) { console.error('Data must be an array of objects'); return false }
   let isValid = false
   let errorCount = 0
@@ -344,9 +344,9 @@ export function validateData (data: dataArray): boolean {
   return errorCount === 0
 }
 
-export function validateOption (option: option): boolean {
+export function validateOption(option: option): boolean {
   if (option.text === undefined) {
-    console.error('Data object option must have at least have a text value. Check object: '+JSON.stringify(option))
+    console.error('Data object option must have at least have a text value. Check object: ' + JSON.stringify(option))
     return false
   }
   return true

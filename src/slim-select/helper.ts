@@ -1,12 +1,12 @@
-export function hasClassInTree (element: HTMLElement, className: string) {
-  function hasClass (element: HTMLElement, className: string) {
+export function hasClassInTree(element: HTMLElement, className: string) {
+  function hasClass(element: HTMLElement, className: string) {
     if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
       return element
     }
     return null
   }
 
-  function parentByClass (childElement: any, className: string): any {
+  function parentByClass(childElement: any, className: string): any {
     if (!childElement || childElement === document as any) {
       return null
     } else if (hasClass(childElement, className)) {
@@ -19,7 +19,7 @@ export function hasClassInTree (element: HTMLElement, className: string) {
   return hasClass(element, className) || parentByClass(element, className)
 }
 
-export function ensureElementInView (container: HTMLElement, element: HTMLElement): void {
+export function ensureElementInView(container: HTMLElement, element: HTMLElement): void {
   // Determine container top and bottom
   let cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
   let cBottom = cTop + container.clientHeight
@@ -36,34 +36,34 @@ export function ensureElementInView (container: HTMLElement, element: HTMLElemen
   }
 }
 
-export function putContent (el: HTMLElement, currentPosition: string, isOpen: boolean): string {
+export function putContent(el: HTMLElement, currentPosition: string, isOpen: boolean): string {
   let height = el.offsetHeight
   var rect = el.getBoundingClientRect()
   var elemTop = (isOpen ? rect.top : rect.top - height)
   var elemBottom = (isOpen ? rect.bottom : rect.bottom + height)
 
   if (elemTop <= 0) { return 'below' }
-  if (elemBottom >= window.innerHeight) { return 'above'}
+  if (elemBottom >= window.innerHeight) { return 'above' }
   return (isOpen ? currentPosition : 'below')
 }
 
-export function debounce (func: Function, wait = 100, immediate = false): () => void {
-	var timeout: any
-	return function() {
+export function debounce(func: Function, wait = 100, immediate = false): () => void {
+  var timeout: any
+  return function () {
     var context = self
     var args = arguments
-		var later = () => {
-			timeout = null
-			if (!immediate) func.apply(context, args)
-		}
-		var callNow = immediate && !timeout
-		clearTimeout(timeout)
-		timeout = setTimeout(later, wait)
-		if (callNow) func.apply(context, args)
-	}
+    var later = () => {
+      timeout = null
+      if (!immediate) func.apply(context, args)
+    }
+    var callNow = immediate && !timeout
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+    if (callNow) func.apply(context, args)
+  }
 }
 
-export function isValueInArrayOfObjects (selected: any, key: string, value: string): boolean {
+export function isValueInArrayOfObjects(selected: any, key: string, value: string): boolean {
   if (!Array.isArray(selected)) {
     return selected[key] === value
   }
@@ -81,9 +81,9 @@ export function highlight(str: string, search: any, className: string) {
   // the completed string will be itself if already set, otherwise, the string that was passed in
   var completedString: any = completedString || str
   var regex = new RegExp("(" + search.trim() + ")(?![^<]*>[^<>]*</)", "i")
-  
+
   // If the regex doesn't match the string just exit
-  if (!str.match(regex)) {return str}
+  if (!str.match(regex)) { return str }
 
   // Otherwise, get to highlighting
   var matchStartPosition = (str.match(regex) as any).index
