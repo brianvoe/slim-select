@@ -10,9 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "node"
-    ],
+    "types": [],
     "paths": {
       "@/*": [
         "src/*"
