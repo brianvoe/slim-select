@@ -388,30 +388,24 @@ export default class SlimSelect {
     if (this.data.searchValue !== value) {
       this.slim.search.input.value = value
       if (this.config.isAjax) {
-        if (value.trim() === '') {
-          this.setData([])
-          this.data.search('')
-          this.render()
-        } else {
-          const master = this
-          this.config.isSearching = true
-          this.render()
-          if (this.ajax) {
-            this.ajax(value, function(info: any) {
-              // Only process if return callback is not false
-              master.config.isSearching = false
-              if (Array.isArray(info)) {
-                info.unshift({ text: '', placeholder: true })
-                master.setData(info)
-                master.data.search(value)
-                master.render()
-              } else if (typeof info === 'string') {
-                master.slim.options(info)
-              } else {
-                master.render()
-              }
-            })
-          }
+        const master = this
+        this.config.isSearching = true
+        this.render()
+        if (this.ajax) {
+          this.ajax(value, function(info: any) {
+            // Only process if return callback is not false
+            master.config.isSearching = false
+            if (Array.isArray(info)) {
+              info.unshift({ text: '', placeholder: true })
+              master.setData(info)
+              master.data.search(value)
+              master.render()
+            } else if (typeof info === 'string') {
+              master.slim.options(info)
+            } else {
+              master.render()
+            }
+          })
         }
       } else {
         this.data.search(value)
