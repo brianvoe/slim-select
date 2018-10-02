@@ -42,7 +42,7 @@ export default Vue.extend({
       }
     })
 
-    new SlimSelect({
+    const ajaxMulti = new SlimSelect({
       select: '#ajaxMultiple',
       placeholder: 'Search "Dennis"',
       ajax(search: any, callback: any) {
@@ -57,7 +57,7 @@ export default Vue.extend({
             }
 
             setTimeout(() => {
-              ajaxSingle.setSearchText('Sorry No Results.')
+              ajaxMulti.setSearchText('Sorry No Results.')
               callback(data)
             }, 1000)
           })
@@ -327,7 +327,9 @@ export default Vue.extend({
       <h2 class="header">ajax</h2>
       <p>
         Slim select allows you to syncronize result values from your ajax requests.<br />
-        Call callback() method with slimselect data, false or string with specific string.
+        Call callback() method with slimselect data, false or string with specific string.<br />
+        <br />
+        When doing fetch request for each ajax call be sure to debounce your request so you are not getting fetch race conditions.
       </p>
 
       <div class="set-content">
