@@ -134,14 +134,14 @@
 
       <pre>
         <code class="language-html">
-          <!-- Options -->
+          &lt;!-- Options --&gt;
           &lt;select id="single"&gt;
             &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
             &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
           &lt;/select&gt;
 
-          <!-- Optgroups -->
+          &lt;!-- Optgroups --&gt;
           &lt;select id="single-optgroups"&gt;
             &lt;optgroup label="Label 1"&gt;
               &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
