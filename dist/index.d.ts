@@ -1,4 +1,3 @@
-import 'custom-event-polyfill';
 import Config from './config';
 import Select from './select';
 import Data, { dataArray, option } from './data';
