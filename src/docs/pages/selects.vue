@@ -1,8 +1,9 @@
-<script>
-  import SlimSelect from 'slim-select/index.ts'
+<script lang="ts">
+  import Vue from 'vue'
+  import SlimSelect from '@/slim-select'
 
-  export default {
-    data () {
+  export default Vue.extend({
+    data() {
       return {
         states: [
           {abv: 'AL', state: 'Alabama'},
@@ -65,8 +66,7 @@
         ]
       }
     },
-    mounted () {
-      /* eslint-disable no-new */
+    mounted() {
       new SlimSelect({
         select: '#single'
       })
@@ -77,12 +77,12 @@
       new SlimSelect({
         select: '#multiple'
       })
-      var multiGroup = new SlimSelect({
+      const multiGroup = new SlimSelect({
         select: '#multiple-group'
       })
       multiGroup.set(['Cheese', 'Apple', 'Corn'])
     }
-  }
+  })
 </script>
 
 <style lang="scss">
@@ -134,14 +134,14 @@
 
       <pre>
         <code class="language-html">
-          <!-- Options -->
+          &lt;!-- Options --&gt;
           &lt;select id="single"&gt;
             &lt;option value="value 1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value 2"&gt;Value 2&lt;/option&gt;
             &lt;option value="value 3"&gt;Value 3&lt;/option&gt;
           &lt;/select&gt;
 
-          <!-- Optgroups -->
+          &lt;!-- Optgroups --&gt;
           &lt;select id="single-optgroups"&gt;
             &lt;optgroup label="Label 1"&gt;
               &lt;option value="value 1"&gt;Value 1&lt;/option&gt;

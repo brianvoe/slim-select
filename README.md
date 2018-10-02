@@ -9,6 +9,8 @@ Slim advanced select dropdown
 
 For documentation and examples on all features see: http://slimselectjs.com
 
+![](https://raw.githubusercontent.com/brianvoe/slim-select/master/slimselect.gif)
+
 ## Features
 - No Dependencies
 - 20kb - 5kb gzip

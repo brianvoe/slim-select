@@ -1,27 +1,29 @@
-<script>
-  import SlimSelect from 'slim-select/index.ts'
+<script lang="ts">
+  import Vue from 'vue'
+  import SlimSelect from '@/slim-select'
   import Chance from 'chance'
   let chance = new Chance()
 
-export default {
+  export default Vue.extend({
     data () {
       return {
-        selectedSingle: null,
+        selectedSingle: null as any,
         selectedSingleValue: '',
-        selectedMultiple: null,
+        selectedMultiple: null as any,
         selectedMultipleValue: '',
-        setSingle: null,
-        setMultiple: null,
-        setDataSingle: null,
-        setDataMultiple: null,
-        setSearchSingle: null,
-        setSearchMultiple: null,
-        setEnableSingle: null,
-        setEnableMultiple: null,
-        setOpenCloseSingle: null,
-        setOpenCloseMultiple: null,
-        setDestroySingle: null,
-        setDestroyMultiple: null
+        setSingle: null as any,
+        setMultiple: null as any,
+        setDataSingle: null as any,
+        setDataMultiple: null as any,
+        setSearchSingle: null as any,
+        setSearchMultiple: null as any,
+        setSearchTextSingle: null as any,
+        setEnableSingle: null as any,
+        setEnableMultiple: null as any,
+        setOpenCloseSingle: null as any,
+        setOpenCloseMultiple: null as any,
+        setDestroySingle: null as any,
+        setDestroyMultiple: null as any
       }
     },
     mounted () {
@@ -68,11 +70,9 @@ export default {
       this.setEnableSingle = new SlimSelect({
         select: '#setEnableSingle'
       })
-      this.setEnableSingle.disable()
       this.setEnableMultiple = new SlimSelect({
         select: '#setEnableMultiple'
       })
-      this.setEnableMultiple.disable()
 
       // Open / Close
       this.setOpenCloseSingle = new SlimSelect({
@@ -120,7 +120,7 @@ export default {
         this.setDataSingle.setData(values)
         this.setDataMultiple.setData(values)
       },
-      setSearch (e) {
+      setSearch () {
         setTimeout(() => {
           this.setSearchSingle.open()
           this.setSearchSingle.search('value 2')
@@ -146,6 +146,7 @@ export default {
         this.setDestroySingle = new SlimSelect({
           select: '#setDestroySingle'
         })
+
         this.setDestroyMultiple = new SlimSelect({
           select: '#setDestroyMultiple'
         })
@@ -153,9 +154,10 @@ export default {
       setDestroy () {
         this.setDestroySingle.destroy()
         this.setDestroyMultiple.destroy()
+
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss">
@@ -263,6 +265,9 @@ export default {
             {text: 'value1'},
             {text: 'value2'}
           ])
+
+          // If you want to set a placeholder set the first object placeholder to true 
+          {'placeholder': true, 'text': 'placeholder text'}
         </code>
       </pre>
 
@@ -279,7 +284,8 @@ export default {
             value: 'value', // Optional - value will be set by text if not set
             innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
             disabled: false, // Optional - default is false
-            placeholder: false // Optional - default is false
+            placeholder: false, // Optional - default is false
+            data: {} // Optional - If you have data attributes
           }
         </code>
       </pre>
@@ -349,12 +355,12 @@ export default {
         <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
         <div class="btn" @click="setDisable" v-else>Disable</div>
 
-        <select id="setEnableSingle">
+        <select id="setEnableSingle" disabled>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
-        <select id="setEnableMultiple" multiple>
+        <select id="setEnableMultiple" multiple disabled>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>

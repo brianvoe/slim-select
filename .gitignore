@@ -1,4 +1,9 @@
+.DS_Store
 node_modules
 
-npm-debug.log
-bundle-analyzer.html
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*

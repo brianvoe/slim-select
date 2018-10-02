@@ -7,7 +7,7 @@
 		exports["SlimSelect"] = factory();
 	else
 		root["SlimSelect"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -46,12 +46,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -67,7 +87,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 2);
@@ -102,13 +123,10 @@ function hasClassInTree(element, className) {
 }
 exports.hasClassInTree = hasClassInTree;
 function ensureElementInView(container, element) {
-    // Determine container top and bottom
-    var cTop = container.scrollTop + container.offsetTop; // Make sure to have offsetTop
+    var cTop = container.scrollTop + container.offsetTop;
     var cBottom = cTop + container.clientHeight;
-    // Determine element top and bottom
     var eTop = element.offsetTop;
     var eBottom = eTop + element.clientHeight;
-    // Check if out of view
     if (eTop < cTop) {
         container.scrollTop -= (cTop - eTop);
     }
@@ -136,7 +154,8 @@ function debounce(func, wait, immediate) {
     if (immediate === void 0) { immediate = false; }
     var timeout;
     return function () {
-        var context = this, args = arguments;
+        var context = self;
+        var args = arguments;
         var later = function () {
             timeout = null;
             if (!immediate)
@@ -162,12 +181,33 @@ function isValueInArrayOfObjects(selected, key, value) {
     return false;
 }
 exports.isValueInArrayOfObjects = isValueInArrayOfObjects;
-function highlight(text, search, className) {
-    var pattern = new RegExp('(>[^<.]*)(' + search.trim() + ')([^<.]*)', 'gi');
-    var replaceWith = '$1<span ' + (className ? 'class="' + className + '"' : '') + '">$2</span>$3';
-    return text.replace(pattern, replaceWith);
+function highlight(str, search, className) {
+    var completedString = completedString || str;
+    var regex = new RegExp("(" + search.trim() + ")(?![^<]*>[^<>]*</)", "i");
+    if (!str.match(regex)) {
+        return str;
+    }
+    var matchStartPosition = str.match(regex).index;
+    var matchEndPosition = matchStartPosition + str.match(regex)[0].toString().length;
+    var originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition);
+    completedString = completedString.replace(regex, "<mark class=\"" + className + "\">" + originalTextFoundByRegex + "</mark>");
+    return completedString;
 }
 exports.highlight = highlight;
+(function () {
+    var w = window;
+    if (typeof w.CustomEvent === "function") {
+        return;
+    }
+    function CustomEvent(event, params) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = w.Event.prototype;
+    w.CustomEvent = CustomEvent;
+})();
 
 
 /***/ }),
@@ -177,8 +217,7 @@ exports.highlight = highlight;
 "use strict";
 
 exports.__esModule = true;
-// Class is responsible for managing the data
-var data = /** @class */ (function () {
+var data = (function () {
     function data(info) {
         this.contentOpen = false;
         this.contentPosition = 'below';
@@ -200,10 +239,9 @@ var data = /** @class */ (function () {
             display: (info.display ? info.display : true),
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : ''),
-            data: (info.data ? info.data : {})
+            data: (info.data ? info.data : {}),
         };
     };
-    // Add to the current data array
     data.prototype.add = function (data) {
         var dataObject = {
             id: String(Math.floor(Math.random() * 100000000)),
@@ -218,10 +256,8 @@ var data = /** @class */ (function () {
         };
         this.data.push(dataObject);
     };
-    // From passed in select element pull optgroup and options into data
     data.prototype.parseSelectData = function () {
         this.data = [];
-        // Loop through nodes and create data
         var element = this.main.select.element;
         var nodes = element.childNodes;
         for (var i = 0; i < nodes.length; i++) {
@@ -244,7 +280,6 @@ var data = /** @class */ (function () {
             }
         }
     };
-    // From passed in option pull pieces of usable information
     data.prototype.pullOptionData = function (option) {
         return {
             id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
@@ -253,11 +288,10 @@ var data = /** @class */ (function () {
             innerHTML: option.innerHTML,
             selected: option.selected,
             disabled: option.disabled,
-            placeholder: option.dataset.placeholder || null,
+            placeholder: option.dataset.placeholder || '',
             data: option.dataset
         };
     };
-    // From select element get current selected and set selected
     data.prototype.setSelectedFromSelect = function () {
         var options = this.main.select.element.options;
         if (this.main.config.isMultiple) {
@@ -265,13 +299,15 @@ var data = /** @class */ (function () {
             for (var i = 0; i < options.length; i++) {
                 var option = options[i];
                 if (option.selected) {
-                    newSelected.push(this.getObjectFromData(option.value, 'value').id);
+                    var newOption = this.getObjectFromData(option.value, 'value');
+                    if (newOption && newOption.id) {
+                        newSelected.push(newOption.id);
+                    }
                 }
             }
             this.setSelected(newSelected, 'id');
         }
         else {
-            // Single select element
             if (options.selectedIndex !== -1) {
                 var option = options[options.selectedIndex];
                 var value = option.value;
@@ -279,17 +315,16 @@ var data = /** @class */ (function () {
             }
         }
     };
-    // From value set the selected value
     data.prototype.setSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
-        // Loop through data and set selected values
         for (var i = 0; i < this.data.length; i++) {
-            // Deal with optgroups
             if (this.data[i].hasOwnProperty('label')) {
                 if (this.data[i].hasOwnProperty('options')) {
                     var options = this.data[i].options;
-                    for (var o = 0; o < options.length; o++) {
-                        options[o].selected = this.shouldBeSelected(options[o], value, type);
+                    if (options) {
+                        for (var o = 0; o < options.length; o++) {
+                            options[o].selected = this.shouldBeSelected(options[o], value, type);
+                        }
                     }
                 }
             }
@@ -298,81 +333,73 @@ var data = /** @class */ (function () {
             }
         }
     };
-    // Determines whether or not passed in option should be selected based upon possible values
     data.prototype.shouldBeSelected = function (option, value, type) {
         if (type === void 0) { type = 'id'; }
         if (Array.isArray(value)) {
             for (var i = 0; i < value.length; i++) {
-                if (String(option[type]) === String(value[i])) {
+                if (type in option && String(option[type]) === String(value[i])) {
                     return true;
                 }
             }
         }
         else {
-            if (String(option[type]) === String(value)) {
+            if (type in option && String(option[type]) === String(value)) {
                 return true;
             }
         }
         return false;
     };
-    // From data get option | option[] of selected values
-    // If single select return last selected value
     data.prototype.getSelected = function () {
-        var value = null;
+        var value = { text: '' };
         var values = [];
         for (var i = 0; i < this.data.length; i++) {
-            // Deal with optgroups
             if (this.data[i].hasOwnProperty('label')) {
                 if (this.data[i].hasOwnProperty('options')) {
                     var options = this.data[i].options;
-                    for (var o = 0; o < options.length; o++) {
-                        if (options[o].selected) {
-                            // If single return option
-                            if (!this.main.config.isMultiple) {
-                                value = options[o];
-                            }
-                            else {
-                                // Push to multiple array
-                                values.push(options[o]);
+                    if (options) {
+                        for (var o = 0; o < options.length; o++) {
+                            if (options[o].selected) {
+                                if (!this.main.config.isMultiple) {
+                                    value = options[o];
+                                }
+                                else {
+                                    values.push(options[o]);
+                                }
                             }
                         }
                     }
                 }
             }
             else {
-                // Push options to array
                 if (this.data[i].selected) {
-                    // If single return option
                     if (!this.main.config.isMultiple) {
                         value = this.data[i];
                     }
                     else {
-                        // Push to multiple array
                         values.push(this.data[i]);
                     }
                 }
             }
         }
-        // Either return array or object or null
         if (this.main.config.isMultiple) {
             return values;
         }
         return value;
     };
-    // If select type is multiple append value and set selected
     data.prototype.addToSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
         if (this.main.config.isMultiple) {
             var values = [];
             var selected = this.getSelected();
-            for (var i = 0; i < selected.length; i++) {
-                values.push(selected[i][type]);
+            if (Array.isArray(selected)) {
+                for (var i = 0; i < selected.length; i++) {
+                    values.push(selected[i][type]);
+                }
             }
             values.push(value);
             this.setSelected(values, type);
         }
     };
-    // Remove object from selected
     data.prototype.removeFromSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
         if (this.main.config.isMultiple) {
@@ -386,33 +413,30 @@ var data = /** @class */ (function () {
             this.setSelected(values, type);
         }
     };
-    // Trigger onChange callback
     data.prototype.onDataChange = function () {
         if (this.main.onChange && this.isOnChangeEnabled) {
             this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())));
         }
     };
-    // Take in a value loop through the data till you find it and return it
     data.prototype.getObjectFromData = function (value, type) {
         if (type === void 0) { type = 'id'; }
         for (var i = 0; i < this.data.length; i++) {
-            // If option check if value is the same
             if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
                 return this.data[i];
             }
-            // If optgroup loop through options
             if (this.data[i].hasOwnProperty('options')) {
                 var optgroupObject = this.data[i];
-                for (var ii = 0; ii < optgroupObject.options.length; ii++) {
-                    if (String(optgroupObject.options[ii][type]) === String(value)) {
-                        return optgroupObject.options[ii];
+                if (optgroupObject.options) {
+                    for (var ii = 0; ii < optgroupObject.options.length; ii++) {
+                        if (String(optgroupObject.options[ii][type]) === String(value)) {
+                            return optgroupObject.options[ii];
+                        }
                     }
                 }
             }
         }
         return null;
     };
-    // Take in search string and return filtered list of values
     data.prototype.search = function (search) {
         this.searchValue = search;
         if (search.trim() === '') {
@@ -422,19 +446,20 @@ var data = /** @class */ (function () {
         var valuesArray = this.data.slice(0);
         search = search.trim().toLowerCase();
         var filtered = valuesArray.map(function (obj) {
-            // If optgroup
             if (obj.hasOwnProperty('options')) {
                 var optgroupObj = obj;
-                var options = optgroupObj.options.filter(function (opt) {
-                    return opt.text.toLowerCase().indexOf(search) !== -1;
-                });
+                var options = [];
+                if (optgroupObj.options) {
+                    options = optgroupObj.options.filter(function (opt) {
+                        return opt.text.toLowerCase().indexOf(search) !== -1;
+                    });
+                }
                 if (options.length !== 0) {
-                    var optgroup = Object.assign({}, optgroupObj); // Break pointer
+                    var optgroup = Object.assign({}, optgroupObj);
                     optgroup.options = options;
                     return optgroup;
                 }
             }
-            // If single option
             if (obj.hasOwnProperty('text')) {
                 var optionObj = obj;
                 if (optionObj.text.toLowerCase().indexOf(search) !== -1) {
@@ -443,7 +468,6 @@ var data = /** @class */ (function () {
             }
             return null;
         });
-        // Filter out false values
         this.filtered = filtered.filter(function (info) { return info; });
     };
     return data;
@@ -452,7 +476,7 @@ exports["default"] = data;
 function validateData(data) {
     if (!data) {
         console.error('Data must be an array of objects');
-        return;
+        return false;
     }
     var isValid = false;
     var errorCount = 0;
@@ -461,10 +485,12 @@ function validateData(data) {
             if (data[i].hasOwnProperty('options')) {
                 var optgroup = data[i];
                 var options = optgroup.options;
-                for (var j = 0; j < options.length; j++) {
-                    isValid = validateOption(options[j]);
-                    if (!isValid) {
-                        errorCount++;
+                if (options) {
+                    for (var j = 0; j < options.length; j++) {
+                        isValid = validateOption(options[j]);
+                        if (!isValid) {
+                            errorCount++;
+                        }
                     }
                 }
             }
@@ -497,14 +523,12 @@ exports.validateOption = validateOption;
 "use strict";
 
 exports.__esModule = true;
-__webpack_require__(3);
-__webpack_require__(4); // Needed for IE to use custom events
-var config_1 = __webpack_require__(5);
+var config_1 = __webpack_require__(3);
 var helper_1 = __webpack_require__(0);
-var select_1 = __webpack_require__(6);
+var select_1 = __webpack_require__(4);
 var data_1 = __webpack_require__(1);
-var slim_1 = __webpack_require__(7);
-var SlimSelect = /** @class */ (function () {
+var slim_1 = __webpack_require__(5);
+var SlimSelect = (function () {
     function SlimSelect(info) {
         var _this = this;
         this.ajax = null;
@@ -515,17 +539,13 @@ var SlimSelect = /** @class */ (function () {
         this.afterOpen = null;
         this.beforeClose = null;
         this.afterClose = null;
-        this.validate(info);
-        var selectElement = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
-        // If select already has a slim select id on it lets destroy it first
+        var selectElement = this.validate(info);
         if (selectElement.dataset.ssid) {
             this.destroy(selectElement.dataset.ssid);
         }
-        // Set ajax function if passed in
         if (info.ajax) {
             this.ajax = info.ajax;
         }
-        // Add addable if option is passed in
         if (info.addable) {
             this.addable = info.addable;
         }
@@ -535,6 +555,7 @@ var SlimSelect = /** @class */ (function () {
             showSearch: info.showSearch,
             searchPlaceholder: info.searchPlaceholder,
             searchText: info.searchText,
+            searchingText: info.searchingText,
             searchHighlight: info.searchHighlight,
             closeOnSelect: info.closeOnSelect,
             showContent: info.showContent,
@@ -542,7 +563,8 @@ var SlimSelect = /** @class */ (function () {
             allowDeselect: info.allowDeselect,
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText,
-            showOptionTooltips: info.showOptionTooltips
+            showOptionTooltips: info.showOptionTooltips,
+            limit: info.limit
         });
         this.select = new select_1["default"]({
             select: selectElement,
@@ -550,20 +572,17 @@ var SlimSelect = /** @class */ (function () {
         });
         this.data = new data_1["default"]({ main: this });
         this.slim = new slim_1["default"]({ main: this });
-        // Add after original select element
-        this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
-        // If data is passed in lets set it
-        // and thus will start the render
+        if (this.select.element.parentNode) {
+            this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
+        }
         if (info.data) {
             this.setData(info.data);
         }
         else {
-            // Do an initial render on startup
             this.render();
         }
-        // Add onclick listener to document to closeContent if clicked outside
         document.addEventListener('click', function (e) {
-            if (!helper_1.hasClassInTree(e.target, _this.config.id)) {
+            if (e.target && !helper_1.hasClassInTree(e.target, _this.config.id)) {
                 _this.close();
             }
         });
@@ -577,7 +596,6 @@ var SlimSelect = /** @class */ (function () {
                 }
             }
         }), false);
-        // Add event callbacks after everthing has been created
         if (info.beforeOnChange) {
             this.beforeOnChange = info.beforeOnChange;
         }
@@ -596,6 +614,9 @@ var SlimSelect = /** @class */ (function () {
         if (info.afterClose) {
             this.afterClose = info.afterClose;
         }
+        if (!this.config.isEnabled) {
+            this.disable();
+        }
     }
     SlimSelect.prototype.validate = function (info) {
         var select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
@@ -605,6 +626,7 @@ var SlimSelect = /** @class */ (function () {
         if (select.tagName !== 'SELECT') {
             throw new Error('Element isnt of type select');
         }
+        return select;
     };
     SlimSelect.prototype.selected = function () {
         if (this.config.isMultiple) {
@@ -620,7 +642,6 @@ var SlimSelect = /** @class */ (function () {
             return (selected ? selected.value : '');
         }
     };
-    // Sets value of the select, adds it to data and original select
     SlimSelect.prototype.set = function (value, type, close, render) {
         if (type === void 0) { type = 'value'; }
         if (close === void 0) { close = true; }
@@ -632,13 +653,12 @@ var SlimSelect = /** @class */ (function () {
             this.data.setSelected(value, type);
         }
         this.select.setValue();
-        this.data.onDataChange(); // Trigger on change callback
+        this.data.onDataChange();
         this.render();
         if (close) {
             this.close();
         }
     };
-    // setSelected is just mapped to the set method 
     SlimSelect.prototype.setSelected = function (value, type, close, render) {
         if (type === void 0) { type = 'value'; }
         if (close === void 0) { close = true; }
@@ -646,15 +666,13 @@ var SlimSelect = /** @class */ (function () {
         this.set(value, type, close, render);
     };
     SlimSelect.prototype.setData = function (data) {
-        // Validate data if passed in
         var isValid = data_1.validateData(data);
         if (!isValid) {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
-        } // If data passed in is not valid DO NOT parse, set and render
+        }
         var newData = JSON.parse(JSON.stringify(data));
         var selected = this.data.getSelected();
-        // If its an ajax type keep selected values
         if (this.config.isAjax && selected) {
             if (this.config.isMultiple) {
                 var reverseSelected = selected.reverse();
@@ -664,24 +682,19 @@ var SlimSelect = /** @class */ (function () {
             }
             else {
                 newData.unshift(this.data.getSelected());
-                newData.unshift({
-                    text: '',
-                    placeholder: true
-                });
+                newData.unshift({ text: '', placeholder: true });
             }
         }
         this.select.create(newData);
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
     };
-    // addData will append to the current data set
     SlimSelect.prototype.addData = function (data) {
-        // Validate data if passed in
         var isValid = data_1.validateData([data]);
         if (!isValid) {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
-        } // If data passed in is not valid DO NOT parse, set and render
+        }
         var option = this.data.newOption(data);
         this.data.add(option);
         this.select.create(this.data.data);
@@ -689,33 +702,27 @@ var SlimSelect = /** @class */ (function () {
         this.data.setSelectedFromSelect();
         this.render();
     };
-    // Open content section
     SlimSelect.prototype.open = function () {
         var _this = this;
-        // Dont open if disabled
         if (!this.config.isEnabled) {
             return;
         }
-        // Dont do anything if the content is already open
         if (this.data.contentOpen) {
             return;
         }
-        // Focus on input field
         this.slim.search.input.focus();
-        // Run beforeOpen callback
         if (this.beforeOpen) {
             this.beforeOpen();
         }
-        if (this.config.isMultiple) {
+        if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.plus.classList.add('ss-cross');
         }
-        else {
+        else if (this.slim.singleSelected) {
             this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down');
             this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up');
         }
         this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow));
         this.slim.content.classList.add(this.config.open);
-        // Check showContent to see if they want to specifically show in a certain direction
         if (this.config.showContent.toLowerCase() === 'up') {
             this.moveContentAbove();
         }
@@ -723,7 +730,6 @@ var SlimSelect = /** @class */ (function () {
             this.moveContentBelow();
         }
         else {
-            // Auto identify where to put it
             if (helper_1.putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
                 this.moveContentAbove();
             }
@@ -731,7 +737,6 @@ var SlimSelect = /** @class */ (function () {
                 this.moveContentBelow();
             }
         }
-        // Move to selected option for single option
         if (!this.config.isMultiple) {
             var selected = this.data.getSelected();
             if (selected) {
@@ -742,33 +747,27 @@ var SlimSelect = /** @class */ (function () {
                 }
             }
         }
-        // setTimeout is for animation completion
         setTimeout(function () {
             _this.data.contentOpen = true;
-            // Run afterOpen callback
             if (_this.afterOpen) {
                 _this.afterOpen();
             }
         }, 300);
     };
-    // Close content section
     SlimSelect.prototype.close = function () {
         var _this = this;
-        // Dont do anything if the content is already closed
         if (!this.data.contentOpen) {
             return;
         }
-        // Run beforeClose calback
         if (this.beforeClose) {
             this.beforeClose();
         }
-        // this.slim.search.input.blur() // Removed due to safari quirk
-        if (this.config.isMultiple) {
+        if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.remove(this.config.openAbove);
             this.slim.multiSelected.container.classList.remove(this.config.openBelow);
             this.slim.multiSelected.plus.classList.remove('ss-cross');
         }
-        else {
+        else if (this.slim.singleSelected) {
             this.slim.singleSelected.container.classList.remove(this.config.openAbove);
             this.slim.singleSelected.container.classList.remove(this.config.openBelow);
             this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down');
@@ -776,85 +775,94 @@ var SlimSelect = /** @class */ (function () {
         }
         this.slim.content.classList.remove(this.config.open);
         this.data.contentOpen = false;
-        this.search(''); // Clear search
-        // Reset the content below
+        this.search('');
         setTimeout(function () {
             _this.slim.content.removeAttribute('style');
             _this.data.contentPosition = 'below';
-            _this.slim[(_this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(_this.config.openAbove);
-            _this.slim[(_this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(_this.config.openBelow);
-            // After content is closed lets blur on the input field
+            if (_this.config.isMultiple && _this.slim.multiSelected) {
+                _this.slim.multiSelected.container.classList.remove(_this.config.openAbove);
+                _this.slim.multiSelected.container.classList.remove(_this.config.openBelow);
+            }
+            else if (_this.slim.singleSelected) {
+                _this.slim.singleSelected.container.classList.remove(_this.config.openAbove);
+                _this.slim.singleSelected.container.classList.remove(_this.config.openBelow);
+            }
             _this.slim.search.input.blur();
-            // Run afterClose callback
             if (_this.afterClose) {
                 _this.afterClose();
             }
         }, 300);
     };
     SlimSelect.prototype.moveContentAbove = function () {
-        var selectHeight = (this.config.isMultiple ? this.slim.multiSelected.container.offsetHeight : this.slim.singleSelected.container.offsetHeight);
+        var selectHeight = 0;
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            selectHeight = this.slim.multiSelected.container.offsetHeight;
+        }
+        else if (this.slim.singleSelected) {
+            selectHeight = this.slim.singleSelected.container.offsetHeight;
+        }
         var contentHeight = this.slim.content.offsetHeight;
         var height = selectHeight + contentHeight - 1;
         this.slim.content.style.margin = '-' + height + 'px 0 0 0';
         this.slim.content.style.height = (height - selectHeight + 1) + 'px';
-        this.slim.content.style['transform-origin'] = 'center bottom';
+        this.slim.content.style.transformOrigin = 'center bottom';
         this.data.contentPosition = 'above';
-        this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openBelow);
-        this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openAbove);
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.remove(this.config.openBelow);
+            this.slim.multiSelected.container.classList.add(this.config.openAbove);
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.remove(this.config.openBelow);
+            this.slim.singleSelected.container.classList.add(this.config.openAbove);
+        }
     };
     SlimSelect.prototype.moveContentBelow = function () {
         this.slim.content.removeAttribute('style');
         this.data.contentPosition = 'below';
-        this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.remove(this.config.openAbove);
-        this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add(this.config.openBelow);
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.remove(this.config.openAbove);
+            this.slim.multiSelected.container.classList.add(this.config.openBelow);
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.remove(this.config.openAbove);
+            this.slim.singleSelected.container.classList.add(this.config.openBelow);
+        }
     };
-    // Set to enabled, remove disabled classes and removed disabled from original select
     SlimSelect.prototype.enable = function () {
         this.config.isEnabled = true;
-        if (this.config.isMultiple) {
+        if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.remove(this.config.disabled);
         }
-        else {
+        else if (this.slim.singleSelected) {
             this.slim.singleSelected.container.classList.remove(this.config.disabled);
         }
-        // Disable original select but dont trigger observer
         this.select.disconnectMutationObserver();
         this.select.element.disabled = false;
         this.slim.search.input.disabled = false;
         this.select.observeMutationObserver();
     };
-    // Set to disabled, add disabled classes and add disabled to original select
     SlimSelect.prototype.disable = function () {
         this.config.isEnabled = false;
-        if (this.config.isMultiple) {
+        if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.add(this.config.disabled);
         }
-        else {
+        else if (this.slim.singleSelected) {
             this.slim.singleSelected.container.classList.add(this.config.disabled);
         }
-        // Enable original select but dont trigger observer
         this.select.disconnectMutationObserver();
         this.select.element.disabled = true;
         this.slim.search.input.disabled = true;
         this.select.observeMutationObserver();
     };
-    // Take in string value and search current options
     SlimSelect.prototype.search = function (value) {
-        // Only filter data and rerender if value has changed
         if (this.data.searchValue !== value) {
             this.slim.search.input.value = value;
             if (this.config.isAjax) {
-                if (value.trim() === '') {
-                    this.setData([]);
-                    this.data.search('');
-                    this.render();
-                }
-                else {
-                    var master_1 = this;
-                    this.config.isSearching = true;
-                    this.render();
+                var master_1 = this;
+                this.config.isSearching = true;
+                this.render();
+                if (this.ajax) {
                     this.ajax(value, function (info) {
-                        // Only process if return callback is not false
                         master_1.config.isSearching = false;
                         if (Array.isArray(info)) {
                             info.unshift({ text: '', placeholder: true });
@@ -890,21 +898,17 @@ var SlimSelect = /** @class */ (function () {
         }
         this.slim.options();
     };
-    // Display original select again and remove slim
     SlimSelect.prototype.destroy = function (id) {
         if (id === void 0) { id = null; }
         var slim = (id ? document.querySelector('.' + id) : this.slim.container);
         var select = (id ? document.querySelector("[data-ssid=" + id + "]") : this.select.element);
-        // If there is no slim dont do anything
         if (!slim || !select) {
             return;
         }
-        // Show original select
         select.style.display = null;
         delete select.dataset.ssid;
-        // Remove slim from original select dropdown
-        this.select.element.slim = null;
-        // Remove slim select
+        var el = select;
+        el.slim = null;
         if (slim.parentElement) {
             slim.parentElement.removeChild(slim);
         }
@@ -912,73 +916,16 @@ var SlimSelect = /** @class */ (function () {
     return SlimSelect;
 }());
 exports["default"] = SlimSelect;
-(module).exports = SlimSelect;
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-// Polyfill for creating CustomEvents on IE9/10/11
-
-// code pulled from:
-// https://github.com/d4tocchini/customevent-polyfill
-// https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent#Polyfill
-
-try {
-    var ce = new window.CustomEvent('test');
-    ce.preventDefault();
-    if (ce.defaultPrevented !== true) {
-        // IE has problems with .preventDefault() on custom events
-        // http://stackoverflow.com/questions/23349191
-        throw new Error('Could not prevent default');
-    }
-} catch(e) {
-  var CustomEvent = function(event, params) {
-    var evt, origPrevent;
-    params = params || {
-      bubbles: false,
-      cancelable: false,
-      detail: undefined
-    };
-
-    evt = document.createEvent("CustomEvent");
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-    origPrevent = evt.preventDefault;
-    evt.preventDefault = function () {
-      origPrevent.call(this);
-      try {
-        Object.defineProperty(this, 'defaultPrevented', {
-          get: function () {
-            return true;
-          }
-        });
-      } catch(e) {
-        this.defaultPrevented = true;
-      }
-    };
-    return evt;
-  };
-
-  CustomEvent.prototype = window.Event.prototype;
-  window.CustomEvent = CustomEvent; // expose definition to window
-}
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 exports.__esModule = true;
-var config = /** @class */ (function () {
+var config = (function () {
     function config(info) {
         this.id = '';
         this.isMultiple = false;
@@ -987,15 +934,16 @@ var config = /** @class */ (function () {
         this.showSearch = true;
         this.searchHighlight = false;
         this.closeOnSelect = true;
-        this.showContent = 'auto'; // options: auto, up, down
+        this.showContent = 'auto';
         this.searchPlaceholder = 'Search';
         this.searchText = 'No Results';
+        this.searchingText = 'Searching...';
         this.placeholderText = 'Select Value';
         this.allowDeselect = false;
         this.isEnabled = true;
         this.valuesUseText = false;
         this.showOptionTooltips = false;
-        // Classes
+        this.limit = 0;
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
         this.arrow = 'ss-arrow';
@@ -1038,6 +986,9 @@ var config = /** @class */ (function () {
         if (info.searchText) {
             this.searchText = info.searchText;
         }
+        if (info.searchingText) {
+            this.searchingText = info.searchingText;
+        }
         if (info.placeholderText) {
             this.placeholderText = info.placeholderText;
         }
@@ -1048,6 +999,9 @@ var config = /** @class */ (function () {
         if (info.showOptionTooltips) {
             this.showOptionTooltips = info.showOptionTooltips;
         }
+        if (info.limit) {
+            this.limit = info.limit;
+        }
     }
     return config;
 }());
@@ -1055,32 +1009,31 @@ exports["default"] = config;
 
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 exports.__esModule = true;
-var select = /** @class */ (function () {
+var select = (function () {
     function select(info) {
         this.element = info.select;
         this.main = info.main;
-        // If original select is set to disabled lets make sure slim is too
         if (this.element.disabled) {
             this.main.config.isEnabled = false;
         }
         this.addAttributes();
         this.addEventListeners();
+        this.mutationObserver = null;
         this.addMutationObserver();
-        // Add slim to original select dropdown
-        this.element.slim = info.main;
+        var el = this.element;
+        el.slim = info.main;
     }
     select.prototype.setValue = function () {
         if (!this.main.data.getSelected()) {
             return;
         }
         if (this.main.config.isMultiple) {
-            // If multiple loop through options and set selected
             var selected = this.main.data.getSelected();
             var options = this.element.options;
             for (var o = 0; o < options.length; o++) {
@@ -1094,22 +1047,18 @@ var select = /** @class */ (function () {
             }
         }
         else {
-            // If single select simply set value
             var selected = this.main.data.getSelected();
             this.element.value = (selected ? selected.value : '');
         }
-        // Do not trigger onChange callbacks for this event listener
         this.main.data.isOnChangeEnabled = false;
-        this.element.dispatchEvent(new CustomEvent('change'));
+        this.element.dispatchEvent(new CustomEvent('change', { bubbles: true }));
         this.main.data.isOnChangeEnabled = true;
     };
     select.prototype.addAttributes = function () {
         this.element.tabIndex = -1;
         this.element.style.display = 'none';
-        // Add slim select id
         this.element.dataset.ssid = this.main.config.id;
     };
-    // Add onChange listener to original select
     select.prototype.addEventListeners = function () {
         var _this = this;
         this.element.addEventListener('change', function (e) {
@@ -1117,10 +1066,8 @@ var select = /** @class */ (function () {
             _this.main.render();
         });
     };
-    // Add MutationObserver to select
     select.prototype.addMutationObserver = function () {
         var _this = this;
-        // Only add if not in ajax mode
         if (this.main.config.isAjax) {
             return;
         }
@@ -1128,10 +1075,18 @@ var select = /** @class */ (function () {
             _this.main.data.parseSelectData();
             _this.main.data.setSelectedFromSelect();
             _this.main.render();
+            mutations.forEach(function (mutation) {
+                if (mutation.attributeName === 'class') {
+                    _this.main.slim.updateContainerDivClass(_this.main.slim.container);
+                }
+            });
         });
         this.observeMutationObserver();
     };
     select.prototype.observeMutationObserver = function () {
+        if (!this.mutationObserver) {
+            return;
+        }
         this.mutationObserver.observe(this.element, {
             attributes: true,
             childList: true,
@@ -1143,17 +1098,17 @@ var select = /** @class */ (function () {
             this.mutationObserver.disconnect();
         }
     };
-    // Create select element and optgroup/options
     select.prototype.create = function (data) {
-        // Clear out select
         this.element.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
             if (data[i].hasOwnProperty('options')) {
                 var optgroupObject = data[i];
                 var optgroup = document.createElement('optgroup');
                 optgroup.label = optgroupObject.label;
-                for (var o = 0; o < optgroupObject.options.length; o++) {
-                    optgroup.appendChild(this.createOption(optgroupObject.options[o]));
+                if (optgroupObject.options) {
+                    for (var o = 0; o < optgroupObject.options.length; o++) {
+                        optgroup.appendChild(this.createOption(optgroupObject.options[o]));
+                    }
                 }
                 this.element.appendChild(optgroup);
             }
@@ -1188,7 +1143,7 @@ exports["default"] = select;
 
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1196,16 +1151,16 @@ exports["default"] = select;
 exports.__esModule = true;
 var helper_1 = __webpack_require__(0);
 var data_1 = __webpack_require__(1);
-// Class is responsible for creating all the elements
-var slim = /** @class */ (function () {
+var slim = (function () {
     function slim(info) {
         this.main = info.main;
-        // Create elements in order of appending
         this.container = this.containerDiv();
         this.content = this.contentDiv();
         this.search = this.searchDiv();
         this.list = this.listDiv();
         this.options();
+        this.singleSelected = null;
+        this.multiSelected = null;
         if (this.main.config.isMultiple) {
             this.multiSelected = this.multiSelectedDiv();
             this.container.appendChild(this.multiSelected.container);
@@ -1218,30 +1173,29 @@ var slim = /** @class */ (function () {
         this.content.appendChild(this.search.container);
         this.content.appendChild(this.list);
     }
-    // Create main container
     slim.prototype.containerDiv = function () {
-        // Create main container
         var container = document.createElement('div');
+        container.style.cssText = this.main.config.style;
+        this.updateContainerDivClass(container);
+        return container;
+    };
+    slim.prototype.updateContainerDivClass = function (container) {
+        this.main.config["class"] = this.main.select.element.classList;
+        container.className = '';
         container.classList.add(this.main.config.id);
         container.classList.add(this.main.config.main);
-        // Add style and classes
-        container.style.cssText = this.main.config.style;
         for (var i = 0; i < this.main.config["class"].length; i++) {
             container.classList.add(this.main.config["class"][i]);
         }
-        return container;
     };
     slim.prototype.singleSelectedDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.singleSelected);
-        // Placeholder text
         var placeholder = document.createElement('span');
         placeholder.classList.add('placeholder');
         container.appendChild(placeholder);
-        // Deselect
-        var deselect = null;
-        deselect = document.createElement('span');
+        var deselect = document.createElement('span');
         deselect.innerHTML = 'X';
         deselect.classList.add('ss-deselect');
         deselect.onclick = function (e) {
@@ -1249,14 +1203,12 @@ var slim = /** @class */ (function () {
             e.stopPropagation();
         };
         container.appendChild(deselect);
-        // Arrow
         var arrowContainer = document.createElement('span');
         arrowContainer.classList.add(this.main.config.arrow);
         var arrowIcon = document.createElement('span');
         arrowIcon.classList.add('arrow-down');
         arrowContainer.appendChild(arrowIcon);
         container.appendChild(arrowContainer);
-        // Add onclick for main selector div
         container.onclick = function () {
             if (!_this.main.config.isEnabled) {
                 return;
@@ -1273,36 +1225,38 @@ var slim = /** @class */ (function () {
             }
         };
     };
-    // Based upon current selection set placeholder text
     slim.prototype.placeholder = function () {
         var selected = this.main.data.getSelected();
-        // Placeholder display
         if (selected === null || (selected && selected.placeholder)) {
             var placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
             placeholder.innerHTML = this.main.config.placeholderText;
-            this.singleSelected.placeholder.innerHTML = placeholder.outerHTML;
+            if (this.singleSelected) {
+                this.singleSelected.placeholder.innerHTML = placeholder.outerHTML;
+            }
         }
         else {
             var selectedValue = '';
             if (selected) {
                 selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text;
             }
-            this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '');
+            if (this.singleSelected) {
+                this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '');
+            }
         }
     };
-    // Based upon current selection/settings hide/show deselect
     slim.prototype.deselect = function () {
-        // if allowDeselect is false just hide it
-        if (!this.main.config.allowDeselect) {
-            this.singleSelected.deselect.classList.add('ss-hide');
-            return;
-        }
-        if (this.main.selected() === '') {
-            this.singleSelected.deselect.classList.add('ss-hide');
-        }
-        else {
-            this.singleSelected.deselect.classList.remove('ss-hide');
+        if (this.singleSelected) {
+            if (!this.main.config.allowDeselect) {
+                this.singleSelected.deselect.classList.add('ss-hide');
+                return;
+            }
+            if (this.main.selected() === '') {
+                this.singleSelected.deselect.classList.add('ss-hide');
+            }
+            else {
+                this.singleSelected.deselect.classList.remove('ss-hide');
+            }
         }
     };
     slim.prototype.multiSelectedDiv = function () {
@@ -1328,7 +1282,6 @@ var slim = /** @class */ (function () {
             if (!_this.main.config.isEnabled) {
                 return;
             }
-            // Open only if you are not clicking on x text
             var target = e.target;
             if (!target.classList.contains(_this.main.config.valueDelete)) {
                 _this.main.open();
@@ -1341,15 +1294,12 @@ var slim = /** @class */ (function () {
             plus: plus
         };
     };
-    // Get selected values and append to multiSelected values container
-    // and remove those who shouldnt exist
     slim.prototype.values = function () {
-        if (!this.main.config.isMultiple) {
+        if (!this.multiSelected) {
             return;
         }
         var currentNodes = this.multiSelected.values.childNodes;
         var selected = this.main.data.getSelected();
-        // Remove nodes that shouldnt be there
         var exists;
         var nodesToRemove = [];
         for (var c = 0; c < currentNodes.length; c++) {
@@ -1368,7 +1318,6 @@ var slim = /** @class */ (function () {
             nodesToRemove[i].classList.add('ss-out');
             this.multiSelected.values.removeChild(nodesToRemove[i]);
         }
-        // Add values that dont currently exist
         currentNodes = this.multiSelected.values.childNodes;
         for (var s = 0; s < selected.length; s++) {
             exists = false;
@@ -1379,7 +1328,7 @@ var slim = /** @class */ (function () {
                 }
             }
             if (!exists) {
-                if (currentNodes.length === 0) {
+                if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
                     this.multiSelected.values.appendChild(this.valueDiv(selected[s]));
                 }
                 else if (s === 0) {
@@ -1390,7 +1339,6 @@ var slim = /** @class */ (function () {
                 }
             }
         }
-        // If there are no values set placeholder
         if (selected.length === 0) {
             var placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
@@ -1419,7 +1367,6 @@ var slim = /** @class */ (function () {
             if (_this.main.beforeOnChange) {
                 var selected = _this.main.data.getSelected();
                 var currentValues = JSON.parse(JSON.stringify(selected));
-                // Remove from current selection
                 for (var i = 0; i < currentValues.length; i++) {
                     if (currentValues[i].id === option.id) {
                         currentValues.splice(i, 1);
@@ -1436,13 +1383,12 @@ var slim = /** @class */ (function () {
                 _this.main.data.removeFromSelected(option.id, 'id');
                 _this.main.render();
                 _this.main.select.setValue();
-                _this.main.data.onDataChange(); // Trigger on change callback
+                _this.main.data.onDataChange();
             }
         };
         value.appendChild(deleteSpan);
         return value;
     };
-    // Create content container
     slim.prototype.contentDiv = function () {
         var container = document.createElement('div');
         container.classList.add(this.main.config.content);
@@ -1453,7 +1399,6 @@ var slim = /** @class */ (function () {
         var container = document.createElement('div');
         var input = document.createElement('input');
         container.classList.add(this.main.config.search);
-        // We still want the search to be tabable but not shown
         if (!this.main.config.showSearch) {
             container.classList.add(this.main.config.hide);
             input.readOnly = true;
@@ -1502,7 +1447,6 @@ var slim = /** @class */ (function () {
                 }
             }
             else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                // Cancel out to leave for onkeydown to handle
             }
             else if (e.key === 'Escape') {
                 _this.main.close();
@@ -1520,55 +1464,57 @@ var slim = /** @class */ (function () {
         };
         input.onfocus = function () { _this.main.open(); };
         container.appendChild(input);
+        var searchReturn = {
+            container: container,
+            input: input
+        };
         if (this.main.addable) {
             var addable = document.createElement('div');
             addable.classList.add(this.main.config.addable);
             addable.innerHTML = '+';
             addable.onclick = function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var inputValue = _this.search.input.value;
-                if (inputValue.trim() === '') {
-                    _this.search.input.focus();
-                    return;
-                }
-                var addableValue = _this.main.addable(inputValue);
-                var addableValueStr = '';
-                if (!addableValue) {
-                    return;
-                }
-                if (typeof addableValue == 'object') {
-                    var validValue = data_1.validateOption(addableValue);
-                    if (validValue) {
-                        _this.main.addData(addableValue);
-                        addableValueStr = (addableValue.value ? addableValue.value : addableValue.text);
+                if (_this.main.addable) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var inputValue = _this.search.input.value;
+                    if (inputValue.trim() === '') {
+                        _this.search.input.focus();
+                        return;
                     }
-                }
-                else {
-                    _this.main.addData(_this.main.data.newOption({
-                        text: addableValue,
-                        value: addableValue
-                    }));
-                    addableValueStr = addableValue;
-                }
-                _this.main.search('');
-                setTimeout(function () {
-                    _this.main.set(addableValueStr, 'value', false, false);
-                }, 100);
-                // Close it only if closeOnSelect = true
-                if (_this.main.config.closeOnSelect) {
+                    var addableValue = _this.main.addable(inputValue);
+                    var addableValueStr_1 = '';
+                    if (!addableValue) {
+                        return;
+                    }
+                    if (typeof addableValue == 'object') {
+                        var validValue = data_1.validateOption(addableValue);
+                        if (validValue) {
+                            _this.main.addData(addableValue);
+                            addableValueStr_1 = (addableValue.value ? addableValue.value : addableValue.text);
+                        }
+                    }
+                    else {
+                        _this.main.addData(_this.main.data.newOption({
+                            text: addableValue,
+                            value: addableValue
+                        }));
+                        addableValueStr_1 = addableValue;
+                    }
+                    _this.main.search('');
                     setTimeout(function () {
-                        _this.main.close();
+                        _this.main.set(addableValueStr_1, 'value', false, false);
                     }, 100);
+                    if (_this.main.config.closeOnSelect) {
+                        setTimeout(function () {
+                            _this.main.close();
+                        }, 100);
+                    }
                 }
             };
             container.appendChild(addable);
+            searchReturn.addable = addable;
         }
-        return {
-            container: container,
-            input: input,
-            addable: addable
-        };
+        return searchReturn;
     };
     slim.prototype.highlightUp = function () {
         var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
@@ -1589,11 +1535,9 @@ var slim = /** @class */ (function () {
             var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
             prev = allOptions[allOptions.length - 1];
         }
-        // Do not select if optgroup label
         if (prev && prev.classList.contains(this.main.config.optgroupLabel)) {
             prev = null;
         }
-        // Check if parent is optgroup
         if (prev === null) {
             var parent = highlighted.parentNode;
             if (parent.classList.contains(this.main.config.optgroup)) {
@@ -1605,7 +1549,6 @@ var slim = /** @class */ (function () {
                 }
             }
         }
-        // If previous element exists highlight it
         if (prev) {
             if (highlighted) {
                 highlighted.classList.remove(this.main.config.highlighted);
@@ -1632,7 +1575,6 @@ var slim = /** @class */ (function () {
         else {
             next = this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
         }
-        // Check if parent is optgroup
         if (next === null && highlighted !== null) {
             var parent = highlighted.parentNode;
             if (parent.classList.contains(this.main.config.optgroup)) {
@@ -1642,7 +1584,6 @@ var slim = /** @class */ (function () {
                 }
             }
         }
-        // If previous element exists highlight it
         if (next) {
             if (highlighted) {
                 highlighted.classList.remove(this.main.config.highlighted);
@@ -1651,11 +1592,10 @@ var slim = /** @class */ (function () {
             helper_1.ensureElementInView(this.list, next);
         }
     };
-    // Create main container that options will reside
     slim.prototype.listDiv = function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
-        list.onmousewheel = function (e) {
+        list.addEventListener('wheel', function (e) {
             var scrollTop = list.scrollTop, scrollHeight = list.scrollHeight, height = list.offsetHeight, delta = (e.type == 'DOMMouseScroll' ? e.detail * -40 : e.wheelDelta), up = delta > 0;
             var prevent = function () {
                 e.stopPropagation();
@@ -1664,25 +1604,20 @@ var slim = /** @class */ (function () {
                 return false;
             };
             if (!up && -delta > scrollHeight - height - scrollTop) {
-                // Scrolling down, but this will take us past the bottom.
                 list.scrollTop = scrollHeight;
                 return prevent();
             }
             else if (up && delta > scrollTop) {
-                // Scrolling up, but this will take us past the top.
                 list.scrollTop = 0;
                 return prevent();
             }
-        };
+        });
         return list;
     };
-    // Loop through data || filtered data and build options and append to list container
     slim.prototype.options = function (content) {
         if (content === void 0) { content = ''; }
         var data = this.main.data.filtered || this.main.data.data;
-        // Clear out innerHtml
         this.list.innerHTML = '';
-        // If content is being passed just use that text
         if (content !== '') {
             var searching = document.createElement('div');
             searching.classList.add(this.main.config.option);
@@ -1691,16 +1626,14 @@ var slim = /** @class */ (function () {
             this.list.appendChild(searching);
             return;
         }
-        // If ajax and isSearching
         if (this.main.config.isAjax && this.main.config.isSearching) {
             var searching = document.createElement('div');
             searching.classList.add(this.main.config.option);
             searching.classList.add(this.main.config.disabled);
-            searching.innerHTML = 'Searching...';
+            searching.innerHTML = this.main.config.searchingText;
             this.list.appendChild(searching);
             return;
         }
-        // If no results show no results text
         if (data.length === 0) {
             var noResults = document.createElement('div');
             noResults.classList.add(this.main.config.option);
@@ -1709,21 +1642,20 @@ var slim = /** @class */ (function () {
             this.list.appendChild(noResults);
             return;
         }
-        // Append individual options to div container
         for (var i = 0; i < data.length; i++) {
-            // Create optgroup
             if (data[i].hasOwnProperty('label')) {
                 var item = data[i];
                 var optgroup = document.createElement('div');
                 optgroup.classList.add(this.main.config.optgroup);
-                // Create label
                 var optgroupLabel = document.createElement('div');
                 optgroupLabel.classList.add(this.main.config.optgroupLabel);
                 optgroupLabel.innerHTML = item.label;
                 optgroup.appendChild(optgroupLabel);
                 var options = item.options;
-                for (var ii = 0; ii < options.length; ii++) {
-                    optgroup.appendChild(this.option(options[ii]));
+                if (options) {
+                    for (var ii = 0; ii < options.length; ii++) {
+                        optgroup.appendChild(this.option(options[ii]));
+                    }
                 }
                 this.list.appendChild(optgroup);
             }
@@ -1732,9 +1664,7 @@ var slim = /** @class */ (function () {
             }
         }
     };
-    // Create single option
     slim.prototype.option = function (data) {
-        // Add hidden placeholder
         if (data.placeholder) {
             var placeholder = document.createElement('div');
             placeholder.classList.add(this.main.config.option);
@@ -1745,19 +1675,22 @@ var slim = /** @class */ (function () {
         option.classList.add(this.main.config.option);
         var selected = this.main.data.getSelected();
         option.dataset.id = data.id;
-        if (this.main.config.searchHighlight && this.main.slim && this.main.slim.search.input.value.trim() !== '') {
+        if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
             option.innerHTML = helper_1.highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
         }
-        else {
+        else if (data.innerHTML) {
             option.innerHTML = data.innerHTML;
         }
-        if (this.main.config.showOptionTooltips) {
+        if (this.main.config.showOptionTooltips && option.textContent) {
             option.setAttribute('title', option.textContent);
         }
         var master = this;
-        option.onclick = function (e) {
+        option.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
+            if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) {
+                return;
+            }
             var element = this;
             var elementID = element.dataset.id;
             if (master.main.beforeOnChange) {
@@ -1779,7 +1712,7 @@ var slim = /** @class */ (function () {
             else {
                 master.main.set(elementID, 'id', master.main.config.closeOnSelect);
             }
-        };
+        });
         if (data.disabled || (selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id))) {
             option.onclick = null;
             option.classList.add(this.main.config.disabled);

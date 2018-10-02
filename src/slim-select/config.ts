@@ -1,17 +1,19 @@
 interface constructor {
   select: HTMLSelectElement
   isAjax: boolean
-  showSearch: boolean
-  searchPlaceholder: string
-  searchText: string
-  searchHighlight: boolean
-  closeOnSelect: boolean
-  showContent: string
-  placeholderText: string
-  allowDeselect: boolean
-  isEnabled: boolean
-  valuesUseText: boolean
-  showOptionTooltips: boolean
+  showSearch?: boolean
+  searchPlaceholder?: string
+  searchText?: string
+  searchingText?: string
+  searchHighlight?: boolean
+  closeOnSelect?: boolean
+  showContent?: string
+  placeholderText?: string
+  allowDeselect?: boolean
+  isEnabled?: boolean
+  valuesUseText?: boolean
+  showOptionTooltips?: boolean
+  limit?: number
 }
 
 export default class config {
@@ -27,11 +29,13 @@ export default class config {
   showContent: string = 'auto' // options: auto, up, down
   searchPlaceholder: string = 'Search'
   searchText: string = 'No Results'
+  searchingText: string = 'Searching...'
   placeholderText: string = 'Select Value'
   allowDeselect: boolean = false
   isEnabled: boolean = true
   valuesUseText: boolean = false
   showOptionTooltips: boolean = false
+  limit: number = 0
 
   // Classes
   readonly main: string = 'ss-main'
@@ -73,9 +77,11 @@ export default class config {
     this.isEnabled = (info.isEnabled === false ? false : true)
     if (info.searchPlaceholder) { this.searchPlaceholder = info.searchPlaceholder }
     if (info.searchText) { this.searchText = info.searchText }
+    if (info.searchingText) { this.searchingText = info.searchingText }
     if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
+    if (info.limit) { this.limit = info.limit }
   }
 }

@@ -1,5 +1,5 @@
 <script>
-  import SlimSelect from '../slim-select/index.ts'
+  import SlimSelect from '@/slim-select'
 
   export default {
     data () {
@@ -69,10 +69,10 @@
       </div>
       <div class="select-nav">
         <a href="https://github.com/brianvoe/slim-select" target="_blank">
-          <img src="~images/github.png" />
+          <img src="images/github.png" />
         </a>
         <a href="https://www.npmjs.com/package/slim-select" target="_blank">
-          <img src="~images/npm.png" />
+          <img src="images/npm.png" />
         </a>
         <select id="select-nav"></select>
       </div>

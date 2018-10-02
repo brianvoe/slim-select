@@ -1,10 +1,14 @@
+import Vue from 'vue'
+import Router from 'vue-router'
 import home from './pages/home.vue'
 import install from './pages/install.vue'
 import selects from './pages/selects.vue'
 import options from './pages/options.vue'
 import methods from './pages/methods.vue'
 
-export default {
+Vue.use(Router)
+
+export default new Router({
   mode: 'history',
   base: '/',
   linkActiveClass: 'active',
@@ -13,6 +17,6 @@ export default {
     {path: '/install', component: install},
     {path: '/selects', component: selects},
     {path: '/options', component: options},
-    {path: '/methods', component: methods}
+    {path: '/methods', component: methods},
   ]
-}
+})
