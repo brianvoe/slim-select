@@ -3,14 +3,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
-var nonMiniCss = new MiniCssExtractPlugin({
-  filename: 'slimselect.css',
-  minimize: false
-})
-var miniCss = new MiniCssExtractPlugin({
-  filename: 'slimselect.min.css'
-})
-
 module.exports = {
   mode: 'production',
   entry: {
@@ -29,22 +21,18 @@ module.exports = {
       {
         test: /\.(sass|scss)$/,
         use: [
-          nonMiniCss.loader,
-          "css-loader", // translates CSS into CommonJS
-          "sass-loader" // compiles Sass to CSS, using Node Sass by default
-        ]
-      },
-      {
-        test: /\.(sass|scss)$/,
-        use: [
-          miniCss.loader,
-          "css-loader", // translates CSS into CommonJS
+          MiniCssExtractPlugin.loader,
+          "css-loader",
           "sass-loader" // compiles Sass to CSS, using Node Sass by default
         ]
       }
     ]
   },
-  plugins: [nonMiniCss, miniCss],
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css'
+    })
+  ],
   resolve: {
     extensions: ['.ts', '.js']
   },
@@ -60,7 +48,9 @@ module.exports = {
         sourceMap: false,
         include: /\.min\.js$/
       }),
-      new OptimizeCSSAssetsPlugin({})
+      new OptimizeCSSAssetsPlugin({
+        assetNameRegExp: /\.min\.css$/g, // Lets only run optimize on files with min in it
+      })
     ],
     splitChunks: {
       cacheGroups: {
