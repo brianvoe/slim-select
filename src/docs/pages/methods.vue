@@ -284,7 +284,8 @@
             value: 'value', // Optional - value will be set by text if not set
             innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
             disabled: false, // Optional - default is false
-            placeholder: false // Optional - default is false
+            placeholder: false, // Optional - default is false
+            data: {} // Optional - If you have data attributes
           }
         </code>
       </pre>

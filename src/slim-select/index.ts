@@ -243,7 +243,6 @@ export default class SlimSelect {
       }
     }
 
-
     // Move to selected option for single option
     if (!this.config.isMultiple) {
       const selected = this.data.getSelected() as option
@@ -255,7 +254,6 @@ export default class SlimSelect {
         }
       }
     }
-
 
     // setTimeout is for animation completion
     setTimeout(() => {
