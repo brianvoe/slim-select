@@ -145,3 +145,19 @@ export default class select {
     return option
   }
 }
+
+// Custom events
+(function () {
+  let w = (window as any)
+  if (typeof w.CustomEvent === "function") { return }
+
+  function CustomEvent(event: any, params: any) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined }
+    var evt = document.createEvent('CustomEvent')
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
+    return evt
+  }
+
+  CustomEvent.prototype = w.Event.prototype
+  w.CustomEvent = CustomEvent
+})();

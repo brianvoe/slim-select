@@ -1,4 +1,3 @@
-import 'custom-event-polyfill' // Needed for IE to use custom events
 import Config from './config'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
