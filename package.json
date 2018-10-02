@@ -14,7 +14,7 @@
   "main": "dist/slimselect.min.js",
   "style": "dist/slimselect.min.css",
   "sass": "src/slim-select/slimselect.scss",
-  "types": "dist/slimselect.d.ts",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
@@ -28,7 +28,9 @@
   ],
   "scripts": {
     "dev": "vue-cli-service serve",
-    "library": "rm -r dist && cd src/slim-select && webpack && cd ../../ && rm dist/slimselectcss.js",
+    "library": "rm -r dist && cd src/slim-select && webpack && cd ../../ && npm run cleanDist && npm run renameDist",
+    "cleanDist": "rm dist/slimselectcss.min.js && rm dist/slimselectcss.js",
+    "renameDist": "mv 'dist/slimselectcss.css' 'dist/slimselect.css' && mv 'dist/slimselectcss.min.css' 'dist/slimselect.min.css'",
     "docs": "vue-cli-service build",
     "build": "npm run docs && npm run library",
     "lint": "vue-cli-service lint"
