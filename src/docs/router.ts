@@ -1,10 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import home from './pages/home.vue'
-import install from './pages/install.vue'
-import selects from './pages/selects.vue'
-import options from './pages/options.vue'
-import methods from './pages/methods.vue'
 
 Vue.use(Router)
 
@@ -13,10 +8,25 @@ export default new Router({
   base: '/',
   linkActiveClass: 'active',
   routes: [
-    {path: '/', component: home},
-    {path: '/install', component: install},
-    {path: '/selects', component: selects},
-    {path: '/options', component: options},
-    {path: '/methods', component: methods},
+    {
+      path: '/',
+      component: () => import(/* webpackChunkName: "home" */ './pages/home.vue')
+    },
+    {
+      path: '/install',
+      component: () => import(/* webpackChunkName: "install" */ './pages/install.vue')
+    },
+    {
+      path: '/selects', 
+      component: () => import(/* webpackChunkName: "selects" */ './pages/selects.vue')
+    },
+    {
+      path: '/options', 
+      component: () => import(/* webpackChunkName: "options" */ './pages/options.vue')
+    },
+    {
+      path: '/methods', 
+      component: () => import(/* webpackChunkName: "methods" */ './pages/methods.vue')
+    },
   ]
 })

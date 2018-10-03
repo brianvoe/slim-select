@@ -6,7 +6,7 @@ interface Constructor {
   main: SlimSelect
 }
 
-export default class select {
+export default class Select {
   element: HTMLSelectElement
   main: SlimSelect
   mutationObserver: MutationObserver | null
