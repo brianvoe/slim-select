@@ -22,7 +22,7 @@ export interface option {
 }
 
 // Class is responsible for managing the data
-export default class data {
+export default class Data {
   main: SlimSelect
   searchValue: string
   data: dataObject[]

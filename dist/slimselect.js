@@ -217,8 +217,8 @@ exports.highlight = highlight;
 "use strict";
 
 exports.__esModule = true;
-var data = (function () {
-    function data(info) {
+var Data = (function () {
+    function Data(info) {
         this.contentOpen = false;
         this.contentPosition = 'below';
         this.isOnChangeEnabled = true;
@@ -229,7 +229,7 @@ var data = (function () {
         this.parseSelectData();
         this.setSelectedFromSelect();
     }
-    data.prototype.newOption = function (info) {
+    Data.prototype.newOption = function (info) {
         return {
             id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
             value: (info.value ? info.value : ''),
@@ -242,7 +242,7 @@ var data = (function () {
             data: (info.data ? info.data : {}),
         };
     };
-    data.prototype.add = function (data) {
+    Data.prototype.add = function (data) {
         var dataObject = {
             id: String(Math.floor(Math.random() * 100000000)),
             value: data.value,
@@ -256,7 +256,7 @@ var data = (function () {
         };
         this.data.push(dataObject);
     };
-    data.prototype.parseSelectData = function () {
+    Data.prototype.parseSelectData = function () {
         this.data = [];
         var element = this.main.select.element;
         var nodes = element.childNodes;
@@ -280,7 +280,7 @@ var data = (function () {
             }
         }
     };
-    data.prototype.pullOptionData = function (option) {
+    Data.prototype.pullOptionData = function (option) {
         return {
             id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
             value: option.value,
@@ -292,7 +292,7 @@ var data = (function () {
             data: option.dataset
         };
     };
-    data.prototype.setSelectedFromSelect = function () {
+    Data.prototype.setSelectedFromSelect = function () {
         var options = this.main.select.element.options;
         if (this.main.config.isMultiple) {
             var newSelected = [];
@@ -315,7 +315,7 @@ var data = (function () {
             }
         }
     };
-    data.prototype.setSelected = function (value, type) {
+    Data.prototype.setSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
         for (var i = 0; i < this.data.length; i++) {
             if (this.data[i].hasOwnProperty('label')) {
@@ -333,7 +333,7 @@ var data = (function () {
             }
         }
     };
-    data.prototype.shouldBeSelected = function (option, value, type) {
+    Data.prototype.shouldBeSelected = function (option, value, type) {
         if (type === void 0) { type = 'id'; }
         if (Array.isArray(value)) {
             for (var i = 0; i < value.length; i++) {
@@ -349,7 +349,7 @@ var data = (function () {
         }
         return false;
     };
-    data.prototype.getSelected = function () {
+    Data.prototype.getSelected = function () {
         var value = { text: '' };
         var values = [];
         for (var i = 0; i < this.data.length; i++) {
@@ -386,7 +386,7 @@ var data = (function () {
         }
         return value;
     };
-    data.prototype.addToSelected = function (value, type) {
+    Data.prototype.addToSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
         if (this.main.config.isMultiple) {
             var values = [];
@@ -400,7 +400,7 @@ var data = (function () {
             this.setSelected(values, type);
         }
     };
-    data.prototype.removeFromSelected = function (value, type) {
+    Data.prototype.removeFromSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
         if (this.main.config.isMultiple) {
             var values = [];
@@ -413,12 +413,12 @@ var data = (function () {
             this.setSelected(values, type);
         }
     };
-    data.prototype.onDataChange = function () {
+    Data.prototype.onDataChange = function () {
         if (this.main.onChange && this.isOnChangeEnabled) {
             this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())));
         }
     };
-    data.prototype.getObjectFromData = function (value, type) {
+    Data.prototype.getObjectFromData = function (value, type) {
         if (type === void 0) { type = 'id'; }
         for (var i = 0; i < this.data.length; i++) {
             if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
@@ -437,7 +437,7 @@ var data = (function () {
         }
         return null;
     };
-    data.prototype.search = function (search) {
+    Data.prototype.search = function (search) {
         this.searchValue = search;
         if (search.trim() === '') {
             this.filtered = null;
@@ -470,9 +470,9 @@ var data = (function () {
         });
         this.filtered = filtered.filter(function (info) { return info; });
     };
-    return data;
+    return Data;
 }());
-exports["default"] = data;
+exports["default"] = Data;
 function validateData(data) {
     if (!data) {
         console.error('Data must be an array of objects');
@@ -925,8 +925,8 @@ exports["default"] = SlimSelect;
 "use strict";
 
 exports.__esModule = true;
-var config = (function () {
-    function config(info) {
+var Config = (function () {
+    function Config(info) {
         this.id = '';
         this.isMultiple = false;
         this.isAjax = false;
@@ -1003,9 +1003,9 @@ var config = (function () {
             this.limit = info.limit;
         }
     }
-    return config;
+    return Config;
 }());
-exports["default"] = config;
+exports["default"] = Config;
 
 
 /***/ }),
@@ -1015,8 +1015,8 @@ exports["default"] = config;
 "use strict";
 
 exports.__esModule = true;
-var select = (function () {
-    function select(info) {
+var Select = (function () {
+    function Select(info) {
         this.element = info.select;
         this.main = info.main;
         if (this.element.disabled) {
@@ -1029,7 +1029,7 @@ var select = (function () {
         var el = this.element;
         el.slim = info.main;
     }
-    select.prototype.setValue = function () {
+    Select.prototype.setValue = function () {
         if (!this.main.data.getSelected()) {
             return;
         }
@@ -1054,19 +1054,19 @@ var select = (function () {
         this.element.dispatchEvent(new CustomEvent('change', { bubbles: true }));
         this.main.data.isOnChangeEnabled = true;
     };
-    select.prototype.addAttributes = function () {
+    Select.prototype.addAttributes = function () {
         this.element.tabIndex = -1;
         this.element.style.display = 'none';
         this.element.dataset.ssid = this.main.config.id;
     };
-    select.prototype.addEventListeners = function () {
+    Select.prototype.addEventListeners = function () {
         var _this = this;
         this.element.addEventListener('change', function (e) {
             _this.main.data.setSelectedFromSelect();
             _this.main.render();
         });
     };
-    select.prototype.addMutationObserver = function () {
+    Select.prototype.addMutationObserver = function () {
         var _this = this;
         if (this.main.config.isAjax) {
             return;
@@ -1083,7 +1083,7 @@ var select = (function () {
         });
         this.observeMutationObserver();
     };
-    select.prototype.observeMutationObserver = function () {
+    Select.prototype.observeMutationObserver = function () {
         if (!this.mutationObserver) {
             return;
         }
@@ -1093,12 +1093,12 @@ var select = (function () {
             characterData: true
         });
     };
-    select.prototype.disconnectMutationObserver = function () {
+    Select.prototype.disconnectMutationObserver = function () {
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
         }
     };
-    select.prototype.create = function (data) {
+    Select.prototype.create = function (data) {
         this.element.innerHTML = '';
         for (var i = 0; i < data.length; i++) {
             if (data[i].hasOwnProperty('options')) {
@@ -1117,7 +1117,7 @@ var select = (function () {
             }
         }
     };
-    select.prototype.createOption = function (info) {
+    Select.prototype.createOption = function (info) {
         var option = document.createElement('option');
         option.value = info.value || info.text;
         option.innerHTML = info.innerHTML || info.text;
@@ -1137,9 +1137,9 @@ var select = (function () {
         }
         return option;
     };
-    return select;
+    return Select;
 }());
-exports["default"] = select;
+exports["default"] = Select;
 
 
 /***/ }),
@@ -1151,8 +1151,8 @@ exports["default"] = select;
 exports.__esModule = true;
 var helper_1 = __webpack_require__(0);
 var data_1 = __webpack_require__(1);
-var slim = (function () {
-    function slim(info) {
+var Slim = (function () {
+    function Slim(info) {
         this.main = info.main;
         this.container = this.containerDiv();
         this.content = this.contentDiv();
@@ -1173,13 +1173,13 @@ var slim = (function () {
         this.content.appendChild(this.search.container);
         this.content.appendChild(this.list);
     }
-    slim.prototype.containerDiv = function () {
+    Slim.prototype.containerDiv = function () {
         var container = document.createElement('div');
         container.style.cssText = this.main.config.style;
         this.updateContainerDivClass(container);
         return container;
     };
-    slim.prototype.updateContainerDivClass = function (container) {
+    Slim.prototype.updateContainerDivClass = function (container) {
         this.main.config["class"] = this.main.select.element.classList;
         container.className = '';
         container.classList.add(this.main.config.id);
@@ -1188,7 +1188,7 @@ var slim = (function () {
             container.classList.add(this.main.config["class"][i]);
         }
     };
-    slim.prototype.singleSelectedDiv = function () {
+    Slim.prototype.singleSelectedDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.singleSelected);
@@ -1225,7 +1225,7 @@ var slim = (function () {
             }
         };
     };
-    slim.prototype.placeholder = function () {
+    Slim.prototype.placeholder = function () {
         var selected = this.main.data.getSelected();
         if (selected === null || (selected && selected.placeholder)) {
             var placeholder = document.createElement('span');
@@ -1245,7 +1245,7 @@ var slim = (function () {
             }
         }
     };
-    slim.prototype.deselect = function () {
+    Slim.prototype.deselect = function () {
         if (this.singleSelected) {
             if (!this.main.config.allowDeselect) {
                 this.singleSelected.deselect.classList.add('ss-hide');
@@ -1259,7 +1259,7 @@ var slim = (function () {
             }
         }
     };
-    slim.prototype.multiSelectedDiv = function () {
+    Slim.prototype.multiSelectedDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         container.classList.add(this.main.config.multiSelected);
@@ -1294,7 +1294,7 @@ var slim = (function () {
             plus: plus
         };
     };
-    slim.prototype.values = function () {
+    Slim.prototype.values = function () {
         if (!this.multiSelected) {
             return;
         }
@@ -1346,7 +1346,7 @@ var slim = (function () {
             this.multiSelected.values.innerHTML = placeholder.outerHTML;
         }
     };
-    slim.prototype.valueDiv = function (option) {
+    Slim.prototype.valueDiv = function (option) {
         var _this = this;
         var value = document.createElement('div');
         value.classList.add(this.main.config.value);
@@ -1389,12 +1389,12 @@ var slim = (function () {
         value.appendChild(deleteSpan);
         return value;
     };
-    slim.prototype.contentDiv = function () {
+    Slim.prototype.contentDiv = function () {
         var container = document.createElement('div');
         container.classList.add(this.main.config.content);
         return container;
     };
-    slim.prototype.searchDiv = function () {
+    Slim.prototype.searchDiv = function () {
         var _this = this;
         var container = document.createElement('div');
         var input = document.createElement('input');
@@ -1516,7 +1516,7 @@ var slim = (function () {
         }
         return searchReturn;
     };
-    slim.prototype.highlightUp = function () {
+    Slim.prototype.highlightUp = function () {
         var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
         var prev = null;
         if (highlighted) {
@@ -1557,7 +1557,7 @@ var slim = (function () {
             helper_1.ensureElementInView(this.list, prev);
         }
     };
-    slim.prototype.highlightDown = function () {
+    Slim.prototype.highlightDown = function () {
         var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
         var next = null;
         if (highlighted) {
@@ -1592,7 +1592,7 @@ var slim = (function () {
             helper_1.ensureElementInView(this.list, next);
         }
     };
-    slim.prototype.listDiv = function () {
+    Slim.prototype.listDiv = function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
         list.addEventListener('wheel', function (e) {
@@ -1614,7 +1614,7 @@ var slim = (function () {
         });
         return list;
     };
-    slim.prototype.options = function (content) {
+    Slim.prototype.options = function (content) {
         if (content === void 0) { content = ''; }
         var data = this.main.data.filtered || this.main.data.data;
         this.list.innerHTML = '';
@@ -1664,7 +1664,7 @@ var slim = (function () {
             }
         }
     };
-    slim.prototype.option = function (data) {
+    Slim.prototype.option = function (data) {
         if (data.placeholder) {
             var placeholder = document.createElement('div');
             placeholder.classList.add(this.main.config.option);
@@ -1719,9 +1719,9 @@ var slim = (function () {
         }
         return option;
     };
-    return slim;
+    return Slim;
 }());
-exports["default"] = slim;
+exports["default"] = Slim;
 
 
 /***/ })

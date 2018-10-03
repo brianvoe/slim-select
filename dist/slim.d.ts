@@ -20,7 +20,7 @@ interface search {
     input: HTMLInputElement;
     addable?: HTMLDivElement;
 }
-export default class slim {
+export default class Slim {
     main: SlimSelect;
     container: HTMLDivElement;
     singleSelected: singleSelected | null;

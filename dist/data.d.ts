@@ -19,7 +19,7 @@ export interface option {
     placeholder?: string;
     data?: object;
 }
-export default class data {
+export default class Data {
     main: SlimSelect;
     searchValue: string;
     data: dataObject[];

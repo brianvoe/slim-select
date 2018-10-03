@@ -16,7 +16,7 @@ interface constructor {
   limit?: number
 }
 
-export default class config {
+export default class Config {
   id: string = ''
   style: string
   class: DOMTokenList

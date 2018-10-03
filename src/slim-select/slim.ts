@@ -26,7 +26,7 @@ interface search {
 }
 
 // Class is responsible for creating all the elements
-export default class slim {
+export default class Slim {
   main: SlimSelect
   container: HTMLDivElement
   singleSelected: singleSelected | null
