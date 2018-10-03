@@ -1,0 +1,21 @@
+<html>
+  <head>
+
+    <link href="./dist/slimselect.min.css" rel="stylesheet" />
+  </head>
+  <body>
+    <select id="select">
+      <option value="best">Best</option>
+      <option value="select">Select</option>
+      <option value="ever">Ever</option>
+    </select>
+    <script>
+      setTimeout(function() {
+        new SlimSelect({
+          select: '#select'
+        })
+      }, 300)
+    </script>
+    <script src="./dist/slimselect.min.js"></script>
+  </body>
+</html>
