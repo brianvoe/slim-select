@@ -67,6 +67,7 @@ module.exports = {
     path: path.resolve(__dirname, '../../dist'),
     filename: '[name].js',
     library: 'SlimSelect',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    libraryExport: 'default'
   }
 }
