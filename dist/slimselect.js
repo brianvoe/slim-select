@@ -836,10 +836,10 @@ var SlimSelect = (function () {
         else if (this.slim.singleSelected) {
             this.slim.singleSelected.container.classList.remove(this.config.disabled);
         }
-        this.select.disconnectMutationObserver();
+        this.select.triggerMutationObserver = false;
         this.select.element.disabled = false;
         this.slim.search.input.disabled = false;
-        this.select.observeMutationObserver();
+        this.select.triggerMutationObserver = true;
     };
     SlimSelect.prototype.disable = function () {
         this.config.isEnabled = false;
@@ -849,10 +849,10 @@ var SlimSelect = (function () {
         else if (this.slim.singleSelected) {
             this.slim.singleSelected.container.classList.add(this.config.disabled);
         }
-        this.select.disconnectMutationObserver();
+        this.select.triggerMutationObserver = false;
         this.select.element.disabled = true;
         this.slim.search.input.disabled = true;
-        this.select.observeMutationObserver();
+        this.select.triggerMutationObserver = true;
     };
     SlimSelect.prototype.search = function (value) {
         if (this.data.searchValue !== value) {
@@ -1017,6 +1017,7 @@ exports["default"] = Config;
 exports.__esModule = true;
 var Select = (function () {
     function Select(info) {
+        this.triggerMutationObserver = true;
         this.element = info.select;
         this.main = info.main;
         if (this.element.disabled) {
@@ -1072,6 +1073,9 @@ var Select = (function () {
             return;
         }
         this.mutationObserver = new MutationObserver(function (mutations) {
+            if (!_this.triggerMutationObserver) {
+                return;
+            }
             _this.main.data.parseSelectData();
             _this.main.data.setSelectedFromSelect();
             _this.main.render();
@@ -1199,8 +1203,11 @@ var Slim = (function () {
         deselect.innerHTML = 'X';
         deselect.classList.add('ss-deselect');
         deselect.onclick = function (e) {
-            _this.main.set('');
             e.stopPropagation();
+            if (!_this.main.config.isEnabled) {
+                return;
+            }
+            _this.main.set('');
         };
         container.appendChild(deselect);
         var arrowContainer = document.createElement('span');

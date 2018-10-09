@@ -357,10 +357,10 @@ export default class SlimSelect {
     }
 
     // Disable original select but dont trigger observer
-    this.select.disconnectMutationObserver()
+    this.select.triggerMutationObserver = false
     this.select.element.disabled = false
     this.slim.search.input.disabled = false
-    this.select.observeMutationObserver()
+    this.select.triggerMutationObserver = true
   }
 
   // Set to disabled, add disabled classes and add disabled to original select
@@ -373,10 +373,10 @@ export default class SlimSelect {
     }
 
     // Enable original select but dont trigger observer
-    this.select.disconnectMutationObserver()
+    this.select.triggerMutationObserver = false
     this.select.element.disabled = true
     this.slim.search.input.disabled = true
-    this.select.observeMutationObserver()
+    this.select.triggerMutationObserver = true
   }
 
   // Take in string value and search current options

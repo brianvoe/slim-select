@@ -101,8 +101,12 @@ export default class Slim {
     deselect.innerHTML = 'X'
     deselect.classList.add('ss-deselect')
     deselect.onclick = (e) => {
-      this.main.set('')
       e.stopPropagation()
+
+      // Dont do anything if disabled
+      if(!this.main.config.isEnabled) {return}
+
+      this.main.set('')
     }
     container.appendChild(deselect)
 
