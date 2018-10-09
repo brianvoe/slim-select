@@ -10,6 +10,7 @@ export default class Select {
   element: HTMLSelectElement
   main: SlimSelect
   mutationObserver: MutationObserver | null
+  triggerMutationObserver: boolean = true
   constructor(info: Constructor) {
     this.element = info.select
     this.main = info.main
@@ -77,6 +78,8 @@ export default class Select {
     if (this.main.config.isAjax) { return }
 
     this.mutationObserver = new MutationObserver((mutations) => {
+      if (!this.triggerMutationObserver) {return}
+
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()
       this.main.render()
