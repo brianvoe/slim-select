@@ -8,6 +8,7 @@ export default class Select {
     element: HTMLSelectElement;
     main: SlimSelect;
     mutationObserver: MutationObserver | null;
+    triggerMutationObserver: boolean;
     constructor(info: Constructor);
     setValue(): void;
     addAttributes(): void;
