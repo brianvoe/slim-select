@@ -91,7 +91,7 @@ export default class Data {
             optgroup.options.push(option)
 
             // If option has placeholder set to true set placeholder text
-            if (option.placeholder) {
+            if (option.placeholder && option.text.trim() !== '') {
               this.main.config.placeholderText = option.text
             }
           }
@@ -102,7 +102,7 @@ export default class Data {
         this.data.push(option)
 
         // If option has placeholder set to true set placeholder text
-        if (option.placeholder) {
+        if (option.placeholder && option.text.trim() !== '') {
           this.main.config.placeholderText = option.text
         }
       }
