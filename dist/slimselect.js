@@ -238,7 +238,7 @@ var Data = (function () {
             selected: (info.selected ? info.selected : false),
             display: (info.display ? info.display : true),
             disabled: (info.disabled ? info.disabled : false),
-            placeholder: (info.placeholder ? info.placeholder : ''),
+            placeholder: (info.placeholder ? info.placeholder : false),
             data: (info.data ? info.data : {}),
         };
     };
@@ -251,7 +251,7 @@ var Data = (function () {
             selected: false,
             display: true,
             disabled: false,
-            placeholder: '',
+            placeholder: false,
             data: {}
         };
         this.data.push(dataObject);
@@ -270,13 +270,21 @@ var Data = (function () {
                 var options = nodes[i].childNodes;
                 for (var ii = 0; ii < options.length; ii++) {
                     if (options[ii].nodeName === 'OPTION') {
-                        optgroup.options.push(this.pullOptionData(options[ii]));
+                        var option = this.pullOptionData(options[ii]);
+                        optgroup.options.push(option);
+                        if (option.placeholder) {
+                            this.main.config.placeholderText = option.text;
+                        }
                     }
                 }
                 this.data.push(optgroup);
             }
             else if (nodes[i].nodeName === 'OPTION') {
-                this.data.push(this.pullOptionData(nodes[i]));
+                var option = this.pullOptionData(nodes[i]);
+                this.data.push(option);
+                if (option.placeholder) {
+                    this.main.config.placeholderText = option.text;
+                }
             }
         }
     };
@@ -288,7 +296,7 @@ var Data = (function () {
             innerHTML: option.innerHTML,
             selected: option.selected,
             disabled: option.disabled,
-            placeholder: option.dataset.placeholder || '',
+            placeholder: option.dataset.placeholder === 'true',
             data: option.dataset
         };
     };
@@ -323,6 +331,9 @@ var Data = (function () {
                     var options = this.data[i].options;
                     if (options) {
                         for (var o = 0; o < options.length; o++) {
+                            if (options[o].placeholder) {
+                                continue;
+                            }
                             options[o].selected = this.shouldBeSelected(options[o], value, type);
                         }
                     }
