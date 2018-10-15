@@ -272,7 +272,7 @@ var Data = (function () {
                     if (options[ii].nodeName === 'OPTION') {
                         var option = this.pullOptionData(options[ii]);
                         optgroup.options.push(option);
-                        if (option.placeholder) {
+                        if (option.placeholder && option.text.trim() !== '') {
                             this.main.config.placeholderText = option.text;
                         }
                     }
@@ -282,7 +282,7 @@ var Data = (function () {
             else if (nodes[i].nodeName === 'OPTION') {
                 var option = this.pullOptionData(nodes[i]);
                 this.data.push(option);
-                if (option.placeholder) {
+                if (option.placeholder && option.text.trim() !== '') {
                     this.main.config.placeholderText = option.text;
                 }
             }
