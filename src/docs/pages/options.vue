@@ -5,6 +5,7 @@ import SlimSelect from '@/slim-select'
 export default Vue.extend({
   data() {
     return {
+      butts: '',
       beforeOnChangeSingle: null,
       beforeOnChangeMultiple: null,
       onChangeSingle: null,
@@ -12,6 +13,31 @@ export default Vue.extend({
     }
   },
   mounted() {
+    new SlimSelect({
+      select: '#dataSingle',
+      data: [
+        {text: 'data placeholder', placeholder: true},
+        {text: 'Value 2'},
+        {text: 'Value 3', value: ''}
+      ]
+    })
+
+    new SlimSelect({
+      select: '#dataMultiple',
+      data: [
+        {placeholder: true, text: 'data placeholder'},
+        {text: 'Human'},
+        {
+          label: 'Animals',
+          options: [
+            {text: 'Cat'},
+            {text: 'Dog'},
+            {text: 'Bird', value: ''}
+          ]
+        }
+      ]
+    })
+    
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
       placeholder: 'Search "Graham"',
@@ -319,6 +345,74 @@ export default Vue.extend({
           // and continue to use slim select off of the element using the .slim data value
           let el = document.querySelector('.element .you #want')
           el.slim.open() // Or any other options/methods
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">data</h2>
+      <p>Data is a value that can be set to initialize options in the select dropdown</p>
+
+      <div class="set-content">
+        <select id="dataSingle"></select>
+        <select id="dataMultiple" multiple></select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            data: [
+              {text: 'Value 1'},
+              {text: 'Value 2'},
+              {text: 'Value 3'}
+            ],
+            // groups
+            data: [
+              {
+                label: 'Animals',
+                options: [
+                  {text: 'Cat'},
+                  {text: 'Dog'},
+                  {text: 'Bird'}
+                ]
+              }
+            ]
+            // Mix - option and group options
+            data: [
+              {text: 'Human'}, // regular option
+              {
+                label: 'Animals',
+                options: [
+                  {text: 'Cat'},
+                  {text: 'Dog'},
+                  {text: 'Bird'}
+                ]
+              }
+            ]
+          })
+
+          // If you want to set a placeholder set the first object placeholder to true 
+          {'placeholder': true, 'text': 'placeholder text'}
+        </code>
+      </pre>
+
+      <h4>Data Types</h4>
+      <pre>
+        <code class="language-javascript">
+          var optgroup = {
+            label: 'label', // Required
+            options: [] // Required - value is an array of options
+          }
+
+          var option = {
+            text: 'text', // Required
+            value: 'value', // Optional - value will be set by text if not set
+            innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
+            disabled: false, // Optional - default is false
+            placeholder: false, // Optional - default is false
+            data: {} // Optional - If you have data attributes
+          }
         </code>
       </pre>
     </div>

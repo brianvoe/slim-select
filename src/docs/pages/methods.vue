@@ -248,6 +248,7 @@
         The setData method can take in an array of objects. This will set the options
         of the original select and rerender slim select.
       </p>
+      <p>To get a better break down of possible data options see <router-link to="/options">options/data</router-link></p>
 
       <div class="set-content">
         <div class="btn" @click="setData">Set Data</div>
@@ -265,28 +266,6 @@
             {text: 'value1'},
             {text: 'value2'}
           ])
-
-          // If you want to set a placeholder set the first object placeholder to true 
-          {'placeholder': true, 'text': 'placeholder text'}
-        </code>
-      </pre>
-
-      <h4>Data Types</h4>
-      <pre>
-        <code class="language-javascript">
-          var optgroup = {
-            label: 'label', // Required
-            options: [] // Required - value is an array of options
-          }
-
-          var option = {
-            text: 'text', // Required
-            value: 'value', // Optional - value will be set by text if not set
-            innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for dispay purposes if set
-            disabled: false, // Optional - default is false
-            placeholder: false, // Optional - default is false
-            data: {} // Optional - If you have data attributes
-          }
         </code>
       </pre>
     </div>
