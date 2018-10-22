@@ -17,7 +17,7 @@
       padding: 0 0 30px 0;
 
       .install-code {
-        max-width: 180px;
+        max-width: 200px;
         margin-left: auto;
         margin-right: auto;
       }
@@ -29,7 +29,7 @@
 
     .cdn-content {
       .example-code {
-        max-width: 200px;
+        max-width: 220px;
         margin-left: auto;
         margin-right: auto;
       }
