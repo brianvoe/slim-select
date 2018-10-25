@@ -572,6 +572,7 @@ var SlimSelect = (function () {
             showContent: info.showContent,
             placeholderText: info.placeholder,
             allowDeselect: info.allowDeselect,
+            deselectLabel: info.deselectLabel,
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText,
             showOptionTooltips: info.showOptionTooltips,
@@ -951,6 +952,7 @@ var Config = (function () {
         this.searchingText = 'Searching...';
         this.placeholderText = 'Select Value';
         this.allowDeselect = false;
+        this.deselectLabel = 'x';
         this.isEnabled = true;
         this.valuesUseText = false;
         this.showOptionTooltips = false;
@@ -1004,6 +1006,9 @@ var Config = (function () {
             this.placeholderText = info.placeholderText;
         }
         this.allowDeselect = (info.allowDeselect === true ? true : false);
+        if (info.deselectLabel) {
+            this.deselectLabel = info.deselectLabel;
+        }
         if (info.valuesUseText) {
             this.valuesUseText = info.valuesUseText;
         }
@@ -1211,7 +1216,7 @@ var Slim = (function () {
         placeholder.classList.add('placeholder');
         container.appendChild(placeholder);
         var deselect = document.createElement('span');
-        deselect.innerHTML = 'X';
+        deselect.innerHTML = this.main.config.deselectLabel;
         deselect.classList.add('ss-deselect');
         deselect.onclick = function (e) {
             e.stopPropagation();
@@ -1375,7 +1380,7 @@ var Slim = (function () {
         value.appendChild(text);
         var deleteSpan = document.createElement('span');
         deleteSpan.classList.add(this.main.config.valueDelete);
-        deleteSpan.innerHTML = 'x';
+        deleteSpan.innerHTML = this.main.config.deselectLabel;
         deleteSpan.onclick = function (e) {
             e.preventDefault();
             e.stopPropagation();

@@ -109,6 +109,11 @@ export default Vue.extend({
     })
 
     new SlimSelect({
+      select: '#deselectLabel',
+      deselectLabel: '✖'
+    })
+
+    new SlimSelect({
       select: '#addableSingle',
       addable: (value: string) => {
         return value
@@ -544,6 +549,43 @@ export default Vue.extend({
         <code class="language-html">
           &lt;!-- Requires emtpy data-placeholder option --&gt;
           &lt;select id="allowDeselect"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">allowDeselect</h2>
+      <p>
+        This will allow you to change the deselect label (default 'x') on single select lists,
+        and the delete label on multiple-select lists.
+      </p>
+
+      <div class="set-content">
+        <select id="deselectLabel">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            deselectLabel: '✖'
+          })
+        </code>
+      </pre>
+      <pre>
+        <code class="language-html">
+          &lt;!-- Requires emtpy data-placeholder option --&gt;
+          &lt;select id="deselectLabel"&gt;
             &lt;option data-placeholder="true"&gt;&lt;/option&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;
