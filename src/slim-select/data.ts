@@ -47,7 +47,7 @@ export default class Data {
       text: (info.text ? info.text : ''),
       innerHTML: (info.innerHTML ? info.innerHTML : ''),
       selected: (info.selected ? info.selected : false),
-      display: (info.display ? info.display : true),
+      display: (info.display != undefined ? info.display : true),
       disabled: (info.disabled ? info.disabled : false),
       placeholder: (info.placeholder ? info.placeholder : false),
       data: (info.data ? info.data : {}),
