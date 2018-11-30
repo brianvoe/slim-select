@@ -236,7 +236,7 @@ var Data = (function () {
             text: (info.text ? info.text : ''),
             innerHTML: (info.innerHTML ? info.innerHTML : ''),
             selected: (info.selected ? info.selected : false),
-            display: (info.display ? info.display : true),
+            display: (info.display !== undefined ? info.display : true),
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : false),
             data: (info.data ? info.data : {}),
@@ -1614,7 +1614,11 @@ var Slim = (function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
         list.addEventListener('wheel', function (e) {
-            var scrollTop = list.scrollTop, scrollHeight = list.scrollHeight, height = list.offsetHeight, delta = (e.type == 'DOMMouseScroll' ? e.detail * -40 : e.wheelDelta), up = delta > 0;
+            var scrollTop = list.scrollTop;
+            var scrollHeight = list.scrollHeight;
+            var height = list.offsetHeight;
+            var delta = Math.round(-e.deltaY);
+            var up = delta > 0;
             var prevent = function () {
                 e.stopPropagation();
                 e.preventDefault();
