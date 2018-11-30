@@ -47,6 +47,7 @@
     "prismjs": "^1.15.0",
     "sass-loader": "^7.0.1",
     "typescript": "^3.2.1",
+    "uglifyjs-webpack-plugin": "^2.0.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.2",
     "vue-template-compiler": "^2.5.17",
