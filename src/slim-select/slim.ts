@@ -532,11 +532,11 @@ export default class Slim {
     var list = document.createElement('div')
     list.classList.add(this.main.config.list)
     list.addEventListener('wheel', (e: WheelEvent) => {
-      var scrollTop = list.scrollTop,
-        scrollHeight = list.scrollHeight,
-        height = list.offsetHeight,
-        delta = (e.type == 'DOMMouseScroll' ? e.detail * -40 : e.wheelDelta),
-        up = delta > 0;
+      var scrollTop = list.scrollTop
+      var scrollHeight = list.scrollHeight
+      var height = list.offsetHeight
+      var delta = Math.round(-e.deltaY)
+      var up = delta > 0
 
       var prevent = function () {
         e.stopPropagation();
