@@ -257,6 +257,11 @@
         font-weight: bold; }
       .ss-main .ss-content .ss-list .ss-optgroup .ss-option {
         padding: 6px 6px 6px 25px; }
+      .ss-main .ss-content .ss-list .ss-optgroup-label-selectable {
+        cursor: pointer; }
+        .ss-main .ss-content .ss-list .ss-optgroup-label-selectable:hover {
+          color: #ffffff;
+          background-color: #5897fb; }
       .ss-main .ss-content .ss-list .ss-option {
         padding: 6px 10px 6px 10px;
         cursor: pointer;

@@ -17,6 +17,7 @@ interface constructor {
     isEnabled?: boolean;
     valuesUseText?: boolean;
     showOptionTooltips?: boolean;
+    selectByGroup?: boolean;
     limit?: number;
     ajax?: Function;
     addable?: Function;
