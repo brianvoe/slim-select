@@ -607,7 +607,7 @@ export default class Slim {
         // Create label
         let optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.main.config.optgroupLabel)
-        if (this.main.config.selectByGroup) {
+        if (this.main.config.selectByGroup && this.main.config.isMultiple) {
             optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
         }
         optgroupLabel.innerHTML = item.label
@@ -619,7 +619,7 @@ export default class Slim {
             optgroup.appendChild(this.option(options[ii]))
           }
 
-	      if (this.main.config.selectByGroup) { // Selecting all values by clicking the group label
+	      if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
 	         optgroupLabel.onclick = ((optgroup) => { 
 	             return () => {
 	                 for (var option of <any>optgroup.children) {

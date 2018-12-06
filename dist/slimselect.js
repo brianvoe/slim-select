@@ -1677,7 +1677,7 @@ var Slim = (function () {
                 optgroup.classList.add(this.main.config.optgroup);
                 var optgroupLabel = document.createElement('div');
                 optgroupLabel.classList.add(this.main.config.optgroupLabel);
-                if (this.main.config.selectByGroup) {
+                if (this.main.config.selectByGroup && this.main.config.isMultiple) {
                     optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
                 }
                 optgroupLabel.innerHTML = item.label;
@@ -1687,7 +1687,7 @@ var Slim = (function () {
                     for (var ii = 0; ii < options.length; ii++) {
                         optgroup.appendChild(this.option(options[ii]));
                     }
-                    if (this.main.config.selectByGroup) {
+                    if (this.main.config.selectByGroup && this.main.config.isMultiple) {
                         optgroupLabel.onclick = (function (optgroup) {
                             return function () {
                                 for (var _i = 0, _a = optgroup.children; _i < _a.length; _i++) {
