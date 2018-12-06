@@ -924,10 +924,12 @@ export default Vue.extend({
         selectByGroup option is used to enable the selection of all options under a specific group by clicking that option group's label.
       </p>
 
-      <select id="selectByGroup">
-        <option value="value1">Value 1</option>
-        <option value="value2">Value 2</option>
-        <option value="value3">Value 3</option>
+      <select id="selectByGroup" multiple>
+		<optgroup label="Label 1">
+			<option value="value1">Value 1</option>
+			<option value="value2">Value 2</option>
+			<option value="value3">Value 3</option>
+		</optgroup>
       </select>
 
       <pre>
