@@ -341,8 +341,18 @@ $spacing-s: 4px !default;
           padding: 6px 10px 6px 10px;
           font-weight: bold;
         }
+
         .ss-option {
           padding: 6px 6px 6px 25px;
+        }
+      }
+
+      .ss-optgroup-label-selectable {
+        cursor: pointer;
+        
+        &:hover {
+          color: $white;
+          background-color: $primary-color;
         }
       }
 

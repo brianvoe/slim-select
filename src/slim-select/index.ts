@@ -19,6 +19,7 @@ interface constructor {
   isEnabled?: boolean
   valuesUseText?: boolean // Use text value when showing selected value
   showOptionTooltips?: boolean
+  selectByGroup?: boolean
   limit?: number
 
   // Events
@@ -72,6 +73,7 @@ export default class SlimSelect {
       isEnabled: info.isEnabled,
       valuesUseText: info.valuesUseText,
       showOptionTooltips: info.showOptionTooltips,
+      selectByGroup: info.selectByGroup,
       limit: info.limit
     })
 

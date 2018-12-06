@@ -13,6 +13,7 @@ interface constructor {
   isEnabled?: boolean
   valuesUseText?: boolean
   showOptionTooltips?: boolean
+  selectByGroup?: boolean
   limit?: number
 }
 
@@ -35,6 +36,7 @@ export default class Config {
   isEnabled: boolean = true
   valuesUseText: boolean = false
   showOptionTooltips: boolean = false
+  selectByGroup: boolean = false
   limit: number = 0
 
   // Classes
@@ -58,6 +60,7 @@ export default class Config {
   readonly list: string = 'ss-list'
   readonly optgroup: string = 'ss-optgroup'
   readonly optgroupLabel: string = 'ss-optgroup-label'
+  readonly optgroupLabelSelectable: string = 'ss-optgroup-label-selectable'
   readonly option: string = 'ss-option'
   readonly highlighted: string = 'ss-highlighted'
   readonly disabled: string = 'ss-disabled'
@@ -82,6 +85,7 @@ export default class Config {
     this.allowDeselect = (info.allowDeselect === true ? true : false)
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
+    if (info.selectByGroup) { this.selectByGroup = info.selectByGroup }
     if (info.limit) { this.limit = info.limit }
   }
 }
