@@ -58,7 +58,9 @@ export default class Select {
 
   addAttributes() {
     this.element.tabIndex = -1
-    this.element.style.display = 'none'
+    this.element.style.position = 'absolute'
+    this.element.style.clip = 'rect(0, 0, 0, 0)'
+    this.element.style.pointerEvents = 'none'
 
     // Add slim select id
     this.element.dataset.ssid = this.main.config.id
