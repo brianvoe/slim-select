@@ -299,8 +299,9 @@ export default class Data {
     this.searchValue = search
     if (search.trim() === '') { this.filtered = null; return }
 
+    var searchFilter = this.main.config.searchFilter
     var valuesArray = this.data.slice(0)
-    search = search.trim().toLowerCase()
+    search = search.trim()
     var filtered = valuesArray.map(function (obj) {
       // If optgroup
       if (obj.hasOwnProperty('options')) {
@@ -308,7 +309,7 @@ export default class Data {
         let options: option[] = []
         if (optgroupObj.options) {
           options = optgroupObj.options.filter(function (opt) {
-            return opt.text.toLowerCase().indexOf(search) !== -1
+            return searchFilter(opt, search)
           })
         }
         if (options.length !== 0) {
@@ -321,7 +322,7 @@ export default class Data {
       // If single option
       if (obj.hasOwnProperty('text')) {
         let optionObj = <option>obj
-        if (optionObj.text.toLowerCase().indexOf(search) !== -1) { return obj }
+        if (searchFilter(optionObj, search)) { return obj }
       }
 
       return null
