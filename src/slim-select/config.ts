@@ -34,7 +34,7 @@ export default class Config {
   searchPlaceholder: string = 'Search'
   searchText: string = 'No Results'
   searchingText: string = 'Searching...'
-  searchFilter: Function = function(opt:option, search:string){return opt.text.toLowerCase().indexOf(search) !== -1;}
+  searchFilter: Function = function(opt:option, search:string){return opt.text.toLowerCase().indexOf(search) !== -1}
   placeholderText: string = 'Select Value'
   allowDeselect: boolean = false
   deselectLabel: string = 'x'
