@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import { option, optgroup, dataArray } from './data'
+import { option, optgroup, dataArray, dataObject } from './data'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -139,6 +139,11 @@ export default class Select {
     if (info.selected) { option.selected = info.selected }
     if (info.disabled) { option.disabled = true }
     if (info.placeholder) { option.setAttribute('data-placeholder', 'true') }
+    if (info.class) {
+      info.class.split(' ').forEach((optionClass: string) => {
+        option.classList.add(optionClass)
+      })
+    }
     if (info.data && typeof info.data === 'object') {
       Object.keys(info.data).forEach(function (key) {
         option.setAttribute('data-' + key, info.data[key])

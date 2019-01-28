@@ -1,3 +1,5 @@
+import { option } from './data'
+
 interface constructor {
   select: HTMLSelectElement
   isAjax: boolean
@@ -6,10 +8,12 @@ interface constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
+  searchFilter?: Function
   closeOnSelect?: boolean
   showContent?: string
   placeholderText?: string
   allowDeselect?: boolean
+  deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean
   showOptionTooltips?: boolean
@@ -31,8 +35,10 @@ export default class Config {
   searchPlaceholder: string = 'Search'
   searchText: string = 'No Results'
   searchingText: string = 'Searching...'
+  searchFilter: Function = function(opt:option, search:string){return opt.text.toLowerCase().indexOf(search) !== -1;}
   placeholderText: string = 'Select Value'
   allowDeselect: boolean = false
+  deselectLabel: string = 'x'
   isEnabled: boolean = true
   valuesUseText: boolean = false
   showOptionTooltips: boolean = false
@@ -83,9 +89,11 @@ export default class Config {
     if (info.searchingText) { this.searchingText = info.searchingText }
     if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
+    if (info.deselectLabel) { this.deselectLabel = info.deselectLabel }
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
     if (info.selectByGroup) { this.selectByGroup = info.selectByGroup }
     if (info.limit) { this.limit = info.limit }
+    if (info.searchFilter) { this.searchFilter = info.searchFilter }
   }
 }

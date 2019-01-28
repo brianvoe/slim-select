@@ -12,10 +12,12 @@ interface constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
+  searchFilter?: Function
   closeOnSelect?: boolean
   showContent?: string
   placeholder?: string
   allowDeselect?: boolean
+  deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean // Use text value when showing selected value
   showOptionTooltips?: boolean
@@ -66,10 +68,12 @@ export default class SlimSelect {
       searchText: info.searchText,
       searchingText: info.searchingText,
       searchHighlight: info.searchHighlight,
+      searchFilter: info.searchFilter,
       closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
       placeholderText: info.placeholder,
       allowDeselect: info.allowDeselect,
+      deselectLabel: info.deselectLabel,
       isEnabled: info.isEnabled,
       valuesUseText: info.valuesUseText,
       showOptionTooltips: info.showOptionTooltips,

@@ -109,6 +109,11 @@ export default Vue.extend({
     })
 
     new SlimSelect({
+      select: '#deselectLabel',
+      deselectLabel: '✖'
+    })
+
+    new SlimSelect({
       select: '#addableSingle',
       addable: (value: string) => {
         return value
@@ -132,6 +137,9 @@ export default Vue.extend({
 
     new SlimSelect({
       select: '#select-class'
+    })
+    new SlimSelect({
+      select: '#option-class'
     })
 
     new SlimSelect({
@@ -289,6 +297,11 @@ export default Vue.extend({
       select: '#showOptionTooltips',
       showOptionTooltips: true
     })
+
+    new SlimSelect({
+      select: '#searchFilter',
+      searchFilter: (option: any, search: any) => { return option.text.substr(0, search.length) === search }
+    })
   }
 })
 </script>
@@ -318,6 +331,16 @@ export default Vue.extend({
       .ss-arrow * {
         border-color: white;
       }
+    }
+  }
+
+  .option-class {
+    .ss-option {
+      color: white;
+
+      &.red { background-color: red; }
+      &.green { background-color: green; }
+      &.blue { background-color: blue; }
     }
   }
 }
@@ -554,6 +577,43 @@ export default Vue.extend({
     </div>
 
     <div class="content">
+      <h2 class="header">allowDeselect</h2>
+      <p>
+        This will allow you to change the deselect label (default 'x') on single select lists,
+        and the delete label on multiple-select lists.
+      </p>
+
+      <div class="set-content">
+        <select id="deselectLabel">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            deselectLabel: '✖'
+          })
+        </code>
+      </pre>
+      <pre>
+        <code class="language-html">
+          &lt;!-- Requires emtpy data-placeholder option --&gt;
+          &lt;select id="deselectLabel"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
       <h2 class="header">addable</h2>
       <p>
         Slim select has the ability to dynamically add options via the search input field
@@ -635,6 +695,7 @@ export default Vue.extend({
       <h2 class="header">css / class</h2>
       <p>
         Slim select will inherit any styles and classes that were added to the original select element.
+        This includes options as well.
       </p>
 
       <div class="set-content">
@@ -643,14 +704,19 @@ export default Vue.extend({
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
+        <select id="option-class" class="option-class">
+          <option class="red" value="value1">Red</option>
+          <option class="green" value="value2">Green</option>
+          <option class="blue" value="value3">Blue</option>
+        </select>
       </div>
 
       <pre>
         <code class="language-html">
           &lt;select id="select-class" class="classItems"&gt;
-            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+            &lt;option class="red" value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option class="green" value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option class="blue" value="value3"&gt;Value 3&lt;/option&gt;
           &lt;/select&gt;
         </code>
       </pre>
@@ -917,7 +983,7 @@ export default Vue.extend({
         </code>
       </pre>
     </div>
-
+    
     <div class="content">
       <h2 class="header">selectByGroup</h2>
       <p>
@@ -925,18 +991,46 @@ export default Vue.extend({
       </p>
 
       <select id="selectByGroup" multiple>
-		<optgroup label="Label 1">
-			<option value="value1">Value 1</option>
-			<option value="value2">Value 2</option>
-			<option value="value3">Value 3</option>
-		</optgroup>
+        <optgroup label="Label 1">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </optgroup>
       </select>
-
+      
       <pre>
         <code class="language-javascript">
           new SlimSelect({
             select: '#selectByGroup',
             selectByGroup: true
+          })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">searchFilter</h2>
+      <p>
+        searchFilter option is used to replace the default matching algorithm.
+      </p>
+      <p>
+        See methods/setData for the proper object interface of <em>option</em>.
+      </p>
+
+      <select id="searchFilter">
+        <option value="apple">Apple</option>
+        <option value="orange">Orange</option>
+        <option value="pineapple">Pineapple</option>
+      </select>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#searchFilter',
+            // Exact case sensitive start of string match
+            searchFilter: (option, search) => { 
+              return option.text.substr(0, search.length) === search
+            }
           })
         </code>
       </pre>
