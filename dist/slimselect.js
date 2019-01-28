@@ -102,21 +102,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 exports.__esModule = true;
 function hasClassInTree(element, className) {
-    function hasClass(element, className) {
-        if (!(!className || !element || !element.classList || !element.classList.contains(className))) {
-            return element;
+    function hasClass(e, c) {
+        if (!(!c || !e || !e.classList || !e.classList.contains(c))) {
+            return e;
         }
         return null;
     }
-    function parentByClass(childElement, className) {
-        if (!childElement || childElement === document) {
+    function parentByClass(e, c) {
+        if (!e || e === document) {
             return null;
         }
-        else if (hasClass(childElement, className)) {
-            return childElement;
+        else if (hasClass(e, c)) {
+            return e;
         }
         else {
-            return parentByClass(childElement.parentNode, className);
+            return parentByClass(e.parentNode, c);
         }
     }
     return hasClass(element, className) || parentByClass(element, className);
@@ -158,14 +158,16 @@ function debounce(func, wait, immediate) {
         var args = arguments;
         var later = function () {
             timeout = null;
-            if (!immediate)
+            if (!immediate) {
                 func.apply(context, args);
+            }
         };
         var callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-        if (callNow)
+        if (callNow) {
             func.apply(context, args);
+        }
     };
 }
 exports.debounce = debounce;
@@ -173,8 +175,9 @@ function isValueInArrayOfObjects(selected, key, value) {
     if (!Array.isArray(selected)) {
         return selected[key] === value;
     }
-    for (var i = 0; i < selected.length; i++) {
-        if (selected[i] && selected[i][key] && selected[i][key] === value) {
+    for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
+        var s = selected_1[_i];
+        if (s && s[key] && s[key] === value) {
             return true;
         }
     }
@@ -182,8 +185,8 @@ function isValueInArrayOfObjects(selected, key, value) {
 }
 exports.isValueInArrayOfObjects = isValueInArrayOfObjects;
 function highlight(str, search, className) {
-    var completedString = completedString || str;
-    var regex = new RegExp("(" + search.trim() + ")(?![^<]*>[^<>]*</)", "i");
+    var completedString = str;
+    var regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
     if (!str.match(regex)) {
         return str;
     }
@@ -196,7 +199,7 @@ function highlight(str, search, className) {
 exports.highlight = highlight;
 (function () {
     var w = window;
-    if (typeof w.CustomEvent === "function") {
+    if (typeof w.CustomEvent === 'function') {
         return;
     }
     function CustomEvent(event, params) {
@@ -239,6 +242,7 @@ var Data = (function () {
             display: (info.display !== undefined ? info.display : true),
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : false),
+            "class": (info["class"] ? info["class"] : undefined),
             data: (info.data ? info.data : {}),
         };
     };
@@ -252,6 +256,7 @@ var Data = (function () {
             display: true,
             disabled: false,
             placeholder: false,
+            "class": undefined,
             data: {}
         };
         this.data.push(dataObject);
@@ -297,6 +302,7 @@ var Data = (function () {
             selected: option.selected,
             disabled: option.disabled,
             placeholder: option.dataset.placeholder === 'true',
+            "class": option.classList.value,
             data: option.dataset
         };
     };
@@ -454,15 +460,16 @@ var Data = (function () {
             this.filtered = null;
             return;
         }
+        var searchFilter = this.main.config.searchFilter;
         var valuesArray = this.data.slice(0);
-        search = search.trim().toLowerCase();
+        search = search.trim();
         var filtered = valuesArray.map(function (obj) {
             if (obj.hasOwnProperty('options')) {
                 var optgroupObj = obj;
                 var options = [];
                 if (optgroupObj.options) {
                     options = optgroupObj.options.filter(function (opt) {
-                        return opt.text.toLowerCase().indexOf(search) !== -1;
+                        return searchFilter(opt, search);
                     });
                 }
                 if (options.length !== 0) {
@@ -473,7 +480,7 @@ var Data = (function () {
             }
             if (obj.hasOwnProperty('text')) {
                 var optionObj = obj;
-                if (optionObj.text.toLowerCase().indexOf(search) !== -1) {
+                if (searchFilter(optionObj, search)) {
                     return obj;
                 }
             }
@@ -568,6 +575,7 @@ var SlimSelect = (function () {
             searchText: info.searchText,
             searchingText: info.searchingText,
             searchHighlight: info.searchHighlight,
+            searchFilter: info.searchFilter,
             closeOnSelect: info.closeOnSelect,
             showContent: info.showContent,
             placeholderText: info.placeholder,
@@ -645,8 +653,9 @@ var SlimSelect = (function () {
         if (this.config.isMultiple) {
             var selected = this.data.getSelected();
             var outputSelected = [];
-            for (var i = 0; i < selected.length; i++) {
-                outputSelected.push(selected[i].value);
+            for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
+                var s = selected_1[_i];
+                outputSelected.push(s.value);
             }
             return outputSelected;
         }
@@ -689,8 +698,9 @@ var SlimSelect = (function () {
         if (this.config.isAjax && selected) {
             if (this.config.isMultiple) {
                 var reverseSelected = selected.reverse();
-                for (var i = 0; i < reverseSelected.length; i++) {
-                    newData.unshift(reverseSelected[i]);
+                for (var _i = 0, reverseSelected_1 = reverseSelected; _i < reverseSelected_1.length; _i++) {
+                    var r = reverseSelected_1[_i];
+                    newData.unshift(r);
                 }
             }
             else {
@@ -708,8 +718,7 @@ var SlimSelect = (function () {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
         }
-        var option = this.data.newOption(data);
-        this.data.add(option);
+        this.data.add(this.data.newOption(data));
         this.select.create(this.data.data);
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
@@ -1024,7 +1033,13 @@ var Config = (function () {
         if (info.limit) {
             this.limit = info.limit;
         }
+        if (info.searchFilter) {
+            this.searchFilter = info.searchFilter;
+        }
     }
+    Config.prototype.searchFilter = function (opt, search) {
+        return opt.text.toLowerCase().indexOf(search) !== -1;
+    };
     return Config;
 }());
 exports["default"] = Config;
@@ -1155,6 +1170,11 @@ var Select = (function () {
         }
         if (info.placeholder) {
             option.setAttribute('data-placeholder', 'true');
+        }
+        if (info["class"]) {
+            info["class"].split(' ').forEach(function (optionClass) {
+                option.classList.add(optionClass);
+            });
         }
         if (info.data && typeof info.data === 'object') {
             Object.keys(info.data).forEach(function (key) {
@@ -1427,7 +1447,12 @@ var Slim = (function () {
         var _this = this;
         var container = document.createElement('div');
         var input = document.createElement('input');
+        var addable = document.createElement('div');
         container.classList.add(this.main.config.search);
+        var searchReturn = {
+            container: container,
+            input: input
+        };
         if (!this.main.config.showSearch) {
             container.classList.add(this.main.config.hide);
             input.readOnly = true;
@@ -1493,12 +1518,7 @@ var Slim = (function () {
         };
         input.onfocus = function () { _this.main.open(); };
         container.appendChild(input);
-        var searchReturn = {
-            container: container,
-            input: input
-        };
         if (this.main.addable) {
-            var addable = document.createElement('div');
             addable.classList.add(this.main.config.addable);
             addable.innerHTML = '+';
             addable.onclick = function (e) {
@@ -1515,7 +1535,7 @@ var Slim = (function () {
                     if (!addableValue) {
                         return;
                     }
-                    if (typeof addableValue == 'object') {
+                    if (typeof addableValue === 'object') {
                         var validValue = data_1.validateOption(addableValue);
                         if (validValue) {
                             _this.main.addData(addableValue);
@@ -1568,10 +1588,10 @@ var Slim = (function () {
             prev = null;
         }
         if (prev === null) {
-            var parent = highlighted.parentNode;
-            if (parent.classList.contains(this.main.config.optgroup)) {
-                if (parent.previousSibling) {
-                    var prevNodes = parent.previousSibling.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
+            var parent_1 = highlighted.parentNode;
+            if (parent_1.classList.contains(this.main.config.optgroup)) {
+                if (parent_1.previousSibling) {
+                    var prevNodes = parent_1.previousSibling.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
                     if (prevNodes.length) {
                         prev = prevNodes[prevNodes.length - 1];
                     }
@@ -1605,10 +1625,10 @@ var Slim = (function () {
             next = this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
         }
         if (next === null && highlighted !== null) {
-            var parent = highlighted.parentNode;
-            if (parent.classList.contains(this.main.config.optgroup)) {
-                if (parent.nextSibling) {
-                    var sibling = parent.nextSibling;
+            var parent_2 = highlighted.parentNode;
+            if (parent_2.classList.contains(this.main.config.optgroup)) {
+                if (parent_2.nextSibling) {
+                    var sibling = parent_2.nextSibling;
                     next = sibling.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
                 }
             }
@@ -1719,6 +1739,12 @@ var Slim = (function () {
         }
         var option = document.createElement('div');
         option.classList.add(this.main.config.option);
+        if (data["class"]) {
+            var dataClasses = data["class"].split(' ');
+            dataClasses.forEach(function (dataClass) {
+                option.classList.add(dataClass);
+            });
+        }
         var selected = this.main.data.getSelected();
         option.dataset.id = data.id;
         if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {

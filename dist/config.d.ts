@@ -1,4 +1,5 @@
-interface constructor {
+import { option } from './data';
+interface Constructor {
     select: HTMLSelectElement;
     isAjax: boolean;
     showSearch?: boolean;
@@ -6,6 +7,7 @@ interface constructor {
     searchText?: string;
     searchingText?: string;
     searchHighlight?: boolean;
+    searchFilter?: (opt: option, search: string) => boolean;
     closeOnSelect?: boolean;
     showContent?: string;
     placeholderText?: string;
@@ -64,6 +66,7 @@ export default class Config {
     readonly highlighted: string;
     readonly disabled: string;
     readonly hide: string;
-    constructor(info: constructor);
+    constructor(info: Constructor);
+    searchFilter(opt: option, search: string): boolean;
 }
 export {};

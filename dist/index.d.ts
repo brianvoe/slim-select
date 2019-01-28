@@ -2,7 +2,7 @@ import Config from './config';
 import Select from './select';
 import Data, { dataArray, option } from './data';
 import Slim from './slim';
-interface constructor {
+interface Constructor {
     select: string | Element;
     data?: dataArray;
     showSearch?: boolean;
@@ -10,6 +10,7 @@ interface constructor {
     searchText?: string;
     searchingText?: string;
     searchHighlight?: boolean;
+    searchFilter?: (opt: option, search: string) => boolean;
     closeOnSelect?: boolean;
     showContent?: string;
     placeholder?: string;
@@ -42,8 +43,8 @@ export default class SlimSelect {
     afterOpen: Function | null;
     beforeClose: Function | null;
     afterClose: Function | null;
-    constructor(info: constructor);
-    validate(info: constructor): HTMLSelectElement;
+    constructor(info: Constructor);
+    validate(info: Constructor): HTMLSelectElement;
     selected(): string | string[];
     set(value: string | string[], type?: string, close?: boolean, render?: boolean): void;
     setSelected(value: string | string[], type?: string, close?: boolean, render?: boolean): void;
