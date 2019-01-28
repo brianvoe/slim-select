@@ -18,6 +18,7 @@ export interface option {
   display?: boolean
   disabled?: boolean
   placeholder?: boolean
+  class?: string
   data?: object
 }
 
@@ -50,6 +51,7 @@ export default class Data {
       display: (info.display !== undefined ? info.display : true),
       disabled: (info.disabled ? info.disabled : false),
       placeholder: (info.placeholder ? info.placeholder : false),
+      class: (info.class ? info.class : undefined),
       data: (info.data ? info.data : {}),
     }
   }
@@ -65,6 +67,7 @@ export default class Data {
       display: true,
       disabled: false,
       placeholder: false,
+      class: undefined,
       data: {}
     }
 
@@ -119,6 +122,7 @@ export default class Data {
       selected: option.selected,
       disabled: option.disabled,
       placeholder: option.dataset.placeholder === 'true',
+      class: option.classList.value,
       data: option.dataset
     }
   }

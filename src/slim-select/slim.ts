@@ -635,6 +635,12 @@ export default class Slim {
 
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
+    if (data.class) {
+      let dataClasses = data.class.split(' ')
+      dataClasses.forEach((dataClass: string) => {
+        option.classList.add(dataClass)
+      })
+    }
 
     let selected = this.main.data.getSelected() as option
 
