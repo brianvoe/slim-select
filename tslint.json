@@ -19,6 +19,7 @@
     "semicolon": [true, "never"],
     "no-unused-expression": [true, "allow-new"],
     "no-empty-interface": false,
-    "max-line-length": false
+    "max-line-length": false,
+    "no-console": false
   }
 }
