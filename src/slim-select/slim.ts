@@ -98,7 +98,7 @@ export default class Slim {
 
     // Deselect
     let deselect = document.createElement('span')
-    deselect.innerHTML = 'X'
+    deselect.innerHTML = this.main.config.deselectLabel
     deselect.classList.add('ss-deselect')
     deselect.onclick = (e) => {
       e.stopPropagation()
@@ -285,7 +285,7 @@ export default class Slim {
 
     let deleteSpan = document.createElement('span')
     deleteSpan.classList.add(this.main.config.valueDelete)
-    deleteSpan.innerHTML = 'x'
+    deleteSpan.innerHTML = this.main.config.deselectLabel
     deleteSpan.onclick = (e) => {
       e.preventDefault()
       e.stopPropagation()

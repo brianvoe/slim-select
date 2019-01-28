@@ -14,6 +14,7 @@ interface constructor {
     showContent?: string;
     placeholder?: string;
     allowDeselect?: boolean;
+    deselectLabel?: string;
     isEnabled?: boolean;
     valuesUseText?: boolean;
     showOptionTooltips?: boolean;
