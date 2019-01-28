@@ -1,6 +1,6 @@
 import SlimSelect from './index'
 
-interface constructor { main: SlimSelect }
+interface Constructor { main: SlimSelect }
 
 export type dataArray = dataObject[]
 export type dataObject = optgroup | option
@@ -31,7 +31,7 @@ export default class Data {
   public contentOpen: boolean = false
   public contentPosition: string = 'below'
   public isOnChangeEnabled: boolean = true
-  constructor(info: constructor) {
+  constructor(info: Constructor) {
     this.main = info.main
     this.searchValue = ''
     this.data = []

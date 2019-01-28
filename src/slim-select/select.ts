@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import { option, optgroup, dataArray, dataObject } from './data'
+import { option, optgroup, dataArray } from './data'
 
 interface Constructor {
   select: HTMLSelectElement

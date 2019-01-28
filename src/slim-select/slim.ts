@@ -223,36 +223,34 @@ export default class Slim {
   // and remove those who shouldnt exist
   public values(): void {
     if (!this.multiSelected) { return }
-    let currentNodes = this.multiSelected.values.childNodes
+    let currentNodes = this.multiSelected.values.childNodes as any as HTMLDivElement[]
     const selected = this.main.data.getSelected() as option[]
 
     // Remove nodes that shouldnt be there
     let exists
     const nodesToRemove = []
-    for (let c = 0; c < currentNodes.length; c++) {
+    for (const c of currentNodes) {
       exists = true
-      const node = currentNodes[c] as HTMLDivElement
-      for (let s = 0; s < selected.length; s++) {
-        if (String(selected[s].id) === String(node.dataset.id)) {
+      for (const s of selected) {
+        if (String(s.id) === String(c.dataset.id)) {
           exists = false
         }
       }
 
-      if (exists) { nodesToRemove.push(node) }
+      if (exists) { nodesToRemove.push(c) }
     }
 
-    for (let i = 0; i < nodesToRemove.length; i++) {
-      nodesToRemove[i].classList.add('ss-out')
-      this.multiSelected.values.removeChild(nodesToRemove[i])
+    for (const n of nodesToRemove) {
+      n.classList.add('ss-out')
+      this.multiSelected.values.removeChild(n)
     }
 
     // Add values that dont currently exist
-    currentNodes = this.multiSelected.values.childNodes
+    currentNodes = this.multiSelected.values.childNodes as any as HTMLDivElement[]
     for (let s = 0; s < selected.length; s++) {
       exists = false
-      for (let c = 0; c < currentNodes.length; c++) {
-        const node = currentNodes[c] as HTMLDivElement
-        if (String(selected[s].id) === String(node.dataset.id)) {
+      for (const c of currentNodes) {
+        if (String(selected[s].id) === String(c.dataset.id)) {
           exists = true
         }
       }
@@ -277,14 +275,14 @@ export default class Slim {
     }
   }
 
-  public valueDiv(option: option): HTMLDivElement {
+  public valueDiv(optionObj: option): HTMLDivElement {
     const value = document.createElement('div')
     value.classList.add(this.main.config.value)
-    value.dataset.id = option.id
+    value.dataset.id = optionObj.id
 
     const text = document.createElement('span')
     text.classList.add(this.main.config.valueText)
-    text.innerHTML = (option.innerHTML && this.main.config.valuesUseText !== true ? option.innerHTML : option.text)
+    text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text)
     value.appendChild(text)
 
     const deleteSpan = document.createElement('span')
@@ -302,19 +300,19 @@ export default class Slim {
 
         // Remove from current selection
         for (let i = 0; i < currentValues.length; i++) {
-          if (currentValues[i].id === option.id) {
+          if (currentValues[i].id === optionObj.id) {
             currentValues.splice(i, 1)
           }
         }
 
         const beforeOnchange = this.main.beforeOnChange(currentValues)
         if (beforeOnchange !== false) {
-          this.main.data.removeFromSelected((option.id as any), 'id')
+          this.main.data.removeFromSelected((optionObj.id as any), 'id')
           this.main.render()
           this.main.select.setValue()
         }
       } else {
-        this.main.data.removeFromSelected((option.id as any), 'id')
+        this.main.data.removeFromSelected((optionObj.id as any), 'id')
         this.main.render()
         this.main.select.setValue()
         this.main.data.onDataChange() // Trigger on change callback
@@ -619,15 +617,15 @@ export default class Slim {
 
         const options = item.options
         if (options) {
-          for (let ii = 0; ii < options.length; ii++) {
-            optgroupEl.appendChild(this.option(options[ii]))
+          for (const o of options) {
+            optgroupEl.appendChild(this.option(o))
           }
 
           if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
-           optgroupLabel.onclick = ((optgroup) => {
+           optgroupLabel.onclick = ((optgroupElement) => {
                return () => {
-                   for (const option of optgroupEl.children as any) {
-                       option.click()
+                   for (const o of optgroupElement.children as any) {
+                      o.click()
                    }
                }
            })(optgroupEl)
