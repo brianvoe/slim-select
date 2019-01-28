@@ -14,6 +14,7 @@ interface constructor {
     isEnabled?: boolean;
     valuesUseText?: boolean;
     showOptionTooltips?: boolean;
+    selectByGroup?: boolean;
     limit?: number;
 }
 export default class Config {
@@ -36,6 +37,7 @@ export default class Config {
     isEnabled: boolean;
     valuesUseText: boolean;
     showOptionTooltips: boolean;
+    selectByGroup: boolean;
     limit: number;
     readonly main: string;
     readonly singleSelected: string;
@@ -57,6 +59,7 @@ export default class Config {
     readonly list: string;
     readonly optgroup: string;
     readonly optgroupLabel: string;
+    readonly optgroupLabelSelectable: string;
     readonly option: string;
     readonly highlighted: string;
     readonly disabled: string;
