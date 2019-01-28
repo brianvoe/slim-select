@@ -672,7 +672,7 @@ export default Vue.extend({
     </div>
 
     <div class="content">
-      <h2 class="header">Multi Select Limit</h2>
+      <h2 class="header">limit</h2>
       <p>When using multi select you can set a limit on the amount of selections you can have.</p>
 
       <div class="set-content">

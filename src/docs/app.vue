@@ -2,8 +2,8 @@
   import SlimSelect from '@/slim-select'
 
   export default {
-    data () {
-      let path = this.$route.path
+    data() {
+      const path = this.$route.path
       return {
         year: new Date().getFullYear(),
         navData: [
@@ -15,13 +15,13 @@
         ]
       }
     },
-    mounted () {
+    mounted() {
       // Lets redirect to path
       if (this.$route.query.p) {
         this.$router.push({ path: this.$route.query.p })
       }
 
-      let slim = new SlimSelect({
+      const slim = new SlimSelect({
         select: '#select-nav',
         showSearch: false,
         onChange: (info) => {

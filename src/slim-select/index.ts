@@ -1,8 +1,8 @@
 import Config from './config'
-import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
-import Data, { dataArray, Option, validateData } from './data'
 import Slim from './slim'
+import Data, { dataArray, Option, validateData } from './data'
+import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 
 interface Constructor {
   select: string | Element
@@ -25,14 +25,14 @@ interface Constructor {
   limit?: number
 
   // Events
-  ajax?: Function
-  addable?: Function
-  beforeOnChange?: Function
-  onChange?: Function
-  beforeOpen?: Function
-  afterOpen?: Function
-  beforeClose?: Function
-  afterClose?: Function
+  ajax?: (value: string, func: (info: any) => void) => void
+  addable?: (value: string) => Option | string
+  beforeOnChange?: (info: Option) => void | boolean
+  onChange?: (info: Option) => void
+  beforeOpen?: () => void
+  afterOpen?: () => void
+  beforeClose?: () => void
+  afterClose?: () => void
 }
 
 export default class SlimSelect {
@@ -40,14 +40,14 @@ export default class SlimSelect {
   public select: Select
   public data: Data
   public slim: Slim
-  public ajax: Function | null = null
-  public addable: Function | null = null
-  public beforeOnChange: Function | null = null
-  public onChange: Function | null = null
-  public beforeOpen: Function | null = null
-  public afterOpen: Function | null = null
-  public beforeClose: Function | null = null
-  public afterClose: Function | null = null
+  public ajax: ((value: string, func: (info: any) => void) => void) | null = null
+  public addable: ((value: string) => Option | string) | null = null
+  public beforeOnChange: ((info: Option) => void | boolean) | null = null
+  public onChange: ((info: Option) => void) | null = null
+  public beforeOpen: (() => void) | null = null
+  public afterOpen: (() => void) | null = null
+  public beforeClose: (() => void) | null = null
+  public afterClose: (() => void) | null = null
   constructor(info: Constructor) {
     const selectElement = this.validate(info)
 
@@ -393,6 +393,8 @@ export default class SlimSelect {
         const master = this
         this.config.isSearching = true
         this.render()
+
+        // If ajax call it
         if (this.ajax) {
           this.ajax(value, (info: any) => {
             // Only process if return callback is not false

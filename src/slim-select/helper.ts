@@ -45,11 +45,10 @@ export function putContent(el: HTMLElement, currentPosition: string, isOpen: boo
   return (isOpen ? currentPosition : 'below')
 }
 
-export function debounce(func: Function, wait = 100, immediate = false): () => void {
+export function debounce(func: (...params: any[]) => void, wait = 100, immediate = false): () => void {
   let timeout: any
-  return function() {
+  return function(this: any, ...args: any[]) {
     const context = self
-    const args = arguments
     const later = () => {
       timeout = null
       if (!immediate) { func.apply(context, args) }

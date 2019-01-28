@@ -8,25 +8,10 @@ export default new Router({
   base: '/',
   linkActiveClass: 'active',
   routes: [
-    {
-      path: '/',
-      component: () => import(/* webpackChunkName: "home" */ './pages/home.vue')
-    },
-    {
-      path: '/install',
-      component: () => import(/* webpackChunkName: "install" */ './pages/install.vue')
-    },
-    {
-      path: '/selects',
-      component: () => import(/* webpackChunkName: "selects" */ './pages/selects.vue')
-    },
-    {
-      path: '/options',
-      component: () => import(/* webpackChunkName: "options" */ './pages/options.vue')
-    },
-    {
-      path: '/methods',
-      component: () => import(/* webpackChunkName: "methods" */ './pages/methods.vue')
-    },
+    { path: '/', component: () => import(/* webpackChunkName: "home" */ './pages/home.vue') },
+    { path: '/install', component: () => import(/* webpackChunkName: "install" */ './pages/install.vue') },
+    { path: '/selects', component: () => import(/* webpackChunkName: "selects" */ './pages/selects.vue') },
+    { path: '/options', component: () => import(/* webpackChunkName: "options" */ './pages/options.vue') },
+    { path: '/methods', component: () => import(/* webpackChunkName: "methods" */ './pages/methods.vue') }
   ]
 })
