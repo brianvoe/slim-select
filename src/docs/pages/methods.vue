@@ -76,20 +76,20 @@ export default Vue.extend({
 
     // Open / Close
     this.setOpenCloseSingle = new SlimSelect({
-      select: '#setOpenCloseSingle',
+      select: '#setOpenCloseSingle'
       // Optional callbacks
-      beforeOpen() { console.log('beforeOpen')},
-      afterOpen() { console.log('afterOpen')},
-      beforeClose() { console.log('beforeClose')},
-      afterClose() { console.log('afterClose')}
+      // beforeOpen() { console.log('beforeOpen') },
+      // afterOpen() { console.log('afterOpen') },
+      // beforeClose() { console.log('beforeClose') },
+      // afterClose() { console.log('afterClose') }
     })
     this.setOpenCloseMultiple = new SlimSelect({
-      select: '#setOpenCloseMultiple',
+      select: '#setOpenCloseMultiple'
       // Optional callbacks
-      beforeOpen() { console.log('beforeOpen')},
-      afterOpen() { console.log('afterOpen')},
-      beforeClose() { console.log('beforeClose')},
-      afterClose() { console.log('afterClose')}
+      // beforeOpen() { console.log('beforeOpen') },
+      // afterOpen() { console.log('afterOpen') },
+      // beforeClose() { console.log('beforeClose') },
+      // afterClose() { console.log('afterClose') }
     })
 
     // Destroy

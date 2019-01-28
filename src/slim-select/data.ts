@@ -3,13 +3,13 @@ import SlimSelect from './index'
 interface Constructor { main: SlimSelect }
 
 export type dataArray = dataObject[]
-export type dataObject = optgroup | option
-export interface optgroup {
+export type dataObject = Optgroup | Option
+export interface Optgroup {
   label: string
-  options?: option[]
+  options?: Option[]
 }
 
-export interface option {
+export interface Option {
   id?: string
   value?: string
   text: string
@@ -41,7 +41,7 @@ export default class Data {
     this.setSelectedFromSelect()
   }
 
-  public newOption(info: any): option {
+  public newOption(info: any): Option {
     return {
       id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
       value: (info.value ? info.value : ''),
@@ -57,8 +57,8 @@ export default class Data {
   }
 
   // Add to the current data array
-  public add(data: option) {
-    const dataObject: option = {
+  public add(data: Option) {
+    const dataObject: Option = {
       id: String(Math.floor(Math.random() * 100000000)),
       value: data.value,
       text: data.text,
@@ -85,7 +85,7 @@ export default class Data {
         const node = nodes[i] as HTMLOptGroupElement
         const optgroup = {
           label: node.label,
-          options: [] as option[]
+          options: [] as Option[]
         }
         const options = nodes[i].childNodes
         for (let ii = 0; ii < options.length; ii++) {
@@ -113,7 +113,7 @@ export default class Data {
   }
 
   // From passed in option pull pieces of usable information
-  public pullOptionData(option: HTMLOptionElement): option {
+  public pullOptionData(option: HTMLOptionElement): Option {
     return {
       id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
       value: option.value,
@@ -159,7 +159,7 @@ export default class Data {
       // Deal with optgroups
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
-          const options = (this.data[i] as optgroup).options
+          const options = (this.data[i] as Optgroup).options
           if (options) {
             for (let o = 0; o < options.length; o++) {
               // Do not select if its a placeholder
@@ -170,13 +170,13 @@ export default class Data {
           }
         }
       } else {
-        (this.data[i] as option).selected = this.shouldBeSelected((this.data[i] as option), value, type)
+        (this.data[i] as Option).selected = this.shouldBeSelected((this.data[i] as Option), value, type)
       }
     }
   }
 
   // Determines whether or not passed in option should be selected based upon possible values
-  public shouldBeSelected(option: option, value: string | string[], type: string = 'id'): boolean {
+  public shouldBeSelected(option: Option, value: string | string[], type: string = 'id'): boolean {
     if (Array.isArray(value)) {
       for (let i = 0; i < value.length; i++) {
         if (type in option && String((option as any)[type]) === String(value[i])) {
@@ -194,14 +194,14 @@ export default class Data {
 
   // From data get option | option[] of selected values
   // If single select return last selected value
-  public getSelected(): option | option[] {
-    let value: option = { text: '' } // Dont worry about setting this(make typescript happy). If single a value will be selected
-    const values: option[] = []
+  public getSelected(): Option | Option[] {
+    let value: Option = { text: '' } // Dont worry about setting this(make typescript happy). If single a value will be selected
+    const values: Option[] = []
     for (let i = 0; i < this.data.length; i++) {
       // Deal with optgroups
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
-          const options = (this.data[i] as optgroup).options
+          const options = (this.data[i] as Optgroup).options
           if (options) {
             for (let o = 0; o < options.length; o++) {
               if (options[o].selected) {
@@ -218,13 +218,13 @@ export default class Data {
         }
       } else {
         // Push options to array
-        if ((this.data[i] as option).selected) {
+        if ((this.data[i] as Option).selected) {
           // If single return option
           if (!this.main.config.isMultiple) {
-            value = this.data[i] as option
+            value = this.data[i] as Option
           } else {
             // Push to multiple array
-            values.push(this.data[i] as option)
+            values.push(this.data[i] as Option)
           }
         }
       }
@@ -257,7 +257,7 @@ export default class Data {
   public removeFromSelected(value: string, type = 'id') {
     if (this.main.config.isMultiple) {
       const values = []
-      const selected = this.getSelected() as option[]
+      const selected = this.getSelected() as Option[]
       for (let i = 0; i < selected.length; i++) {
         if (String((selected[i] as any)[type]) !== String(value)) {
           values.push((selected[i] as any)[type])
@@ -276,15 +276,15 @@ export default class Data {
   }
 
   // Take in a value loop through the data till you find it and return it
-  public getObjectFromData(value: string, type = 'id'): option | null {
+  public getObjectFromData(value: string, type = 'id'): Option | null {
     for (let i = 0; i < this.data.length; i++) {
       // If option check if value is the same
       if (type in this.data[i] && String((this.data[i] as any)[type]) === String(value)) {
-        return this.data[i] as option
+        return this.data[i] as Option
       }
       // If optgroup loop through options
       if (this.data[i].hasOwnProperty('options')) {
-        const optgroupObject = this.data[i] as optgroup
+        const optgroupObject = this.data[i] as Optgroup
         if (optgroupObject.options) {
           for (let ii = 0; ii < optgroupObject.options.length; ii++) {
             if (String((optgroupObject.options[ii] as any)[type]) === String(value)) {
@@ -309,8 +309,8 @@ export default class Data {
     const filtered = valuesArray.map(function(obj) {
       // If optgroup
       if (obj.hasOwnProperty('options')) {
-        const optgroupObj = obj as optgroup
-        let options: option[] = []
+        const optgroupObj = obj as Optgroup
+        let options: Option[] = []
         if (optgroupObj.options) {
           options = optgroupObj.options.filter(function(opt) {
             return searchFilter(opt, search)
@@ -325,7 +325,7 @@ export default class Data {
 
       // If single option
       if (obj.hasOwnProperty('text')) {
-        const optionObj = obj as option
+        const optionObj = obj as Option
         if (searchFilter(optionObj, search)) { return obj }
       }
 
@@ -345,7 +345,7 @@ export function validateData(data: dataArray): boolean {
   for (let i = 0; i < data.length; i++) {
     if (data[i].hasOwnProperty('label')) {
       if (data[i].hasOwnProperty('options')) {
-        const optgroup = data[i] as optgroup
+        const optgroup = data[i] as Optgroup
         const options = optgroup.options
         if (options) {
           for (let j = 0; j < options.length; j++) {
@@ -355,7 +355,7 @@ export function validateData(data: dataArray): boolean {
         }
       }
     } else {
-      const option = data[i] as option
+      const option = data[i] as Option
       isValid = validateOption(option)
       if (!isValid) { errorCount++ }
     }
@@ -364,7 +364,7 @@ export function validateData(data: dataArray): boolean {
   return errorCount === 0
 }
 
-export function validateOption(option: option): boolean {
+export function validateOption(option: Option): boolean {
   if (option.text === undefined) {
     console.error('Data object option must have at least have a text value. Check object: ' + JSON.stringify(option))
     return false

@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import { option, optgroup, dataArray } from './data'
+import { Option, Optgroup, dataArray } from './data'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -33,7 +33,7 @@ export default class Select {
 
     if (this.main.config.isMultiple) {
       // If multiple loop through options and set selected
-      const selected = this.main.data.getSelected() as option[]
+      const selected = this.main.data.getSelected() as Option[]
       const options = this.element.options as any as HTMLOptionElement[]
       for (const o of options) {
         o.selected = false
@@ -116,7 +116,7 @@ export default class Select {
 
     for (const d of data) {
       if (d.hasOwnProperty('options')) {
-        const optgroupObject = d as optgroup
+        const optgroupObject = d as Optgroup
         const optgroupEl = document.createElement('optgroup') as HTMLOptGroupElement
         optgroupEl.label = optgroupObject.label
         if (optgroupObject.options) {

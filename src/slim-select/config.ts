@@ -1,4 +1,4 @@
-import { option } from './data'
+import { Option } from './data'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -8,7 +8,7 @@ interface Constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
-  searchFilter?: (opt: option, search: string) => boolean
+  searchFilter?: (opt: Option, search: string) => boolean
   closeOnSelect?: boolean
   showContent?: string
   placeholderText?: string
@@ -96,7 +96,7 @@ export default class Config {
     if (info.searchFilter) { this.searchFilter = info.searchFilter }
   }
 
-  public searchFilter(opt: option, search: string): boolean {
+  public searchFilter(opt: Option, search: string): boolean {
     return opt.text.toLowerCase().indexOf(search) !== -1
   }
 }

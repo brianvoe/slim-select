@@ -49,20 +49,20 @@ export default Vue.extend({
         }
 
         fetch('https://jsonplaceholder.typicode.com/users')
-          .then(function(response) {
+          .then((response) => {
             return response.json()
           })
-          .then(function(json) {
+          .then((json) => {
             const data = [] as any
-            for (let i = 0; i < json.length; i++) {
-              data.push({ text: json[i].name })
+            for (const j of json) {
+              data.push({ text: j.name })
             }
 
             setTimeout(() => {
               callback(data)
             }, 1000)
           })
-          .catch(function(error) {
+          .catch((error) => {
             callback(false)
           })
       }
@@ -73,13 +73,13 @@ export default Vue.extend({
       placeholder: 'Search "Dennis"',
       ajax(search: any, callback: any) {
         fetch('https://jsonplaceholder.typicode.com/users')
-          .then(function(response) {
+          .then((response) => {
             return response.json()
           })
-          .then(function(json) {
+          .then((json) => {
             const data = [] as any
-            for (let i = 0; i < json.length; i++) {
-              data.push({ text: json[i].name })
+            for (const j of json) {
+              data.push({ text: j.name })
             }
 
             setTimeout(() => {
@@ -87,7 +87,7 @@ export default Vue.extend({
               callback(data)
             }, 1000)
           })
-          .catch(function(error) {
+          .catch((error) => {
             callback(false)
           })
       }

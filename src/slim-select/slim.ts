@@ -1,6 +1,6 @@
 import SlimSelect from './index'
 import { ensureElementInView, isValueInArrayOfObjects, highlight } from './helper'
-import { option, optgroup, validateOption } from './data'
+import { Option, Optgroup, validateOption } from './data'
 
 interface SingleSelected {
   container: HTMLDivElement
@@ -142,7 +142,7 @@ export default class Slim {
 
   // Based upon current selection set placeholder text
   public placeholder(): void {
-    const selected = this.main.data.getSelected() as option
+    const selected = this.main.data.getSelected() as Option
 
     // Placeholder display
     if (selected === null || (selected && selected.placeholder)) {
@@ -224,7 +224,7 @@ export default class Slim {
   public values(): void {
     if (!this.multiSelected) { return }
     let currentNodes = this.multiSelected.values.childNodes as any as HTMLDivElement[]
-    const selected = this.main.data.getSelected() as option[]
+    const selected = this.main.data.getSelected() as Option[]
 
     // Remove nodes that shouldnt be there
     let exists
@@ -275,7 +275,7 @@ export default class Slim {
     }
   }
 
-  public valueDiv(optionObj: option): HTMLDivElement {
+  public valueDiv(optionObj: Option): HTMLDivElement {
     const value = document.createElement('div')
     value.classList.add(this.main.config.value)
     value.dataset.id = optionObj.id
@@ -295,7 +295,7 @@ export default class Slim {
       if (!this.main.config.isEnabled) { return }
 
       if (this.main.beforeOnChange) {
-        const selected = this.main.data.getSelected() as option
+        const selected = this.main.data.getSelected() as Option
         const currentValues = JSON.parse(JSON.stringify(selected))
 
         // Remove from current selection
@@ -602,7 +602,7 @@ export default class Slim {
     for (const d of data) {
       // Create optgroup
       if (d.hasOwnProperty('label')) {
-        const item = d as optgroup
+        const item = d as Optgroup
         const optgroupEl = document.createElement('div')
         optgroupEl.classList.add(this.main.config.optgroup)
 
@@ -633,13 +633,13 @@ export default class Slim {
         }
         this.list.appendChild(optgroupEl)
       } else {
-        this.list.appendChild(this.option(d as option))
+        this.list.appendChild(this.option(d as Option))
       }
     }
   }
 
   // Create single option
-  public option(data: option): HTMLDivElement {
+  public option(data: Option): HTMLDivElement {
     // Add hidden placeholder
     if (data.placeholder) {
       const placeholder = document.createElement('div')
@@ -657,7 +657,7 @@ export default class Slim {
       })
     }
 
-    const selected = this.main.data.getSelected() as option
+    const selected = this.main.data.getSelected() as Option
 
     optionEl.dataset.id = data.id
     if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {

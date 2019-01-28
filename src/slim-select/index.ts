@@ -1,7 +1,7 @@
 import Config from './config'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
-import Data, { dataArray, option, validateData } from './data'
+import Data, { dataArray, Option, validateData } from './data'
 import Slim from './slim'
 
 interface Constructor {
@@ -12,7 +12,7 @@ interface Constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
-  searchFilter?: (opt: option, search: string) => boolean
+  searchFilter?: (opt: Option, search: string) => boolean
   closeOnSelect?: boolean
   showContent?: string
   placeholder?: string
@@ -141,14 +141,14 @@ export default class SlimSelect {
 
   public selected(): string | string[] {
     if (this.config.isMultiple) {
-      const selected = this.data.getSelected() as option[]
+      const selected = this.data.getSelected() as Option[]
       const outputSelected: string[] = []
       for (const s of selected) {
         outputSelected.push(s.value as string)
       }
       return outputSelected
     } else {
-      const selected = this.data.getSelected() as option
+      const selected = this.data.getSelected() as Option
       return (selected ? selected.value as string : '')
     }
   }
@@ -183,7 +183,7 @@ export default class SlimSelect {
     // If its an ajax type keep selected values
     if (this.config.isAjax && selected) {
       if (this.config.isMultiple) {
-        const reverseSelected = (selected as option[]).reverse()
+        const reverseSelected = (selected as Option[]).reverse()
         for (const r of reverseSelected) {
           newData.unshift(r)
         }
@@ -199,7 +199,7 @@ export default class SlimSelect {
   }
 
   // addData will append to the current data set
-  public addData(data: option) {
+  public addData(data: Option) {
     // Validate data if passed in
     const isValid = validateData([data])
     if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
@@ -250,7 +250,7 @@ export default class SlimSelect {
 
     // Move to selected option for single option
     if (!this.config.isMultiple) {
-      const selected = this.data.getSelected() as option
+      const selected = this.data.getSelected() as Option
       if (selected) {
         const selectedId = selected.id
         const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
