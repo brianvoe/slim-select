@@ -34,13 +34,12 @@ export default class Select {
     if (this.main.config.isMultiple) {
       // If multiple loop through options and set selected
       const selected = this.main.data.getSelected() as option[]
-      const options = this.element.options
-      for (let o = 0; o < options.length; o++) {
-        const option = options[o] as HTMLOptionElement
-        option.selected = false
-        for (let s = 0; s < selected.length; s++) {
-          if (selected[s].value === option.value) {
-            option.selected = true
+      const options = this.element.options as any as HTMLOptionElement[]
+      for (const o of options) {
+        o.selected = false
+        for (const s of selected) {
+          if (s.value === o.value) {
+            o.selected = true
           }
         }
       }
@@ -115,41 +114,41 @@ export default class Select {
     // Clear out select
     this.element.innerHTML = ''
 
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].hasOwnProperty('options')) {
-        const optgroupObject = data[i] as optgroup
-        const optgroup = document.createElement('optgroup') as HTMLOptGroupElement
-        optgroup.label = optgroupObject.label
+    for (const d of data) {
+      if (d.hasOwnProperty('options')) {
+        const optgroupObject = d as optgroup
+        const optgroupEl = document.createElement('optgroup') as HTMLOptGroupElement
+        optgroupEl.label = optgroupObject.label
         if (optgroupObject.options) {
-          for (let o = 0; o < optgroupObject.options.length; o++) {
-            optgroup.appendChild(this.createOption(optgroupObject.options[o]))
+          for (const oo of optgroupObject.options) {
+            optgroupEl.appendChild(this.createOption(oo))
           }
         }
-        this.element.appendChild(optgroup)
+        this.element.appendChild(optgroupEl)
       } else {
-        this.element.appendChild(this.createOption(data[i]))
+        this.element.appendChild(this.createOption(d))
       }
     }
   }
 
   public createOption(info: any): HTMLOptionElement {
-    const option = document.createElement('option')
-    option.value = info.value || info.text
-    option.innerHTML = info.innerHTML || info.text
-    if (info.selected) { option.selected = info.selected }
-    if (info.disabled) { option.disabled = true }
-    if (info.placeholder) { option.setAttribute('data-placeholder', 'true') }
+    const optionEl = document.createElement('option')
+    optionEl.value = info.value || info.text
+    optionEl.innerHTML = info.innerHTML || info.text
+    if (info.selected) { optionEl.selected = info.selected }
+    if (info.disabled) { optionEl.disabled = true }
+    if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }
     if (info.class) {
       info.class.split(' ').forEach((optionClass: string) => {
-        option.classList.add(optionClass)
+        optionEl.classList.add(optionClass)
       })
     }
     if (info.data && typeof info.data === 'object') {
-      Object.keys(info.data).forEach(function(key) {
-        option.setAttribute('data-' + key, info.data[key])
+      Object.keys(info.data).forEach((key) => {
+        optionEl.setAttribute('data-' + key, info.data[key])
       })
     }
 
-    return option
+    return optionEl
   }
 }

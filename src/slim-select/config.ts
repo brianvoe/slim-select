@@ -24,7 +24,7 @@ interface Constructor {
 export default class Config {
   public id: string = ''
   public style: string
-  public class: DOMTokenList
+  public class: string[]
   public isMultiple: boolean = false
   public isAjax: boolean = false
   public isSearching: boolean = false
@@ -74,7 +74,7 @@ export default class Config {
   constructor(info: Constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
     this.style = info.select.style.cssText
-    this.class = info.select.classList
+    this.class = info.select.classList.value.split(' ')
 
     this.isMultiple = info.select.multiple
     this.isAjax = info.isAjax

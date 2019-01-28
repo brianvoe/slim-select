@@ -2,7 +2,7 @@ import SlimSelect from './index'
 import { ensureElementInView, isValueInArrayOfObjects, highlight } from './helper'
 import { option, optgroup, validateOption } from './data'
 
-interface singleSelected {
+interface SingleSelected {
   container: HTMLDivElement
   placeholder: HTMLSpanElement
   deselect: HTMLSpanElement
@@ -12,14 +12,14 @@ interface singleSelected {
   }
 }
 
-interface multiSelected {
+interface MultiSelected {
   container: HTMLDivElement
   values: HTMLDivElement
   add: HTMLDivElement
   plus: HTMLSpanElement
 }
 
-interface search {
+interface Search {
   container: HTMLDivElement
   input: HTMLInputElement
   addable?: HTMLDivElement
@@ -29,10 +29,10 @@ interface search {
 export default class Slim {
   public main: SlimSelect
   public container: HTMLDivElement
-  public singleSelected: singleSelected | null
-  public multiSelected: multiSelected | null
+  public singleSelected: SingleSelected | null
+  public multiSelected: MultiSelected | null
   public content: HTMLDivElement
-  public search: search
+  public search: Search
   public list: HTMLDivElement
   constructor(info: { main: SlimSelect }) {
     this.main = info.main
@@ -48,7 +48,9 @@ export default class Slim {
     this.multiSelected = null
     if (this.main.config.isMultiple) {
       this.multiSelected = this.multiSelectedDiv()
-      this.container.appendChild(this.multiSelected.container)
+      if (this.multiSelected) {
+        this.container.appendChild(this.multiSelected.container)
+      }
     } else {
       this.singleSelected = this.singleSelectedDiv()
       this.container.appendChild(this.singleSelected.container)
@@ -74,7 +76,7 @@ export default class Slim {
   // Will look at the original select and pull classes from it
   public updateContainerDivClass(container: HTMLDivElement) {
     // Set config class
-    this.main.config.class = this.main.select.element.classList
+    this.main.config.class = this.main.select.element.classList.value.split(' ')
 
     // Clear out classlist
     container.className = ''
@@ -82,12 +84,14 @@ export default class Slim {
     // Loop through config class and add
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
-    for (let i = 0; i < this.main.config.class.length; i++) {
-      container.classList.add(this.main.config.class[i])
+    for (const c of this.main.config.class) {
+      if (c.trim() !== '') {
+        container.classList.add(c)
+      }
     }
   }
 
-  public singleSelectedDiv(): singleSelected {
+  public singleSelectedDiv(): SingleSelected {
     const container: HTMLDivElement = document.createElement('div')
     container.classList.add(this.main.config.singleSelected)
 
@@ -176,7 +180,7 @@ export default class Slim {
     }
   }
 
-  public multiSelectedDiv(): multiSelected {
+  public multiSelectedDiv(): MultiSelected {
     const container = document.createElement('div')
     container.classList.add(this.main.config.multiSelected)
 
@@ -328,14 +332,14 @@ export default class Slim {
     return container
   }
 
-  public searchDiv(): search {
+  public searchDiv(): Search {
     const container = document.createElement('div')
     const input = document.createElement('input')
     const addable = document.createElement('div')
     container.classList.add(this.main.config.search)
 
     // Setup search return object
-    const searchReturn: search = {
+    const searchReturn: Search = {
       container,
       input
     }
@@ -538,7 +542,7 @@ export default class Slim {
       const delta = Math.round(-e.deltaY)
       const up = delta > 0
 
-      const prevent = function() {
+      const prevent = () => {
         e.stopPropagation()
         e.preventDefault()
         e.returnValue = false
@@ -597,12 +601,12 @@ export default class Slim {
     }
 
     // Append individual options to div container
-    for (let i = 0; i < data.length; i++) {
+    for (const d of data) {
       // Create optgroup
-      if (data[i].hasOwnProperty('label')) {
-        const item = data[i] as optgroup
-        const optgroup = document.createElement('div')
-        optgroup.classList.add(this.main.config.optgroup)
+      if (d.hasOwnProperty('label')) {
+        const item = d as optgroup
+        const optgroupEl = document.createElement('div')
+        optgroupEl.classList.add(this.main.config.optgroup)
 
         // Create label
         const optgroupLabel = document.createElement('div')
@@ -611,27 +615,27 @@ export default class Slim {
             optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable)
         }
         optgroupLabel.innerHTML = item.label
-        optgroup.appendChild(optgroupLabel)
+        optgroupEl.appendChild(optgroupLabel)
 
         const options = item.options
         if (options) {
           for (let ii = 0; ii < options.length; ii++) {
-            optgroup.appendChild(this.option(options[ii]))
+            optgroupEl.appendChild(this.option(options[ii]))
           }
 
           if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
            optgroupLabel.onclick = ((optgroup) => {
                return () => {
-                   for (const option of optgroup.children as any) {
+                   for (const option of optgroupEl.children as any) {
                        option.click()
                    }
                }
-           })(optgroup)
+           })(optgroupEl)
          }
         }
-        this.list.appendChild(optgroup)
+        this.list.appendChild(optgroupEl)
       } else {
-        this.list.appendChild(this.option(data[i] as option))
+        this.list.appendChild(this.option(d as option))
       }
     }
   }
@@ -646,28 +650,28 @@ export default class Slim {
       return placeholder
     }
 
-    const option = document.createElement('div')
-    option.classList.add(this.main.config.option)
+    const optionEl = document.createElement('div')
+    optionEl.classList.add(this.main.config.option)
     if (data.class) {
       const dataClasses = data.class.split(' ')
       dataClasses.forEach((dataClass: string) => {
-        option.classList.add(dataClass)
+        optionEl.classList.add(dataClass)
       })
     }
 
     const selected = this.main.data.getSelected() as option
 
-    option.dataset.id = data.id
+    optionEl.dataset.id = data.id
     if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
-      option.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter)
+      optionEl.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter)
     } else if (data.innerHTML) {
-      option.innerHTML = data.innerHTML
+      optionEl.innerHTML = data.innerHTML
     }
-    if (this.main.config.showOptionTooltips && option.textContent) {
-      option.setAttribute('title', option.textContent)
+    if (this.main.config.showOptionTooltips && optionEl.textContent) {
+      optionEl.setAttribute('title', optionEl.textContent)
     }
     const master = this
-    option.addEventListener('click', function(e: MouseEvent) {
+    optionEl.addEventListener('click', function(e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
 
@@ -698,10 +702,10 @@ export default class Slim {
     })
 
     if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', (data.id as string)))) {
-      option.onclick = null
-      option.classList.add(this.main.config.disabled)
+      optionEl.onclick = null
+      optionEl.classList.add(this.main.config.disabled)
     }
 
-    return option
+    return optionEl
   }
 }
