@@ -1,3 +1,5 @@
+import { option } from './data'
+
 interface constructor {
   select: HTMLSelectElement
   isAjax: boolean
@@ -6,6 +8,7 @@ interface constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
+  searchFilter?: Function
   closeOnSelect?: boolean
   showContent?: string
   placeholderText?: string
@@ -31,6 +34,7 @@ export default class Config {
   searchPlaceholder: string = 'Search'
   searchText: string = 'No Results'
   searchingText: string = 'Searching...'
+  searchFilter: Function = function(opt:option, search:string){return opt.text.toLowerCase().indexOf(search) !== -1;}
   placeholderText: string = 'Select Value'
   allowDeselect: boolean = false
   deselectLabel: string = 'x'
@@ -86,5 +90,6 @@ export default class Config {
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
     if (info.limit) { this.limit = info.limit }
+    if (info.searchFilter) { this.searchFilter = info.searchFilter }
   }
 }

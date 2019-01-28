@@ -297,6 +297,11 @@ export default Vue.extend({
       select: '#showOptionTooltips',
       showOptionTooltips: true
     })
+
+    new SlimSelect({
+      select: '#searchFilter',
+      searchFilter: (option: any, search: any) => { return option.text.substr(0, search.length) === search }
+    })
   }
 })
 </script>
@@ -969,6 +974,34 @@ export default Vue.extend({
           new SlimSelect({
             select: '#showOptionTooltips',
             showOptionTooltips: true
+          })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">searchFilter</h2>
+      <p>
+        searchFilter option is used to replace the default matching algorithm.
+      </p>
+      <p>
+        See methods/setData for the proper object interface of <em>option</em>.
+      </p>
+
+      <select id="searchFilter">
+        <option value="apple">Apple</option>
+        <option value="orange">Orange</option>
+        <option value="pineapple">Pineapple</option>
+      </select>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#searchFilter',
+            // Exact case sensitive start of string match
+            searchFilter: (option, search) => { 
+              return option.text.substr(0, search.length) === search
+            }
           })
         </code>
       </pre>
