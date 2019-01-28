@@ -607,6 +607,9 @@ export default class Slim {
         // Create label
         let optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.main.config.optgroupLabel)
+        if (this.main.config.selectByGroup && this.main.config.isMultiple) {
+            optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
+        }
         optgroupLabel.innerHTML = item.label
         optgroup.appendChild(optgroupLabel)
 
@@ -615,6 +618,16 @@ export default class Slim {
           for (var ii = 0; ii < options.length; ii++) {
             optgroup.appendChild(this.option(options[ii]))
           }
+
+	      if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
+	         optgroupLabel.onclick = ((optgroup) => { 
+	             return () => {
+	                 for (var option of <any>optgroup.children) {
+	                     option.click();
+	                 }
+	             }
+	         })(optgroup);
+	       }
         }
         this.list.appendChild(optgroup)
       } else {

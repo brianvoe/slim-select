@@ -576,6 +576,7 @@ var SlimSelect = (function () {
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText,
             showOptionTooltips: info.showOptionTooltips,
+            selectByGroup: info.selectByGroup,
             limit: info.limit
         });
         this.select = new select_1["default"]({
@@ -956,6 +957,7 @@ var Config = (function () {
         this.isEnabled = true;
         this.valuesUseText = false;
         this.showOptionTooltips = false;
+        this.selectByGroup = false;
         this.limit = 0;
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
@@ -977,6 +979,7 @@ var Config = (function () {
         this.list = 'ss-list';
         this.optgroup = 'ss-optgroup';
         this.optgroupLabel = 'ss-optgroup-label';
+        this.optgroupLabelSelectable = 'ss-optgroup-label-selectable';
         this.option = 'ss-option';
         this.highlighted = 'ss-highlighted';
         this.disabled = 'ss-disabled';
@@ -1014,6 +1017,9 @@ var Config = (function () {
         }
         if (info.showOptionTooltips) {
             this.showOptionTooltips = info.showOptionTooltips;
+        }
+        if (info.selectByGroup) {
+            this.selectByGroup = info.selectByGroup;
         }
         if (info.limit) {
             this.limit = info.limit;
@@ -1676,12 +1682,25 @@ var Slim = (function () {
                 optgroup.classList.add(this.main.config.optgroup);
                 var optgroupLabel = document.createElement('div');
                 optgroupLabel.classList.add(this.main.config.optgroupLabel);
+                if (this.main.config.selectByGroup && this.main.config.isMultiple) {
+                    optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
+                }
                 optgroupLabel.innerHTML = item.label;
                 optgroup.appendChild(optgroupLabel);
                 var options = item.options;
                 if (options) {
                     for (var ii = 0; ii < options.length; ii++) {
                         optgroup.appendChild(this.option(options[ii]));
+                    }
+                    if (this.main.config.selectByGroup && this.main.config.isMultiple) {
+                        optgroupLabel.onclick = (function (optgroup) {
+                            return function () {
+                                for (var _i = 0, _a = optgroup.children; _i < _a.length; _i++) {
+                                    var option = _a[_i];
+                                    option.click();
+                                }
+                            };
+                        })(optgroup);
                     }
                 }
                 this.list.appendChild(optgroup);
