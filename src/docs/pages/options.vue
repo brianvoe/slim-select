@@ -110,7 +110,8 @@ export default Vue.extend({
 
     new SlimSelect({
       select: '#deselectLabel',
-      deselectLabel: '✖'
+      allowDeselect: true,
+      deselectLabel: '<span class="red">✖</span>'
     })
 
     new SlimSelect({
@@ -320,6 +321,10 @@ export default Vue.extend({
         margin: 0 0 0 0;
       }
     }
+  }
+
+  .deselectLabel {
+    .red { color: red; }
   }
 
   .select-class {
@@ -577,16 +582,17 @@ export default Vue.extend({
     </div>
 
     <div class="content">
-      <h2 class="header">allowDeselect</h2>
+      <h2 class="header">deselectLabel</h2>
       <p>
         This will allow you to change the deselect label (default 'x') on single select lists,
         and the delete label on multiple-select lists.
       </p>
+      <p>Note: Be aware of the lmited space available for it</p>
 
       <div class="set-content">
-        <select id="deselectLabel">
+        <select id="deselectLabel" class="deselectLabel">
           <option data-placeholder="true"></option>
-          <option value="value1">Value 1</option>
+          <option selected value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
@@ -596,7 +602,8 @@ export default Vue.extend({
         <code class="language-javascript">
           new SlimSelect({
             select: '.element .you #want',
-            deselectLabel: '✖'
+            allowDeselect: true,
+            deselectLabel: '&lt;span class="red"&gt;✖&lt;/span&gt;'
           })
         </code>
       </pre>
