@@ -335,9 +335,13 @@ export default Vue.extend({
   }
 
   .option-class {
-    .red { background-color: red; }
-    .green { background-color: green; }
-    .blue { background-color: blue; }
+    .ss-option {
+      color: white;
+
+      &.red { background-color: red; }
+      &.green { background-color: green; }
+      &.blue { background-color: blue; }
+    }
   }
 }
 </style>
@@ -691,6 +695,7 @@ export default Vue.extend({
       <h2 class="header">css / class</h2>
       <p>
         Slim select will inherit any styles and classes that were added to the original select element.
+        This includes options as well.
       </p>
 
       <div class="set-content">
