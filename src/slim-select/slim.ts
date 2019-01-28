@@ -532,11 +532,11 @@ export default class Slim {
     var list = document.createElement('div')
     list.classList.add(this.main.config.list)
     list.addEventListener('wheel', (e: WheelEvent) => {
-      var scrollTop = list.scrollTop,
-        scrollHeight = list.scrollHeight,
-        height = list.offsetHeight,
-        delta = (e.type == 'DOMMouseScroll' ? e.detail * -40 : e.wheelDelta),
-        up = delta > 0;
+      var scrollTop = list.scrollTop
+      var scrollHeight = list.scrollHeight
+      var height = list.offsetHeight
+      var delta = Math.round(-e.deltaY)
+      var up = delta > 0
 
       var prevent = function () {
         e.stopPropagation();
@@ -635,6 +635,12 @@ export default class Slim {
 
     var option = document.createElement('div')
     option.classList.add(this.main.config.option)
+    if (data.class) {
+      let dataClasses = data.class.split(' ')
+      dataClasses.forEach((dataClass: string) => {
+        option.classList.add(dataClass)
+      })
+    }
 
     let selected = this.main.data.getSelected() as option
 

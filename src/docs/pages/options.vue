@@ -138,6 +138,9 @@ export default Vue.extend({
     new SlimSelect({
       select: '#select-class'
     })
+    new SlimSelect({
+      select: '#option-class'
+    })
 
     new SlimSelect({
       select: '#selectInnerHTMLSingle',
@@ -324,6 +327,12 @@ export default Vue.extend({
         border-color: white;
       }
     }
+  }
+
+  .option-class {
+    .red { background-color: red; }
+    .green { background-color: green; }
+    .blue { background-color: blue; }
   }
 }
 </style>
@@ -685,14 +694,19 @@ export default Vue.extend({
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
+        <select id="option-class" class="option-class">
+          <option class="red" value="value1">Red</option>
+          <option class="green" value="value2">Green</option>
+          <option class="blue" value="value3">Blue</option>
+        </select>
       </div>
 
       <pre>
         <code class="language-html">
           &lt;select id="select-class" class="classItems"&gt;
-            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+            &lt;option class="red" value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option class="green" value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option class="blue" value="value3"&gt;Value 3&lt;/option&gt;
           &lt;/select&gt;
         </code>
       </pre>
