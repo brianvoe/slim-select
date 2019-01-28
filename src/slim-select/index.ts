@@ -4,7 +4,7 @@ import Select from './select'
 import Data, { dataArray, option, validateData } from './data'
 import Slim from './slim'
 
-interface constructor {
+interface Constructor {
   select: string | Element
   data?: dataArray
   showSearch?: boolean
@@ -12,7 +12,7 @@ interface constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
-  searchFilter?: Function
+  searchFilter?: (opt: option, search: string) => boolean
   closeOnSelect?: boolean
   showContent?: string
   placeholder?: string
@@ -48,7 +48,7 @@ export default class SlimSelect {
   public afterOpen: Function | null = null
   public beforeClose: Function | null = null
   public afterClose: Function | null = null
-  constructor(info: constructor) {
+  constructor(info: Constructor) {
     const selectElement = this.validate(info)
 
     // If select already has a slim select id on it lets destroy it first
@@ -132,7 +132,7 @@ export default class SlimSelect {
     if (!this.config.isEnabled) { this.disable() }
   }
 
-  public validate(info: constructor) {
+  public validate(info: Constructor) {
     const select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select) as HTMLSelectElement
     if (!select) { throw new Error('Could not find select element') }
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
@@ -143,8 +143,8 @@ export default class SlimSelect {
     if (this.config.isMultiple) {
       const selected = this.data.getSelected() as option[]
       const outputSelected: string[] = []
-      for (let i = 0; i < selected.length; i++) {
-        outputSelected.push(selected[i].value as string)
+      for (const s of selected) {
+        outputSelected.push(s.value as string)
       }
       return outputSelected
     } else {
@@ -184,8 +184,8 @@ export default class SlimSelect {
     if (this.config.isAjax && selected) {
       if (this.config.isMultiple) {
         const reverseSelected = (selected as option[]).reverse()
-        for (let i = 0; i < reverseSelected.length; i++) {
-          newData.unshift(reverseSelected[i])
+        for (const r of reverseSelected) {
+          newData.unshift(r)
         }
       } else {
         newData.unshift(this.data.getSelected())
@@ -204,8 +204,7 @@ export default class SlimSelect {
     const isValid = validateData([data])
     if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
 
-    const option = this.data.newOption(data)
-    this.data.add(option)
+    this.data.add(this.data.newOption(data))
     this.select.create(this.data.data)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
@@ -395,7 +394,7 @@ export default class SlimSelect {
         this.config.isSearching = true
         this.render()
         if (this.ajax) {
-          this.ajax(value, function (info: any) {
+          this.ajax(value, (info: any) => {
             // Only process if return callback is not false
             master.config.isSearching = false
             if (Array.isArray(info)) {

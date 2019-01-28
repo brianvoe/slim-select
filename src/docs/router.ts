@@ -17,15 +17,15 @@ export default new Router({
       component: () => import(/* webpackChunkName: "install" */ './pages/install.vue')
     },
     {
-      path: '/selects', 
+      path: '/selects',
       component: () => import(/* webpackChunkName: "selects" */ './pages/selects.vue')
     },
     {
-      path: '/options', 
+      path: '/options',
       component: () => import(/* webpackChunkName: "options" */ './pages/options.vue')
     },
     {
-      path: '/methods', 
+      path: '/methods',
       component: () => import(/* webpackChunkName: "methods" */ './pages/methods.vue')
     },
   ]

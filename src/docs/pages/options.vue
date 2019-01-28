@@ -37,7 +37,7 @@ export default Vue.extend({
         }
       ]
     })
-    
+
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
       placeholder: 'Search "Graham"',
@@ -300,8 +300,13 @@ export default Vue.extend({
     })
 
     new SlimSelect({
+      select: '#selectByGroup',
+      selectByGroup: true
+    })
+
+    new SlimSelect({
       select: '#searchFilter',
-      searchFilter: (option: any, search: any) => { return option.text.substr(0, search.length) === search }
+      searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search
     })
   }
 })

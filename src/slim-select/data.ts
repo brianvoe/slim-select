@@ -24,13 +24,13 @@ export interface option {
 
 // Class is responsible for managing the data
 export default class Data {
-  main: SlimSelect
-  searchValue: string
-  data: dataObject[]
-  filtered: dataObject[] | null
-  contentOpen: boolean = false
-  contentPosition: string = 'below'
-  isOnChangeEnabled: boolean = true
+  public main: SlimSelect
+  public searchValue: string
+  public data: dataObject[]
+  public filtered: dataObject[] | null
+  public contentOpen: boolean = false
+  public contentPosition: string = 'below'
+  public isOnChangeEnabled: boolean = true
   constructor(info: constructor) {
     this.main = info.main
     this.searchValue = ''
@@ -41,7 +41,7 @@ export default class Data {
     this.setSelectedFromSelect()
   }
 
-  newOption(info: any): option {
+  public newOption(info: any): option {
     return {
       id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
       value: (info.value ? info.value : ''),
@@ -57,8 +57,8 @@ export default class Data {
   }
 
   // Add to the current data array
-  add(data: option) {
-    let dataObject: option = {
+  public add(data: option) {
+    const dataObject: option = {
       id: String(Math.floor(Math.random() * 100000000)),
       value: data.value,
       text: data.text,
@@ -75,22 +75,22 @@ export default class Data {
   }
 
   // From passed in select element pull optgroup and options into data
-  parseSelectData() {
+  public parseSelectData() {
     this.data = []
     // Loop through nodes and create data
-    var element: HTMLSelectElement = this.main.select.element
-    var nodes = element.childNodes
-    for (var i = 0; i < nodes.length; i++) {
+    const element: HTMLSelectElement = this.main.select.element
+    const nodes = element.childNodes
+    for (let i = 0; i < nodes.length; i++) {
       if (nodes[i].nodeName === 'OPTGROUP') {
-        let node = nodes[i] as HTMLOptGroupElement
-        let optgroup = {
+        const node = nodes[i] as HTMLOptGroupElement
+        const optgroup = {
           label: node.label,
           options: [] as option[]
         }
-        let options = nodes[i].childNodes
-        for (var ii = 0; ii < options.length; ii++) {
+        const options = nodes[i].childNodes
+        for (let ii = 0; ii < options.length; ii++) {
           if (options[ii].nodeName === 'OPTION') {
-            let option = this.pullOptionData(options[ii] as HTMLOptionElement)
+            const option = this.pullOptionData(options[ii] as HTMLOptionElement)
             optgroup.options.push(option)
 
             // If option has placeholder set to true set placeholder text
@@ -101,7 +101,7 @@ export default class Data {
         }
         this.data.push(optgroup)
       } else if (nodes[i].nodeName === 'OPTION') {
-        let option = this.pullOptionData(nodes[i] as HTMLOptionElement)
+        const option = this.pullOptionData(nodes[i] as HTMLOptionElement)
         this.data.push(option)
 
         // If option has placeholder set to true set placeholder text
@@ -113,7 +113,7 @@ export default class Data {
   }
 
   // From passed in option pull pieces of usable information
-  pullOptionData(option: HTMLOptionElement): option {
+  public pullOptionData(option: HTMLOptionElement): option {
     return {
       id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
       value: option.value,
@@ -128,14 +128,14 @@ export default class Data {
   }
 
   // From select element get current selected and set selected
-  setSelectedFromSelect(): void {
-    let options = this.main.select.element.options
+  public setSelectedFromSelect(): void {
+    const options = this.main.select.element.options
     if (this.main.config.isMultiple) {
-      let newSelected: string[] = []
-      for (var i = 0; i < options.length; i++) {
-        let option = <HTMLOptionElement>options[i]
+      const newSelected: string[] = []
+      for (let i = 0; i < options.length; i++) {
+        const option = options[i] as HTMLOptionElement
         if (option.selected) {
-          let newOption = this.getObjectFromData(option.value, 'value')
+          const newOption = this.getObjectFromData(option.value, 'value')
           if (newOption && newOption.id) {
             newSelected.push(newOption.id)
           }
@@ -145,40 +145,40 @@ export default class Data {
     } else {
       // Single select element
       if (options.selectedIndex !== -1) {
-        let option = <HTMLOptionElement>options[options.selectedIndex]
-        let value = option.value
+        const option = options[options.selectedIndex] as HTMLOptionElement
+        const value = option.value
         this.setSelected(value, 'value')
       }
     }
   }
 
   // From value set the selected value
-  setSelected(value: string | string[], type = 'id'): void {
+  public setSelected(value: string | string[], type = 'id'): void {
     // Loop through data and set selected values
-    for (var i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.length; i++) {
       // Deal with optgroups
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
-          let options = (<optgroup>this.data[i]).options
+          const options = (this.data[i] as optgroup).options
           if (options) {
-            for (var o = 0; o < options.length; o++) {
+            for (let o = 0; o < options.length; o++) {
               // Do not select if its a placeholder
-              if(options[o].placeholder){continue}
+              if (options[o].placeholder) {continue}
 
               options[o].selected = this.shouldBeSelected(options[o], value, type)
             }
           }
         }
       } else {
-        (<option>this.data[i]).selected = this.shouldBeSelected((<option>this.data[i]), value, type)
+        (this.data[i] as option).selected = this.shouldBeSelected((this.data[i] as option), value, type)
       }
     }
   }
 
   // Determines whether or not passed in option should be selected based upon possible values
-  shouldBeSelected(option: option, value: string | string[], type: string = 'id'): boolean {
+  public shouldBeSelected(option: option, value: string | string[], type: string = 'id'): boolean {
     if (Array.isArray(value)) {
-      for (var i = 0; i < value.length; i++) {
+      for (let i = 0; i < value.length; i++) {
         if (type in option && String((option as any)[type]) === String(value[i])) {
           return true
         }
@@ -194,16 +194,16 @@ export default class Data {
 
   // From data get option | option[] of selected values
   // If single select return last selected value
-  getSelected(): option | option[] {
-    var value: option = { text: '' } // Dont worry about setting this(make typescript happy). If single a value will be selected
-    var values: option[] = []
-    for (var i = 0; i < this.data.length; i++) {
+  public getSelected(): option | option[] {
+    let value: option = { text: '' } // Dont worry about setting this(make typescript happy). If single a value will be selected
+    const values: option[] = []
+    for (let i = 0; i < this.data.length; i++) {
       // Deal with optgroups
       if (this.data[i].hasOwnProperty('label')) {
         if (this.data[i].hasOwnProperty('options')) {
-          let options = (this.data[i] as optgroup).options
+          const options = (this.data[i] as optgroup).options
           if (options) {
-            for (var o = 0; o < options.length; o++) {
+            for (let o = 0; o < options.length; o++) {
               if (options[o].selected) {
                 // If single return option
                 if (!this.main.config.isMultiple) {
@@ -238,12 +238,12 @@ export default class Data {
   }
 
   // If select type is multiple append value and set selected
-  addToSelected(value: string, type = 'id') {
+  public addToSelected(value: string, type = 'id') {
     if (this.main.config.isMultiple) {
-      let values = []
-      let selected = this.getSelected()
+      const values = []
+      const selected = this.getSelected()
       if (Array.isArray(selected)) {
-        for (var i = 0; i < selected.length; i++) {
+        for (let i = 0; i < selected.length; i++) {
           values.push((selected[i] as any)[type])
         }
       }
@@ -254,11 +254,11 @@ export default class Data {
   }
 
   // Remove object from selected
-  removeFromSelected(value: string, type = 'id') {
+  public removeFromSelected(value: string, type = 'id') {
     if (this.main.config.isMultiple) {
-      let values = []
-      let selected = this.getSelected() as option[]
-      for (var i = 0; i < selected.length; i++) {
+      const values = []
+      const selected = this.getSelected() as option[]
+      for (let i = 0; i < selected.length; i++) {
         if (String((selected[i] as any)[type]) !== String(value)) {
           values.push((selected[i] as any)[type])
         }
@@ -269,24 +269,24 @@ export default class Data {
   }
 
   // Trigger onChange callback
-  onDataChange(): void {
+  public onDataChange(): void {
     if (this.main.onChange && this.isOnChangeEnabled) {
       this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())))
     }
   }
 
   // Take in a value loop through the data till you find it and return it
-  getObjectFromData(value: string, type = 'id'): option | null {
-    for (var i = 0; i < this.data.length; i++) {
+  public getObjectFromData(value: string, type = 'id'): option | null {
+    for (let i = 0; i < this.data.length; i++) {
       // If option check if value is the same
       if (type in this.data[i] && String((this.data[i] as any)[type]) === String(value)) {
         return this.data[i] as option
       }
       // If optgroup loop through options
       if (this.data[i].hasOwnProperty('options')) {
-        let optgroupObject = this.data[i] as optgroup
+        const optgroupObject = this.data[i] as optgroup
         if (optgroupObject.options) {
-          for (var ii = 0; ii < optgroupObject.options.length; ii++) {
+          for (let ii = 0; ii < optgroupObject.options.length; ii++) {
             if (String((optgroupObject.options[ii] as any)[type]) === String(value)) {
               return optgroupObject.options[ii]
             }
@@ -299,25 +299,25 @@ export default class Data {
   }
 
   // Take in search string and return filtered list of values
-  search(search: string) {
+  public search(search: string) {
     this.searchValue = search
     if (search.trim() === '') { this.filtered = null; return }
 
-    var searchFilter = this.main.config.searchFilter
-    var valuesArray = this.data.slice(0)
+    const searchFilter = this.main.config.searchFilter
+    const valuesArray = this.data.slice(0)
     search = search.trim()
-    var filtered = valuesArray.map(function (obj) {
+    const filtered = valuesArray.map(function(obj) {
       // If optgroup
       if (obj.hasOwnProperty('options')) {
-        let optgroupObj = obj as optgroup
+        const optgroupObj = obj as optgroup
         let options: option[] = []
         if (optgroupObj.options) {
-          options = optgroupObj.options.filter(function (opt) {
+          options = optgroupObj.options.filter(function(opt) {
             return searchFilter(opt, search)
           })
         }
         if (options.length !== 0) {
-          var optgroup = (<any>Object).assign({}, optgroupObj) // Break pointer
+          const optgroup = (Object as any).assign({}, optgroupObj) // Break pointer
           optgroup.options = options
           return optgroup
         }
@@ -325,7 +325,7 @@ export default class Data {
 
       // If single option
       if (obj.hasOwnProperty('text')) {
-        let optionObj = <option>obj
+        const optionObj = obj as option
         if (searchFilter(optionObj, search)) { return obj }
       }
 
@@ -333,7 +333,7 @@ export default class Data {
     })
 
     // Filter out false values
-    this.filtered = filtered.filter(function (info) { return info })
+    this.filtered = filtered.filter(function(info) { return info })
   }
 }
 
@@ -342,20 +342,20 @@ export function validateData(data: dataArray): boolean {
   let isValid = false
   let errorCount = 0
 
-  for (var i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     if (data[i].hasOwnProperty('label')) {
       if (data[i].hasOwnProperty('options')) {
-        let optgroup = <optgroup>data[i]
-        let options = optgroup.options
+        const optgroup = data[i] as optgroup
+        const options = optgroup.options
         if (options) {
-          for (var j = 0; j < options.length; j++) {
+          for (let j = 0; j < options.length; j++) {
             isValid = validateOption(options[j])
             if (!isValid) { errorCount++ }
           }
         }
       }
     } else {
-      let option = <option>data[i]
+      const option = data[i] as option
       isValid = validateOption(option)
       if (!isValid) { errorCount++ }
     }

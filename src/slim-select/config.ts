@@ -1,6 +1,6 @@
 import { option } from './data'
 
-interface constructor {
+interface Constructor {
   select: HTMLSelectElement
   isAjax: boolean
   showSearch?: boolean
@@ -8,7 +8,7 @@ interface constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
-  searchFilter?: Function
+  searchFilter?: (opt: option, search: string) => boolean
   closeOnSelect?: boolean
   showContent?: string
   placeholderText?: string
@@ -22,57 +22,56 @@ interface constructor {
 }
 
 export default class Config {
-  id: string = ''
-  style: string
-  class: DOMTokenList
-  isMultiple: boolean = false
-  isAjax: boolean = false
-  isSearching: boolean = false
-  showSearch: boolean = true
-  searchHighlight: boolean = false
-  closeOnSelect: boolean = true
-  showContent: string = 'auto' // options: auto, up, down
-  searchPlaceholder: string = 'Search'
-  searchText: string = 'No Results'
-  searchingText: string = 'Searching...'
-  searchFilter: Function = function(opt:option, search:string){return opt.text.toLowerCase().indexOf(search) !== -1}
-  placeholderText: string = 'Select Value'
-  allowDeselect: boolean = false
-  deselectLabel: string = 'x'
-  isEnabled: boolean = true
-  valuesUseText: boolean = false
-  showOptionTooltips: boolean = false
-  selectByGroup: boolean = false
-  limit: number = 0
+  public id: string = ''
+  public style: string
+  public class: DOMTokenList
+  public isMultiple: boolean = false
+  public isAjax: boolean = false
+  public isSearching: boolean = false
+  public showSearch: boolean = true
+  public searchHighlight: boolean = false
+  public closeOnSelect: boolean = true
+  public showContent: string = 'auto' // options: auto, up, down
+  public searchPlaceholder: string = 'Search'
+  public searchText: string = 'No Results'
+  public searchingText: string = 'Searching...'
+  public placeholderText: string = 'Select Value'
+  public allowDeselect: boolean = false
+  public deselectLabel: string = 'x'
+  public isEnabled: boolean = true
+  public valuesUseText: boolean = false
+  public showOptionTooltips: boolean = false
+  public selectByGroup: boolean = false
+  public limit: number = 0
 
   // Classes
-  readonly main: string = 'ss-main'
-  readonly singleSelected: string = 'ss-single-selected'
-  readonly arrow: string = 'ss-arrow'
-  readonly multiSelected: string = 'ss-multi-selected'
-  readonly add: string = 'ss-add'
-  readonly plus: string = 'ss-plus'
-  readonly values: string = 'ss-values'
-  readonly value: string = 'ss-value'
-  readonly valueText: string = 'ss-value-text'
-  readonly valueDelete: string = 'ss-value-delete'
-  readonly content: string = 'ss-content'
-  readonly open: string = 'ss-open'
-  readonly openAbove: string = 'ss-open-above'
-  readonly openBelow: string = 'ss-open-below'
-  readonly search: string = 'ss-search'
-  readonly searchHighlighter: string = 'ss-search-highlight'
-  readonly addable: string = 'ss-addable'
-  readonly list: string = 'ss-list'
-  readonly optgroup: string = 'ss-optgroup'
-  readonly optgroupLabel: string = 'ss-optgroup-label'
-  readonly optgroupLabelSelectable: string = 'ss-optgroup-label-selectable'
-  readonly option: string = 'ss-option'
-  readonly highlighted: string = 'ss-highlighted'
-  readonly disabled: string = 'ss-disabled'
-  readonly hide: string = 'ss-hide'
+  public readonly main: string = 'ss-main'
+  public readonly singleSelected: string = 'ss-single-selected'
+  public readonly arrow: string = 'ss-arrow'
+  public readonly multiSelected: string = 'ss-multi-selected'
+  public readonly add: string = 'ss-add'
+  public readonly plus: string = 'ss-plus'
+  public readonly values: string = 'ss-values'
+  public readonly value: string = 'ss-value'
+  public readonly valueText: string = 'ss-value-text'
+  public readonly valueDelete: string = 'ss-value-delete'
+  public readonly content: string = 'ss-content'
+  public readonly open: string = 'ss-open'
+  public readonly openAbove: string = 'ss-open-above'
+  public readonly openBelow: string = 'ss-open-below'
+  public readonly search: string = 'ss-search'
+  public readonly searchHighlighter: string = 'ss-search-highlight'
+  public readonly addable: string = 'ss-addable'
+  public readonly list: string = 'ss-list'
+  public readonly optgroup: string = 'ss-optgroup'
+  public readonly optgroupLabel: string = 'ss-optgroup-label'
+  public readonly optgroupLabelSelectable: string = 'ss-optgroup-label-selectable'
+  public readonly option: string = 'ss-option'
+  public readonly highlighted: string = 'ss-highlighted'
+  public readonly disabled: string = 'ss-disabled'
+  public readonly hide: string = 'ss-hide'
 
-  constructor(info: constructor) {
+  constructor(info: Constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
     this.style = info.select.style.cssText
     this.class = info.select.classList
@@ -95,5 +94,9 @@ export default class Config {
     if (info.selectByGroup) { this.selectByGroup = info.selectByGroup }
     if (info.limit) { this.limit = info.limit }
     if (info.searchFilter) { this.searchFilter = info.searchFilter }
+  }
+
+  public searchFilter(opt: option, search: string): boolean {
+    return opt.text.toLowerCase().indexOf(search) !== -1
   }
 }

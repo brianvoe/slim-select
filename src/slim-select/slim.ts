@@ -27,13 +27,13 @@ interface search {
 
 // Class is responsible for creating all the elements
 export default class Slim {
-  main: SlimSelect
-  container: HTMLDivElement
-  singleSelected: singleSelected | null
-  multiSelected: multiSelected | null
-  content: HTMLDivElement
-  search: search
-  list: HTMLDivElement
+  public main: SlimSelect
+  public container: HTMLDivElement
+  public singleSelected: singleSelected | null
+  public multiSelected: multiSelected | null
+  public content: HTMLDivElement
+  public search: search
+  public list: HTMLDivElement
   constructor(info: { main: SlimSelect }) {
     this.main = info.main
 
@@ -59,9 +59,9 @@ export default class Slim {
   }
 
   // Create main container
-  containerDiv(): HTMLDivElement {
+  public containerDiv(): HTMLDivElement {
     // Create main container
-    let container = document.createElement('div') as HTMLDivElement
+    const container = document.createElement('div') as HTMLDivElement
 
     // Add style and classes
     container.style.cssText = this.main.config.style
@@ -72,7 +72,7 @@ export default class Slim {
   }
 
   // Will look at the original select and pull classes from it
-  updateContainerDivClass(container: HTMLDivElement) {
+  public updateContainerDivClass(container: HTMLDivElement) {
     // Set config class
     this.main.config.class = this.main.select.element.classList
 
@@ -82,38 +82,38 @@ export default class Slim {
     // Loop through config class and add
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
-    for (var i = 0; i < this.main.config.class.length; i++) {
+    for (let i = 0; i < this.main.config.class.length; i++) {
       container.classList.add(this.main.config.class[i])
     }
   }
 
-  singleSelectedDiv(): singleSelected {
-    let container: HTMLDivElement = document.createElement('div')
+  public singleSelectedDiv(): singleSelected {
+    const container: HTMLDivElement = document.createElement('div')
     container.classList.add(this.main.config.singleSelected)
 
     // Placeholder text
-    let placeholder: HTMLSpanElement = document.createElement('span')
+    const placeholder: HTMLSpanElement = document.createElement('span')
     placeholder.classList.add('placeholder')
     container.appendChild(placeholder)
 
     // Deselect
-    let deselect = document.createElement('span')
+    const deselect = document.createElement('span')
     deselect.innerHTML = this.main.config.deselectLabel
     deselect.classList.add('ss-deselect')
     deselect.onclick = (e) => {
       e.stopPropagation()
 
       // Dont do anything if disabled
-      if(!this.main.config.isEnabled) {return}
+      if (!this.main.config.isEnabled) {return}
 
       this.main.set('')
     }
     container.appendChild(deselect)
 
     // Arrow
-    var arrowContainer: HTMLSpanElement = document.createElement('span')
+    const arrowContainer: HTMLSpanElement = document.createElement('span')
     arrowContainer.classList.add(this.main.config.arrow)
-    let arrowIcon = document.createElement('span')
+    const arrowIcon = document.createElement('span')
     arrowIcon.classList.add('arrow-down')
     arrowContainer.appendChild(arrowIcon)
     container.appendChild(arrowContainer)
@@ -126,9 +126,9 @@ export default class Slim {
     }
 
     return {
-      container: container,
-      placeholder: placeholder,
-      deselect: deselect,
+      container,
+      placeholder,
+      deselect,
       arrowIcon: {
         container: arrowContainer,
         arrow: arrowIcon
@@ -137,12 +137,12 @@ export default class Slim {
   }
 
   // Based upon current selection set placeholder text
-  placeholder(): void {
-    let selected = <option>this.main.data.getSelected()
+  public placeholder(): void {
+    const selected = this.main.data.getSelected() as option
 
     // Placeholder display
     if (selected === null || (selected && selected.placeholder)) {
-      let placeholder = document.createElement('span')
+      const placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
       placeholder.innerHTML = this.main.config.placeholderText
       if (this.singleSelected) {
@@ -160,7 +160,7 @@ export default class Slim {
   }
 
   // Based upon current selection/settings hide/show deselect
-  deselect(): void {
+  public deselect(): void {
     if (this.singleSelected) {
       // if allowDeselect is false just hide it
       if (!this.main.config.allowDeselect) {
@@ -176,17 +176,17 @@ export default class Slim {
     }
   }
 
-  multiSelectedDiv(): multiSelected {
-    let container = document.createElement('div')
+  public multiSelectedDiv(): multiSelected {
+    const container = document.createElement('div')
     container.classList.add(this.main.config.multiSelected)
 
-    let values = document.createElement('div')
+    const values = document.createElement('div')
     values.classList.add(this.main.config.values)
     container.appendChild(values)
 
-    let add = document.createElement('div')
+    const add = document.createElement('div')
     add.classList.add(this.main.config.add)
-    let plus = document.createElement('span')
+    const plus = document.createElement('span')
     plus.classList.add(this.main.config.plus)
     plus.onclick = (e) => {
       if (this.main.data.contentOpen) {
@@ -201,34 +201,34 @@ export default class Slim {
       if (!this.main.config.isEnabled) { return }
 
       // Open only if you are not clicking on x text
-      let target = e.target as Element
+      const target = e.target as Element
       if (!target.classList.contains(this.main.config.valueDelete)) {
         this.main.open()
       }
     }
 
     return {
-      container: container,
-      values: values,
-      add: add,
-      plus: plus
+      container,
+      values,
+      add,
+      plus
     }
   }
 
   // Get selected values and append to multiSelected values container
   // and remove those who shouldnt exist
-  values(): void {
+  public values(): void {
     if (!this.multiSelected) { return }
     let currentNodes = this.multiSelected.values.childNodes
-    let selected = this.main.data.getSelected() as option[]
+    const selected = this.main.data.getSelected() as option[]
 
     // Remove nodes that shouldnt be there
     let exists
-    let nodesToRemove = []
-    for (var c = 0; c < currentNodes.length; c++) {
+    const nodesToRemove = []
+    for (let c = 0; c < currentNodes.length; c++) {
       exists = true
-      let node = currentNodes[c] as HTMLDivElement
-      for (var s = 0; s < selected.length; s++) {
+      const node = currentNodes[c] as HTMLDivElement
+      for (let s = 0; s < selected.length; s++) {
         if (String(selected[s].id) === String(node.dataset.id)) {
           exists = false
         }
@@ -244,10 +244,10 @@ export default class Slim {
 
     // Add values that dont currently exist
     currentNodes = this.multiSelected.values.childNodes
-    for (var s = 0; s < selected.length; s++) {
+    for (let s = 0; s < selected.length; s++) {
       exists = false
-      for (var c = 0; c < currentNodes.length; c++) {
-        let node = currentNodes[c] as HTMLDivElement
+      for (let c = 0; c < currentNodes.length; c++) {
+        const node = currentNodes[c] as HTMLDivElement
         if (String(selected[s].id) === String(node.dataset.id)) {
           exists = true
         }
@@ -266,24 +266,24 @@ export default class Slim {
 
     // If there are no values set placeholder
     if (selected.length === 0) {
-      let placeholder = document.createElement('span')
+      const placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
       placeholder.innerHTML = this.main.config.placeholderText
       this.multiSelected.values.innerHTML = placeholder.outerHTML
     }
   }
 
-  valueDiv(option: option): HTMLDivElement {
-    let value = document.createElement('div')
+  public valueDiv(option: option): HTMLDivElement {
+    const value = document.createElement('div')
     value.classList.add(this.main.config.value)
     value.dataset.id = option.id
 
-    let text = document.createElement('span')
+    const text = document.createElement('span')
     text.classList.add(this.main.config.valueText)
     text.innerHTML = (option.innerHTML && this.main.config.valuesUseText !== true ? option.innerHTML : option.text)
     value.appendChild(text)
 
-    let deleteSpan = document.createElement('span')
+    const deleteSpan = document.createElement('span')
     deleteSpan.classList.add(this.main.config.valueDelete)
     deleteSpan.innerHTML = this.main.config.deselectLabel
     deleteSpan.onclick = (e) => {
@@ -293,17 +293,17 @@ export default class Slim {
       if (!this.main.config.isEnabled) { return }
 
       if (this.main.beforeOnChange) {
-        let selected = <option>this.main.data.getSelected()
-        let currentValues = JSON.parse(JSON.stringify(selected))
+        const selected = this.main.data.getSelected() as option
+        const currentValues = JSON.parse(JSON.stringify(selected))
 
         // Remove from current selection
-        for (var i = 0; i < currentValues.length; i++) {
+        for (let i = 0; i < currentValues.length; i++) {
           if (currentValues[i].id === option.id) {
             currentValues.splice(i, 1)
           }
         }
 
-        let beforeOnchange = this.main.beforeOnChange(currentValues)
+        const beforeOnchange = this.main.beforeOnChange(currentValues)
         if (beforeOnchange !== false) {
           this.main.data.removeFromSelected((option.id as any), 'id')
           this.main.render()
@@ -322,16 +322,23 @@ export default class Slim {
   }
 
   // Create content container
-  contentDiv(): HTMLDivElement {
-    let container = document.createElement('div')
+  public contentDiv(): HTMLDivElement {
+    const container = document.createElement('div')
     container.classList.add(this.main.config.content)
     return container
   }
 
-  searchDiv(): search {
-    var container = document.createElement('div')
-    var input = document.createElement('input')
+  public searchDiv(): search {
+    const container = document.createElement('div')
+    const input = document.createElement('input')
+    const addable = document.createElement('div')
     container.classList.add(this.main.config.search)
+
+    // Setup search return object
+    const searchReturn: search = {
+      container,
+      input
+    }
 
     // We still want the search to be tabable but not shown
     if (!this.main.config.showSearch) {
@@ -344,7 +351,7 @@ export default class Slim {
     input.tabIndex = 0
     input.onclick = (e) => {
       setTimeout(() => {
-        let target = <HTMLInputElement>e.target
+        const target = e.target as HTMLInputElement
         if (target.value === '') { this.main.search('') }
       }, 10)
     }
@@ -364,7 +371,7 @@ export default class Slim {
       }
     }
     input.onkeyup = (e) => {
-      let target = <HTMLInputElement>e.target
+      const target = e.target as HTMLInputElement
       if (e.key === 'Enter') {
         if (this.main.addable && e.ctrlKey) {
           addable.click()
@@ -372,7 +379,7 @@ export default class Slim {
           e.stopPropagation()
           return
         }
-        var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
+        const highlighted = this.list.querySelector('.' + this.main.config.highlighted) as HTMLDivElement
         if (highlighted) { highlighted.click() }
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle
@@ -391,14 +398,7 @@ export default class Slim {
     input.onfocus = () => { this.main.open() }
     container.appendChild(input)
 
-    // Setup search return object
-    let searchReturn: search = {
-      container: container,
-      input: input
-    }
-
     if (this.main.addable) {
-      var addable = document.createElement('div')
       addable.classList.add(this.main.config.addable)
       addable.innerHTML = '+'
       addable.onclick = (e) => {
@@ -406,15 +406,15 @@ export default class Slim {
           e.preventDefault()
           e.stopPropagation()
 
-          let inputValue = this.search.input.value
+          const inputValue = this.search.input.value
           if (inputValue.trim() === '') { this.search.input.focus(); return }
 
-          let addableValue = this.main.addable(inputValue)
+          const addableValue = this.main.addable(inputValue)
           let addableValueStr = ''
           if (!addableValue) { return }
 
-          if (typeof addableValue == 'object') {
-            let validValue = validateOption(addableValue)
+          if (typeof addableValue === 'object') {
+            const validValue = validateOption(addableValue)
             if (validValue) {
               this.main.addData(addableValue)
               addableValueStr = (addableValue.value ? addableValue.value : addableValue.text)
@@ -448,9 +448,9 @@ export default class Slim {
     return searchReturn
   }
 
-  highlightUp(): void {
-    var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-    var prev: HTMLDivElement | null = null
+  public highlightUp(): void {
+    const highlighted = this.list.querySelector('.' + this.main.config.highlighted) as HTMLDivElement
+    let prev: HTMLDivElement | null = null
     if (highlighted) {
       prev = highlighted.previousSibling as HTMLDivElement
       while (prev !== null) {
@@ -462,7 +462,7 @@ export default class Slim {
         }
       }
     } else {
-      var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
+      const allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
       prev = allOptions[allOptions.length - 1] as HTMLDivElement
     }
 
@@ -471,10 +471,10 @@ export default class Slim {
 
     // Check if parent is optgroup
     if (prev === null) {
-      var parent = <HTMLDivElement>highlighted.parentNode
+      const parent = highlighted.parentNode as HTMLDivElement
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.previousSibling) {
-          let prevNodes = (<HTMLDivElement>parent.previousSibling).querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
+          const prevNodes = (parent.previousSibling as HTMLDivElement).querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
           if (prevNodes.length) {
             prev = prevNodes[prevNodes.length - 1] as HTMLDivElement
           }
@@ -490,31 +490,31 @@ export default class Slim {
     }
   }
 
-  highlightDown(): void {
-    var highlighted = <HTMLDivElement>this.list.querySelector('.' + this.main.config.highlighted)
-    var next = null
+  public highlightDown(): void {
+    const highlighted = this.list.querySelector('.' + this.main.config.highlighted) as HTMLDivElement
+    let next = null
 
     if (highlighted) {
-      next = <HTMLDivElement>highlighted.nextSibling
+      next = highlighted.nextSibling as HTMLDivElement
       while (next !== null) {
         if (next.classList.contains(this.main.config.disabled)) {
-          next = <HTMLDivElement>next.nextSibling
+          next = next.nextSibling as HTMLDivElement
           continue
         } else {
           break
         }
       }
     } else {
-      next = <HTMLDivElement>this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
+      next = this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')') as HTMLDivElement
     }
 
     // Check if parent is optgroup
     if (next === null && highlighted !== null) {
-      var parent = <HTMLDivElement>highlighted.parentNode
+      const parent = highlighted.parentNode as HTMLDivElement
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.nextSibling) {
-          let sibling = <HTMLDivElement>parent.nextSibling
-          next = <HTMLDivElement>sibling.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
+          const sibling = parent.nextSibling as HTMLDivElement
+          next = sibling.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')') as HTMLDivElement
         }
       }
     }
@@ -528,31 +528,31 @@ export default class Slim {
   }
 
   // Create main container that options will reside
-  listDiv(): HTMLDivElement {
-    var list = document.createElement('div')
+  public listDiv(): HTMLDivElement {
+    const list = document.createElement('div')
     list.classList.add(this.main.config.list)
     list.addEventListener('wheel', (e: WheelEvent) => {
-      var scrollTop = list.scrollTop
-      var scrollHeight = list.scrollHeight
-      var height = list.offsetHeight
-      var delta = Math.round(-e.deltaY)
-      var up = delta > 0
+      const scrollTop = list.scrollTop
+      const scrollHeight = list.scrollHeight
+      const height = list.offsetHeight
+      const delta = Math.round(-e.deltaY)
+      const up = delta > 0
 
-      var prevent = function () {
-        e.stopPropagation();
-        e.preventDefault();
-        e.returnValue = false;
-        return false;
+      const prevent = function() {
+        e.stopPropagation()
+        e.preventDefault()
+        e.returnValue = false
+        return false
       }
 
       if (!up && -delta > scrollHeight - height - scrollTop) {
         // Scrolling down, but this will take us past the bottom.
-        list.scrollTop = scrollHeight;
-        return prevent();
+        list.scrollTop = scrollHeight
+        return prevent()
       } else if (up && delta > scrollTop) {
         // Scrolling up, but this will take us past the top.
-        list.scrollTop = 0;
-        return prevent();
+        list.scrollTop = 0
+        return prevent()
       }
     })
 
@@ -560,15 +560,15 @@ export default class Slim {
   }
 
   // Loop through data || filtered data and build options and append to list container
-  options(content: string = ''): void {
-    var data = this.main.data.filtered || this.main.data.data
+  public options(content: string = ''): void {
+    const data = this.main.data.filtered || this.main.data.data
 
     // Clear out innerHtml
     this.list.innerHTML = ''
 
     // If content is being passed just use that text
     if (content !== '') {
-      let searching = document.createElement('div')
+      const searching = document.createElement('div')
       searching.classList.add(this.main.config.option)
       searching.classList.add(this.main.config.disabled)
       searching.innerHTML = content
@@ -578,7 +578,7 @@ export default class Slim {
 
     // If ajax and isSearching
     if (this.main.config.isAjax && this.main.config.isSearching) {
-      let searching = document.createElement('div')
+      const searching = document.createElement('div')
       searching.classList.add(this.main.config.option)
       searching.classList.add(this.main.config.disabled)
       searching.innerHTML = this.main.config.searchingText
@@ -588,7 +588,7 @@ export default class Slim {
 
     // If no results show no results text
     if (data.length === 0) {
-      let noResults = document.createElement('div')
+      const noResults = document.createElement('div')
       noResults.classList.add(this.main.config.option)
       noResults.classList.add(this.main.config.disabled)
       noResults.innerHTML = this.main.config.searchText
@@ -597,37 +597,37 @@ export default class Slim {
     }
 
     // Append individual options to div container
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       // Create optgroup
       if (data[i].hasOwnProperty('label')) {
-        let item = data[i] as optgroup
-        let optgroup = document.createElement('div')
+        const item = data[i] as optgroup
+        const optgroup = document.createElement('div')
         optgroup.classList.add(this.main.config.optgroup)
 
         // Create label
-        let optgroupLabel = document.createElement('div')
+        const optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.main.config.optgroupLabel)
         if (this.main.config.selectByGroup && this.main.config.isMultiple) {
-            optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
+            optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable)
         }
         optgroupLabel.innerHTML = item.label
         optgroup.appendChild(optgroupLabel)
 
-        let options = item.options
+        const options = item.options
         if (options) {
-          for (var ii = 0; ii < options.length; ii++) {
+          for (let ii = 0; ii < options.length; ii++) {
             optgroup.appendChild(this.option(options[ii]))
           }
 
-	      if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
-	         optgroupLabel.onclick = ((optgroup) => { 
-	             return () => {
-	                 for (var option of <any>optgroup.children) {
-	                     option.click();
-	                 }
-	             }
-	         })(optgroup);
-	       }
+          if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
+           optgroupLabel.onclick = ((optgroup) => {
+               return () => {
+                   for (const option of optgroup.children as any) {
+                       option.click()
+                   }
+               }
+           })(optgroup)
+         }
         }
         this.list.appendChild(optgroup)
       } else {
@@ -637,25 +637,25 @@ export default class Slim {
   }
 
   // Create single option
-  option(data: option): HTMLDivElement {
+  public option(data: option): HTMLDivElement {
     // Add hidden placeholder
     if (data.placeholder) {
-      let placeholder = document.createElement('div')
+      const placeholder = document.createElement('div')
       placeholder.classList.add(this.main.config.option)
       placeholder.classList.add(this.main.config.hide)
       return placeholder
     }
 
-    var option = document.createElement('div')
+    const option = document.createElement('div')
     option.classList.add(this.main.config.option)
     if (data.class) {
-      let dataClasses = data.class.split(' ')
+      const dataClasses = data.class.split(' ')
       dataClasses.forEach((dataClass: string) => {
         option.classList.add(dataClass)
       })
     }
 
-    let selected = this.main.data.getSelected() as option
+    const selected = this.main.data.getSelected() as option
 
     option.dataset.id = data.id
     if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
@@ -666,19 +666,19 @@ export default class Slim {
     if (this.main.config.showOptionTooltips && option.textContent) {
       option.setAttribute('title', option.textContent)
     }
-    let master = this
-    option.addEventListener('click', function (e: MouseEvent) {
+    const master = this
+    option.addEventListener('click', function(e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
 
       // Check if hit limit
       if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) { return }
 
-      let element = this
-      let elementID = element.dataset.id
+      const element = this
+      const elementID = element.dataset.id
       if (master.main.beforeOnChange) {
         let value
-        let objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID as string)))
+        const objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID as string)))
         objectInfo.selected = true
 
         if (master.main.config.isMultiple) {
@@ -688,7 +688,7 @@ export default class Slim {
           value = JSON.parse(JSON.stringify(objectInfo))
         }
 
-        let beforeOnchange = master.main.beforeOnChange(value)
+        const beforeOnchange = master.main.beforeOnChange(value)
         if (beforeOnchange !== false) {
           master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
         }
