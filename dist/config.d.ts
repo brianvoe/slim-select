@@ -1,4 +1,4 @@
-import { option } from './data';
+import { Option } from './data';
 interface Constructor {
     select: HTMLSelectElement;
     isAjax: boolean;
@@ -7,7 +7,7 @@ interface Constructor {
     searchText?: string;
     searchingText?: string;
     searchHighlight?: boolean;
-    searchFilter?: (opt: option, search: string) => boolean;
+    searchFilter?: (opt: Option, search: string) => boolean;
     closeOnSelect?: boolean;
     showContent?: string;
     placeholderText?: string;
@@ -22,7 +22,7 @@ interface Constructor {
 export default class Config {
     id: string;
     style: string;
-    class: DOMTokenList;
+    class: string[];
     isMultiple: boolean;
     isAjax: boolean;
     isSearching: boolean;
@@ -67,6 +67,6 @@ export default class Config {
     readonly disabled: string;
     readonly hide: string;
     constructor(info: Constructor);
-    searchFilter(opt: option, search: string): boolean;
+    searchFilter(opt: Option, search: string): boolean;
 }
 export {};

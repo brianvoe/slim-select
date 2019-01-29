@@ -1,14 +1,14 @@
 import SlimSelect from './index';
-interface constructor {
+interface Constructor {
     main: SlimSelect;
 }
 export declare type dataArray = dataObject[];
-export declare type dataObject = optgroup | option;
-export interface optgroup {
+export declare type dataObject = Optgroup | Option;
+export interface Optgroup {
     label: string;
-    options?: option[];
+    options?: Option[];
 }
-export interface option {
+export interface Option {
     id?: string;
     value?: string;
     text: string;
@@ -28,21 +28,21 @@ export default class Data {
     contentOpen: boolean;
     contentPosition: string;
     isOnChangeEnabled: boolean;
-    constructor(info: constructor);
-    newOption(info: any): option;
-    add(data: option): void;
+    constructor(info: Constructor);
+    newOption(info: any): Option;
+    add(data: Option): void;
     parseSelectData(): void;
-    pullOptionData(option: HTMLOptionElement): option;
+    pullOptionData(option: HTMLOptionElement): Option;
     setSelectedFromSelect(): void;
     setSelected(value: string | string[], type?: string): void;
-    shouldBeSelected(option: option, value: string | string[], type?: string): boolean;
-    getSelected(): option | option[];
+    shouldBeSelected(option: Option, value: string | string[], type?: string): boolean;
+    getSelected(): Option | Option[];
     addToSelected(value: string, type?: string): void;
     removeFromSelected(value: string, type?: string): void;
     onDataChange(): void;
-    getObjectFromData(value: string, type?: string): option | null;
+    getObjectFromData(value: string, type?: string): Option | null;
     search(search: string): void;
 }
 export declare function validateData(data: dataArray): boolean;
-export declare function validateOption(option: option): boolean;
+export declare function validateOption(option: Option): boolean;
 export {};

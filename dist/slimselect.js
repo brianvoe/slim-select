@@ -154,8 +154,11 @@ function debounce(func, wait, immediate) {
     if (immediate === void 0) { immediate = false; }
     var timeout;
     return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
         var context = self;
-        var args = arguments;
         var later = function () {
             timeout = null;
             if (!immediate) {
@@ -243,11 +246,11 @@ var Data = (function () {
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : false),
             "class": (info["class"] ? info["class"] : undefined),
-            data: (info.data ? info.data : {}),
+            data: (info.data ? info.data : {})
         };
     };
     Data.prototype.add = function (data) {
-        var dataObject = {
+        this.data.push({
             id: String(Math.floor(Math.random() * 100000000)),
             value: data.value,
             text: data.text,
@@ -258,24 +261,24 @@ var Data = (function () {
             placeholder: false,
             "class": undefined,
             data: {}
-        };
-        this.data.push(dataObject);
+        });
     };
     Data.prototype.parseSelectData = function () {
         this.data = [];
-        var element = this.main.select.element;
-        var nodes = element.childNodes;
-        for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i].nodeName === 'OPTGROUP') {
-                var node = nodes[i];
+        var nodes = this.main.select.element.childNodes;
+        for (var _i = 0, nodes_1 = nodes; _i < nodes_1.length; _i++) {
+            var n = nodes_1[_i];
+            if (n.nodeName === 'OPTGROUP') {
+                var node = n;
                 var optgroup = {
                     label: node.label,
                     options: []
                 };
-                var options = nodes[i].childNodes;
-                for (var ii = 0; ii < options.length; ii++) {
-                    if (options[ii].nodeName === 'OPTION') {
-                        var option = this.pullOptionData(options[ii]);
+                var options = n.childNodes;
+                for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
+                    var o = options_1[_a];
+                    if (o.nodeName === 'OPTION') {
+                        var option = this.pullOptionData(o);
                         optgroup.options.push(option);
                         if (option.placeholder && option.text.trim() !== '') {
                             this.main.config.placeholderText = option.text;
@@ -284,8 +287,8 @@ var Data = (function () {
                 }
                 this.data.push(optgroup);
             }
-            else if (nodes[i].nodeName === 'OPTION') {
-                var option = this.pullOptionData(nodes[i]);
+            else if (n.nodeName === 'OPTION') {
+                var option = this.pullOptionData(n);
                 this.data.push(option);
                 if (option.placeholder && option.text.trim() !== '') {
                     this.main.config.placeholderText = option.text;
@@ -307,13 +310,13 @@ var Data = (function () {
         };
     };
     Data.prototype.setSelectedFromSelect = function () {
-        var options = this.main.select.element.options;
         if (this.main.config.isMultiple) {
+            var options = this.main.select.element.options;
             var newSelected = [];
-            for (var i = 0; i < options.length; i++) {
-                var option = options[i];
-                if (option.selected) {
-                    var newOption = this.getObjectFromData(option.value, 'value');
+            for (var _i = 0, options_2 = options; _i < options_2.length; _i++) {
+                var o = options_2[_i];
+                if (o.selected) {
+                    var newOption = this.getObjectFromData(o.value, 'value');
                     if (newOption && newOption.id) {
                         newSelected.push(newOption.id);
                     }
@@ -322,6 +325,7 @@ var Data = (function () {
             this.setSelected(newSelected, 'id');
         }
         else {
+            var options = this.main.select.element.options;
             if (options.selectedIndex !== -1) {
                 var option = options[options.selectedIndex];
                 var value = option.value;
@@ -331,30 +335,33 @@ var Data = (function () {
     };
     Data.prototype.setSelected = function (value, type) {
         if (type === void 0) { type = 'id'; }
-        for (var i = 0; i < this.data.length; i++) {
-            if (this.data[i].hasOwnProperty('label')) {
-                if (this.data[i].hasOwnProperty('options')) {
-                    var options = this.data[i].options;
+        for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
+            var d = _a[_i];
+            if (d.hasOwnProperty('label')) {
+                if (d.hasOwnProperty('options')) {
+                    var options = d.options;
                     if (options) {
-                        for (var o = 0; o < options.length; o++) {
-                            if (options[o].placeholder) {
+                        for (var _b = 0, options_3 = options; _b < options_3.length; _b++) {
+                            var o = options_3[_b];
+                            if (o.placeholder) {
                                 continue;
                             }
-                            options[o].selected = this.shouldBeSelected(options[o], value, type);
+                            o.selected = this.shouldBeSelected(o, value, type);
                         }
                     }
                 }
             }
             else {
-                this.data[i].selected = this.shouldBeSelected(this.data[i], value, type);
+                d.selected = this.shouldBeSelected(d, value, type);
             }
         }
     };
     Data.prototype.shouldBeSelected = function (option, value, type) {
         if (type === void 0) { type = 'id'; }
         if (Array.isArray(value)) {
-            for (var i = 0; i < value.length; i++) {
-                if (type in option && String(option[type]) === String(value[i])) {
+            for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
+                var v = value_1[_i];
+                if (type in option && String(option[type]) === String(v)) {
                     return true;
                 }
             }
@@ -369,18 +376,20 @@ var Data = (function () {
     Data.prototype.getSelected = function () {
         var value = { text: '' };
         var values = [];
-        for (var i = 0; i < this.data.length; i++) {
-            if (this.data[i].hasOwnProperty('label')) {
-                if (this.data[i].hasOwnProperty('options')) {
-                    var options = this.data[i].options;
+        for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
+            var d = _a[_i];
+            if (d.hasOwnProperty('label')) {
+                if (d.hasOwnProperty('options')) {
+                    var options = d.options;
                     if (options) {
-                        for (var o = 0; o < options.length; o++) {
-                            if (options[o].selected) {
+                        for (var _b = 0, options_4 = options; _b < options_4.length; _b++) {
+                            var o = options_4[_b];
+                            if (o.selected) {
                                 if (!this.main.config.isMultiple) {
-                                    value = options[o];
+                                    value = o;
                                 }
                                 else {
-                                    values.push(options[o]);
+                                    values.push(o);
                                 }
                             }
                         }
@@ -388,12 +397,12 @@ var Data = (function () {
                 }
             }
             else {
-                if (this.data[i].selected) {
+                if (d.selected) {
                     if (!this.main.config.isMultiple) {
-                        value = this.data[i];
+                        value = d;
                     }
                     else {
-                        values.push(this.data[i]);
+                        values.push(d);
                     }
                 }
             }
@@ -409,8 +418,9 @@ var Data = (function () {
             var values = [];
             var selected = this.getSelected();
             if (Array.isArray(selected)) {
-                for (var i = 0; i < selected.length; i++) {
-                    values.push(selected[i][type]);
+                for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
+                    var s = selected_1[_i];
+                    values.push(s[type]);
                 }
             }
             values.push(value);
@@ -422,9 +432,10 @@ var Data = (function () {
         if (this.main.config.isMultiple) {
             var values = [];
             var selected = this.getSelected();
-            for (var i = 0; i < selected.length; i++) {
-                if (String(selected[i][type]) !== String(value)) {
-                    values.push(selected[i][type]);
+            for (var _i = 0, selected_2 = selected; _i < selected_2.length; _i++) {
+                var s = selected_2[_i];
+                if (String(s[type]) !== String(value)) {
+                    values.push(s[type]);
                 }
             }
             this.setSelected(values, type);
@@ -437,16 +448,18 @@ var Data = (function () {
     };
     Data.prototype.getObjectFromData = function (value, type) {
         if (type === void 0) { type = 'id'; }
-        for (var i = 0; i < this.data.length; i++) {
-            if (type in this.data[i] && String(this.data[i][type]) === String(value)) {
-                return this.data[i];
+        for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
+            var d = _a[_i];
+            if (type in d && String(d[type]) === String(value)) {
+                return d;
             }
-            if (this.data[i].hasOwnProperty('options')) {
-                var optgroupObject = this.data[i];
+            if (d.hasOwnProperty('options')) {
+                var optgroupObject = d;
                 if (optgroupObject.options) {
-                    for (var ii = 0; ii < optgroupObject.options.length; ii++) {
-                        if (String(optgroupObject.options[ii][type]) === String(value)) {
-                            return optgroupObject.options[ii];
+                    for (var _b = 0, _c = optgroupObject.options; _b < _c.length; _b++) {
+                        var oo = _c[_b];
+                        if (String(oo[type]) === String(value)) {
+                            return oo;
                         }
                     }
                 }
@@ -498,14 +511,16 @@ function validateData(data) {
     }
     var isValid = false;
     var errorCount = 0;
-    for (var i = 0; i < data.length; i++) {
-        if (data[i].hasOwnProperty('label')) {
-            if (data[i].hasOwnProperty('options')) {
-                var optgroup = data[i];
+    for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+        var d = data_1[_i];
+        if (d.hasOwnProperty('label')) {
+            if (d.hasOwnProperty('options')) {
+                var optgroup = d;
                 var options = optgroup.options;
                 if (options) {
-                    for (var j = 0; j < options.length; j++) {
-                        isValid = validateOption(options[j]);
+                    for (var _a = 0, options_5 = options; _a < options_5.length; _a++) {
+                        var o = options_5[_a];
+                        isValid = validateOption(o);
                         if (!isValid) {
                             errorCount++;
                         }
@@ -514,7 +529,7 @@ function validateData(data) {
             }
         }
         else {
-            var option = data[i];
+            var option = d;
             isValid = validateOption(option);
             if (!isValid) {
                 errorCount++;
@@ -542,10 +557,10 @@ exports.validateOption = validateOption;
 
 exports.__esModule = true;
 var config_1 = __webpack_require__(3);
-var helper_1 = __webpack_require__(0);
 var select_1 = __webpack_require__(4);
-var data_1 = __webpack_require__(1);
 var slim_1 = __webpack_require__(5);
+var data_1 = __webpack_require__(1);
+var helper_1 = __webpack_require__(0);
 var SlimSelect = (function () {
     function SlimSelect(info) {
         var _this = this;
@@ -995,7 +1010,7 @@ var Config = (function () {
         this.hide = 'ss-hide';
         this.id = 'ss-' + Math.floor(Math.random() * 100000);
         this.style = info.select.style.cssText;
-        this["class"] = info.select.classList;
+        this["class"] = info.select.classList.value.split(' ');
         this.isMultiple = info.select.multiple;
         this.isAjax = info.isAjax;
         this.showSearch = (info.showSearch === false ? false : true);
@@ -1074,12 +1089,13 @@ var Select = (function () {
         if (this.main.config.isMultiple) {
             var selected = this.main.data.getSelected();
             var options = this.element.options;
-            for (var o = 0; o < options.length; o++) {
-                var option = options[o];
-                option.selected = false;
-                for (var s = 0; s < selected.length; s++) {
-                    if (selected[s].value === option.value) {
-                        option.selected = true;
+            for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
+                var o = options_1[_i];
+                o.selected = false;
+                for (var _a = 0, selected_1 = selected; _a < selected_1.length; _a++) {
+                    var s = selected_1[_a];
+                    if (s.value === o.value) {
+                        o.selected = true;
                     }
                 }
             }
@@ -1141,47 +1157,49 @@ var Select = (function () {
     };
     Select.prototype.create = function (data) {
         this.element.innerHTML = '';
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].hasOwnProperty('options')) {
-                var optgroupObject = data[i];
-                var optgroup = document.createElement('optgroup');
-                optgroup.label = optgroupObject.label;
+        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+            var d = data_1[_i];
+            if (d.hasOwnProperty('options')) {
+                var optgroupObject = d;
+                var optgroupEl = document.createElement('optgroup');
+                optgroupEl.label = optgroupObject.label;
                 if (optgroupObject.options) {
-                    for (var o = 0; o < optgroupObject.options.length; o++) {
-                        optgroup.appendChild(this.createOption(optgroupObject.options[o]));
+                    for (var _a = 0, _b = optgroupObject.options; _a < _b.length; _a++) {
+                        var oo = _b[_a];
+                        optgroupEl.appendChild(this.createOption(oo));
                     }
                 }
-                this.element.appendChild(optgroup);
+                this.element.appendChild(optgroupEl);
             }
             else {
-                this.element.appendChild(this.createOption(data[i]));
+                this.element.appendChild(this.createOption(d));
             }
         }
     };
     Select.prototype.createOption = function (info) {
-        var option = document.createElement('option');
-        option.value = info.value || info.text;
-        option.innerHTML = info.innerHTML || info.text;
+        var optionEl = document.createElement('option');
+        optionEl.value = info.value || info.text;
+        optionEl.innerHTML = info.innerHTML || info.text;
         if (info.selected) {
-            option.selected = info.selected;
+            optionEl.selected = info.selected;
         }
         if (info.disabled) {
-            option.disabled = true;
+            optionEl.disabled = true;
         }
         if (info.placeholder) {
-            option.setAttribute('data-placeholder', 'true');
+            optionEl.setAttribute('data-placeholder', 'true');
         }
         if (info["class"]) {
             info["class"].split(' ').forEach(function (optionClass) {
-                option.classList.add(optionClass);
+                optionEl.classList.add(optionClass);
             });
         }
         if (info.data && typeof info.data === 'object') {
             Object.keys(info.data).forEach(function (key) {
-                option.setAttribute('data-' + key, info.data[key]);
+                optionEl.setAttribute('data-' + key, info.data[key]);
             });
         }
-        return option;
+        return optionEl;
     };
     return Select;
 }());
@@ -1209,7 +1227,9 @@ var Slim = (function () {
         this.multiSelected = null;
         if (this.main.config.isMultiple) {
             this.multiSelected = this.multiSelectedDiv();
-            this.container.appendChild(this.multiSelected.container);
+            if (this.multiSelected) {
+                this.container.appendChild(this.multiSelected.container);
+            }
         }
         else {
             this.singleSelected = this.singleSelectedDiv();
@@ -1226,12 +1246,15 @@ var Slim = (function () {
         return container;
     };
     Slim.prototype.updateContainerDivClass = function (container) {
-        this.main.config["class"] = this.main.select.element.classList;
+        this.main.config["class"] = this.main.select.element.classList.value.split(' ');
         container.className = '';
         container.classList.add(this.main.config.id);
         container.classList.add(this.main.config.main);
-        for (var i = 0; i < this.main.config["class"].length; i++) {
-            container.classList.add(this.main.config["class"][i]);
+        for (var _i = 0, _a = this.main.config["class"]; _i < _a.length; _i++) {
+            var c = _a[_i];
+            if (c.trim() !== '') {
+                container.classList.add(c);
+            }
         }
     };
     Slim.prototype.singleSelectedDiv = function () {
@@ -1351,28 +1374,30 @@ var Slim = (function () {
         var selected = this.main.data.getSelected();
         var exists;
         var nodesToRemove = [];
-        for (var c = 0; c < currentNodes.length; c++) {
+        for (var _i = 0, currentNodes_1 = currentNodes; _i < currentNodes_1.length; _i++) {
+            var c = currentNodes_1[_i];
             exists = true;
-            var node = currentNodes[c];
-            for (var s = 0; s < selected.length; s++) {
-                if (String(selected[s].id) === String(node.dataset.id)) {
+            for (var _a = 0, selected_1 = selected; _a < selected_1.length; _a++) {
+                var s = selected_1[_a];
+                if (String(s.id) === String(c.dataset.id)) {
                     exists = false;
                 }
             }
             if (exists) {
-                nodesToRemove.push(node);
+                nodesToRemove.push(c);
             }
         }
-        for (var i = 0; i < nodesToRemove.length; i++) {
-            nodesToRemove[i].classList.add('ss-out');
-            this.multiSelected.values.removeChild(nodesToRemove[i]);
+        for (var _b = 0, nodesToRemove_1 = nodesToRemove; _b < nodesToRemove_1.length; _b++) {
+            var n = nodesToRemove_1[_b];
+            n.classList.add('ss-out');
+            this.multiSelected.values.removeChild(n);
         }
         currentNodes = this.multiSelected.values.childNodes;
         for (var s = 0; s < selected.length; s++) {
             exists = false;
-            for (var c = 0; c < currentNodes.length; c++) {
-                var node = currentNodes[c];
-                if (String(selected[s].id) === String(node.dataset.id)) {
+            for (var _c = 0, currentNodes_2 = currentNodes; _c < currentNodes_2.length; _c++) {
+                var c = currentNodes_2[_c];
+                if (String(selected[s].id) === String(c.dataset.id)) {
                     exists = true;
                 }
             }
@@ -1395,14 +1420,14 @@ var Slim = (function () {
             this.multiSelected.values.innerHTML = placeholder.outerHTML;
         }
     };
-    Slim.prototype.valueDiv = function (option) {
+    Slim.prototype.valueDiv = function (optionObj) {
         var _this = this;
         var value = document.createElement('div');
         value.classList.add(this.main.config.value);
-        value.dataset.id = option.id;
+        value.dataset.id = optionObj.id;
         var text = document.createElement('span');
         text.classList.add(this.main.config.valueText);
-        text.innerHTML = (option.innerHTML && this.main.config.valuesUseText !== true ? option.innerHTML : option.text);
+        text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text);
         value.appendChild(text);
         var deleteSpan = document.createElement('span');
         deleteSpan.classList.add(this.main.config.valueDelete);
@@ -1417,19 +1442,19 @@ var Slim = (function () {
                 var selected = _this.main.data.getSelected();
                 var currentValues = JSON.parse(JSON.stringify(selected));
                 for (var i = 0; i < currentValues.length; i++) {
-                    if (currentValues[i].id === option.id) {
+                    if (currentValues[i].id === optionObj.id) {
                         currentValues.splice(i, 1);
                     }
                 }
                 var beforeOnchange = _this.main.beforeOnChange(currentValues);
                 if (beforeOnchange !== false) {
-                    _this.main.data.removeFromSelected(option.id, 'id');
+                    _this.main.data.removeFromSelected(optionObj.id, 'id');
                     _this.main.render();
                     _this.main.select.setValue();
                 }
             }
             else {
-                _this.main.data.removeFromSelected(option.id, 'id');
+                _this.main.data.removeFromSelected(optionObj.id, 'id');
                 _this.main.render();
                 _this.main.select.setValue();
                 _this.main.data.onDataChange();
@@ -1695,38 +1720,40 @@ var Slim = (function () {
             this.list.appendChild(noResults);
             return;
         }
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].hasOwnProperty('label')) {
-                var item = data[i];
-                var optgroup = document.createElement('div');
-                optgroup.classList.add(this.main.config.optgroup);
+        for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
+            var d = data_2[_i];
+            if (d.hasOwnProperty('label')) {
+                var item = d;
+                var optgroupEl = document.createElement('div');
+                optgroupEl.classList.add(this.main.config.optgroup);
                 var optgroupLabel = document.createElement('div');
                 optgroupLabel.classList.add(this.main.config.optgroupLabel);
                 if (this.main.config.selectByGroup && this.main.config.isMultiple) {
                     optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
                 }
                 optgroupLabel.innerHTML = item.label;
-                optgroup.appendChild(optgroupLabel);
+                optgroupEl.appendChild(optgroupLabel);
                 var options = item.options;
                 if (options) {
-                    for (var ii = 0; ii < options.length; ii++) {
-                        optgroup.appendChild(this.option(options[ii]));
+                    for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
+                        var o = options_1[_a];
+                        optgroupEl.appendChild(this.option(o));
                     }
                     if (this.main.config.selectByGroup && this.main.config.isMultiple) {
-                        optgroupLabel.onclick = (function (optgroup) {
+                        optgroupLabel.onclick = (function (optgroupElement) {
                             return function () {
-                                for (var _i = 0, _a = optgroup.children; _i < _a.length; _i++) {
-                                    var option = _a[_i];
-                                    option.click();
+                                for (var _i = 0, _a = optgroupElement.children; _i < _a.length; _i++) {
+                                    var o = _a[_i];
+                                    o.click();
                                 }
                             };
-                        })(optgroup);
+                        })(optgroupEl);
                     }
                 }
-                this.list.appendChild(optgroup);
+                this.list.appendChild(optgroupEl);
             }
             else {
-                this.list.appendChild(this.option(data[i]));
+                this.list.appendChild(this.option(d));
             }
         }
     };
@@ -1737,27 +1764,27 @@ var Slim = (function () {
             placeholder.classList.add(this.main.config.hide);
             return placeholder;
         }
-        var option = document.createElement('div');
-        option.classList.add(this.main.config.option);
+        var optionEl = document.createElement('div');
+        optionEl.classList.add(this.main.config.option);
         if (data["class"]) {
             var dataClasses = data["class"].split(' ');
             dataClasses.forEach(function (dataClass) {
-                option.classList.add(dataClass);
+                optionEl.classList.add(dataClass);
             });
         }
         var selected = this.main.data.getSelected();
-        option.dataset.id = data.id;
+        optionEl.dataset.id = data.id;
         if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
-            option.innerHTML = helper_1.highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
+            optionEl.innerHTML = helper_1.highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
         }
         else if (data.innerHTML) {
-            option.innerHTML = data.innerHTML;
+            optionEl.innerHTML = data.innerHTML;
         }
-        if (this.main.config.showOptionTooltips && option.textContent) {
-            option.setAttribute('title', option.textContent);
+        if (this.main.config.showOptionTooltips && optionEl.textContent) {
+            optionEl.setAttribute('title', optionEl.textContent);
         }
         var master = this;
-        option.addEventListener('click', function (e) {
+        optionEl.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) {
@@ -1786,10 +1813,10 @@ var Slim = (function () {
             }
         });
         if (data.disabled || (selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id))) {
-            option.onclick = null;
-            option.classList.add(this.main.config.disabled);
+            optionEl.onclick = null;
+            optionEl.classList.add(this.main.config.disabled);
         }
-        return option;
+        return optionEl;
     };
     return Slim;
 }());
