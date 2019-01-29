@@ -1,10 +1,10 @@
 import Config from './config'
-import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 import Select from './select'
-import Data, { dataArray, option, validateData } from './data'
 import Slim from './slim'
+import Data, { dataArray, Option, validateData } from './data'
+import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 
-interface constructor {
+interface Constructor {
   select: string | Element
   data?: dataArray
   showSearch?: boolean
@@ -12,24 +12,27 @@ interface constructor {
   searchText?: string
   searchingText?: string
   searchHighlight?: boolean
+  searchFilter?: (opt: Option, search: string) => boolean
   closeOnSelect?: boolean
   showContent?: string
   placeholder?: string
   allowDeselect?: boolean
+  deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean // Use text value when showing selected value
   showOptionTooltips?: boolean
+  selectByGroup?: boolean
   limit?: number
 
   // Events
-  ajax?: Function
-  addable?: Function
-  beforeOnChange?: Function
-  onChange?: Function
-  beforeOpen?: Function
-  afterOpen?: Function
-  beforeClose?: Function
-  afterClose?: Function
+  ajax?: (value: string, func: (info: any) => void) => void
+  addable?: (value: string) => Option | string
+  beforeOnChange?: (info: Option) => void | boolean
+  onChange?: (info: Option) => void
+  beforeOpen?: () => void
+  afterOpen?: () => void
+  beforeClose?: () => void
+  afterClose?: () => void
 }
 
 export default class SlimSelect {
@@ -37,15 +40,15 @@ export default class SlimSelect {
   public select: Select
   public data: Data
   public slim: Slim
-  public ajax: Function | null = null
-  public addable: Function | null = null
-  public beforeOnChange: Function | null = null
-  public onChange: Function | null = null
-  public beforeOpen: Function | null = null
-  public afterOpen: Function | null = null
-  public beforeClose: Function | null = null
-  public afterClose: Function | null = null
-  constructor(info: constructor) {
+  public ajax: ((value: string, func: (info: any) => void) => void) | null = null
+  public addable: ((value: string) => Option | string) | null = null
+  public beforeOnChange: ((info: Option) => void | boolean) | null = null
+  public onChange: ((info: Option) => void) | null = null
+  public beforeOpen: (() => void) | null = null
+  public afterOpen: (() => void) | null = null
+  public beforeClose: (() => void) | null = null
+  public afterClose: (() => void) | null = null
+  constructor(info: Constructor) {
     const selectElement = this.validate(info)
 
     // If select already has a slim select id on it lets destroy it first
@@ -65,13 +68,16 @@ export default class SlimSelect {
       searchText: info.searchText,
       searchingText: info.searchingText,
       searchHighlight: info.searchHighlight,
+      searchFilter: info.searchFilter,
       closeOnSelect: info.closeOnSelect,
       showContent: info.showContent,
       placeholderText: info.placeholder,
       allowDeselect: info.allowDeselect,
+      deselectLabel: info.deselectLabel,
       isEnabled: info.isEnabled,
       valuesUseText: info.valuesUseText,
       showOptionTooltips: info.showOptionTooltips,
+      selectByGroup: info.selectByGroup,
       limit: info.limit
     })
 
@@ -126,7 +132,7 @@ export default class SlimSelect {
     if (!this.config.isEnabled) { this.disable() }
   }
 
-  public validate(info: constructor) {
+  public validate(info: Constructor) {
     const select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select) as HTMLSelectElement
     if (!select) { throw new Error('Could not find select element') }
     if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
@@ -135,14 +141,14 @@ export default class SlimSelect {
 
   public selected(): string | string[] {
     if (this.config.isMultiple) {
-      const selected = this.data.getSelected() as option[]
+      const selected = this.data.getSelected() as Option[]
       const outputSelected: string[] = []
-      for (let i = 0; i < selected.length; i++) {
-        outputSelected.push(selected[i].value as string)
+      for (const s of selected) {
+        outputSelected.push(s.value as string)
       }
       return outputSelected
     } else {
-      const selected = this.data.getSelected() as option
+      const selected = this.data.getSelected() as Option
       return (selected ? selected.value as string : '')
     }
   }
@@ -177,9 +183,9 @@ export default class SlimSelect {
     // If its an ajax type keep selected values
     if (this.config.isAjax && selected) {
       if (this.config.isMultiple) {
-        const reverseSelected = (selected as option[]).reverse()
-        for (let i = 0; i < reverseSelected.length; i++) {
-          newData.unshift(reverseSelected[i])
+        const reverseSelected = (selected as Option[]).reverse()
+        for (const r of reverseSelected) {
+          newData.unshift(r)
         }
       } else {
         newData.unshift(this.data.getSelected())
@@ -193,13 +199,12 @@ export default class SlimSelect {
   }
 
   // addData will append to the current data set
-  public addData(data: option) {
+  public addData(data: Option) {
     // Validate data if passed in
     const isValid = validateData([data])
     if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
 
-    const option = this.data.newOption(data)
-    this.data.add(option)
+    this.data.add(this.data.newOption(data))
     this.select.create(this.data.data)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
@@ -245,7 +250,7 @@ export default class SlimSelect {
 
     // Move to selected option for single option
     if (!this.config.isMultiple) {
-      const selected = this.data.getSelected() as option
+      const selected = this.data.getSelected() as Option
       if (selected) {
         const selectedId = selected.id
         const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
@@ -388,8 +393,10 @@ export default class SlimSelect {
         const master = this
         this.config.isSearching = true
         this.render()
+
+        // If ajax call it
         if (this.ajax) {
-          this.ajax(value, function (info: any) {
+          this.ajax(value, (info: any) => {
             // Only process if return callback is not false
             master.config.isSearching = false
             if (Array.isArray(info)) {

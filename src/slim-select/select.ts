@@ -1,5 +1,5 @@
 import SlimSelect from './index'
-import { option, optgroup, dataArray } from './data'
+import { Option, Optgroup, dataArray } from './data'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -7,10 +7,10 @@ interface Constructor {
 }
 
 export default class Select {
-  element: HTMLSelectElement
-  main: SlimSelect
-  mutationObserver: MutationObserver | null
-  triggerMutationObserver: boolean = true
+  public element: HTMLSelectElement
+  public main: SlimSelect
+  public mutationObserver: MutationObserver | null
+  public triggerMutationObserver: boolean = true
   constructor(info: Constructor) {
     this.element = info.select
     this.main = info.main
@@ -24,29 +24,28 @@ export default class Select {
     this.addMutationObserver()
 
     // Add slim to original select dropdown
-    let el = this.element as any
+    const el = this.element as any
     el.slim = info.main
   }
 
-  setValue(): void {
+  public setValue(): void {
     if (!this.main.data.getSelected()) { return }
 
     if (this.main.config.isMultiple) {
       // If multiple loop through options and set selected
-      let selected = <option[]>this.main.data.getSelected()
-      let options = this.element.options
-      for (var o = 0; o < options.length; o++) {
-        let option = <HTMLOptionElement>options[o]
-        option.selected = false
-        for (var s = 0; s < selected.length; s++) {
-          if (selected[s].value === option.value) {
-            option.selected = true
+      const selected = this.main.data.getSelected() as Option[]
+      const options = this.element.options as any as HTMLOptionElement[]
+      for (const o of options) {
+        o.selected = false
+        for (const s of selected) {
+          if (s.value === o.value) {
+            o.selected = true
           }
         }
       }
     } else {
       // If single select simply set value
-      let selected = this.main.data.getSelected() as any
+      const selected = this.main.data.getSelected() as any
       this.element.value = (selected ? selected.value : '')
     }
 
@@ -56,7 +55,7 @@ export default class Select {
     this.main.data.isOnChangeEnabled = true
   }
 
-  addAttributes() {
+  public addAttributes() {
     this.element.tabIndex = -1
     this.element.style.display = 'none'
 
@@ -65,7 +64,7 @@ export default class Select {
   }
 
   // Add onChange listener to original select
-  addEventListeners() {
+  public addEventListeners() {
     this.element.addEventListener('change', (e: Event) => {
       this.main.data.setSelectedFromSelect()
       this.main.render()
@@ -73,7 +72,7 @@ export default class Select {
   }
 
   // Add MutationObserver to select
-  addMutationObserver(): void {
+  public addMutationObserver(): void {
     // Only add if not in ajax mode
     if (this.main.config.isAjax) { return }
 
@@ -84,7 +83,7 @@ export default class Select {
       this.main.data.setSelectedFromSelect()
       this.main.render()
 
-      mutations.forEach(mutation => {
+      mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class') {
           this.main.slim.updateContainerDivClass(this.main.slim.container)
         }
@@ -94,7 +93,7 @@ export default class Select {
     this.observeMutationObserver()
   }
 
-  observeMutationObserver(): void {
+  public observeMutationObserver(): void {
     if (!this.mutationObserver) { return }
 
     this.mutationObserver.observe(this.element, {
@@ -104,47 +103,52 @@ export default class Select {
     })
   }
 
-  disconnectMutationObserver(): void {
+  public disconnectMutationObserver(): void {
     if (this.mutationObserver) {
       this.mutationObserver.disconnect()
     }
   }
 
   // Create select element and optgroup/options
-  create(data: dataArray): void {
+  public create(data: dataArray): void {
     // Clear out select
     this.element.innerHTML = ''
 
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].hasOwnProperty('options')) {
-        let optgroupObject = <optgroup>data[i]
-        let optgroup = <HTMLOptGroupElement>document.createElement('optgroup')
-        optgroup.label = optgroupObject.label
+    for (const d of data) {
+      if (d.hasOwnProperty('options')) {
+        const optgroupObject = d as Optgroup
+        const optgroupEl = document.createElement('optgroup') as HTMLOptGroupElement
+        optgroupEl.label = optgroupObject.label
         if (optgroupObject.options) {
-          for (var o = 0; o < optgroupObject.options.length; o++) {
-            optgroup.appendChild(this.createOption(optgroupObject.options[o]))
+          for (const oo of optgroupObject.options) {
+            optgroupEl.appendChild(this.createOption(oo))
           }
         }
-        this.element.appendChild(optgroup)
+        this.element.appendChild(optgroupEl)
       } else {
-        this.element.appendChild(this.createOption(data[i]))
+        this.element.appendChild(this.createOption(d))
       }
     }
   }
 
-  createOption(info: any): HTMLOptionElement {
-    var option = document.createElement('option')
-    option.value = info.value || info.text
-    option.innerHTML = info.innerHTML || info.text
-    if (info.selected) { option.selected = info.selected }
-    if (info.disabled) { option.disabled = true }
-    if (info.placeholder) { option.setAttribute('data-placeholder', 'true') }
+  public createOption(info: any): HTMLOptionElement {
+    const optionEl = document.createElement('option')
+    optionEl.value = info.value || info.text
+    optionEl.innerHTML = info.innerHTML || info.text
+    if (info.selected) { optionEl.selected = info.selected }
+    if (info.disabled) { optionEl.disabled = true }
+    if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }
+    if (info.class) {
+      info.class.split(' ').forEach((optionClass: string) => {
+        optionEl.classList.add(optionClass)
+      })
+    }
     if (info.data && typeof info.data === 'object') {
-      Object.keys(info.data).forEach(function (key) {
-        option.setAttribute('data-' + key, info.data[key])
+      Object.keys(info.data).forEach((key) => {
+        optionEl.setAttribute('data-' + key, info.data[key])
       })
     }
 
-    return option
+    return optionEl
   }
 }

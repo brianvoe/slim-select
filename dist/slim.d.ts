@@ -1,6 +1,6 @@
 import SlimSelect from './index';
-import { option } from './data';
-interface singleSelected {
+import { Option } from './data';
+interface SingleSelected {
     container: HTMLDivElement;
     placeholder: HTMLSpanElement;
     deselect: HTMLSpanElement;
@@ -9,13 +9,13 @@ interface singleSelected {
         arrow: HTMLSpanElement;
     };
 }
-interface multiSelected {
+interface MultiSelected {
     container: HTMLDivElement;
     values: HTMLDivElement;
     add: HTMLDivElement;
     plus: HTMLSpanElement;
 }
-interface search {
+interface Search {
     container: HTMLDivElement;
     input: HTMLInputElement;
     addable?: HTMLDivElement;
@@ -23,28 +23,28 @@ interface search {
 export default class Slim {
     main: SlimSelect;
     container: HTMLDivElement;
-    singleSelected: singleSelected | null;
-    multiSelected: multiSelected | null;
+    singleSelected: SingleSelected | null;
+    multiSelected: MultiSelected | null;
     content: HTMLDivElement;
-    search: search;
+    search: Search;
     list: HTMLDivElement;
     constructor(info: {
         main: SlimSelect;
     });
     containerDiv(): HTMLDivElement;
     updateContainerDivClass(container: HTMLDivElement): void;
-    singleSelectedDiv(): singleSelected;
+    singleSelectedDiv(): SingleSelected;
     placeholder(): void;
     deselect(): void;
-    multiSelectedDiv(): multiSelected;
+    multiSelectedDiv(): MultiSelected;
     values(): void;
-    valueDiv(option: option): HTMLDivElement;
+    valueDiv(optionObj: Option): HTMLDivElement;
     contentDiv(): HTMLDivElement;
-    searchDiv(): search;
+    searchDiv(): Search;
     highlightUp(): void;
     highlightDown(): void;
     listDiv(): HTMLDivElement;
     options(content?: string): void;
-    option(data: option): HTMLDivElement;
+    option(data: Option): HTMLDivElement;
 }
 export {};

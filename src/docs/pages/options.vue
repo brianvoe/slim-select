@@ -37,7 +37,7 @@ export default Vue.extend({
         }
       ]
     })
-    
+
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
       placeholder: 'Search "Graham"',
@@ -49,20 +49,20 @@ export default Vue.extend({
         }
 
         fetch('https://jsonplaceholder.typicode.com/users')
-          .then(function(response) {
+          .then((response) => {
             return response.json()
           })
-          .then(function(json) {
+          .then((json) => {
             const data = [] as any
-            for (let i = 0; i < json.length; i++) {
-              data.push({ text: json[i].name })
+            for (const j of json) {
+              data.push({ text: j.name })
             }
 
             setTimeout(() => {
               callback(data)
             }, 1000)
           })
-          .catch(function(error) {
+          .catch((error) => {
             callback(false)
           })
       }
@@ -73,13 +73,13 @@ export default Vue.extend({
       placeholder: 'Search "Dennis"',
       ajax(search: any, callback: any) {
         fetch('https://jsonplaceholder.typicode.com/users')
-          .then(function(response) {
+          .then((response) => {
             return response.json()
           })
-          .then(function(json) {
+          .then((json) => {
             const data = [] as any
-            for (let i = 0; i < json.length; i++) {
-              data.push({ text: json[i].name })
+            for (const j of json) {
+              data.push({ text: j.name })
             }
 
             setTimeout(() => {
@@ -87,7 +87,7 @@ export default Vue.extend({
               callback(data)
             }, 1000)
           })
-          .catch(function(error) {
+          .catch((error) => {
             callback(false)
           })
       }
@@ -106,6 +106,12 @@ export default Vue.extend({
     new SlimSelect({
       select: '#allowDeselect',
       allowDeselect: true
+    })
+
+    new SlimSelect({
+      select: '#deselectLabel',
+      allowDeselect: true,
+      deselectLabel: '<span class="red">✖</span>'
     })
 
     new SlimSelect({
@@ -132,6 +138,9 @@ export default Vue.extend({
 
     new SlimSelect({
       select: '#select-class'
+    })
+    new SlimSelect({
+      select: '#option-class'
     })
 
     new SlimSelect({
@@ -289,6 +298,16 @@ export default Vue.extend({
       select: '#showOptionTooltips',
       showOptionTooltips: true
     })
+
+    new SlimSelect({
+      select: '#selectByGroup',
+      selectByGroup: true
+    })
+
+    new SlimSelect({
+      select: '#searchFilter',
+      searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search
+    })
   }
 })
 </script>
@@ -309,6 +328,10 @@ export default Vue.extend({
     }
   }
 
+  .deselectLabel {
+    .red { color: red; }
+  }
+
   .select-class {
     .ss-single-selected {
       background-color: #5897fb;
@@ -318,6 +341,16 @@ export default Vue.extend({
       .ss-arrow * {
         border-color: white;
       }
+    }
+  }
+
+  .option-class {
+    .ss-option {
+      color: white;
+
+      &.red { background-color: red; }
+      &.green { background-color: green; }
+      &.blue { background-color: blue; }
     }
   }
 }
@@ -554,6 +587,45 @@ export default Vue.extend({
     </div>
 
     <div class="content">
+      <h2 class="header">deselectLabel</h2>
+      <p>
+        This will allow you to change the deselect label (default 'x') on single select lists,
+        and the delete label on multiple-select lists.
+      </p>
+      <p>Note: Be aware of the lmited space available for it</p>
+
+      <div class="set-content">
+        <select id="deselectLabel" class="deselectLabel">
+          <option data-placeholder="true"></option>
+          <option selected value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            allowDeselect: true,
+            deselectLabel: '&lt;span class="red"&gt;✖&lt;/span&gt;'
+          })
+        </code>
+      </pre>
+      <pre>
+        <code class="language-html">
+          &lt;!-- Requires emtpy data-placeholder option --&gt;
+          &lt;select id="deselectLabel"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
       <h2 class="header">addable</h2>
       <p>
         Slim select has the ability to dynamically add options via the search input field
@@ -600,7 +672,7 @@ export default Vue.extend({
     </div>
 
     <div class="content">
-      <h2 class="header">Multi Select Limit</h2>
+      <h2 class="header">limit</h2>
       <p>When using multi select you can set a limit on the amount of selections you can have.</p>
 
       <div class="set-content">
@@ -635,6 +707,7 @@ export default Vue.extend({
       <h2 class="header">css / class</h2>
       <p>
         Slim select will inherit any styles and classes that were added to the original select element.
+        This includes options as well.
       </p>
 
       <div class="set-content">
@@ -643,14 +716,19 @@ export default Vue.extend({
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
+        <select id="option-class" class="option-class">
+          <option class="red" value="value1">Red</option>
+          <option class="green" value="value2">Green</option>
+          <option class="blue" value="value3">Blue</option>
+        </select>
       </div>
 
       <pre>
         <code class="language-html">
           &lt;select id="select-class" class="classItems"&gt;
-            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+            &lt;option class="red" value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option class="green" value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option class="blue" value="value3"&gt;Value 3&lt;/option&gt;
           &lt;/select&gt;
         </code>
       </pre>
@@ -913,6 +991,58 @@ export default Vue.extend({
           new SlimSelect({
             select: '#showOptionTooltips',
             showOptionTooltips: true
+          })
+        </code>
+      </pre>
+    </div>
+    
+    <div class="content">
+      <h2 class="header">selectByGroup</h2>
+      <p>
+        selectByGroup option is used to enable the selection of all options under a specific group by clicking that option group's label.
+      </p>
+
+      <select id="selectByGroup" multiple>
+        <optgroup label="Label 1">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </optgroup>
+      </select>
+      
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#selectByGroup',
+            selectByGroup: true
+          })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">searchFilter</h2>
+      <p>
+        searchFilter option is used to replace the default matching algorithm.
+      </p>
+      <p>
+        See methods/setData for the proper object interface of <em>option</em>.
+      </p>
+
+      <select id="searchFilter">
+        <option value="apple">Apple</option>
+        <option value="orange">Orange</option>
+        <option value="pineapple">Pineapple</option>
+      </select>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#searchFilter',
+            // Exact case sensitive start of string match
+            searchFilter: (option, search) => { 
+              return option.text.substr(0, search.length) === search
+            }
           })
         </code>
       </pre>

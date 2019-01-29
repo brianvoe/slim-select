@@ -1,4 +1,5 @@
-interface constructor {
+import { Option } from './data';
+interface Constructor {
     select: HTMLSelectElement;
     isAjax: boolean;
     showSearch?: boolean;
@@ -6,19 +7,22 @@ interface constructor {
     searchText?: string;
     searchingText?: string;
     searchHighlight?: boolean;
+    searchFilter?: (opt: Option, search: string) => boolean;
     closeOnSelect?: boolean;
     showContent?: string;
     placeholderText?: string;
     allowDeselect?: boolean;
+    deselectLabel?: string;
     isEnabled?: boolean;
     valuesUseText?: boolean;
     showOptionTooltips?: boolean;
+    selectByGroup?: boolean;
     limit?: number;
 }
 export default class Config {
     id: string;
     style: string;
-    class: DOMTokenList;
+    class: string[];
     isMultiple: boolean;
     isAjax: boolean;
     isSearching: boolean;
@@ -31,9 +35,11 @@ export default class Config {
     searchingText: string;
     placeholderText: string;
     allowDeselect: boolean;
+    deselectLabel: string;
     isEnabled: boolean;
     valuesUseText: boolean;
     showOptionTooltips: boolean;
+    selectByGroup: boolean;
     limit: number;
     readonly main: string;
     readonly singleSelected: string;
@@ -55,10 +61,12 @@ export default class Config {
     readonly list: string;
     readonly optgroup: string;
     readonly optgroupLabel: string;
+    readonly optgroupLabelSelectable: string;
     readonly option: string;
     readonly highlighted: string;
     readonly disabled: string;
     readonly hide: string;
-    constructor(info: constructor);
+    constructor(info: Constructor);
+    searchFilter(opt: Option, search: string): boolean;
 }
 export {};

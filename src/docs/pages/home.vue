@@ -1,17 +1,17 @@
 <script lang="ts">
-  import Vue from 'vue'
-  import SlimSelect from '@/slim-select'
+import Vue from 'vue'
+import SlimSelect from '@/slim-select'
 
-  export default Vue.extend({
-    mounted () {
-      new SlimSelect({
-        select: '#slim-single-select'
-      })
-      new SlimSelect({
-        select: '#slim-multi-select'
-      })
-    }
-  })
+export default Vue.extend({
+  mounted() {
+    new SlimSelect({
+      select: '#slim-single-select'
+    })
+    new SlimSelect({
+      select: '#slim-multi-select'
+    })
+  }
+})
 </script>
 
 <style lang="scss">

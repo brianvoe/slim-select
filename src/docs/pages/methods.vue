@@ -1,163 +1,163 @@
 <script lang="ts">
-  import Vue from 'vue'
-  import SlimSelect from '@/slim-select'
-  import Chance from 'chance'
-  let chance = new Chance()
+import Vue from 'vue'
+import SlimSelect from '@/slim-select'
+import Chance from 'chance'
+const chance = new Chance()
 
-  export default Vue.extend({
-    data () {
-      return {
-        selectedSingle: null as any,
-        selectedSingleValue: '',
-        selectedMultiple: null as any,
-        selectedMultipleValue: '',
-        setSingle: null as any,
-        setMultiple: null as any,
-        setDataSingle: null as any,
-        setDataMultiple: null as any,
-        setSearchSingle: null as any,
-        setSearchMultiple: null as any,
-        setSearchTextSingle: null as any,
-        setEnableSingle: null as any,
-        setEnableMultiple: null as any,
-        setOpenCloseSingle: null as any,
-        setOpenCloseMultiple: null as any,
-        setDestroySingle: null as any,
-        setDestroyMultiple: null as any
+export default Vue.extend({
+  data() {
+    return {
+      selectedSingle: null as any,
+      selectedSingleValue: '',
+      selectedMultiple: null as any,
+      selectedMultipleValue: '',
+      setSingle: null as any,
+      setMultiple: null as any,
+      setDataSingle: null as any,
+      setDataMultiple: null as any,
+      setSearchSingle: null as any,
+      setSearchMultiple: null as any,
+      setSearchTextSingle: null as any,
+      setEnableSingle: null as any,
+      setEnableMultiple: null as any,
+      setOpenCloseSingle: null as any,
+      setOpenCloseMultiple: null as any,
+      setDestroySingle: null as any,
+      setDestroyMultiple: null as any
+    }
+  },
+  mounted() {
+    // Selected
+    this.selectedSingle = new SlimSelect({
+      select: '#selectedSingle'
+    })
+    this.selectedMultiple = new SlimSelect({
+      select: '#selectedMultiple'
+    })
+
+    // Set
+    this.setSingle = new SlimSelect({
+      select: '#setSingle'
+    })
+    this.setMultiple = new SlimSelect({
+      select: '#setMultiple'
+    })
+
+    // Set Data
+    this.setDataSingle = new SlimSelect({
+      select: '#setDataSingle'
+    })
+    this.setDataMultiple = new SlimSelect({
+      select: '#setDataMultiple'
+    })
+    this.setData()
+
+    // Search
+    this.setSearchSingle = new SlimSelect({
+      select: '#setSearchSingle'
+    })
+    this.setSearchMultiple = new SlimSelect({
+      select: '#setSearchMultiple'
+    })
+
+    // setSearchText
+    this.setSearchTextSingle = new SlimSelect({
+      select: '#setSearchTextSingle'
+    })
+    this.setSearchTextSingle.setSearchText('Sorry No Results Here!!!')
+
+    // Enable / Disable
+    this.setEnableSingle = new SlimSelect({
+      select: '#setEnableSingle'
+    })
+    this.setEnableMultiple = new SlimSelect({
+      select: '#setEnableMultiple'
+    })
+
+    // Open / Close
+    this.setOpenCloseSingle = new SlimSelect({
+      select: '#setOpenCloseSingle'
+      // Optional callbacks
+      // beforeOpen() { console.log('beforeOpen') },
+      // afterOpen() { console.log('afterOpen') },
+      // beforeClose() { console.log('beforeClose') },
+      // afterClose() { console.log('afterClose') }
+    })
+    this.setOpenCloseMultiple = new SlimSelect({
+      select: '#setOpenCloseMultiple'
+      // Optional callbacks
+      // beforeOpen() { console.log('beforeOpen') },
+      // afterOpen() { console.log('afterOpen') },
+      // beforeClose() { console.log('beforeClose') },
+      // afterClose() { console.log('afterClose') }
+    })
+
+    // Destroy
+    this.setDestroySingle = new SlimSelect({
+      select: '#setDestroySingle'
+    })
+    this.setDestroyMultiple = new SlimSelect({
+      select: '#setDestroyMultiple'
+    })
+  },
+  methods: {
+    getSelected() {
+      this.selectedSingleValue = this.selectedSingle.selected()
+      this.selectedMultipleValue = this.selectedMultiple.selected()
+    },
+    setValue() {
+      this.setSingle.set('value2')
+      this.setMultiple.set(['value2', 'value3'])
+    },
+    setData() {
+      const values = []
+      for (let i = 0; i < 10; i++) {
+        values.push({
+          text: chance.first() + ' ' + chance.last(),
+          selected: chance.bool()
+        })
+      }
+      this.setDataSingle.setData(values)
+      this.setDataMultiple.setData(values)
+    },
+    setSearch() {
+      setTimeout(() => {
+        this.setSearchSingle.open()
+        this.setSearchSingle.search('value 2')
+        this.setSearchMultiple.open()
+        this.setSearchMultiple.search('value 2')
+      }, 100)
+    },
+    setEnable() {
+      this.setEnableSingle.enable()
+      this.setEnableMultiple.enable()
+    },
+    setDisable() {
+      this.setEnableSingle.disable()
+      this.setEnableMultiple.disable()
+    },
+    setOpenClose() {
+      if (!this.setOpenCloseSingle.data.contentOpen) {
+        this.setOpenCloseSingle.open()
+        this.setOpenCloseMultiple.open()
       }
     },
-    mounted () {
-      // Selected
-      this.selectedSingle = new SlimSelect({
-        select: '#selectedSingle'
-      })
-      this.selectedMultiple = new SlimSelect({
-        select: '#selectedMultiple'
-      })
-
-      // Set
-      this.setSingle = new SlimSelect({
-        select: '#setSingle'
-      })
-      this.setMultiple = new SlimSelect({
-        select: '#setMultiple'
-      })
-
-      // Set Data
-      this.setDataSingle = new SlimSelect({
-        select: '#setDataSingle'
-      })
-      this.setDataMultiple = new SlimSelect({
-        select: '#setDataMultiple'
-      })
-      this.setData()
-
-      // Search
-      this.setSearchSingle = new SlimSelect({
-        select: '#setSearchSingle'
-      })
-      this.setSearchMultiple = new SlimSelect({
-        select: '#setSearchMultiple'
-      })
-
-      // setSearchText
-      this.setSearchTextSingle = new SlimSelect({
-        select: '#setSearchTextSingle'
-      })
-      this.setSearchTextSingle.setSearchText('Sorry No Results Here!!!')
-
-      // Enable / Disable
-      this.setEnableSingle = new SlimSelect({
-        select: '#setEnableSingle'
-      })
-      this.setEnableMultiple = new SlimSelect({
-        select: '#setEnableMultiple'
-      })
-
-      // Open / Close
-      this.setOpenCloseSingle = new SlimSelect({
-        select: '#setOpenCloseSingle',
-        // Optional callbacks
-        beforeOpen: function () { console.log('beforeOpen')},
-        afterOpen: function () { console.log('afterOpen')},
-        beforeClose: function () { console.log('beforeClose')},
-        afterClose: function () { console.log('afterClose')}
-      })
-      this.setOpenCloseMultiple = new SlimSelect({
-        select: '#setOpenCloseMultiple',
-        // Optional callbacks
-        beforeOpen: function () { console.log('beforeOpen')},
-        afterOpen: function () { console.log('afterOpen')},
-        beforeClose: function () { console.log('beforeClose')},
-        afterClose: function () { console.log('afterClose')}
-      })
-
-      // Destroy
+    setCreate() {
       this.setDestroySingle = new SlimSelect({
         select: '#setDestroySingle'
       })
+
       this.setDestroyMultiple = new SlimSelect({
         select: '#setDestroyMultiple'
       })
     },
-    methods: {
-      getSelected () {
-        this.selectedSingleValue = this.selectedSingle.selected()
-        this.selectedMultipleValue = this.selectedMultiple.selected()
-      },
-      setValue () {
-        this.setSingle.set('value2')
-        this.setMultiple.set(['value2', 'value3'])
-      },
-      setData () {
-        let values = []
-        for (var i = 0; i < 10; i++) {
-          values.push({
-            text: chance.first() + ' ' + chance.last(),
-            selected: chance.bool()
-          })
-        }
-        this.setDataSingle.setData(values)
-        this.setDataMultiple.setData(values)
-      },
-      setSearch () {
-        setTimeout(() => {
-          this.setSearchSingle.open()
-          this.setSearchSingle.search('value 2')
-          this.setSearchMultiple.open()
-          this.setSearchMultiple.search('value 2')
-        }, 100)
-      },
-      setEnable () {
-        this.setEnableSingle.enable()
-        this.setEnableMultiple.enable()
-      },
-      setDisable () {
-        this.setEnableSingle.disable()
-        this.setEnableMultiple.disable()
-      },
-      setOpenClose () {
-        if (!this.setOpenCloseSingle.data.contentOpen) {
-          this.setOpenCloseSingle.open()
-          this.setOpenCloseMultiple.open()
-        }
-      },
-      setCreate () {
-        this.setDestroySingle = new SlimSelect({
-          select: '#setDestroySingle'
-        })
+    setDestroy() {
+      this.setDestroySingle.destroy()
+      this.setDestroyMultiple.destroy()
 
-        this.setDestroyMultiple = new SlimSelect({
-          select: '#setDestroyMultiple'
-        })
-      },
-      setDestroy () {
-        this.setDestroySingle.destroy()
-        this.setDestroyMultiple.destroy()
-
-      }
     }
-  })
+  }
+})
 </script>
 
 <style lang="scss">
