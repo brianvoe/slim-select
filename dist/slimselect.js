@@ -1435,8 +1435,12 @@ var Slim = (function () {
         deleteSpan.onclick = function (e) {
             e.preventDefault();
             e.stopPropagation();
+            var shouldUpdate = false;
             if (!_this.main.config.isEnabled) {
                 return;
+            }
+            if (!_this.main.beforeOnChange) {
+                shouldUpdate = true;
             }
             if (_this.main.beforeOnChange) {
                 var selected = _this.main.data.getSelected();
@@ -1448,12 +1452,10 @@ var Slim = (function () {
                 }
                 var beforeOnchange = _this.main.beforeOnChange(currentValues);
                 if (beforeOnchange !== false) {
-                    _this.main.data.removeFromSelected(optionObj.id, 'id');
-                    _this.main.render();
-                    _this.main.select.setValue();
+                    shouldUpdate = true;
                 }
             }
-            else {
+            if (shouldUpdate) {
                 _this.main.data.removeFromSelected(optionObj.id, 'id');
                 _this.main.render();
                 _this.main.select.setValue();
