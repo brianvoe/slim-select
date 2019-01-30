@@ -291,8 +291,12 @@ export default class Slim {
     deleteSpan.onclick = (e) => {
       e.preventDefault()
       e.stopPropagation()
+      let shouldUpdate = false
 
       if (!this.main.config.isEnabled) { return }
+
+      // If no beforeOnChange is set automatically update at end
+      if (!this.main.beforeOnChange) {shouldUpdate = true}
 
       if (this.main.beforeOnChange) {
         const selected = this.main.data.getSelected() as Option
@@ -306,13 +310,10 @@ export default class Slim {
         }
 
         const beforeOnchange = this.main.beforeOnChange(currentValues)
-        if (beforeOnchange !== false) {
-          this.main.data.removeFromSelected((optionObj.id as any), 'id')
-          this.main.render()
-          this.main.select.setValue()
-          this.main.data.onDataChange() // Trigger on change callback
-        }
-      } else {
+        if (beforeOnchange !== false) { shouldUpdate = true }
+      }
+
+      if (shouldUpdate) {
         this.main.data.removeFromSelected((optionObj.id as any), 'id')
         this.main.render()
         this.main.select.setValue()
