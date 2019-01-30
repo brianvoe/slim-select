@@ -310,6 +310,7 @@ export default class Slim {
           this.main.data.removeFromSelected((optionObj.id as any), 'id')
           this.main.render()
           this.main.select.setValue()
+          this.main.data.onDataChange() // Trigger on change callback
         }
       } else {
         this.main.data.removeFromSelected((optionObj.id as any), 'id')
