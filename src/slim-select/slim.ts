@@ -26,7 +26,7 @@ interface Search {
 }
 
 // Class is responsible for creating all the elements
-export default class Slim {
+export class Slim {
   public main: SlimSelect
   public container: HTMLDivElement
   public singleSelected: SingleSelected | null
@@ -76,7 +76,7 @@ export default class Slim {
   // Will look at the original select and pull classes from it
   public updateContainerDivClass(container: HTMLDivElement) {
     // Set config class
-    this.main.config.class = this.main.select.element.classList.value.split(' ')
+    this.main.config.class = this.main.select.element.className.split(' ')
 
     // Clear out classlist
     container.className = ''
@@ -653,8 +653,7 @@ export default class Slim {
     const optionEl = document.createElement('div')
     optionEl.classList.add(this.main.config.option)
     if (data.class) {
-      const dataClasses = data.class.split(' ')
-      dataClasses.forEach((dataClass: string) => {
+      data.class.split(' ').forEach((dataClass: string) => {
         optionEl.classList.add(dataClass)
       })
     }
