@@ -1,7 +1,7 @@
-import Config from './config'
-import Select from './select'
-import Slim from './slim'
-import Data, { dataArray, Option, validateData } from './data'
+import { Config } from './config'
+import { Select } from './select'
+import { Slim } from './slim'
+import { Data, dataArray, Option, validateData } from './data'
 import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
 
 interface Constructor {

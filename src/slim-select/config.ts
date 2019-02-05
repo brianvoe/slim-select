@@ -21,7 +21,7 @@ interface Constructor {
   limit?: number
 }
 
-export default class Config {
+export class Config {
   public id: string = ''
   public style: string
   public class: string[]
@@ -74,7 +74,7 @@ export default class Config {
   constructor(info: Constructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
     this.style = info.select.style.cssText
-    this.class = info.select.classList.value.split(' ')
+    this.class = info.select.className.split(' ')
 
     this.isMultiple = info.select.multiple
     this.isAjax = info.isAjax

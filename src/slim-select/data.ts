@@ -23,7 +23,7 @@ export interface Option {
 }
 
 // Class is responsible for managing the data
-export default class Data {
+export class Data {
   public main: SlimSelect
   public searchValue: string
   public data: dataObject[]
@@ -119,7 +119,7 @@ export default class Data {
       selected: option.selected,
       disabled: option.disabled,
       placeholder: option.dataset.placeholder === 'true',
-      class: option.classList.value,
+      class: option.className,
       data: option.dataset
     }
   }

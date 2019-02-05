@@ -305,7 +305,7 @@ var Data = (function () {
             selected: option.selected,
             disabled: option.disabled,
             placeholder: option.dataset.placeholder === 'true',
-            "class": option.classList.value,
+            "class": option.className,
             data: option.dataset
         };
     };
@@ -503,7 +503,7 @@ var Data = (function () {
     };
     return Data;
 }());
-exports["default"] = Data;
+exports.Data = Data;
 function validateData(data) {
     if (!data) {
         console.error('Data must be an array of objects');
@@ -582,7 +582,7 @@ var SlimSelect = (function () {
         if (info.addable) {
             this.addable = info.addable;
         }
-        this.config = new config_1["default"]({
+        this.config = new config_1.Config({
             select: selectElement,
             isAjax: (info.ajax ? true : false),
             showSearch: info.showSearch,
@@ -602,12 +602,12 @@ var SlimSelect = (function () {
             selectByGroup: info.selectByGroup,
             limit: info.limit
         });
-        this.select = new select_1["default"]({
+        this.select = new select_1.Select({
             select: selectElement,
             main: this
         });
-        this.data = new data_1["default"]({ main: this });
-        this.slim = new slim_1["default"]({ main: this });
+        this.data = new data_1.Data({ main: this });
+        this.slim = new slim_1.Slim({ main: this });
         if (this.select.element.parentNode) {
             this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
         }
@@ -1010,7 +1010,7 @@ var Config = (function () {
         this.hide = 'ss-hide';
         this.id = 'ss-' + Math.floor(Math.random() * 100000);
         this.style = info.select.style.cssText;
-        this["class"] = info.select.classList.value.split(' ');
+        this["class"] = info.select.className.split(' ');
         this.isMultiple = info.select.multiple;
         this.isAjax = info.isAjax;
         this.showSearch = (info.showSearch === false ? false : true);
@@ -1057,7 +1057,7 @@ var Config = (function () {
     };
     return Config;
 }());
-exports["default"] = Config;
+exports.Config = Config;
 
 
 /***/ }),
@@ -1203,7 +1203,7 @@ var Select = (function () {
     };
     return Select;
 }());
-exports["default"] = Select;
+exports.Select = Select;
 
 
 /***/ }),
@@ -1246,7 +1246,7 @@ var Slim = (function () {
         return container;
     };
     Slim.prototype.updateContainerDivClass = function (container) {
-        this.main.config["class"] = this.main.select.element.classList.value.split(' ');
+        this.main.config["class"] = this.main.select.element.className.split(' ');
         container.className = '';
         container.classList.add(this.main.config.id);
         container.classList.add(this.main.config.main);
@@ -1769,8 +1769,7 @@ var Slim = (function () {
         var optionEl = document.createElement('div');
         optionEl.classList.add(this.main.config.option);
         if (data["class"]) {
-            var dataClasses = data["class"].split(' ');
-            dataClasses.forEach(function (dataClass) {
+            data["class"].split(' ').forEach(function (dataClass) {
                 optionEl.classList.add(dataClass);
             });
         }
@@ -1822,7 +1821,7 @@ var Slim = (function () {
     };
     return Slim;
 }());
-exports["default"] = Slim;
+exports.Slim = Slim;
 
 
 /***/ })
