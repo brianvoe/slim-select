@@ -1,7 +1,7 @@
-import Config from './config';
-import Select from './select';
-import Slim from './slim';
-import Data, { dataArray, Option } from './data';
+import { Config } from './config';
+import { Select } from './select';
+import { Slim } from './slim';
+import { Data, dataArray, Option } from './data';
 interface Constructor {
     select: string | Element;
     data?: dataArray;

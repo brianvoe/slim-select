@@ -19,7 +19,7 @@ interface Constructor {
     selectByGroup?: boolean;
     limit?: number;
 }
-export default class Config {
+export declare class Config {
     id: string;
     style: string;
     class: string[];

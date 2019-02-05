@@ -20,7 +20,7 @@ export interface Option {
     class?: string;
     data?: object;
 }
-export default class Data {
+export declare class Data {
     main: SlimSelect;
     searchValue: string;
     data: dataObject[];
