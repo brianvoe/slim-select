@@ -97,6 +97,6 @@ export class Config {
   }
 
   public searchFilter(opt: Option, search: string): boolean {
-    return opt.text.toLowerCase().indexOf(search) !== -1
+    return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
   }
 }
