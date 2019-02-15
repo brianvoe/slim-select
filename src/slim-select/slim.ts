@@ -612,7 +612,7 @@ export class Slim {
         const optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.main.config.optgroupLabel)
         if (this.main.config.selectByGroup && this.main.config.isMultiple) {
-            optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable)
+          optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable)
         }
         optgroupLabel.innerHTML = item.label
         optgroupEl.appendChild(optgroupLabel)
@@ -623,15 +623,20 @@ export class Slim {
             optgroupEl.appendChild(this.option(o))
           }
 
-          if (this.main.config.selectByGroup && this.main.config.isMultiple) { // Selecting all values by clicking the group label
-           optgroupLabel.onclick = ((optgroupElement) => {
-               return () => {
-                   for (const o of optgroupElement.children as any) {
-                      o.click()
-                   }
-               }
-           })(optgroupEl)
-         }
+          // Selecting all values by clicking the group label
+          if (this.main.config.selectByGroup && this.main.config.isMultiple) {
+            const master = this
+            optgroupLabel.addEventListener('click', (e: MouseEvent) => {
+              e.preventDefault()
+              e.stopPropagation()
+
+              for (const childEl of optgroupEl.children as any as HTMLDivElement[]) {
+                if (childEl.className.indexOf(master.main.config.option) !== -1) {
+                  childEl.click()
+                }
+              }
+            })
+          }
         }
         this.list.appendChild(optgroupEl)
       } else {

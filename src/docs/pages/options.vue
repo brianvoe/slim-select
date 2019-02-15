@@ -253,7 +253,8 @@ export default Vue.extend({
 
     new SlimSelect({
       select: '#closeOnSelectMultiple',
-      closeOnSelect: false
+      closeOnSelect: false,
+      selectByGroup: true
     })
 
     new SlimSelect({
@@ -847,11 +848,21 @@ export default Vue.extend({
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
+          <optgroup label="Super Values">
+            <option value="value11">Value 1</option>
+            <option value="value22">Value 2</option>
+            <option value="value33">Value 3</option>
+          </optgroup>
         </select>
         <select id="closeOnSelectMultiple" multiple>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
+          <optgroup label="Super Values">
+            <option value="value11">Value 1</option>
+            <option value="value22">Value 2</option>
+            <option value="value33">Value 3</option>
+          </optgroup>
         </select>
       </div>
 

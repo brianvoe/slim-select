@@ -1053,7 +1053,7 @@ var Config = (function () {
         }
     }
     Config.prototype.searchFilter = function (opt, search) {
-        return opt.text.toLowerCase().indexOf(search) !== -1;
+        return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
     };
     return Config;
 }());
@@ -1722,41 +1722,48 @@ var Slim = (function () {
             this.list.appendChild(noResults);
             return;
         }
-        for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
-            var d = data_2[_i];
+        var _loop_1 = function (d) {
             if (d.hasOwnProperty('label')) {
                 var item = d;
-                var optgroupEl = document.createElement('div');
-                optgroupEl.classList.add(this.main.config.optgroup);
+                var optgroupEl_1 = document.createElement('div');
+                optgroupEl_1.classList.add(this_1.main.config.optgroup);
                 var optgroupLabel = document.createElement('div');
-                optgroupLabel.classList.add(this.main.config.optgroupLabel);
-                if (this.main.config.selectByGroup && this.main.config.isMultiple) {
-                    optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
+                optgroupLabel.classList.add(this_1.main.config.optgroupLabel);
+                if (this_1.main.config.selectByGroup && this_1.main.config.isMultiple) {
+                    optgroupLabel.classList.add(this_1.main.config.optgroupLabelSelectable);
                 }
                 optgroupLabel.innerHTML = item.label;
-                optgroupEl.appendChild(optgroupLabel);
+                optgroupEl_1.appendChild(optgroupLabel);
                 var options = item.options;
                 if (options) {
-                    for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
-                        var o = options_1[_a];
-                        optgroupEl.appendChild(this.option(o));
+                    for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
+                        var o = options_1[_i];
+                        optgroupEl_1.appendChild(this_1.option(o));
                     }
-                    if (this.main.config.selectByGroup && this.main.config.isMultiple) {
-                        optgroupLabel.onclick = (function (optgroupElement) {
-                            return function () {
-                                for (var _i = 0, _a = optgroupElement.children; _i < _a.length; _i++) {
-                                    var o = _a[_i];
-                                    o.click();
+                    if (this_1.main.config.selectByGroup && this_1.main.config.isMultiple) {
+                        var master_1 = this_1;
+                        optgroupLabel.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            for (var _i = 0, _a = optgroupEl_1.children; _i < _a.length; _i++) {
+                                var childEl = _a[_i];
+                                if (childEl.className.indexOf(master_1.main.config.option) !== -1) {
+                                    childEl.click();
                                 }
-                            };
-                        })(optgroupEl);
+                            }
+                        });
                     }
                 }
-                this.list.appendChild(optgroupEl);
+                this_1.list.appendChild(optgroupEl_1);
             }
             else {
-                this.list.appendChild(this.option(d));
+                this_1.list.appendChild(this_1.option(d));
             }
+        };
+        var this_1 = this;
+        for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
+            var d = data_2[_i];
+            _loop_1(d);
         }
     };
     Slim.prototype.option = function (data) {
