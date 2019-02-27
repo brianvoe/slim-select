@@ -189,16 +189,16 @@ export default Vue.extend({
       valuesUseText: true,
       data: [
         {
-          innerHTML: '<b>Bold Text</b>',
+          innerHTML: '<b>Bold Text</b><br /><small>additional content</small>',
           text: 'Bold Text',
           value: 'bold text'
         },
         {
-          innerHTML: '<i>Slim Select you are awesome</i>',
+          innerHTML: '<i>Slim Select you are awesome</i><br /><small>additional content</small>',
           text: 'Slim Select awesome'
         },
         {
-          innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
+          innerHTML: '<div style="border: solid 1px #666666;">Border<br /><small>additional content</small></div>',
           text: 'Border',
           value: 'border'
         }
@@ -210,16 +210,16 @@ export default Vue.extend({
       valuesUseText: true,
       data: [
         {
-          innerHTML: '<b>Bold Text</b>',
+          innerHTML: '<b>Bold Text</b><br /><small>additional content</small>',
           text: 'Bold Text',
           value: 'bold text'
         },
         {
-          innerHTML: '<i>Slim Select you are awesome</i>',
+          innerHTML: '<i>Slim Select you are awesome</i><br /><small>additional content</small>',
           text: 'Slim Select awesome'
         },
         {
-          innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
+          innerHTML: '<div style="border: solid 1px #666666;">Border<br /><small>additional content</small></div>',
           text: 'Border',
           value: 'border'
         }
@@ -748,13 +748,6 @@ export default Vue.extend({
         <select id="selectInnerHTMLSingle"></select>
         <select id="selectInnerHTMLMulti" multiple></select>
       </div>
-      <div class="set-content" style="padding: 16px 0 0 0;">
-        <h4>Use text for selected values</h4>
-      </div>
-      <div class="set-content">
-        <select id="selectInnerHTMLSingleText"></select>
-        <select id="selectInnerHTMLMultiText" multiple></select>
-      </div>
 
       <pre>
         <code class="language-javascript">
@@ -772,6 +765,46 @@ export default Vue.extend({
           })
         </code>
       </pre>
+
+      <div class="set-content" style="padding: 16px 0 0 0;">
+        <h4>Use text for selected values</h4>
+      </div>       
+      <p>
+        With the <code>valuesUseText</code> option, you can use rich information in the select dropdown, but show only a single label in the selected value(s).
+      </p>
+      <div class="set-content">
+        <select id="selectInnerHTMLSingleText"></select>
+        <select id="selectInnerHTMLMultiText" multiple></select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          <select id="select-innerHTML"></select>
+
+          var select = new SlimSelect({
+          select: '#select-innerHTML-text',
+          valuesUseText: true,
+          data: [
+            {
+              innerHTML: '<b>Bold Text</b><br /><small>additional content</small>',
+              text: 'Bold Text',
+              value: 'bold text'
+            },
+            {
+              innerHTML: '<i>Slim Select you are awesome</i><br /><small>additional content</small>',
+              text: 'Slim Select awesome'
+            },
+            {
+              innerHTML: '<div style="border: solid 1px #666666;">Border<br /><small>additional content</small></div>',
+              text: 'Border',
+              value: 'border'
+            }
+          ]
+        })
+        </code>
+      </pre>
+
+
     </div>
 
     <div class="content">

@@ -114,7 +114,10 @@ export class Data {
     return {
       id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
       value: option.value,
-      text: option.text,
+      // if explicitly defined, we stored text in a custom data attribute
+      // note that due to constantly re-constructing data from nodes and vice-versa,
+      // text will now be explicitly defined on the next pass.
+      text: option.getAttribute( 'data-x-text' ) || option.text,
       innerHTML: option.innerHTML,
       selected: option.selected,
       disabled: option.disabled,

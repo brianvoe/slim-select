@@ -149,6 +149,12 @@ export class Select {
       })
     }
 
+    // add text attribute as data-x-text to the option element so that we
+    // can conserve it when re-constructing the data from option elements.
+    if ( info.text ) {
+      optionEl.setAttribute( 'data-x-text', info.text )
+    }
+
     return optionEl
   }
 }
