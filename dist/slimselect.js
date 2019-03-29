@@ -1487,6 +1487,7 @@ var Slim = (function () {
         input.type = 'search';
         input.placeholder = this.main.config.searchPlaceholder;
         input.tabIndex = 0;
+        input.setAttribute('aria-label', this.main.config.searchPlaceholder);
         input.onclick = function (e) {
             setTimeout(function () {
                 var target = e.target;
