@@ -226,25 +226,14 @@ export default Vue.extend({
       ]
     })
 
-    new SlimSelect({
-      select: '#showSearch',
-      showSearch: false
-    })
-
-    new SlimSelect({
-      select: '#searchText',
-      searchText: 'Sorry nothing to see here'
-    })
-
-    new SlimSelect({
-      select: '#searchPlaceholder',
-      searchPlaceholder: 'Search for the good stuff!'
-    })
-
-    new SlimSelect({
-      select: '#searchHighlight',
-      searchHighlight: true
-    })
+    new SlimSelect({ select: '#showSearchSingle', showSearch: false })
+    new SlimSelect({ select: '#searchTextSingle', searchText: 'Sorry nothing to see here'})
+    new SlimSelect({ select: '#searchPlaceholderSingle', searchPlaceholder: 'Search for the good stuff!' })
+    new SlimSelect({ select: '#searchHighlightSingle', searchHighlight: true })
+    new SlimSelect({ select: '#showSearchMulti', showSearch: false })
+    new SlimSelect({ select: '#searchTextMulti', searchText: 'Sorry nothing to see here'})
+    new SlimSelect({ select: '#searchPlaceholderMulti', searchPlaceholder: 'Search for the good stuff!' })
+    new SlimSelect({ select: '#searchHighlightMulti', searchHighlight: true })
 
     new SlimSelect({
       select: '#closeOnSelectSingle',
@@ -798,22 +787,45 @@ export default Vue.extend({
       </p>
 
       <div class="set-content">
-        <select id="showSearch">
+        <select id="showSearchSingle">
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
         </select>
-        <select id="searchText">
+        <select id="searchTextSingle">
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
         </select>
-        <select id="searchPlaceholder">
+        <select id="searchPlaceholderSingle">
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
         </select>
-        <select id="searchHighlight">
+        <select id="searchHighlightSingle">
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
+      </div>
+      
+      <div class="set-content">
+        <select id="showSearchMulti" multiple>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
+        <select id="searchTextMulti" multiple>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
+        <select id="searchPlaceholderMulti" multiple>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
+        <select id="searchHighlightMulti" multiple>
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
