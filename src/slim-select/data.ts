@@ -139,11 +139,11 @@ export class Data {
       }
       this.setSelected(newSelected, 'id')
     } else {
-      const options = this.main.select.element.options
+      const element = this.main.select.element
 
       // Single select element
-      if (options.selectedIndex !== -1) {
-        const option = options[options.selectedIndex] as HTMLOptionElement
+      if (element.selectedIndex !== -1) {
+        const option = element.options[element.selectedIndex] as HTMLOptionElement
         const value = option.value
         this.setSelected(value, 'value')
       }
