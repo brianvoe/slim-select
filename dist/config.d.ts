@@ -63,6 +63,7 @@ export declare class Config {
     readonly optgroupLabel: string;
     readonly optgroupLabelSelectable: string;
     readonly option: string;
+    readonly optionSelected: string;
     readonly highlighted: string;
     readonly disabled: string;
     readonly hide: string;
