@@ -709,6 +709,7 @@ export class Slim {
     if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', (data.id as string)))) {
       optionEl.onclick = null
       optionEl.classList.add(this.main.config.disabled)
+      optionEl.classList.add(this.main.config.optionSelected)
     }
 
     return optionEl

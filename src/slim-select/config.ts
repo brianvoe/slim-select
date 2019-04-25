@@ -67,6 +67,7 @@ export class Config {
   public readonly optgroupLabel: string = 'ss-optgroup-label'
   public readonly optgroupLabelSelectable: string = 'ss-optgroup-label-selectable'
   public readonly option: string = 'ss-option'
+  public readonly optionSelected: string = 'ss-option-selected'
   public readonly highlighted: string = 'ss-highlighted'
   public readonly disabled: string = 'ss-disabled'
   public readonly hide: string = 'ss-hide'
