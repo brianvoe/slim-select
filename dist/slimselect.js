@@ -325,9 +325,9 @@ var Data = (function () {
             this.setSelected(newSelected, 'id');
         }
         else {
-            var options = this.main.select.element.options;
-            if (options.selectedIndex !== -1) {
-                var option = options[options.selectedIndex];
+            var element = this.main.select.element;
+            if (element.selectedIndex !== -1) {
+                var option = element.options[element.selectedIndex];
                 var value = option.value;
                 this.setSelected(value, 'value');
             }
@@ -1005,6 +1005,7 @@ var Config = (function () {
         this.optgroupLabel = 'ss-optgroup-label';
         this.optgroupLabelSelectable = 'ss-optgroup-label-selectable';
         this.option = 'ss-option';
+        this.optionSelected = 'ss-option-selected';
         this.highlighted = 'ss-highlighted';
         this.disabled = 'ss-disabled';
         this.hide = 'ss-hide';
@@ -1824,6 +1825,7 @@ var Slim = (function () {
         if (data.disabled || (selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id))) {
             optionEl.onclick = null;
             optionEl.classList.add(this.main.config.disabled);
+            optionEl.classList.add(this.main.config.optionSelected);
         }
         return optionEl;
     };
