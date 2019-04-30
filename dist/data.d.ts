@@ -18,6 +18,7 @@ export interface Option {
     disabled?: boolean;
     placeholder?: boolean;
     class?: string;
+    style?: string;
     data?: object;
 }
 export declare class Data {

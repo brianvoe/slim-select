@@ -306,6 +306,7 @@ var Data = (function () {
             disabled: option.disabled,
             placeholder: option.dataset.placeholder === 'true',
             "class": option.className,
+            style: option.style.cssText,
             data: option.dataset
         };
     };
@@ -1782,6 +1783,9 @@ var Slim = (function () {
                 optionEl.classList.add(dataClass);
             });
         }
+        if (data.style) {
+            optionEl.style.cssText = data.style;
+        }
         var selected = this.main.data.getSelected();
         optionEl.dataset.id = data.id;
         if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
@@ -1797,6 +1801,9 @@ var Slim = (function () {
         optionEl.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
+            if (data.disabled || data.selected) {
+                return;
+            }
             if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) {
                 return;
             }

@@ -47,7 +47,7 @@
         white-space: nowrap;
         width: auto; }
       .ss-main .ss-single-selected .placeholder .ss-disabled {
-        cursor: pointer;
+        cursor: not-allowed;
         color: #8a8a8a; }
     .ss-main .ss-single-selected .ss-deselect {
       display: flex;
@@ -272,7 +272,7 @@
           color: #ffffff;
           background-color: #5897fb; }
         .ss-main .ss-content .ss-list .ss-option.ss-disabled {
-          cursor: default;
+          cursor: not-allowed;
           color: #bdbdbd;
           background-color: #ffffff; }
         .ss-main .ss-content .ss-list .ss-option.ss-hide {
