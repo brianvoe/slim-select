@@ -657,11 +657,18 @@ export class Slim {
     }
 
     const optionEl = document.createElement('div')
+
+    // Add class to div element
     optionEl.classList.add(this.main.config.option)
     if (data.class) {
       data.class.split(' ').forEach((dataClass: string) => {
         optionEl.classList.add(dataClass)
       })
+    }
+
+    // Add style to div element
+    if (data.style) {
+      optionEl.style.cssText = data.style
     }
 
     const selected = this.main.data.getSelected() as Option
@@ -679,6 +686,9 @@ export class Slim {
     optionEl.addEventListener('click', function(e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
+
+      // Check if option is disabled or is already selected, do nothing
+      if (data.disabled || data.selected) { return }
 
       // Check if hit limit
       if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) { return }

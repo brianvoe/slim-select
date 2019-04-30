@@ -19,6 +19,7 @@ export interface Option {
   disabled?: boolean
   placeholder?: boolean
   class?: string
+  style?: string
   data?: object
 }
 
@@ -120,6 +121,7 @@ export class Data {
       disabled: option.disabled,
       placeholder: option.dataset.placeholder === 'true',
       class: option.className,
+      style: option.style.cssText,
       data: option.dataset
     }
   }

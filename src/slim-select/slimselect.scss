@@ -69,7 +69,7 @@ $spacing-s: 4px !default;
       }
 
       .ss-disabled {
-        cursor: pointer;
+        cursor: not-allowed;
         color: $font-placeholder-color;
       }
     }
@@ -371,7 +371,7 @@ $spacing-s: 4px !default;
         }
 
         &.ss-disabled {
-          cursor: default;
+          cursor: not-allowed;
           color: lighten($font-placeholder-color, 20);
           background-color: $white;
         }
