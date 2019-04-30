@@ -38,6 +38,9 @@ export default Vue.extend({
       ]
     })
 
+    new SlimSelect({ select: '#optionsSingle' })
+    new SlimSelect({ select: '#optionsMultiple' })
+
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
       placeholder: 'Search "Graham"',
@@ -136,12 +139,11 @@ export default Vue.extend({
       limit: 2
     })
 
-    new SlimSelect({
-      select: '#select-class'
-    })
-    new SlimSelect({
-      select: '#option-class'
-    })
+    new SlimSelect({ select: '#select-class' })
+    new SlimSelect({ select: '#option-class' })
+
+    new SlimSelect({ select: '#select-style' })
+    new SlimSelect({ select: '#option-style' })
 
     new SlimSelect({
       select: '#selectInnerHTMLSingle',
@@ -434,10 +436,36 @@ export default Vue.extend({
             innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
             disabled: false, // Optional - default is false
             placeholder: false, // Optional - default is false
+            class: '', // Optional - default is not set
+            css: '', // Optional - default is not set
             data: {} // Optional - If you have data attributes
           }
         </code>
       </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">options</h2>
+      <p>
+        Slim select will take on attributes of the original as best as possible. 
+        Below are example usages of attributes added to the underlining select options that slim select picked up and used
+      </p>
+
+      <div class="set-content">
+        <select id="optionsSingle">
+          <option data-placeholder="true"></option>
+          <option value="value1" data-info="Here is info">Data Attributes</option>
+          <option value="value2" disabled>Disabled Option</option>
+          <option value="value3" class="green">Class Green</option>
+          <option value="value3" style="color: purple;">Inline Style</option>
+        </select>
+        <select id="optionsMultiple" multiple>
+          <option value="value1" data-info="Here is info">Data Attributes</option>
+          <option value="value2" disabled>Disabled Option</option>
+          <option value="value3" class="green">Class Green</option>
+          <option value="value3" style="color: purple;">Inline Style</option>
+        </select>
+      </div>
     </div>
 
     <div class="content">
@@ -694,9 +722,9 @@ export default Vue.extend({
     </div>
 
     <div class="content">
-      <h2 class="header">css / class</h2>
+      <h2 class="header">css class</h2>
       <p>
-        Slim select will inherit any styles and classes that were added to the original select element.
+        Slim select will inherit any classes that were added to the original select element.
         This includes options as well.
       </p>
 
@@ -719,6 +747,43 @@ export default Vue.extend({
             &lt;option class="red" value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option class="green" value="value2"&gt;Value 2&lt;/option&gt;
             &lt;option class="blue" value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">inline styles</h2>
+      <p>
+        Slim select will inherit any styles that were added to the original select element.
+        This includes options as well.
+      </p>
+
+      <div class="set-content">
+        <select id="select-style" style="color: red;">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="option-style">
+          <option style="color: red;" value="value1">Red</option>
+          <option style="color: green;">Green</option>
+          <option style="color: blue;">Blue</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-html">
+          &lt;select id="select-style" style="color: red;"&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+
+          &lt;select id="option-style"&gt;
+            &lt;option style="color: red;" value="value1"&gt;Red&lt;/option&gt;
+            &lt;option style="color: green;"&gt;Green&lt;/option&gt;
+            &lt;option style="color: blue;"&gt;Blue&lt;/option&gt;
           &lt;/select&gt;
         </code>
       </pre>
