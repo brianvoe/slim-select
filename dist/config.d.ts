@@ -18,6 +18,7 @@ interface Constructor {
     showOptionTooltips?: boolean;
     selectByGroup?: boolean;
     limit?: number;
+    timeoutDelay?: number;
 }
 export declare class Config {
     id: string;
@@ -41,6 +42,7 @@ export declare class Config {
     showOptionTooltips: boolean;
     selectByGroup: boolean;
     limit: number;
+    timeoutDelay: number;
     readonly main: string;
     readonly singleSelected: string;
     readonly arrow: string;

@@ -601,7 +601,8 @@ var SlimSelect = (function () {
             valuesUseText: info.valuesUseText,
             showOptionTooltips: info.showOptionTooltips,
             selectByGroup: info.selectByGroup,
-            limit: info.limit
+            limit: info.limit,
+            timeoutDelay: info.timeoutDelay
         });
         this.select = new select_1.Select({
             select: selectElement,
@@ -790,7 +791,7 @@ var SlimSelect = (function () {
             if (_this.afterOpen) {
                 _this.afterOpen();
             }
-        }, 300);
+        }, this.config.timeoutDelay);
     };
     SlimSelect.prototype.close = function () {
         var _this = this;
@@ -829,7 +830,7 @@ var SlimSelect = (function () {
             if (_this.afterClose) {
                 _this.afterClose();
             }
-        }, 300);
+        }, this.config.timeoutDelay);
     };
     SlimSelect.prototype.moveContentAbove = function () {
         var selectHeight = 0;
@@ -984,6 +985,7 @@ var Config = (function () {
         this.showOptionTooltips = false;
         this.selectByGroup = false;
         this.limit = 0;
+        this.timeoutDelay = 300;
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
         this.arrow = 'ss-arrow';
@@ -1052,6 +1054,9 @@ var Config = (function () {
         }
         if (info.searchFilter) {
             this.searchFilter = info.searchFilter;
+        }
+        if (info.timeoutDelay != null) {
+            this.timeoutDelay = info.timeoutDelay;
         }
     }
     Config.prototype.searchFilter = function (opt, search) {
