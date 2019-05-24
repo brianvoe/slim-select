@@ -229,7 +229,11 @@ export default Vue.extend({
     })
 
     new SlimSelect({ select: '#showSearchSingle', showSearch: false })
-    new SlimSelect({ select: '#searchTextSingle', searchText: 'Sorry nothing to see here'})
+    new SlimSelect({
+      select: '#searchTextSingle', searchText: 'Sorry nothing to see here',
+      beforeOpen: () => {console.log('beforeOpen')}, beforeClose: () => {console.log('beforeClose')},
+      afterOpen: () => {console.log('afterOpen')}, afterClose: () => {console.log('afterClose')}
+    })
     new SlimSelect({ select: '#searchPlaceholderSingle', searchPlaceholder: 'Search for the good stuff!' })
     new SlimSelect({ select: '#searchHighlightSingle', searchHighlight: true })
     new SlimSelect({ select: '#showSearchMulti', showSearch: false })

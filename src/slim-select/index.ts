@@ -221,9 +221,6 @@ export default class SlimSelect {
     // Dont do anything if the content is already open
     if (this.data.contentOpen) { return }
 
-    // Focus on input field
-    this.slim.search.input.focus()
-
     // Run beforeOpen callback
     if (this.beforeOpen) { this.beforeOpen() }
 
@@ -265,6 +262,9 @@ export default class SlimSelect {
     // setTimeout is for animation completion
     setTimeout(() => {
       this.data.contentOpen = true
+
+      // Focus on input field
+      this.slim.search.input.focus()
 
       // Run afterOpen callback
       if (this.afterOpen) {
