@@ -44,7 +44,7 @@ export class Config {
   public showOptionTooltips: boolean = false
   public selectByGroup: boolean = false
   public limit: number = 0
-  public timeoutDelay: number = 300
+  public timeoutDelay: number = 200
 
   // Classes
   public readonly main: string = 'ss-main'
