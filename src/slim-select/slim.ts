@@ -716,10 +716,16 @@ export class Slim {
       }
     })
 
-    if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', (data.id as string)))) {
+    const isSelected = selected && isValueInArrayOfObjects(selected, 'id', (data.id as string))
+    if (data.disabled || isSelected) {
       optionEl.onclick = null
       optionEl.classList.add(this.main.config.disabled)
+    }
+
+    if (isSelected) {
       optionEl.classList.add(this.main.config.optionSelected)
+    } else {
+      optionEl.classList.remove(this.main.config.optionSelected)
     }
 
     return optionEl
