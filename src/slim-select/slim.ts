@@ -370,7 +370,11 @@ export class Slim {
         this.highlightDown()
         e.preventDefault()
       } else if (e.key === 'Tab') {
-        this.main.close()
+        if (!this.main.data.contentOpen) {
+          setTimeout(() => { this.main.close() }, this.main.config.timeoutDelay)
+        } else {
+          this.main.close()
+        }
       } else if (e.key === 'Enter') {
         e.preventDefault()
       }
