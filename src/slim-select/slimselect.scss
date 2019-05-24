@@ -2,9 +2,10 @@ $height: 30px !default;
 $white: #ffffff !default;
 $font-color: #666666 !default;
 $font-placeholder-color: #8a8a8a !default;
+$font-disabled-color: #dedede !default;
 $primary-color: #5897fb !default;
 $border-color: #dcdee2 !default;
-$search-highlight-color: unquote('#fff70062') !default;
+$search-highlight-color: #fffb8c !default;
 $border-radius: 4px !default;
 $spacing-l: 8px !default;
 $spacing-m: 6px !default;
@@ -70,7 +71,7 @@ $spacing-s: 4px !default;
 
       .ss-disabled {
         cursor: not-allowed;
-        color: $font-placeholder-color;
+        color: $font-disabled-color;
       }
     }
 
@@ -167,7 +168,7 @@ $spacing-s: 4px !default;
         line-height: 1em;
         align-items: center;
         width: 100%;
-        color: $font-placeholder-color;
+        color: $font-disabled-color;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -301,7 +302,7 @@ $spacing-s: 4px !default;
         -webkit-appearance: textfield;
         
         &::placeholder {
-          color: lighten($font-placeholder-color, 20);
+          color: $font-placeholder-color;
           vertical-align: middle;
         }
 
@@ -372,7 +373,7 @@ $spacing-s: 4px !default;
 
         &.ss-disabled {
           cursor: not-allowed;
-          color: lighten($font-placeholder-color, 20);
+          color: $font-disabled-color;
           background-color: $white;
         }
 
