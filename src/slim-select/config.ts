@@ -19,6 +19,7 @@ interface Constructor {
   showOptionTooltips?: boolean
   selectByGroup?: boolean
   limit?: number
+  timeoutDelay?: number
 }
 
 export class Config {
@@ -43,6 +44,7 @@ export class Config {
   public showOptionTooltips: boolean = false
   public selectByGroup: boolean = false
   public limit: number = 0
+  public timeoutDelay: number = 200
 
   // Classes
   public readonly main: string = 'ss-main'
@@ -95,6 +97,7 @@ export class Config {
     if (info.selectByGroup) { this.selectByGroup = info.selectByGroup }
     if (info.limit) { this.limit = info.limit }
     if (info.searchFilter) { this.searchFilter = info.searchFilter }
+    if (info.timeoutDelay != null) { this.timeoutDelay = info.timeoutDelay }
   }
 
   public searchFilter(opt: Option, search: string): boolean {

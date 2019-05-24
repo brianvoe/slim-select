@@ -23,6 +23,7 @@ interface Constructor {
   showOptionTooltips?: boolean
   selectByGroup?: boolean
   limit?: number
+  timeoutDelay?: number
 
   // Events
   ajax?: (value: string, func: (info: any) => void) => void
@@ -78,7 +79,8 @@ export default class SlimSelect {
       valuesUseText: info.valuesUseText,
       showOptionTooltips: info.showOptionTooltips,
       selectByGroup: info.selectByGroup,
-      limit: info.limit
+      limit: info.limit,
+      timeoutDelay: info.timeoutDelay
     })
 
     this.select = new Select({
@@ -219,9 +221,6 @@ export default class SlimSelect {
     // Dont do anything if the content is already open
     if (this.data.contentOpen) { return }
 
-    // Focus on input field
-    this.slim.search.input.focus()
-
     // Run beforeOpen callback
     if (this.beforeOpen) { this.beforeOpen() }
 
@@ -264,11 +263,14 @@ export default class SlimSelect {
     setTimeout(() => {
       this.data.contentOpen = true
 
+      // Focus on input field
+      this.slim.search.input.focus()
+
       // Run afterOpen callback
       if (this.afterOpen) {
         this.afterOpen()
       }
-    }, 300)
+    }, this.config.timeoutDelay)
   }
 
   // Close content section
@@ -313,7 +315,7 @@ export default class SlimSelect {
 
       // Run afterClose callback
       if (this.afterClose) { this.afterClose() }
-    }, 300)
+    }, this.config.timeoutDelay)
   }
 
   public moveContentAbove(): void {

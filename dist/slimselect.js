@@ -601,7 +601,8 @@ var SlimSelect = (function () {
             valuesUseText: info.valuesUseText,
             showOptionTooltips: info.showOptionTooltips,
             selectByGroup: info.selectByGroup,
-            limit: info.limit
+            limit: info.limit,
+            timeoutDelay: info.timeoutDelay
         });
         this.select = new select_1.Select({
             select: selectElement,
@@ -748,7 +749,6 @@ var SlimSelect = (function () {
         if (this.data.contentOpen) {
             return;
         }
-        this.slim.search.input.focus();
         if (this.beforeOpen) {
             this.beforeOpen();
         }
@@ -787,10 +787,11 @@ var SlimSelect = (function () {
         }
         setTimeout(function () {
             _this.data.contentOpen = true;
+            _this.slim.search.input.focus();
             if (_this.afterOpen) {
                 _this.afterOpen();
             }
-        }, 300);
+        }, this.config.timeoutDelay);
     };
     SlimSelect.prototype.close = function () {
         var _this = this;
@@ -829,7 +830,7 @@ var SlimSelect = (function () {
             if (_this.afterClose) {
                 _this.afterClose();
             }
-        }, 300);
+        }, this.config.timeoutDelay);
     };
     SlimSelect.prototype.moveContentAbove = function () {
         var selectHeight = 0;
@@ -984,6 +985,7 @@ var Config = (function () {
         this.showOptionTooltips = false;
         this.selectByGroup = false;
         this.limit = 0;
+        this.timeoutDelay = 200;
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
         this.arrow = 'ss-arrow';
@@ -1052,6 +1054,9 @@ var Config = (function () {
         }
         if (info.searchFilter) {
             this.searchFilter = info.searchFilter;
+        }
+        if (info.timeoutDelay != null) {
+            this.timeoutDelay = info.timeoutDelay;
         }
     }
     Config.prototype.searchFilter = function (opt, search) {
@@ -1510,7 +1515,12 @@ var Slim = (function () {
                 e.preventDefault();
             }
             else if (e.key === 'Tab') {
-                _this.main.close();
+                if (!_this.main.data.contentOpen) {
+                    setTimeout(function () { _this.main.close(); }, _this.main.config.timeoutDelay);
+                }
+                else {
+                    _this.main.close();
+                }
             }
             else if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1829,10 +1839,16 @@ var Slim = (function () {
                 master.main.set(elementID, 'id', master.main.config.closeOnSelect);
             }
         });
-        if (data.disabled || (selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id))) {
+        var isSelected = selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id);
+        if (data.disabled || isSelected) {
             optionEl.onclick = null;
             optionEl.classList.add(this.main.config.disabled);
+        }
+        if (isSelected) {
             optionEl.classList.add(this.main.config.optionSelected);
+        }
+        else {
+            optionEl.classList.remove(this.main.config.optionSelected);
         }
         return optionEl;
     };

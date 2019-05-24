@@ -370,7 +370,11 @@ export class Slim {
         this.highlightDown()
         e.preventDefault()
       } else if (e.key === 'Tab') {
-        this.main.close()
+        if (!this.main.data.contentOpen) {
+          setTimeout(() => { this.main.close() }, this.main.config.timeoutDelay)
+        } else {
+          this.main.close()
+        }
       } else if (e.key === 'Enter') {
         e.preventDefault()
       }
@@ -716,10 +720,16 @@ export class Slim {
       }
     })
 
-    if (data.disabled || (selected && isValueInArrayOfObjects(selected, 'id', (data.id as string)))) {
+    const isSelected = selected && isValueInArrayOfObjects(selected, 'id', (data.id as string))
+    if (data.disabled || isSelected) {
       optionEl.onclick = null
       optionEl.classList.add(this.main.config.disabled)
+    }
+
+    if (isSelected) {
       optionEl.classList.add(this.main.config.optionSelected)
+    } else {
+      optionEl.classList.remove(this.main.config.optionSelected)
     }
 
     return optionEl
