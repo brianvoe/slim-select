@@ -9,6 +9,7 @@ interface Constructor {
     searchPlaceholder?: string;
     searchText?: string;
     searchingText?: string;
+    searchFocus?: boolean;
     searchHighlight?: boolean;
     searchFilter?: (opt: Option, search: string) => boolean;
     closeOnSelect?: boolean;
