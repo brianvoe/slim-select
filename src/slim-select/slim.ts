@@ -539,6 +539,20 @@ export class Slim {
   // Create main container that options will reside
   public listDiv(): HTMLDivElement {
     const list = document.createElement('div')
+
+    let supportsPassive = false
+    try {
+      const opts = Object.defineProperty({}, 'passive', {
+        get: () => {
+          supportsPassive = true
+        }
+      })
+      window.addEventListener('testPassive', (e) => {console.log('added')}, opts)
+      window.removeEventListener('testPassive', (e) => {console.log('removed')}, opts)
+    } catch (error) {
+      console.log(error)
+    }
+
     list.classList.add(this.main.config.list)
     list.addEventListener('wheel', (e: WheelEvent) => {
       const scrollTop = list.scrollTop
@@ -563,7 +577,7 @@ export class Slim {
         list.scrollTop = 0
         return prevent()
       }
-    })
+    }, supportsPassive ? { passive: true } : false)
 
     return list
   }
