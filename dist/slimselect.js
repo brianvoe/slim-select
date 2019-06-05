@@ -1684,27 +1684,6 @@ var Slim = (function () {
     Slim.prototype.listDiv = function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
-        list.addEventListener('wheel', function (e) {
-            var scrollTop = list.scrollTop;
-            var scrollHeight = list.scrollHeight;
-            var height = list.offsetHeight;
-            var delta = Math.round(-e.deltaY);
-            var up = delta > 0;
-            var prevent = function () {
-                e.stopPropagation();
-                e.preventDefault();
-                e.returnValue = false;
-                return false;
-            };
-            if (!up && -delta > scrollHeight - height - scrollTop) {
-                list.scrollTop = scrollHeight;
-                return prevent();
-            }
-            else if (up && delta > scrollTop) {
-                list.scrollTop = 0;
-                return prevent();
-            }
-        });
         return list;
     };
     Slim.prototype.options = function (content) {
