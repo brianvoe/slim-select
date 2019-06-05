@@ -540,31 +540,6 @@ export class Slim {
   public listDiv(): HTMLDivElement {
     const list = document.createElement('div')
     list.classList.add(this.main.config.list)
-    list.addEventListener('wheel', (e: WheelEvent) => {
-      const scrollTop = list.scrollTop
-      const scrollHeight = list.scrollHeight
-      const height = list.offsetHeight
-      const delta = Math.round(-e.deltaY)
-      const up = delta > 0
-
-      const prevent = () => {
-        e.stopPropagation()
-        e.preventDefault()
-        e.returnValue = false
-        return false
-      }
-
-      if (!up && -delta > scrollHeight - height - scrollTop) {
-        // Scrolling down, but this will take us past the bottom.
-        list.scrollTop = scrollHeight
-        return prevent()
-      } else if (up && delta > scrollTop) {
-        // Scrolling up, but this will take us past the top.
-        list.scrollTop = 0
-        return prevent()
-      }
-    })
-
     return list
   }
 
