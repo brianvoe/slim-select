@@ -13,6 +13,7 @@ interface Constructor {
   showContent?: string
   placeholderText?: string
   allowDeselect?: boolean
+  allowDeselectOption?: boolean
   deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean
@@ -38,6 +39,7 @@ export class Config {
   public searchingText: string = 'Searching...'
   public placeholderText: string = 'Select Value'
   public allowDeselect: boolean = false
+  public allowDeselectOption: boolean = false
   public deselectLabel: string = 'x'
   public isEnabled: boolean = true
   public valuesUseText: boolean = false
@@ -91,6 +93,7 @@ export class Config {
     if (info.searchingText) { this.searchingText = info.searchingText }
     if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
+    this.allowDeselectOption = (info.allowDeselectOption === true ? true : false)
     if (info.deselectLabel) { this.deselectLabel = info.deselectLabel }
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
