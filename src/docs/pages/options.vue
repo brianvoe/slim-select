@@ -451,6 +451,7 @@ export default Vue.extend({
             text: 'text', // Required
             value: 'value', // Optional - value will be set by text if not set
             innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
+            selected: false, // Optional - default is false
             disabled: false, // Optional - default is false
             placeholder: false, // Optional - default is false
             class: '', // Optional - default is not set
