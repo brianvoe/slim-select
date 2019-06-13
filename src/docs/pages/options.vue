@@ -113,14 +113,12 @@ export default Vue.extend({
 
     new SlimSelect({
       select: '#allowDeselectOption',
-      allowDeselectOption: true,
-      closeOnSelect: false
+      allowDeselectOption: true
     })
 
     new SlimSelect({
       select: '#allowDeselectOptionMultiple',
-      allowDeselectOption: true,
-      closeOnSelect: false
+      allowDeselectOption: true
     })
 
 
@@ -644,8 +642,7 @@ export default Vue.extend({
         <code class="language-javascript">
           new SlimSelect({
             select: '.element .you #want',
-            allowDeselectOption: true,
-            closeOnSelect: false
+            allowDeselectOption: true
           })
         </code>
       </pre>
