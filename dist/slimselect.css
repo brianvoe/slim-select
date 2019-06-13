@@ -275,6 +275,9 @@
           cursor: not-allowed;
           color: #dedede;
           background-color: #ffffff; }
+        .ss-main .ss-content .ss-list .ss-option:not(.ss-disabled).ss-option-selected {
+          color: #666666;
+          background-color: rgba(88, 151, 251, 0.1); }
         .ss-main .ss-content .ss-list .ss-option.ss-hide {
           display: none; }
         .ss-main .ss-content .ss-list .ss-option .ss-search-highlight {

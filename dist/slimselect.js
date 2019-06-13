@@ -596,6 +596,7 @@ var SlimSelect = (function () {
             showContent: info.showContent,
             placeholderText: info.placeholder,
             allowDeselect: info.allowDeselect,
+            allowDeselectOption: info.allowDeselectOption,
             deselectLabel: info.deselectLabel,
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText,
@@ -979,6 +980,7 @@ var Config = (function () {
         this.searchingText = 'Searching...';
         this.placeholderText = 'Select Value';
         this.allowDeselect = false;
+        this.allowDeselectOption = false;
         this.deselectLabel = 'x';
         this.isEnabled = true;
         this.valuesUseText = false;
@@ -1037,6 +1039,7 @@ var Config = (function () {
             this.placeholderText = info.placeholderText;
         }
         this.allowDeselect = (info.allowDeselect === true ? true : false);
+        this.allowDeselectOption = (info.allowDeselectOption === true ? true : false);
         if (info.deselectLabel) {
             this.deselectLabel = info.deselectLabel;
         }
@@ -1790,38 +1793,72 @@ var Slim = (function () {
         optionEl.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (data.disabled || data.selected) {
-                return;
-            }
-            if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) {
-                return;
-            }
             var element = this;
             var elementID = element.dataset.id;
-            if (master.main.beforeOnChange) {
-                var value = void 0;
-                var objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID)));
-                objectInfo.selected = true;
-                if (master.main.config.isMultiple) {
-                    value = JSON.parse(JSON.stringify(selected));
-                    value.push(objectInfo);
+            if (data.selected === true && master.main.config.allowDeselectOption) {
+                var shouldUpdate = false;
+                if (!master.main.beforeOnChange || !master.main.config.isMultiple) {
+                    shouldUpdate = true;
                 }
-                else {
-                    value = JSON.parse(JSON.stringify(objectInfo));
+                if (master.main.beforeOnChange && master.main.config.isMultiple) {
+                    var selectedValues = master.main.data.getSelected();
+                    var currentValues = JSON.parse(JSON.stringify(selectedValues));
+                    for (var i = 0; i < currentValues.length; i++) {
+                        if (currentValues[i].id === elementID) {
+                            currentValues.splice(i, 1);
+                        }
+                    }
+                    var beforeOnchange = master.main.beforeOnChange(currentValues);
+                    if (beforeOnchange !== false) {
+                        shouldUpdate = true;
+                    }
                 }
-                var beforeOnchange = master.main.beforeOnChange(value);
-                if (beforeOnchange !== false) {
-                    master.main.set(elementID, 'id', master.main.config.closeOnSelect);
+                if (shouldUpdate) {
+                    if (master.main.config.isMultiple) {
+                        master.main.data.removeFromSelected(elementID, 'id');
+                        master.main.render();
+                        master.main.select.setValue();
+                        master.main.data.onDataChange();
+                    }
+                    else {
+                        master.main.set('');
+                    }
                 }
             }
             else {
-                master.main.set(elementID, 'id', master.main.config.closeOnSelect);
+                if (data.disabled || data.selected) {
+                    return;
+                }
+                if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) {
+                    return;
+                }
+                if (master.main.beforeOnChange) {
+                    var value = void 0;
+                    var objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID)));
+                    objectInfo.selected = true;
+                    if (master.main.config.isMultiple) {
+                        value = JSON.parse(JSON.stringify(selected));
+                        value.push(objectInfo);
+                    }
+                    else {
+                        value = JSON.parse(JSON.stringify(objectInfo));
+                    }
+                    var beforeOnchange = master.main.beforeOnChange(value);
+                    if (beforeOnchange !== false) {
+                        master.main.set(elementID, 'id', master.main.config.closeOnSelect);
+                    }
+                }
+                else {
+                    master.main.set(elementID, 'id', master.main.config.closeOnSelect);
+                }
             }
         });
         var isSelected = selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id);
         if (data.disabled || isSelected) {
             optionEl.onclick = null;
-            optionEl.classList.add(this.main.config.disabled);
+            if (!master.main.config.allowDeselectOption) {
+                optionEl.classList.add(this.main.config.disabled);
+            }
         }
         if (isSelected) {
             optionEl.classList.add(this.main.config.optionSelected);
