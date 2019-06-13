@@ -353,14 +353,10 @@ export default Vue.extend({
     }
   }
 
-  .option-class {
-    .ss-option {
-      color: white;
-
-      &.red { background-color: red; }
-      &.green { background-color: green; }
-      &.blue { background-color: blue; }
-    }
+  .ss-option {
+    &.red { color: white; background-color: red; }
+    &.green { color: white; background-color: green; }
+    &.blue { color: white; background-color: blue; }
   }
 }
 </style>
