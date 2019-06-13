@@ -666,39 +666,81 @@ export class Slim {
       e.preventDefault()
       e.stopPropagation()
 
-      // Check if option is disabled or is already selected, do nothing
-      if (data.disabled || data.selected) { return }
-
-      // Check if hit limit
-      if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) { return }
-
       const element = this
       const elementID = element.dataset.id
-      if (master.main.beforeOnChange) {
-        let value
-        const objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID as string)))
-        objectInfo.selected = true
 
-        if (master.main.config.isMultiple) {
-          value = JSON.parse(JSON.stringify(selected))
-          value.push(objectInfo)
-        } else {
-          value = JSON.parse(JSON.stringify(objectInfo))
+      if (data.selected === true && master.main.config.allowDeselectOption) {
+        let shouldUpdate = false
+
+        // If no beforeOnChange is set automatically update at end
+        if (!master.main.beforeOnChange || !master.main.config.isMultiple) {shouldUpdate = true}
+
+        if (master.main.beforeOnChange && master.main.config.isMultiple) {
+          const selectedValues = master.main.data.getSelected() as Option
+          const currentValues = JSON.parse(JSON.stringify(selectedValues))
+
+          // Remove from current selection
+
+          for (let i = 0; i < currentValues.length; i++) {
+            if (currentValues[i].id === elementID) {
+              currentValues.splice(i, 1)
+            }
+          }
+
+          const beforeOnchange = master.main.beforeOnChange(currentValues)
+          if (beforeOnchange !== false) { shouldUpdate = true }
         }
 
-        const beforeOnchange = master.main.beforeOnChange(value)
-        if (beforeOnchange !== false) {
-          master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
+        if (shouldUpdate) {
+          if (master.main.config.isMultiple) {
+            master.main.data.removeFromSelected((elementID as any), 'id')
+            master.main.render()
+            master.main.select.setValue()
+            master.main.data.onDataChange() // Trigger on change callback
+          } else {
+            master.main.set('')
+          }
+
         }
       } else {
-        master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
+        // Check if option is disabled or is already selected, do nothing
+        if (data.disabled || data.selected) {
+          return
+        }
+
+        // Check if hit limit
+        if (master.main.config.limit && Array.isArray(selected) && master.main.config.limit <= selected.length) {
+          return
+        }
+
+        if (master.main.beforeOnChange) {
+          let value
+          const objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID as string)))
+          objectInfo.selected = true
+
+          if (master.main.config.isMultiple) {
+            value = JSON.parse(JSON.stringify(selected))
+            value.push(objectInfo)
+          } else {
+            value = JSON.parse(JSON.stringify(objectInfo))
+          }
+
+          const beforeOnchange = master.main.beforeOnChange(value)
+          if (beforeOnchange !== false) {
+            master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
+          }
+        } else {
+          master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
+        }
       }
     })
 
     const isSelected = selected && isValueInArrayOfObjects(selected, 'id', (data.id as string))
     if (data.disabled || isSelected) {
       optionEl.onclick = null
-      optionEl.classList.add(this.main.config.disabled)
+      if (!master.main.config.allowDeselectOption) {
+        optionEl.classList.add(this.main.config.disabled)
+      }
     }
 
     if (isSelected) {
