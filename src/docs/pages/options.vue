@@ -112,6 +112,17 @@ export default Vue.extend({
     })
 
     new SlimSelect({
+      select: '#allowDeselectOption',
+      allowDeselectOption: true
+    })
+
+    new SlimSelect({
+      select: '#allowDeselectOptionMultiple',
+      allowDeselectOption: true
+    })
+
+
+    new SlimSelect({
       select: '#deselectLabel',
       allowDeselect: true,
       deselectLabel: '<span class="red">✖</span>'
@@ -342,14 +353,10 @@ export default Vue.extend({
     }
   }
 
-  .option-class {
-    .ss-option {
-      color: white;
-
-      &.red { background-color: red; }
-      &.green { background-color: green; }
-      &.blue { background-color: blue; }
-    }
+  .ss-option {
+    &.red { color: white; background-color: red; }
+    &.green { color: white; background-color: green; }
+    &.blue { color: white; background-color: blue; }
   }
 }
 </style>
@@ -440,6 +447,7 @@ export default Vue.extend({
             text: 'text', // Required
             value: 'value', // Optional - value will be set by text if not set
             innerHTML: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
+            selected: false, // Optional - default is false
             disabled: false, // Optional - default is false
             placeholder: false, // Optional - default is false
             class: '', // Optional - default is not set
@@ -601,6 +609,49 @@ export default Vue.extend({
         <code class="language-html">
           &lt;!-- Requires emtpy data-placeholder option --&gt;
           &lt;select id="allowDeselect"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">allowDeselectOption</h2>
+      <p>
+        This will allow you to deselect a value in the dropdown<br />
+        Be sure to have an empty option data placeholder so slim select has an empty string value to select.
+      </p>
+
+      <div class="set-content">
+        <select id="allowDeselectOption">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="allowDeselectOptionMultiple" multiple>
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            allowDeselectOption: true
+          })
+        </code>
+      </pre>
+      <pre>
+        <code class="language-html">
+          &lt;!-- Requires emtpy data-placeholder option --&gt;
+          &lt;select id="allowDeselectOption"&gt;
             &lt;option data-placeholder="true"&gt;&lt;/option&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;

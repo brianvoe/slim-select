@@ -377,6 +377,11 @@ $spacing-s: 4px !default;
           background-color: $white;
         }
 
+        &:not(.ss-disabled).ss-option-selected {
+          color: $font-color;
+          background-color: rgba($primary-color, .1);
+        }
+
         &.ss-hide { display: none; }
 
         .ss-search-highlight {
