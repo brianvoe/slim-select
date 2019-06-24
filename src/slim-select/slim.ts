@@ -741,7 +741,7 @@ export class Slim {
       if (!master.main.config.allowDeselectOption) {
         optionEl.classList.add(this.main.config.disabled)
       }
-      if (master.main.config.hideSelectedOptionInDropDown) {
+      if (master.main.config.hideSelectedOption) {
         optionEl.classList.add(this.main.config.hide)
       }
     }
