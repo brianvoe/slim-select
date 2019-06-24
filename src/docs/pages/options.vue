@@ -315,6 +315,16 @@ export default Vue.extend({
       select: '#searchFilter',
       searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search
     })
+
+    new SlimSelect({
+      select: '#hideSelectedOption',
+      hideSelectedOption: true
+    })
+
+    new SlimSelect({
+      select: '#hideSelectedOptionMultiple',
+      hideSelectedOption: true
+    })
   }
 })
 </script>
@@ -1187,6 +1197,52 @@ export default Vue.extend({
               return option.text.substr(0, search.length) === search
             }
           })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">hideSelectedOption</h2>
+      <p>
+        hideSelectedOption option is used to hide the current selected option in the dropdown.
+      </p>
+
+      <div class="set-content">
+        <select id="hideSelectedOption">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <select id="hideSelectedOptionMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            hideSelectedOption: true
+          })
+        </code>
+      </pre>
+      <pre>
+        <code class="language-html">
+          &lt;select id="hideSelectedOption"&gt;
+            &lt;option data-placeholder="true"&gt;&lt;/option&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+
+          &lt;select id="hideSelectedOptionMultiple"&gt;
+            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
         </code>
       </pre>
     </div>
