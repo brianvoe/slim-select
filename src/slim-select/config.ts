@@ -14,6 +14,7 @@ interface Constructor {
   placeholderText?: string
   allowDeselect?: boolean
   allowDeselectOption?: boolean
+  hideSelectedOptionInDropDown?: boolean
   deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean
@@ -40,6 +41,7 @@ export class Config {
   public placeholderText: string = 'Select Value'
   public allowDeselect: boolean = false
   public allowDeselectOption: boolean = false
+  public hideSelectedOptionInDropDown: boolean = false
   public deselectLabel: string = 'x'
   public isEnabled: boolean = true
   public valuesUseText: boolean = false
@@ -94,6 +96,7 @@ export class Config {
     if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
     this.allowDeselectOption = (info.allowDeselectOption === true ? true : false)
+    this.hideSelectedOptionInDropDown = (info.hideSelectedOptionInDropDown === true ? true : false)
     if (info.deselectLabel) { this.deselectLabel = info.deselectLabel }
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
