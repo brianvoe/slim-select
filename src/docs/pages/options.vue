@@ -984,7 +984,7 @@ export default Vue.extend({
             showSearch: false,
             searchText: 'Sorry nothing to see here',
             searchPlaceholder: 'Search for the good stuff!',
-            searchFocus: false
+            searchFocus: false, // Whether or not to focus on the search input field
             searchHighlight: true
           })
 
