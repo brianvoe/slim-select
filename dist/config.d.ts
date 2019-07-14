@@ -14,6 +14,7 @@ interface Constructor {
     placeholderText?: string;
     allowDeselect?: boolean;
     allowDeselectOption?: boolean;
+    hideSelectedOption?: boolean;
     deselectLabel?: string;
     isEnabled?: boolean;
     valuesUseText?: boolean;
@@ -40,6 +41,7 @@ export declare class Config {
     placeholderText: string;
     allowDeselect: boolean;
     allowDeselectOption: boolean;
+    hideSelectedOption: boolean;
     deselectLabel: string;
     isEnabled: boolean;
     valuesUseText: boolean;

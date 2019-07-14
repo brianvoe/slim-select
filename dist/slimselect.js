@@ -598,6 +598,7 @@ var SlimSelect = (function () {
             placeholderText: info.placeholder,
             allowDeselect: info.allowDeselect,
             allowDeselectOption: info.allowDeselectOption,
+            hideSelectedOption: info.hideSelectedOption,
             deselectLabel: info.deselectLabel,
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText,
@@ -985,6 +986,7 @@ var Config = (function () {
         this.placeholderText = 'Select Value';
         this.allowDeselect = false;
         this.allowDeselectOption = false;
+        this.hideSelectedOption = false;
         this.deselectLabel = 'x';
         this.isEnabled = true;
         this.valuesUseText = false;
@@ -1045,6 +1047,7 @@ var Config = (function () {
         }
         this.allowDeselect = (info.allowDeselect === true ? true : false);
         this.allowDeselectOption = (info.allowDeselectOption === true ? true : false);
+        this.hideSelectedOption = (info.hideSelectedOption === true ? true : false);
         if (info.deselectLabel) {
             this.deselectLabel = info.deselectLabel;
         }
@@ -1371,7 +1374,7 @@ var Slim = (function () {
             }
             var target = e.target;
             if (!target.classList.contains(_this.main.config.valueDelete)) {
-                _this.main.open();
+                _this.main.data.contentOpen ? _this.main.close() : _this.main.open();
             }
         };
         return {
@@ -1863,6 +1866,9 @@ var Slim = (function () {
             optionEl.onclick = null;
             if (!master.main.config.allowDeselectOption) {
                 optionEl.classList.add(this.main.config.disabled);
+            }
+            if (master.main.config.hideSelectedOption) {
+                optionEl.classList.add(this.main.config.hide);
             }
         }
         if (isSelected) {
