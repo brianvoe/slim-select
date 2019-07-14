@@ -18,6 +18,7 @@ interface Constructor {
   placeholder?: string
   allowDeselect?: boolean
   allowDeselectOption?: boolean
+  hideSelectedOption?: boolean
   deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean // Use text value when showing selected value
@@ -76,6 +77,7 @@ export default class SlimSelect {
       placeholderText: info.placeholder,
       allowDeselect: info.allowDeselect,
       allowDeselectOption: info.allowDeselectOption,
+      hideSelectedOption: info.hideSelectedOption,
       deselectLabel: info.deselectLabel,
       isEnabled: info.isEnabled,
       valuesUseText: info.valuesUseText,

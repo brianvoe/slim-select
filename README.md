@@ -58,6 +58,7 @@ new SlimSelect({
 })
 ```
 
+
 ## Testing
 Browser testing has been provided by
 
