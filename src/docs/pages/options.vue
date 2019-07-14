@@ -631,7 +631,7 @@ export default Vue.extend({
     <div class="content">
       <h2 class="header">allowDeselectOption</h2>
       <p>
-        This will allow you to deselect a value in the dropdown<br />
+        This will allow you to deselect a value in the dropdown. By simple clicking the option again.<br />
         Be sure to have an empty option data placeholder so slim select has an empty string value to select.
       </p>
 
@@ -643,7 +643,6 @@ export default Vue.extend({
           <option value="value3">Value 3</option>
         </select>
         <select id="allowDeselectOptionMultiple" multiple>
-          <option data-placeholder="true"></option>
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
