@@ -31,7 +31,7 @@
       slim.setData(this.navData)
 
       this.$router.onReady(() => {
-        let urlPathValue = this.$route.path.replace('/', '')
+        const urlPathValue = this.$route.path.replace('/', '')
         if (urlPathValue !== '') {
           slim.setSelected(urlPathValue)
         }
