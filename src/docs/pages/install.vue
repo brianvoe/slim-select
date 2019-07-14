@@ -11,25 +11,22 @@
     methods: {
       download() {
         function A(blob) {
-          var a = document.createElement("a")
+          const a = document.createElement('a')
           document.body.appendChild(a)
-          a.style = "display: none"
+          a.style = 'display: none'
 
-          var url = window.URL.createObjectURL(blob)
+          const url = window.URL.createObjectURL(blob)
           a.href = url
           a.download = 'slimselect.js'
           a.click()
           window.URL.revokeObjectURL(url)
         }
 
-        var xhr = new XMLHttpRequest()
-        xhr.open("GET", `https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
-        xhr.responseType = "blob"
-
-        xhr.onload = function () {
-          A(this.response, 'filename')
-        };
-        xhr.send();
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', `https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
+        xhr.responseType = 'blob'
+        xhr.onload = () => { A(this.response, 'filename') }
+        xhr.send()
       }
     }
   }
