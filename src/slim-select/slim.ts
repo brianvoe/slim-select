@@ -207,7 +207,7 @@ export class Slim {
       // Open only if you are not clicking on x text
       const target = e.target as Element
       if (!target.classList.contains(this.main.config.valueDelete)) {
-        this.main.open()
+        this.main.data.contentOpen ? this.main.close() : this.main.open()
       }
     }
 
