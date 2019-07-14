@@ -7,6 +7,27 @@
       return {
         version: packageJson.version
       }
+    },
+    methods: {
+      download() {
+        function A(blob) {
+          const a = document.createElement('a')
+          document.body.appendChild(a)
+          a.style = 'display: none'
+
+          const url = window.URL.createObjectURL(blob)
+          a.href = url
+          a.download = 'slimselect.js'
+          a.click()
+          window.URL.revokeObjectURL(url)
+        }
+
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', `https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
+        xhr.responseType = 'blob'
+        xhr.onload = () => { A(this.response, 'filename') }
+        xhr.send()
+      }
     }
   }
 </script>
@@ -75,6 +96,11 @@
           })
         </code>
       </pre>
+    </div>
+
+    <div class="download-content">
+      <h2>Download</h2>
+      <div class="btn" @click="download">Click Here To Download</div>
     </div>
 
   </div>

@@ -45,8 +45,8 @@ npm install slim-select
 ### or
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/slimselect.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<current_version>/slimselect.min.css"> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.css"> 
 ```
 
 ## Usage
@@ -57,7 +57,6 @@ new SlimSelect({
   select: '#slim-select'
 })
 ```
-
 
 ## Testing
 Browser testing has been provided by

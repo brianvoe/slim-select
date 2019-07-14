@@ -29,6 +29,13 @@
         }
       })
       slim.setData(this.navData)
+
+      this.$router.onReady(() => {
+        const urlPathValue = this.$route.path.replace('/', '')
+        if (urlPathValue !== '') {
+          slim.setSelected(urlPathValue)
+        }
+      })
     }
   }
 </script>

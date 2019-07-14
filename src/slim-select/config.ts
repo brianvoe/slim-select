@@ -7,6 +7,7 @@ interface Constructor {
   searchPlaceholder?: string
   searchText?: string
   searchingText?: string
+  searchFocus?: boolean
   searchHighlight?: boolean
   searchFilter?: (opt: Option, search: string) => boolean
   closeOnSelect?: boolean
@@ -14,6 +15,7 @@ interface Constructor {
   placeholderText?: string
   allowDeselect?: boolean
   allowDeselectOption?: boolean
+  hideSelectedOption?: boolean
   deselectLabel?: string
   isEnabled?: boolean
   valuesUseText?: boolean
@@ -31,6 +33,7 @@ export class Config {
   public isAjax: boolean = false
   public isSearching: boolean = false
   public showSearch: boolean = true
+  public searchFocus: boolean = true
   public searchHighlight: boolean = false
   public closeOnSelect: boolean = true
   public showContent: string = 'auto' // options: auto, up, down
@@ -40,6 +43,7 @@ export class Config {
   public placeholderText: string = 'Select Value'
   public allowDeselect: boolean = false
   public allowDeselectOption: boolean = false
+  public hideSelectedOption: boolean = false
   public deselectLabel: string = 'x'
   public isEnabled: boolean = true
   public valuesUseText: boolean = false
@@ -84,6 +88,7 @@ export class Config {
     this.isMultiple = info.select.multiple
     this.isAjax = info.isAjax
     this.showSearch = (info.showSearch === false ? false : true)
+    this.searchFocus = (info.searchFocus === false ? false : true)
     this.searchHighlight = (info.searchHighlight === true ? true : false)
     this.closeOnSelect = (info.closeOnSelect === false ? false : true)
     if (info.showContent) { this.showContent = info.showContent }
@@ -94,6 +99,7 @@ export class Config {
     if (info.placeholderText) { this.placeholderText = info.placeholderText }
     this.allowDeselect = (info.allowDeselect === true ? true : false)
     this.allowDeselectOption = (info.allowDeselectOption === true ? true : false)
+    this.hideSelectedOption = (info.hideSelectedOption === true ? true : false)
     if (info.deselectLabel) { this.deselectLabel = info.deselectLabel }
     if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
     if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }

@@ -590,6 +590,7 @@ var SlimSelect = (function () {
             searchPlaceholder: info.searchPlaceholder,
             searchText: info.searchText,
             searchingText: info.searchingText,
+            searchFocus: info.searchFocus,
             searchHighlight: info.searchHighlight,
             searchFilter: info.searchFilter,
             closeOnSelect: info.closeOnSelect,
@@ -597,6 +598,7 @@ var SlimSelect = (function () {
             placeholderText: info.placeholder,
             allowDeselect: info.allowDeselect,
             allowDeselectOption: info.allowDeselectOption,
+            hideSelectedOption: info.hideSelectedOption,
             deselectLabel: info.deselectLabel,
             isEnabled: info.isEnabled,
             valuesUseText: info.valuesUseText,
@@ -788,7 +790,9 @@ var SlimSelect = (function () {
         }
         setTimeout(function () {
             _this.data.contentOpen = true;
-            _this.slim.search.input.focus();
+            if (_this.config.searchFocus) {
+                _this.slim.search.input.focus();
+            }
             if (_this.afterOpen) {
                 _this.afterOpen();
             }
@@ -972,6 +976,7 @@ var Config = (function () {
         this.isAjax = false;
         this.isSearching = false;
         this.showSearch = true;
+        this.searchFocus = true;
         this.searchHighlight = false;
         this.closeOnSelect = true;
         this.showContent = 'auto';
@@ -981,6 +986,7 @@ var Config = (function () {
         this.placeholderText = 'Select Value';
         this.allowDeselect = false;
         this.allowDeselectOption = false;
+        this.hideSelectedOption = false;
         this.deselectLabel = 'x';
         this.isEnabled = true;
         this.valuesUseText = false;
@@ -1020,6 +1026,7 @@ var Config = (function () {
         this.isMultiple = info.select.multiple;
         this.isAjax = info.isAjax;
         this.showSearch = (info.showSearch === false ? false : true);
+        this.searchFocus = (info.searchFocus === false ? false : true);
         this.searchHighlight = (info.searchHighlight === true ? true : false);
         this.closeOnSelect = (info.closeOnSelect === false ? false : true);
         if (info.showContent) {
@@ -1040,6 +1047,7 @@ var Config = (function () {
         }
         this.allowDeselect = (info.allowDeselect === true ? true : false);
         this.allowDeselectOption = (info.allowDeselectOption === true ? true : false);
+        this.hideSelectedOption = (info.hideSelectedOption === true ? true : false);
         if (info.deselectLabel) {
             this.deselectLabel = info.deselectLabel;
         }
@@ -1366,7 +1374,7 @@ var Slim = (function () {
             }
             var target = e.target;
             if (!target.classList.contains(_this.main.config.valueDelete)) {
-                _this.main.open();
+                _this.main.data.contentOpen ? _this.main.close() : _this.main.open();
             }
         };
         return {
@@ -1858,6 +1866,9 @@ var Slim = (function () {
             optionEl.onclick = null;
             if (!master.main.config.allowDeselectOption) {
                 optionEl.classList.add(this.main.config.disabled);
+            }
+            if (master.main.config.hideSelectedOption) {
+                optionEl.classList.add(this.main.config.hide);
             }
         }
         if (isSelected) {

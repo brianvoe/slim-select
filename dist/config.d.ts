@@ -6,6 +6,7 @@ interface Constructor {
     searchPlaceholder?: string;
     searchText?: string;
     searchingText?: string;
+    searchFocus?: boolean;
     searchHighlight?: boolean;
     searchFilter?: (opt: Option, search: string) => boolean;
     closeOnSelect?: boolean;
@@ -13,6 +14,7 @@ interface Constructor {
     placeholderText?: string;
     allowDeselect?: boolean;
     allowDeselectOption?: boolean;
+    hideSelectedOption?: boolean;
     deselectLabel?: string;
     isEnabled?: boolean;
     valuesUseText?: boolean;
@@ -29,6 +31,7 @@ export declare class Config {
     isAjax: boolean;
     isSearching: boolean;
     showSearch: boolean;
+    searchFocus: boolean;
     searchHighlight: boolean;
     closeOnSelect: boolean;
     showContent: string;
@@ -38,6 +41,7 @@ export declare class Config {
     placeholderText: string;
     allowDeselect: boolean;
     allowDeselectOption: boolean;
+    hideSelectedOption: boolean;
     deselectLabel: string;
     isEnabled: boolean;
     valuesUseText: boolean;

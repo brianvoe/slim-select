@@ -47,7 +47,6 @@
         white-space: nowrap;
         width: auto; }
       .ss-main .ss-single-selected .placeholder .ss-disabled {
-        cursor: not-allowed;
         color: #dedede; }
     .ss-main .ss-single-selected .ss-deselect {
       display: flex;

@@ -9,6 +9,7 @@ interface Constructor {
     searchPlaceholder?: string;
     searchText?: string;
     searchingText?: string;
+    searchFocus?: boolean;
     searchHighlight?: boolean;
     searchFilter?: (opt: Option, search: string) => boolean;
     closeOnSelect?: boolean;
@@ -16,6 +17,7 @@ interface Constructor {
     placeholder?: string;
     allowDeselect?: boolean;
     allowDeselectOption?: boolean;
+    hideSelectedOption?: boolean;
     deselectLabel?: string;
     isEnabled?: boolean;
     valuesUseText?: boolean;
