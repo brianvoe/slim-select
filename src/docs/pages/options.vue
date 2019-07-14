@@ -246,10 +246,12 @@ export default Vue.extend({
       afterOpen: () => {console.log('afterOpen')}, afterClose: () => {console.log('afterClose')}
     })
     new SlimSelect({ select: '#searchPlaceholderSingle', searchPlaceholder: 'Search for the good stuff!' })
+    new SlimSelect({ select: '#searchFocusSingle', searchFocus: false })
     new SlimSelect({ select: '#searchHighlightSingle', searchHighlight: true })
     new SlimSelect({ select: '#showSearchMulti', showSearch: false })
     new SlimSelect({ select: '#searchTextMulti', searchText: 'Sorry nothing to see here'})
     new SlimSelect({ select: '#searchPlaceholderMulti', searchPlaceholder: 'Search for the good stuff!' })
+    new SlimSelect({ select: '#searchFocusMulti', searchFocus: false })
     new SlimSelect({ select: '#searchHighlightMulti', searchHighlight: true })
 
     new SlimSelect({
@@ -438,7 +440,7 @@ export default Vue.extend({
             ]
           })
 
-          // If you want to set a placeholder set the first object placeholder to true 
+          // If you want to set a placeholder set the first object placeholder to true
           {'placeholder': true, 'text': 'placeholder text'}
         </code>
       </pre>
@@ -469,7 +471,7 @@ export default Vue.extend({
     <div class="content">
       <h2 class="header">options</h2>
       <p>
-        Slim select will take on attributes of the original as best as possible. 
+        Slim select will take on attributes of the original as best as possible.
         Below are example usages of attributes added to the underlining select options that slim select picked up and used
       </p>
 
@@ -894,7 +896,7 @@ export default Vue.extend({
     </div>
 
     <div class="content">
-      <h2 class="header">showSearch / searchText / searchingText / searchHighlight</h2>
+      <h2 class="header">showSearch / searchText / searchingText / searchFocus / searchHighlight</h2>
       <p>
         showSearch is a boolean value that will decide whether or not to show the search.
         Default is true.
@@ -910,6 +912,10 @@ export default Vue.extend({
       <p>
         searchPlaceholder is a string value that will set the value of the input search placeholder text.
         Default is 'Search'.
+      </p>
+      <p>
+        searchFocus is a boolean value that will focus search input on opening.
+        Default is true.
       </p>
       <p>
         searchHighlight is a boolean value that will highlight search results.
@@ -932,13 +938,18 @@ export default Vue.extend({
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
         </select>
+        <select id="searchFocusSingle">
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
         <select id="searchHighlightSingle">
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
         </select>
       </div>
-      
+
       <div class="set-content">
         <select id="showSearchMulti" multiple>
           <option value="dog">Dog</option>
@@ -951,6 +962,11 @@ export default Vue.extend({
           <option value="bird">Bird</option>
         </select>
         <select id="searchPlaceholderMulti" multiple>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </select>
+        <select id="searchFocusMulti" multiple>
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
@@ -969,6 +985,7 @@ export default Vue.extend({
             showSearch: false,
             searchText: 'Sorry nothing to see here',
             searchPlaceholder: 'Search for the good stuff!',
+            searchFocus: false
             searchHighlight: true
           })
 
@@ -981,8 +998,8 @@ export default Vue.extend({
     <div class="content">
       <h2 class="header">closeOnSelect</h2>
       <p>
-        closeOnSelect is a boolean value in which determines whether or not to 
-        close the content area upon selecting a value. 
+        closeOnSelect is a boolean value in which determines whether or not to
+        close the content area upon selecting a value.
       </p>
 
       <div class="set-content">
@@ -1021,8 +1038,8 @@ export default Vue.extend({
     <div class="content">
       <h2 class="header">showContent</h2>
       <p>
-        showContent is a string value that will decide where to show your content when it comes out. 
-        By default slim select will try to put the content where it can without going off screen. 
+        showContent is a string value that will decide where to show your content when it comes out.
+        By default slim select will try to put the content where it can without going off screen.
         But you may want to always show it in one direction.
       </p>
       <p>
@@ -1130,7 +1147,7 @@ export default Vue.extend({
       <h2 class="header">showOptionTooltips</h2>
       <p>
         showOptionTooltips option is used to active displaying the on-hover tooltips for select options.
-        The tooltip text is equal to the option text content. 
+        The tooltip text is equal to the option text content.
       </p>
 
       <select id="showOptionTooltips">
@@ -1148,7 +1165,7 @@ export default Vue.extend({
         </code>
       </pre>
     </div>
-    
+
     <div class="content">
       <h2 class="header">selectByGroup</h2>
       <p>
@@ -1162,7 +1179,7 @@ export default Vue.extend({
           <option value="value3">Value 3</option>
         </optgroup>
       </select>
-      
+
       <pre>
         <code class="language-javascript">
           new SlimSelect({
@@ -1193,7 +1210,7 @@ export default Vue.extend({
           new SlimSelect({
             select: '#searchFilter',
             // Exact case sensitive start of string match
-            searchFilter: (option, search) => { 
+            searchFilter: (option, search) => {
               return option.text.substr(0, search.length) === search
             }
           })

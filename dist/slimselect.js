@@ -590,6 +590,7 @@ var SlimSelect = (function () {
             searchPlaceholder: info.searchPlaceholder,
             searchText: info.searchText,
             searchingText: info.searchingText,
+            searchFocus: info.searchFocus,
             searchHighlight: info.searchHighlight,
             searchFilter: info.searchFilter,
             closeOnSelect: info.closeOnSelect,
@@ -788,7 +789,9 @@ var SlimSelect = (function () {
         }
         setTimeout(function () {
             _this.data.contentOpen = true;
-            _this.slim.search.input.focus();
+            if (_this.config.searchFocus) {
+                _this.slim.search.input.focus();
+            }
             if (_this.afterOpen) {
                 _this.afterOpen();
             }
@@ -972,6 +975,7 @@ var Config = (function () {
         this.isAjax = false;
         this.isSearching = false;
         this.showSearch = true;
+        this.searchFocus = true;
         this.searchHighlight = false;
         this.closeOnSelect = true;
         this.showContent = 'auto';
@@ -1020,6 +1024,7 @@ var Config = (function () {
         this.isMultiple = info.select.multiple;
         this.isAjax = info.isAjax;
         this.showSearch = (info.showSearch === false ? false : true);
+        this.searchFocus = (info.searchFocus === false ? false : true);
         this.searchHighlight = (info.searchHighlight === true ? true : false);
         this.closeOnSelect = (info.closeOnSelect === false ? false : true);
         if (info.showContent) {

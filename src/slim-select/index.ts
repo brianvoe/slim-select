@@ -11,6 +11,7 @@ interface Constructor {
   searchPlaceholder?: string
   searchText?: string
   searchingText?: string
+  searchFocus?: boolean
   searchHighlight?: boolean
   searchFilter?: (opt: Option, search: string) => boolean
   closeOnSelect?: boolean
@@ -70,6 +71,7 @@ export default class SlimSelect {
       searchPlaceholder: info.searchPlaceholder,
       searchText: info.searchText,
       searchingText: info.searchingText,
+      searchFocus: info.searchFocus,
       searchHighlight: info.searchHighlight,
       searchFilter: info.searchFilter,
       closeOnSelect: info.closeOnSelect,
@@ -268,7 +270,9 @@ export default class SlimSelect {
       this.data.contentOpen = true
 
       // Focus on input field
-      this.slim.search.input.focus()
+      if (this.config.searchFocus) {
+        this.slim.search.input.focus()
+      }
 
       // Run afterOpen callback
       if (this.afterOpen) {
