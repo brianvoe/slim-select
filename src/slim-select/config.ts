@@ -44,7 +44,7 @@ export class Config {
   public allowDeselect: boolean = false
   public allowDeselectOption: boolean = false
   public hideSelectedOption: boolean = false
-  public deselectLabel: string = 'x'
+  public deselectLabel: string = '×'
   public isEnabled: boolean = true
   public valuesUseText: boolean = false
   public showOptionTooltips: boolean = false
