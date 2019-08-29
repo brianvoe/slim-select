@@ -85,7 +85,7 @@ export class Slim {
     container.classList.add(this.main.config.id)
     container.classList.add(this.main.config.main)
     for (const c of this.main.config.class) {
-      if (c.trim() !== '') {
+      if (c.trim() !== '' && c.trim() !== 'hidden-accessible') {
         container.classList.add(c)
       }
     }

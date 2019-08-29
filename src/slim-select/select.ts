@@ -57,7 +57,8 @@ export class Select {
 
   public addAttributes() {
     this.element.tabIndex = -1
-    this.element.style.display = 'none'
+    /* this.element.style.display = 'none' */
+	this.element.classList.add("hidden-accessible");
 
     // Add slim select id
     this.element.dataset.ssid = this.main.config.id
