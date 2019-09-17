@@ -375,7 +375,7 @@ var Data = (function () {
         return false;
     };
     Data.prototype.getSelected = function () {
-        var value = { text: '' };
+        var value = { text: '', placeholder: this.main.config.placeholderText };
         var values = [];
         for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
             var d = _a[_i];
