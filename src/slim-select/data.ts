@@ -17,7 +17,7 @@ export interface Option {
   selected?: boolean
   display?: boolean
   disabled?: boolean
-  placeholder?: boolean
+  placeholder?: boolean|string
   class?: string
   style?: string
   data?: object
@@ -195,7 +195,7 @@ export class Data {
   // From data get option | option[] of selected values
   // If single select return last selected value
   public getSelected(): Option | Option[] {
-    let value: Option = { text: '' } // Dont worry about setting this(make typescript happy). If single a value will be selected
+    let value: Option = { text: '', placeholder: this.main.config.placeholderText } // Dont worry about setting this(make typescript happy). If single a value will be selected
     const values: Option[] = []
     for (const d of this.data) {
       // Deal with optgroups
