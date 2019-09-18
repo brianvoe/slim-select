@@ -8,6 +8,7 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sudo apt-get update
+  - sudo apt-get install -y dpkg  # to upgrade to dpkg >= 1.17.5ubuntu5.8, which fixes
   - sudo apt-get install -y libappindicator1 fonts-liberation
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   - sudo dpkg -i google-chrome*.deb
