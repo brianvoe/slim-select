@@ -36,12 +36,12 @@ export function ensureElementInView(container: HTMLElement, element: HTMLElement
 
 export function putContent(el: HTMLElement, currentPosition: string, isOpen: boolean): string {
   const height = el.offsetHeight
-  const rect = el.getBoundingClientRect()
-  const elemTop = (isOpen ? rect.top : rect.top - height)
-  const elemBottom = (isOpen ? rect.bottom : rect.bottom + height)
+  const rect = el.parentNode.getBoundingClientRect()
+  const elemTop = rect.top - height
+  const elemBottom = rect.bottom + height
 
   if (elemTop <= 0) { return 'below' }
-  if (elemBottom >= window.innerHeight) { return 'above' }
+  if (elemBottom >= window.innerHeight - 20) /* can be scroll at window bottom */ { return 'above' }
   return (isOpen ? currentPosition : 'below')
 }
 
