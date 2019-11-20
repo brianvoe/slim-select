@@ -118,15 +118,19 @@ export default class SlimSelect {
       }
     })
 
-    window.addEventListener('scroll', debounce((e: Event) => {
-      if (this.data.contentOpen && this.config.showContent === 'auto') {
-        if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
-          this.moveContentAbove()
-        } else {
-          this.moveContentBelow()
-        }
-      }
-    }), false)
+    // If the user wants to show the content forcibly on a specific side,
+    // there is no need to listen for scroll events
+    if (this.config.showContent === 'auto') {
+        window.addEventListener('scroll', debounce((e: Event) => {
+            if (this.data.contentOpen) {
+                if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+                    this.moveContentAbove()
+                } else {
+                    this.moveContentBelow()
+                }
+            }
+        }), false)
+    }
 
     // Add event callbacks after everthing has been created
     if (info.beforeOnChange) { this.beforeOnChange = info.beforeOnChange }
