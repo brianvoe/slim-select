@@ -27,6 +27,7 @@ interface Constructor {
   selectByGroup?: boolean
   limit?: number
   timeoutDelay?: number
+  addToBody?: boolean
 
   // Events
   ajax?: (value: string, func: (info: any) => void) => void
@@ -86,7 +87,8 @@ export default class SlimSelect {
       showOptionTooltips: info.showOptionTooltips,
       selectByGroup: info.selectByGroup,
       limit: info.limit,
-      timeoutDelay: info.timeoutDelay
+      timeoutDelay: info.timeoutDelay,
+      addToBody: info.addToBody
     })
 
     this.select = new Select({
@@ -237,6 +239,14 @@ export default class SlimSelect {
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
     (this.slim as any)[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow))
+
+    if (this.config.addToBody) {
+      // move the content in to the right location
+      const containerRect = this.slim.container.getBoundingClientRect()
+      this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px'
+      this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px'
+      this.slim.content.style.width = containerRect.width + 'px'
+    }
     this.slim.content.classList.add(this.config.open)
 
     // Check showContent to see if they want to specifically show in a certain direction
@@ -350,7 +360,6 @@ export default class SlimSelect {
   }
 
   public moveContentBelow(): void {
-    this.slim.content.removeAttribute('style')
     this.data.contentPosition = 'below'
 
     if (this.config.isMultiple && this.slim.multiSelected) {
@@ -444,7 +453,7 @@ export default class SlimSelect {
 
   // Display original select again and remove slim
   public destroy(id: string | null = null): void {
-    const slim = (id ? document.querySelector('.' + id) : this.slim.container)
+    const slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container)
     const select = (id ? document.querySelector(`[data-ssid=${id}]`) as HTMLSelectElement : this.select.element)
     // If there is no slim dont do anything
     if (!slim || !select) { return }
@@ -460,6 +469,13 @@ export default class SlimSelect {
     // Remove slim select
     if (slim.parentElement) {
       slim.parentElement.removeChild(slim)
+    }
+
+    // remove the content if it was added to the document body
+    if (this.config.addToBody) {
+      const slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content)
+      if (!slimContent) { return }
+      document.body.removeChild(slimContent)
     }
   }
 }
