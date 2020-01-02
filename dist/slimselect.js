@@ -605,7 +605,8 @@ var SlimSelect = (function () {
             showOptionTooltips: info.showOptionTooltips,
             selectByGroup: info.selectByGroup,
             limit: info.limit,
-            timeoutDelay: info.timeoutDelay
+            timeoutDelay: info.timeoutDelay,
+            addToBody: info.addToBody
         });
         this.select = new select_1.Select({
             select: selectElement,
@@ -763,6 +764,12 @@ var SlimSelect = (function () {
             this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up');
         }
         this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow));
+        if (this.config.addToBody) {
+            var containerRect = this.slim.container.getBoundingClientRect();
+            this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px';
+            this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px';
+            this.slim.content.style.width = containerRect.width + 'px';
+        }
         this.slim.content.classList.add(this.config.open);
         if (this.config.showContent.toLowerCase() === 'up') {
             this.moveContentAbove();
@@ -861,7 +868,6 @@ var SlimSelect = (function () {
         }
     };
     SlimSelect.prototype.moveContentBelow = function () {
-        this.slim.content.removeAttribute('style');
         this.data.contentPosition = 'below';
         if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.remove(this.config.openAbove);
@@ -944,7 +950,7 @@ var SlimSelect = (function () {
     };
     SlimSelect.prototype.destroy = function (id) {
         if (id === void 0) { id = null; }
-        var slim = (id ? document.querySelector('.' + id) : this.slim.container);
+        var slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
         var select = (id ? document.querySelector("[data-ssid=" + id + "]") : this.select.element);
         if (!slim || !select) {
             return;
@@ -955,6 +961,13 @@ var SlimSelect = (function () {
         el.slim = null;
         if (slim.parentElement) {
             slim.parentElement.removeChild(slim);
+        }
+        if (this.config.addToBody) {
+            var slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content);
+            if (!slimContent) {
+                return;
+            }
+            document.body.removeChild(slimContent);
         }
     };
     return SlimSelect;
@@ -994,6 +1007,7 @@ var Config = (function () {
         this.selectByGroup = false;
         this.limit = 0;
         this.timeoutDelay = 200;
+        this.addToBody = false;
         this.main = 'ss-main';
         this.singleSelected = 'ss-single-selected';
         this.arrow = 'ss-arrow';
@@ -1069,6 +1083,7 @@ var Config = (function () {
         if (info.timeoutDelay != null) {
             this.timeoutDelay = info.timeoutDelay;
         }
+        this.addToBody = (info.addToBody === true ? true : false);
     }
     Config.prototype.searchFilter = function (opt, search) {
         return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
@@ -1253,7 +1268,12 @@ var Slim = (function () {
             this.singleSelected = this.singleSelectedDiv();
             this.container.appendChild(this.singleSelected.container);
         }
-        this.container.appendChild(this.content);
+        if (this.main.config.addToBody) {
+            document.body.appendChild(this.content);
+        }
+        else {
+            this.container.appendChild(this.content);
+        }
         this.content.appendChild(this.search.container);
         this.content.appendChild(this.list);
     }
