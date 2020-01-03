@@ -628,16 +628,18 @@ var SlimSelect = (function () {
                 _this.close();
             }
         });
-        window.addEventListener('scroll', helper_1.debounce(function (e) {
-            if (_this.data.contentOpen && _this.config.showContent === 'auto') {
-                if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
-                    _this.moveContentAbove();
+        if (this.config.showContent === 'auto') {
+            window.addEventListener('scroll', helper_1.debounce(function (e) {
+                if (_this.data.contentOpen) {
+                    if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
+                        _this.moveContentAbove();
+                    }
+                    else {
+                        _this.moveContentBelow();
+                    }
                 }
-                else {
-                    _this.moveContentBelow();
-                }
-            }
-        }), false);
+            }), false);
+        }
         if (info.beforeOnChange) {
             this.beforeOnChange = info.beforeOnChange;
         }
@@ -955,7 +957,7 @@ var SlimSelect = (function () {
         if (!slim || !select) {
             return;
         }
-        select.style.display = null;
+        select.style.display = '';
         delete select.dataset.ssid;
         var el = select;
         el.slim = null;
