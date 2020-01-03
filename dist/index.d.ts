@@ -25,6 +25,7 @@ interface Constructor {
     selectByGroup?: boolean;
     limit?: number;
     timeoutDelay?: number;
+    addToBody?: boolean;
     ajax?: (value: string, func: (info: any) => void) => void;
     addable?: (value: string) => Option | string;
     beforeOnChange?: (info: Option) => void | boolean;

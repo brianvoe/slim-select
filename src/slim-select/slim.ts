@@ -55,7 +55,11 @@ export class Slim {
       this.singleSelected = this.singleSelectedDiv()
       this.container.appendChild(this.singleSelected.container)
     }
-    this.container.appendChild(this.content)
+    if (this.main.config.addToBody) {
+      document.body.appendChild(this.content)
+    } else {
+      this.container.appendChild(this.content)
+    }
     this.content.appendChild(this.search.container)
     this.content.appendChild(this.list)
   }
