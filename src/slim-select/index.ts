@@ -463,7 +463,7 @@ export default class SlimSelect {
     if (!slim || !select) { return }
 
     // Show original select
-    select.style.display = null
+    select.style.display = ''
     delete select.dataset.ssid
 
     // Remove slim from original select dropdown
