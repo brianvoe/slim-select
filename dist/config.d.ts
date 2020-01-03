@@ -22,6 +22,7 @@ interface Constructor {
     selectByGroup?: boolean;
     limit?: number;
     timeoutDelay?: number;
+    addToBody?: boolean;
 }
 export declare class Config {
     id: string;
@@ -49,6 +50,7 @@ export declare class Config {
     selectByGroup: boolean;
     limit: number;
     timeoutDelay: number;
+    addToBody: boolean;
     readonly main: string;
     readonly singleSelected: string;
     readonly arrow: string;

@@ -23,6 +23,7 @@ interface Constructor {
   selectByGroup?: boolean
   limit?: number
   timeoutDelay?: number
+  addToBody?: boolean
 }
 
 export class Config {
@@ -51,6 +52,7 @@ export class Config {
   public selectByGroup: boolean = false
   public limit: number = 0
   public timeoutDelay: number = 200
+  public addToBody: boolean = false
 
   // Classes
   public readonly main: string = 'ss-main'
@@ -107,6 +109,7 @@ export class Config {
     if (info.limit) { this.limit = info.limit }
     if (info.searchFilter) { this.searchFilter = info.searchFilter }
     if (info.timeoutDelay != null) { this.timeoutDelay = info.timeoutDelay }
+    this.addToBody = (info.addToBody === true ? true : false)
   }
 
   public searchFilter(opt: Option, search: string): boolean {

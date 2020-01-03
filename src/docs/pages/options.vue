@@ -5,6 +5,8 @@ import SlimSelect from '@/slim-select'
 export default Vue.extend({
   data() {
     return {
+      addToBodySingle: null as any,
+      addToBodyMultiple: null as any,
       butts: '',
       beforeOnChangeSingle: null,
       beforeOnChangeMultiple: null,
@@ -270,6 +272,17 @@ export default Vue.extend({
       showContent: 'up'
     })
 
+    this.addToBodySingle = new SlimSelect({
+      select: '#addToBodySingle',
+      addToBody: true
+    })
+
+    this.addToBodyMultiple = new SlimSelect({
+      select: '#addToBodyMultiple',
+      addToBody: true,
+      selectByGroup: true
+    })
+
     new SlimSelect({
       select: '#showContentDown',
       showContent: 'down'
@@ -327,6 +340,10 @@ export default Vue.extend({
       select: '#hideSelectedOptionMultiple',
       hideSelectedOption: true
     })
+  },
+  beforeDestroy() {
+    this.addToBodySingle.destroy()
+    this.addToBodyMultiple.destroy()
   }
 })
 </script>
@@ -1063,6 +1080,51 @@ export default Vue.extend({
           new SlimSelect({
             select: '#showContent',
             showContent: 'auto' // 'auto', 'up' or 'down'
+          })
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">addToBody</h2>
+      <p>
+        addToBody is a boolean value that configures the select dropdown to be added directly to the document body, rather than the parent container.
+        This allows using slim-select in scenarios where you have no control of the overflow state of the parent containers.
+
+        Keep in mind that the widget has to be disposed explicitly by calling <b>destroy</b>.
+      </p>
+      <p>
+        Possible Options: <b>true</b> or <b>false</b>. Default is <b>false</b>
+      </p>
+
+      <div class="set-content">
+        <select id="addToBodySingle">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+          <optgroup label="Super Values">
+            <option value="value11">Value 1</option>
+            <option value="value22">Value 2</option>
+            <option value="value33">Value 3</option>
+          </optgroup>
+        </select>
+        <select id="addToBodyMultiple" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+          <optgroup label="Super Values">
+            <option value="value11">Value 1</option>
+            <option value="value22">Value 2</option>
+            <option value="value33">Value 3</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '#showContent',
+            addToBody: true
           })
         </code>
       </pre>
