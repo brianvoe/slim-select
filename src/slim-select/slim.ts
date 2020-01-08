@@ -56,6 +56,10 @@ export class Slim {
       this.container.appendChild(this.singleSelected.container)
     }
     if (this.main.config.addToBody) {
+      // add the id to the content as a class as well
+      // this is important on touch devices as the close method is
+      // triggered when clicks on the document body occur
+      this.content.classList.add(this.main.config.id)
       document.body.appendChild(this.content)
     } else {
       this.container.appendChild(this.content)
@@ -358,6 +362,9 @@ export class Slim {
     input.placeholder = this.main.config.searchPlaceholder
     input.tabIndex = 0
     input.setAttribute('aria-label', this.main.config.searchPlaceholder)
+    input.setAttribute('autocapitalize', 'off')
+    input.setAttribute('autocomplete', 'off')
+    input.setAttribute('autocorrect', 'off')
     input.onclick = (e) => {
       setTimeout(() => {
         const target = e.target as HTMLInputElement

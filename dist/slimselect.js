@@ -1271,6 +1271,7 @@ var Slim = (function () {
             this.container.appendChild(this.singleSelected.container);
         }
         if (this.main.config.addToBody) {
+            this.content.classList.add(this.main.config.id);
             document.body.appendChild(this.content);
         }
         else {
@@ -1528,6 +1529,9 @@ var Slim = (function () {
         input.placeholder = this.main.config.searchPlaceholder;
         input.tabIndex = 0;
         input.setAttribute('aria-label', this.main.config.searchPlaceholder);
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('autocorrect', 'off');
         input.onclick = function (e) {
             setTimeout(function () {
                 var target = e.target;
