@@ -21,6 +21,7 @@ export interface Option {
   class?: string
   style?: string
   data?: object
+  mandatory?: boolean
 }
 
 // Class is responsible for managing the data
@@ -53,7 +54,8 @@ export class Data {
       disabled: (info.disabled ? info.disabled : false),
       placeholder: (info.placeholder ? info.placeholder : false),
       class: (info.class ? info.class : undefined),
-      data: (info.data ? info.data : {})
+      data: (info.data ? info.data : {}),
+      mandatory: (info.mandatory ? info.mandatory : false)
     }
   }
 
@@ -69,6 +71,7 @@ export class Data {
       disabled: false,
       placeholder: false,
       class: undefined,
+      mandatory: data.mandatory,
       data: {}
     })
   }
@@ -122,7 +125,8 @@ export class Data {
       placeholder: option.dataset.placeholder === 'true',
       class: option.className,
       style: option.style.cssText,
-      data: option.dataset
+      data: option.dataset,
+      mandatory: (option.dataset ? option.dataset.mandatory === 'true' : false)
     }
   }
 

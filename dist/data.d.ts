@@ -20,6 +20,7 @@ export interface Option {
     class?: string;
     style?: string;
     data?: object;
+    mandatory?: boolean;
 }
 export declare class Data {
     main: SlimSelect;

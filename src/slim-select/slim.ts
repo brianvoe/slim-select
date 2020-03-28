@@ -293,6 +293,8 @@ export class Slim {
     text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text)
     value.appendChild(text)
 
+    if (optionObj.mandatory) { return value }
+
     const deleteSpan = document.createElement('span')
     deleteSpan.classList.add(this.main.config.valueDelete)
     deleteSpan.innerHTML = this.main.config.deselectLabel
