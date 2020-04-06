@@ -1,5 +1,6 @@
 import SlimSelect from './index'
 import { Option, Optgroup, dataArray } from './data'
+import { kebabCase } from './helper'
 
 interface Constructor {
   select: HTMLSelectElement
@@ -133,7 +134,7 @@ export class Select {
 
   public createOption(info: any): HTMLOptionElement {
     const optionEl = document.createElement('option')
-    optionEl.value = info.value || info.text
+    optionEl.value = info.value !== '' ? info.value : info.text
     optionEl.innerHTML = info.innerHTML || info.text
     if (info.selected) { optionEl.selected = info.selected }
     if (info.disabled) { optionEl.disabled = true }
@@ -145,7 +146,7 @@ export class Select {
     }
     if (info.data && typeof info.data === 'object') {
       Object.keys(info.data).forEach((key) => {
-        optionEl.setAttribute('data-' + key, info.data[key])
+        optionEl.setAttribute('data-' + kebabCase(key), info.data[key])
       })
     }
 
