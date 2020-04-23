@@ -136,6 +136,9 @@ export class Select {
     optionEl.value = info.value || info.text
     optionEl.innerHTML = info.innerHTML || info.text
     if (info.selected) { optionEl.selected = info.selected }
+    if (info.display === false) {
+      optionEl.style.display = 'none'
+    }
     if (info.disabled) { optionEl.disabled = true }
     if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }
     if (info.class) {
