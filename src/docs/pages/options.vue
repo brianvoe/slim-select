@@ -98,6 +98,24 @@ export default Vue.extend({
       }
     })
 
+    const displaySelect = new SlimSelect({
+      select: '#selectdisplay'
+    })
+
+    const displayData = [
+      { value: 'A', text: 'A', display: false },
+      { value: 'B', text: 'B' },
+      { value: 'C', text: 'C' }
+    ]
+
+    displaySelect.setData(displayData)
+    displaySelect.set(['A', 'C'])
+
+    new SlimSelect({
+      select: '#selectdisplay2'
+    })
+
+
     new SlimSelect({
       select: '#placeholderSingle',
       placeholder: 'Placeholder Text Here'
@@ -640,6 +658,66 @@ export default Vue.extend({
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;
             &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="content">
+      <h2 class="header">display</h2>
+      <p>Allows to hide elements of select options.</p>
+
+      <div class="set-content">
+        <select id="selectdisplay" multiple></select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+            const displaySelect = new SlimSelect({
+              select: '#selectdisplay'
+            })
+
+            const displayData = [
+              { value: 'A', text: 'A', display: false },
+              { value: 'B', text: 'B' },
+              { value: 'C', text: 'C' }
+            ]
+
+            displaySelect.setData(displayData)
+            displaySelect.set(['A', 'C'])
+        </code>
+      </pre>
+
+      <pre>
+        <code class="language-html">
+          &lt;select id="selectMultiMandatory" multiple&gt;
+          &lt;/select&gt;
+        </code>
+      </pre>
+
+      <p>Or</p>
+      <div class="set-content">
+        <select id="selectdisplay2" multiple>
+          <option value="A" style="display: none;" selected>A</option>
+          <option value="B" selected>B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+            const slim = new SlimSelect({
+                select: '#selectdisplay2'
+            });
+        </code>
+      </pre>
+
+      <pre>
+        <code class="language-html">
+          &lt;select id="selectdisplay2" multiple&gt;
+            &lt;option value="A" style="display: none;" selected&gt;A&lt;/option&gt;
+            &lt;option value="B" selected&gt;B&lt;/option&gt;
+            &lt;option value="C"&gt;C&lt;/option&gt;
           &lt;/select&gt;
         </code>
       </pre>
