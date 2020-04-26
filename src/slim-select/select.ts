@@ -142,6 +142,7 @@ export class Select {
     }
     if (info.disabled) { optionEl.disabled = true }
     if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }
+    if (info.mandatory) { optionEl.setAttribute('data-mandatory', 'true') }
     if (info.class) {
       info.class.split(' ').forEach((optionClass: string) => {
         optionEl.classList.add(optionClass)

@@ -246,7 +246,8 @@ var Data = (function () {
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : false),
             "class": (info["class"] ? info["class"] : undefined),
-            data: (info.data ? info.data : {})
+            data: (info.data ? info.data : {}),
+            mandatory: (info.mandatory ? info.mandatory : false)
         };
     };
     Data.prototype.add = function (data) {
@@ -260,6 +261,7 @@ var Data = (function () {
             disabled: false,
             placeholder: false,
             "class": undefined,
+            mandatory: data.mandatory,
             data: {}
         });
     };
@@ -307,7 +309,8 @@ var Data = (function () {
             placeholder: option.dataset.placeholder === 'true',
             "class": option.className,
             style: option.style.cssText,
-            data: option.dataset
+            data: option.dataset,
+            mandatory: (option.dataset ? option.dataset.mandatory === 'true' : false)
         };
     };
     Data.prototype.setSelectedFromSelect = function () {
@@ -1224,6 +1227,9 @@ var Select = (function () {
         if (info.placeholder) {
             optionEl.setAttribute('data-placeholder', 'true');
         }
+        if (info.mandatory) {
+            optionEl.setAttribute('data-mandatory', 'true');
+        }
         if (info["class"]) {
             info["class"].split(' ').forEach(function (optionClass) {
                 optionEl.classList.add(optionClass);
@@ -1470,6 +1476,9 @@ var Slim = (function () {
         text.classList.add(this.main.config.valueText);
         text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text);
         value.appendChild(text);
+        if (optionObj.mandatory) {
+            return value;
+        }
         var deleteSpan = document.createElement('span');
         deleteSpan.classList.add(this.main.config.valueDelete);
         deleteSpan.innerHTML = this.main.config.deselectLabel;
