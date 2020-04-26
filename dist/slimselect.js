@@ -200,6 +200,13 @@ function highlight(str, search, className) {
     return completedString;
 }
 exports.highlight = highlight;
+function kebabCase(str) {
+    var result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, function (match) { return '-' + match.toLowerCase(); });
+    return (str[0] === str[0].toUpperCase())
+        ? result.substring(1)
+        : result;
+}
+exports.kebabCase = kebabCase;
 (function () {
     var w = window;
     if (typeof w.CustomEvent === 'function') {
@@ -246,7 +253,8 @@ var Data = (function () {
             disabled: (info.disabled ? info.disabled : false),
             placeholder: (info.placeholder ? info.placeholder : false),
             "class": (info["class"] ? info["class"] : undefined),
-            data: (info.data ? info.data : {})
+            data: (info.data ? info.data : {}),
+            mandatory: (info.mandatory ? info.mandatory : false)
         };
     };
     Data.prototype.add = function (data) {
@@ -260,6 +268,7 @@ var Data = (function () {
             disabled: false,
             placeholder: false,
             "class": undefined,
+            mandatory: data.mandatory,
             data: {}
         });
     };
@@ -307,7 +316,8 @@ var Data = (function () {
             placeholder: option.dataset.placeholder === 'true',
             "class": option.className,
             style: option.style.cssText,
-            data: option.dataset
+            data: option.dataset,
+            mandatory: (option.dataset ? option.dataset.mandatory === 'true' : false)
         };
     };
     Data.prototype.setSelectedFromSelect = function () {
@@ -1102,6 +1112,7 @@ exports.Config = Config;
 "use strict";
 
 exports.__esModule = true;
+var helper_1 = __webpack_require__(0);
 var Select = (function () {
     function Select(info) {
         this.triggerMutationObserver = true;
@@ -1213,16 +1224,22 @@ var Select = (function () {
     };
     Select.prototype.createOption = function (info) {
         var optionEl = document.createElement('option');
-        optionEl.value = info.value || info.text;
+        optionEl.value = info.value !== '' ? info.value : info.text;
         optionEl.innerHTML = info.innerHTML || info.text;
         if (info.selected) {
             optionEl.selected = info.selected;
+        }
+        if (info.display === false) {
+            optionEl.style.display = 'none';
         }
         if (info.disabled) {
             optionEl.disabled = true;
         }
         if (info.placeholder) {
             optionEl.setAttribute('data-placeholder', 'true');
+        }
+        if (info.mandatory) {
+            optionEl.setAttribute('data-mandatory', 'true');
         }
         if (info["class"]) {
             info["class"].split(' ').forEach(function (optionClass) {
@@ -1231,7 +1248,7 @@ var Select = (function () {
         }
         if (info.data && typeof info.data === 'object') {
             Object.keys(info.data).forEach(function (key) {
-                optionEl.setAttribute('data-' + key, info.data[key]);
+                optionEl.setAttribute('data-' + helper_1.kebabCase(key), info.data[key]);
             });
         }
         return optionEl;
@@ -1470,40 +1487,39 @@ var Slim = (function () {
         text.classList.add(this.main.config.valueText);
         text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text);
         value.appendChild(text);
-        var deleteSpan = document.createElement('span');
-        deleteSpan.classList.add(this.main.config.valueDelete);
-        deleteSpan.innerHTML = this.main.config.deselectLabel;
-        deleteSpan.onclick = function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var shouldUpdate = false;
-            if (!_this.main.config.isEnabled) {
-                return;
-            }
-            if (!_this.main.beforeOnChange) {
-                shouldUpdate = true;
-            }
-            if (_this.main.beforeOnChange) {
-                var selected = _this.main.data.getSelected();
-                var currentValues = JSON.parse(JSON.stringify(selected));
-                for (var i = 0; i < currentValues.length; i++) {
-                    if (currentValues[i].id === optionObj.id) {
-                        currentValues.splice(i, 1);
-                    }
-                }
-                var beforeOnchange = _this.main.beforeOnChange(currentValues);
-                if (beforeOnchange !== false) {
+        if (!optionObj.mandatory) {
+            var deleteSpan = document.createElement('span');
+            deleteSpan.classList.add(this.main.config.valueDelete);
+            deleteSpan.innerHTML = this.main.config.deselectLabel;
+            deleteSpan.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var shouldUpdate = false;
+                if (!_this.main.beforeOnChange) {
                     shouldUpdate = true;
                 }
-            }
-            if (shouldUpdate) {
-                _this.main.data.removeFromSelected(optionObj.id, 'id');
-                _this.main.render();
-                _this.main.select.setValue();
-                _this.main.data.onDataChange();
-            }
-        };
-        value.appendChild(deleteSpan);
+                if (_this.main.beforeOnChange) {
+                    var selected = _this.main.data.getSelected();
+                    var currentValues = JSON.parse(JSON.stringify(selected));
+                    for (var i = 0; i < currentValues.length; i++) {
+                        if (currentValues[i].id === optionObj.id) {
+                            currentValues.splice(i, 1);
+                        }
+                    }
+                    var beforeOnchange = _this.main.beforeOnChange(currentValues);
+                    if (beforeOnchange !== false) {
+                        shouldUpdate = true;
+                    }
+                }
+                if (shouldUpdate) {
+                    _this.main.data.removeFromSelected(optionObj.id, 'id');
+                    _this.main.render();
+                    _this.main.select.setValue();
+                    _this.main.data.onDataChange();
+                }
+            };
+            value.appendChild(deleteSpan);
+        }
         return value;
     };
     Slim.prototype.contentDiv = function () {

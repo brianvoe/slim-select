@@ -293,42 +293,44 @@ export class Slim {
     text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text)
     value.appendChild(text)
 
-    const deleteSpan = document.createElement('span')
-    deleteSpan.classList.add(this.main.config.valueDelete)
-    deleteSpan.innerHTML = this.main.config.deselectLabel
-    deleteSpan.onclick = (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      let shouldUpdate = false
+    if (!optionObj.mandatory) {
+      const deleteSpan = document.createElement('span')
+      deleteSpan.classList.add(this.main.config.valueDelete)
+      deleteSpan.innerHTML = this.main.config.deselectLabel
+      deleteSpan.onclick = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        let shouldUpdate = false
 
-      if (!this.main.config.isEnabled) { return }
+        // If no beforeOnChange is set automatically update at end
+        if (!this.main.beforeOnChange) {shouldUpdate = true}
 
-      // If no beforeOnChange is set automatically update at end
-      if (!this.main.beforeOnChange) {shouldUpdate = true}
+        if (this.main.beforeOnChange) {
+          const selected = this.main.data.getSelected() as Option
+          const currentValues = JSON.parse(JSON.stringify(selected))
 
-      if (this.main.beforeOnChange) {
-        const selected = this.main.data.getSelected() as Option
-        const currentValues = JSON.parse(JSON.stringify(selected))
-
-        // Remove from current selection
-        for (let i = 0; i < currentValues.length; i++) {
-          if (currentValues[i].id === optionObj.id) {
-            currentValues.splice(i, 1)
+          // Remove from current selection
+          for (let i = 0; i < currentValues.length; i++) {
+            if (currentValues[i].id === optionObj.id) {
+              currentValues.splice(i, 1)
+            }
           }
+
+          const beforeOnchange = this.main.beforeOnChange(currentValues)
+          if (beforeOnchange !== false) { shouldUpdate = true }
         }
 
-        const beforeOnchange = this.main.beforeOnChange(currentValues)
-        if (beforeOnchange !== false) { shouldUpdate = true }
+        if (shouldUpdate) {
+          this.main.data.removeFromSelected((optionObj.id as any), 'id')
+          this.main.render()
+          this.main.select.setValue()
+          this.main.data.onDataChange() // Trigger on change callback
+        }
       }
 
-      if (shouldUpdate) {
-        this.main.data.removeFromSelected((optionObj.id as any), 'id')
-        this.main.render()
-        this.main.select.setValue()
-        this.main.data.onDataChange() // Trigger on change callback
-      }
+
+      value.appendChild(deleteSpan)
     }
-    value.appendChild(deleteSpan)
 
     return value
   }

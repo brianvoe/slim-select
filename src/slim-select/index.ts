@@ -32,8 +32,8 @@ interface Constructor {
   // Events
   ajax?: (value: string, func: (info: any) => void) => void
   addable?: (value: string) => Option | string
-  beforeOnChange?: (info: Option) => void | boolean
-  onChange?: (info: Option) => void
+  beforeOnChange?: (info: Option | Option[]) => void | boolean
+  onChange?: (info: Option | Option[]) => void
   beforeOpen?: () => void
   afterOpen?: () => void
   beforeClose?: () => void
