@@ -62,3 +62,25 @@ new SlimSelect({
 Browser testing has been provided by
 
 <img src="https://digitalscientists.com/system/images/1448/original/logo-browserstack.png" width="300" />
+
+## Capybara
+Assumption is that you have a label who's parent also contains the select list you are choosing from.
+
+```ruby
+def js_select(item_text, options)
+  container = find(:xpath, "//parent::*[label[text()='#{options[:from]}']]")
+
+  within "##{container[:id]}", visible: false do
+    find('.ss-arrow').click
+    input = find(".ss-search input").native
+    input.send_keys(item_text)
+    find('div.ss-list').click
+  end
+end
+
+...
+
+# usage
+js_select 'Item name', from: 'Label text'
+
+```
