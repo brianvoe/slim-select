@@ -114,7 +114,7 @@ export default class SlimSelect {
     }
 
     // Add onclick listener to document to closeContent if clicked outside
-    document.addEventListener('click', this.functionNamespace.documentClick)
+    document.addEventListener('click', this.documentClick)
 
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
