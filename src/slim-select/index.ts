@@ -494,8 +494,7 @@ export default class SlimSelect {
     }
   }
 
-  private windowScroll(e: Event): void {
-      console.log(this.slim.container)
+  private windowScroll: (e: Event) => void = debound(e => {
       if (this.data.contentOpen) {
           if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
               this.moveContentAbove()
@@ -503,6 +502,6 @@ export default class SlimSelect {
               this.moveContentBelow()
           }
       }
-  }
+  })
 
 }
