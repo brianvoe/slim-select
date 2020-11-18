@@ -53,6 +53,17 @@ export default class SlimSelect {
   public afterOpen: (() => void) | null = null
   public beforeClose: (() => void) | null = null
   public afterClose: (() => void) | null = null
+
+  private windowScroll: (e: Event) => void = debounce((e: Event) => {
+    if (this.data.contentOpen) {
+      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+        this.moveContentAbove()
+      } else {
+        this.moveContentBelow()
+      }
+    }
+  })
+
   constructor(info: Constructor) {
     const selectElement = this.validate(info)
 
@@ -478,21 +489,10 @@ export default class SlimSelect {
     }
   }
 
-
-  private documentClick: (e: Event) => void = e => {
+  private documentClick: (e: Event) => void = (e: Event) => {
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
       this.close()
     }
   }
-
-  private windowScroll: (e: Event) => void = debound(e => {
-      if (this.data.contentOpen) {
-          if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
-              this.moveContentAbove()
-          } else {
-              this.moveContentBelow()
-          }
-      }
-  })
 
 }
