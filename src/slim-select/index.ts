@@ -488,7 +488,7 @@ export default class SlimSelect {
   }
 
 
-  private documentClick(e: Event): void {
+  private documentClick: (e: Event) => void = e => {
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
       this.close()
     }
