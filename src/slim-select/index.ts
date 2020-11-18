@@ -113,12 +113,6 @@ export default class SlimSelect {
       this.render()
     }
 
-    this.functionNamespace = {
-        documentClick: this.documentClick.bind(this),
-        windowScroll: debounce(this.windowScroll.bind(this))
-    }
-
-
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', this.functionNamespace.documentClick)
 
