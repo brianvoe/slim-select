@@ -48,6 +48,7 @@ export default class SlimSelect {
     afterOpen: (() => void) | null;
     beforeClose: (() => void) | null;
     afterClose: (() => void) | null;
+    private windowScroll;
     constructor(info: Constructor);
     validate(info: Constructor): HTMLSelectElement;
     selected(): string | string[];
@@ -65,5 +66,6 @@ export default class SlimSelect {
     setSearchText(text: string): void;
     render(): void;
     destroy(id?: string | null): void;
+    private documentClick;
 }
 export {};

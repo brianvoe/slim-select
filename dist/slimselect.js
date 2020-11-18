@@ -583,6 +583,21 @@ var SlimSelect = (function () {
         this.afterOpen = null;
         this.beforeClose = null;
         this.afterClose = null;
+        this.windowScroll = helper_1.debounce(function (e) {
+            if (_this.data.contentOpen) {
+                if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
+                    _this.moveContentAbove();
+                }
+                else {
+                    _this.moveContentBelow();
+                }
+            }
+        });
+        this.documentClick = function (e) {
+            if (e.target && !helper_1.hasClassInTree(e.target, _this.config.id)) {
+                _this.close();
+            }
+        };
         var selectElement = this.validate(info);
         if (selectElement.dataset.ssid) {
             this.destroy(selectElement.dataset.ssid);
@@ -633,22 +648,9 @@ var SlimSelect = (function () {
         else {
             this.render();
         }
-        document.addEventListener('click', function (e) {
-            if (e.target && !helper_1.hasClassInTree(e.target, _this.config.id)) {
-                _this.close();
-            }
-        });
+        document.addEventListener('click', this.documentClick);
         if (this.config.showContent === 'auto') {
-            window.addEventListener('scroll', helper_1.debounce(function (e) {
-                if (_this.data.contentOpen) {
-                    if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
-                        _this.moveContentAbove();
-                    }
-                    else {
-                        _this.moveContentBelow();
-                    }
-                }
-            }), false);
+            window.addEventListener('scroll', this.windowScroll, false);
         }
         if (info.beforeOnChange) {
             this.beforeOnChange = info.beforeOnChange;
@@ -966,6 +968,10 @@ var SlimSelect = (function () {
         var select = (id ? document.querySelector("[data-ssid=" + id + "]") : this.select.element);
         if (!slim || !select) {
             return;
+        }
+        document.removeEventListener('click', this.documentClick);
+        if (this.config.showContent === 'auto') {
+            window.removeEventListener('scroll', this.windowScroll, false);
         }
         select.style.display = '';
         delete select.dataset.ssid;
