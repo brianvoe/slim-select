@@ -77,4 +77,10 @@ def js_select(item_text, options)
     find('div.ss-list').click
   end
 end
+
+...
+
+# usage
+js_select 'Item name', from: 'Label text'
+
 ```
