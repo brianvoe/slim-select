@@ -119,7 +119,7 @@ export default class SlimSelect {
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
     if (this.config.showContent === 'auto') {
-      window.addEventListener('scroll', this.functionNamespace.windowScroll, false)
+      window.addEventListener('scroll', this.windowScroll, false)
     }
 
     // Add event callbacks after everthing has been created
