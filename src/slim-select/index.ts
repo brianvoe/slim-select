@@ -53,9 +53,6 @@ export default class SlimSelect {
   public afterOpen: (() => void) | null = null
   public beforeClose: (() => void) | null = null
   public afterClose: (() => void) | null = null
-
-  private functionNamespace: any
-
   constructor(info: Constructor) {
     const selectElement = this.validate(info)
 
