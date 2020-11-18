@@ -114,24 +114,12 @@ export default class SlimSelect {
     }
 
     // Add onclick listener to document to closeContent if clicked outside
-    document.addEventListener('click', (e: Event) => {
-      if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
-        this.close()
-      }
-    })
+    document.addEventListener('click', this.documentClick)
 
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
     if (this.config.showContent === 'auto') {
-        window.addEventListener('scroll', debounce((e: Event) => {
-            if (this.data.contentOpen) {
-                if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
-                    this.moveContentAbove()
-                } else {
-                    this.moveContentBelow()
-                }
-            }
-        }), false)
+      window.addEventListener('scroll', this.windowScroll, false)
     }
 
     // Add event callbacks after everthing has been created
@@ -462,6 +450,13 @@ export default class SlimSelect {
     // If there is no slim dont do anything
     if (!slim || !select) { return }
 
+
+    document.removeEventListener('click', this.documentClick)
+
+    if (this.config.showContent === 'auto') {
+      window.removeEventListener('scroll', this.windowScroll, false)
+    }
+
     // Show original select
     select.style.display = ''
     delete select.dataset.ssid
@@ -482,4 +477,22 @@ export default class SlimSelect {
       document.body.removeChild(slimContent)
     }
   }
+
+
+  private documentClick: (e: Event) => void = e => {
+    if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
+      this.close()
+    }
+  }
+
+  private windowScroll: (e: Event) => void = debound(e => {
+      if (this.data.contentOpen) {
+          if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+              this.moveContentAbove()
+          } else {
+              this.moveContentBelow()
+          }
+      }
+  })
+
 }
