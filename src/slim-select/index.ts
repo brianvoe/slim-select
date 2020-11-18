@@ -460,7 +460,7 @@ export default class SlimSelect {
     if (!slim || !select) { return }
 
 
-    document.removeEventListener('click', this.functionNamespace.documentClick)
+    document.removeEventListener('click', this.documentClick)
 
     if (this.config.showContent === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
