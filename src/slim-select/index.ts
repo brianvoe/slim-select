@@ -409,34 +409,36 @@ export default class SlimSelect {
   // Take in string value and search current options
   public search(value: string): void {
     // Only filter data and rerender if value has changed
-    if (this.data.searchValue !== value) {
-      this.slim.search.input.value = value
-      if (this.config.isAjax) {
-        const master = this
-        this.config.isSearching = true
-        this.render()
+    if (this.data.searchValue === value) {
+      return
+    }
+    
+    this.slim.search.input.value = value
+    if (this.config.isAjax) {
+      const master = this
+      this.config.isSearching = true
+      this.render()
 
-        // If ajax call it
-        if (this.ajax) {
-          this.ajax(value, (info: any) => {
-            // Only process if return callback is not false
-            master.config.isSearching = false
-            if (Array.isArray(info)) {
-              info.unshift({ text: '', placeholder: true })
-              master.setData(info)
-              master.data.search(value)
-              master.render()
-            } else if (typeof info === 'string') {
-              master.slim.options(info)
-            } else {
-              master.render()
-            }
-          })
-        }
-      } else {
-        this.data.search(value)
-        this.render()
+      // If ajax call it
+      if (this.ajax) {
+        this.ajax(value, (info: any) => {
+          // Only process if return callback is not false
+          master.config.isSearching = false
+          if (Array.isArray(info)) {
+            info.unshift({ text: '', placeholder: true })
+            master.setData(info)
+            master.data.search(value)
+            master.render()
+          } else if (typeof info === 'string') {
+            master.slim.options(info)
+          } else {
+            master.render()
+          }
+        })
       }
+    } else {
+      this.data.search(value)
+      this.render()
     }
   }
 

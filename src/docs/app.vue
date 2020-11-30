@@ -25,7 +25,9 @@
         select: '#select-nav',
         showSearch: false,
         onChange: (info) => {
-          this.$router.push({ path: info.value })
+          if (!this.$route.path.includes(info.value)) {
+            this.$router.push({ path: info.value })
+          }
         }
       })
       slim.setData(this.navData)
