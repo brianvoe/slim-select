@@ -193,6 +193,14 @@ export default class SlimSelect {
     const newData = JSON.parse(JSON.stringify(data))
     const selected = this.data.getSelected()
 
+    // Check newData to make sure value is set
+    // If not set from text
+    for (let i = 0; i < newData.length; i++) {
+      if (!newData[i].value && !newData[i].placeholder) {
+        newData[i].value = newData[i].text
+      }
+    }
+
     // If its an ajax type keep selected values
     if (this.config.isAjax && selected) {
       if (this.config.isMultiple) {
@@ -201,8 +209,25 @@ export default class SlimSelect {
           newData.unshift(r)
         }
       } else {
-        newData.unshift(this.data.getSelected())
-        newData.unshift({ text: '', placeholder: true })
+        newData.unshift(selected)
+
+        // Look for duplicate selected if so remove it
+        for (let i = 0; i < newData.length; i++) {
+          if (!newData[i].placeholder && newData[i].value === (selected as Option).value && newData[i].text === (selected as Option).text) {
+            delete newData[i]
+          }
+        }
+
+        // Add placeholder if it doesnt already have one
+        let hasPlaceholder = false
+        for (let i = 0; i < newData.length; i++) {
+          if (newData[i].placeholder) {
+            hasPlaceholder = true
+          }
+        }
+        if (!hasPlaceholder) {
+          newData.unshift({ text: '', placeholder: true })
+        }
       }
     }
 
@@ -409,10 +434,8 @@ export default class SlimSelect {
   // Take in string value and search current options
   public search(value: string): void {
     // Only filter data and rerender if value has changed
-    if (this.data.searchValue === value) {
-      return
-    }
-    
+    if (this.data.searchValue === value) { return }
+
     this.slim.search.input.value = value
     if (this.config.isAjax) {
       const master = this
