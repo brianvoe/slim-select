@@ -7,7 +7,6 @@ export default Vue.extend({
     return {
       addToBodySingle: null as any,
       addToBodyMultiple: null as any,
-      butts: '',
       beforeOnChangeSingle: null,
       beforeOnChangeMultiple: null,
       onChangeSingle: null,
@@ -63,9 +62,7 @@ export default Vue.extend({
               data.push({ text: j.name })
             }
 
-            setTimeout(() => {
-              callback(data)
-            }, 1000)
+            callback(data)
           })
           .catch((error) => {
             callback(false)

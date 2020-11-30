@@ -730,6 +730,11 @@ var SlimSelect = (function () {
         }
         var newData = JSON.parse(JSON.stringify(data));
         var selected = this.data.getSelected();
+        for (var i = 0; i < newData.length; i++) {
+            if (!newData[i].value && !newData[i].placeholder) {
+                newData[i].value = newData[i].text;
+            }
+        }
         if (this.config.isAjax && selected) {
             if (this.config.isMultiple) {
                 var reverseSelected = selected.reverse();
@@ -739,8 +744,21 @@ var SlimSelect = (function () {
                 }
             }
             else {
-                newData.unshift(this.data.getSelected());
-                newData.unshift({ text: '', placeholder: true });
+                newData.unshift(selected);
+                for (var i = 0; i < newData.length; i++) {
+                    if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
+                        delete newData[i];
+                    }
+                }
+                var hasPlaceholder = false;
+                for (var i = 0; i < newData.length; i++) {
+                    if (newData[i].placeholder) {
+                        hasPlaceholder = true;
+                    }
+                }
+                if (!hasPlaceholder) {
+                    newData.unshift({ text: '', placeholder: true });
+                }
             }
         }
         this.select.create(newData);
@@ -919,34 +937,35 @@ var SlimSelect = (function () {
         this.select.triggerMutationObserver = true;
     };
     SlimSelect.prototype.search = function (value) {
-        if (this.data.searchValue !== value) {
-            this.slim.search.input.value = value;
-            if (this.config.isAjax) {
-                var master_1 = this;
-                this.config.isSearching = true;
-                this.render();
-                if (this.ajax) {
-                    this.ajax(value, function (info) {
-                        master_1.config.isSearching = false;
-                        if (Array.isArray(info)) {
-                            info.unshift({ text: '', placeholder: true });
-                            master_1.setData(info);
-                            master_1.data.search(value);
-                            master_1.render();
-                        }
-                        else if (typeof info === 'string') {
-                            master_1.slim.options(info);
-                        }
-                        else {
-                            master_1.render();
-                        }
-                    });
-                }
+        if (this.data.searchValue === value) {
+            return;
+        }
+        this.slim.search.input.value = value;
+        if (this.config.isAjax) {
+            var master_1 = this;
+            this.config.isSearching = true;
+            this.render();
+            if (this.ajax) {
+                this.ajax(value, function (info) {
+                    master_1.config.isSearching = false;
+                    if (Array.isArray(info)) {
+                        info.unshift({ text: '', placeholder: true });
+                        master_1.setData(info);
+                        master_1.data.search(value);
+                        master_1.render();
+                    }
+                    else if (typeof info === 'string') {
+                        master_1.slim.options(info);
+                    }
+                    else {
+                        master_1.render();
+                    }
+                });
             }
-            else {
-                this.data.search(value);
-                this.render();
-            }
+        }
+        else {
+            this.data.search(value);
+            this.render();
         }
     };
     SlimSelect.prototype.setSearchText = function (text) {
