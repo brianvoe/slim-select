@@ -20,6 +20,7 @@
     "no-unused-expression": [true, "allow-new"],
     "no-empty-interface": false,
     "max-line-length": false,
-    "no-console": false
+    "no-console": false,
+    "prefer-for-of": false
   }
 }
