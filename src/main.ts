@@ -7,8 +7,6 @@ import Normalizer from 'prismjs/plugins/normalize-whitespace/prism-normalize-whi
 import 'prismjs/plugins/toolbar/prism-toolbar'
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard'
 
-import '@/docs/google-analytics.js'
-
 import '@/docs/assets/scss/index.scss'
 import '@/slim-select/slimselect.scss'
 
