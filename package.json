@@ -12,6 +12,10 @@
     "node": ">=8"
   },
   "main": "dist/slimselect.min.js",
+  "exports": {
+    "require": "./dist/slimselect.min.js",
+    "import": "./dist/slimselect.min.mjs"
+  },
   "style": "dist/slimselect.min.css",
   "sass": "src/slim-select/slimselect.scss",
   "types": "dist/index.d.ts",
@@ -28,11 +32,12 @@
   ],
   "scripts": {
     "dev": "vue-cli-service serve",
-    "library": "rm -r dist && cd src/slim-select && webpack && cd ../../ && npm run cleanDist && npm run renameDist",
+    "library": "rm -r dist && cd src/slim-select && webpack && cd ../../ && npm run cleanDist && npm run renameDist && npm run mjs",
     "cleanDist": "rm dist/slimselectcss.min.js && rm dist/slimselectcss.js",
     "renameDist": "mv 'dist/slimselectcss.css' 'dist/slimselect.css' && mv 'dist/slimselectcss.min.css' 'dist/slimselect.min.css'",
     "docs": "vue-cli-service build",
     "build": "npm run docs && npm run library",
+    "mjs": "(printf 'var exports = {};'; cat dist/slimselect.min.js; printf 'export default exports.SlimSelect') > dist/slimselect.min.mjs",
     "lint": "vue-cli-service lint"
   },
   "devDependencies": {
