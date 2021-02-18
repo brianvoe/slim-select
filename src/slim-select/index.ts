@@ -177,6 +177,11 @@ export default class SlimSelect {
     this.data.onDataChange() // Trigger on change callback
     this.render()
 
+    // Close when all options are selected and hidden
+    if (this.config.hideSelectedOption && this.config.isMultiple && (this.data.getSelected() as Option[]).length === this.data.data.length) {
+      close = true
+    }
+
     if (close) { this.close() }
   }
 
@@ -256,6 +261,9 @@ export default class SlimSelect {
 
     // Dont do anything if the content is already open
     if (this.data.contentOpen) { return }
+
+    // Dont open when all options are selected and hidden
+    if (this.config.hideSelectedOption && this.config.isMultiple && (this.data.getSelected() as Option[]).length === this.data.data.length) { return }
 
     // Run beforeOpen callback
     if (this.beforeOpen) { this.beforeOpen() }
