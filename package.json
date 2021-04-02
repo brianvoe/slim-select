@@ -13,8 +13,14 @@
   },
   "main": "dist/slimselect.min.js",
   "exports": {
-    "require": "./dist/slimselect.min.js",
-    "import": "./dist/slimselect.min.mjs"
+    ".":{
+      "require": "./dist/slimselect.min.js",
+      "import": "./dist/slimselect.min.mjs"
+    },
+    "./slimselect.min.css": {
+      "require": "./dist/slimselect.min.css",
+      "import": "./dist/slimselect.min.css"
+    }
   },
   "style": "dist/slimselect.min.css",
   "sass": "src/slim-select/slimselect.scss",
