@@ -553,6 +553,9 @@ export class Slim {
   public listDiv(): HTMLDivElement {
     const list = document.createElement('div')
     list.classList.add(this.main.config.list)
+    list.setAttribute('role', 'listbox')
+    // @todo Link to?
+    // list.setAttribute('aria-labelledby', '')
     return list
   }
 
@@ -652,6 +655,8 @@ export class Slim {
 
     // Add class to div element
     optionEl.classList.add(this.main.config.option)
+    // Add WCAG attribute
+    optionEl.setAttribute('role', 'option')
     if (data.class) {
       data.class.split(' ').forEach((dataClass: string) => {
         optionEl.classList.add(dataClass)
