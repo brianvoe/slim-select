@@ -53,6 +53,7 @@ export class Config {
   public limit: number = 0
   public timeoutDelay: number = 200
   public addToBody: boolean = false
+  public placeholderId: string = ''
 
   // Classes
   public readonly main: string = 'ss-main'
@@ -110,6 +111,7 @@ export class Config {
     if (info.searchFilter) { this.searchFilter = info.searchFilter }
     if (info.timeoutDelay != null) { this.timeoutDelay = info.timeoutDelay }
     this.addToBody = (info.addToBody === true ? true : false)
+    this.placeholderId = this.id + '-placeholder'
   }
 
   public searchFilter(opt: Option, search: string): boolean {

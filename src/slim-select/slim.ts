@@ -106,6 +106,7 @@ export class Slim {
     // Placeholder text
     const placeholder: HTMLSpanElement = document.createElement('span')
     placeholder.classList.add('placeholder')
+    placeholder.id = this.main.config.placeholderId
     container.appendChild(placeholder)
 
     // Deselect
@@ -554,8 +555,7 @@ export class Slim {
     const list = document.createElement('div')
     list.classList.add(this.main.config.list)
     list.setAttribute('role', 'listbox')
-    // @todo Link to?
-    // list.setAttribute('aria-labelledby', '')
+    list.setAttribute('aria-labelledby', this.main.config.placeholderId)
     return list
   }
 
@@ -766,8 +766,10 @@ export class Slim {
 
     if (isSelected) {
       optionEl.classList.add(this.main.config.optionSelected)
+      optionEl.setAttribute('aria-selected', 'true')
     } else {
       optionEl.classList.remove(this.main.config.optionSelected)
+      optionEl.setAttribute('aria-selected', 'false')
     }
 
     return optionEl
