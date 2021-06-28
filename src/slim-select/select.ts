@@ -135,7 +135,7 @@ export class Select {
 
   public createOption(info: any): HTMLOptionElement {
     const optionEl = document.createElement('option')
-    optionEl.value = info.value !== '' ? info.value : info.text
+    optionEl.value = info.value !== undefined ? info.value : info.text
     optionEl.innerHTML = info.innerHTML || info.text
     if (info.selected) { optionEl.selected = info.selected }
     if (info.display === false) {
