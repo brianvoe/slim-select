@@ -712,6 +712,9 @@ var SlimSelect = (function () {
         this.select.setValue();
         this.data.onDataChange();
         this.render();
+        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
+            close = true;
+        }
         if (close) {
             this.close();
         }
@@ -747,7 +750,7 @@ var SlimSelect = (function () {
                 newData.unshift(selected);
                 for (var i = 0; i < newData.length; i++) {
                     if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
-                        delete newData[i];
+                        newData.splice(i, 1);
                     }
                 }
                 var hasPlaceholder = false;
@@ -783,6 +786,9 @@ var SlimSelect = (function () {
             return;
         }
         if (this.data.contentOpen) {
+            return;
+        }
+        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
             return;
         }
         if (this.beforeOpen) {
@@ -1183,6 +1189,7 @@ var Select = (function () {
         this.element.tabIndex = -1;
         this.element.style.display = 'none';
         this.element.dataset.ssid = this.main.config.id;
+        this.element.setAttribute('aria-hidden', 'true');
     };
     Select.prototype.addEventListeners = function () {
         var _this = this;
@@ -1249,7 +1256,7 @@ var Select = (function () {
     };
     Select.prototype.createOption = function (info) {
         var optionEl = document.createElement('option');
-        optionEl.value = info.value !== '' ? info.value : info.text;
+        optionEl.value = info.value !== undefined ? info.value : info.text;
         optionEl.innerHTML = info.innerHTML || info.text;
         if (info.selected) {
             optionEl.selected = info.selected;
@@ -1762,6 +1769,7 @@ var Slim = (function () {
     Slim.prototype.listDiv = function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
+        list.setAttribute('role', 'listbox');
         return list;
     };
     Slim.prototype.options = function (content) {
@@ -1845,6 +1853,7 @@ var Slim = (function () {
         }
         var optionEl = document.createElement('div');
         optionEl.classList.add(this.main.config.option);
+        optionEl.setAttribute('role', 'option');
         if (data["class"]) {
             data["class"].split(' ').forEach(function (dataClass) {
                 optionEl.classList.add(dataClass);
