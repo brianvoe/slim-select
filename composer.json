@@ -1,0 +1,24 @@
+{
+  "name": "brianvoe/slim-select",
+  "version": "1.27.0",
+  "description": "Slim advanced select dropdown",
+  "keywords": [
+    "select",
+    "vanilla",
+    "dropdown",
+    "search",
+    "multiselect"
+  ],
+  "homepage": "https://slimselectjs.com",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Brian Voelker",
+      "email": "brian@webiswhatido.com",
+      "homepage": "http://webiswhatido.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
