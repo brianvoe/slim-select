@@ -101,6 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 exports.__esModule = true;
+exports.kebabCase = exports.highlight = exports.isValueInArrayOfObjects = exports.debounce = exports.putContent = exports.ensureElementInView = exports.hasClassInTree = void 0;
 function hasClassInTree(element, className) {
     function hasClass(e, c) {
         if (!(!c || !e || !e.classList || !e.classList.contains(c))) {
@@ -196,7 +197,7 @@ function highlight(str, search, className) {
     var matchStartPosition = str.match(regex).index;
     var matchEndPosition = matchStartPosition + str.match(regex)[0].toString().length;
     var originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition);
-    completedString = completedString.replace(regex, "<mark class=\"" + className + "\">" + originalTextFoundByRegex + "</mark>");
+    completedString = completedString.replace(regex, "<mark class=\"".concat(className, "\">").concat(originalTextFoundByRegex, "</mark>"));
     return completedString;
 }
 exports.highlight = highlight;
@@ -230,6 +231,7 @@ exports.kebabCase = kebabCase;
 "use strict";
 
 exports.__esModule = true;
+exports.validateOption = exports.validateData = exports.Data = void 0;
 var Data = (function () {
     function Data(info) {
         this.contentOpen = false;
@@ -583,9 +585,9 @@ var SlimSelect = (function () {
         this.afterOpen = null;
         this.beforeClose = null;
         this.afterClose = null;
-        this.windowScroll = helper_1.debounce(function (e) {
+        this.windowScroll = (0, helper_1.debounce)(function (e) {
             if (_this.data.contentOpen) {
-                if (helper_1.putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
+                if ((0, helper_1.putContent)(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
                     _this.moveContentAbove();
                 }
                 else {
@@ -594,7 +596,7 @@ var SlimSelect = (function () {
             }
         });
         this.documentClick = function (e) {
-            if (e.target && !helper_1.hasClassInTree(e.target, _this.config.id)) {
+            if (e.target && !(0, helper_1.hasClassInTree)(e.target, _this.config.id)) {
                 _this.close();
             }
         };
@@ -712,6 +714,9 @@ var SlimSelect = (function () {
         this.select.setValue();
         this.data.onDataChange();
         this.render();
+        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
+            close = true;
+        }
         if (close) {
             this.close();
         }
@@ -723,7 +728,7 @@ var SlimSelect = (function () {
         this.set(value, type, close, render);
     };
     SlimSelect.prototype.setData = function (data) {
-        var isValid = data_1.validateData(data);
+        var isValid = (0, data_1.validateData)(data);
         if (!isValid) {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
@@ -747,7 +752,7 @@ var SlimSelect = (function () {
                 newData.unshift(selected);
                 for (var i = 0; i < newData.length; i++) {
                     if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
-                        delete newData[i];
+                        newData.splice(i, 1);
                     }
                 }
                 var hasPlaceholder = false;
@@ -766,7 +771,7 @@ var SlimSelect = (function () {
         this.data.setSelectedFromSelect();
     };
     SlimSelect.prototype.addData = function (data) {
-        var isValid = data_1.validateData([data]);
+        var isValid = (0, data_1.validateData)([data]);
         if (!isValid) {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
@@ -783,6 +788,9 @@ var SlimSelect = (function () {
             return;
         }
         if (this.data.contentOpen) {
+            return;
+        }
+        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
             return;
         }
         if (this.beforeOpen) {
@@ -810,7 +818,7 @@ var SlimSelect = (function () {
             this.moveContentBelow();
         }
         else {
-            if (helper_1.putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+            if ((0, helper_1.putContent)(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
                 this.moveContentAbove();
             }
             else {
@@ -823,7 +831,7 @@ var SlimSelect = (function () {
                 var selectedId = selected.id;
                 var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
                 if (selectedOption) {
-                    helper_1.ensureElementInView(this.slim.list, selectedOption);
+                    (0, helper_1.ensureElementInView)(this.slim.list, selectedOption);
                 }
             }
         }
@@ -984,7 +992,7 @@ var SlimSelect = (function () {
     SlimSelect.prototype.destroy = function (id) {
         if (id === void 0) { id = null; }
         var slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
-        var select = (id ? document.querySelector("[data-ssid=" + id + "]") : this.select.element);
+        var select = (id ? document.querySelector("[data-ssid=".concat(id, "]")) : this.select.element);
         if (!slim || !select) {
             return;
         }
@@ -1019,6 +1027,7 @@ exports["default"] = SlimSelect;
 "use strict";
 
 exports.__esModule = true;
+exports.Config = void 0;
 var Config = (function () {
     function Config(info) {
         this.id = '';
@@ -1137,6 +1146,7 @@ exports.Config = Config;
 "use strict";
 
 exports.__esModule = true;
+exports.Select = void 0;
 var helper_1 = __webpack_require__(0);
 var Select = (function () {
     function Select(info) {
@@ -1183,6 +1193,7 @@ var Select = (function () {
         this.element.tabIndex = -1;
         this.element.style.display = 'none';
         this.element.dataset.ssid = this.main.config.id;
+        this.element.setAttribute('aria-hidden', 'true');
     };
     Select.prototype.addEventListeners = function () {
         var _this = this;
@@ -1273,7 +1284,7 @@ var Select = (function () {
         }
         if (info.data && typeof info.data === 'object') {
             Object.keys(info.data).forEach(function (key) {
-                optionEl.setAttribute('data-' + helper_1.kebabCase(key), info.data[key]);
+                optionEl.setAttribute('data-' + (0, helper_1.kebabCase)(key), info.data[key]);
             });
         }
         return optionEl;
@@ -1290,6 +1301,7 @@ exports.Select = Select;
 "use strict";
 
 exports.__esModule = true;
+exports.Slim = void 0;
 var helper_1 = __webpack_require__(0);
 var data_1 = __webpack_require__(1);
 var Slim = (function () {
@@ -1654,7 +1666,7 @@ var Slim = (function () {
                         return;
                     }
                     if (typeof addableValue === 'object') {
-                        var validValue = data_1.validateOption(addableValue);
+                        var validValue = (0, data_1.validateOption)(addableValue);
                         if (validValue) {
                             _this.main.addData(addableValue);
                             addableValueStr_1 = (addableValue.value ? addableValue.value : addableValue.text);
@@ -1721,7 +1733,7 @@ var Slim = (function () {
                 highlighted.classList.remove(this.main.config.highlighted);
             }
             prev.classList.add(this.main.config.highlighted);
-            helper_1.ensureElementInView(this.list, prev);
+            (0, helper_1.ensureElementInView)(this.list, prev);
         }
     };
     Slim.prototype.highlightDown = function () {
@@ -1756,12 +1768,13 @@ var Slim = (function () {
                 highlighted.classList.remove(this.main.config.highlighted);
             }
             next.classList.add(this.main.config.highlighted);
-            helper_1.ensureElementInView(this.list, next);
+            (0, helper_1.ensureElementInView)(this.list, next);
         }
     };
     Slim.prototype.listDiv = function () {
         var list = document.createElement('div');
         list.classList.add(this.main.config.list);
+        list.setAttribute('role', 'listbox');
         return list;
     };
     Slim.prototype.options = function (content) {
@@ -1806,8 +1819,8 @@ var Slim = (function () {
                 optgroupEl_1.appendChild(optgroupLabel);
                 var options = item.options;
                 if (options) {
-                    for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
-                        var o = options_1[_i];
+                    for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
+                        var o = options_1[_a];
                         optgroupEl_1.appendChild(this_1.option(o));
                     }
                     if (this_1.main.config.selectByGroup && this_1.main.config.isMultiple) {
@@ -1845,6 +1858,7 @@ var Slim = (function () {
         }
         var optionEl = document.createElement('div');
         optionEl.classList.add(this.main.config.option);
+        optionEl.setAttribute('role', 'option');
         if (data["class"]) {
             data["class"].split(' ').forEach(function (dataClass) {
                 optionEl.classList.add(dataClass);
@@ -1856,7 +1870,7 @@ var Slim = (function () {
         var selected = this.main.data.getSelected();
         optionEl.dataset.id = data.id;
         if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
-            optionEl.innerHTML = helper_1.highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
+            optionEl.innerHTML = (0, helper_1.highlight)(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
         }
         else if (data.innerHTML) {
             optionEl.innerHTML = data.innerHTML;
@@ -1928,7 +1942,7 @@ var Slim = (function () {
                 }
             }
         });
-        var isSelected = selected && helper_1.isValueInArrayOfObjects(selected, 'id', data.id);
+        var isSelected = selected && (0, helper_1.isValueInArrayOfObjects)(selected, 'id', data.id);
         if (data.disabled || isSelected) {
             optionEl.onclick = null;
             if (!master.main.config.allowDeselectOption) {
