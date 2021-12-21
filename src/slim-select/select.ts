@@ -62,6 +62,7 @@ export class Select {
 
     // Add slim select id
     this.element.dataset.ssid = this.main.config.id
+    this.element.setAttribute('aria-hidden', 'true')
   }
 
   // Add onChange listener to original select

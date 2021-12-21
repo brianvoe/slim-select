@@ -177,6 +177,11 @@ export default class SlimSelect {
     this.data.onDataChange() // Trigger on change callback
     this.render()
 
+    // Close when all options are selected and hidden
+    if (this.config.hideSelectedOption && this.config.isMultiple && (this.data.getSelected() as Option[]).length === this.data.data.length) {
+      close = true
+    }
+
     if (close) { this.close() }
   }
 
@@ -214,7 +219,7 @@ export default class SlimSelect {
         // Look for duplicate selected if so remove it
         for (let i = 0; i < newData.length; i++) {
           if (!newData[i].placeholder && newData[i].value === (selected as Option).value && newData[i].text === (selected as Option).text) {
-            delete newData[i]
+            newData.splice(i, 1)
           }
         }
 
@@ -256,6 +261,9 @@ export default class SlimSelect {
 
     // Dont do anything if the content is already open
     if (this.data.contentOpen) { return }
+
+    // Dont open when all options are selected and hidden
+    if (this.config.hideSelectedOption && this.config.isMultiple && (this.data.getSelected() as Option[]).length === this.data.data.length) { return }
 
     // Run beforeOpen callback
     if (this.beforeOpen) { this.beforeOpen() }
