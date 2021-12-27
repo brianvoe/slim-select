@@ -249,6 +249,7 @@ var Data = (function () {
             id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
             value: (info.value ? info.value : ''),
             text: (info.text ? info.text : ''),
+            innerText: (info.text ? info.text : ''),
             innerHTML: (info.innerHTML ? info.innerHTML : ''),
             selected: (info.selected ? info.selected : false),
             display: (info.display !== undefined ? info.display : true),
@@ -264,6 +265,7 @@ var Data = (function () {
             id: String(Math.floor(Math.random() * 100000000)),
             value: data.value,
             text: data.text,
+            innerText: data.text,
             innerHTML: '',
             selected: false,
             display: true,
@@ -308,10 +310,12 @@ var Data = (function () {
         }
     };
     Data.prototype.pullOptionData = function (option) {
+        var _a;
         return {
             id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
             value: option.value,
-            text: option.text,
+            text: (_a = option.dataset.ssText) !== null && _a !== void 0 ? _a : option.text,
+            innerText: option.innerText,
             innerHTML: option.innerHTML,
             selected: option.selected,
             disabled: option.disabled,
@@ -387,7 +391,7 @@ var Data = (function () {
         return false;
     };
     Data.prototype.getSelected = function () {
-        var value = { text: '', placeholder: this.main.config.placeholderText };
+        var value = { text: '', innerText: '', placeholder: this.main.config.placeholderText };
         var values = [];
         for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
             var d = _a[_i];
@@ -1132,7 +1136,7 @@ var Config = (function () {
         this.addToBody = (info.addToBody === true ? true : false);
     }
     Config.prototype.searchFilter = function (opt, search) {
-        return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
+        return opt.innerText.toLowerCase().indexOf(search.toLowerCase()) !== -1;
     };
     return Config;
 }());
@@ -1262,6 +1266,7 @@ var Select = (function () {
         var optionEl = document.createElement('option');
         optionEl.value = info.value !== '' ? info.value : info.text;
         optionEl.innerHTML = info.innerHTML || info.text;
+        optionEl.setAttribute('data-ss-text', info.text);
         if (info.selected) {
             optionEl.selected = info.selected;
         }

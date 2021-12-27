@@ -137,6 +137,7 @@ export class Select {
     const optionEl = document.createElement('option')
     optionEl.value = info.value !== '' ? info.value : info.text
     optionEl.innerHTML = info.innerHTML || info.text
+    optionEl.setAttribute('data-ss-text', info.text)
     if (info.selected) { optionEl.selected = info.selected }
     if (info.display === false) {
       optionEl.style.display = 'none'
