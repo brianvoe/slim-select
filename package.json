@@ -8,9 +8,6 @@
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
-  "engines": {
-    "node": ">=8"
-  },
   "main": "dist/slimselect.min.js",
   "exports": {
     "require": "./dist/slimselect.min.js",
@@ -31,31 +28,26 @@
     "multiselect"
   ],
   "scripts": {
-    "dev": "vue-cli-service serve",
+    "dev": "vite",
     "library": "rm -r dist && cd src/slim-select && webpack && cd ../../ && npm run cleanDist && npm run renameDist && npm run mjs",
     "cleanDist": "rm dist/slimselectcss.min.js && rm dist/slimselectcss.js",
     "renameDist": "mv 'dist/slimselectcss.css' 'dist/slimselect.css' && mv 'dist/slimselectcss.min.css' 'dist/slimselect.min.css'",
     "docs": "vue-cli-service build",
-    "build": "npm run docs && npm run library",
-    "mjs": "(printf 'var exports = {};'; cat dist/slimselect.min.js; printf 'export default exports.SlimSelect') > dist/slimselect.min.mjs",
-    "lint": "vue-cli-service lint"
+    "build_old": "npm run docs && npm run library",
+    "build": "vue-tsc --noEmit && vite build"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.15",
-    "@vue/cli-plugin-typescript": "^4.5.15",
-    "@vue/cli-service": "^4.5.15",
-    "chance": "^1.1.8",
+    "@types/downloadjs": "^1.4.3",
+    "@vitejs/plugin-vue": "^2.0.1",
     "clipboard": "^2.0.8",
-    "node-sass": "^5.0.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
+    "downloadjs": "^1.4.7",
     "prismjs": "^1.25.0",
-    "sass-loader": "^10.1.0",
+    "sass": "^1.46.0",
     "typescript": "^4.5.4",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "vue": "^2.6.14",
-    "vue-router": "^3.5.3",
-    "vue-template-compiler": "^2.6.14",
-    "vuex": "^3.6.2",
-    "webpack-cli": "^4.9.1"
+    "vite": "^2.7.10",
+    "vue": "^3.2.26",
+    "vue-router": "^4.0.12",
+    "vue-tsc": "^0.30.2",
+    "vuex": "^4.0.2"
   }
 }

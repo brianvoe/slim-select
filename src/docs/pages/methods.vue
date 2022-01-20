@@ -1,10 +1,9 @@
 <script lang="ts">
-import Vue from 'vue'
-import SlimSelect from '@/slim-select'
-import Chance from 'chance'
-const chance = new Chance()
+import { defineComponent } from 'vue'
+import SlimSelect from '../../slim-select'
 
-export default Vue.extend({
+export default defineComponent({
+  name: 'Methods',
   data() {
     return {
       selectedSingle: null as any,
@@ -113,8 +112,8 @@ export default Vue.extend({
       const values = []
       for (let i = 0; i < 10; i++) {
         values.push({
-          text: chance.first() + ' ' + chance.last(),
-          selected: chance.bool()
+          text: 'Bill Mister',
+          selected: Math.random() < 0.5
         })
       }
       this.setDataSingle.setData(values)

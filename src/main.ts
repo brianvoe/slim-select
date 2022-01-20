@@ -1,14 +1,15 @@
-import Vue from 'vue'
-import router from '@/docs/router'
+import './docs/assets/scss/index.scss'
+import './slim-select/slimselect.scss'
 
-import app from '@/docs/app.vue'
+import { createApp } from 'vue'
+import router from './docs/router'
+
+import App from './docs/App.vue'
 import Prism from 'prismjs'
 import Normalizer from 'prismjs/plugins/normalize-whitespace/prism-normalize-whitespace'
 import 'prismjs/plugins/toolbar/prism-toolbar'
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard'
 
-import '@/docs/assets/scss/index.scss'
-import '@/slim-select/slimselect.scss'
 
 new Normalizer({
   'remove-trailing': true,
@@ -17,13 +18,12 @@ new Normalizer({
   'right-trim': true
 })
 
-Vue.mixin({
+const app = createApp(App)
+app.use(router)
+app.mount('#app')
+
+app.mixin({
   updated() {
     Prism.highlightAll()
   }
 })
-
-new Vue({
-  router,
-  render: (h) => h(app)
-}).$mount('#app')

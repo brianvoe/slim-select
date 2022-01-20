@@ -1,8 +1,11 @@
-<script>
-  import SlimSelect from '@/slim-select'
+<script lang="ts">
+  import { defineComponent } from 'vue'
+  import SlimSelect from '../slim-select'
+ import { Option } from '../slim-select/data'
 
-  export default {
-    data() {
+  export default defineComponent({
+    name: 'App',
+    data () {
       const path = this.$route.path
       return {
         year: new Date().getFullYear(),
@@ -18,28 +21,29 @@
     mounted() {
       // Lets redirect to path
       if (this.$route.query.p) {
-        this.$router.push({ path: this.$route.query.p })
+        this.$router.push({ path: this.$route.query.p as string })
       }
 
       const slim = new SlimSelect({
         select: '#select-nav',
         showSearch: false,
         onChange: (info) => {
-          if (!this.$route.path.includes(info.value)) {
-            this.$router.push({ path: info.value })
+          let infoOption = info as Option
+          if (!this.$route.path.includes(infoOption.value!)) {
+            this.$router.push({ path: infoOption.value! })
           }
         }
       })
       slim.setData(this.navData)
 
-      this.$router.onReady(() => {
+      this.$router.isReady().then(() => {
         const urlPathValue = this.$route.path.replace('/', '')
         if (urlPathValue !== '') {
           slim.setSelected(urlPathValue)
         }
       })
     }
-  }
+  })
 </script>
 
 <style lang="scss">

@@ -1,8 +1,10 @@
-<script>
-  import SlimSelect from '@/slim-select'
+<script lang="ts">
+  import { defineComponent } from 'vue'
+  import download from 'downloadjs'
   import packageJson from '../../../package.json'
 
-  export default {
+  export default defineComponent({
+    name: 'Install',
     data: () => {
       return {
         version: packageJson.version
@@ -10,26 +12,28 @@
     },
     methods: {
       download() {
-        function A(blob) {
-          const a = document.createElement('a')
-          document.body.appendChild(a)
-          a.style = 'display: none'
+        download(`https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
 
-          const url = window.URL.createObjectURL(blob)
-          a.href = url
-          a.download = 'slimselect.js'
-          a.click()
-          window.URL.revokeObjectURL(url)
-        }
+        // function A(blob: any) {
+        //   let a = document.createElement('a') as HTMLAnchorElement
+        //   a.style.display = 'none'
+        //   document.body.appendChild(a)
 
-        const xhr = new XMLHttpRequest()
-        xhr.open('GET', `https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
-        xhr.responseType = 'blob'
-        xhr.onload = () => { A(this.response, 'filename') }
-        xhr.send()
+        //   const url = window.URL.createObjectURL(blob)
+        //   a.href = url
+        //   a.download = 'slimselect.js'
+        //   a.click()
+        //   window.URL.revokeObjectURL(url)
+        // }
+
+        // const xhr = new XMLHttpRequest()
+        // xhr.open('GET', `https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
+        // xhr.responseType = 'blob'
+        // xhr.onload = () => { A(this.response, 'filename') }
+        // xhr.send()
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss">

@@ -1,7 +1,0 @@
-{
-  "editor.formatOnSave": false,
-  "extensions.ignoreRecommendations": false,
-  "editor.detectIndentation": false,
-  "editor.tabSize": 2,
-  "tslint.autoFixOnSave": true
-}

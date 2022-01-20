@@ -1,8 +1,9 @@
 <script lang="ts">
-import Vue from 'vue'
-import SlimSelect from '@/slim-select'
+import { defineComponent } from 'vue'
+import SlimSelect from '../../slim-select'
 
-export default Vue.extend({
+export default defineComponent({
+  name: 'Options',
   data() {
     return {
       addToBodySingle: null as any,
