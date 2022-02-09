@@ -46,7 +46,7 @@
     "@vue/cli-service": "^4.5.15",
     "chance": "^1.1.8",
     "clipboard": "^2.0.8",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
     "prismjs": "^1.25.0",
     "sass-loader": "^10.1.0",
