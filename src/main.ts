@@ -1,3 +1,4 @@
+import '../node_modules/prismjs/themes/prism-okaidia.css'
 import './docs/assets/scss/index.scss'
 import './slim-select/slimselect.scss'
 
@@ -8,8 +9,6 @@ import App from './docs/App.vue'
 import Prism from 'prismjs'
 import Normalizer from 'prismjs/plugins/normalize-whitespace/prism-normalize-whitespace'
 import 'prismjs/plugins/toolbar/prism-toolbar'
-import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard'
-
 
 new Normalizer({
   'remove-trailing': true,
@@ -20,10 +19,9 @@ new Normalizer({
 
 const app = createApp(App)
 app.use(router)
-app.mount('#app')
-
 app.mixin({
   updated() {
     Prism.highlightAll()
   }
 })
+app.mount('#app')

@@ -11,26 +11,8 @@
       }
     },
     methods: {
-      download() {
+      downloadLink() {
         download(`https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
-
-        // function A(blob: any) {
-        //   let a = document.createElement('a') as HTMLAnchorElement
-        //   a.style.display = 'none'
-        //   document.body.appendChild(a)
-
-        //   const url = window.URL.createObjectURL(blob)
-        //   a.href = url
-        //   a.download = 'slimselect.js'
-        //   a.click()
-        //   window.URL.revokeObjectURL(url)
-        // }
-
-        // const xhr = new XMLHttpRequest()
-        // xhr.open('GET', `https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
-        // xhr.responseType = 'blob'
-        // xhr.onload = () => { A(this.response, 'filename') }
-        // xhr.send()
       }
     }
   })
@@ -104,7 +86,7 @@
 
     <div class="download-content">
       <h2>Download</h2>
-      <div class="btn" @click="download">Click Here To Download</div>
+      <div class="btn" @click="downloadLink">Click Here To Download</div>
     </div>
 
   </div>

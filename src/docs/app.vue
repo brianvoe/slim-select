@@ -29,9 +29,7 @@
         showSearch: false,
         onChange: (info) => {
           let infoOption = info as Option
-          if (!this.$route.path.includes(infoOption.value!)) {
-            this.$router.push({ path: infoOption.value! })
-          }
+          this.$router.push({ path: infoOption.value! })
         }
       })
       slim.setData(this.navData)
@@ -91,9 +89,7 @@
       </div>
     </div>
     <div class="main">
-      <transition name="fade" mode="out-in" appear>
-        <router-view></router-view>
-      </transition>
+      <router-view />
     </div>
     <div class="footer">
       © {{year}} <a href="http://webiswhatido.com" style="color: #ffffff;" target="_blank">Brian Voelker</a>. Slim Select is under the MIT license.
