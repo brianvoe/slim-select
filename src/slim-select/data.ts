@@ -62,16 +62,12 @@ export class Data {
   // Add to the current data array
   public add(data: Option) {
     this.data.push({
+      ...data,
       id: String(Math.floor(Math.random() * 100000000)),
-      value: data.value,
-      text: data.text,
-      innerHTML: '',
       selected: false,
       display: true,
       disabled: false,
       placeholder: false,
-      class: undefined,
-      mandatory: data.mandatory,
       data: {}
     })
   }
