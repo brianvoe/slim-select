@@ -180,7 +180,8 @@ export class Slim {
         return
       }
 
-      if (this.main.selected() === '') {
+      const selectedValue = this.main.selected()
+      if (selectedValue === '' || selectedValue === undefined) {
         this.singleSelected.deselect.classList.add('ss-hide')
       } else {
         this.singleSelected.deselect.classList.remove('ss-hide')

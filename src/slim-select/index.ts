@@ -152,7 +152,7 @@ export default class SlimSelect {
     return select
   }
 
-  public selected(): string | string[] {
+  public selected(): string | string[] | undefined {
     if (this.config.isMultiple) {
       const selected = this.data.getSelected() as Option[]
       const outputSelected: string[] = []
@@ -162,7 +162,7 @@ export default class SlimSelect {
       return outputSelected
     } else {
       const selected = this.data.getSelected() as Option
-      return (selected ? selected.value as string : '')
+      return (selected ? selected.value : '')
     }
   }
 
