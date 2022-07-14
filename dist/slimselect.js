@@ -7,228 +7,133 @@
 		exports["SlimSelect"] = factory();
 	else
 		root["SlimSelect"] = factory();
-})(window, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+})(self, function() {
+return /******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
 
-"use strict";
+/***/ 526:
+/***/ (function(__unused_webpack_module, exports) {
+
 
 exports.__esModule = true;
-exports.kebabCase = exports.highlight = exports.isValueInArrayOfObjects = exports.debounce = exports.putContent = exports.ensureElementInView = exports.hasClassInTree = void 0;
-function hasClassInTree(element, className) {
-    function hasClass(e, c) {
-        if (!(!c || !e || !e.classList || !e.classList.contains(c))) {
-            return e;
+exports.Config = void 0;
+var Config = (function () {
+    function Config(info) {
+        this.id = '';
+        this.isMultiple = false;
+        this.isAjax = false;
+        this.isSearching = false;
+        this.showSearch = true;
+        this.searchFocus = true;
+        this.searchHighlight = false;
+        this.closeOnSelect = true;
+        this.showContent = 'auto';
+        this.searchPlaceholder = 'Search';
+        this.searchText = 'No Results';
+        this.searchingText = 'Searching...';
+        this.placeholderText = 'Select Value';
+        this.allowDeselect = false;
+        this.allowDeselectOption = false;
+        this.hideSelectedOption = false;
+        this.deselectLabel = 'x';
+        this.isEnabled = true;
+        this.valuesUseText = false;
+        this.showOptionTooltips = false;
+        this.selectByGroup = false;
+        this.limit = 0;
+        this.timeoutDelay = 200;
+        this.addToBody = false;
+        this.main = 'ss-main';
+        this.singleSelected = 'ss-single-selected';
+        this.arrow = 'ss-arrow';
+        this.multiSelected = 'ss-multi-selected';
+        this.add = 'ss-add';
+        this.plus = 'ss-plus';
+        this.values = 'ss-values';
+        this.value = 'ss-value';
+        this.valueText = 'ss-value-text';
+        this.valueDelete = 'ss-value-delete';
+        this.content = 'ss-content';
+        this.open = 'ss-open';
+        this.openAbove = 'ss-open-above';
+        this.openBelow = 'ss-open-below';
+        this.search = 'ss-search';
+        this.searchHighlighter = 'ss-search-highlight';
+        this.addable = 'ss-addable';
+        this.list = 'ss-list';
+        this.optgroup = 'ss-optgroup';
+        this.optgroupLabel = 'ss-optgroup-label';
+        this.optgroupLabelSelectable = 'ss-optgroup-label-selectable';
+        this.option = 'ss-option';
+        this.optionSelected = 'ss-option-selected';
+        this.highlighted = 'ss-highlighted';
+        this.disabled = 'ss-disabled';
+        this.hide = 'ss-hide';
+        this.id = 'ss-' + Math.floor(Math.random() * 100000);
+        this.style = info.select.style.cssText;
+        this["class"] = info.select.className.split(' ');
+        this.isMultiple = info.select.multiple;
+        this.isAjax = info.isAjax;
+        this.showSearch = (info.showSearch === false ? false : true);
+        this.searchFocus = (info.searchFocus === false ? false : true);
+        this.searchHighlight = (info.searchHighlight === true ? true : false);
+        this.closeOnSelect = (info.closeOnSelect === false ? false : true);
+        if (info.showContent) {
+            this.showContent = info.showContent;
         }
-        return null;
-    }
-    function parentByClass(e, c) {
-        if (!e || e === document) {
-            return null;
+        this.isEnabled = (info.isEnabled === false ? false : true);
+        if (info.searchPlaceholder) {
+            this.searchPlaceholder = info.searchPlaceholder;
         }
-        else if (hasClass(e, c)) {
-            return e;
+        if (info.searchText) {
+            this.searchText = info.searchText;
         }
-        else {
-            return parentByClass(e.parentNode, c);
+        if (info.searchingText) {
+            this.searchingText = info.searchingText;
         }
-    }
-    return hasClass(element, className) || parentByClass(element, className);
-}
-exports.hasClassInTree = hasClassInTree;
-function ensureElementInView(container, element) {
-    var cTop = container.scrollTop + container.offsetTop;
-    var cBottom = cTop + container.clientHeight;
-    var eTop = element.offsetTop;
-    var eBottom = eTop + element.clientHeight;
-    if (eTop < cTop) {
-        container.scrollTop -= (cTop - eTop);
-    }
-    else if (eBottom > cBottom) {
-        container.scrollTop += (eBottom - cBottom);
-    }
-}
-exports.ensureElementInView = ensureElementInView;
-function putContent(el, currentPosition, isOpen) {
-    var height = el.offsetHeight;
-    var rect = el.getBoundingClientRect();
-    var elemTop = (isOpen ? rect.top : rect.top - height);
-    var elemBottom = (isOpen ? rect.bottom : rect.bottom + height);
-    if (elemTop <= 0) {
-        return 'below';
-    }
-    if (elemBottom >= window.innerHeight) {
-        return 'above';
-    }
-    return (isOpen ? currentPosition : 'below');
-}
-exports.putContent = putContent;
-function debounce(func, wait, immediate) {
-    if (wait === void 0) { wait = 100; }
-    if (immediate === void 0) { immediate = false; }
-    var timeout;
-    return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
+        if (info.placeholderText) {
+            this.placeholderText = info.placeholderText;
         }
-        var context = self;
-        var later = function () {
-            timeout = null;
-            if (!immediate) {
-                func.apply(context, args);
-            }
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) {
-            func.apply(context, args);
+        this.allowDeselect = (info.allowDeselect === true ? true : false);
+        this.allowDeselectOption = (info.allowDeselectOption === true ? true : false);
+        this.hideSelectedOption = (info.hideSelectedOption === true ? true : false);
+        if (info.deselectLabel) {
+            this.deselectLabel = info.deselectLabel;
         }
+        if (info.valuesUseText) {
+            this.valuesUseText = info.valuesUseText;
+        }
+        if (info.showOptionTooltips) {
+            this.showOptionTooltips = info.showOptionTooltips;
+        }
+        if (info.selectByGroup) {
+            this.selectByGroup = info.selectByGroup;
+        }
+        if (info.limit) {
+            this.limit = info.limit;
+        }
+        if (info.searchFilter) {
+            this.searchFilter = info.searchFilter;
+        }
+        if (info.timeoutDelay != null) {
+            this.timeoutDelay = info.timeoutDelay;
+        }
+        this.addToBody = (info.addToBody === true ? true : false);
+    }
+    Config.prototype.searchFilter = function (opt, search) {
+        return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
     };
-}
-exports.debounce = debounce;
-function isValueInArrayOfObjects(selected, key, value) {
-    if (!Array.isArray(selected)) {
-        return selected[key] === value;
-    }
-    for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
-        var s = selected_1[_i];
-        if (s && s[key] && s[key] === value) {
-            return true;
-        }
-    }
-    return false;
-}
-exports.isValueInArrayOfObjects = isValueInArrayOfObjects;
-function highlight(str, search, className) {
-    var completedString = str;
-    var regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
-    if (!str.match(regex)) {
-        return str;
-    }
-    var matchStartPosition = str.match(regex).index;
-    var matchEndPosition = matchStartPosition + str.match(regex)[0].toString().length;
-    var originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition);
-    completedString = completedString.replace(regex, "<mark class=\"".concat(className, "\">").concat(originalTextFoundByRegex, "</mark>"));
-    return completedString;
-}
-exports.highlight = highlight;
-function kebabCase(str) {
-    var result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, function (match) { return '-' + match.toLowerCase(); });
-    return (str[0] === str[0].toUpperCase())
-        ? result.substring(1)
-        : result;
-}
-exports.kebabCase = kebabCase;
-(function () {
-    var w = window;
-    if (typeof w.CustomEvent === 'function') {
-        return;
-    }
-    function CustomEvent(event, params) {
-        params = params || { bubbles: false, cancelable: false, detail: undefined };
-        var evt = document.createEvent('CustomEvent');
-        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-        return evt;
-    }
-    CustomEvent.prototype = w.Event.prototype;
-    w.CustomEvent = CustomEvent;
-})();
+    return Config;
+}());
+exports.Config = Config;
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/***/ 442:
+/***/ (function(__unused_webpack_module, exports) {
+
 
 exports.__esModule = true;
 exports.validateOption = exports.validateData = exports.Data = void 0;
@@ -563,591 +468,144 @@ exports.validateOption = validateOption;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/***/ 86:
+/***/ (function(__unused_webpack_module, exports) {
+
 
 exports.__esModule = true;
-var config_1 = __webpack_require__(3);
-var select_1 = __webpack_require__(4);
-var slim_1 = __webpack_require__(5);
-var data_1 = __webpack_require__(1);
-var helper_1 = __webpack_require__(0);
-var SlimSelect = (function () {
-    function SlimSelect(info) {
-        var _this = this;
-        this.ajax = null;
-        this.addable = null;
-        this.beforeOnChange = null;
-        this.onChange = null;
-        this.beforeOpen = null;
-        this.afterOpen = null;
-        this.beforeClose = null;
-        this.afterClose = null;
-        this.windowScroll = (0, helper_1.debounce)(function (e) {
-            if (_this.data.contentOpen) {
-                if ((0, helper_1.putContent)(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
-                    _this.moveContentAbove();
-                }
-                else {
-                    _this.moveContentBelow();
-                }
-            }
-        });
-        this.documentClick = function (e) {
-            if (e.target && !(0, helper_1.hasClassInTree)(e.target, _this.config.id)) {
-                _this.close();
+exports.kebabCase = exports.highlight = exports.isValueInArrayOfObjects = exports.debounce = exports.putContent = exports.ensureElementInView = exports.hasClassInTree = void 0;
+function hasClassInTree(element, className) {
+    function hasClass(e, c) {
+        if (!(!c || !e || !e.classList || !e.classList.contains(c))) {
+            return e;
+        }
+        return null;
+    }
+    function parentByClass(e, c) {
+        if (!e || e === document) {
+            return null;
+        }
+        else if (hasClass(e, c)) {
+            return e;
+        }
+        else {
+            return parentByClass(e.parentNode, c);
+        }
+    }
+    return hasClass(element, className) || parentByClass(element, className);
+}
+exports.hasClassInTree = hasClassInTree;
+function ensureElementInView(container, element) {
+    var cTop = container.scrollTop + container.offsetTop;
+    var cBottom = cTop + container.clientHeight;
+    var eTop = element.offsetTop;
+    var eBottom = eTop + element.clientHeight;
+    if (eTop < cTop) {
+        container.scrollTop -= (cTop - eTop);
+    }
+    else if (eBottom > cBottom) {
+        container.scrollTop += (eBottom - cBottom);
+    }
+}
+exports.ensureElementInView = ensureElementInView;
+function putContent(el, currentPosition, isOpen) {
+    var height = el.offsetHeight;
+    var rect = el.getBoundingClientRect();
+    var elemTop = (isOpen ? rect.top : rect.top - height);
+    var elemBottom = (isOpen ? rect.bottom : rect.bottom + height);
+    if (elemTop <= 0) {
+        return 'below';
+    }
+    if (elemBottom >= window.innerHeight) {
+        return 'above';
+    }
+    return (isOpen ? currentPosition : 'below');
+}
+exports.putContent = putContent;
+function debounce(func, wait, immediate) {
+    if (wait === void 0) { wait = 100; }
+    if (immediate === void 0) { immediate = false; }
+    var timeout;
+    return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var context = self;
+        var later = function () {
+            timeout = null;
+            if (!immediate) {
+                func.apply(context, args);
             }
         };
-        var selectElement = this.validate(info);
-        if (selectElement.dataset.ssid) {
-            this.destroy(selectElement.dataset.ssid);
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) {
+            func.apply(context, args);
         }
-        if (info.ajax) {
-            this.ajax = info.ajax;
-        }
-        if (info.addable) {
-            this.addable = info.addable;
-        }
-        this.config = new config_1.Config({
-            select: selectElement,
-            isAjax: (info.ajax ? true : false),
-            showSearch: info.showSearch,
-            searchPlaceholder: info.searchPlaceholder,
-            searchText: info.searchText,
-            searchingText: info.searchingText,
-            searchFocus: info.searchFocus,
-            searchHighlight: info.searchHighlight,
-            searchFilter: info.searchFilter,
-            closeOnSelect: info.closeOnSelect,
-            showContent: info.showContent,
-            placeholderText: info.placeholder,
-            allowDeselect: info.allowDeselect,
-            allowDeselectOption: info.allowDeselectOption,
-            hideSelectedOption: info.hideSelectedOption,
-            deselectLabel: info.deselectLabel,
-            isEnabled: info.isEnabled,
-            valuesUseText: info.valuesUseText,
-            showOptionTooltips: info.showOptionTooltips,
-            selectByGroup: info.selectByGroup,
-            limit: info.limit,
-            timeoutDelay: info.timeoutDelay,
-            addToBody: info.addToBody
-        });
-        this.select = new select_1.Select({
-            select: selectElement,
-            main: this
-        });
-        this.data = new data_1.Data({ main: this });
-        this.slim = new slim_1.Slim({ main: this });
-        if (this.select.element.parentNode) {
-            this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
-        }
-        if (info.data) {
-            this.setData(info.data);
-        }
-        else {
-            this.render();
-        }
-        document.addEventListener('click', this.documentClick);
-        if (this.config.showContent === 'auto') {
-            window.addEventListener('scroll', this.windowScroll, false);
-        }
-        if (info.beforeOnChange) {
-            this.beforeOnChange = info.beforeOnChange;
-        }
-        if (info.onChange) {
-            this.onChange = info.onChange;
-        }
-        if (info.beforeOpen) {
-            this.beforeOpen = info.beforeOpen;
-        }
-        if (info.afterOpen) {
-            this.afterOpen = info.afterOpen;
-        }
-        if (info.beforeClose) {
-            this.beforeClose = info.beforeClose;
-        }
-        if (info.afterClose) {
-            this.afterClose = info.afterClose;
-        }
-        if (!this.config.isEnabled) {
-            this.disable();
+    };
+}
+exports.debounce = debounce;
+function isValueInArrayOfObjects(selected, key, value) {
+    if (!Array.isArray(selected)) {
+        return selected[key] === value;
+    }
+    for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
+        var s = selected_1[_i];
+        if (s && s[key] && s[key] === value) {
+            return true;
         }
     }
-    SlimSelect.prototype.validate = function (info) {
-        var select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
-        if (!select) {
-            throw new Error('Could not find select element');
-        }
-        if (select.tagName !== 'SELECT') {
-            throw new Error('Element isnt of type select');
-        }
-        return select;
-    };
-    SlimSelect.prototype.selected = function () {
-        if (this.config.isMultiple) {
-            var selected = this.data.getSelected();
-            var outputSelected = [];
-            for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
-                var s = selected_1[_i];
-                outputSelected.push(s.value);
-            }
-            return outputSelected;
-        }
-        else {
-            var selected = this.data.getSelected();
-            return (selected ? selected.value : '');
-        }
-    };
-    SlimSelect.prototype.set = function (value, type, close, render) {
-        if (type === void 0) { type = 'value'; }
-        if (close === void 0) { close = true; }
-        if (render === void 0) { render = true; }
-        if (this.config.isMultiple && !Array.isArray(value)) {
-            this.data.addToSelected(value, type);
-        }
-        else {
-            this.data.setSelected(value, type);
-        }
-        this.select.setValue();
-        this.data.onDataChange();
-        this.render();
-        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
-            close = true;
-        }
-        if (close) {
-            this.close();
-        }
-    };
-    SlimSelect.prototype.setSelected = function (value, type, close, render) {
-        if (type === void 0) { type = 'value'; }
-        if (close === void 0) { close = true; }
-        if (render === void 0) { render = true; }
-        this.set(value, type, close, render);
-    };
-    SlimSelect.prototype.setData = function (data) {
-        var isValid = (0, data_1.validateData)(data);
-        if (!isValid) {
-            console.error('Validation problem on: #' + this.select.element.id);
-            return;
-        }
-        var newData = JSON.parse(JSON.stringify(data));
-        var selected = this.data.getSelected();
-        for (var i = 0; i < newData.length; i++) {
-            if (!newData[i].value && !newData[i].placeholder) {
-                newData[i].value = newData[i].text;
-            }
-        }
-        if (this.config.isAjax && selected) {
-            if (this.config.isMultiple) {
-                var reverseSelected = selected.reverse();
-                for (var _i = 0, reverseSelected_1 = reverseSelected; _i < reverseSelected_1.length; _i++) {
-                    var r = reverseSelected_1[_i];
-                    newData.unshift(r);
-                }
-            }
-            else {
-                newData.unshift(selected);
-                for (var i = 0; i < newData.length; i++) {
-                    if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
-                        newData.splice(i, 1);
-                    }
-                }
-                var hasPlaceholder = false;
-                for (var i = 0; i < newData.length; i++) {
-                    if (newData[i].placeholder) {
-                        hasPlaceholder = true;
-                    }
-                }
-                if (!hasPlaceholder) {
-                    newData.unshift({ text: '', placeholder: true });
-                }
-            }
-        }
-        this.select.create(newData);
-        this.data.parseSelectData();
-        this.data.setSelectedFromSelect();
-    };
-    SlimSelect.prototype.addData = function (data) {
-        var isValid = (0, data_1.validateData)([data]);
-        if (!isValid) {
-            console.error('Validation problem on: #' + this.select.element.id);
-            return;
-        }
-        this.data.add(this.data.newOption(data));
-        this.select.create(this.data.data);
-        this.data.parseSelectData();
-        this.data.setSelectedFromSelect();
-        this.render();
-    };
-    SlimSelect.prototype.open = function () {
-        var _this = this;
-        if (!this.config.isEnabled) {
-            return;
-        }
-        if (this.data.contentOpen) {
-            return;
-        }
-        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
-            return;
-        }
-        if (this.beforeOpen) {
-            this.beforeOpen();
-        }
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            this.slim.multiSelected.plus.classList.add('ss-cross');
-        }
-        else if (this.slim.singleSelected) {
-            this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down');
-            this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up');
-        }
-        this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow));
-        if (this.config.addToBody) {
-            var containerRect = this.slim.container.getBoundingClientRect();
-            this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px';
-            this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px';
-            this.slim.content.style.width = containerRect.width + 'px';
-        }
-        this.slim.content.classList.add(this.config.open);
-        if (this.config.showContent.toLowerCase() === 'up') {
-            this.moveContentAbove();
-        }
-        else if (this.config.showContent.toLowerCase() === 'down') {
-            this.moveContentBelow();
-        }
-        else {
-            if ((0, helper_1.putContent)(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
-                this.moveContentAbove();
-            }
-            else {
-                this.moveContentBelow();
-            }
-        }
-        if (!this.config.isMultiple) {
-            var selected = this.data.getSelected();
-            if (selected) {
-                var selectedId = selected.id;
-                var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
-                if (selectedOption) {
-                    (0, helper_1.ensureElementInView)(this.slim.list, selectedOption);
-                }
-            }
-        }
-        setTimeout(function () {
-            _this.data.contentOpen = true;
-            if (_this.config.searchFocus) {
-                _this.slim.search.input.focus();
-            }
-            if (_this.afterOpen) {
-                _this.afterOpen();
-            }
-        }, this.config.timeoutDelay);
-    };
-    SlimSelect.prototype.close = function () {
-        var _this = this;
-        if (!this.data.contentOpen) {
-            return;
-        }
-        if (this.beforeClose) {
-            this.beforeClose();
-        }
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            this.slim.multiSelected.container.classList.remove(this.config.openAbove);
-            this.slim.multiSelected.container.classList.remove(this.config.openBelow);
-            this.slim.multiSelected.plus.classList.remove('ss-cross');
-        }
-        else if (this.slim.singleSelected) {
-            this.slim.singleSelected.container.classList.remove(this.config.openAbove);
-            this.slim.singleSelected.container.classList.remove(this.config.openBelow);
-            this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down');
-            this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up');
-        }
-        this.slim.content.classList.remove(this.config.open);
-        this.data.contentOpen = false;
-        this.search('');
-        setTimeout(function () {
-            _this.slim.content.removeAttribute('style');
-            _this.data.contentPosition = 'below';
-            if (_this.config.isMultiple && _this.slim.multiSelected) {
-                _this.slim.multiSelected.container.classList.remove(_this.config.openAbove);
-                _this.slim.multiSelected.container.classList.remove(_this.config.openBelow);
-            }
-            else if (_this.slim.singleSelected) {
-                _this.slim.singleSelected.container.classList.remove(_this.config.openAbove);
-                _this.slim.singleSelected.container.classList.remove(_this.config.openBelow);
-            }
-            _this.slim.search.input.blur();
-            if (_this.afterClose) {
-                _this.afterClose();
-            }
-        }, this.config.timeoutDelay);
-    };
-    SlimSelect.prototype.moveContentAbove = function () {
-        var selectHeight = 0;
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            selectHeight = this.slim.multiSelected.container.offsetHeight;
-        }
-        else if (this.slim.singleSelected) {
-            selectHeight = this.slim.singleSelected.container.offsetHeight;
-        }
-        var contentHeight = this.slim.content.offsetHeight;
-        var height = selectHeight + contentHeight - 1;
-        this.slim.content.style.margin = '-' + height + 'px 0 0 0';
-        this.slim.content.style.height = (height - selectHeight + 1) + 'px';
-        this.slim.content.style.transformOrigin = 'center bottom';
-        this.data.contentPosition = 'above';
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            this.slim.multiSelected.container.classList.remove(this.config.openBelow);
-            this.slim.multiSelected.container.classList.add(this.config.openAbove);
-        }
-        else if (this.slim.singleSelected) {
-            this.slim.singleSelected.container.classList.remove(this.config.openBelow);
-            this.slim.singleSelected.container.classList.add(this.config.openAbove);
-        }
-    };
-    SlimSelect.prototype.moveContentBelow = function () {
-        this.data.contentPosition = 'below';
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            this.slim.multiSelected.container.classList.remove(this.config.openAbove);
-            this.slim.multiSelected.container.classList.add(this.config.openBelow);
-        }
-        else if (this.slim.singleSelected) {
-            this.slim.singleSelected.container.classList.remove(this.config.openAbove);
-            this.slim.singleSelected.container.classList.add(this.config.openBelow);
-        }
-    };
-    SlimSelect.prototype.enable = function () {
-        this.config.isEnabled = true;
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            this.slim.multiSelected.container.classList.remove(this.config.disabled);
-        }
-        else if (this.slim.singleSelected) {
-            this.slim.singleSelected.container.classList.remove(this.config.disabled);
-        }
-        this.select.triggerMutationObserver = false;
-        this.select.element.disabled = false;
-        this.slim.search.input.disabled = false;
-        this.select.triggerMutationObserver = true;
-    };
-    SlimSelect.prototype.disable = function () {
-        this.config.isEnabled = false;
-        if (this.config.isMultiple && this.slim.multiSelected) {
-            this.slim.multiSelected.container.classList.add(this.config.disabled);
-        }
-        else if (this.slim.singleSelected) {
-            this.slim.singleSelected.container.classList.add(this.config.disabled);
-        }
-        this.select.triggerMutationObserver = false;
-        this.select.element.disabled = true;
-        this.slim.search.input.disabled = true;
-        this.select.triggerMutationObserver = true;
-    };
-    SlimSelect.prototype.search = function (value) {
-        if (this.data.searchValue === value) {
-            return;
-        }
-        this.slim.search.input.value = value;
-        if (this.config.isAjax) {
-            var master_1 = this;
-            this.config.isSearching = true;
-            this.render();
-            if (this.ajax) {
-                this.ajax(value, function (info) {
-                    master_1.config.isSearching = false;
-                    if (Array.isArray(info)) {
-                        info.unshift({ text: '', placeholder: true });
-                        master_1.setData(info);
-                        master_1.data.search(value);
-                        master_1.render();
-                    }
-                    else if (typeof info === 'string') {
-                        master_1.slim.options(info);
-                    }
-                    else {
-                        master_1.render();
-                    }
-                });
-            }
-        }
-        else {
-            this.data.search(value);
-            this.render();
-        }
-    };
-    SlimSelect.prototype.setSearchText = function (text) {
-        this.config.searchText = text;
-    };
-    SlimSelect.prototype.render = function () {
-        if (this.config.isMultiple) {
-            this.slim.values();
-        }
-        else {
-            this.slim.placeholder();
-            this.slim.deselect();
-        }
-        this.slim.options();
-    };
-    SlimSelect.prototype.destroy = function (id) {
-        if (id === void 0) { id = null; }
-        var slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
-        var select = (id ? document.querySelector("[data-ssid=".concat(id, "]")) : this.select.element);
-        if (!slim || !select) {
-            return;
-        }
-        document.removeEventListener('click', this.documentClick);
-        if (this.config.showContent === 'auto') {
-            window.removeEventListener('scroll', this.windowScroll, false);
-        }
-        select.style.display = '';
-        delete select.dataset.ssid;
-        var el = select;
-        el.slim = null;
-        if (slim.parentElement) {
-            slim.parentElement.removeChild(slim);
-        }
-        if (this.config.addToBody) {
-            var slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content);
-            if (!slimContent) {
-                return;
-            }
-            document.body.removeChild(slimContent);
-        }
-    };
-    return SlimSelect;
-}());
-exports["default"] = SlimSelect;
+    return false;
+}
+exports.isValueInArrayOfObjects = isValueInArrayOfObjects;
+function highlight(str, search, className) {
+    var completedString = str;
+    var regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
+    if (!str.match(regex)) {
+        return str;
+    }
+    var matchStartPosition = str.match(regex).index;
+    var matchEndPosition = matchStartPosition + str.match(regex)[0].toString().length;
+    var originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition);
+    completedString = completedString.replace(regex, "<mark class=\"".concat(className, "\">").concat(originalTextFoundByRegex, "</mark>"));
+    return completedString;
+}
+exports.highlight = highlight;
+function kebabCase(str) {
+    var result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, function (match) { return '-' + match.toLowerCase(); });
+    return (str[0] === str[0].toUpperCase())
+        ? result.substring(1)
+        : result;
+}
+exports.kebabCase = kebabCase;
+(function () {
+    var w = window;
+    if (typeof w.CustomEvent === 'function') {
+        return;
+    }
+    function CustomEvent(event, params) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = w.Event.prototype;
+    w.CustomEvent = CustomEvent;
+})();
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/***/ 437:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-exports.__esModule = true;
-exports.Config = void 0;
-var Config = (function () {
-    function Config(info) {
-        this.id = '';
-        this.isMultiple = false;
-        this.isAjax = false;
-        this.isSearching = false;
-        this.showSearch = true;
-        this.searchFocus = true;
-        this.searchHighlight = false;
-        this.closeOnSelect = true;
-        this.showContent = 'auto';
-        this.searchPlaceholder = 'Search';
-        this.searchText = 'No Results';
-        this.searchingText = 'Searching...';
-        this.placeholderText = 'Select Value';
-        this.allowDeselect = false;
-        this.allowDeselectOption = false;
-        this.hideSelectedOption = false;
-        this.deselectLabel = 'x';
-        this.isEnabled = true;
-        this.valuesUseText = false;
-        this.showOptionTooltips = false;
-        this.selectByGroup = false;
-        this.limit = 0;
-        this.timeoutDelay = 200;
-        this.addToBody = false;
-        this.main = 'ss-main';
-        this.singleSelected = 'ss-single-selected';
-        this.arrow = 'ss-arrow';
-        this.multiSelected = 'ss-multi-selected';
-        this.add = 'ss-add';
-        this.plus = 'ss-plus';
-        this.values = 'ss-values';
-        this.value = 'ss-value';
-        this.valueText = 'ss-value-text';
-        this.valueDelete = 'ss-value-delete';
-        this.content = 'ss-content';
-        this.open = 'ss-open';
-        this.openAbove = 'ss-open-above';
-        this.openBelow = 'ss-open-below';
-        this.search = 'ss-search';
-        this.searchHighlighter = 'ss-search-highlight';
-        this.addable = 'ss-addable';
-        this.list = 'ss-list';
-        this.optgroup = 'ss-optgroup';
-        this.optgroupLabel = 'ss-optgroup-label';
-        this.optgroupLabelSelectable = 'ss-optgroup-label-selectable';
-        this.option = 'ss-option';
-        this.optionSelected = 'ss-option-selected';
-        this.highlighted = 'ss-highlighted';
-        this.disabled = 'ss-disabled';
-        this.hide = 'ss-hide';
-        this.id = 'ss-' + Math.floor(Math.random() * 100000);
-        this.style = info.select.style.cssText;
-        this["class"] = info.select.className.split(' ');
-        this.isMultiple = info.select.multiple;
-        this.isAjax = info.isAjax;
-        this.showSearch = (info.showSearch === false ? false : true);
-        this.searchFocus = (info.searchFocus === false ? false : true);
-        this.searchHighlight = (info.searchHighlight === true ? true : false);
-        this.closeOnSelect = (info.closeOnSelect === false ? false : true);
-        if (info.showContent) {
-            this.showContent = info.showContent;
-        }
-        this.isEnabled = (info.isEnabled === false ? false : true);
-        if (info.searchPlaceholder) {
-            this.searchPlaceholder = info.searchPlaceholder;
-        }
-        if (info.searchText) {
-            this.searchText = info.searchText;
-        }
-        if (info.searchingText) {
-            this.searchingText = info.searchingText;
-        }
-        if (info.placeholderText) {
-            this.placeholderText = info.placeholderText;
-        }
-        this.allowDeselect = (info.allowDeselect === true ? true : false);
-        this.allowDeselectOption = (info.allowDeselectOption === true ? true : false);
-        this.hideSelectedOption = (info.hideSelectedOption === true ? true : false);
-        if (info.deselectLabel) {
-            this.deselectLabel = info.deselectLabel;
-        }
-        if (info.valuesUseText) {
-            this.valuesUseText = info.valuesUseText;
-        }
-        if (info.showOptionTooltips) {
-            this.showOptionTooltips = info.showOptionTooltips;
-        }
-        if (info.selectByGroup) {
-            this.selectByGroup = info.selectByGroup;
-        }
-        if (info.limit) {
-            this.limit = info.limit;
-        }
-        if (info.searchFilter) {
-            this.searchFilter = info.searchFilter;
-        }
-        if (info.timeoutDelay != null) {
-            this.timeoutDelay = info.timeoutDelay;
-        }
-        this.addToBody = (info.addToBody === true ? true : false);
-    }
-    Config.prototype.searchFilter = function (opt, search) {
-        return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-    };
-    return Config;
-}());
-exports.Config = Config;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 
 exports.__esModule = true;
 exports.Select = void 0;
-var helper_1 = __webpack_require__(0);
+var helper_1 = __webpack_require__(86);
 var Select = (function () {
     function Select(info) {
         this.triggerMutationObserver = true;
@@ -1295,15 +753,16 @@ exports.Select = Select;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/***/ 682:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
 
 exports.__esModule = true;
 exports.Slim = void 0;
-var helper_1 = __webpack_require__(0);
-var data_1 = __webpack_require__(1);
+var helper_1 = __webpack_require__(86);
+var data_1 = __webpack_require__(442);
+var helper_2 = __webpack_require__(86);
 var Slim = (function () {
     function Slim(info) {
         this.main = info.main;
@@ -1958,6 +1417,12 @@ var Slim = (function () {
         else {
             optionEl.classList.remove(this.main.config.optionSelected);
         }
+        if (data.data && typeof data.data === 'object') {
+            var dataSet_1 = data.data;
+            Object.keys(dataSet_1).forEach(function (key) {
+                optionEl.setAttribute('data-' + (0, helper_2.kebabCase)(key), dataSet_1[key]);
+            });
+        }
         return optionEl;
     };
     return Slim;
@@ -1966,5 +1431,494 @@ exports.Slim = Slim;
 
 
 /***/ })
-/******/ ])["default"];
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+!function() {
+var exports = __webpack_exports__;
+var __webpack_unused_export__;
+
+__webpack_unused_export__ = true;
+var config_1 = __webpack_require__(526);
+var select_1 = __webpack_require__(437);
+var slim_1 = __webpack_require__(682);
+var data_1 = __webpack_require__(442);
+var helper_1 = __webpack_require__(86);
+var SlimSelect = (function () {
+    function SlimSelect(info) {
+        var _this = this;
+        this.ajax = null;
+        this.addable = null;
+        this.beforeOnChange = null;
+        this.onChange = null;
+        this.beforeOpen = null;
+        this.afterOpen = null;
+        this.beforeClose = null;
+        this.afterClose = null;
+        this.windowScroll = (0, helper_1.debounce)(function (e) {
+            if (_this.data.contentOpen) {
+                if ((0, helper_1.putContent)(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
+                    _this.moveContentAbove();
+                }
+                else {
+                    _this.moveContentBelow();
+                }
+            }
+        });
+        this.documentClick = function (e) {
+            if (e.target && !(0, helper_1.hasClassInTree)(e.target, _this.config.id)) {
+                _this.close();
+            }
+        };
+        var selectElement = this.validate(info);
+        if (selectElement.dataset.ssid) {
+            this.destroy(selectElement.dataset.ssid);
+        }
+        if (info.ajax) {
+            this.ajax = info.ajax;
+        }
+        if (info.addable) {
+            this.addable = info.addable;
+        }
+        this.config = new config_1.Config({
+            select: selectElement,
+            isAjax: (info.ajax ? true : false),
+            showSearch: info.showSearch,
+            searchPlaceholder: info.searchPlaceholder,
+            searchText: info.searchText,
+            searchingText: info.searchingText,
+            searchFocus: info.searchFocus,
+            searchHighlight: info.searchHighlight,
+            searchFilter: info.searchFilter,
+            closeOnSelect: info.closeOnSelect,
+            showContent: info.showContent,
+            placeholderText: info.placeholder,
+            allowDeselect: info.allowDeselect,
+            allowDeselectOption: info.allowDeselectOption,
+            hideSelectedOption: info.hideSelectedOption,
+            deselectLabel: info.deselectLabel,
+            isEnabled: info.isEnabled,
+            valuesUseText: info.valuesUseText,
+            showOptionTooltips: info.showOptionTooltips,
+            selectByGroup: info.selectByGroup,
+            limit: info.limit,
+            timeoutDelay: info.timeoutDelay,
+            addToBody: info.addToBody
+        });
+        this.select = new select_1.Select({
+            select: selectElement,
+            main: this
+        });
+        this.data = new data_1.Data({ main: this });
+        this.slim = new slim_1.Slim({ main: this });
+        if (this.select.element.parentNode) {
+            this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling);
+        }
+        if (info.data) {
+            this.setData(info.data);
+        }
+        else {
+            this.render();
+        }
+        document.addEventListener('click', this.documentClick);
+        if (this.config.showContent === 'auto') {
+            window.addEventListener('scroll', this.windowScroll, false);
+        }
+        if (info.beforeOnChange) {
+            this.beforeOnChange = info.beforeOnChange;
+        }
+        if (info.onChange) {
+            this.onChange = info.onChange;
+        }
+        if (info.beforeOpen) {
+            this.beforeOpen = info.beforeOpen;
+        }
+        if (info.afterOpen) {
+            this.afterOpen = info.afterOpen;
+        }
+        if (info.beforeClose) {
+            this.beforeClose = info.beforeClose;
+        }
+        if (info.afterClose) {
+            this.afterClose = info.afterClose;
+        }
+        if (!this.config.isEnabled) {
+            this.disable();
+        }
+    }
+    SlimSelect.prototype.validate = function (info) {
+        var select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
+        if (!select) {
+            throw new Error('Could not find select element');
+        }
+        if (select.tagName !== 'SELECT') {
+            throw new Error('Element isnt of type select');
+        }
+        return select;
+    };
+    SlimSelect.prototype.selected = function () {
+        if (this.config.isMultiple) {
+            var selected = this.data.getSelected();
+            var outputSelected = [];
+            for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
+                var s = selected_1[_i];
+                outputSelected.push(s.value);
+            }
+            return outputSelected;
+        }
+        else {
+            var selected = this.data.getSelected();
+            return (selected ? selected.value : '');
+        }
+    };
+    SlimSelect.prototype.set = function (value, type, close, render) {
+        if (type === void 0) { type = 'value'; }
+        if (close === void 0) { close = true; }
+        if (render === void 0) { render = true; }
+        if (this.config.isMultiple && !Array.isArray(value)) {
+            this.data.addToSelected(value, type);
+        }
+        else {
+            this.data.setSelected(value, type);
+        }
+        this.select.setValue();
+        this.data.onDataChange();
+        this.render();
+        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
+            close = true;
+        }
+        if (close) {
+            this.close();
+        }
+    };
+    SlimSelect.prototype.setSelected = function (value, type, close, render) {
+        if (type === void 0) { type = 'value'; }
+        if (close === void 0) { close = true; }
+        if (render === void 0) { render = true; }
+        this.set(value, type, close, render);
+    };
+    SlimSelect.prototype.setData = function (data) {
+        var isValid = (0, data_1.validateData)(data);
+        if (!isValid) {
+            console.error('Validation problem on: #' + this.select.element.id);
+            return;
+        }
+        var newData = JSON.parse(JSON.stringify(data));
+        var selected = this.data.getSelected();
+        for (var i = 0; i < newData.length; i++) {
+            if (!newData[i].value && !newData[i].placeholder) {
+                newData[i].value = newData[i].text;
+            }
+        }
+        if (this.config.isAjax && selected) {
+            if (this.config.isMultiple) {
+                var reverseSelected = selected.reverse();
+                for (var _i = 0, reverseSelected_1 = reverseSelected; _i < reverseSelected_1.length; _i++) {
+                    var r = reverseSelected_1[_i];
+                    newData.unshift(r);
+                }
+            }
+            else {
+                newData.unshift(selected);
+                for (var i = 0; i < newData.length; i++) {
+                    if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
+                        newData.splice(i, 1);
+                    }
+                }
+                var hasPlaceholder = false;
+                for (var i = 0; i < newData.length; i++) {
+                    if (newData[i].placeholder) {
+                        hasPlaceholder = true;
+                    }
+                }
+                if (!hasPlaceholder) {
+                    newData.unshift({ text: '', placeholder: true });
+                }
+            }
+        }
+        this.select.create(newData);
+        this.data.parseSelectData();
+        this.data.setSelectedFromSelect();
+    };
+    SlimSelect.prototype.addData = function (data) {
+        var isValid = (0, data_1.validateData)([data]);
+        if (!isValid) {
+            console.error('Validation problem on: #' + this.select.element.id);
+            return;
+        }
+        this.data.add(this.data.newOption(data));
+        this.select.create(this.data.data);
+        this.data.parseSelectData();
+        this.data.setSelectedFromSelect();
+        this.render();
+    };
+    SlimSelect.prototype.open = function () {
+        var _this = this;
+        if (!this.config.isEnabled) {
+            return;
+        }
+        if (this.data.contentOpen) {
+            return;
+        }
+        if (this.config.hideSelectedOption && this.config.isMultiple && this.data.getSelected().length === this.data.data.length) {
+            return;
+        }
+        if (this.beforeOpen) {
+            this.beforeOpen();
+        }
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.plus.classList.add('ss-cross');
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down');
+            this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up');
+        }
+        this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow));
+        if (this.config.addToBody) {
+            var containerRect = this.slim.container.getBoundingClientRect();
+            this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px';
+            this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px';
+            this.slim.content.style.width = containerRect.width + 'px';
+        }
+        this.slim.content.classList.add(this.config.open);
+        if (this.config.showContent.toLowerCase() === 'up') {
+            this.moveContentAbove();
+        }
+        else if (this.config.showContent.toLowerCase() === 'down') {
+            this.moveContentBelow();
+        }
+        else {
+            if ((0, helper_1.putContent)(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+                this.moveContentAbove();
+            }
+            else {
+                this.moveContentBelow();
+            }
+        }
+        if (!this.config.isMultiple) {
+            var selected = this.data.getSelected();
+            if (selected) {
+                var selectedId = selected.id;
+                var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
+                if (selectedOption) {
+                    (0, helper_1.ensureElementInView)(this.slim.list, selectedOption);
+                }
+            }
+        }
+        setTimeout(function () {
+            _this.data.contentOpen = true;
+            if (_this.config.searchFocus) {
+                _this.slim.search.input.focus();
+            }
+            if (_this.afterOpen) {
+                _this.afterOpen();
+            }
+        }, this.config.timeoutDelay);
+    };
+    SlimSelect.prototype.close = function () {
+        var _this = this;
+        if (!this.data.contentOpen) {
+            return;
+        }
+        if (this.beforeClose) {
+            this.beforeClose();
+        }
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.remove(this.config.openAbove);
+            this.slim.multiSelected.container.classList.remove(this.config.openBelow);
+            this.slim.multiSelected.plus.classList.remove('ss-cross');
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.remove(this.config.openAbove);
+            this.slim.singleSelected.container.classList.remove(this.config.openBelow);
+            this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down');
+            this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up');
+        }
+        this.slim.content.classList.remove(this.config.open);
+        this.data.contentOpen = false;
+        this.search('');
+        setTimeout(function () {
+            _this.slim.content.removeAttribute('style');
+            _this.data.contentPosition = 'below';
+            if (_this.config.isMultiple && _this.slim.multiSelected) {
+                _this.slim.multiSelected.container.classList.remove(_this.config.openAbove);
+                _this.slim.multiSelected.container.classList.remove(_this.config.openBelow);
+            }
+            else if (_this.slim.singleSelected) {
+                _this.slim.singleSelected.container.classList.remove(_this.config.openAbove);
+                _this.slim.singleSelected.container.classList.remove(_this.config.openBelow);
+            }
+            _this.slim.search.input.blur();
+            if (_this.afterClose) {
+                _this.afterClose();
+            }
+        }, this.config.timeoutDelay);
+    };
+    SlimSelect.prototype.moveContentAbove = function () {
+        var selectHeight = 0;
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            selectHeight = this.slim.multiSelected.container.offsetHeight;
+        }
+        else if (this.slim.singleSelected) {
+            selectHeight = this.slim.singleSelected.container.offsetHeight;
+        }
+        var contentHeight = this.slim.content.offsetHeight;
+        var height = selectHeight + contentHeight - 1;
+        this.slim.content.style.margin = '-' + height + 'px 0 0 0';
+        this.slim.content.style.height = (height - selectHeight + 1) + 'px';
+        this.slim.content.style.transformOrigin = 'center bottom';
+        this.data.contentPosition = 'above';
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.remove(this.config.openBelow);
+            this.slim.multiSelected.container.classList.add(this.config.openAbove);
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.remove(this.config.openBelow);
+            this.slim.singleSelected.container.classList.add(this.config.openAbove);
+        }
+    };
+    SlimSelect.prototype.moveContentBelow = function () {
+        this.data.contentPosition = 'below';
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.remove(this.config.openAbove);
+            this.slim.multiSelected.container.classList.add(this.config.openBelow);
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.remove(this.config.openAbove);
+            this.slim.singleSelected.container.classList.add(this.config.openBelow);
+        }
+    };
+    SlimSelect.prototype.enable = function () {
+        this.config.isEnabled = true;
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.remove(this.config.disabled);
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.remove(this.config.disabled);
+        }
+        this.select.triggerMutationObserver = false;
+        this.select.element.disabled = false;
+        this.slim.search.input.disabled = false;
+        this.select.triggerMutationObserver = true;
+    };
+    SlimSelect.prototype.disable = function () {
+        this.config.isEnabled = false;
+        if (this.config.isMultiple && this.slim.multiSelected) {
+            this.slim.multiSelected.container.classList.add(this.config.disabled);
+        }
+        else if (this.slim.singleSelected) {
+            this.slim.singleSelected.container.classList.add(this.config.disabled);
+        }
+        this.select.triggerMutationObserver = false;
+        this.select.element.disabled = true;
+        this.slim.search.input.disabled = true;
+        this.select.triggerMutationObserver = true;
+    };
+    SlimSelect.prototype.search = function (value) {
+        if (this.data.searchValue === value) {
+            return;
+        }
+        this.slim.search.input.value = value;
+        if (this.config.isAjax) {
+            var master_1 = this;
+            this.config.isSearching = true;
+            this.render();
+            if (this.ajax) {
+                this.ajax(value, function (info) {
+                    master_1.config.isSearching = false;
+                    if (Array.isArray(info)) {
+                        info.unshift({ text: '', placeholder: true });
+                        master_1.setData(info);
+                        master_1.data.search(value);
+                        master_1.render();
+                    }
+                    else if (typeof info === 'string') {
+                        master_1.slim.options(info);
+                    }
+                    else {
+                        master_1.render();
+                    }
+                });
+            }
+        }
+        else {
+            this.data.search(value);
+            this.render();
+        }
+    };
+    SlimSelect.prototype.setSearchText = function (text) {
+        this.config.searchText = text;
+    };
+    SlimSelect.prototype.render = function () {
+        if (this.config.isMultiple) {
+            this.slim.values();
+        }
+        else {
+            this.slim.placeholder();
+            this.slim.deselect();
+        }
+        this.slim.options();
+    };
+    SlimSelect.prototype.destroy = function (id) {
+        if (id === void 0) { id = null; }
+        var slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
+        var select = (id ? document.querySelector("[data-ssid=".concat(id, "]")) : this.select.element);
+        if (!slim || !select) {
+            return;
+        }
+        document.removeEventListener('click', this.documentClick);
+        if (this.config.showContent === 'auto') {
+            window.removeEventListener('scroll', this.windowScroll, false);
+        }
+        select.style.display = '';
+        delete select.dataset.ssid;
+        var el = select;
+        el.slim = null;
+        if (slim.parentElement) {
+            slim.parentElement.removeChild(slim);
+        }
+        if (this.config.addToBody) {
+            var slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content);
+            if (!slimContent) {
+                return;
+            }
+            document.body.removeChild(slimContent);
+        }
+    };
+    return SlimSelect;
+}());
+exports["default"] = SlimSelect;
+
+}();
+__webpack_exports__ = __webpack_exports__["default"];
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
 });

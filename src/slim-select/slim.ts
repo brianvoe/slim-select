@@ -1,6 +1,7 @@
 import SlimSelect from './index'
 import { ensureElementInView, isValueInArrayOfObjects, highlight } from './helper'
 import { Option, Optgroup, validateOption } from './data'
+import { kebabCase } from './helper'
 
 interface SingleSelected {
   container: HTMLDivElement
@@ -768,6 +769,13 @@ export class Slim {
       optionEl.classList.add(this.main.config.optionSelected)
     } else {
       optionEl.classList.remove(this.main.config.optionSelected)
+    }
+
+    if (data.data && typeof data.data === 'object') {
+      const dataSet = data.data as any;
+      Object.keys(dataSet).forEach((key) => {
+        optionEl.setAttribute('data-' + kebabCase(key), dataSet[key])
+      })
     }
 
     return optionEl
