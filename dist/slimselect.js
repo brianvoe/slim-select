@@ -217,7 +217,7 @@ var Data = (function () {
             id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
             value: option.value,
             text: option.text,
-            innerHTML: option.innerHTML,
+            innerHTML: (option.dataset && option.dataset.html) || option.innerHTML,
             selected: option.selected,
             disabled: option.disabled,
             placeholder: option.dataset.placeholder === 'true',
