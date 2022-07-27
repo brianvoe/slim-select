@@ -213,7 +213,9 @@ $spacing-s: 4px !default;
     .ss-add {
       display: flex;
       flex: 0 1 3px;
-      margin: 9px 12px 0 5px;
+      margin: 0px 12px 0 5px;
+      justify-content: center;
+      flex-direction: column;
 
       .ss-plus {
         display: flex;
