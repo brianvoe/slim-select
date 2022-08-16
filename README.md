@@ -13,7 +13,7 @@ For documentation and examples on all features see: http://slimselectjs.com
 
 ## Features
 - No Dependencies
-- 20kb - 5kb gzip
+- 35kb - 9kb gzip
 - Single Select
 - Multi Select
 - User Addable Options
