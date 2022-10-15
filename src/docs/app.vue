@@ -1,7 +1,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import SlimSelect from '../slim-select'
- import { Option } from '../slim-select/data'
+  import { Option } from '../slim-select/data'
 
   export default defineComponent({
     name: 'App',
@@ -80,10 +80,10 @@
       </div>
       <div class="select-nav">
         <a href="https://github.com/brianvoe/slim-select" target="_blank">
-          <img src="images/github.png" />
+          <img src="../../public/images/github.png" />
         </a>
         <a href="https://www.npmjs.com/package/slim-select" target="_blank">
-          <img src="images/npm.png" />
+          <img src="../../public/images/npm.png" />
         </a>
         <select id="select-nav"></select>
       </div>
