@@ -1,5 +1,25 @@
 import { Option } from './data';
-import SlimSelect, { MultiSelected, Search, SingleSelected } from './index';
+import SlimSelect from './index';
+export interface SingleSelected {
+    container: HTMLDivElement;
+    placeholder: HTMLSpanElement;
+    deselect: HTMLSpanElement;
+    arrowIcon: {
+        container: HTMLSpanElement;
+        arrow: HTMLSpanElement;
+    };
+}
+export interface MultiSelected {
+    container: HTMLDivElement;
+    values: HTMLDivElement;
+    add: HTMLDivElement;
+    plus: HTMLSpanElement;
+}
+export interface Search {
+    container: HTMLDivElement;
+    input: HTMLInputElement;
+    addable?: HTMLDivElement;
+}
 export declare class Slim {
     main: SlimSelect;
     container: HTMLDivElement;
