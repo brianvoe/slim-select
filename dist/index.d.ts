@@ -1,10 +1,10 @@
 import { Config } from './config';
+import { Data, DataArray, Option } from './data';
 import { Select } from './select';
 import { Slim } from './slim';
-import { Data, dataArray, Option } from './data';
-interface Constructor {
+export interface Constructor {
     select: string | Element;
-    data?: dataArray;
+    data?: DataArray;
     showSearch?: boolean;
     searchPlaceholder?: string;
     searchText?: string;
@@ -35,6 +35,26 @@ interface Constructor {
     beforeClose?: () => void;
     afterClose?: () => void;
 }
+export interface SingleSelected {
+    container: HTMLDivElement;
+    placeholder: HTMLSpanElement;
+    deselect: HTMLSpanElement;
+    arrowIcon: {
+        container: HTMLSpanElement;
+        arrow: HTMLSpanElement;
+    };
+}
+export interface MultiSelected {
+    container: HTMLDivElement;
+    values: HTMLDivElement;
+    add: HTMLDivElement;
+    plus: HTMLSpanElement;
+}
+export interface Search {
+    container: HTMLDivElement;
+    input: HTMLInputElement;
+    addable?: HTMLDivElement;
+}
 export default class SlimSelect {
     config: Config;
     select: Select;
@@ -54,7 +74,7 @@ export default class SlimSelect {
     selected(): string | string[];
     set(value: string | string[], type?: string, close?: boolean, render?: boolean): void;
     setSelected(value: string | string[], type?: string, close?: boolean, render?: boolean): void;
-    setData(data: dataArray): void;
+    setData(data: DataArray): void;
     addData(data: Option): void;
     open(): void;
     close(): void;
@@ -68,4 +88,3 @@ export default class SlimSelect {
     destroy(id?: string | null): void;
     private documentClick;
 }
-export {};

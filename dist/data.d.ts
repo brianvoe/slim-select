@@ -1,9 +1,9 @@
 import SlimSelect from './index';
-interface Constructor {
+export interface DataConstructor {
     main: SlimSelect;
 }
-export declare type dataArray = dataObject[];
-export declare type dataObject = Optgroup | Option;
+export declare type DataArray = DataObject[];
+export declare type DataObject = Optgroup | Option;
 export interface Optgroup {
     label: string;
     options?: Option[];
@@ -25,12 +25,12 @@ export interface Option {
 export declare class Data {
     main: SlimSelect;
     searchValue: string;
-    data: dataObject[];
-    filtered: dataObject[] | null;
+    data: DataObject[];
+    filtered: DataObject[] | null;
     contentOpen: boolean;
     contentPosition: string;
     isOnChangeEnabled: boolean;
-    constructor(info: Constructor);
+    constructor(info: DataConstructor);
     newOption(info: any): Option;
     add(data: Option): void;
     parseSelectData(): void;
@@ -45,6 +45,5 @@ export declare class Data {
     getObjectFromData(value: string, type?: string): Option | null;
     search(search: string): void;
 }
-export declare function validateData(data: dataArray): boolean;
+export declare function validateData(data: DataArray): boolean;
 export declare function validateOption(option: Option): boolean;
-export {};

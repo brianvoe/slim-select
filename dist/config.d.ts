@@ -1,5 +1,5 @@
 import { Option } from './data';
-interface Constructor {
+export interface ConfigConstructor {
     select: HTMLSelectElement;
     isAjax: boolean;
     showSearch?: boolean;
@@ -77,7 +77,6 @@ export declare class Config {
     readonly highlighted: string;
     readonly disabled: string;
     readonly hide: string;
-    constructor(info: Constructor);
+    constructor(info: ConfigConstructor);
     searchFilter(opt: Option, search: string): boolean;
 }
-export {};
