@@ -13,9 +13,6 @@
   "unpkg": "dist/slimselect.min.js",
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
-  "browser": {
-    "./sfc": "src/slimselect.vue"
-  },
   "style": "dist/slimselect.min.css",
   "sass": "src/slim-select/slimselect.scss",
   "repository": {
@@ -31,11 +28,11 @@
   ],
   "scripts": {
     "dev": "vite --port=8080",
-    "library": "rm -r dist && cd src/slim-select && webpack && cd ../../ && npm run cleanDist && npm run renameDist && npm run mjs",
-    "clean": "rimraf ./dist",
-    "build": "npm run clean & npm run build:docs & npm run build:library",
-    "build:docs": "vue-cli-service build",
-    "build:library": "rollup --config src/slim-select/rollup.config.mjs"
+    "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
+    "build": "npm run build:clean && npm run build:docs && npm run build:library",
+    "build:clean": "rimraf ./dist/*",
+    "build:docs": "vite build",
+    "build:library": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^9.0.1",
@@ -43,9 +40,11 @@
     "@vitejs/plugin-vue": "^3.1.2",
     "clipboard": "^2.0.11",
     "downloadjs": "^1.4.7",
+    "prettier": "^2.7.1",
     "prismjs": "^1.29.0",
     "rimraf": "^3.0.2",
-    "rollup": "^3.1.0",
+    "rollup": "^2.79.1",
+    "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.55.0",
     "tslib": "^2.4.0",
     "typescript": "^4.8.4",
