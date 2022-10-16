@@ -35,26 +35,6 @@ export interface Constructor {
     beforeClose?: () => void;
     afterClose?: () => void;
 }
-export interface SingleSelected {
-    container: HTMLDivElement;
-    placeholder: HTMLSpanElement;
-    deselect: HTMLSpanElement;
-    arrowIcon: {
-        container: HTMLSpanElement;
-        arrow: HTMLSpanElement;
-    };
-}
-export interface MultiSelected {
-    container: HTMLDivElement;
-    values: HTMLDivElement;
-    add: HTMLDivElement;
-    plus: HTMLSpanElement;
-}
-export interface Search {
-    container: HTMLDivElement;
-    input: HTMLInputElement;
-    addable?: HTMLDivElement;
-}
 export default class SlimSelect {
     config: Config;
     select: Select;
