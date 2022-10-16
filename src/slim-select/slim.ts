@@ -1,8 +1,8 @@
+import { Optgroup, Option, validateOption } from './data'
+import { ensureElementInView, highlight, isValueInArrayOfObjects } from './helper'
 import SlimSelect from './index'
-import { ensureElementInView, isValueInArrayOfObjects, highlight } from './helper'
-import { Option, Optgroup, validateOption } from './data'
 
-interface SingleSelected {
+export interface SingleSelected {
   container: HTMLDivElement
   placeholder: HTMLSpanElement
   deselect: HTMLSpanElement
@@ -12,14 +12,14 @@ interface SingleSelected {
   }
 }
 
-interface MultiSelected {
+export interface MultiSelected {
   container: HTMLDivElement
   values: HTMLDivElement
   add: HTMLDivElement
   plus: HTMLSpanElement
 }
 
-interface Search {
+export interface Search {
   container: HTMLDivElement
   input: HTMLInputElement
   addable?: HTMLDivElement
@@ -116,7 +116,9 @@ export class Slim {
       e.stopPropagation()
 
       // Dont do anything if disabled
-      if (!this.main.config.isEnabled) {return}
+      if (!this.main.config.isEnabled) {
+        return
+      }
 
       this.main.set('')
     }
@@ -132,7 +134,9 @@ export class Slim {
 
     // Add onclick for main selector div
     container.onclick = () => {
-      if (!this.main.config.isEnabled) { return }
+      if (!this.main.config.isEnabled) {
+        return
+      }
 
       this.main.data.contentOpen ? this.main.close() : this.main.open()
     }
@@ -143,8 +147,8 @@ export class Slim {
       deselect,
       arrowIcon: {
         container: arrowContainer,
-        arrow: arrowIcon
-      }
+        arrow: arrowIcon,
+      },
     }
   }
 
@@ -163,10 +167,11 @@ export class Slim {
     } else {
       let selectedValue = ''
       if (selected) {
-        selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
+        selectedValue =
+          selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
       }
       if (this.singleSelected) {
-        this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
+        this.singleSelected.placeholder.innerHTML = selected ? selectedValue : ''
       }
     }
   }
@@ -210,7 +215,9 @@ export class Slim {
     container.appendChild(add)
 
     container.onclick = (e) => {
-      if (!this.main.config.isEnabled) { return }
+      if (!this.main.config.isEnabled) {
+        return
+      }
 
       // Open only if you are not clicking on x text
       const target = e.target as Element
@@ -223,14 +230,16 @@ export class Slim {
       container,
       values,
       add,
-      plus
+      plus,
     }
   }
 
   // Get selected values and append to multiSelected values container
   // and remove those who shouldnt exist
   public values(): void {
-    if (!this.multiSelected) { return }
+    if (!this.multiSelected) {
+      return
+    }
     let currentNodes = this.multiSelected.values.childNodes as any as HTMLDivElement[]
     const selected = this.main.data.getSelected() as Option[]
 
@@ -245,7 +254,9 @@ export class Slim {
         }
       }
 
-      if (exists) { nodesToRemove.push(c) }
+      if (exists) {
+        nodesToRemove.push(c)
+      }
     }
 
     for (const n of nodesToRemove) {
@@ -267,9 +278,9 @@ export class Slim {
         if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
           this.multiSelected.values.appendChild(this.valueDiv(selected[s]))
         } else if (s === 0) {
-          this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), (currentNodes[s] as any))
+          this.multiSelected.values.insertBefore(this.valueDiv(selected[s]), currentNodes[s] as any)
         } else {
-          (currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
+          ;(currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.valueDiv(selected[s]))
         }
       }
     }
@@ -290,7 +301,8 @@ export class Slim {
 
     const text = document.createElement('span')
     text.classList.add(this.main.config.valueText)
-    text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text)
+    text.innerHTML =
+      optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text
     value.appendChild(text)
 
     if (!optionObj.mandatory) {
@@ -303,7 +315,9 @@ export class Slim {
         let shouldUpdate = false
 
         // If no beforeOnChange is set automatically update at end
-        if (!this.main.beforeOnChange) {shouldUpdate = true}
+        if (!this.main.beforeOnChange) {
+          shouldUpdate = true
+        }
 
         if (this.main.beforeOnChange) {
           const selected = this.main.data.getSelected() as Option
@@ -317,17 +331,18 @@ export class Slim {
           }
 
           const beforeOnchange = this.main.beforeOnChange(currentValues)
-          if (beforeOnchange !== false) { shouldUpdate = true }
+          if (beforeOnchange !== false) {
+            shouldUpdate = true
+          }
         }
 
         if (shouldUpdate) {
-          this.main.data.removeFromSelected((optionObj.id as any), 'id')
+          this.main.data.removeFromSelected(optionObj.id as any, 'id')
           this.main.render()
           this.main.select.setValue()
           this.main.data.onDataChange() // Trigger on change callback
         }
       }
-
 
       value.appendChild(deleteSpan)
     }
@@ -351,7 +366,7 @@ export class Slim {
     // Setup search return object
     const searchReturn: Search = {
       container,
-      input
+      input,
     }
 
     // We still want the search to be tabable but not shown
@@ -370,7 +385,9 @@ export class Slim {
     input.onclick = (e) => {
       setTimeout(() => {
         const target = e.target as HTMLInputElement
-        if (target.value === '') { this.main.search('') }
+        if (target.value === '') {
+          this.main.search('')
+        }
       }, 10)
     }
     input.onkeydown = (e) => {
@@ -384,7 +401,9 @@ export class Slim {
         e.preventDefault()
       } else if (e.key === 'Tab') {
         if (!this.main.data.contentOpen) {
-          setTimeout(() => { this.main.close() }, this.main.config.timeoutDelay)
+          setTimeout(() => {
+            this.main.close()
+          }, this.main.config.timeoutDelay)
         } else {
           this.main.close()
         }
@@ -402,7 +421,9 @@ export class Slim {
           return
         }
         const highlighted = this.list.querySelector('.' + this.main.config.highlighted) as HTMLDivElement
-        if (highlighted) { highlighted.click() }
+        if (highlighted) {
+          highlighted.click()
+        }
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         // Cancel out to leave for onkeydown to handle
       } else if (e.key === 'Escape') {
@@ -417,7 +438,9 @@ export class Slim {
       e.preventDefault()
       e.stopPropagation()
     }
-    input.onfocus = () => { this.main.open() }
+    input.onfocus = () => {
+      this.main.open()
+    }
     container.appendChild(input)
 
     if (this.main.addable) {
@@ -429,34 +452,43 @@ export class Slim {
           e.stopPropagation()
 
           const inputValue = this.search.input.value
-          if (inputValue.trim() === '') { this.search.input.focus(); return }
+          if (inputValue.trim() === '') {
+            this.search.input.focus()
+            return
+          }
 
           const addableValue = this.main.addable(inputValue)
           let addableValueStr = ''
-          if (!addableValue) { return }
+          if (!addableValue) {
+            return
+          }
 
           if (typeof addableValue === 'object') {
             const validValue = validateOption(addableValue)
             if (validValue) {
               this.main.addData(addableValue)
-              addableValueStr = (addableValue.value ? addableValue.value : addableValue.text)
+              addableValueStr = addableValue.value ? addableValue.value : addableValue.text
             }
           } else {
-            this.main.addData(this.main.data.newOption({
-              text: addableValue,
-              value: addableValue
-            }))
+            this.main.addData(
+              this.main.data.newOption({
+                text: addableValue,
+                value: addableValue,
+              }),
+            )
             addableValueStr = addableValue
           }
 
           this.main.search('')
-          setTimeout(() => { // Temp fix to solve multi render issue
+          setTimeout(() => {
+            // Temp fix to solve multi render issue
             this.main.set(addableValueStr, 'value', false, false)
           }, 100)
 
           // Close it only if closeOnSelect = true
           if (this.main.config.closeOnSelect) {
-            setTimeout(() => { // Give it a little padding for a better looking animation
+            setTimeout(() => {
+              // Give it a little padding for a better looking animation
               this.main.close()
             }, 100)
           }
@@ -484,19 +516,25 @@ export class Slim {
         }
       }
     } else {
-      const allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
+      const allOptions = this.list.querySelectorAll(
+        '.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')',
+      )
       prev = allOptions[allOptions.length - 1] as HTMLDivElement
     }
 
     // Do not select if optgroup label
-    if (prev && prev.classList.contains(this.main.config.optgroupLabel)) { prev = null }
+    if (prev && prev.classList.contains(this.main.config.optgroupLabel)) {
+      prev = null
+    }
 
     // Check if parent is optgroup
     if (prev === null) {
       const parent = highlighted.parentNode as HTMLDivElement
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.previousSibling) {
-          const prevNodes = (parent.previousSibling as HTMLDivElement).querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')')
+          const prevNodes = (parent.previousSibling as HTMLDivElement).querySelectorAll(
+            '.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')',
+          )
           if (prevNodes.length) {
             prev = prevNodes[prevNodes.length - 1] as HTMLDivElement
           }
@@ -506,7 +544,9 @@ export class Slim {
 
     // If previous element exists highlight it
     if (prev) {
-      if (highlighted) { highlighted.classList.remove(this.main.config.highlighted) }
+      if (highlighted) {
+        highlighted.classList.remove(this.main.config.highlighted)
+      }
       prev.classList.add(this.main.config.highlighted)
       ensureElementInView(this.list, prev)
     }
@@ -527,7 +567,9 @@ export class Slim {
         }
       }
     } else {
-      next = this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')') as HTMLDivElement
+      next = this.list.querySelector(
+        '.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')',
+      ) as HTMLDivElement
     }
 
     // Check if parent is optgroup
@@ -536,14 +578,18 @@ export class Slim {
       if (parent.classList.contains(this.main.config.optgroup)) {
         if (parent.nextSibling) {
           const sibling = parent.nextSibling as HTMLDivElement
-          next = sibling.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')') as HTMLDivElement
+          next = sibling.querySelector(
+            '.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')',
+          ) as HTMLDivElement
         }
       }
     }
 
     // If previous element exists highlight it
     if (next) {
-      if (highlighted) { highlighted.classList.remove(this.main.config.highlighted) }
+      if (highlighted) {
+        highlighted.classList.remove(this.main.config.highlighted)
+      }
       next.classList.add(this.main.config.highlighted)
       ensureElementInView(this.list, next)
     }
@@ -671,8 +717,17 @@ export class Slim {
     const selected = this.main.data.getSelected() as Option
 
     optionEl.dataset.id = data.id
-    if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
-      optionEl.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter)
+    if (
+      this.main.config.searchHighlight &&
+      this.main.slim &&
+      data.innerHTML &&
+      this.main.slim.search.input.value.trim() !== ''
+    ) {
+      optionEl.innerHTML = highlight(
+        data.innerHTML,
+        this.main.slim.search.input.value,
+        this.main.config.searchHighlighter,
+      )
     } else if (data.innerHTML) {
       optionEl.innerHTML = data.innerHTML
     }
@@ -680,7 +735,7 @@ export class Slim {
       optionEl.setAttribute('title', optionEl.textContent)
     }
     const master = this
-    optionEl.addEventListener('click', function(e: MouseEvent) {
+    optionEl.addEventListener('click', function (e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
 
@@ -691,7 +746,9 @@ export class Slim {
         let shouldUpdate = false
 
         // If no beforeOnChange is set automatically update at end
-        if (!master.main.beforeOnChange || !master.main.config.isMultiple) {shouldUpdate = true}
+        if (!master.main.beforeOnChange || !master.main.config.isMultiple) {
+          shouldUpdate = true
+        }
 
         if (master.main.beforeOnChange && master.main.config.isMultiple) {
           const selectedValues = master.main.data.getSelected() as Option
@@ -706,19 +763,20 @@ export class Slim {
           }
 
           const beforeOnchange = master.main.beforeOnChange(currentValues)
-          if (beforeOnchange !== false) { shouldUpdate = true }
+          if (beforeOnchange !== false) {
+            shouldUpdate = true
+          }
         }
 
         if (shouldUpdate) {
           if (master.main.config.isMultiple) {
-            master.main.data.removeFromSelected((elementID as any), 'id')
+            master.main.data.removeFromSelected(elementID as any, 'id')
             master.main.render()
             master.main.select.setValue()
             master.main.data.onDataChange() // Trigger on change callback
           } else {
             master.main.set('')
           }
-
         }
       } else {
         // Check if option is disabled or is already selected, do nothing
@@ -745,15 +803,15 @@ export class Slim {
 
           const beforeOnchange = master.main.beforeOnChange(value)
           if (beforeOnchange !== false) {
-            master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
+            master.main.set(elementID as string, 'id', master.main.config.closeOnSelect)
           }
         } else {
-          master.main.set((elementID as string), 'id', master.main.config.closeOnSelect)
+          master.main.set(elementID as string, 'id', master.main.config.closeOnSelect)
         }
       }
     })
 
-    const isSelected = selected && isValueInArrayOfObjects(selected, 'id', (data.id as string))
+    const isSelected = selected && isValueInArrayOfObjects(selected, 'id', data.id as string)
     if (data.disabled || isSelected) {
       optionEl.onclick = null
       if (!master.main.config.allowDeselectOption) {

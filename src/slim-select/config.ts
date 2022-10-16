@@ -1,6 +1,6 @@
 import { Option } from './data'
 
-interface Constructor {
+export interface ConfigConstructor {
   select: HTMLSelectElement
   isAjax: boolean
   showSearch?: boolean
@@ -82,34 +82,58 @@ export class Config {
   public readonly disabled: string = 'ss-disabled'
   public readonly hide: string = 'ss-hide'
 
-  constructor(info: Constructor) {
+  constructor(info: ConfigConstructor) {
     this.id = 'ss-' + Math.floor(Math.random() * 100000)
     this.style = info.select.style.cssText
     this.class = info.select.className.split(' ')
 
     this.isMultiple = info.select.multiple
     this.isAjax = info.isAjax
-    this.showSearch = (info.showSearch === false ? false : true)
-    this.searchFocus = (info.searchFocus === false ? false : true)
-    this.searchHighlight = (info.searchHighlight === true ? true : false)
-    this.closeOnSelect = (info.closeOnSelect === false ? false : true)
-    if (info.showContent) { this.showContent = info.showContent }
-    this.isEnabled = (info.isEnabled === false ? false : true)
-    if (info.searchPlaceholder) { this.searchPlaceholder = info.searchPlaceholder }
-    if (info.searchText) { this.searchText = info.searchText }
-    if (info.searchingText) { this.searchingText = info.searchingText }
-    if (info.placeholderText) { this.placeholderText = info.placeholderText }
-    this.allowDeselect = (info.allowDeselect === true ? true : false)
-    this.allowDeselectOption = (info.allowDeselectOption === true ? true : false)
-    this.hideSelectedOption = (info.hideSelectedOption === true ? true : false)
-    if (info.deselectLabel) { this.deselectLabel = info.deselectLabel }
-    if (info.valuesUseText) { this.valuesUseText = info.valuesUseText }
-    if (info.showOptionTooltips) { this.showOptionTooltips = info.showOptionTooltips }
-    if (info.selectByGroup) { this.selectByGroup = info.selectByGroup }
-    if (info.limit) { this.limit = info.limit }
-    if (info.searchFilter) { this.searchFilter = info.searchFilter }
-    if (info.timeoutDelay != null) { this.timeoutDelay = info.timeoutDelay }
-    this.addToBody = (info.addToBody === true ? true : false)
+    this.showSearch = info.showSearch === false ? false : true
+    this.searchFocus = info.searchFocus === false ? false : true
+    this.searchHighlight = info.searchHighlight === true ? true : false
+    this.closeOnSelect = info.closeOnSelect === false ? false : true
+    if (info.showContent) {
+      this.showContent = info.showContent
+    }
+    this.isEnabled = info.isEnabled === false ? false : true
+    if (info.searchPlaceholder) {
+      this.searchPlaceholder = info.searchPlaceholder
+    }
+    if (info.searchText) {
+      this.searchText = info.searchText
+    }
+    if (info.searchingText) {
+      this.searchingText = info.searchingText
+    }
+    if (info.placeholderText) {
+      this.placeholderText = info.placeholderText
+    }
+    this.allowDeselect = info.allowDeselect === true ? true : false
+    this.allowDeselectOption = info.allowDeselectOption === true ? true : false
+    this.hideSelectedOption = info.hideSelectedOption === true ? true : false
+    if (info.deselectLabel) {
+      this.deselectLabel = info.deselectLabel
+    }
+    if (info.valuesUseText) {
+      this.valuesUseText = info.valuesUseText
+    }
+    if (info.showOptionTooltips) {
+      this.showOptionTooltips = info.showOptionTooltips
+    }
+    if (info.selectByGroup) {
+      this.selectByGroup = info.selectByGroup
+    }
+    if (info.limit) {
+      this.limit = info.limit
+    }
+    if (info.searchFilter) {
+      this.searchFilter = info.searchFilter
+    }
+    if (info.timeoutDelay != null) {
+      this.timeoutDelay = info.timeoutDelay
+    }
+    this.addToBody = info.addToBody === true ? true : false
   }
 
   public searchFilter(opt: Option, search: string): boolean {

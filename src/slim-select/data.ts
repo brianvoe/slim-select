@@ -1,9 +1,11 @@
 import SlimSelect from './index'
 
-interface Constructor { main: SlimSelect }
+export interface DataConstructor {
+  main: SlimSelect
+}
 
-export type dataArray = dataObject[]
-export type dataObject = Optgroup | Option
+export type DataArray = DataObject[]
+export type DataObject = Optgroup | Option
 export interface Optgroup {
   label: string
   options?: Option[]
@@ -17,7 +19,7 @@ export interface Option {
   selected?: boolean
   display?: boolean
   disabled?: boolean
-  placeholder?: boolean|string
+  placeholder?: boolean | string
   class?: string
   style?: string
   data?: object
@@ -28,12 +30,12 @@ export interface Option {
 export class Data {
   public main: SlimSelect
   public searchValue: string
-  public data: dataObject[]
-  public filtered: dataObject[] | null
+  public data: DataObject[]
+  public filtered: DataObject[] | null
   public contentOpen: boolean = false
   public contentPosition: string = 'below'
   public isOnChangeEnabled: boolean = true
-  constructor(info: Constructor) {
+  constructor(info: DataConstructor) {
     this.main = info.main
     this.searchValue = ''
     this.data = []
@@ -45,17 +47,17 @@ export class Data {
 
   public newOption(info: any): Option {
     return {
-      id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
-      value: (info.value ? info.value : ''),
-      text: (info.text ? info.text : ''),
-      innerHTML: (info.innerHTML ? info.innerHTML : ''),
-      selected: (info.selected ? info.selected : false),
-      display: (info.display !== undefined ? info.display : true),
-      disabled: (info.disabled ? info.disabled : false),
-      placeholder: (info.placeholder ? info.placeholder : false),
-      class: (info.class ? info.class : undefined),
-      data: (info.data ? info.data : {}),
-      mandatory: (info.mandatory ? info.mandatory : false)
+      id: info.id ? info.id : String(Math.floor(Math.random() * 100000000)),
+      value: info.value ? info.value : '',
+      text: info.text ? info.text : '',
+      innerHTML: info.innerHTML ? info.innerHTML : '',
+      selected: info.selected ? info.selected : false,
+      display: info.display !== undefined ? info.display : true,
+      disabled: info.disabled ? info.disabled : false,
+      placeholder: info.placeholder ? info.placeholder : false,
+      class: info.class ? info.class : undefined,
+      data: info.data ? info.data : {},
+      mandatory: info.mandatory ? info.mandatory : false,
     }
   }
 
@@ -72,7 +74,7 @@ export class Data {
       placeholder: false,
       class: undefined,
       mandatory: data.mandatory,
-      data: {}
+      data: {},
     })
   }
 
@@ -80,13 +82,15 @@ export class Data {
   public parseSelectData() {
     this.data = []
     // Loop through nodes and create data
-    const nodes = (this.main.select.element as HTMLSelectElement).childNodes as any as HTMLOptGroupElement[] | HTMLOptionElement[]
+    const nodes = (this.main.select.element as HTMLSelectElement).childNodes as any as
+      | HTMLOptGroupElement[]
+      | HTMLOptionElement[]
     for (const n of nodes) {
       if (n.nodeName === 'OPTGROUP') {
         const node = n as HTMLOptGroupElement
         const optgroup = {
           label: node.label,
-          options: [] as Option[]
+          options: [] as Option[],
         }
         const options = n.childNodes as any as HTMLOptionElement[]
         for (const o of options) {
@@ -126,7 +130,7 @@ export class Data {
       class: option.className,
       style: option.style.cssText,
       data: option.dataset,
-      mandatory: (option.dataset ? option.dataset.mandatory === 'true' : false)
+      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
     }
   }
 
@@ -167,14 +171,16 @@ export class Data {
           if (options) {
             for (const o of options) {
               // Do not select if its a placeholder
-              if (o.placeholder) {continue}
+              if (o.placeholder) {
+                continue
+              }
 
               o.selected = this.shouldBeSelected(o, value, type)
             }
           }
         }
       } else {
-        (d as Option).selected = this.shouldBeSelected((d as Option), value, type)
+        ;(d as Option).selected = this.shouldBeSelected(d as Option, value, type)
       }
     }
   }
@@ -199,7 +205,10 @@ export class Data {
   // From data get option | option[] of selected values
   // If single select return last selected value
   public getSelected(): Option | Option[] {
-    let value: Option = { text: '', placeholder: this.main.config.placeholderText } // Dont worry about setting this(make typescript happy). If single a value will be selected
+    let value: Option = {
+      text: '',
+      placeholder: this.main.config.placeholderText,
+    } // Dont worry about setting this(make typescript happy). If single a value will be selected
     const values: Option[] = []
     for (const d of this.data) {
       // Deal with optgroups
@@ -305,7 +314,10 @@ export class Data {
   // Take in search string and return filtered list of values
   public search(search: string) {
     this.searchValue = search
-    if (search.trim() === '') { this.filtered = null; return }
+    if (search.trim() === '') {
+      this.filtered = null
+      return
+    }
 
     const searchFilter = this.main.config.searchFilter
     const valuesArray = this.data.slice(0)
@@ -330,7 +342,9 @@ export class Data {
       // If single option
       if (obj.hasOwnProperty('text')) {
         const optionObj = obj as Option
-        if (searchFilter(optionObj, search)) { return obj }
+        if (searchFilter(optionObj, search)) {
+          return obj
+        }
       }
 
       return null
@@ -341,8 +355,11 @@ export class Data {
   }
 }
 
-export function validateData(data: dataArray): boolean {
-  if (!data) { console.error('Data must be an array of objects'); return false }
+export function validateData(data: DataArray): boolean {
+  if (!data) {
+    console.error('Data must be an array of objects')
+    return false
+  }
   let isValid = false
   let errorCount = 0
 
@@ -354,14 +371,18 @@ export function validateData(data: dataArray): boolean {
         if (options) {
           for (const o of options) {
             isValid = validateOption(o)
-            if (!isValid) { errorCount++ }
+            if (!isValid) {
+              errorCount++
+            }
           }
         }
       }
     } else {
       const option = d as Option
       isValid = validateOption(option)
-      if (!isValid) { errorCount++ }
+      if (!isValid) {
+        errorCount++
+      }
     }
   }
 

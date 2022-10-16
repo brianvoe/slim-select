@@ -14,7 +14,7 @@ new Normalizer({
   'remove-trailing': true,
   'remove-indent': true,
   'left-trim': true,
-  'right-trim': true
+  'right-trim': true,
 })
 
 const app = createApp(App)
@@ -22,6 +22,6 @@ app.use(router)
 app.mixin({
   updated() {
     Prism.highlightAll()
-  }
+  },
 })
 app.mount('#app')

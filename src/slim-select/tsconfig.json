@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "strict": true, /* Enable all strict type-checking options. */
-    "declaration": true, /* Generates corresponding '.d.ts' file. */
+    "strict": true /* Enable all strict type-checking options. */,
+    "declaration": true /* Generates corresponding '.d.ts' file. */,
     "outDir": "../../dist", // Output to dist folder
-    "removeComments": true, /* Do not emit comments to output. */
+    "removeComments": true /* Do not emit comments to output. */,
     "importHelpers": true /* Import emit helpers from 'tslib'. */
   }
 }

@@ -1,10 +1,13 @@
 import typescript from '@rollup/plugin-typescript'
+import { terser } from 'rollup-plugin-terser'
 
 export default {
-    plugins: [typescript()],
     input: './index.ts',
     output: [{
+        name: 'SlimSelect',
         file: '../../dist/slimselect.umd.js',
-        format: 'umd'
-    }]
+        format: 'umd',
+        sourcemap: true
+    }],
+    plugins: [typescript(), terser()]
 }

@@ -1,8 +1,8 @@
-import SlimSelect from './index'
-import { Option, Optgroup, dataArray } from './data'
+import { DataArray, Optgroup, Option } from './data'
 import { kebabCase } from './helper'
+import SlimSelect from './index'
 
-interface Constructor {
+export interface SelectConstructor {
   select: HTMLSelectElement
   main: SlimSelect
 }
@@ -12,12 +12,14 @@ export class Select {
   public main: SlimSelect
   public mutationObserver: MutationObserver | null
   public triggerMutationObserver: boolean = true
-  constructor(info: Constructor) {
+  constructor(info: SelectConstructor) {
     this.element = info.select
     this.main = info.main
 
     // If original select is set to disabled lets make sure slim is too
-    if (this.element.disabled) { this.main.config.isEnabled = false }
+    if (this.element.disabled) {
+      this.main.config.isEnabled = false
+    }
 
     this.addAttributes()
     this.addEventListeners()
@@ -30,7 +32,9 @@ export class Select {
   }
 
   public setValue(): void {
-    if (!this.main.data.getSelected()) { return }
+    if (!this.main.data.getSelected()) {
+      return
+    }
 
     if (this.main.config.isMultiple) {
       // If multiple loop through options and set selected
@@ -47,7 +51,7 @@ export class Select {
     } else {
       // If single select simply set value
       const selected = this.main.data.getSelected() as any
-      this.element.value = (selected ? selected.value : '')
+      this.element.value = selected ? selected.value : ''
     }
 
     // Do not trigger onChange callbacks for this event listener
@@ -76,10 +80,14 @@ export class Select {
   // Add MutationObserver to select
   public addMutationObserver(): void {
     // Only add if not in ajax mode
-    if (this.main.config.isAjax) { return }
+    if (this.main.config.isAjax) {
+      return
+    }
 
     this.mutationObserver = new MutationObserver((mutations) => {
-      if (!this.triggerMutationObserver) {return}
+      if (!this.triggerMutationObserver) {
+        return
+      }
 
       this.main.data.parseSelectData()
       this.main.data.setSelectedFromSelect()
@@ -96,12 +104,14 @@ export class Select {
   }
 
   public observeMutationObserver(): void {
-    if (!this.mutationObserver) { return }
+    if (!this.mutationObserver) {
+      return
+    }
 
     this.mutationObserver.observe(this.element, {
       attributes: true,
       childList: true,
-      characterData: true
+      characterData: true,
     })
   }
 
@@ -112,7 +122,7 @@ export class Select {
   }
 
   // Create select element and optgroup/options
-  public create(data: dataArray): void {
+  public create(data: DataArray): void {
     // Clear out select
     this.element.innerHTML = ''
 
@@ -137,13 +147,21 @@ export class Select {
     const optionEl = document.createElement('option')
     optionEl.value = info.value !== '' ? info.value : info.text
     optionEl.innerHTML = info.innerHTML || info.text
-    if (info.selected) { optionEl.selected = info.selected }
+    if (info.selected) {
+      optionEl.selected = info.selected
+    }
     if (info.display === false) {
       optionEl.style.display = 'none'
     }
-    if (info.disabled) { optionEl.disabled = true }
-    if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }
-    if (info.mandatory) { optionEl.setAttribute('data-mandatory', 'true') }
+    if (info.disabled) {
+      optionEl.disabled = true
+    }
+    if (info.placeholder) {
+      optionEl.setAttribute('data-placeholder', 'true')
+    }
+    if (info.mandatory) {
+      optionEl.setAttribute('data-mandatory', 'true')
+    }
     if (info.class) {
       info.class.split(' ').forEach((optionClass: string) => {
         optionEl.classList.add(optionClass)
