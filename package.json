@@ -32,7 +32,9 @@
     "build": "npm run build:clean && npm run build:docs && npm run build:library",
     "build:clean": "rimraf ./dist/*",
     "build:docs": "vite build",
-    "build:library": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../"
+    "build:library": "npm run build:library:js && npm run build:library:css",
+    "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
+    "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^9.0.1",
