@@ -2,23 +2,18 @@ import { DataArray, Optgroup, Option } from './data'
 import { kebabCase } from './helper'
 import SlimSelect from './index'
 
-export interface SelectConstructor {
-  select: HTMLSelectElement
-  main: SlimSelect
-}
-
 export class Select {
   public element: HTMLSelectElement
   public main: SlimSelect
   public mutationObserver: MutationObserver | null
   public triggerMutationObserver: boolean = true
-  constructor(info: SelectConstructor) {
-    this.element = info.select
-    this.main = info.main
+  constructor(main: SlimSelect) {
+    this.element = main.select
+    this.main = main
 
     // If original select is set to disabled lets make sure slim is too
     if (this.element.disabled) {
-      this.main.config.isEnabled = false
+      this.main.isEnabled = false
     }
 
     this.addAttributes()
@@ -28,7 +23,7 @@ export class Select {
 
     // Add slim to original select dropdown
     const el = this.element as any
-    el.slim = info.main
+    el.slim = main
   }
 
   public setValue(): void {
@@ -36,7 +31,7 @@ export class Select {
       return
     }
 
-    if (this.main.config.isMultiple) {
+    if (this.main.isMultiple) {
       // If multiple loop through options and set selected
       const selected = this.main.data.getSelected() as Option[]
       const options = this.element.options as any as HTMLOptionElement[]
@@ -65,7 +60,7 @@ export class Select {
     this.element.style.display = 'none'
 
     // Add slim select id
-    this.element.dataset.ssid = this.main.config.id
+    this.element.dataset.ssid = this.main.id
     this.element.setAttribute('aria-hidden', 'true')
   }
 
@@ -80,7 +75,7 @@ export class Select {
   // Add MutationObserver to select
   public addMutationObserver(): void {
     // Only add if not in ajax mode
-    if (this.main.config.isAjax) {
+    if (this.main.isAjax) {
       return
     }
 

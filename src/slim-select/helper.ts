@@ -107,6 +107,7 @@ export function kebabCase(str: string) {
   return str[0] === str[0].toUpperCase() ? result.substring(1) : result
 }
 
+// TODO: Figure out if this is still needed
 // Custom events
 ;(() => {
   const w = window as any

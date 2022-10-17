@@ -1,9 +1,5 @@
 import SlimSelect from './index'
 
-export interface DataConstructor {
-  main: SlimSelect
-}
-
 export type DataArray = DataObject[]
 export type DataObject = Optgroup | Option
 export interface Optgroup {
@@ -35,8 +31,8 @@ export class Data {
   public contentOpen: boolean = false
   public contentPosition: string = 'below'
   public isOnChangeEnabled: boolean = true
-  constructor(info: DataConstructor) {
-    this.main = info.main
+  constructor(main: SlimSelect) {
+    this.main = main
     this.searchValue = ''
     this.data = []
     this.filtered = null
@@ -82,7 +78,7 @@ export class Data {
   public parseSelectData() {
     this.data = []
     // Loop through nodes and create data
-    const nodes = (this.main.select.element as HTMLSelectElement).childNodes as any as
+    const nodes = (this.main.select as HTMLSelectElement).childNodes as any as
       | HTMLOptGroupElement[]
       | HTMLOptionElement[]
     for (const n of nodes) {
@@ -100,7 +96,7 @@ export class Data {
 
             // If option has placeholder set to true set placeholder text
             if (option.placeholder && option.text.trim() !== '') {
-              this.main.config.placeholderText = option.text
+              this.main.placeholderText = option.text
             }
           }
         }
@@ -111,7 +107,7 @@ export class Data {
 
         // If option has placeholder set to true set placeholder text
         if (option.placeholder && option.text.trim() !== '') {
-          this.main.config.placeholderText = option.text
+          this.main.placeholderText = option.text
         }
       }
     }
@@ -136,8 +132,8 @@ export class Data {
 
   // From select element get current selected and set selected
   public setSelectedFromSelect(): void {
-    if (this.main.config.isMultiple) {
-      const options = this.main.select.element.options as any as HTMLOptionElement[]
+    if (this.main.isMultiple) {
+      const options = this.main.select.options as any as HTMLOptionElement[]
       const newSelected: string[] = []
       for (const o of options) {
         if (o.selected) {
@@ -149,7 +145,7 @@ export class Data {
       }
       this.setSelected(newSelected, 'id')
     } else {
-      const element = this.main.select.element
+      const element = this.main.select
 
       // Single select element
       if (element.selectedIndex !== -1) {
@@ -207,7 +203,7 @@ export class Data {
   public getSelected(): Option | Option[] {
     let value: Option = {
       text: '',
-      placeholder: this.main.config.placeholderText,
+      placeholder: this.main.placeholderText,
     } // Dont worry about setting this(make typescript happy). If single a value will be selected
     const values: Option[] = []
     for (const d of this.data) {
@@ -219,7 +215,7 @@ export class Data {
             for (const o of options) {
               if (o.selected) {
                 // If single return option
-                if (!this.main.config.isMultiple) {
+                if (!this.main.isMultiple) {
                   value = o
                 } else {
                   // Push to multiple array
@@ -233,7 +229,7 @@ export class Data {
         // Push options to array
         if ((d as Option).selected) {
           // If single return option
-          if (!this.main.config.isMultiple) {
+          if (!this.main.isMultiple) {
             value = d as Option
           } else {
             // Push to multiple array
@@ -244,7 +240,7 @@ export class Data {
     }
 
     // Either return array or object or null
-    if (this.main.config.isMultiple) {
+    if (this.main.isMultiple) {
       return values
     }
     return value
@@ -252,7 +248,7 @@ export class Data {
 
   // If select type is multiple append value and set selected
   public addToSelected(value: string, type = 'id') {
-    if (this.main.config.isMultiple) {
+    if (this.main.isMultiple) {
       const values = []
       const selected = this.getSelected()
       if (Array.isArray(selected)) {
@@ -268,7 +264,7 @@ export class Data {
 
   // Remove object from selected
   public removeFromSelected(value: string, type = 'id') {
-    if (this.main.config.isMultiple) {
+    if (this.main.isMultiple) {
       const values = []
       const selected = this.getSelected() as Option[]
       for (const s of selected) {
@@ -319,7 +315,7 @@ export class Data {
       return
     }
 
-    const searchFilter = this.main.config.searchFilter
+    const searchFilter = this.main.searchFilter
     const valuesArray = this.data.slice(0)
     search = search.trim()
     const filtered = valuesArray.map((obj) => {

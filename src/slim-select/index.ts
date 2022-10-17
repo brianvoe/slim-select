@@ -1,4 +1,3 @@
-import { Config } from './config'
 import { Data, DataArray, Option, validateData } from './data'
 import { debounce, ensureElementInView, hasClassInTree, putContent } from './helper'
 import { Select } from './select'
@@ -7,6 +6,11 @@ import { Slim } from './slim'
 export interface Constructor {
   select: string | Element
   data?: DataArray
+  settings?: Settings
+  events?: Events
+}
+
+export interface Settings {
   showSearch?: boolean
   searchPlaceholder?: string
   searchText?: string
@@ -16,7 +20,7 @@ export interface Constructor {
   searchFilter?: (opt: Option, search: string) => boolean
   closeOnSelect?: boolean
   showContent?: string
-  placeholder?: string
+  placeholderText?: string
   allowDeselect?: boolean
   allowDeselectOption?: boolean
   hideSelectedOption?: boolean
@@ -28,8 +32,9 @@ export interface Constructor {
   limit?: number
   timeoutDelay?: number
   addToBody?: boolean
+}
 
-  // Events
+export interface Events {
   ajax?: (value: string, func: (info: any) => void) => void
   addable?: (value: string) => Option | string
   beforeOnChange?: (info: Option | Option[]) => void | boolean
@@ -41,8 +46,68 @@ export interface Constructor {
 }
 
 export default class SlimSelect {
-  public config: Config
-  public select: Select
+  public select: HTMLSelectElement
+  public id: string = '' // Primary ID for the select
+  public style: string = '' // Style attribute from the select element
+  public class: string[] = [] // Class attribute from the select element
+  public isMultiple: boolean = false
+  public isAjax: boolean = false
+  public isSearching: boolean = false
+  public showSearch: boolean = true
+  public searchFocus: boolean = true
+  public searchHighlight: boolean = false
+  public searchFilter(opt: Option, search: string): boolean {
+    return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+  }
+  public closeOnSelect: boolean = true
+  public showContent: string = 'auto' // options: auto, up, down
+  public searchPlaceholder: string = 'Search'
+  public searchText: string = 'No Results'
+  public searchingText: string = 'Searching...'
+  public placeholderText: string = 'Select Value'
+  public allowDeselect: boolean = false
+  public allowDeselectOption: boolean = false
+  public hideSelectedOption: boolean = false
+  public deselectLabel: string = 'x'
+  public isEnabled: boolean = true
+  public valuesUseText: boolean = false
+  public showOptionTooltips: boolean = false
+  public selectByGroup: boolean = false
+  public limit: number = 0
+  public timeoutDelay: number = 200
+  public addToBody: boolean = false
+
+  // Classes
+  public classes = {
+    main: 'ss-main',
+    singleSelected: 'ss-single-selected',
+    arrow: 'ss-arrow',
+    multiSelected: 'ss-multi-selected',
+    add: 'ss-add',
+    plus: 'ss-plus',
+    values: 'ss-values',
+    value: 'ss-value',
+    valueText: 'ss-value-text',
+    valueDelete: 'ss-value-delete',
+    content: 'ss-content',
+    open: 'ss-open',
+    openAbove: 'ss-open-above',
+    openBelow: 'ss-open-below',
+    search: 'ss-search',
+    searchHighlighter: 'ss-search-highlight',
+    addable: 'ss-addable',
+    list: 'ss-list',
+    optgroup: 'ss-optgroup',
+    optgroupLabel: 'ss-optgroup-label',
+    optgroupLabelSelectable: 'ss-optgroup-label-selectable',
+    option: 'ss-option',
+    optionSelected: 'ss-option-selected',
+    highlighted: 'ss-highlighted',
+    disabled: 'ss-disabled',
+    hide: 'ss-hide',
+  }
+
+  public selectClass: Select
   public data: Data
   public slim: Slim
   public ajax: ((value: string, func: (info: any) => void) => void) | null = null
@@ -65,11 +130,11 @@ export default class SlimSelect {
   })
 
   constructor(info: Constructor) {
-    const selectElement = this.validate(info)
+    this.select = this.validate(info)
 
     // If select already has a slim select id on it lets destroy it first
-    if (selectElement.dataset.ssid) {
-      this.destroy(selectElement.dataset.ssid)
+    if (this.select.dataset.ssid) {
+      this.destroy(this.select.dataset.ssid)
     }
 
     // Set ajax function if passed in
@@ -82,43 +147,17 @@ export default class SlimSelect {
       this.addable = info.addable
     }
 
-    this.config = new Config({
-      select: selectElement,
-      isAjax: info.ajax ? true : false,
-      showSearch: info.showSearch,
-      searchPlaceholder: info.searchPlaceholder,
-      searchText: info.searchText,
-      searchingText: info.searchingText,
-      searchFocus: info.searchFocus,
-      searchHighlight: info.searchHighlight,
-      searchFilter: info.searchFilter,
-      closeOnSelect: info.closeOnSelect,
-      showContent: info.showContent,
-      placeholderText: info.placeholder,
-      allowDeselect: info.allowDeselect,
-      allowDeselectOption: info.allowDeselectOption,
-      hideSelectedOption: info.hideSelectedOption,
-      deselectLabel: info.deselectLabel,
-      isEnabled: info.isEnabled,
-      valuesUseText: info.valuesUseText,
-      showOptionTooltips: info.showOptionTooltips,
-      selectByGroup: info.selectByGroup,
-      limit: info.limit,
-      timeoutDelay: info.timeoutDelay,
-      addToBody: info.addToBody,
-    })
+    // Take the constructor info and set the primary fields
+    this.setSettingsFromConstructor(info)
 
-    this.select = new Select({
-      select: selectElement,
-      main: this,
-    })
+    this.selectClass = new Select(this)
 
-    this.data = new Data({ main: this })
-    this.slim = new Slim({ main: this })
+    this.data = new Data(this)
+    this.slim = new Slim(this)
 
     // Add after original select element
-    if (this.select.element.parentNode) {
-      this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
+    if (this.select.parentNode) {
+      this.select.parentNode.insertBefore(this.slim.container, this.select.nextSibling)
     }
 
     // If data is passed in lets set it
@@ -135,7 +174,7 @@ export default class SlimSelect {
 
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
-    if (this.config.showContent === 'auto') {
+    if (this.showContent === 'auto') {
       window.addEventListener('scroll', this.windowScroll, false)
     }
 
@@ -160,7 +199,7 @@ export default class SlimSelect {
     }
 
     // If disabled lets call it
-    if (!this.config.isEnabled) {
+    if (!this.isEnabled) {
       this.disable()
     }
   }
@@ -178,8 +217,61 @@ export default class SlimSelect {
     return select
   }
 
+  setSettingsFromConstructor(info: Constructor) {
+    this.id = 'ss-' + Math.floor(Math.random() * 100000)
+    this.style = this.select.style.cssText
+    this.class = this.select.className.split(' ')
+    this.isMultiple = this.select.multiple
+    this.isAjax = info.ajax ? true : false
+    this.showSearch = info.showSearch === false ? false : true
+    this.searchFocus = info.searchFocus === false ? false : true
+    this.searchHighlight = info.searchHighlight === true ? true : false
+    this.closeOnSelect = info.closeOnSelect === false ? false : true
+    if (info.showContent) {
+      this.showContent = info.showContent
+    }
+    this.isEnabled = info.isEnabled === false ? false : true
+    if (info.searchPlaceholder) {
+      this.searchPlaceholder = info.searchPlaceholder
+    }
+    if (info.searchText) {
+      this.searchText = info.searchText
+    }
+    if (info.searchingText) {
+      this.searchingText = info.searchingText
+    }
+    if (info.placeholderText) {
+      this.placeholderText = info.placeholderText
+    }
+    this.allowDeselect = info.allowDeselect === true ? true : false
+    this.allowDeselectOption = info.allowDeselectOption === true ? true : false
+    this.hideSelectedOption = info.hideSelectedOption === true ? true : false
+    if (info.deselectLabel) {
+      this.deselectLabel = info.deselectLabel
+    }
+    if (info.valuesUseText) {
+      this.valuesUseText = info.valuesUseText
+    }
+    if (info.showOptionTooltips) {
+      this.showOptionTooltips = info.showOptionTooltips
+    }
+    if (info.selectByGroup) {
+      this.selectByGroup = info.selectByGroup
+    }
+    if (info.limit) {
+      this.limit = info.limit
+    }
+    if (info.searchFilter) {
+      this.searchFilter = info.searchFilter
+    }
+    if (info.timeoutDelay != null) {
+      this.timeoutDelay = info.timeoutDelay
+    }
+    this.addToBody = info.addToBody === true ? true : false
+  }
+
   public selected(): string | string[] {
-    if (this.config.isMultiple) {
+    if (this.isMultiple) {
       const selected = this.data.getSelected() as Option[]
       const outputSelected: string[] = []
       for (const s of selected) {
@@ -194,19 +286,19 @@ export default class SlimSelect {
 
   // Sets value of the select, adds it to data and original select
   public set(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
-    if (this.config.isMultiple && !Array.isArray(value)) {
+    if (this.isMultiple && !Array.isArray(value)) {
       this.data.addToSelected(value, type)
     } else {
       this.data.setSelected(value, type)
     }
-    this.select.setValue()
+    this.selectClass.setValue()
     this.data.onDataChange() // Trigger on change callback
     this.render()
 
     // Close when all options are selected and hidden
     if (
-      this.config.hideSelectedOption &&
-      this.config.isMultiple &&
+      this.hideSelectedOption &&
+      this.isMultiple &&
       (this.data.getSelected() as Option[]).length === this.data.data.length
     ) {
       close = true
@@ -226,7 +318,7 @@ export default class SlimSelect {
     // Validate data if passed in
     const isValid = validateData(data)
     if (!isValid) {
-      console.error('Validation problem on: #' + this.select.element.id)
+      console.error('Validation problem on: #' + this.select.id)
       return
     } // If data passed in is not valid DO NOT parse, set and render
 
@@ -242,8 +334,8 @@ export default class SlimSelect {
     }
 
     // If its an ajax type keep selected values
-    if (this.config.isAjax && selected) {
-      if (this.config.isMultiple) {
+    if (this.isAjax && selected) {
+      if (this.isMultiple) {
         const reverseSelected = (selected as Option[]).reverse()
         for (const r of reverseSelected) {
           newData.unshift(r)
@@ -275,7 +367,7 @@ export default class SlimSelect {
       }
     }
 
-    this.select.create(newData)
+    this.selectClass.create(newData)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
   }
@@ -285,12 +377,12 @@ export default class SlimSelect {
     // Validate data if passed in
     const isValid = validateData([data])
     if (!isValid) {
-      console.error('Validation problem on: #' + this.select.element.id)
+      console.error('Validation problem on: #' + this.select.id)
       return
     } // If data passed in is not valid DO NOT parse, set and render
 
     this.data.add(this.data.newOption(data))
-    this.select.create(this.data.data)
+    this.selectClass.create(this.data.data)
     this.data.parseSelectData()
     this.data.setSelectedFromSelect()
     this.render()
@@ -299,7 +391,7 @@ export default class SlimSelect {
   // Open content section
   public open(): void {
     // Dont open if disabled
-    if (!this.config.isEnabled) {
+    if (!this.isEnabled) {
       return
     }
 
@@ -310,8 +402,8 @@ export default class SlimSelect {
 
     // Dont open when all options are selected and hidden
     if (
-      this.config.hideSelectedOption &&
-      this.config.isMultiple &&
+      this.hideSelectedOption &&
+      this.isMultiple &&
       (this.data.getSelected() as Option[]).length === this.data.data.length
     ) {
       return
@@ -322,29 +414,29 @@ export default class SlimSelect {
       this.beforeOpen()
     }
 
-    if (this.config.isMultiple && this.slim.multiSelected) {
+    if (this.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.plus.classList.add('ss-cross')
     } else if (this.slim.singleSelected) {
       this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down')
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
-    ;(this.slim as any)[this.config.isMultiple ? 'multiSelected' : 'singleSelected'].container.classList.add(
-      this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow,
+    ;(this.slim as any)[this.isMultiple ? 'multiSelected' : 'singleSelected'].container.classList.add(
+      this.data.contentPosition === 'above' ? this.classes.openAbove : this.classes.openBelow,
     )
 
-    if (this.config.addToBody) {
+    if (this.addToBody) {
       // move the content in to the right location
       const containerRect = this.slim.container.getBoundingClientRect()
       this.slim.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
       this.slim.content.style.left = containerRect.left + window.scrollX + 'px'
       this.slim.content.style.width = containerRect.width + 'px'
     }
-    this.slim.content.classList.add(this.config.open)
+    this.slim.content.classList.add(this.classes.open)
 
     // Check showContent to see if they want to specifically show in a certain direction
-    if (this.config.showContent.toLowerCase() === 'up') {
+    if (this.showContent.toLowerCase() === 'up') {
       this.moveContentAbove()
-    } else if (this.config.showContent.toLowerCase() === 'down') {
+    } else if (this.showContent.toLowerCase() === 'down') {
       this.moveContentBelow()
     } else {
       // Auto identify where to put it
@@ -356,7 +448,7 @@ export default class SlimSelect {
     }
 
     // Move to selected option for single option
-    if (!this.config.isMultiple) {
+    if (!this.isMultiple) {
       const selected = this.data.getSelected() as Option
       if (selected) {
         const selectedId = selected.id
@@ -372,7 +464,7 @@ export default class SlimSelect {
       this.data.contentOpen = true
 
       // Focus on input field
-      if (this.config.searchFocus) {
+      if (this.searchFocus) {
         this.slim.search.input.focus()
       }
 
@@ -380,7 +472,7 @@ export default class SlimSelect {
       if (this.afterOpen) {
         this.afterOpen()
       }
-    }, this.config.timeoutDelay)
+    }, this.timeoutDelay)
   }
 
   // Close content section
@@ -396,17 +488,17 @@ export default class SlimSelect {
     }
 
     // this.slim.search.input.blur() // Removed due to safari quirk
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.openAbove)
-      this.slim.multiSelected.container.classList.remove(this.config.openBelow)
+    if (this.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.remove(this.classes.openAbove)
+      this.slim.multiSelected.container.classList.remove(this.classes.openBelow)
       this.slim.multiSelected.plus.classList.remove('ss-cross')
     } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.openAbove)
-      this.slim.singleSelected.container.classList.remove(this.config.openBelow)
+      this.slim.singleSelected.container.classList.remove(this.classes.openAbove)
+      this.slim.singleSelected.container.classList.remove(this.classes.openBelow)
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down')
       this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up')
     }
-    this.slim.content.classList.remove(this.config.open)
+    this.slim.content.classList.remove(this.classes.open)
     this.data.contentOpen = false
 
     this.search('') // Clear search
@@ -416,12 +508,12 @@ export default class SlimSelect {
       this.slim.content.removeAttribute('style')
       this.data.contentPosition = 'below'
 
-      if (this.config.isMultiple && this.slim.multiSelected) {
-        this.slim.multiSelected.container.classList.remove(this.config.openAbove)
-        this.slim.multiSelected.container.classList.remove(this.config.openBelow)
+      if (this.isMultiple && this.slim.multiSelected) {
+        this.slim.multiSelected.container.classList.remove(this.classes.openAbove)
+        this.slim.multiSelected.container.classList.remove(this.classes.openBelow)
       } else if (this.slim.singleSelected) {
-        this.slim.singleSelected.container.classList.remove(this.config.openAbove)
-        this.slim.singleSelected.container.classList.remove(this.config.openBelow)
+        this.slim.singleSelected.container.classList.remove(this.classes.openAbove)
+        this.slim.singleSelected.container.classList.remove(this.classes.openBelow)
       }
 
       // After content is closed lets blur on the input field
@@ -431,12 +523,12 @@ export default class SlimSelect {
       if (this.afterClose) {
         this.afterClose()
       }
-    }, this.config.timeoutDelay)
+    }, this.timeoutDelay)
   }
 
   public moveContentAbove(): void {
     let selectHeight: number = 0
-    if (this.config.isMultiple && this.slim.multiSelected) {
+    if (this.isMultiple && this.slim.multiSelected) {
       selectHeight = this.slim.multiSelected.container.offsetHeight
     } else if (this.slim.singleSelected) {
       selectHeight = this.slim.singleSelected.container.offsetHeight
@@ -448,57 +540,57 @@ export default class SlimSelect {
     this.slim.content.style.transformOrigin = 'center bottom'
     this.data.contentPosition = 'above'
 
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.openBelow)
-      this.slim.multiSelected.container.classList.add(this.config.openAbove)
+    if (this.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.remove(this.classes.openBelow)
+      this.slim.multiSelected.container.classList.add(this.classes.openAbove)
     } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.openBelow)
-      this.slim.singleSelected.container.classList.add(this.config.openAbove)
+      this.slim.singleSelected.container.classList.remove(this.classes.openBelow)
+      this.slim.singleSelected.container.classList.add(this.classes.openAbove)
     }
   }
 
   public moveContentBelow(): void {
     this.data.contentPosition = 'below'
 
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.openAbove)
-      this.slim.multiSelected.container.classList.add(this.config.openBelow)
+    if (this.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.remove(this.classes.openAbove)
+      this.slim.multiSelected.container.classList.add(this.classes.openBelow)
     } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.openAbove)
-      this.slim.singleSelected.container.classList.add(this.config.openBelow)
+      this.slim.singleSelected.container.classList.remove(this.classes.openAbove)
+      this.slim.singleSelected.container.classList.add(this.classes.openBelow)
     }
   }
 
   // Set to enabled, remove disabled classes and removed disabled from original select
   public enable(): void {
-    this.config.isEnabled = true
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.disabled)
+    this.isEnabled = true
+    if (this.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.remove(this.classes.disabled)
     } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.disabled)
+      this.slim.singleSelected.container.classList.remove(this.classes.disabled)
     }
 
     // Disable original select but dont trigger observer
-    this.select.triggerMutationObserver = false
-    this.select.element.disabled = false
+    this.selectClass.triggerMutationObserver = false
+    this.selectClass.element.disabled = false
     this.slim.search.input.disabled = false
-    this.select.triggerMutationObserver = true
+    this.selectClass.triggerMutationObserver = true
   }
 
   // Set to disabled, add disabled classes and add disabled to original select
   public disable(): void {
-    this.config.isEnabled = false
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.add(this.config.disabled)
+    this.isEnabled = false
+    if (this.isMultiple && this.slim.multiSelected) {
+      this.slim.multiSelected.container.classList.add(this.classes.disabled)
     } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.add(this.config.disabled)
+      this.slim.singleSelected.container.classList.add(this.classes.disabled)
     }
 
     // Enable original select but dont trigger observer
-    this.select.triggerMutationObserver = false
-    this.select.element.disabled = true
+    this.selectClass.triggerMutationObserver = false
+    this.selectClass.element.disabled = true
     this.slim.search.input.disabled = true
-    this.select.triggerMutationObserver = true
+    this.selectClass.triggerMutationObserver = true
   }
 
   // Take in string value and search current options
@@ -509,16 +601,16 @@ export default class SlimSelect {
     }
 
     this.slim.search.input.value = value
-    if (this.config.isAjax) {
+    if (this.isAjax) {
       const master = this
-      this.config.isSearching = true
+      this.isSearching = true
       this.render()
 
       // If ajax call it
       if (this.ajax) {
         this.ajax(value, (info: any) => {
           // Only process if return callback is not false
-          master.config.isSearching = false
+          master.isSearching = false
           if (Array.isArray(info)) {
             info.unshift({ text: '', placeholder: true })
             master.setData(info)
@@ -538,11 +630,11 @@ export default class SlimSelect {
   }
 
   public setSearchText(text: string): void {
-    this.config.searchText = text
+    this.searchText = text
   }
 
   public render(): void {
-    if (this.config.isMultiple) {
+    if (this.isMultiple) {
       this.slim.values()
     } else {
       this.slim.placeholder()
@@ -554,7 +646,7 @@ export default class SlimSelect {
   // Display original select again and remove slim
   public destroy(id: string | null = null): void {
     const slim = id ? document.querySelector('.' + id + '.ss-main') : this.slim.container
-    const select = id ? (document.querySelector(`[data-ssid=${id}]`) as HTMLSelectElement) : this.select.element
+    const select = id ? (document.querySelector(`[data-ssid=${id}]`) as HTMLSelectElement) : this.select
     // If there is no slim dont do anything
     if (!slim || !select) {
       return
@@ -562,7 +654,7 @@ export default class SlimSelect {
 
     document.removeEventListener('click', this.documentClick)
 
-    if (this.config.showContent === 'auto') {
+    if (this.showContent === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
 
@@ -580,7 +672,7 @@ export default class SlimSelect {
     }
 
     // remove the content if it was added to the document body
-    if (this.config.addToBody) {
+    if (this.addToBody) {
       const slimContent = id ? document.querySelector('.' + id + '.ss-content') : this.slim.content
       if (!slimContent) {
         return
@@ -590,7 +682,7 @@ export default class SlimSelect {
   }
 
   private documentClick: (e: Event) => void = (e: Event) => {
-    if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
+    if (e.target && !hasClassInTree(e.target as HTMLElement, this.id)) {
       this.close()
     }
   }
