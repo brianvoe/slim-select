@@ -1,5 +1,4 @@
 import { describe, expect, test } from '@jest/globals'
-import { error } from 'console'
 import Store, { Optgroup, Option } from './store'
 
 describe('store module', () => {
@@ -33,7 +32,6 @@ describe('store module', () => {
         text: 'test',
       },
     ])
-    error(store.data)
 
     // Make sure data has one item and that it has the correct text
     expect(store.data.length).toBe(1)
@@ -106,7 +104,7 @@ describe('store module', () => {
         text: 'test',
       },
     ])
-    store.setSelectedByID(['8675309'])
+    store.setSelectedBy('id', ['8675309'])
 
     // Make sure data has one item and that it has the correct text
     expect(store.data.length).toBe(1)
@@ -122,7 +120,7 @@ describe('store module', () => {
         value: 'hello',
       },
     ])
-    store.setSelectedByID(['hello'])
+    store.setSelectedBy('value', ['hello'])
 
     // Make sure data has one item and that it has the correct text
     expect(store.data.length).toBe(1)
@@ -151,7 +149,6 @@ describe('store module', () => {
 
     // With searchFilter search against current store data set
     let search = store.search('test2', searchFilter)
-    error(search)
     expect(search.length).toBe(1)
     expect((search[0] as Option).value).toBe('test2')
   })

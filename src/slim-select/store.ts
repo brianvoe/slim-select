@@ -55,16 +55,20 @@ export default class Store {
     // if it doesn't already have one
     for (let dataObj of data) {
       // Optgroup
-      if ('options' in dataObj) {
+      if ('options' in dataObj || 'label' in dataObj) {
+        // Setup new optgroup
+        let optOptions: Optgroup = {
+          label: dataObj.label,
+          options: [],
+        } as Required<Optgroup>
+
+        // If you have options add them to the optgroup
         if (dataObj.options) {
-          let optOptions: Optgroup = {
-            label: dataObj.label,
-            options: [],
-          } as Required<Optgroup>
           for (let option of dataObj.options) {
             optOptions.options!.push(Store.mergeDefaultOption(option))
           }
         }
+        dataOut.push(optOptions)
       }
 
       // Option
@@ -79,43 +83,21 @@ export default class Store {
 
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
-  public setSelectedByID(selectedID: string[]) {
+  public setSelectedBy(selectedType: 'id' | 'value', selectedVals: string[]) {
     for (let dataObj of this.data) {
       // Optgroup
       if ('options' in dataObj && dataObj.options) {
         for (let option of dataObj.options) {
-          if (option.id) {
-            option.selected = selectedID.includes(option.id)
+          if (option[selectedType]) {
+            option.selected = selectedVals.includes(option[selectedType] as string)
           }
         }
       }
 
       // Option
       if ('id' in dataObj) {
-        if (dataObj.id) {
-          dataObj.selected = selectedID.includes(dataObj.id)
-        }
-      }
-    }
-  }
-
-  // Pass in an array of id that will loop through
-  // each option and set the selected property to true
-  public setSelectedByValue(selectedValues: string[]) {
-    for (let dataObj of this.data) {
-      // Optgroup
-      if ('options' in dataObj && dataObj.options) {
-        dataObj.options.forEach((option: Option) => {
-          if (option.value) {
-            option.selected = selectedValues.includes(option.value)
-          }
-        })
-      }
-
-      // Option
-      if ('id' in dataObj) {
-        if (dataObj.value) {
-          dataObj.selected = selectedValues.includes(dataObj.value)
+        if (dataObj[selectedType]) {
+          dataObj.selected = selectedVals.includes(dataObj[selectedType] as string)
         }
       }
     }
