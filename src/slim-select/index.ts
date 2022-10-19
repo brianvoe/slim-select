@@ -125,7 +125,7 @@ export default class SlimSelect {
   }
 
   public selectClass: Select
-  public data: Store
+  public store: Store
   public slim: Slim
 
   constructor(info: Constructor) {
@@ -148,7 +148,7 @@ export default class SlimSelect {
     this.setEvents(info.events || {})
 
     this.selectClass = new Select(this)
-    this.data = new Store()
+    this.store = new Store()
     this.slim = new Slim(this)
 
     // Add after original select element
@@ -212,14 +212,14 @@ export default class SlimSelect {
 
   public selected(): string | string[] {
     if (this.isMultiple) {
-      const selected = this.data.getSelected() as Option[]
+      const selected = this.store.getSelected()
       const outputSelected: string[] = []
       for (const s of selected) {
         outputSelected.push(s.value as string)
       }
       return outputSelected
     } else {
-      const selected = this.data.getSelected() as Option
+      const selected = this.store.getSelected() as Option
       return selected ? (selected.value as string) : ''
     }
   }
@@ -227,19 +227,19 @@ export default class SlimSelect {
   // Sets value of the select, adds it to data and original select
   public set(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
     if (this.isMultiple && !Array.isArray(value)) {
-      this.data.addToSelected(value, type)
+      this.store.addToSelected(value, type)
     } else {
-      this.data.setSelected(value, type)
+      this.store.setSelected(value, type)
     }
     this.selectClass.setValue()
-    this.data.onDataChange() // Trigger on change callback
+    this.store.onDataChange() // Trigger on change callback
     this.render()
 
     // Close when all options are selected and hidden
     if (
       this.settings.hideSelectedOption &&
       this.isMultiple &&
-      (this.data.getSelected() as Option[]).length === this.data.data.length
+      (this.store.getSelected() as Option[]).length === this.store.data.length
     ) {
       close = true
     }
@@ -263,7 +263,7 @@ export default class SlimSelect {
     } // If data passed in is not valid DO NOT parse, set and render
 
     const newData = JSON.parse(JSON.stringify(data))
-    const selected = this.data.getSelected()
+    const selected = this.store.getSelected()
 
     // Check newData to make sure value is set
     // If not set from text
@@ -308,8 +308,8 @@ export default class SlimSelect {
     }
 
     this.selectClass.create(newData)
-    this.data.parseSelectData()
-    this.data.setSelectedFromSelect()
+    this.store.parseSelectData()
+    this.store.setSelectedFromSelect()
   }
 
   // addData will append to the current data set
@@ -321,10 +321,10 @@ export default class SlimSelect {
       return
     } // If data passed in is not valid DO NOT parse, set and render
 
-    this.data.add(this.data.newOption(data))
-    this.selectClass.create(this.data.data)
-    this.data.parseSelectData()
-    this.data.setSelectedFromSelect()
+    this.store.add(this.store.newOption(data))
+    this.selectClass.create(this.store.data)
+    this.store.parseSelectData()
+    this.store.setSelectedFromSelect()
     this.render()
   }
 
@@ -336,7 +336,7 @@ export default class SlimSelect {
     }
 
     // Dont do anything if the content is already open
-    if (this.data.contentOpen) {
+    if (this.store.contentOpen) {
       return
     }
 
@@ -344,7 +344,7 @@ export default class SlimSelect {
     if (
       this.settings.hideSelectedOption &&
       this.isMultiple &&
-      (this.data.getSelected() as Option[]).length === this.data.data.length
+      (this.store.getSelected() as Option[]).length === this.store.data.length
     ) {
       return
     }
@@ -361,7 +361,7 @@ export default class SlimSelect {
       this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
     }
     ;(this.slim as any)[this.isMultiple ? 'multiSelected' : 'singleSelected'].container.classList.add(
-      this.data.contentPosition === 'above' ? this.classes.openAbove : this.classes.openBelow,
+      this.store.contentPosition === 'above' ? this.classes.openAbove : this.classes.openBelow,
     )
 
     if (this.settings.addToBody) {
@@ -380,7 +380,7 @@ export default class SlimSelect {
       this.moveContentBelow()
     } else {
       // Auto identify where to put it
-      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+      if (putContent(this.slim.content, this.store.contentPosition, this.store.contentOpen) === 'above') {
         this.moveContentAbove()
       } else {
         this.moveContentBelow()
@@ -389,7 +389,7 @@ export default class SlimSelect {
 
     // Move to selected option for single option
     if (!this.isMultiple) {
-      const selected = this.data.getSelected() as Option
+      const selected = this.store.getSelected() as Option
       if (selected) {
         const selectedId = selected.id
         const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
@@ -401,7 +401,7 @@ export default class SlimSelect {
 
     // setTimeout is for animation completion
     setTimeout(() => {
-      this.data.contentOpen = true
+      this.store.contentOpen = true
 
       // Focus on input field
       if (this.settings.searchFocus) {
@@ -418,7 +418,7 @@ export default class SlimSelect {
   // Close content section
   public close(): void {
     // Dont do anything if the content is already closed
-    if (!this.data.contentOpen) {
+    if (!this.store.contentOpen) {
       return
     }
 
@@ -439,14 +439,14 @@ export default class SlimSelect {
       this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up')
     }
     this.slim.content.classList.remove(this.classes.open)
-    this.data.contentOpen = false
+    this.store.contentOpen = false
 
     this.search('') // Clear search
 
     // Reset the content below
     setTimeout(() => {
       this.slim.content.removeAttribute('style')
-      this.data.contentPosition = 'below'
+      this.store.contentPosition = 'below'
 
       if (this.isMultiple && this.slim.multiSelected) {
         this.slim.multiSelected.container.classList.remove(this.classes.openAbove)
@@ -478,7 +478,7 @@ export default class SlimSelect {
     this.slim.content.style.margin = '-' + height + 'px 0 0 0'
     this.slim.content.style.height = height - selectHeight + 1 + 'px'
     this.slim.content.style.transformOrigin = 'center bottom'
-    this.data.contentPosition = 'above'
+    this.store.contentPosition = 'above'
 
     if (this.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.container.classList.remove(this.classes.openBelow)
@@ -490,7 +490,7 @@ export default class SlimSelect {
   }
 
   public moveContentBelow(): void {
-    this.data.contentPosition = 'below'
+    this.store.contentPosition = 'below'
 
     if (this.isMultiple && this.slim.multiSelected) {
       this.slim.multiSelected.container.classList.remove(this.classes.openAbove)
@@ -536,7 +536,7 @@ export default class SlimSelect {
   // Take in string value and search current options
   public search(value: string): void {
     // Only filter data and rerender if value has changed
-    if (this.data.searchValue === value) {
+    if (this.store.searchValue === value) {
       return
     }
 
@@ -564,7 +564,7 @@ export default class SlimSelect {
         })
       }
     } else {
-      this.data.search(value)
+      this.store.search(value)
       this.render()
     }
   }
@@ -623,8 +623,8 @@ export default class SlimSelect {
 
   // Event listener for window scrolling`
   private windowScroll: (e: Event) => void = debounce((e: Event) => {
-    if (this.data.contentOpen) {
-      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+    if (this.store.contentOpen) {
+      if (putContent(this.slim.content, this.store.contentPosition, this.store.contentOpen) === 'above') {
         this.moveContentAbove()
       } else {
         this.moveContentBelow()
