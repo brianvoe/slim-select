@@ -1,19 +1,91 @@
-import { DataArray, Optgroup, Option } from './data'
-import { kebabCase } from './helper'
-import SlimSelect from './index'
+import { generateID, kebabCase } from './helper'
+import SlimSelect, { Events, Settings } from './index'
+import { DataArray, Optgroup, Option } from './store'
+
+export default class Select2 {
+  public select: HTMLSelectElement
+  public data: DataArray
+  public settings: Required<Settings>
+  public events: Events
+
+  // Mutation observer fields
+  public mutationObserverOn: boolean = true
+  public mutationObserver: MutationObserver | null = null
+
+  constructor(select: HTMLSelectElement, data: DataArray, settings: Required<Settings>, events: Events) {
+    this.select = select
+    this.data = data
+    this.settings = settings
+    this.events = events
+  }
+
+  // public getData(): Option[] {
+  //   return this.data.options
+  // }
+
+  // From passed in select element pull optgroup and options into data
+  public getSelectData(select: HTMLSelectElement): DataArray {
+    let data = []
+
+    // Loop through nodes and get data
+    const nodes = select.childNodes as any as HTMLOptGroupElement[] | HTMLOptionElement[]
+    for (const n of nodes) {
+      // Optgroup
+      if (n.nodeName === 'OPTGROUP') {
+        const node = n as HTMLOptGroupElement
+        const optgroup = {
+          label: node.label,
+          options: [] as Option[],
+        }
+        const options = n.childNodes as any as HTMLOptionElement[]
+        for (const o of options) {
+          if (o.nodeName === 'OPTION') {
+            const option = this.getOptionData(o as HTMLOptionElement)
+            optgroup.options.push(option)
+          }
+        }
+        data.push(optgroup)
+      }
+
+      // Option
+      if (n.nodeName === 'OPTION') {
+        const option = this.getOptionData(n as HTMLOptionElement)
+        data.push(option)
+      }
+    }
+
+    return data
+  }
+
+  // From passed in option pull pieces of usable information
+  public getOptionData(option: HTMLOptionElement): Option {
+    return {
+      id: (option.dataset ? option.dataset.id : false) || generateID(),
+      value: option.value,
+      text: option.text,
+      innerHTML: option.innerHTML,
+      selected: option.selected,
+      disabled: option.disabled,
+      placeholder: option.dataset.placeholder || '',
+      class: option.className,
+      style: option.style.cssText,
+      data: option.dataset,
+      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
+    } as Required<Option>
+  }
+}
 
 export class Select {
-  public element: HTMLSelectElement
   public main: SlimSelect
   public mutationObserver: MutationObserver | null
   public triggerMutationObserver: boolean = true
+
   constructor(main: SlimSelect) {
-    this.element = main.select
     this.main = main
 
     // If original select is set to disabled lets make sure slim is too
-    if (this.element.disabled) {
-      this.main.isEnabled = false
+    if (this.main.select.disabled) {
+      this.main.settings.isEnabled = false
     }
 
     this.addAttributes()
@@ -22,7 +94,7 @@ export class Select {
     this.addMutationObserver()
 
     // Add slim to original select dropdown
-    const el = this.element as any
+    const el = this.main.select as any
     el.slim = main
   }
 
@@ -34,7 +106,7 @@ export class Select {
     if (this.main.isMultiple) {
       // If multiple loop through options and set selected
       const selected = this.main.data.getSelected() as Option[]
-      const options = this.element.options as any as HTMLOptionElement[]
+      const options = this.main.select.options as any as HTMLOptionElement[]
       for (const o of options) {
         o.selected = false
         for (const s of selected) {
@@ -46,27 +118,27 @@ export class Select {
     } else {
       // If single select simply set value
       const selected = this.main.data.getSelected() as any
-      this.element.value = selected ? selected.value : ''
+      this.main.select.value = selected ? selected.value : ''
     }
 
     // Do not trigger onChange callbacks for this event listener
     this.main.data.isOnChangeEnabled = false
-    this.element.dispatchEvent(new CustomEvent('change', { bubbles: true }))
+    // this.main.select.dispatchEvent(new CustomEvent('change', { bubbles: true }))
     this.main.data.isOnChangeEnabled = true
   }
 
   public addAttributes() {
-    this.element.tabIndex = -1
-    this.element.style.display = 'none'
+    this.main.select.tabIndex = -1
+    this.main.select.style.display = 'none'
 
     // Add slim select id
-    this.element.dataset.ssid = this.main.id
-    this.element.setAttribute('aria-hidden', 'true')
+    this.main.select.dataset.ssid = this.main.id
+    this.main.select.setAttribute('aria-hidden', 'true')
   }
 
   // Add onChange listener to original select
   public addEventListeners() {
-    this.element.addEventListener('change', (e: Event) => {
+    this.main.select.addEventListener('change', (e: Event) => {
       this.main.data.setSelectedFromSelect()
       this.main.render()
     })
@@ -103,7 +175,7 @@ export class Select {
       return
     }
 
-    this.mutationObserver.observe(this.element, {
+    this.mutationObserver.observe(this.main.select, {
       attributes: true,
       childList: true,
       characterData: true,
@@ -119,7 +191,7 @@ export class Select {
   // Create select element and optgroup/options
   public create(data: DataArray): void {
     // Clear out select
-    this.element.innerHTML = ''
+    this.main.select.innerHTML = ''
 
     for (const d of data) {
       if (d.hasOwnProperty('options')) {
@@ -131,9 +203,9 @@ export class Select {
             optgroupEl.appendChild(this.createOption(oo))
           }
         }
-        this.element.appendChild(optgroupEl)
+        this.main.select.appendChild(optgroupEl)
       } else {
-        this.element.appendChild(this.createOption(d))
+        this.main.select.appendChild(this.createOption(d))
       }
     }
   }

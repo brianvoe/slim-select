@@ -1,6 +1,6 @@
-import { Optgroup, Option, validateOption } from './data'
 import { ensureElementInView, highlight, isValueInArrayOfObjects } from './helper'
 import SlimSelect from './index'
+import { Optgroup, Option, validateOption } from './store'
 
 export interface SingleSelected {
   container: HTMLDivElement
@@ -55,7 +55,7 @@ export class Slim {
       this.singleSelected = this.singleSelectedDiv()
       this.container.appendChild(this.singleSelected.container)
     }
-    if (this.main.addToBody) {
+    if (this.main.settings.addToBody) {
       // add the id to the content as a class as well
       // this is important on touch devices as the close method is
       // triggered when clicks on the document body occur
@@ -110,13 +110,13 @@ export class Slim {
 
     // Deselect
     const deselect = document.createElement('span')
-    deselect.innerHTML = this.main.deselectLabel
+    deselect.innerHTML = this.main.settings.deselectLabel!
     deselect.classList.add('ss-deselect')
     deselect.onclick = (e) => {
       e.stopPropagation()
 
       // Dont do anything if disabled
-      if (!this.main.isEnabled) {
+      if (!this.main.settings.isEnabled) {
         return
       }
 
@@ -134,7 +134,7 @@ export class Slim {
 
     // Add onclick for main selector div
     container.onclick = () => {
-      if (!this.main.isEnabled) {
+      if (!this.main.settings.isEnabled) {
         return
       }
 
@@ -160,14 +160,15 @@ export class Slim {
     if (selected === null || (selected && selected.placeholder)) {
       const placeholder = document.createElement('span')
       placeholder.classList.add(this.main.classes.disabled)
-      placeholder.innerHTML = this.main.placeholderText
+      placeholder.innerHTML = this.main.settings.placeholderText
       if (this.singleSelected) {
         this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
       }
     } else {
       let selectedValue = ''
       if (selected) {
-        selectedValue = selected.innerHTML && this.main.valuesUseText !== true ? selected.innerHTML : selected.text
+        selectedValue =
+          selected.innerHTML && this.main.settings.valuesUseText !== true ? selected.innerHTML : selected.text
       }
       if (this.singleSelected) {
         this.singleSelected.placeholder.innerHTML = selected ? selectedValue : ''
@@ -179,7 +180,7 @@ export class Slim {
   public deselect(): void {
     if (this.singleSelected) {
       // if allowDeselect is false just hide it
-      if (!this.main.allowDeselect) {
+      if (!this.main.settings.allowDeselect) {
         this.singleSelected.deselect.classList.add('ss-hide')
         return
       }
@@ -214,7 +215,7 @@ export class Slim {
     container.appendChild(add)
 
     container.onclick = (e) => {
-      if (!this.main.isEnabled) {
+      if (!this.main.settings.isEnabled) {
         return
       }
 
@@ -288,7 +289,7 @@ export class Slim {
     if (selected.length === 0) {
       const placeholder = document.createElement('span')
       placeholder.classList.add(this.main.classes.disabled)
-      placeholder.innerHTML = this.main.placeholderText
+      placeholder.innerHTML = this.main.settings.placeholderText
       this.multiSelected.values.innerHTML = placeholder.outerHTML
     }
   }
@@ -300,24 +301,25 @@ export class Slim {
 
     const text = document.createElement('span')
     text.classList.add(this.main.classes.valueText)
-    text.innerHTML = optionObj.innerHTML && this.main.valuesUseText !== true ? optionObj.innerHTML : optionObj.text
+    text.innerHTML =
+      optionObj.innerHTML && this.main.settings.valuesUseText !== true ? optionObj.innerHTML : optionObj.text
     value.appendChild(text)
 
     if (!optionObj.mandatory) {
       const deleteSpan = document.createElement('span')
       deleteSpan.classList.add(this.main.classes.valueDelete)
-      deleteSpan.innerHTML = this.main.deselectLabel
+      deleteSpan.innerHTML = this.main.settings.deselectLabel
       deleteSpan.onclick = (e) => {
         e.preventDefault()
         e.stopPropagation()
         let shouldUpdate = false
 
         // If no beforeOnChange is set automatically update at end
-        if (!this.main.beforeOnChange) {
+        if (!this.main.events.beforeOnChange) {
           shouldUpdate = true
         }
 
-        if (this.main.beforeOnChange) {
+        if (this.main.events.beforeOnChange) {
           const selected = this.main.data.getSelected() as Option
           const currentValues = JSON.parse(JSON.stringify(selected))
 
@@ -328,7 +330,7 @@ export class Slim {
             }
           }
 
-          const beforeOnchange = this.main.beforeOnChange(currentValues)
+          const beforeOnchange = this.main.events.beforeOnChange(currentValues)
           if (beforeOnchange !== false) {
             shouldUpdate = true
           }
@@ -368,15 +370,15 @@ export class Slim {
     }
 
     // We still want the search to be tabable but not shown
-    if (!this.main.showSearch) {
+    if (!this.main.settings.showSearch) {
       container.classList.add(this.main.classes.hide)
       input.readOnly = true
     }
 
     input.type = 'search'
-    input.placeholder = this.main.searchPlaceholder
+    input.placeholder = this.main.settings.searchPlaceholder
     input.tabIndex = 0
-    input.setAttribute('aria-label', this.main.searchPlaceholder)
+    input.setAttribute('aria-label', this.main.settings.searchPlaceholder)
     input.setAttribute('autocapitalize', 'off')
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
@@ -401,7 +403,7 @@ export class Slim {
         if (!this.main.data.contentOpen) {
           setTimeout(() => {
             this.main.close()
-          }, this.main.timeoutDelay)
+          }, this.main.settings.timeoutDelay)
         } else {
           this.main.close()
         }
@@ -412,7 +414,7 @@ export class Slim {
     input.onkeyup = (e) => {
       const target = e.target as HTMLInputElement
       if (e.key === 'Enter') {
-        if (this.main.addable && e.ctrlKey) {
+        if (this.main.events.addable && e.ctrlKey) {
           addable.click()
           e.preventDefault()
           e.stopPropagation()
@@ -427,7 +429,7 @@ export class Slim {
       } else if (e.key === 'Escape') {
         this.main.close()
       } else {
-        if (this.main.showSearch && this.main.data.contentOpen) {
+        if (this.main.settings.showSearch && this.main.data.contentOpen) {
           this.main.search(target.value)
         } else {
           input.value = ''
@@ -441,11 +443,11 @@ export class Slim {
     }
     container.appendChild(input)
 
-    if (this.main.addable) {
+    if (this.main.events.addable) {
       addable.classList.add(this.main.classes.addable)
       addable.innerHTML = '+'
       addable.onclick = (e) => {
-        if (this.main.addable) {
+        if (this.main.events.addable) {
           e.preventDefault()
           e.stopPropagation()
 
@@ -455,7 +457,7 @@ export class Slim {
             return
           }
 
-          const addableValue = this.main.addable(inputValue)
+          const addableValue = this.main.events.addable(inputValue)
           let addableValueStr = ''
           if (!addableValue) {
             return
@@ -484,7 +486,7 @@ export class Slim {
           }, 100)
 
           // Close it only if closeOnSelect = true
-          if (this.main.closeOnSelect) {
+          if (this.main.settings.closeOnSelect) {
             setTimeout(() => {
               // Give it a little padding for a better looking animation
               this.main.close()
@@ -625,7 +627,7 @@ export class Slim {
       const searching = document.createElement('div')
       searching.classList.add(this.main.classes.option)
       searching.classList.add(this.main.classes.disabled)
-      searching.innerHTML = this.main.searchingText
+      searching.innerHTML = this.main.settings.searchingText
       this.list.appendChild(searching)
       return
     }
@@ -635,7 +637,7 @@ export class Slim {
       const noResults = document.createElement('div')
       noResults.classList.add(this.main.classes.option)
       noResults.classList.add(this.main.classes.disabled)
-      noResults.innerHTML = this.main.searchText
+      noResults.innerHTML = this.main.settings.searchText
       this.list.appendChild(noResults)
       return
     }
@@ -651,7 +653,7 @@ export class Slim {
         // Create label
         const optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.main.classes.optgroupLabel)
-        if (this.main.selectByGroup && this.main.isMultiple) {
+        if (this.main.settings.selectByGroup && this.main.isMultiple) {
           optgroupLabel.classList.add(this.main.classes.optgroupLabelSelectable)
         }
         optgroupLabel.innerHTML = item.label
@@ -664,7 +666,7 @@ export class Slim {
           }
 
           // Selecting all values by clicking the group label
-          if (this.main.selectByGroup && this.main.isMultiple) {
+          if (this.main.settings.selectByGroup && this.main.isMultiple) {
             const master = this
             optgroupLabel.addEventListener('click', (e: MouseEvent) => {
               e.preventDefault()
@@ -716,7 +718,7 @@ export class Slim {
 
     optionEl.dataset.id = data.id
     if (
-      this.main.searchHighlight &&
+      this.main.settings.searchHighlight &&
       this.main.slim &&
       data.innerHTML &&
       this.main.slim.search.input.value.trim() !== ''
@@ -729,7 +731,7 @@ export class Slim {
     } else if (data.innerHTML) {
       optionEl.innerHTML = data.innerHTML
     }
-    if (this.main.showOptionTooltips && optionEl.textContent) {
+    if (this.main.settings.showOptionTooltips && optionEl.textContent) {
       optionEl.setAttribute('title', optionEl.textContent)
     }
     const master = this
@@ -740,15 +742,15 @@ export class Slim {
       const element = this
       const elementID = element.dataset.id
 
-      if (data.selected === true && master.main.allowDeselectOption) {
+      if (data.selected === true && master.main.settings.allowDeselectOption) {
         let shouldUpdate = false
 
         // If no beforeOnChange is set automatically update at end
-        if (!master.main.beforeOnChange || !master.main.isMultiple) {
+        if (!master.main.events.beforeOnChange || !master.main.isMultiple) {
           shouldUpdate = true
         }
 
-        if (master.main.beforeOnChange && master.main.isMultiple) {
+        if (master.main.events.beforeOnChange && master.main.isMultiple) {
           const selectedValues = master.main.data.getSelected() as Option
           const currentValues = JSON.parse(JSON.stringify(selectedValues))
 
@@ -760,7 +762,7 @@ export class Slim {
             }
           }
 
-          const beforeOnchange = master.main.beforeOnChange(currentValues)
+          const beforeOnchange = master.main.events.beforeOnChange(currentValues)
           if (beforeOnchange !== false) {
             shouldUpdate = true
           }
@@ -783,11 +785,11 @@ export class Slim {
         }
 
         // Check if hit limit
-        if (master.main.limit && Array.isArray(selected) && master.main.limit <= selected.length) {
+        if (master.main.settings.limit && Array.isArray(selected) && master.main.settings.limit <= selected.length) {
           return
         }
 
-        if (master.main.beforeOnChange) {
+        if (master.main.events.beforeOnChange) {
           let value
           const objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID as string)))
           objectInfo.selected = true
@@ -799,12 +801,12 @@ export class Slim {
             value = JSON.parse(JSON.stringify(objectInfo))
           }
 
-          const beforeOnchange = master.main.beforeOnChange(value)
+          const beforeOnchange = master.main.events.beforeOnChange(value)
           if (beforeOnchange !== false) {
-            master.main.set(elementID as string, 'id', master.main.closeOnSelect)
+            master.main.set(elementID as string, 'id', master.main.settings.closeOnSelect)
           }
         } else {
-          master.main.set(elementID as string, 'id', master.main.closeOnSelect)
+          master.main.set(elementID as string, 'id', master.main.settings.closeOnSelect)
         }
       }
     })
@@ -812,10 +814,10 @@ export class Slim {
     const isSelected = selected && isValueInArrayOfObjects(selected, 'id', data.id as string)
     if (data.disabled || isSelected) {
       optionEl.onclick = null
-      if (!master.main.allowDeselectOption) {
+      if (!master.main.settings.allowDeselectOption) {
         optionEl.classList.add(this.main.classes.disabled)
       }
-      if (master.main.hideSelectedOption) {
+      if (master.main.settings.hideSelectedOption) {
         optionEl.classList.add(this.main.classes.hide)
       }
     }

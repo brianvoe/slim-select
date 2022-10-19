@@ -1,3 +1,7 @@
+export function generateID(): string {
+  return Math.floor(Math.random() * 100000).toString()
+}
+
 export function hasClassInTree(element: HTMLElement, className: string) {
   function hasClass(e: HTMLElement, c: string) {
     if (!(!c || !e || !e.classList || !e.classList.contains(c))) {
@@ -106,22 +110,3 @@ export function kebabCase(str: string) {
   const result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (match) => '-' + match.toLowerCase())
   return str[0] === str[0].toUpperCase() ? result.substring(1) : result
 }
-
-// TODO: Figure out if this is still needed
-// Custom events
-;(() => {
-  const w = window as any
-  if (typeof w.CustomEvent === 'function') {
-    return
-  }
-
-  function CustomEvent(event: any, params: any) {
-    params = params || { bubbles: false, cancelable: false, detail: undefined }
-    const evt = document.createEvent('CustomEvent')
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
-    return evt
-  }
-
-  CustomEvent.prototype = w.Event.prototype
-  w.CustomEvent = CustomEvent
-})()
