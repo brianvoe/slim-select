@@ -5,7 +5,7 @@
 'use strict'
 
 import { describe, expect, test } from '@jest/globals'
-import Slim from './slim'
+import Slim from './render'
 
 describe('select module', () => {
   test('constructor', () => {

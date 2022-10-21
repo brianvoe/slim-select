@@ -1,6 +1,6 @@
 import { debounce, ensureElementInView, generateID, hasClassInTree, putContent } from './helper'
+import { Slim } from './render'
 import { Select } from './select'
-import { Slim } from './slim'
 import Store, { DataArray, Option } from './store'
 
 export interface Constructor {
