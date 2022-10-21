@@ -6,32 +6,8 @@ import Store, { DataArray, Option } from './store'
 export interface Constructor {
   select: string | Element
   data?: DataArray
-  settings?: Settings
+  settings?: SettingsFields
   events?: Events
-}
-
-export interface Settings {
-  showSearch?: boolean
-  searchPlaceholder?: string
-  searchText?: string
-  searchingText?: string
-  searchFocus?: boolean
-  searchHighlight?: boolean
-  searchFilter?: (opt: Option, search: string) => boolean
-  closeOnSelect?: boolean
-  showContent?: string
-  placeholderText?: string
-  allowDeselect?: boolean
-  allowDeselectOption?: boolean
-  hideSelectedOption?: boolean
-  deselectLabel?: string
-  isEnabled?: boolean
-  valuesUseText?: boolean // Use text value when showing selected value
-  showOptionTooltips?: boolean
-  selectByGroup?: boolean
-  limit?: number
-  timeoutDelay?: number
-  addToBody?: boolean
 }
 
 export interface Events {
@@ -46,41 +22,17 @@ export interface Events {
 }
 
 export default class SlimSelect {
-  public select: HTMLSelectElement
+  public selectEl: HTMLSelectElement
   public id: string = '' // Primary ID for the select
   public style: string = '' // Style attribute from the select element
   public class: string[] = [] // Class attribute from the select element
 
-  // Misc internal settings
-  public isMultiple: boolean = false
-  public isAjax: boolean = false
-  public isSearching: boolean = false
+  // Classes
+  public select: Select
+  public store: Store
+  public slim: Slim
 
-  public settings = {
-    showSearch: true,
-    searchFocus: true,
-    searchHighlight: false,
-    searchFilter(opt: Option, search: string): boolean {
-      return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
-    },
-    closeOnSelect: true,
-    showContent: 'auto', // options: auto, up, down
-    searchPlaceholder: 'Search',
-    searchText: 'No Results',
-    searchingText: 'Searching...',
-    placeholderText: 'Select Value',
-    allowDeselect: false,
-    allowDeselectOption: false,
-    hideSelectedOption: false,
-    deselectLabel: 'x',
-    isEnabled: true,
-    valuesUseText: false,
-    showOptionTooltips: false,
-    selectByGroup: false,
-    limit: 0,
-    timeoutDelay: 200,
-    addToBody: false,
-  } as Required<Settings> // Internally its required that all fields are set
+  // Misc internal settings
 
   public events = {
     ajax: undefined,
@@ -93,53 +45,23 @@ export default class SlimSelect {
     afterClose: undefined,
   } as Events
 
-  // Classes
-  // TODO: Move into slim.ts file
-  public classes = {
-    main: 'ss-main',
-    singleSelected: 'ss-single-selected',
-    arrow: 'ss-arrow',
-    multiSelected: 'ss-multi-selected',
-    add: 'ss-add',
-    plus: 'ss-plus',
-    values: 'ss-values',
-    value: 'ss-value',
-    valueText: 'ss-value-text',
-    valueDelete: 'ss-value-delete',
-    content: 'ss-content',
-    open: 'ss-open',
-    openAbove: 'ss-open-above',
-    openBelow: 'ss-open-below',
-    search: 'ss-search',
-    searchHighlighter: 'ss-search-highlight',
-    addable: 'ss-addable',
-    list: 'ss-list',
-    optgroup: 'ss-optgroup',
-    optgroupLabel: 'ss-optgroup-label',
-    optgroupLabelSelectable: 'ss-optgroup-label-selectable',
-    option: 'ss-option',
-    optionSelected: 'ss-option-selected',
-    highlighted: 'ss-highlighted',
-    disabled: 'ss-disabled',
-    hide: 'ss-hide',
-  }
-
-  public selectClass: Select
-  public store: Store
-  public slim: Slim
-
   constructor(info: Constructor) {
-    this.select = this.validate(info)
+    this.selectEl = this.validate(info)
 
     // If select already has a slim select id on it lets destroy it first
-    if (this.select.dataset.ssid) {
-      this.destroy(this.select.dataset.ssid)
+    if (this.selectEl.dataset.ssid) {
+      this.destroy(this.selectEl.dataset.ssid)
     }
+
+    // Set misc attributes on the main select element
+    this.selectEl.tabIndex = -1
+    this.selectEl.style.display = 'none'
+    this.selectEl.setAttribute('aria-hidden', 'true')
 
     // Set base values from select element
     this.id = 'ss-' + generateID()
-    this.style = this.select.style.cssText
-    this.class = this.select.className.split(' ')
+    this.style = this.selectEl.style.cssText
+    this.class = this.selectEl.className.split(' ')
 
     // Set settings from constructor
     this.setSettings(info.settings || {})
@@ -147,13 +69,23 @@ export default class SlimSelect {
     // Set events from constructor
     this.setEvents(info.events || {})
 
-    this.selectClass = new Select(this)
-    this.store = new Store()
+    // Setup Select class
+    this.select = new Select(this)
+    if (info.data) {
+      this.select.updateSelect(info.data)
+    }
+    this.select.addChangeListeners(() => {
+      // Update the data in the store
+      this.store.updateData(this.select.getData())
+    })
+
+    // Setup Store class from either passed in data or select element data
+    this.store = info.data ? new Store(info.data) : new Store(this.select.getData())
     this.slim = new Slim(this)
 
     // Add after original select element
-    if (this.select.parentNode) {
-      this.select.parentNode.insertBefore(this.slim.container, this.select.nextSibling)
+    if (this.selectEl.parentNode) {
+      this.selectEl.parentNode.insertBefore(this.slim.container, this.selectEl.nextSibling)
     }
 
     // If data is passed in lets set it
@@ -231,7 +163,7 @@ export default class SlimSelect {
     } else {
       this.store.setSelected(value, type)
     }
-    this.selectClass.setValue()
+    this.select.setValue()
     this.store.onDataChange() // Trigger on change callback
     this.render()
 
@@ -258,7 +190,7 @@ export default class SlimSelect {
     // Validate data if passed in
     const isValid = validateData(data)
     if (!isValid) {
-      console.error('Validation problem on: #' + this.select.id)
+      console.error('Validation problem on: #' + this.selectEl.id)
       return
     } // If data passed in is not valid DO NOT parse, set and render
 
@@ -307,7 +239,7 @@ export default class SlimSelect {
       }
     }
 
-    this.selectClass.create(newData)
+    this.select.create(newData)
     this.store.parseSelectData()
     this.store.setSelectedFromSelect()
   }
@@ -317,12 +249,12 @@ export default class SlimSelect {
     // Validate data if passed in
     const isValid = validateData([data])
     if (!isValid) {
-      console.error('Validation problem on: #' + this.select.id)
+      console.error('Validation problem on: #' + this.selectEl.id)
       return
     } // If data passed in is not valid DO NOT parse, set and render
 
     this.store.add(this.store.newOption(data))
-    this.selectClass.create(this.store.data)
+    this.select.create(this.store.data)
     this.store.parseSelectData()
     this.store.setSelectedFromSelect()
     this.render()
@@ -511,10 +443,10 @@ export default class SlimSelect {
     }
 
     // Disable original select but dont trigger observer
-    this.selectClass.triggerMutationObserver = false
-    this.selectClass.main.select.disabled = false
+    this.select.triggerMutationObserver = false
+    this.select.main.select.disabled = false
     this.slim.search.input.disabled = false
-    this.selectClass.triggerMutationObserver = true
+    this.select.triggerMutationObserver = true
   }
 
   // Set to disabled, add disabled classes and add disabled to original select
@@ -527,10 +459,10 @@ export default class SlimSelect {
     }
 
     // Enable original select but dont trigger observer
-    this.selectClass.triggerMutationObserver = false
-    this.selectClass.main.select.disabled = true
+    this.select.triggerMutationObserver = false
+    this.select.main.select.disabled = true
     this.slim.search.input.disabled = true
-    this.selectClass.triggerMutationObserver = true
+    this.select.triggerMutationObserver = true
   }
 
   // Take in string value and search current options
