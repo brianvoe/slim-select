@@ -2,15 +2,39 @@ import { generateID } from './helper'
 
 export type DataArray = DataObject[]
 export type DataObject = Optgroup | Option
-export interface Optgroup {
-  label: string
-  options?: Option[]
+export type DataFields = DataField[]
+export type DataField = OptgroupFields | OptionFields
+
+export interface OptgroupFields {
+  id?: string
+  label: string // Required
+  options?: OptionFields[]
 }
 
-export interface Option {
+export class Optgroup {
+  public id: string
+  public label: string
+  public options: Option[]
+
+  constructor(optgroup: OptgroupFields) {
+    this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id
+    this.label = optgroup.label || ''
+
+    // If options exist, loop through options and create new option class
+    // and set the options to the optgroup options field
+    this.options = []
+    if (optgroup.options) {
+      for (const o of optgroup.options) {
+        this.options.push(new Option(o))
+      }
+    }
+  }
+}
+
+export interface OptionFields {
   id?: string
   value?: string
-  text: string
+  text: string // Required
   innerHTML?: string
   selected?: boolean
   display?: boolean
@@ -18,67 +42,81 @@ export interface Option {
   placeholder?: string
   class?: string
   style?: string
-  data?: object
+  data?: { [key: string]: string }
   mandatory?: boolean
 }
 
-export default class Store {
-  public data: DataArray = []
+export class Option implements Required<OptionFields> {
+  id: string
+  value: string
+  text: string
+  innerHTML: string
+  selected: boolean
+  display: boolean
+  disabled: boolean
+  placeholder: string
+  class: string
+  style: string
+  data: { [key: string]: string }
+  mandatory: boolean
 
-  constructor() {}
-
-  static mergeDefaultOption(option: Option): Option {
-    const defaultOption: Option = {
-      id: !option.id || option.id === '' ? generateID() : option.id,
-      value: '',
-      text: '',
-      innerHTML: '',
-      selected: false,
-      display: true,
-      disabled: false,
-      placeholder: '',
-      class: '',
-      style: '',
-      data: {},
-      mandatory: false,
-    } as Required<Option>
-
-    return Object.assign({}, defaultOption, option)
+  constructor(option: OptionFields) {
+    this.id = !option.id || option.id === '' ? generateID() : option.id
+    this.value = option.value || ''
+    this.text = option.text
+    this.innerHTML = option.innerHTML || ''
+    this.selected = option.selected || false
+    this.display = option.display || true
+    this.disabled = option.disabled || false
+    this.placeholder = option.placeholder || ''
+    this.class = option.class || ''
+    this.style = option.style || ''
+    this.data = option.data || {}
+    this.mandatory = option.mandatory || false
   }
+}
 
-  // Set will take in a full data set
-  // and set the data property to the new data
-  public set(data: DataArray): DataArray {
-    let dataOut: DataArray = []
+export default class Store {
+  private data: DataArray = []
 
-    // Loop through each data object and merge with default option
-    // if it doesn't already have one
-    for (let dataObj of data) {
+  constructor(data: (OptgroupFields | OptionFields)[]) {
+    data.forEach((dataObj: OptgroupFields | OptionFields) => {
       // Optgroup
-      if ('options' in dataObj || 'label' in dataObj) {
-        // Setup new optgroup
-        let optOptions: Optgroup = {
-          label: dataObj.label,
-          options: [],
-        } as Required<Optgroup>
-
-        // If you have options add them to the optgroup
-        if (dataObj.options) {
-          for (let option of dataObj.options) {
-            optOptions.options!.push(Store.mergeDefaultOption(option))
-          }
+      // Note: we check label because its
+      // not an instance of Optgroup yet
+      if ('label' in dataObj) {
+        let optOptions: Option[] = []
+        if ('options' in dataObj && dataObj.options) {
+          dataObj.options.forEach((option: OptionFields) => {
+            optOptions.push(new Option(option))
+          })
         }
-        dataOut.push(optOptions)
+
+        if (optOptions.length > 0) {
+          this.data.push(new Optgroup(dataObj))
+        }
       }
 
       // Option
+      // Note: we check label because its
+      // not an instance of Option yet
       if ('text' in dataObj) {
-        dataOut.push(Store.mergeDefaultOption(dataObj))
+        this.data.push(new Option(dataObj))
       }
-    }
+    })
+  }
 
-    this.data = dataOut
-    return dataOut
+  public setData(data: (OptgroupFields | OptionFields)[]) {}
+
+  // Get data will return all the data
+  public getData(): DataArray {
+    return this.filter(null, true)
+  }
+
+  // Get data options will return the data as a
+  // flat array of just options
+  public getDataOptions(): Option[] {
+    return this.filter(null, false) as Option[]
   }
 
   // Pass in an array of id that will loop through
@@ -95,7 +133,7 @@ export default class Store {
       }
 
       // Option
-      if ('id' in dataObj) {
+      if (dataObj instanceof Option) {
         if (dataObj[selectedType]) {
           dataObj.selected = selectedVals.includes(dataObj[selectedType] as string)
         }
@@ -106,35 +144,34 @@ export default class Store {
   // Loop through each option and optgroup options
   // and return an array of all the selected options
   public getSelected(): DataArray {
-    const selected: DataArray = []
+    return this.filter((opt: Option) => {
+      return opt.selected
+    }, true)
+  }
 
-    this.data.forEach((dataObj: DataObject) => {
-      // Optgroup
-      if ('options' in dataObj && dataObj.options) {
-        let optOptions: Option[] = []
+  public getSelectedIDs(): string[] {
+    let selectedOptions = this.getSelected()
+
+    let selectedIDs: string[] = []
+    selectedOptions.forEach((dataObj: DataObject) => {
+      if (dataObj instanceof Optgroup) {
         dataObj.options.forEach((option: Option) => {
-          if (option.selected) {
-            optOptions.push(option)
-          }
+          selectedIDs.push(option.id)
         })
-
-        if (optOptions.length > 0) {
-          selected.push({
-            label: dataObj.label,
-            options: optOptions,
-          })
-        }
-      }
-
-      // Option
-      if ('id' in dataObj) {
-        if (dataObj.selected) {
-          selected.push(dataObj)
-        }
+      } else {
+        selectedIDs.push(dataObj.id)
       }
     })
 
-    return selected
+    return selectedIDs
+  }
+
+  public getOptionByID(id: string): Option | null {
+    let options = this.filter((opt: Option) => {
+      return opt.id === id
+    }, false) as Option[]
+
+    return options.length ? options[0] : null
   }
 
   // Take in search string and return filtered list of values
@@ -144,29 +181,44 @@ export default class Store {
       return []
     }
 
+    return this.filter((opt: Option): boolean => {
+      return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+    }, true)
+  }
+
+  // Filter takes in a function that will be used to filter the data
+  // This will also keep optgroups of sub options meet the filter requirements
+  public filter(filter: { (opt: Option): boolean } | null, includeOptgroup: boolean): DataArray {
     const dataSearch: DataArray = []
     this.data.forEach((dataObj: DataObject) => {
       // Optgroup
-      if ('options' in dataObj && dataObj.options) {
-        let optOptions: Option[] = []
-        dataObj.options.forEach((option: Option) => {
-          if (searchFilter(option, search)) {
-            optOptions.push(option)
-          }
-        })
-
-        if (optOptions.length > 0) {
-          dataSearch.push({
-            label: dataObj.label,
-            options: optOptions,
+      if (dataObj instanceof Optgroup) {
+        // If you dont want to include optgroups
+        if (!includeOptgroup) {
+          // Loop through each option and check if it meets the filter requirements
+          dataObj.options.forEach((option: Option) => {
+            if (filter && filter(option)) {
+              dataSearch.push(option)
+            }
           })
+        } else {
+          let optOptions: Option[] = []
+          dataObj.options.forEach((option: Option) => {
+            if (!filter || filter(option)) {
+              optOptions.push(new Option(option))
+            }
+          })
+
+          if (optOptions.length > 0) {
+            dataSearch.push(new Optgroup({ id: dataObj.id, label: dataObj.label, options: optOptions }))
+          }
         }
       }
 
       // Option
-      if ('id' in dataObj) {
-        if (searchFilter(dataObj, search)) {
-          dataSearch.push(dataObj)
+      if (dataObj instanceof Option) {
+        if (!filter || filter(dataObj)) {
+          dataSearch.push(new Option(dataObj))
         }
       }
     })
