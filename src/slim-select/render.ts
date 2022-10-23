@@ -14,7 +14,7 @@ export interface Callbacks {
   deleteByID: (id: string) => void
 }
 
-export interface SingleSelected {
+export interface Single {
   container: HTMLDivElement
   placeholder: HTMLSpanElement
   deselect: HTMLSpanElement
@@ -24,7 +24,7 @@ export interface SingleSelected {
   }
 }
 
-export interface MultiSelected {
+export interface Multiple {
   container: HTMLDivElement
   values: HTMLDivElement
   add: HTMLDivElement
@@ -44,8 +44,8 @@ export default class Slim {
 
   // Elements
   public main: HTMLDivElement
-  public singleSelected: SingleSelected | null = null
-  public multiSelected: MultiSelected | null = null
+  public single: Single | null = null
+  public multiple: Multiple | null = null
   public content: HTMLDivElement
   public search: Search
   public list: HTMLDivElement
@@ -91,14 +91,14 @@ export default class Slim {
     this.list = this.listDiv()
     this.options()
 
-    this.singleSelected = null
-    this.multiSelected = null
+    this.single = null
+    this.multiple = null
     if (this.settings.isMultiple) {
-      this.multiSelected = this.multiSelectedDiv()
-      this.main.appendChild(this.multiSelected.container)
+      this.multiple = this.multipleDiv()
+      this.main.appendChild(this.multiple.container)
     } else {
-      this.singleSelected = this.singleSelectedDiv()
-      this.main.appendChild(this.singleSelected.container)
+      this.single = this.singleDiv()
+      this.main.appendChild(this.single.container)
     }
     if (this.settings.addToBody) {
       // add the id to the content as a class as well
@@ -137,7 +137,7 @@ export default class Slim {
     return container
   }
 
-  public singleSelectedDiv(): SingleSelected {
+  public singleDiv(): Single {
     const container: HTMLDivElement = document.createElement('div')
     container.classList.add(this.classes.singleSelected)
 
@@ -190,7 +190,7 @@ export default class Slim {
     }
   }
 
-  public multiSelectedDiv(): MultiSelected {
+  public multipleDiv(): Multiple {
     const container = document.createElement('div')
     container.classList.add(this.classes.multiSelected)
 
@@ -469,10 +469,10 @@ export default class Slim {
   // Get selected values and append to multiSelected values container
   // and remove those who shouldnt exist
   public values(): void {
-    if (!this.multiSelected) {
+    if (!this.multiple) {
       return
     }
-    let currentNodes = this.multiSelected.values.childNodes as any as HTMLDivElement[]
+    let currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
     let dataOptions = this.store.getDataOptions()
     let selectedIDs = this.store.getSelectedIDs()
 
@@ -484,11 +484,11 @@ export default class Slim {
     // Loop through and remove
     for (const n of removeNodes) {
       n.classList.add('ss-out')
-      this.multiSelected.values.removeChild(n)
+      this.multiple.values.removeChild(n)
     }
 
     // Add values that dont currently exist
-    currentNodes = this.multiSelected.values.childNodes as any as HTMLDivElement[]
+    currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
     let exists = true
     for (let s = 0; s < dataOptions.length; s++) {
       exists = false
@@ -500,9 +500,9 @@ export default class Slim {
 
       if (!exists) {
         if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
-          this.multiSelected.values.appendChild(this.valueDiv(dataOptions[s]))
+          this.multiple.values.appendChild(this.valueDiv(dataOptions[s]))
         } else if (s === 0) {
-          this.multiSelected.values.insertBefore(this.valueDiv(dataOptions[s]), currentNodes[s] as any)
+          this.multiple.values.insertBefore(this.valueDiv(dataOptions[s]), currentNodes[s] as any)
         } else {
           ;(currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.valueDiv(dataOptions[s]))
         }
@@ -514,7 +514,7 @@ export default class Slim {
       const placeholder = document.createElement('span')
       placeholder.classList.add(this.classes.disabled)
       placeholder.innerHTML = this.settings.placeholderText
-      this.multiSelected.values.innerHTML = placeholder.outerHTML
+      this.multiple.values.innerHTML = placeholder.outerHTML
     }
   }
 
@@ -765,10 +765,10 @@ export default class Slim {
     this.search.input.disabled = false
 
     // Remove disabled class
-    if (this.settings.isMultiple && this.multiSelected) {
-      this.multiSelected.container.classList.remove(this.classes.disabled)
-    } else if (this.singleSelected) {
-      this.singleSelected.container.classList.remove(this.classes.disabled)
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.remove(this.classes.disabled)
+    } else if (this.single) {
+      this.single.container.classList.remove(this.classes.disabled)
     }
   }
 
@@ -778,19 +778,19 @@ export default class Slim {
     this.search.input.disabled = true
 
     // Add disabled class
-    if (this.settings.isMultiple && this.multiSelected) {
-      this.multiSelected.container.classList.add(this.classes.disabled)
-    } else if (this.singleSelected) {
-      this.singleSelected.container.classList.add(this.classes.disabled)
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.add(this.classes.disabled)
+    } else if (this.single) {
+      this.single.container.classList.add(this.classes.disabled)
     }
   }
 
   public moveContentAbove(): void {
     let selectHeight: number = 0
-    if (this.settings.isMultiple && this.multiSelected) {
-      selectHeight = this.multiSelected.container.offsetHeight
-    } else if (this.singleSelected) {
-      selectHeight = this.singleSelected.container.offsetHeight
+    if (this.settings.isMultiple && this.multiple) {
+      selectHeight = this.multiple.container.offsetHeight
+    } else if (this.single) {
+      selectHeight = this.single.container.offsetHeight
     }
     const contentHeight = this.content.offsetHeight
     const height = selectHeight + contentHeight - 1
@@ -798,22 +798,22 @@ export default class Slim {
     this.content.style.height = height - selectHeight + 1 + 'px'
     this.content.style.transformOrigin = 'center bottom'
 
-    if (this.settings.isMultiple && this.multiSelected) {
-      this.multiSelected.container.classList.remove(this.classes.openBelow)
-      this.multiSelected.container.classList.add(this.classes.openAbove)
-    } else if (this.singleSelected) {
-      this.singleSelected.container.classList.remove(this.classes.openBelow)
-      this.singleSelected.container.classList.add(this.classes.openAbove)
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.remove(this.classes.openBelow)
+      this.multiple.container.classList.add(this.classes.openAbove)
+    } else if (this.single) {
+      this.single.container.classList.remove(this.classes.openBelow)
+      this.single.container.classList.add(this.classes.openAbove)
     }
   }
 
   public moveContentBelow(): void {
-    if (this.settings.isMultiple && this.multiSelected) {
-      this.multiSelected.container.classList.remove(this.classes.openAbove)
-      this.multiSelected.container.classList.add(this.classes.openBelow)
-    } else if (this.singleSelected) {
-      this.singleSelected.container.classList.remove(this.classes.openAbove)
-      this.singleSelected.container.classList.add(this.classes.openBelow)
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.remove(this.classes.openAbove)
+      this.multiple.container.classList.add(this.classes.openBelow)
+    } else if (this.single) {
+      this.single.container.classList.remove(this.classes.openAbove)
+      this.single.container.classList.add(this.classes.openBelow)
     }
   }
 }
