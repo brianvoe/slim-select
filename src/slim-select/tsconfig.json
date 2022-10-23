@@ -5,5 +5,7 @@
     "outDir": "../../dist", // Output to dist folder
     "removeComments": true /* Do not emit comments to output. */,
     "importHelpers": true /* Import emit helpers from 'tslib'. */
-  }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.test.ts"]
 }
