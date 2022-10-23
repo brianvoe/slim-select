@@ -1,30 +1,12 @@
+import { generateID } from './helper'
 import { Option } from './store'
 
-export interface SettingsFields {
-  showSearch?: boolean
-  searchPlaceholder?: string
-  searchText?: string
-  searchingText?: string
-  searchFocus?: boolean
-  searchHighlight?: boolean
-  searchFilter?: (opt: Option, search: string) => boolean
-  closeOnSelect?: boolean
-  showContent?: string
-  placeholderText?: string
-  allowDeselect?: boolean
-  allowDeselectOption?: boolean
-  hideSelectedOption?: boolean
-  deselectLabel?: string
-  isEnabled?: boolean
-  valuesUseText?: boolean // Use text value when showing selected value
-  showOptionTooltips?: boolean
-  selectByGroup?: boolean
-  limit?: number
-  timeoutDelay?: number
-  addToBody?: boolean
-}
+export default class Settings {
+  public id: string // Primary ID for the select
+  public style: string // Style attribute from the select element
+  public class: string[] // Class attribute from the select element
 
-export default class Settings implements Required<SettingsFields> {
+  // Dynamic settings
   public isMultiple: boolean = false
   public isAjax: boolean = false
   public isOpen: boolean = false
@@ -41,7 +23,7 @@ export default class Settings implements Required<SettingsFields> {
   public searchHighlight: boolean
   public searchFilter: (opt: Option, search: string) => boolean
   public closeOnSelect: boolean
-  public showContent: string
+  public contentPosition: string
   public placeholderText: string
   public allowDeselect: boolean
   public allowDeselectOption: boolean
@@ -54,7 +36,15 @@ export default class Settings implements Required<SettingsFields> {
   public timeoutDelay: number
   public addToBody: boolean
 
-  constructor(settings: SettingsFields) {
+  constructor(settings?: Partial<Settings>) {
+    if (!settings) {
+      settings = {}
+    }
+
+    this.id = 'ss-' + generateID()
+    this.style = settings.style || ''
+    this.class = settings.class || []
+
     this.isEnabled = settings.isEnabled || true
     this.showSearch = settings.showSearch || true
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'
@@ -68,7 +58,7 @@ export default class Settings implements Required<SettingsFields> {
         return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
       })
     this.closeOnSelect = settings.closeOnSelect || true
-    this.showContent = settings.showContent || 'auto' // options: auto, up, down
+    this.contentPosition = settings.contentPosition || 'auto' // options: auto, up, down
     this.placeholderText = settings.placeholderText || 'Select Value'
     this.allowDeselect = settings.allowDeselect || false
     this.allowDeselectOption = settings.allowDeselectOption || false

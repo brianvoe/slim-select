@@ -1,12 +1,6 @@
 import { generateID, kebabCase } from './helper'
 import { DataArray, Optgroup, Option } from './store'
 
-export interface SelectFields {
-  id?: string
-  style?: string
-  class?: string[]
-}
-
 export default class Select {
   public select: HTMLSelectElement
   public listen: boolean = false
@@ -17,6 +11,35 @@ export default class Select {
 
   constructor(select: HTMLSelectElement) {
     this.select = select
+  }
+
+  // Set to enabled
+  public enable(): void {
+    // Disable original select but dont trigger observer
+    this.disconnectObserver()
+    this.select.disabled = false
+    this.connectObserver()
+  }
+
+  // Set to disabled
+  public disable(): void {
+    // Enable original select but dont trigger observer
+    this.disconnectObserver()
+    this.select.disabled = true
+    this.connectObserver()
+  }
+
+  // Set misc attributes on the main select element
+  public hideUI(): void {
+    this.select.tabIndex = -1
+    this.select.style.display = 'none'
+    this.select.setAttribute('aria-hidden', 'true')
+  }
+
+  public showUI(): void {
+    this.select.removeAttribute('tabindex')
+    this.select.style.display = ''
+    this.select.removeAttribute('aria-hidden')
   }
 
   public changeListen(on: boolean) {
@@ -123,7 +146,7 @@ export default class Select {
       id: (option.dataset ? option.dataset.id : false) || generateID(),
       value: option.value,
       text: option.text,
-      innerHTML: option.innerHTML,
+      html: option.innerHTML,
       selected: option.selected,
       disabled: option.disabled,
       placeholder: option.dataset.placeholder || '',
@@ -134,23 +157,20 @@ export default class Select {
     } as Option
   }
 
-  public updateSelect(selectFields: SelectFields, data: DataArray): void {
+  public updateSelect(id?: string, style?: string, classes?: string[]): void {
     // Update specific select fields
-    if (selectFields.id) {
-      this.select.id = selectFields.id
+    if (id) {
+      this.select.id = id
     }
-    if (selectFields.style) {
-      this.select.style.cssText = selectFields.style
+    if (style) {
+      this.select.style.cssText = style
     }
-    if (selectFields.class) {
+    if (classes) {
       this.select.className = ''
-      selectFields.class.forEach((c) => {
+      classes.forEach((c) => {
         this.select.classList.add(c)
       })
     }
-
-    // Update options
-    this.updateOptions(data)
   }
 
   public updateOptions(data: DataArray): void {
@@ -184,7 +204,7 @@ export default class Select {
     const optionEl = document.createElement('option')
     optionEl.id = info.id
     optionEl.value = info.value !== '' ? info.value : info.text
-    optionEl.innerHTML = info.innerHTML || info.text
+    optionEl.innerHTML = info.html || info.text
     if (info.selected) {
       optionEl.selected = info.selected
     }

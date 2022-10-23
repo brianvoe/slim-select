@@ -2,13 +2,14 @@ import { generateID } from './helper'
 
 export type DataArray = DataObject[]
 export type DataObject = Optgroup | Option
-export type DataFields = DataField[]
-export type DataField = OptgroupFields | OptionFields
 
-export interface OptgroupFields {
+export type DataArrayPartial = DataObjectPartial[]
+export type DataObjectPartial = OptgroupOptional | OptionOptional
+
+export interface OptgroupOptional {
   id?: string
   label: string // Required
-  options?: OptionFields[]
+  options?: OptionOptional[]
 }
 
 export class Optgroup {
@@ -16,7 +17,7 @@ export class Optgroup {
   public label: string
   public options: Option[]
 
-  constructor(optgroup: OptgroupFields) {
+  constructor(optgroup: OptgroupOptional) {
     this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id
     this.label = optgroup.label || ''
 
@@ -31,11 +32,11 @@ export class Optgroup {
   }
 }
 
-export interface OptionFields {
+export interface OptionOptional {
   id?: string
   value?: string
   text: string // Required
-  innerHTML?: string
+  html?: string
   selected?: boolean
   display?: boolean
   disabled?: boolean
@@ -46,11 +47,11 @@ export interface OptionFields {
   mandatory?: boolean
 }
 
-export class Option implements Required<OptionFields> {
+export class Option {
   id: string
   value: string
   text: string
-  innerHTML: string
+  html: string
   selected: boolean
   display: boolean
   disabled: boolean
@@ -60,11 +61,11 @@ export class Option implements Required<OptionFields> {
   data: { [key: string]: string }
   mandatory: boolean
 
-  constructor(option: OptionFields) {
+  constructor(option: OptionOptional) {
     this.id = !option.id || option.id === '' ? generateID() : option.id
     this.value = option.value || ''
-    this.text = option.text
-    this.innerHTML = option.innerHTML || ''
+    this.text = option.text || ''
+    this.html = option.html || ''
     this.selected = option.selected || false
     this.display = option.display || true
     this.disabled = option.disabled || false
@@ -79,15 +80,17 @@ export class Option implements Required<OptionFields> {
 export default class Store {
   private data: DataArray = []
 
-  constructor(data: (OptgroupFields | OptionFields)[]) {
-    data.forEach((dataObj: OptgroupFields | OptionFields) => {
+  constructor(data: DataArrayPartial) {
+    this.setData(data)
+  }
+
+  public setData(data: DataArray | DataArrayPartial) {
+    data.forEach((dataObj: DataObject | DataObjectPartial) => {
       // Optgroup
-      // Note: we check label because its
-      // not an instance of Optgroup yet
-      if ('label' in dataObj) {
+      if (dataObj instanceof Optgroup || 'label' in dataObj) {
         let optOptions: Option[] = []
         if ('options' in dataObj && dataObj.options) {
-          dataObj.options.forEach((option: OptionFields) => {
+          dataObj.options.forEach((option: Option | OptionOptional) => {
             optOptions.push(new Option(option))
           })
         }
@@ -98,15 +101,11 @@ export default class Store {
       }
 
       // Option
-      // Note: we check label because its
-      // not an instance of Option yet
-      if ('text' in dataObj) {
+      if (dataObj instanceof Option || 'text' in dataObj) {
         this.data.push(new Option(dataObj))
       }
     })
   }
-
-  public setData(data: (OptgroupFields | OptionFields)[]) {}
 
   // Get data will return all the data
   public getData(): DataArray {
@@ -124,7 +123,7 @@ export default class Store {
   public setSelectedBy(selectedType: 'id' | 'value', selectedVals: string[]) {
     for (let dataObj of this.data) {
       // Optgroup
-      if ('options' in dataObj && dataObj.options) {
+      if (dataObj instanceof Optgroup) {
         for (let option of dataObj.options) {
           if (option[selectedType]) {
             option.selected = selectedVals.includes(option[selectedType] as string)
@@ -147,6 +146,12 @@ export default class Store {
     return this.filter((opt: Option) => {
       return opt.selected
     }, true)
+  }
+
+  public getSelectedOptions(): Option[] {
+    return this.filter((opt: Option) => {
+      return opt.selected
+    }, false) as Option[]
   }
 
   public getSelectedIDs(): string[] {
@@ -175,13 +180,18 @@ export default class Store {
   }
 
   // Take in search string and return filtered list of values
-  public search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray {
+  public search(search: string, searchFilter?: (opt: Option, search: string) => boolean): DataArray {
     search = search.trim()
     if (search === '') {
       return []
     }
 
     return this.filter((opt: Option): boolean => {
+      if (searchFilter) {
+        return searchFilter(opt, search)
+      }
+
+      // If the searchFilter is not set use default
       return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
     }, true)
   }

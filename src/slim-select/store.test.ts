@@ -26,7 +26,7 @@ describe('store module', () => {
     expect((data[0] as Option).id).toBeDefined()
     expect((data[0] as Option).value).toBeDefined()
     expect((data[0] as Option).text).toBeDefined()
-    expect((data[0] as Option).innerHTML).toBeDefined()
+    expect((data[0] as Option).html).toBeDefined()
     expect((data[0] as Option).selected).toBeDefined()
     expect((data[0] as Option).display).toBeDefined()
     expect((data[0] as Option).disabled).toBeDefined()
