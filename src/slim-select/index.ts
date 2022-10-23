@@ -4,6 +4,7 @@ import Select from './select'
 import Settings from './settings'
 import Store, { DataArray, Option } from './store'
 
+export * from './helper'
 export * from './render'
 export * from './select'
 export * from './settings'
