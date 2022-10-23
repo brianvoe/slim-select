@@ -1,31 +1,19 @@
-import { Config } from './config';
-import { Data, DataArray, Option } from './data';
-import { Select } from './select';
-import { Slim } from './slim';
-export interface Constructor {
+import Render from './render';
+import Select from './select';
+import Settings from './settings';
+import Store, { DataArray, Option } from './store';
+export * from './helper';
+export * from './render';
+export * from './select';
+export * from './settings';
+export * from './store';
+export interface Config {
     select: string | Element;
     data?: DataArray;
-    showSearch?: boolean;
-    searchPlaceholder?: string;
-    searchText?: string;
-    searchingText?: string;
-    searchFocus?: boolean;
-    searchHighlight?: boolean;
-    searchFilter?: (opt: Option, search: string) => boolean;
-    closeOnSelect?: boolean;
-    showContent?: string;
-    placeholder?: string;
-    allowDeselect?: boolean;
-    allowDeselectOption?: boolean;
-    hideSelectedOption?: boolean;
-    deselectLabel?: string;
-    isEnabled?: boolean;
-    valuesUseText?: boolean;
-    showOptionTooltips?: boolean;
-    selectByGroup?: boolean;
-    limit?: number;
-    timeoutDelay?: number;
-    addToBody?: boolean;
+    settings?: Settings;
+    events?: Events;
+}
+export interface Events {
     ajax?: (value: string, func: (info: any) => void) => void;
     addable?: (value: string) => Option | string;
     beforeOnChange?: (info: Option | Option[]) => void | boolean;
@@ -36,35 +24,18 @@ export interface Constructor {
     afterClose?: () => void;
 }
 export default class SlimSelect {
-    config: Config;
+    selectEl: HTMLSelectElement;
+    settings: Settings;
     select: Select;
-    data: Data;
-    slim: Slim;
-    ajax: ((value: string, func: (info: any) => void) => void) | null;
-    addable: ((value: string) => Option | string) | null;
-    beforeOnChange: ((info: Option) => void | boolean) | null;
-    onChange: ((info: Option) => void) | null;
-    beforeOpen: (() => void) | null;
-    afterOpen: (() => void) | null;
-    beforeClose: (() => void) | null;
-    afterClose: (() => void) | null;
-    private windowScroll;
-    constructor(info: Constructor);
-    validate(info: Constructor): HTMLSelectElement;
-    selected(): string | string[];
-    set(value: string | string[], type?: string, close?: boolean, render?: boolean): void;
-    setSelected(value: string | string[], type?: string, close?: boolean, render?: boolean): void;
-    setData(data: DataArray): void;
-    addData(data: Option): void;
-    open(): void;
-    close(): void;
-    moveContentAbove(): void;
-    moveContentBelow(): void;
+    store: Store;
+    render: Render;
+    events: Events;
+    constructor(config: Config);
+    setEvents(events: Events): void;
+    setPosition(position: 'up' | 'down'): void;
     enable(): void;
     disable(): void;
-    search(value: string): void;
-    setSearchText(text: string): void;
-    render(): void;
-    destroy(id?: string | null): void;
+    destroy(ssid: string): void;
+    private windowScroll;
     private documentClick;
 }

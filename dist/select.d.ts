@@ -1,21 +1,26 @@
-import { DataArray } from './data';
-import SlimSelect from './index';
-export interface SelectConstructor {
+import { DataArray, Optgroup, Option } from './store';
+export default class Select {
     select: HTMLSelectElement;
-    main: SlimSelect;
-}
-export declare class Select {
-    element: HTMLSelectElement;
-    main: SlimSelect;
-    mutationObserver: MutationObserver | null;
-    triggerMutationObserver: boolean;
-    constructor(info: SelectConstructor);
-    setValue(): void;
-    addAttributes(): void;
-    addEventListeners(): void;
-    addMutationObserver(): void;
-    observeMutationObserver(): void;
-    disconnectMutationObserver(): void;
-    create(data: DataArray): void;
-    createOption(info: any): HTMLOptionElement;
+    listen: boolean;
+    changeFunc?: (data: DataArray) => void;
+    private observer;
+    constructor(select: HTMLSelectElement);
+    enable(): void;
+    disable(): void;
+    hideUI(): void;
+    showUI(): void;
+    changeListen(on: boolean): void;
+    addChangeFunc(func: (data: DataArray) => void): void;
+    removeChangeFunc(): void;
+    private observeWrapper;
+    private addObserver;
+    private connectObserver;
+    private disconnectObserver;
+    getData(): DataArray;
+    getOptgroupData(optgroup: HTMLOptGroupElement): Optgroup;
+    getOptionData(option: HTMLOptionElement): Option;
+    updateSelect(id?: string, style?: string, classes?: string[]): void;
+    updateOptions(data: DataArray): void;
+    createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;
+    createOption(info: Option): HTMLOptionElement;
 }

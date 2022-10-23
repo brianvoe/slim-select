@@ -1,3 +1,4 @@
+export declare function generateID(): string;
 export declare function hasClassInTree(element: HTMLElement, className: string): any;
 export declare function ensureElementInView(container: HTMLElement, element: HTMLElement): void;
 export declare function putContent(el: HTMLElement, currentPosition: string, isOpen: boolean): string;
