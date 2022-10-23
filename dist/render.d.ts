@@ -11,7 +11,7 @@ export interface Callbacks {
     beforeDelete?: (before: DataArray, after: DataArray) => boolean;
     deleteByID: (id: string) => void;
 }
-export interface SingleSelected {
+export interface Single {
     container: HTMLDivElement;
     placeholder: HTMLSpanElement;
     deselect: HTMLSpanElement;
@@ -20,7 +20,7 @@ export interface SingleSelected {
         arrow: HTMLSpanElement;
     };
 }
-export interface MultiSelected {
+export interface Multiple {
     container: HTMLDivElement;
     values: HTMLDivElement;
     add: HTMLDivElement;
@@ -36,8 +36,8 @@ export default class Slim {
     store: Store;
     callbacks: Callbacks;
     main: HTMLDivElement;
-    singleSelected: SingleSelected | null;
-    multiSelected: MultiSelected | null;
+    single: Single | null;
+    multiple: Multiple | null;
     content: HTMLDivElement;
     search: Search;
     list: HTMLDivElement;
@@ -71,8 +71,8 @@ export default class Slim {
     };
     constructor(settings: Required<Settings>, store: Store, callbacks: Callbacks);
     mainDiv(): HTMLDivElement;
-    singleSelectedDiv(): SingleSelected;
-    multiSelectedDiv(): MultiSelected;
+    singleDiv(): Single;
+    multipleDiv(): Multiple;
     contentDiv(): HTMLDivElement;
     searchDiv(): Search;
     highlightUp(): void;
