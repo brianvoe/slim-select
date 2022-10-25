@@ -1,4 +1,4 @@
-import { debounce, hasClassInTree, putContent } from './helper'
+import { debounce, hasClassInTree } from './helper'
 import Render from './render'
 import Select from './select'
 import Settings, { SettingsPartial } from './settings'
@@ -18,7 +18,7 @@ export interface Config {
 }
 
 export interface Events {
-  ajax?: (value: string, func: (info: any) => void) => void
+  fetch?: (value: string, func: (data: DataArrayPartial) => void) => void
   addable?: (value: string) => Option | string
   beforeOnChange?: (info: Option | Option[]) => void | boolean
   onChange?: (info: Option | Option[]) => void
@@ -39,7 +39,7 @@ export default class SlimSelect {
 
   // Events
   public events = {
-    ajax: undefined,
+    fetch: undefined,
     addable: undefined,
     beforeOnChange: undefined,
     onChange: undefined,
@@ -63,7 +63,7 @@ export default class SlimSelect {
 
     // If select already has a slim select id on it lets destroy it first
     if (this.selectEl.dataset.ssid) {
-      this.destroy(this.selectEl.dataset.ssid)
+      this.destroy()
     }
 
     // Set settings
@@ -209,35 +209,84 @@ export default class SlimSelect {
 
     this.render.open()
 
-    // Move to selected option for single option
-    if (!this.config.isMultiple) {
-      const selected = this.data.getSelected() as Option
-      if (selected) {
-        const selectedId = selected.id
-        const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
-        if (selectedOption) {
-          ensureElementInView(this.slim.list, selectedOption)
-        }
-      }
-    }
-
     // setTimeout is for animation completion
     setTimeout(() => {
-      this.data.contentOpen = true
+      // Update settings
+      this.settings.isOpen = true
 
       // Focus on input field
-      if (this.config.searchFocus) {
-        this.slim.search.input.focus()
-      }
+      this.render.focusSearchInput(true)
 
       // Run afterOpen callback
-      if (this.afterOpen) {
-        this.afterOpen()
+      if (this.events.afterOpen) {
+        this.events.afterOpen()
       }
-    }, this.config.timeoutDelay)
+    }, this.settings.timeoutDelay)
   }
 
-  public destroy(ssid: string): void {
+  // Close content section
+  public close(): void {
+    // Dont do anything if the content is already closed
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    // Run beforeClose calback
+    if (this.events.beforeClose) {
+      this.events.beforeClose()
+    }
+
+    // Tell render to close
+    this.render.close()
+
+    // Update settings
+    this.settings.isOpen = false
+
+    // Clear search
+    this.search('') // Clear search
+
+    // Reset the content below
+    setTimeout(() => {
+      // After content is closed lets blur on the input field
+      this.render.focusSearchInput(false)
+
+      // Run afterClose callback
+      if (this.events.afterClose) {
+        this.events.afterClose()
+      }
+    }, this.settings.timeoutDelay)
+  }
+
+  // Take in string value and search current options
+  public search(value: string): void {
+    // Only filter data and rerender if value has changed
+    if (this.settings.searchValue === value) {
+      return
+    }
+
+    this.render.search.input.value = value
+
+    // If not fetch run regular search
+    if (!this.events.fetch) {
+      this.render.renderOptions(this.store.search(value))
+      return
+    }
+
+    // Fetch event exists so lets update isSearching settings
+    this.settings.isSearching = true
+
+    // Call fetch function
+    this.events.fetch(value, (data: DataArrayPartial) => {
+      // Only process if return callback is not false
+      this.settings.isSearching = false
+      data.unshift({ text: '', placeholder: true })
+      this.store.setData(data)
+      this.store.search(value)
+      this.render.renderOptions(this.store.getData())
+    })
+  }
+
+  public destroy(): void {
     document.removeEventListener('click', this.documentClick)
 
     if (this.settings.contentPosition === 'auto') {
@@ -245,10 +294,10 @@ export default class SlimSelect {
     }
   }
 
-  // Event listener for window scrolling`
+  // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce((e: Event) => {
     if (this.settings.isOpen) {
-      if (putContent(this.selectEl, this.settings.contentPosition, this.settings.isOpen) === 'above') {
+      if (this.render.putContent(this.selectEl, this.settings.isOpen) === 'up') {
         this.setPosition('up')
       } else {
         this.setPosition('down')
@@ -259,7 +308,7 @@ export default class SlimSelect {
   // Event listener for document click
   private documentClick: (e: Event) => void = (e: Event) => {
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
-      //   this.close()
+      this.close()
     }
   }
 }

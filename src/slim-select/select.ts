@@ -171,7 +171,7 @@ export default class Select {
       html: option.innerHTML,
       selected: option.selected,
       disabled: option.disabled,
-      placeholder: option.dataset.placeholder || '',
+      placeholder: option.dataset.placeholder === 'true',
       class: option.className,
       style: option.style.cssText,
       data: option.dataset,

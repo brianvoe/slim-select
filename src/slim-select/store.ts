@@ -40,7 +40,7 @@ export interface OptionOptional {
   selected?: boolean
   display?: boolean
   disabled?: boolean
-  placeholder?: string
+  placeholder?: boolean
   class?: string
   style?: string
   data?: { [key: string]: string }
@@ -55,7 +55,7 @@ export class Option {
   selected: boolean
   display: boolean
   disabled: boolean
-  placeholder: string
+  placeholder: boolean
   class: string
   style: string
   data: { [key: string]: string }
@@ -69,7 +69,7 @@ export class Option {
     this.selected = option.selected || false
     this.display = option.display || true
     this.disabled = option.disabled || false
-    this.placeholder = option.placeholder || ''
+    this.placeholder = option.placeholder || false
     this.class = option.class || ''
     this.style = option.style || ''
     this.data = option.data || {}

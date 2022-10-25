@@ -10,10 +10,10 @@ export default class Settings {
 
   // Dynamic settings
   public isMultiple: boolean = false
-  public isAjax: boolean = false
   public isOpen: boolean = false
   public isAddable: boolean = false
   public isSearching: boolean = false
+  public searchValue: string = ''
 
   // Fields set from constructor
   public isEnabled: boolean
@@ -21,11 +21,10 @@ export default class Settings {
   public searchPlaceholder: string
   public searchText: string
   public searchingText: string
-  public searchFocus: boolean
   public searchHighlight: boolean
   public searchFilter: (opt: Option, search: string) => boolean
   public closeOnSelect: boolean
-  public contentPosition: string
+  public contentPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
   public allowDeselectOption: boolean
@@ -36,7 +35,6 @@ export default class Settings {
   public selectByGroup: boolean
   public limit: number
   public timeoutDelay: number
-  public addToBody: boolean
 
   constructor(settings?: SettingsPartial) {
     if (!settings) {
@@ -52,7 +50,6 @@ export default class Settings {
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'
     this.searchText = settings.searchText || 'No Results'
     this.searchingText = settings.searchingText || 'Searching...'
-    this.searchFocus = settings.searchFocus || true
     this.searchHighlight = settings.searchHighlight || false
     this.searchFilter =
       settings.searchFilter ||
@@ -71,6 +68,5 @@ export default class Settings {
     this.selectByGroup = settings.selectByGroup || false
     this.limit = settings.limit || 0
     this.timeoutDelay = settings.timeoutDelay || 200
-    this.addToBody = settings.addToBody || false
   }
 }

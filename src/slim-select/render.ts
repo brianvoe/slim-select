@@ -1,4 +1,4 @@
-import { ensureElementInView, highlight, isValueInArrayOfObjects } from './helper'
+import { isValueInArrayOfObjects } from './helper'
 import Settings from './settings'
 import Store, { DataArray, Optgroup, Option } from './store'
 
@@ -9,6 +9,7 @@ export interface Callbacks {
   setSelected: (value: string[]) => void
   addOption: (option: Option) => void
   search: (search: string) => void
+  fetch?: (value: string, func: (info: any) => void) => void
   beforeChange?: (before: DataArray, after: DataArray) => boolean
   beforeDelete?: (before: DataArray, after: DataArray) => boolean
   deleteByID: (id: string) => void
@@ -89,7 +90,6 @@ export default class Slim {
     this.content = this.contentDiv()
     this.search = this.searchDiv()
     this.list = this.listDiv()
-    this.options()
 
     this.single = null
     this.multiple = null
@@ -143,18 +143,18 @@ export default class Slim {
       this.single.arrowIcon.arrow.classList.remove('arrow-down')
       this.single.arrowIcon.arrow.classList.add('arrow-up')
     }
-    ;(this.slim as any)[this.config.isMultiple ? 'multiSelected' : 'singleSelected'].container.classList.add(
-      this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow,
+
+    // Add class to single/multiple container
+    this[this.settings.isMultiple ? 'multiple' : 'single']!.container.classList.add(
+      this.settings.contentPosition === 'up' ? this.classes.openAbove : this.classes.openBelow,
     )
 
-    if (this.settings.addToBody) {
-      // move the content in to the right location
-      const containerRect = this.container.getBoundingClientRect()
-      this.slim.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
-      this.slim.content.style.left = containerRect.left + window.scrollX + 'px'
-      this.slim.content.style.width = containerRect.width + 'px'
-    }
-    this.slim.content.classList.add(this.classes.open)
+    // move the content in to the right location
+    const containerRect = this.main.getBoundingClientRect()
+    this.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+    this.content.style.left = containerRect.left + window.scrollX + 'px'
+    this.content.style.width = containerRect.width + 'px'
+    this.content.classList.add(this.classes.open)
 
     // Check showContent to see if they want to specifically show in a certain direction
     if (this.settings.contentPosition.toLowerCase() === 'up') {
@@ -163,12 +163,36 @@ export default class Slim {
       this.moveContentBelow()
     } else {
       // Auto identify where to put it
-      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+      if (this.putContent(this.content, this.settings.isOpen) === 'up') {
         this.moveContentAbove()
       } else {
         this.moveContentBelow()
       }
     }
+
+    // Move to last selected option
+    const selectedOptions = this.store.getSelectedOptions()
+    if (selectedOptions.length) {
+      const selectedId = selectedOptions[selectedOptions.length - 1].id
+      const selectedOption = this.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
+      if (selectedOption) {
+        this.ensureElementInView(this.list, selectedOption)
+      }
+    }
+  }
+
+  public close(): void {
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.remove(this.classes.openAbove)
+      this.multiple.container.classList.remove(this.classes.openBelow)
+      this.multiple.plus.classList.remove('ss-cross')
+    } else if (this.single) {
+      this.single.container.classList.remove(this.classes.openAbove)
+      this.single.container.classList.remove(this.classes.openBelow)
+      this.single.arrowIcon.arrow.classList.add('arrow-down')
+      this.single.arrowIcon.arrow.classList.remove('arrow-up')
+    }
+    this.content.classList.remove(this.classes.open)
   }
 
   public setSelected(): void {
@@ -576,6 +600,32 @@ export default class Slim {
     return searchReturn
   }
 
+  public focusSearchInput(focus: boolean) {
+    if (focus) {
+      this.search.input.focus()
+    } else {
+      this.search.input.blur()
+    }
+  }
+
+  public highlight(str: string, search: any, className: string) {
+    // the completed string will be itself if already set, otherwise, the string that was passed in
+    let completedString: any = str
+    const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
+
+    // If the regex doesn't match the string just exit
+    if (!str.match(regex)) {
+      return str
+    }
+
+    // Otherwise, get to highlighting
+    const matchStartPosition = (str.match(regex) as any).index
+    const matchEndPosition = matchStartPosition + (str.match(regex) as any)[0].toString().length
+    const originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition)
+    completedString = completedString.replace(regex, `<mark class="${className}">${originalTextFoundByRegex}</mark>`)
+    return completedString
+  }
+
   public highlightUp(): void {
     const highlighted = this.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
     let prev: HTMLDivElement | null = null
@@ -620,7 +670,7 @@ export default class Slim {
         highlighted.classList.remove(this.classes.highlighted)
       }
       prev.classList.add(this.classes.highlighted)
-      ensureElementInView(this.list, prev)
+      this.ensureElementInView(this.list, prev)
     }
   }
 
@@ -663,7 +713,7 @@ export default class Slim {
         highlighted.classList.remove(this.classes.highlighted)
       }
       next.classList.add(this.classes.highlighted)
-      ensureElementInView(this.list, next)
+      this.ensureElementInView(this.list, next)
     }
   }
 
@@ -676,25 +726,13 @@ export default class Slim {
     return list
   }
 
-  // Loop through data || filtered data and build options and append to list container
-  public options(content: string = ''): void {
-    const data = this.store.getData()
-
+  // Take in data and add options to
+  public renderOptions(data: DataArray): void {
     // Clear out innerHtml
     this.list.innerHTML = ''
 
-    // If content is being passed just use that text
-    if (content !== '') {
-      const searching = document.createElement('div')
-      searching.classList.add(this.classes.option)
-      searching.classList.add(this.classes.disabled)
-      searching.innerHTML = content
-      this.list.appendChild(searching)
-      return
-    }
-
     // If ajax and isSearching
-    if (this.settings.isAjax && this.settings.isSearching) {
+    if (this.callbacks.fetch && this.settings.isSearching) {
       const searching = document.createElement('div')
       searching.classList.add(this.classes.option)
       searching.classList.add(this.classes.disabled)
@@ -750,7 +788,9 @@ export default class Slim {
           }
         }
         this.list.appendChild(optgroupEl)
-      } else {
+      }
+
+      if (d instanceof Option) {
         this.list.appendChild(this.option(d as Option))
       }
     }
@@ -787,7 +827,7 @@ export default class Slim {
 
     optionEl.dataset.id = option.id
     if (this.settings.searchHighlight && option.html && this.search.input.value.trim() !== '') {
-      optionEl.innerHTML = highlight(option.html, this.search.input.value, this.classes.searchHighlighter)
+      optionEl.innerHTML = this.highlight(option.html, this.search.input.value, this.classes.searchHighlighter)
     } else if (option.html) {
       optionEl.innerHTML = option.html
     }
@@ -904,5 +944,39 @@ export default class Slim {
       this.single.container.classList.remove(this.classes.openAbove)
       this.single.container.classList.add(this.classes.openBelow)
     }
+  }
+
+  public ensureElementInView(container: HTMLElement, element: HTMLElement): void {
+    // Determine container top and bottom
+    const cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
+    const cBottom = cTop + container.clientHeight
+
+    // Determine element top and bottom
+    const eTop = element.offsetTop
+    const eBottom = eTop + element.clientHeight
+
+    // Check if out of view
+    if (eTop < cTop) {
+      container.scrollTop -= cTop - eTop
+    } else if (eBottom > cBottom) {
+      container.scrollTop += eBottom - cBottom
+    }
+  }
+
+  public putContent(el: HTMLElement, isOpen: boolean): 'up' | 'down' {
+    const height = el.offsetHeight
+    const rect = el.getBoundingClientRect()
+    const elemTop = isOpen ? rect.top : rect.top - height
+    const elemBottom = isOpen ? rect.bottom : rect.bottom + height
+
+    if (elemTop <= 0) {
+      return 'down'
+    }
+    if (elemBottom >= window.innerHeight) {
+      return 'up'
+    }
+
+    // default to current position if we cant determine a perfect one
+    return 'down'
   }
 }
