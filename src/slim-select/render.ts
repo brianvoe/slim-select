@@ -100,17 +100,84 @@ export default class Slim {
       this.single = this.singleDiv()
       this.main.appendChild(this.single.container)
     }
-    if (this.settings.addToBody) {
-      // add the id to the content as a class as well
-      // this is important on touch devices as the close method is
-      // triggered when clicks on the document body occur
-      this.content.classList.add(this.main.id)
-      document.body.appendChild(this.content)
-    } else {
-      this.main.appendChild(this.content)
-    }
+
+    // Add content to body
+    this.content.classList.add(this.settings.id)
+    document.body.appendChild(this.content)
+
+    // Add search and list to content
     this.content.appendChild(this.search.container)
     this.content.appendChild(this.list)
+  }
+
+  // Remove disabled classes
+  public enable(): void {
+    // Set search input to "enabled"
+    this.search.input.disabled = false
+
+    // Remove disabled class
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.remove(this.classes.disabled)
+    } else if (this.single) {
+      this.single.container.classList.remove(this.classes.disabled)
+    }
+  }
+
+  // Set disabled classes
+  public disable(): void {
+    // Set search input to disabled
+    this.search.input.disabled = true
+
+    // Add disabled class
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.container.classList.add(this.classes.disabled)
+    } else if (this.single) {
+      this.single.container.classList.add(this.classes.disabled)
+    }
+  }
+
+  public open(): void {
+    if (this.settings.isMultiple && this.multiple) {
+      this.multiple.plus.classList.add('ss-cross')
+    } else if (this.single) {
+      this.single.arrowIcon.arrow.classList.remove('arrow-down')
+      this.single.arrowIcon.arrow.classList.add('arrow-up')
+    }
+    ;(this.slim as any)[this.config.isMultiple ? 'multiSelected' : 'singleSelected'].container.classList.add(
+      this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow,
+    )
+
+    if (this.settings.addToBody) {
+      // move the content in to the right location
+      const containerRect = this.container.getBoundingClientRect()
+      this.slim.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+      this.slim.content.style.left = containerRect.left + window.scrollX + 'px'
+      this.slim.content.style.width = containerRect.width + 'px'
+    }
+    this.slim.content.classList.add(this.classes.open)
+
+    // Check showContent to see if they want to specifically show in a certain direction
+    if (this.settings.contentPosition.toLowerCase() === 'up') {
+      this.moveContentAbove()
+    } else if (this.settings.contentPosition.toLowerCase() === 'down') {
+      this.moveContentBelow()
+    } else {
+      // Auto identify where to put it
+      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+        this.moveContentAbove()
+      } else {
+        this.moveContentBelow()
+      }
+    }
+  }
+
+  public setSelected(): void {
+    if (this.settings.isMultiple && this.multiple) {
+      // Multiple needs to just update the
+      this.multipleValues()
+    } else if (this.single) {
+      this.singlePlaceholder()
+    }
   }
 
   public mainDiv(): HTMLDivElement {
@@ -190,6 +257,54 @@ export default class Slim {
     }
   }
 
+  // Based upon current selection set placeholder text
+  public singlePlaceholder(): void {
+    if (!this.single) {
+      return
+    }
+
+    const selected = this.store.getSelectedOptions()
+    const selectedSingle = selected.length > 0 ? selected[0] : null
+    let selectedValue = ''
+
+    // Placeholder display
+    if (selectedSingle === null || (selectedSingle && selectedSingle.placeholder)) {
+      const placeholder = document.createElement('span')
+      placeholder.classList.add(this.classes.disabled)
+      placeholder.innerHTML = this.settings.placeholderText
+      selectedValue = placeholder.outerHTML
+    } else {
+      // Get the string value to display
+
+      if (selectedSingle) {
+        // Set value based upon whether to use html or text
+        selectedValue = selectedSingle.html && !this.settings.valuesUseText ? selectedSingle.html : selectedSingle.text
+      }
+    }
+
+    // Set the inner html of the new placeholder value
+    this.single.placeholder.innerHTML = selectedValue
+  }
+
+  // Based upon current selection/settings hide/show deselect
+  public singleDeselect(): void {
+    if (!this.single) {
+      return
+    }
+
+    if (!this.settings.allowDeselect) {
+      this.single.deselect.classList.add('ss-hide')
+      return
+    }
+
+    // If allowDeselect is false or selected value is empty just hide deslect
+    if (!this.settings.allowDeselect || !this.store.getSelectedOptions().length) {
+      this.single.deselect.classList.add('ss-hide')
+    } else {
+      this.single.deselect.classList.remove('ss-hide')
+    }
+  }
+
   public multipleDiv(): Multiple {
     const container = document.createElement('div')
     container.classList.add(this.classes.multiSelected)
@@ -231,7 +346,102 @@ export default class Slim {
     }
   }
 
-  // Create content container
+  // Get selected values and append to multiSelected values container
+  // and remove those who shouldnt exist
+  public multipleValues(): void {
+    if (!this.multiple) {
+      return
+    }
+    let currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
+    let dataOptions = this.store.getDataOptions()
+    let selectedIDs = this.store.getSelectedIDs()
+
+    // If dataOptions is empty set placeholder
+    if (dataOptions.length === 0) {
+      const placeholder = document.createElement('span')
+      placeholder.classList.add(this.classes.disabled)
+      placeholder.innerHTML = this.settings.placeholderText
+      this.multiple.values.innerHTML = placeholder.outerHTML
+      return
+    }
+
+    // Filter currentNodes to only include ones that are not in selectedIDs
+    let removeNodes = currentNodes.filter((node) => {
+      return selectedIDs.indexOf(String(node.dataset.id)) === -1
+    })
+
+    // Loop through and remove
+    for (const n of removeNodes) {
+      n.classList.add('ss-out')
+      this.multiple.values.removeChild(n)
+    }
+
+    // Add values that dont currently exist
+    currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
+    let exists = true
+    for (let s = 0; s < dataOptions.length; s++) {
+      exists = false
+      for (const c of currentNodes) {
+        if (dataOptions[s].id === String(c.dataset.id)) {
+          exists = true
+        }
+      }
+
+      if (!exists) {
+        if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
+          this.multiple.values.appendChild(this.multipleValueDiv(dataOptions[s]))
+        } else if (s === 0) {
+          this.multiple.values.insertBefore(this.multipleValueDiv(dataOptions[s]), currentNodes[s] as any)
+        } else {
+          ;(currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.multipleValueDiv(dataOptions[s]))
+        }
+      }
+    }
+  }
+
+  public multipleValueDiv(option: Option): HTMLDivElement {
+    const value = document.createElement('div')
+    value.classList.add(this.classes.value)
+    value.dataset.id = option.id
+
+    const text = document.createElement('span')
+    text.classList.add(this.classes.valueText)
+    text.innerHTML = option.html && this.settings.valuesUseText !== true ? option.html : option.text
+    value.appendChild(text)
+
+    if (!option.mandatory) {
+      const deleteSpan = document.createElement('span')
+      deleteSpan.classList.add(this.classes.valueDelete)
+      deleteSpan.innerHTML = this.settings.deselectLabel
+      deleteSpan.onclick = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        // By Default we will delete
+        let shouldDelete = true
+
+        // If there is a beforeDeselect function run it
+        // and determine
+        if (this.callbacks.beforeDelete) {
+          const before = this.store.getSelected()
+          const after = this.store.getSelected().filter((o) => {
+            return o.id !== option.id
+          })
+
+          shouldDelete = this.callbacks.beforeDelete(before, after) === true
+        }
+
+        if (shouldDelete) {
+          this.callbacks.deleteByID(option.id)
+        }
+      }
+
+      value.appendChild(deleteSpan)
+    }
+
+    return value
+  }
+
   public contentDiv(): HTMLDivElement {
     const container = document.createElement('div')
     container.classList.add(this.classes.content)
@@ -466,101 +676,6 @@ export default class Slim {
     return list
   }
 
-  // Get selected values and append to multiSelected values container
-  // and remove those who shouldnt exist
-  public values(): void {
-    if (!this.multiple) {
-      return
-    }
-    let currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
-    let dataOptions = this.store.getDataOptions()
-    let selectedIDs = this.store.getSelectedIDs()
-
-    // Filter currentNodes to only include ones that are not in selectedIDs
-    let removeNodes = currentNodes.filter((node) => {
-      return selectedIDs.indexOf(String(node.dataset.id)) === -1
-    })
-
-    // Loop through and remove
-    for (const n of removeNodes) {
-      n.classList.add('ss-out')
-      this.multiple.values.removeChild(n)
-    }
-
-    // Add values that dont currently exist
-    currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
-    let exists = true
-    for (let s = 0; s < dataOptions.length; s++) {
-      exists = false
-      for (const c of currentNodes) {
-        if (dataOptions[s].id === String(c.dataset.id)) {
-          exists = true
-        }
-      }
-
-      if (!exists) {
-        if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
-          this.multiple.values.appendChild(this.valueDiv(dataOptions[s]))
-        } else if (s === 0) {
-          this.multiple.values.insertBefore(this.valueDiv(dataOptions[s]), currentNodes[s] as any)
-        } else {
-          ;(currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.valueDiv(dataOptions[s]))
-        }
-      }
-    }
-
-    // If there are no values set placeholder
-    if (dataOptions.length === 0) {
-      const placeholder = document.createElement('span')
-      placeholder.classList.add(this.classes.disabled)
-      placeholder.innerHTML = this.settings.placeholderText
-      this.multiple.values.innerHTML = placeholder.outerHTML
-    }
-  }
-
-  public valueDiv(option: Option): HTMLDivElement {
-    const value = document.createElement('div')
-    value.classList.add(this.classes.value)
-    value.dataset.id = option.id
-
-    const text = document.createElement('span')
-    text.classList.add(this.classes.valueText)
-    text.innerHTML = option.html && this.settings.valuesUseText !== true ? option.html : option.text
-    value.appendChild(text)
-
-    if (!option.mandatory) {
-      const deleteSpan = document.createElement('span')
-      deleteSpan.classList.add(this.classes.valueDelete)
-      deleteSpan.innerHTML = this.settings.deselectLabel
-      deleteSpan.onclick = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-
-        // By Default we will delete
-        let shouldDelete = true
-
-        // If there is a beforeDeselect function run it
-        // and determine
-        if (this.callbacks.beforeDelete) {
-          const before = this.store.getSelected()
-          const after = this.store.getSelected().filter((o) => {
-            return o.id !== option.id
-          })
-
-          shouldDelete = this.callbacks.beforeDelete(before, after) === true
-        }
-
-        if (shouldDelete) {
-          this.callbacks.deleteByID(option.id)
-        }
-      }
-
-      value.appendChild(deleteSpan)
-    }
-
-    return value
-  }
-
   // Loop through data || filtered data and build options and append to list container
   public options(content: string = ''): void {
     const data = this.store.getData()
@@ -757,32 +872,6 @@ export default class Slim {
     }
 
     return optionEl
-  }
-
-  // Remove disabled classes
-  public enable(): void {
-    // Set search input to "enabled"
-    this.search.input.disabled = false
-
-    // Remove disabled class
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.remove(this.classes.disabled)
-    } else if (this.single) {
-      this.single.container.classList.remove(this.classes.disabled)
-    }
-  }
-
-  // Set disabled classes
-  public disable(): void {
-    // Set search input to disabled
-    this.search.input.disabled = true
-
-    // Add disabled class
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.add(this.classes.disabled)
-    } else if (this.single) {
-      this.single.container.classList.add(this.classes.disabled)
-    }
   }
 
   public moveContentAbove(): void {

@@ -67,6 +67,28 @@ export default class Select {
     this.changeFunc = undefined
   }
 
+  public setSelected(value: string[]): void {
+    // Loop through options and set selected
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTGROUP') {
+        const optgroup = o as HTMLOptGroupElement
+        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
+        for (const oo of optgroupOptions) {
+          if (oo.nodeName === 'OPTION') {
+            const option = oo as HTMLOptionElement
+            option.selected = value.includes(option.value)
+          }
+        }
+      }
+
+      if (o.nodeName === 'OPTION') {
+        const option = o as HTMLOptionElement
+        option.selected = value.includes(option.value)
+      }
+    }
+  }
+
   private observeWrapper(mutations: MutationRecord[]): void {
     if (this.changeFunc) {
       this.changeFunc(this.getData())
@@ -111,19 +133,19 @@ export default class Select {
     for (const n of nodes) {
       // Optgroup
       if (n.nodeName === 'OPTGROUP') {
-        data.push(this.getOptgroupData(n as HTMLOptGroupElement))
+        data.push(this.getDataFromOptgroup(n as HTMLOptGroupElement))
       }
 
       // Option
       if (n.nodeName === 'OPTION') {
-        data.push(this.getOptionData(n as HTMLOptionElement))
+        data.push(this.getDataFromOption(n as HTMLOptionElement))
       }
     }
 
     return data
   }
 
-  public getOptgroupData(optgroup: HTMLOptGroupElement): Optgroup {
+  public getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup {
     let data = {
       id: '',
       label: optgroup.label,
@@ -133,7 +155,7 @@ export default class Select {
     const options = optgroup.childNodes as any as HTMLOptionElement[]
     for (const o of options) {
       if (o.nodeName === 'OPTION') {
-        data.options.push(this.getOptionData(o as HTMLOptionElement))
+        data.options.push(this.getDataFromOption(o as HTMLOptionElement))
       }
     }
 
@@ -141,7 +163,7 @@ export default class Select {
   }
 
   // From passed in option pull pieces of usable information
-  public getOptionData(option: HTMLOptionElement): Option {
+  public getDataFromOption(option: HTMLOptionElement): Option {
     return {
       id: (option.dataset ? option.dataset.id : false) || generateID(),
       value: option.value,
@@ -158,17 +180,23 @@ export default class Select {
   }
 
   public updateSelect(id?: string, style?: string, classes?: string[]): void {
-    // Update specific select fields
+    // Update id
     if (id) {
       this.select.id = id
     }
+
+    // Update style
     if (style) {
       this.select.style.cssText = style
     }
+
+    // Update classes
     if (classes) {
       this.select.className = ''
       classes.forEach((c) => {
-        this.select.classList.add(c)
+        if (c.trim() !== '') {
+          this.select.classList.add(c.trim())
+        }
       })
     }
   }

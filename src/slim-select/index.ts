@@ -1,8 +1,8 @@
 import { debounce, hasClassInTree, putContent } from './helper'
 import Render from './render'
 import Select from './select'
-import Settings from './settings'
-import Store, { DataArray, Option } from './store'
+import Settings, { SettingsPartial } from './settings'
+import Store, { DataArray, DataArrayPartial, Option } from './store'
 
 export * from './helper'
 export * from './render'
@@ -12,8 +12,8 @@ export * from './store'
 
 export interface Config {
   select: string | Element
-  data?: DataArray
-  settings?: Settings
+  data?: DataArrayPartial
+  settings?: SettingsPartial
   events?: Events
 }
 
@@ -69,7 +69,8 @@ export default class SlimSelect {
     // Set settings
     this.settings = new Settings(config.settings)
 
-    // Upate settings with style and classname
+    // Upate settings with type, style and classname
+    this.settings.isMultiple = this.selectEl.multiple
     this.settings.style = this.selectEl.style.cssText
     this.settings.class = this.selectEl.className.split(' ')
 
@@ -83,13 +84,19 @@ export default class SlimSelect {
 
     // If data is passed update the original select element
     if (config.data) {
-      this.select.updateOptions(config.data)
+      this.select.updateOptions(this.store.getData())
     }
 
     // Set render callbacks
     const callbacks = {
-      open: () => {},
-      close: () => {},
+      open: () => {
+        console.log('hit open')
+        this.setPosition('down')
+      },
+      close: () => {
+        console.log('hit close')
+        this.setPosition('up')
+      },
       addSelected: (value: string) => {},
       setSelected: (value: string[]) => {},
       addOption: (option: Option) => {},
@@ -105,6 +112,11 @@ export default class SlimSelect {
 
     // Setup render class
     this.render = new Render(this.settings, this.store, callbacks)
+
+    // Add render after original select element
+    if (this.selectEl.parentNode) {
+      this.selectEl.parentNode.insertBefore(this.render.main, this.selectEl.nextSibling)
+    }
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', this.documentClick)
@@ -143,6 +155,7 @@ export default class SlimSelect {
         break
     }
   }
+
   // Set to enabled and remove disabled classes
   public enable(): void {
     this.settings.isEnabled = true
@@ -157,6 +170,71 @@ export default class SlimSelect {
 
     this.select.disable()
     this.render.disable()
+  }
+
+  public getSelected(): DataArray {
+    return this.store.getSelected()
+  }
+
+  public getSelectedOptions(): Option[] {
+    return this.store.getSelectedOptions()
+  }
+
+  public setSelected(value: string | string[]): void {
+    // Update the store
+    this.store.setSelectedBy('id', Array.isArray(value) ? value : [value])
+
+    // Update the select element
+    this.select.setSelected(this.store.getSelectedValues())
+
+    // Update the render
+    this.render.setSelected()
+  }
+
+  public open(): void {
+    // Dont open if disabled
+    if (!this.settings.isEnabled) {
+      return
+    }
+
+    // Dont do anything if the content is already open
+    if (this.settings.isOpen) {
+      return
+    }
+
+    // Run beforeOpen callback
+    if (this.events.beforeOpen) {
+      this.events.beforeOpen()
+    }
+
+    this.render.open()
+
+    // Move to selected option for single option
+    if (!this.config.isMultiple) {
+      const selected = this.data.getSelected() as Option
+      if (selected) {
+        const selectedId = selected.id
+        const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
+        if (selectedOption) {
+          ensureElementInView(this.slim.list, selectedOption)
+        }
+      }
+    }
+
+    // setTimeout is for animation completion
+    setTimeout(() => {
+      this.data.contentOpen = true
+
+      // Focus on input field
+      if (this.config.searchFocus) {
+        this.slim.search.input.focus()
+      }
+
+      // Run afterOpen callback
+      if (this.afterOpen) {
+        this.afterOpen()
+      }
+    }, this.config.timeoutDelay)
   }
 
   public destroy(ssid: string): void {

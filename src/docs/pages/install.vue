@@ -1,52 +1,51 @@
 <script lang="ts">
-  import { defineComponent } from 'vue'
-  import download from 'downloadjs'
-  import packageJson from '../../../package.json'
+import download from 'downloadjs'
+import { defineComponent } from 'vue'
+import packageJson from '../../../package.json'
 
-  export default defineComponent({
-    name: 'Install',
-    data: () => {
-      return {
-        version: packageJson.version
-      }
-    },
-    methods: {
-      downloadLink() {
-        download(`https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
-      }
+export default defineComponent({
+  name: 'Install',
+  data: () => {
+    return {
+      version: packageJson.version,
     }
-  })
+  },
+  methods: {
+    downloadLink() {
+      download(`https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
+    },
+  },
+})
 </script>
 
 <style lang="scss">
-  #install-content {
-    .npm-content {
-      padding: 0 0 30px 0;
+#install-content {
+  .npm-content {
+    padding: 0 0 30px 0;
 
-      .install-code {
-        max-width: 200px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .example-code {
-        max-width: 310px;
-        margin: 0 auto;
-      }
+    .install-code {
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .cdn-content {
-      .example-code {
-        max-width: 220px;
-        margin-left: auto;
-        margin-right: auto;
-      }
+    .example-code {
+      max-width: 310px;
+      margin: 0 auto;
     }
   }
+
+  .cdn-content {
+    .example-code {
+      max-width: 220px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
 </style>
 
 <template>
   <div id="install-content" class="content">
-
     <div class="npm-content">
       <h2>Npm</h2>
       <pre class="install-code">
@@ -86,8 +85,7 @@
 
     <div class="download-content">
       <h2>Download</h2>
-      <div class="btn" @click="downloadLink">Click Here To Download</div>
+      <div class="btn" @click="downloadLink()">Click Here To Download</div>
     </div>
-
   </div>
 </template>

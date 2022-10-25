@@ -171,6 +171,18 @@ export default class Store {
     return selectedIDs
   }
 
+  public getSelectedValues(): string[] {
+    let selectedOptions = this.getSelectedOptions()
+    let selectedValues: string[] = []
+
+    // Loop through each option and get the value
+    selectedOptions.forEach((option: Option) => {
+      selectedValues.push(option.value)
+    })
+
+    return selectedValues
+  }
+
   public getOptionByID(id: string): Option | null {
     let options = this.filter((opt: Option) => {
       return opt.id === id

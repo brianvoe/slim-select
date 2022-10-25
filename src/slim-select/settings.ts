@@ -1,10 +1,12 @@
 import { generateID } from './helper'
 import { Option } from './store'
 
+export type SettingsPartial = Partial<Settings>
+
 export default class Settings {
-  public id: string // Primary ID for the select
-  public style: string // Style attribute from the select element
-  public class: string[] // Class attribute from the select element
+  public id: string = '' // Primary ID for the select
+  public style: string = '' // Style attribute from the select element
+  public class: string[] = [] // Class attribute from the select element
 
   // Dynamic settings
   public isMultiple: boolean = false
@@ -36,7 +38,7 @@ export default class Settings {
   public timeoutDelay: number
   public addToBody: boolean
 
-  constructor(settings?: Partial<Settings>) {
+  constructor(settings?: SettingsPartial) {
     if (!settings) {
       settings = {}
     }
