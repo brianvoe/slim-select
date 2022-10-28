@@ -11,7 +11,6 @@ export default class Settings {
   // Dynamic settings
   public isMultiple: boolean = false
   public isOpen: boolean = false
-  public isAddable: boolean = false
   public isSearching: boolean = false
   public searchValue: string = ''
 
@@ -66,7 +65,7 @@ export default class Settings {
     this.valuesUseText = settings.valuesUseText || false
     this.showOptionTooltips = settings.showOptionTooltips || false
     this.selectByGroup = settings.selectByGroup || false
-    this.limit = settings.limit || 0
+    this.limit = settings.limit || 1000
     this.timeoutDelay = settings.timeoutDelay || 200
   }
 }
