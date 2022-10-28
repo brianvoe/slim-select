@@ -88,7 +88,7 @@ describe('select module', () => {
     let data = store.getData()
     select.updateOptions(data)
 
-    expect(selectElement.innerHTML).toBe('<option id="1" value="1">One</option><option id="2" value="2">Two</option>')
+    expect(selectElement.innerHTML).toBe('<option value="1">One</option><option value="2">Two</option>')
   })
 
   test('event change value listener', () => {
