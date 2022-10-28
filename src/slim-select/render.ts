@@ -1,18 +1,18 @@
-import { isValueInArrayOfObjects } from './helper'
 import Settings from './settings'
-import Store, { DataArray, Optgroup, Option } from './store'
+import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
 
 export interface Callbacks {
   open: () => void
   close: () => void
+  addable?: (value: string) => OptionOptional | string
   addSelected: (value: string) => void
   setSelected: (value: string[]) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   fetch?: (value: string, func: (info: any) => void) => void
-  beforeChange?: (before: DataArray, after: DataArray) => boolean
-  beforeDelete?: (before: DataArray, after: DataArray) => boolean
-  deleteByID: (id: string) => void
+  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean
+  afterChange?: (newVal: DataArray) => void
+  beforeDelete?: (neVal: DataArray, oldVal: DataArray) => boolean
 }
 
 export interface Single {
@@ -91,6 +91,7 @@ export default class Slim {
     this.search = this.searchDiv()
     this.list = this.listDiv()
 
+    // Setup single or multiple
     this.single = null
     this.multiple = null
     if (this.settings.isMultiple) {
@@ -100,6 +101,9 @@ export default class Slim {
       this.single = this.singleDiv()
       this.main.appendChild(this.single.container)
     }
+
+    // Render the placeholder
+    this.setSelected()
 
     // Add content to body
     this.content.classList.add(this.settings.id)
@@ -156,6 +160,9 @@ export default class Slim {
     this.content.style.width = containerRect.width + 'px'
     this.content.classList.add(this.classes.open)
 
+    // Render the options
+    this.renderOptions(this.store.getData())
+
     // Check showContent to see if they want to specifically show in a certain direction
     if (this.settings.contentPosition.toLowerCase() === 'up') {
       this.moveContentAbove()
@@ -197,11 +204,16 @@ export default class Slim {
 
   public setSelected(): void {
     if (this.settings.isMultiple && this.multiple) {
-      // Multiple needs to just update the
+      // Multiple needs to just update the values display
       this.multipleValues()
-    } else if (this.single) {
+    }
+
+    if (!this.settings.isMultiple && this.single) {
       this.singlePlaceholder()
     }
+
+    // Render the options
+    this.renderOptions(this.store.getData())
   }
 
   public mainDiv(): HTMLDivElement {
@@ -241,7 +253,7 @@ export default class Slim {
     const deselect = document.createElement('span')
     deselect.innerHTML = this.settings.deselectLabel
     deselect.classList.add('ss-deselect')
-    deselect.onclick = (e) => {
+    deselect.onclick = (e: Event) => {
       e.stopPropagation()
 
       // Dont do anything if disabled
@@ -253,6 +265,11 @@ export default class Slim {
     }
     container.appendChild(deselect)
 
+    // If allow deselect is false, hide the deselect button
+    if (!this.settings.allowDeselect) {
+      deselect.style.display = 'none'
+    }
+
     // Arrow
     const arrowContainer: HTMLSpanElement = document.createElement('span')
     arrowContainer.classList.add(this.classes.arrow)
@@ -262,7 +279,10 @@ export default class Slim {
     container.appendChild(arrowContainer)
 
     // Add onclick for container selector div
-    container.onclick = () => {
+    container.onclick = (e: Event) => {
+      e.stopPropagation()
+
+      // Dont do anything if disabled
       if (!this.settings.isEnabled) {
         return
       }
@@ -289,25 +309,16 @@ export default class Slim {
 
     const selected = this.store.getSelectedOptions()
     const selectedSingle = selected.length > 0 ? selected[0] : null
-    let selectedValue = ''
 
-    // Placeholder display
-    if (selectedSingle === null || (selectedSingle && selectedSingle.placeholder)) {
-      const placeholder = document.createElement('span')
-      placeholder.classList.add(this.classes.disabled)
-      placeholder.innerHTML = this.settings.placeholderText
-      selectedValue = placeholder.outerHTML
-    } else {
-      // Get the string value to display
-
-      if (selectedSingle) {
-        // Set value based upon whether to use html or text
-        selectedValue = selectedSingle.html && !this.settings.valuesUseText ? selectedSingle.html : selectedSingle.text
-      }
+    // If nothing is seleected use settings placeholder text
+    if (!selectedSingle) {
+      this.single.placeholder.innerHTML = this.settings.placeholderText
+      return
     }
 
-    // Set the inner html of the new placeholder value
-    this.single.placeholder.innerHTML = selectedValue
+    // If there is a selected value, set the text to the placeholder
+    this.single.placeholder.innerHTML =
+      selectedSingle.html && !this.settings.valuesUseText ? selectedSingle.html : selectedSingle.text
   }
 
   // Based upon current selection/settings hide/show deselect
@@ -342,21 +353,23 @@ export default class Slim {
     const plus = document.createElement('span')
     plus.classList.add(this.classes.plus)
     plus.onclick = (e) => {
+      e.stopPropagation()
+
+      // If its open close it
       if (this.settings.isOpen) {
         this.callbacks.close()
-        e.stopPropagation()
       }
     }
     add.appendChild(plus)
     container.appendChild(add)
 
-    container.onclick = (e) => {
+    container.onclick = (e: Event) => {
       if (!this.settings.isEnabled) {
         return
       }
 
       // Open only if you are not clicking on x text
-      const target = e.target as Element
+      const target = e.target as HTMLDivElement
       if (!target.classList.contains(this.classes.valueDelete)) {
         this.settings.isOpen ? this.callbacks.close() : this.callbacks.open()
       }
@@ -376,7 +389,9 @@ export default class Slim {
     if (!this.multiple) {
       return
     }
-    let currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
+
+    // Get various peices of data
+    let currentNodes = this.multiple.values.childNodes as NodeListOf<HTMLDivElement>
     let dataOptions = this.store.getDataOptions()
     let selectedIDs = this.store.getSelectedIDs()
 
@@ -389,10 +404,15 @@ export default class Slim {
       return
     }
 
-    // Filter currentNodes to only include ones that are not in selectedIDs
-    let removeNodes = currentNodes.filter((node) => {
-      return selectedIDs.indexOf(String(node.dataset.id)) === -1
-    })
+    // Loop through currentNodes and only include ones that are not in selectedIDs
+    let removeNodes: HTMLDivElement[] = []
+    for (let i = 0; i < currentNodes.length; i++) {
+      const node = currentNodes[i]
+      const id = node.getAttribute('data-id')
+      if (id && selectedIDs.indexOf(id) === -1) {
+        removeNodes.push(node)
+      }
+    }
 
     // Loop through and remove
     for (const n of removeNodes) {
@@ -401,23 +421,22 @@ export default class Slim {
     }
 
     // Add values that dont currently exist
-    currentNodes = this.multiple.values.childNodes as any as HTMLDivElement[]
-    let exists = true
-    for (let s = 0; s < dataOptions.length; s++) {
-      exists = false
-      for (const c of currentNodes) {
-        if (dataOptions[s].id === String(c.dataset.id)) {
-          exists = true
+    currentNodes = this.multiple.values.childNodes as NodeListOf<HTMLDivElement>
+    for (let d = 0; d < dataOptions.length; d++) {
+      let shouldAdd = dataOptions[d].selected
+      for (let i = 0; i < currentNodes.length; i++) {
+        if (dataOptions[d].id === String(currentNodes[i].dataset.id)) {
+          shouldAdd = false
         }
       }
 
-      if (!exists) {
+      if (shouldAdd) {
         if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
-          this.multiple.values.appendChild(this.multipleValueDiv(dataOptions[s]))
-        } else if (s === 0) {
-          this.multiple.values.insertBefore(this.multipleValueDiv(dataOptions[s]), currentNodes[s] as any)
+          this.multiple.values.appendChild(this.multipleValueDiv(dataOptions[d]))
+        } else if (d === 0) {
+          this.multiple.values.insertBefore(this.multipleValueDiv(dataOptions[d]), currentNodes[d])
         } else {
-          ;(currentNodes[s - 1] as any).insertAdjacentElement('afterend', this.multipleValueDiv(dataOptions[s]))
+          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValueDiv(dataOptions[d]))
         }
       }
     }
@@ -433,6 +452,7 @@ export default class Slim {
     text.innerHTML = option.html && this.settings.valuesUseText !== true ? option.html : option.text
     value.appendChild(text)
 
+    // Only add deletion if the option is not mandatory
     if (!option.mandatory) {
       const deleteSpan = document.createElement('span')
       deleteSpan.classList.add(this.classes.valueDelete)
@@ -443,20 +463,31 @@ export default class Slim {
 
         // By Default we will delete
         let shouldDelete = true
+        const before = this.store.getSelected()
+        const after = this.store.getSelected().filter((o) => {
+          return o.id !== option.id
+        })
 
         // If there is a beforeDeselect function run it
-        // and determine
         if (this.callbacks.beforeDelete) {
-          const before = this.store.getSelected()
-          const after = this.store.getSelected().filter((o) => {
-            return o.id !== option.id
-          })
-
           shouldDelete = this.callbacks.beforeDelete(before, after) === true
         }
 
         if (shouldDelete) {
-          this.callbacks.deleteByID(option.id)
+          // Loop through after and append values to a variable called selected
+          let selectedValues: string[] = []
+          for (const o of after) {
+            if (o instanceof Optgroup) {
+              for (const c of o.options) {
+                selectedValues.push(c.value)
+              }
+            }
+
+            if (o instanceof Option) {
+              selectedValues.push(o.value)
+            }
+          }
+          this.callbacks.setSelected(selectedValues)
         }
       }
 
@@ -533,7 +564,7 @@ export default class Slim {
     input.onkeyup = (e) => {
       const target = e.target as HTMLInputElement
       if (e.key === 'Enter') {
-        if (this.settings.isAddable && e.ctrlKey) {
+        if (this.callbacks.addable && e.ctrlKey) {
           addable.click()
           e.preventDefault()
           e.stopPropagation()
@@ -558,25 +589,47 @@ export default class Slim {
       e.stopPropagation()
     }
     input.onfocus = () => {
+      // If we are already open, do nothing
+      if (this.settings.isOpen) {
+        return
+      }
+
       this.callbacks.open()
     }
     container.appendChild(input)
 
-    if (this.settings.isAddable) {
+    // If addable is enabled, add the addable div
+    if (this.callbacks.addable) {
       addable.classList.add(this.classes.addable)
       addable.innerHTML = '+'
-      addable.onclick = (e) => {
+      addable.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
+        if (!this.callbacks.addable) {
+          return
+        }
 
-        const inputValue = this.search.input.value
-        if (inputValue.trim() === '') {
+        const inputValue = this.search.input.value.trim()
+        if (inputValue === '') {
           this.search.input.focus()
           return
         }
 
-        // Call add option
-        this.callbacks.addOption(new Option({ text: inputValue, value: inputValue }))
+        // Call addable callback
+        const addableValue = this.callbacks.addable(inputValue)
+
+        // If the addableValue is a string, we will add it as a new option
+        // Otherwise we will assume it is an option object
+        if (typeof addableValue === 'string') {
+          this.callbacks.addOption(
+            new Option({
+              text: addableValue,
+              value: addableValue,
+            }),
+          )
+        } else {
+          this.callbacks.addOption(new Option(addableValue))
+        }
 
         // Add option to selected
         this.callbacks.setSelected([inputValue])
@@ -594,6 +647,7 @@ export default class Slim {
       }
       container.appendChild(addable)
 
+      // Add the addable to the search return
       searchReturn.addable = addable
     }
 
@@ -810,8 +864,7 @@ export default class Slim {
 
     // Add class to div element
     optionEl.classList.add(this.classes.option)
-    // Add WCAG attribute
-    optionEl.setAttribute('role', 'option')
+    optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
       option.class.split(' ').forEach((dataClass: string) => {
         optionEl.classList.add(dataClass)
@@ -823,93 +876,102 @@ export default class Slim {
       optionEl.style.cssText = option.style
     }
 
-    const selected = this.store.getSelected()
+    const selectedOptions = this.store.getSelectedOptions()
 
     optionEl.dataset.id = option.id
+
+    // Set option content
     if (this.settings.searchHighlight && option.html && this.search.input.value.trim() !== '') {
       optionEl.innerHTML = this.highlight(option.html, this.search.input.value, this.classes.searchHighlighter)
-    } else if (option.html) {
+    } else if (option.html && option.html !== '') {
       optionEl.innerHTML = option.html
+    } else {
+      optionEl.textContent = option.text
     }
+
+    // Set title attribute
     if (this.settings.showOptionTooltips && optionEl.textContent) {
       optionEl.setAttribute('title', optionEl.textContent)
     }
+
+    // If allowed to deselect, null onclick and add disabled
+    if (option.selected || (option.disabled && !this.settings.allowDeselectOption)) {
+      optionEl.classList.add(this.classes.disabled)
+    }
+
+    // If option is selected and hideSelectedOption is true, hide it
+    if (option.selected && this.settings.hideSelectedOption) {
+      optionEl.classList.add(this.classes.hide)
+    }
+
+    // If option is selected
+    if (option.selected) {
+      optionEl.classList.add(this.classes.optionSelected)
+    } else {
+      optionEl.classList.remove(this.classes.optionSelected)
+    }
+
+    // Add click event listener
     optionEl.addEventListener('click', (e: MouseEvent) => {
       e.preventDefault()
       e.stopPropagation()
 
       const element = e.target as HTMLDivElement
-      const elementID = element.dataset.id as string
+      const elementID = String(element.dataset.id)
 
-      // If option is selected and is allow to be deselected
-      if (option.selected && this.settings.allowDeselectOption) {
-        let shouldUpdate = false
+      // If the option is disabled or selected and the user isnt allowed to deselect
+      if (option.disabled || (option.selected && !this.settings.allowDeselectOption)) {
+        return
+      }
 
-        // If no beforeOnChange is set automatically update at end
-        if (!this.callbacks.beforeChange || !this.settings.isMultiple) {
+      // Check limit and do nothing if limit is reached
+      if (this.settings.isMultiple && Array.isArray(selectedOptions) && this.settings.limit <= selectedOptions.length) {
+        return
+      }
+
+      // Setup
+      let shouldUpdate = false
+      const before = this.store.getSelectedOptions()
+      let after = [] as Option[]
+
+      // If multiple
+      if (this.settings.isMultiple) {
+        if (option.selected) {
+          // If selected after would remove
+          after = before.filter((o: Option) => o.id !== elementID)
+        } else {
+          // If not selected after would add
+          after = before.concat(option)
+        }
+      }
+
+      // If single
+      if (!this.settings.isMultiple) {
+        after = [option]
+      }
+
+      // If no beforeOnChange is set automatically update at end
+      if (!this.callbacks.beforeChange) {
+        shouldUpdate = true
+      }
+
+      if (this.callbacks.beforeChange) {
+        // Check if beforeChange returns true
+        if (this.callbacks.beforeChange(after, before) === true) {
           shouldUpdate = true
         }
+      }
 
-        if (this.callbacks.beforeChange && this.settings.isMultiple) {
-          const before = this.store.getSelectedOptions()
-          const after = before.filter((option: Option) => {
-            return option.id !== elementID
-          })
+      if (shouldUpdate) {
+        // Get values from after and set as selected
+        this.callbacks.setSelected(after.map((o: Option) => o.value))
 
-          // Check if beforeChange returns true
-          if (this.callbacks.beforeChange(before, after) === true) {
-            shouldUpdate = true
-          }
-        }
-
-        if (shouldUpdate) {
-          this.callbacks.addSelected(elementID)
-        }
-      } else {
-        // Check if option is disabled or is already selected, do nothing
-        if (option.disabled || option.selected) {
-          return
-        }
-
-        // Check if hit limit
-        if (this.settings.limit && Array.isArray(selected) && this.settings.limit <= selected.length) {
-          return
-        }
-
-        if (this.callbacks.beforeChange) {
-          // Get the option that is being selected
-          const clickedOption = this.store.getOptionByID(elementID) as Option
-          clickedOption.selected = true
-
-          const before = this.store.getSelectedOptions()
-          const after = before.concat(clickedOption)
-
-          // Check if beforeChange returns true
-          if (this.callbacks.beforeChange(before, after) === true) {
-            this.callbacks.addSelected(elementID)
-          }
-        } else {
-          this.callbacks.addSelected(elementID)
+        // callback that the value has changed
+        if (this.callbacks.afterChange) {
+          this.callbacks.afterChange(after)
         }
       }
     })
-
-    const isSelected = selected && isValueInArrayOfObjects(selected, 'id', option.id as string)
-    if (option.disabled || isSelected) {
-      optionEl.onclick = null
-      if (!this.settings.allowDeselectOption) {
-        optionEl.classList.add(this.classes.disabled)
-      }
-      if (this.settings.hideSelectedOption) {
-        optionEl.classList.add(this.classes.hide)
-      }
-    }
-
-    if (isSelected) {
-      optionEl.classList.add(this.classes.optionSelected)
-    } else {
-      optionEl.classList.remove(this.classes.optionSelected)
-    }
 
     return optionEl
   }

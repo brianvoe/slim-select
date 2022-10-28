@@ -2,7 +2,7 @@ import { debounce, hasClassInTree } from './helper'
 import Render from './render'
 import Select from './select'
 import Settings, { SettingsPartial } from './settings'
-import Store, { DataArray, DataArrayPartial, Option } from './store'
+import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
 export * from './helper'
 export * from './render'
@@ -19,9 +19,9 @@ export interface Config {
 
 export interface Events {
   fetch?: (value: string, func: (data: DataArrayPartial) => void) => void
-  addable?: (value: string) => Option | string
-  beforeOnChange?: (info: Option | Option[]) => void | boolean
-  onChange?: (info: Option | Option[]) => void
+  addable?: (value: string) => OptionOptional | string
+  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean
+  afterChange?: (newVal: DataArray) => void
   beforeOpen?: () => void
   afterOpen?: () => void
   beforeClose?: () => void
@@ -69,6 +69,13 @@ export default class SlimSelect {
     // Set settings
     this.settings = new Settings(config.settings)
 
+    // Set events
+    for (const key in config.events) {
+      if (config.events.hasOwnProperty(key)) {
+        ;(this.events as { [key: string]: any })[key] = (config.events as { [key: string]: any })[key]
+      }
+    }
+
     // Upate settings with type, style and classname
     this.settings.isMultiple = this.selectEl.multiple
     this.settings.style = this.selectEl.style.cssText
@@ -89,25 +96,18 @@ export default class SlimSelect {
 
     // Set render callbacks
     const callbacks = {
-      open: () => {
-        console.log('hit open')
-        this.setPosition('down')
-      },
-      close: () => {
-        console.log('hit close')
-        this.setPosition('up')
-      },
-      addSelected: (value: string) => {},
-      setSelected: (value: string[]) => {},
-      addOption: (option: Option) => {},
+      open: this.open.bind(this),
+      close: this.close.bind(this),
+      addable: this.events.addable ? this.events.addable : undefined,
+      addSelected: this.addSelected.bind(this),
+      setSelected: this.setSelected.bind(this),
+      addOption: this.addOption.bind(this),
       search: (search: string) => {},
-      beforeChange: (before: DataArray, after: DataArray) => {
-        return true
-      },
+      beforeChange: this.events.beforeChange,
+      afterChange: this.events.afterChange,
       beforeDelete: (before: DataArray, after: DataArray) => {
         return true
       },
-      deleteByID: (id: string) => {},
     }
 
     // Setup render class
@@ -130,29 +130,6 @@ export default class SlimSelect {
     // If disabled lets call it
     if (!this.settings.isEnabled) {
       this.disable()
-    }
-  }
-
-  public setEvents(events: Events) {
-    for (const key in events) {
-      if (events.hasOwnProperty(key)) {
-        ;(this.events as { [key: string]: any })[key] = (events as { [key: string]: any })[key]
-      }
-    }
-  }
-
-  // Set position will set the position of the content
-  public setPosition(position: 'up' | 'down'): void {
-    switch (position) {
-      case 'up':
-        this.settings.contentPosition = 'up'
-        this.render.moveContentAbove()
-        break
-
-      case 'down':
-        this.settings.contentPosition = 'down'
-        this.render.moveContentBelow()
-        break
     }
   }
 
@@ -182,7 +159,32 @@ export default class SlimSelect {
 
   public setSelected(value: string | string[]): void {
     // Update the store
-    this.store.setSelectedBy('id', Array.isArray(value) ? value : [value])
+    this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
+
+    // Update the select element
+    this.select.setSelected(this.store.getSelectedValues())
+
+    // Update the render
+    this.render.setSelected()
+  }
+
+  public addOption(option: OptionOptional): void {
+    // Add option to store
+    this.store.addOption(option)
+    const data = this.store.getData()
+
+    // Update the select element
+    this.select.updateOptions(data)
+
+    // Update the render
+    this.render.renderOptions(data)
+  }
+
+  public addSelected(value: string): void {
+    // Update the store
+    let selectedValues = this.store.getSelectedValues()
+    selectedValues.push(value)
+    this.store.setSelectedBy('value', selectedValues)
 
     // Update the select element
     this.select.setSelected(this.store.getSelectedValues())
@@ -296,12 +298,17 @@ export default class SlimSelect {
 
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce((e: Event) => {
-    if (this.settings.isOpen) {
-      if (this.render.putContent(this.selectEl, this.settings.isOpen) === 'up') {
-        this.setPosition('up')
-      } else {
-        this.setPosition('down')
-      }
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    // Determine where to put the content
+    if (this.render.putContent(this.selectEl, this.settings.isOpen) === 'up') {
+      this.settings.contentPosition = 'up'
+      this.render.moveContentAbove()
+    } else {
+      this.settings.contentPosition = 'down'
+      this.render.moveContentBelow()
     }
   })
 
