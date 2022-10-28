@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import SlimSelect, { Option } from '../slim-select'
 
 export default defineComponent({
   name: 'App',
@@ -22,26 +23,25 @@ export default defineComponent({
       this.$router.push({ path: this.$route.query.p as string })
     }
 
-    // const slim = new SlimSelect({
-    //   select: '#select-nav',
-    //   settings: {
-    //     showSearch: false,
-    //   },
-    //   data: this.navData,
-    //   events: {
-    //     onChange: (info) => {
-    //       let infoOption = info as Option
-    //       this.$router.push({ path: infoOption.value! })
-    //     },
-    //   },
-    // })
+    const slim = new SlimSelect({
+      select: '#select-nav',
+      data: this.navData,
+      settings: {
+        showSearch: false,
+      },
+      events: {
+        afterChange: (newVal) => {
+          this.$router.push({ path: (newVal[0] as Option).value })
+        },
+      },
+    })
 
-    // this.$router.isReady().then(() => {
-    //   const urlPathValue = this.$route.path.replace('/', '')
-    //   if (urlPathValue !== '') {
-    //     slim.setSelected(urlPathValue)
-    //   }
-    // })
+    this.$router.isReady().then(() => {
+      const urlPathValue = this.$route.path.replace('/', '')
+      if (urlPathValue !== '') {
+        slim.setSelected(urlPathValue)
+      }
+    })
   },
 })
 </script>

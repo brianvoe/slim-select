@@ -8,9 +8,9 @@ export default defineComponent({
     new SlimSelect({
       select: '#slim-single-select',
     })
-    // new SlimSelect({
-    //   select: '#slim-multi-select',
-    // })
+    new SlimSelect({
+      select: '#slim-multi-select',
+    })
   },
 })
 </script>
@@ -132,7 +132,7 @@ export default defineComponent({
         <div class="header"><h2>Features</h2></div>
         <ul class="list">
           <li><img src="images/check-mark.svg" /> No Dependencies</li>
-          <li><img src="images/check-mark.svg" /> 20kb - 5kb gzip</li>
+          <li><img src="images/check-mark.svg" /> ~30kb - ~5kb gzip</li>
           <li><img src="images/check-mark.svg" /> Single Select</li>
           <li><img src="images/check-mark.svg" /> Multiple Select</li>
           <li><img src="images/check-mark.svg" /> Addable Options</li>
