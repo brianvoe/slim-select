@@ -118,6 +118,10 @@ export default class Store {
     return this.filter(null, false) as Option[]
   }
 
+  public addOption(option: OptionOptional) {
+    this.data.push(new Option(option))
+  }
+
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
   public setSelectedBy(selectedType: 'id' | 'value', selectedVals: string[]) {
