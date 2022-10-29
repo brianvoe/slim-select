@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SlimSelect from '../../slim-select'
+import SlimSelect, { DataArray } from '../../slim-select'
 
 export default defineComponent({
   name: 'Options',
@@ -8,36 +8,28 @@ export default defineComponent({
     return {
       addToBodySingle: null as any,
       addToBodyMultiple: null as any,
-      beforeOnChangeSingle: null,
-      beforeOnChangeMultiple: null,
-      onChangeSingle: null,
-      onChangeMultiple: null
+      beforeChangeSingle: [] as DataArray,
+      beforeChangeMultiple: [] as DataArray,
+      afterChangeSingle: [] as DataArray,
+      afterChangeMultiple: [] as DataArray,
     }
   },
   mounted() {
     new SlimSelect({
       select: '#dataSingle',
-      data: [
-        {text: 'data placeholder', placeholder: true},
-        {text: 'Value 2'},
-        {text: 'Value 3', value: ''}
-      ]
+      data: [{ text: 'data placeholder', placeholder: true }, { text: 'Value 2' }, { text: 'Value 3', value: '' }],
     })
 
     new SlimSelect({
       select: '#dataMultiple',
       data: [
-        {placeholder: true, text: 'data placeholder'},
-        {text: 'Human'},
+        { placeholder: true, text: 'data placeholder' },
+        { text: 'Human' },
         {
           label: 'Animals',
-          options: [
-            {text: 'Cat'},
-            {text: 'Dog'},
-            {text: 'Bird', value: ''}
-          ]
-        }
-      ]
+          options: [{ text: 'Cat' }, { text: 'Dog' }, { text: 'Bird', value: '' }],
+        },
+      ],
     })
 
     new SlimSelect({ select: '#optionsSingle' })
@@ -45,144 +37,164 @@ export default defineComponent({
 
     const ajaxSingle = new SlimSelect({
       select: '#ajaxSingle',
-      placeholder: 'Search "Graham"',
-      searchingText: 'Searching Users...',
-      ajax(search: any, callback: any) {
-        if (search.length < 3) {
-          callback('Need 3 characters')
-          return
-        }
+      settings: {
+        placeholderText: 'Search "Graham"',
+        searchingText: 'Searching Users...',
+      },
+      //   ajax(search: any, callback: any) {
+      //     if (search.length < 3) {
+      //       callback('Need 3 characters')
+      //       return
+      //     }
 
-        fetch('https://jsonplaceholder.typicode.com/users')
-          .then((response) => {
-            return response.json()
-          })
-          .then((json) => {
-            const data = [] as any
-            for (const j of json) {
-              data.push({ text: j.name })
-            }
+      //     fetch('https://jsonplaceholder.typicode.com/users')
+      //       .then((response) => {
+      //         return response.json()
+      //       })
+      //       .then((json) => {
+      //         const data = [] as any
+      //         for (const j of json) {
+      //           data.push({ text: j.name })
+      //         }
 
-            callback(data)
-          })
-          .catch((error) => {
-            callback(false)
-          })
-      }
+      //         callback(data)
+      //       })
+      //       .catch((error) => {
+      //         callback(false)
+      //       })
+      //   }
     })
 
     const ajaxMulti = new SlimSelect({
       select: '#ajaxMultiple',
-      placeholder: 'Search "Dennis"',
-      ajax(search: any, callback: any) {
-        fetch('https://jsonplaceholder.typicode.com/users')
-          .then((response) => {
-            return response.json()
-          })
-          .then((json) => {
-            const data = [] as any
-            for (const j of json) {
-              data.push({ text: j.name })
-            }
+      settings: {
+        placeholderText: 'Search "Dennis"',
+      },
+      // ajax(search: any, callback: any) {
+      //   fetch('https://jsonplaceholder.typicode.com/users')
+      //     .then((response) => {
+      //       return response.json()
+      //     })
+      //     .then((json) => {
+      //       const data = [] as any
+      //       for (const j of json) {
+      //         data.push({ text: j.name })
+      //       }
 
-            setTimeout(() => {
-              ajaxMulti.setSearchText('Sorry No Results.')
-              callback(data)
-            }, 1000)
-          })
-          .catch((error) => {
-            callback(false)
-          })
-      }
+      //       setTimeout(() => {
+      //         ajaxMulti.setSearchText('Sorry No Results.')
+      //         callback(data)
+      //       }, 1000)
+      //     })
+      //     .catch((error) => {
+      //       callback(false)
+      //     })
+      // }
     })
 
     const displaySelect = new SlimSelect({
-      select: '#selectdisplay'
+      select: '#selectdisplay',
     })
 
     const displayData = [
       { value: 'A', text: 'A', display: false },
       { value: 'B', text: 'B' },
-      { value: 'C', text: 'C' }
+      { value: 'C', text: 'C' },
     ]
 
     displaySelect.setData(displayData)
-    displaySelect.set(['A', 'C'])
+    displaySelect.setSelected(['A', 'C'])
 
     new SlimSelect({
-      select: '#selectdisplay2'
+      select: '#selectdisplay2',
     })
-
 
     new SlimSelect({
       select: '#placeholderSingle',
-      placeholder: 'Placeholder Text Here'
+      settings: {
+        placeholderText: 'Placeholder Text Here',
+      },
     })
 
     new SlimSelect({
       select: '#placeholderMultiple',
-      placeholder: 'Placeholder Text Here'
+      settings: {
+        placeholderText: 'Placeholder Text Here',
+      },
     })
 
     new SlimSelect({
       select: '#allowDeselect',
-      allowDeselect: true
+      settings: {
+        allowDeselect: true,
+      },
     })
 
     new SlimSelect({
       select: '#allowDeselectOption',
-      allowDeselectOption: true
+      settings: {
+        allowDeselectOption: true,
+      },
     })
 
     new SlimSelect({
       select: '#allowDeselectOptionMultiple',
-      allowDeselectOption: true
+      settings: {
+        allowDeselectOption: true,
+      },
     })
-
 
     new SlimSelect({
       select: '#deselectLabel',
-      allowDeselect: true,
-      deselectLabel: '<span class="red">✖</span>'
+      settings: {
+        allowDeselect: true,
+        deselectLabel: '<span class="red">✖</span>',
+      },
     })
 
     new SlimSelect({
       select: '#addableSingle',
-      addable: (value: string) => {
-        return value
-      }
+      events: {
+        addable: (value: string) => {
+          return value
+        },
+      },
     })
 
     new SlimSelect({
       select: '#addableMultiple',
-      addable: (value: string) => {
-        return {
-          text: value,
-          value: value.toLowerCase()
-        }
-      }
+      events: {
+        addable: (value: string) => {
+          return {
+            text: value,
+            value: value.toLowerCase(),
+          }
+        },
+      },
     })
 
     const mandatorySelect = new SlimSelect({
-      select: '#selectMultiMandatory'
+      select: '#selectMultiMandatory',
     })
 
     const mandatoryData = [
       { value: 'A', text: 'A', mandatory: true },
       { value: 'B', text: 'B' },
-      { value: 'C', text: 'C' }
+      { value: 'C', text: 'C' },
     ]
 
     mandatorySelect.setData(mandatoryData)
-    mandatorySelect.set(['A', 'C'])
+    mandatorySelect.setSelected(['A', 'C'])
 
     new SlimSelect({
-      select: '#selectMultiMandatory2'
+      select: '#selectMultiMandatory2',
     })
 
     new SlimSelect({
       select: '#selectMultiLimit',
-      limit: 2
+      settings: {
+        maxSelected: 2,
+      },
     })
 
     new SlimSelect({ select: '#select-class' })
@@ -193,191 +205,226 @@ export default defineComponent({
 
     new SlimSelect({
       select: '#selectInnerHTMLSingle',
-      searchHighlight: true,
+      settings: {
+        searchHighlight: true,
+      },
       data: [
         {
-          innerHTML: '<b>Bold Text</b>',
+          html: '<b>Bold Text</b>',
           text: 'Bold Text',
-          value: 'bold text'
+          value: 'bold text',
         },
         {
-          innerHTML: '<i>Slim Select you are awesome</i>',
-          text: 'Slim Select awesome'
+          html: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome',
         },
         {
-          innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
+          html: '<div style="border: solid 1px #666666;">Border</div>',
           text: 'Border',
-          value: 'border'
-        }
-      ]
+          value: 'border',
+        },
+      ],
     })
 
     new SlimSelect({
       select: '#selectInnerHTMLMulti',
       data: [
         {
-          innerHTML: '<b>Bold Text</b>',
+          html: '<b>Bold Text</b>',
           text: 'Bold Text',
-          value: 'bold text'
+          value: 'bold text',
         },
         {
-          innerHTML: '<i>Slim Select you are awesome</i>',
-          text: 'Slim Select awesome'
+          html: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome',
         },
         {
-          innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
+          html: '<div style="border: solid 1px #666666;">Border</div>',
           text: 'Border',
-          value: 'border'
-        }
-      ]
+          value: 'border',
+        },
+      ],
     })
 
     new SlimSelect({
       select: '#selectInnerHTMLSingleText',
-      valuesUseText: true,
+      settings: {
+        valuesUseText: true,
+      },
       data: [
         {
-          innerHTML: '<b>Bold Text</b>',
+          html: '<b>Bold Text</b>',
           text: 'Bold Text',
-          value: 'bold text'
+          value: 'bold text',
         },
         {
-          innerHTML: '<i>Slim Select you are awesome</i>',
-          text: 'Slim Select awesome'
+          html: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome',
         },
         {
-          innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
+          html: '<div style="border: solid 1px #666666;">Border</div>',
           text: 'Border',
-          value: 'border'
-        }
-      ]
+          value: 'border',
+        },
+      ],
     })
 
     new SlimSelect({
       select: '#selectInnerHTMLMultiText',
-      valuesUseText: true,
+      settings: {
+        valuesUseText: true,
+      },
       data: [
         {
-          innerHTML: '<b>Bold Text</b>',
+          html: '<b>Bold Text</b>',
           text: 'Bold Text',
-          value: 'bold text'
+          value: 'bold text',
         },
         {
-          innerHTML: '<i>Slim Select you are awesome</i>',
-          text: 'Slim Select awesome'
+          html: '<i>Slim Select you are awesome</i>',
+          text: 'Slim Select awesome',
         },
         {
-          innerHTML: '<div style="border: solid 1px #666666;">Border</div>',
+          html: '<div style="border: solid 1px #666666;">Border</div>',
           text: 'Border',
-          value: 'border'
-        }
-      ]
+          value: 'border',
+        },
+      ],
     })
 
-    new SlimSelect({ select: '#showSearchSingle', showSearch: false })
+    new SlimSelect({ select: '#showSearchSingle', settings: { showSearch: false } })
     new SlimSelect({
-      select: '#searchTextSingle', searchText: 'Sorry nothing to see here',
-      beforeOpen: () => {console.log('beforeOpen')}, beforeClose: () => {console.log('beforeClose')},
-      afterOpen: () => {console.log('afterOpen')}, afterClose: () => {console.log('afterClose')}
+      select: '#searchTextSingle',
+      settings: {
+        searchText: 'Sorry nothing to see here',
+      },
+      events: {
+        beforeOpen: () => {
+          console.log('beforeOpen')
+        },
+        beforeClose: () => {
+          console.log('beforeClose')
+        },
+        afterOpen: () => {
+          console.log('afterOpen')
+        },
+        afterClose: () => {
+          console.log('afterClose')
+        },
+      },
     })
-    new SlimSelect({ select: '#searchPlaceholderSingle', searchPlaceholder: 'Search for the good stuff!' })
-    new SlimSelect({ select: '#searchFocusSingle', searchFocus: false })
-    new SlimSelect({ select: '#searchHighlightSingle', searchHighlight: true })
-    new SlimSelect({ select: '#showSearchMulti', showSearch: false })
-    new SlimSelect({ select: '#searchTextMulti', searchText: 'Sorry nothing to see here'})
-    new SlimSelect({ select: '#searchPlaceholderMulti', searchPlaceholder: 'Search for the good stuff!' })
-    new SlimSelect({ select: '#searchFocusMulti', searchFocus: false })
-    new SlimSelect({ select: '#searchHighlightMulti', searchHighlight: true })
+    new SlimSelect({
+      select: '#searchPlaceholderSingle',
+      settings: { searchPlaceholder: 'Search for the good stuff!' },
+    })
+    new SlimSelect({ select: '#searchHighlightSingle', settings: { searchHighlight: true } })
+    new SlimSelect({ select: '#showSearchMulti', settings: { showSearch: false } })
+    new SlimSelect({ select: '#searchTextMulti', settings: { searchText: 'Sorry nothing to see here' } })
+    new SlimSelect({ select: '#searchPlaceholderMulti', settings: { searchPlaceholder: 'Search for the good stuff!' } })
+    new SlimSelect({ select: '#searchHighlightMulti', settings: { searchHighlight: true } })
 
     new SlimSelect({
       select: '#closeOnSelectSingle',
-      closeOnSelect: false
+      settings: {
+        closeOnSelect: false,
+      },
     })
 
     new SlimSelect({
       select: '#closeOnSelectMultiple',
-      closeOnSelect: false,
-      selectByGroup: true
+      settings: {
+        closeOnSelect: false,
+        selectByGroup: true,
+      },
     })
 
     new SlimSelect({
       select: '#showContentUp',
-      showContent: 'up'
-    })
-
-    this.addToBodySingle = new SlimSelect({
-      select: '#addToBodySingle',
-      addToBody: true
-    })
-
-    this.addToBodyMultiple = new SlimSelect({
-      select: '#addToBodyMultiple',
-      addToBody: true,
-      selectByGroup: true
+      settings: {
+        contentPosition: 'up',
+      },
     })
 
     new SlimSelect({
       select: '#showContentDown',
-      showContent: 'down'
+      settings: {
+        contentPosition: 'down',
+      },
     })
 
     new SlimSelect({
-      select: '#beforeOnChangeSingle',
-      beforeOnChange: (value: any) => {
-        this.beforeOnChangeSingle = value
-      }
+      select: '#beforeChangeSingle',
+      events: {
+        beforeChange: (newValue: DataArray, oldValue: DataArray) => {
+          this.beforeChangeSingle = newValue
+          return true
+        },
+      },
     })
 
     new SlimSelect({
-      select: '#beforeOnChangeMultiple',
-      beforeOnChange: (values: any) => {
-        this.beforeOnChangeMultiple = values
-      }
+      select: '#beforeChangeMultiple',
+      events: {
+        beforeChange: (newValue: DataArray, oldValue: DataArray) => {
+          this.beforeChangeMultiple = newValue
+          return true
+        },
+      },
     })
 
     new SlimSelect({
-      select: '#onChangeSingle',
-      onChange: (value: any) => {
-        this.onChangeSingle = value
-      }
+      select: '#afterChangeSingle',
+      events: {
+        afterChange: (value: DataArray) => {
+          this.afterChangeSingle = value
+        },
+      },
     })
 
     new SlimSelect({
-      select: '#onChangeMultiple',
-      onChange: (value: any) => {
-        this.onChangeMultiple = value
-      }
+      select: '#afterChangeMultiple',
+      events: {
+        afterChange: (value: DataArray) => {
+          this.afterChangeMultiple = value
+        },
+      },
     })
 
     new SlimSelect({
       select: '#showOptionTooltips',
-      showOptionTooltips: true
+      settings: {
+        showOptionTooltips: true,
+      },
     })
 
     new SlimSelect({
       select: '#selectByGroup',
-      selectByGroup: true
+      settings: {
+        selectByGroup: true,
+      },
     })
 
     new SlimSelect({
       select: '#searchFilter',
-      searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search
+      events: {
+        // searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search,
+      },
     })
 
     new SlimSelect({
       select: '#hideSelectedOption',
-      hideSelectedOption: true
+      settings: {
+        hideSelectedOption: true,
+      },
     })
 
     new SlimSelect({
       select: '#hideSelectedOptionMultiple',
-      hideSelectedOption: true
+      settings: {
+        hideSelectedOption: true,
+      },
     })
   },
-  beforeDestroy() {
-    this.addToBodySingle.destroy()
-    this.addToBodyMultiple.destroy()
-  }
 })
 </script>
 
@@ -398,7 +445,9 @@ export default defineComponent({
   }
 
   .deselectLabel {
-    .red { color: red; }
+    .red {
+      color: red;
+    }
   }
 
   .select-class {
@@ -414,9 +463,18 @@ export default defineComponent({
   }
 
   .ss-option {
-    &.red { color: white; background-color: red; }
-    &.green { color: white; background-color: green; }
-    &.blue { color: white; background-color: blue; }
+    &.red {
+      color: white;
+      background-color: red;
+    }
+    &.green {
+      color: white;
+      background-color: green;
+    }
+    &.blue {
+      color: white;
+      background-color: blue;
+    }
   }
 }
 </style>
@@ -426,9 +484,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">select</h2>
       <p>
-        The select option is used to identify the select element that will be used to
-        create slim select. You can any value you normally would in a querySelector
-        or pass the element directly.
+        The select option is used to identify the select element that will be used to create slim select. You can any
+        value you normally would in a querySelector or pass the element directly.
       </p>
 
       <pre>
@@ -521,8 +578,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">options</h2>
       <p>
-        Slim select will take on attributes of the original as best as possible.
-        Below are example usages of attributes added to the underlining select options that slim select picked up and used
+        Slim select will take on attributes of the original as best as possible. Below are example usages of attributes
+        added to the underlining select options that slim select picked up and used
       </p>
 
       <div class="set-content">
@@ -531,13 +588,13 @@ export default defineComponent({
           <option value="value1" data-info="Here is info">Data Attributes</option>
           <option value="value2" disabled>Disabled Option</option>
           <option value="value3" class="green">Class Green</option>
-          <option value="value3" style="color: purple;">Inline Style</option>
+          <option value="value3" style="color: purple">Inline Style</option>
         </select>
         <select id="optionsMultiple" multiple>
           <option value="value1" data-info="Here is info">Data Attributes</option>
           <option value="value2" disabled>Disabled Option</option>
           <option value="value3" class="green">Class Green</option>
-          <option value="value3" style="color: purple;">Inline Style</option>
+          <option value="value3" style="color: purple">Inline Style</option>
         </select>
       </div>
     </div>
@@ -548,7 +605,8 @@ export default defineComponent({
         Slim select allows you to syncronize result values from your ajax requests.<br />
         Call callback() method with slimselect data, false or string with specific string.<br />
         <br />
-        When doing fetch request for each ajax call be sure to debounce your request so you are not getting fetch race conditions.
+        When doing fetch request for each ajax call be sure to debounce your request so you are not getting fetch race
+        conditions.
       </p>
 
       <div class="set-content">
@@ -599,9 +657,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">placeholder</h2>
       <p>
-        Placeholders consists of setting the placeholder option value.
-        The only difference is single selects require an empty option with data-placeholder set to true.
-        Default value is "Select Value".
+        Placeholders consists of setting the placeholder option value. The only difference is single selects require an
+        empty option with data-placeholder set to true. Default value is "Select Value".
       </p>
 
       <div class="set-content">
@@ -713,7 +770,7 @@ export default defineComponent({
       <p>Or</p>
       <div class="set-content">
         <select id="selectdisplay2" multiple>
-          <option value="A" style="display: none;" selected>A</option>
+          <option value="A" style="display: none" selected>A</option>
           <option value="B" selected>B</option>
           <option value="C">C</option>
         </select>
@@ -783,8 +840,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">deselectLabel</h2>
       <p>
-        This will allow you to change the deselect label (default 'x') on single select lists,
-        and the delete label on multiple-select lists.
+        This will allow you to change the deselect label (default 'x') on single select lists, and the delete label on
+        multiple-select lists.
       </p>
       <p>Note: Be aware of the lmited space available for it</p>
 
@@ -821,12 +878,10 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">addable</h2>
+      <p>Slim select has the ability to dynamically add options via the search input field</p>
       <p>
-        Slim select has the ability to dynamically add options via the search input field
-      </p>
-      <p>
-        addable is a callback which takes a function parameter.
-        The return value is the string of the value you want added.
+        addable is a callback which takes a function parameter. The return value is the string of the value you want
+        added.
       </p>
 
       <div class="set-content">
@@ -899,7 +954,10 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">mandatory</h2>
-      <p>When using multi select you can set a mandatory on the option to prevent capability to deselect particular option. Note options with mandatory flag is not selected by default, you need select them yourselfs.</p>
+      <p>
+        When using multi select you can set a mandatory on the option to prevent capability to deselect particular
+        option. Note options with mandatory flag is not selected by default, you need select them yourselfs.
+      </p>
 
       <div class="set-content">
         <select id="selectMultiMandatory" multiple></select>
@@ -960,8 +1018,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">css class</h2>
       <p>
-        Slim select will inherit any classes that were added to the original select element.
-        This includes options as well.
+        Slim select will inherit any classes that were added to the original select element. This includes options as
+        well.
       </p>
 
       <div class="set-content">
@@ -991,20 +1049,20 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">inline styles</h2>
       <p>
-        Slim select will inherit any styles that were added to the original select element.
-        This includes options as well.
+        Slim select will inherit any styles that were added to the original select element. This includes options as
+        well.
       </p>
 
       <div class="set-content">
-        <select id="select-style" style="color: red;">
+        <select id="select-style" style="color: red">
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
           <option value="value3">Value 3</option>
         </select>
         <select id="option-style">
-          <option style="color: red;" value="value1">Red</option>
-          <option style="color: green;">Green</option>
-          <option style="color: blue;">Blue</option>
+          <option style="color: red" value="value1">Red</option>
+          <option style="color: green">Green</option>
+          <option style="color: blue">Blue</option>
         </select>
       </div>
 
@@ -1027,18 +1085,17 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">innerHTML</h2>
+      <p>Slim select has the ability to set custom html in content in the select option.</p>
       <p>
-        Slim select has the ability to set custom html in content in the select option.
-      </p>
-      <p>
-        Due to html spec we cant do this directly on the select dropdown, but we can pass them as data values to slim select
+        Due to html spec we cant do this directly on the select dropdown, but we can pass them as data values to slim
+        select
       </p>
 
       <div class="set-content">
         <select id="selectInnerHTMLSingle"></select>
         <select id="selectInnerHTMLMulti" multiple></select>
       </div>
-      <div class="set-content" style="padding: 16px 0 0 0;">
+      <div class="set-content" style="padding: 16px 0 0 0">
         <h4>Use text for selected values</h4>
       </div>
       <div class="set-content">
@@ -1065,31 +1122,15 @@ export default defineComponent({
     </div>
 
     <div class="content">
-      <h2 class="header">showSearch / searchText / searchingText / searchFocus / searchHighlight</h2>
+      <h2 class="header">showSearch / searchText / searchingText / searchHighlight</h2>
+      <p>showSearch is a boolean value that will decide whether or not to show the search. Default is true.</p>
+      <p>searchText is a string value that will show in the event there are no results. Default is 'No Results'.</p>
+      <p>searchingText is a string value that will show during an ajax request. Default is 'Searching...'.</p>
       <p>
-        showSearch is a boolean value that will decide whether or not to show the search.
-        Default is true.
+        searchPlaceholder is a string value that will set the value of the input search placeholder text. Default is
+        'Search'.
       </p>
-      <p>
-        searchText is a string value that will show in the event there are no results.
-        Default is 'No Results'.
-      </p>
-      <p>
-        searchingText is a string value that will show during an ajax request.
-        Default is 'Searching...'.
-      </p>
-      <p>
-        searchPlaceholder is a string value that will set the value of the input search placeholder text.
-        Default is 'Search'.
-      </p>
-      <p>
-        searchFocus is a boolean value that will focus search input on opening.
-        Default is true.
-      </p>
-      <p>
-        searchHighlight is a boolean value that will highlight search results.
-        Default is false.
-      </p>
+      <p>searchHighlight is a boolean value that will highlight search results. Default is false.</p>
 
       <div class="set-content">
         <select id="showSearchSingle">
@@ -1103,11 +1144,6 @@ export default defineComponent({
           <option value="bird">Bird</option>
         </select>
         <select id="searchPlaceholderSingle">
-          <option value="dog">Dog</option>
-          <option value="cat">Cat</option>
-          <option value="bird">Bird</option>
-        </select>
-        <select id="searchFocusSingle">
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
@@ -1135,11 +1171,6 @@ export default defineComponent({
           <option value="cat">Cat</option>
           <option value="bird">Bird</option>
         </select>
-        <select id="searchFocusMulti" multiple>
-          <option value="dog">Dog</option>
-          <option value="cat">Cat</option>
-          <option value="bird">Bird</option>
-        </select>
         <select id="searchHighlightMulti" multiple>
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
@@ -1154,7 +1185,6 @@ export default defineComponent({
             showSearch: false,
             searchText: 'Sorry nothing to see here',
             searchPlaceholder: 'Search for the good stuff!',
-            searchFocus: false, // Whether or not to focus on the search input field
             searchHighlight: true
           })
 
@@ -1167,8 +1197,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">closeOnSelect</h2>
       <p>
-        closeOnSelect is a boolean value in which determines whether or not to
-        close the content area upon selecting a value.
+        closeOnSelect is a boolean value in which determines whether or not to close the content area upon selecting a
+        value.
       </p>
 
       <div class="set-content">
@@ -1207,13 +1237,11 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">showContent</h2>
       <p>
-        showContent is a string value that will decide where to show your content when it comes out.
-        By default slim select will try to put the content where it can without going off screen.
-        But you may want to always show it in one direction.
+        showContent is a string value that will decide where to show your content when it comes out. By default slim
+        select will try to put the content where it can without going off screen. But you may want to always show it in
+        one direction.
       </p>
-      <p>
-        Possible Options: <b>'auto', 'up' or 'down'</b>. Default is <b>'auto'</b>
-      </p>
+      <p>Possible Options: <b>'auto', 'up' or 'down'</b>. Default is <b>'auto'</b></p>
 
       <div class="set-content">
         <select id="showContentUp">
@@ -1239,71 +1267,29 @@ export default defineComponent({
     </div>
 
     <div class="content">
-      <h2 class="header">addToBody</h2>
-      <p>
-        addToBody is a boolean value that configures the select dropdown to be added directly to the document body, rather than the parent container.
-        This allows using slim-select in scenarios where you have no control of the overflow state of the parent containers.
-
-        Keep in mind that the widget has to be disposed explicitly by calling <b>destroy</b>.
-      </p>
-      <p>
-        Possible Options: <b>true</b> or <b>false</b>. Default is <b>false</b>
-      </p>
-
-      <div class="set-content">
-        <select id="addToBodySingle">
-          <option value="value1">Value 1</option>
-          <option value="value2">Value 2</option>
-          <option value="value3">Value 3</option>
-          <optgroup label="Super Values">
-            <option value="value11">Value 1</option>
-            <option value="value22">Value 2</option>
-            <option value="value33">Value 3</option>
-          </optgroup>
-        </select>
-        <select id="addToBodyMultiple" multiple>
-          <option value="value1">Value 1</option>
-          <option value="value2">Value 2</option>
-          <option value="value3">Value 3</option>
-          <optgroup label="Super Values">
-            <option value="value11">Value 1</option>
-            <option value="value22">Value 2</option>
-            <option value="value33">Value 3</option>
-          </optgroup>
-        </select>
-      </div>
-
-      <pre>
-        <code class="language-javascript">
-          new SlimSelect({
-            select: '#showContent',
-            addToBody: true
-          })
-        </code>
-      </pre>
-    </div>
-
-    <div class="content">
       <h2 class="header">beforeOnChange</h2>
       <p>
-        beforeOnChange will trigger a callback on an option click and will allow
-        you the ability to halt if the value it produces isnt to your liking.
-        In order to stop propagation just return false on the callback.
-        Returning nothing or true will allow it to continue as normal.
+        beforeOnChange will trigger a callback on an option click and will allow you the ability to halt if the value it
+        produces isnt to your liking. In order to stop propagation just return false on the callback. Returning nothing
+        or true will allow it to continue as normal.
       </p>
 
-      <div v-if="beforeOnChangeSingle"><strong>Before on change: {{beforeOnChangeSingle}}</strong></div>
+      <div v-if="beforeChangeSingle">
+        <strong>Before on change: {{ beforeChangeSingle }}</strong>
+      </div>
 
-      <select id="beforeOnChangeSingle">
+      <select id="beforeChangeSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
       </select>
       <br /><br />
 
-      <div v-if="beforeOnChangeMultiple"><strong>Before on change: {{beforeOnChangeMultiple}}</strong></div>
+      <div v-if="beforeChangeMultiple">
+        <strong>Before on change: {{ beforeChangeMultiple }}</strong>
+      </div>
 
-      <select id="beforeOnChangeMultiple" multiple>
+      <select id="beforeChangeMultiple" multiple>
         <option value="value1" selected>Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
@@ -1324,22 +1310,24 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">onChange</h2>
-      <p>
-        onChange will trigger a callback after the value of the select dropdown has changed.
-      </p>
+      <p>onChange will trigger a callback after the value of the select dropdown has changed.</p>
 
-      <div v-if="onChangeSingle"><strong>On change: {{onChangeSingle}}</strong></div>
+      <div v-if="afterChangeSingle">
+        <strong>On change: {{ afterChangeSingle }}</strong>
+      </div>
 
-      <select id="onChangeSingle">
+      <select id="afterChangeSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
       </select>
       <br /><br />
 
-      <div v-if="onChangeMultiple"><strong>On change: {{onChangeMultiple}}</strong></div>
+      <div v-if="afterChangeMultiple">
+        <strong>On change: {{ afterChangeMultiple }}</strong>
+      </div>
 
-      <select id="onChangeMultiple" multiple>
+      <select id="afterChangeMultiple" multiple>
         <option value="value1" selected>Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
@@ -1360,8 +1348,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">showOptionTooltips</h2>
       <p>
-        showOptionTooltips option is used to active displaying the on-hover tooltips for select options.
-        The tooltip text is equal to the option text content.
+        showOptionTooltips option is used to active displaying the on-hover tooltips for select options. The tooltip
+        text is equal to the option text content.
       </p>
 
       <select id="showOptionTooltips">
@@ -1383,7 +1371,8 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">selectByGroup</h2>
       <p>
-        selectByGroup option is used to enable the selection of all options under a specific group by clicking that option group's label.
+        selectByGroup option is used to enable the selection of all options under a specific group by clicking that
+        option group's label.
       </p>
 
       <select id="selectByGroup" multiple>
@@ -1406,12 +1395,8 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">searchFilter</h2>
-      <p>
-        searchFilter option is used to replace the default matching algorithm.
-      </p>
-      <p>
-        See methods/setData for the proper object interface of <em>option</em>.
-      </p>
+      <p>searchFilter option is used to replace the default matching algorithm.</p>
+      <p>See methods/setData for the proper object interface of <em>option</em>.</p>
 
       <select id="searchFilter">
         <option value="apple">Apple</option>
@@ -1434,9 +1419,7 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">hideSelectedOption</h2>
-      <p>
-        hideSelectedOption option is used to hide the current selected option in the dropdown.
-      </p>
+      <p>hideSelectedOption option is used to hide the current selected option in the dropdown.</p>
 
       <div class="set-content">
         <select id="hideSelectedOption">

@@ -1,5 +1,6 @@
+// Generate an 8 character random string
 export function generateID(): string {
-  return Math.floor(Math.random() * 100000).toString()
+  return Math.random().toString(36).substring(2, 10)
 }
 
 export function hasClassInTree(element: HTMLElement, className: string) {
@@ -40,20 +41,6 @@ export function debounce(func: (...params: any[]) => void, wait = 100, immediate
       func.apply(context, args)
     }
   }
-}
-
-export function isValueInArrayOfObjects(selected: any, key: string, value: string): boolean {
-  if (!Array.isArray(selected)) {
-    return selected[key] === value
-  }
-
-  for (const s of selected) {
-    if (s && s[key] && s[key] === value) {
-      return true
-    }
-  }
-
-  return false
 }
 
 export function kebabCase(str: string) {

@@ -54,8 +54,9 @@ export default class Slim {
   // Classes
   public classes = {
     main: 'ss-main',
-    singleSelected: 'ss-single-selected',
-    multiSelected: 'ss-multi-selected',
+    singleSelected: 'ss-single',
+    multiSelected: 'ss-multi',
+    placeholder: 'ss-placeholder',
     arrow: 'ss-arrow',
     add: 'ss-add',
     plus: 'ss-plus',
@@ -200,6 +201,11 @@ export default class Slim {
       this.single.arrowIcon.arrow.classList.remove('arrow-up')
     }
     this.content.classList.remove(this.classes.open)
+
+    // Clear out the style after closing animation
+    setTimeout(() => {
+      this.content.removeAttribute('style')
+    }, 200)
   }
 
   public setSelected(): void {
@@ -392,16 +398,22 @@ export default class Slim {
 
     // Get various peices of data
     let currentNodes = this.multiple.values.childNodes as NodeListOf<HTMLDivElement>
-    let dataOptions = this.store.getDataOptions()
+    let selectedOptions = this.store.getSelectedOptions()
     let selectedIDs = this.store.getSelectedIDs()
 
-    // If dataOptions is empty set placeholder
-    if (dataOptions.length === 0) {
+    // If selectedOptions is empty set placeholder
+    if (selectedOptions.length === 0) {
       const placeholder = document.createElement('span')
-      placeholder.classList.add(this.classes.disabled)
+      placeholder.classList.add(this.classes.placeholder)
       placeholder.innerHTML = this.settings.placeholderText
       this.multiple.values.innerHTML = placeholder.outerHTML
       return
+    } else {
+      // If there is a placeholder, remove it
+      const placeholder = this.multiple.values.querySelector('.' + this.classes.placeholder)
+      if (placeholder) {
+        placeholder.remove()
+      }
     }
 
     // Loop through currentNodes and only include ones that are not in selectedIDs
@@ -417,26 +429,31 @@ export default class Slim {
     // Loop through and remove
     for (const n of removeNodes) {
       n.classList.add('ss-out')
-      this.multiple.values.removeChild(n)
+      setTimeout(() => {
+        if (this.multiple) {
+          this.multiple.values.removeChild(n)
+        }
+      }, 100)
     }
 
     // Add values that dont currently exist
     currentNodes = this.multiple.values.childNodes as NodeListOf<HTMLDivElement>
-    for (let d = 0; d < dataOptions.length; d++) {
-      let shouldAdd = dataOptions[d].selected
+    for (let d = 0; d < selectedOptions.length; d++) {
+      let shouldAdd = true
       for (let i = 0; i < currentNodes.length; i++) {
-        if (dataOptions[d].id === String(currentNodes[i].dataset.id)) {
+        if (selectedOptions[d].id === String(currentNodes[i].dataset.id)) {
           shouldAdd = false
         }
       }
 
+      // If shouldAdd, insertAdjacentElement it to the values container in the order of the selectedOptions
       if (shouldAdd) {
-        if (currentNodes.length === 0 || !HTMLElement.prototype.insertAdjacentElement) {
-          this.multiple.values.appendChild(this.multipleValueDiv(dataOptions[d]))
+        if (currentNodes.length === 0) {
+          this.multiple.values.appendChild(this.multipleValueDiv(selectedOptions[d]))
         } else if (d === 0) {
-          this.multiple.values.insertBefore(this.multipleValueDiv(dataOptions[d]), currentNodes[d])
+          this.multiple.values.insertBefore(this.multipleValueDiv(selectedOptions[d]), currentNodes[d])
         } else {
-          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValueDiv(dataOptions[d]))
+          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValueDiv(selectedOptions[d]))
         }
       }
     }
@@ -925,7 +942,11 @@ export default class Slim {
       }
 
       // Check limit and do nothing if limit is reached
-      if (this.settings.isMultiple && Array.isArray(selectedOptions) && this.settings.limit <= selectedOptions.length) {
+      if (
+        this.settings.isMultiple &&
+        Array.isArray(selectedOptions) &&
+        this.settings.maxSelected <= selectedOptions.length
+      ) {
         return
       }
 

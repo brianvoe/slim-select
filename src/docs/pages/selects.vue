@@ -15,7 +15,6 @@ export default defineComponent({
         { abv: 'CO', state: 'Colorado' },
         { abv: 'CT', state: 'Connecticut' },
         { abv: 'DE', state: 'Delaware' },
-        { abv: 'DC', state: 'District Of Columbia' },
         { abv: 'FL', state: 'Florida' },
         { abv: 'GA', state: 'Georgia' },
         { abv: 'HI', state: 'Hawaii' },
@@ -71,6 +70,7 @@ export default defineComponent({
     }
   },
   mounted() {
+    // Single
     new SlimSelect({
       select: '#single',
     })
@@ -78,6 +78,7 @@ export default defineComponent({
       select: '#single-group',
     })
 
+    // Multiple
     new SlimSelect({
       select: '#multiple',
     })

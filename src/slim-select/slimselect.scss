@@ -13,6 +13,27 @@
   --ss-spacing-s: 4px;
 }
 
+@keyframes ss-scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes ss-scaleOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
 .ss-main {
   position: relative;
   display: inline-block;
@@ -20,7 +41,7 @@
   color: var(--ss-font-color);
   width: 100%;
 
-  .ss-single-selected {
+  .ss-single {
     display: flex;
     cursor: pointer;
     width: 100%;
@@ -115,7 +136,7 @@
     }
   }
 
-  .ss-multi-selected {
+  .ss-multi {
     display: flex;
     flex-direction: row;
     cursor: pointer;
@@ -162,7 +183,7 @@
       flex: 1 1 100%;
       width: calc(100% - 30px);
 
-      .ss-disabled {
+      .ss-placeholder {
         display: flex;
         padding: 4px 5px;
         margin: 2px 0px;
@@ -175,27 +196,6 @@
         white-space: nowrap;
       }
 
-      @keyframes scaleIn {
-        0% {
-          transform: scale(0);
-          opacity: 0;
-        }
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-      @keyframes scaleOut {
-        0% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(0);
-          opacity: 0;
-        }
-      }
-
       .ss-value {
         display: flex;
         user-select: none;
@@ -206,13 +206,13 @@
         color: var(--ss-bg-color);
         background-color: var(--ss-primary-color);
         border-radius: var(--ss-border-radius);
-        animation-name: scaleIn;
+        animation-name: ss-scaleIn;
         animation-duration: 0.2s;
         animation-timing-function: ease-out;
         animation-fill-mode: both;
 
         &.ss-out {
-          animation-name: scaleOut;
+          animation-name: ss-scaleOut;
           animation-duration: 0.2s;
           animation-timing-function: ease-out;
         }
@@ -256,6 +256,7 @@
     }
   }
 }
+
 .ss-content {
   position: absolute;
   width: 100%;

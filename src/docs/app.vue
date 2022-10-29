@@ -24,7 +24,7 @@ export default defineComponent({
     }
 
     const slim = new SlimSelect({
-      select: '#select-nav',
+      select: this.$refs.selectNav as HTMLSelectElement,
       data: this.navData,
       settings: {
         showSearch: false,
@@ -83,7 +83,7 @@ export default defineComponent({
         <a href="https://www.npmjs.com/package/slim-select" target="_blank">
           <img src="images/npm.png" />
         </a>
-        <select id="select-nav"></select>
+        <select ref="selectNav"></select>
       </div>
     </div>
     <div class="main">

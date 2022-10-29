@@ -32,7 +32,8 @@ export default class Settings {
   public valuesUseText: boolean
   public showOptionTooltips: boolean
   public selectByGroup: boolean
-  public limit: number
+  public minSelected: number
+  public maxSelected: number
   public timeoutDelay: number
 
   constructor(settings?: SettingsPartial) {
@@ -65,7 +66,8 @@ export default class Settings {
     this.valuesUseText = settings.valuesUseText || false
     this.showOptionTooltips = settings.showOptionTooltips || false
     this.selectByGroup = settings.selectByGroup || false
-    this.limit = settings.limit || 1000
+    this.minSelected = settings.minSelected || 0
+    this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200
   }
 }

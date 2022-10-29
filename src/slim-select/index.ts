@@ -168,6 +168,12 @@ export default class SlimSelect {
     this.render.setSelected()
   }
 
+  public setData(data: DataArrayPartial): void {
+    this.store.setData(data)
+    this.select.updateOptions(this.store.getData())
+    this.render.renderOptions(this.store.getData())
+  }
+
   public addOption(option: OptionOptional): void {
     // Add option to store
     this.store.addOption(option)
@@ -226,7 +232,6 @@ export default class SlimSelect {
     }, this.settings.timeoutDelay)
   }
 
-  // Close content section
   public close(): void {
     // Dont do anything if the content is already closed
     if (!this.settings.isOpen) {
@@ -297,17 +302,15 @@ export default class SlimSelect {
   }
 
   // Event listener for window scrolling
-  private windowScroll: (e: Event) => void = debounce((e: Event) => {
+  private windowScroll: (e: Event) => void = debounce(() => {
     if (!this.settings.isOpen) {
       return
     }
 
     // Determine where to put the content
-    if (this.render.putContent(this.selectEl, this.settings.isOpen) === 'up') {
-      this.settings.contentPosition = 'up'
+    if (this.render.putContent(this.render.content, this.settings.isOpen) === 'up') {
       this.render.moveContentAbove()
     } else {
-      this.settings.contentPosition = 'down'
       this.render.moveContentBelow()
     }
   })

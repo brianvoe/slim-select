@@ -6,10 +6,10 @@ export default defineComponent({
   name: 'Home',
   mounted() {
     new SlimSelect({
-      select: '#slim-single-select',
+      select: this.$refs.slimSingle as HTMLSelectElement,
     })
     new SlimSelect({
-      select: '#slim-multi-select',
+      select: this.$refs.slimMulti as HTMLSelectElement,
     })
   },
 })
@@ -111,7 +111,7 @@ export default defineComponent({
     <div class="samples">
       <div class="single">
         <h2>Single Select</h2>
-        <select id="slim-single-select">
+        <select ref="slimSingle">
           <option value="best">Best</option>
           <option value="select" selected="true">Select</option>
           <option value="ever">Ever</option>
@@ -119,7 +119,7 @@ export default defineComponent({
       </div>
       <div class="multi">
         <h2>Multi Select</h2>
-        <select id="slim-multi-select" multiple>
+        <select ref="slimMulti" multiple>
           <option value="best">Best</option>
           <option value="select" selected="true">Select</option>
           <option value="ever">Ever</option>
