@@ -1,0 +1,41 @@
+<script lang="ts">
+import { defineComponent } from 'vue'
+import SlimSelect from '../../../slim-select'
+
+export default defineComponent({
+  name: 'ShowTooltip',
+  mounted() {
+    new SlimSelect({
+      select: '#showOptionTooltips',
+      settings: {
+        showOptionTooltips: true,
+      },
+    })
+  },
+})
+</script>
+
+<template>
+  <div class="content">
+    <h2 class="header">showOptionTooltips</h2>
+    <p>
+      showOptionTooltips option is used to active displaying the on-hover tooltips for select options. The tooltip text
+      is equal to the option text content.
+    </p>
+
+    <select id="showOptionTooltips">
+      <option value="value1">Value 1</option>
+      <option value="value2">Value 2</option>
+      <option value="value3">Value 3</option>
+    </select>
+
+    <pre>
+      <code class="language-javascript">
+        new SlimSelect({
+          select: '#showOptionTooltips',
+          showOptionTooltips: true
+        })
+      </code>
+    </pre>
+  </div>
+</template>
