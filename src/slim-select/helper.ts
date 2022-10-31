@@ -24,7 +24,7 @@ export function hasClassInTree(element: HTMLElement, className: string) {
   return hasClass(element, className) || parentByClass(element, className)
 }
 
-export function debounce(func: (...params: any[]) => void, wait = 100, immediate = false): () => void {
+export function debounce(func: (...params: any[]) => void, wait = 50, immediate = false): () => void {
   let timeout: any
   return function (this: any, ...args: any[]) {
     const context = self
