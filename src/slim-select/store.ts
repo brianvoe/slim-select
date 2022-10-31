@@ -74,6 +74,11 @@ export class Option {
     this.style = option.style || ''
     this.data = option.data || {}
     this.mandatory = option.mandatory || false
+
+    // If no value is set, set the value to the text
+    if (!this.value) {
+      this.value = this.text
+    }
   }
 }
 
