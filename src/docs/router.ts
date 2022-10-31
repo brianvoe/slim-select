@@ -20,9 +20,9 @@ const router = createRouter({
       component: () => import(/* webpackChunkName: "selects" */ './pages/selects.vue'),
     },
     {
-      path: '/options',
-      name: 'Options',
-      component: () => import(/* webpackChunkName: "options" */ './pages/options.vue'),
+      path: '/settings',
+      name: 'Settings',
+      component: () => import(/* webpackChunkName: "settings" */ './pages/settings/index.vue'),
     },
     {
       path: '/methods',
