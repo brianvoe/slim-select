@@ -19,6 +19,7 @@ export interface Config {
 
 export interface Events {
   fetch?: (value: string, func: (data: DataArrayPartial) => void) => void
+  searchFilter?: (opt: Option, search: string) => boolean
   addable?: (value: string) => OptionOptional | string
   beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean
   afterChange?: (newVal: DataArray) => void
@@ -40,6 +41,9 @@ export default class SlimSelect {
   // Events
   public events = {
     fetch: undefined,
+    searchFilter: (opt: Option, search: string) => {
+      return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+    },
     addable: undefined,
     beforeOnChange: undefined,
     onChange: undefined,
@@ -102,7 +106,7 @@ export default class SlimSelect {
       addSelected: this.addSelected.bind(this),
       setSelected: this.setSelected.bind(this),
       addOption: this.addOption.bind(this),
-      search: (search: string) => {},
+      search: this.search.bind(this),
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange,
       beforeDelete: (before: DataArray, after: DataArray) => {
@@ -120,6 +124,9 @@ export default class SlimSelect {
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', this.documentClick)
+
+    // Add window resize listener to moveContent if window size changes
+    window.addEventListener('resize', this.windowResize, false)
 
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
@@ -223,7 +230,7 @@ export default class SlimSelect {
       this.settings.isOpen = true
 
       // Focus on input field
-      this.render.focusSearchInput(true)
+      this.render.search.input.focus()
 
       // Run afterOpen callback
       if (this.events.afterOpen) {
@@ -255,7 +262,7 @@ export default class SlimSelect {
     // Reset the content below
     setTimeout(() => {
       // After content is closed lets blur on the input field
-      this.render.focusSearchInput(false)
+      this.render.search.input.blur()
 
       // Run afterClose callback
       if (this.events.afterClose) {
@@ -271,7 +278,9 @@ export default class SlimSelect {
       return
     }
 
-    this.render.search.input.value = value
+    if (this.render.search.input.value !== value) {
+      this.render.search.input.value = value
+    }
 
     // If not fetch run regular search
     if (!this.events.fetch) {
@@ -296,10 +305,20 @@ export default class SlimSelect {
   public destroy(): void {
     document.removeEventListener('click', this.documentClick)
 
+    window.removeEventListener('resize', this.windowResize, false)
+
     if (this.settings.contentPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
   }
+
+  private windowResize: (e: Event) => void = debounce(() => {
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    this.render.moveContent()
+  })
 
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce(() => {

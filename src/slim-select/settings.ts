@@ -1,5 +1,4 @@
 import { generateID } from './helper'
-import { Option } from './store'
 
 export type SettingsPartial = Partial<Settings>
 
@@ -21,15 +20,14 @@ export default class Settings {
   public searchText: string
   public searchingText: string
   public searchHighlight: boolean
-  public searchFilter: (opt: Option, search: string) => boolean
   public closeOnSelect: boolean
   public contentPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
   public allowDeselectOption: boolean
-  public hideSelectedOption: boolean
+  public hideSelected: boolean
   public deselectLabel: string
-  public valuesUseText: boolean
+  public useHtml: boolean
   public showOptionTooltips: boolean
   public selectByGroup: boolean
   public minSelected: number
@@ -45,27 +43,22 @@ export default class Settings {
     this.style = settings.style || ''
     this.class = settings.class || []
 
-    this.isEnabled = settings.isEnabled || true
-    this.showSearch = settings.showSearch || true
+    this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true
+    this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'
     this.searchText = settings.searchText || 'No Results'
     this.searchingText = settings.searchingText || 'Searching...'
-    this.searchHighlight = settings.searchHighlight || false
-    this.searchFilter =
-      settings.searchFilter ||
-      ((opt: Option, search: string) => {
-        return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
-      })
-    this.closeOnSelect = settings.closeOnSelect || true
+    this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false
+    this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
     this.contentPosition = settings.contentPosition || 'auto' // options: auto, up, down
     this.placeholderText = settings.placeholderText || 'Select Value'
-    this.allowDeselect = settings.allowDeselect || false
-    this.allowDeselectOption = settings.allowDeselectOption || false
-    this.hideSelectedOption = settings.hideSelectedOption || false
+    this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
+    this.allowDeselectOption = settings.allowDeselectOption !== undefined ? settings.allowDeselectOption : false
+    this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
     this.deselectLabel = settings.deselectLabel || 'x'
-    this.valuesUseText = settings.valuesUseText || false
-    this.showOptionTooltips = settings.showOptionTooltips || false
-    this.selectByGroup = settings.selectByGroup || false
+    this.useHtml = settings.useHtml !== undefined ? settings.useHtml : false
+    this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false
+    this.selectByGroup = settings.selectByGroup !== undefined ? settings.selectByGroup : false
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200

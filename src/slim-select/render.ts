@@ -155,10 +155,7 @@ export default class Slim {
     )
 
     // move the content in to the right location
-    const containerRect = this.main.getBoundingClientRect()
-    this.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
-    this.content.style.left = containerRect.left + window.scrollX + 'px'
-    this.content.style.width = containerRect.width + 'px'
+    this.moveContent()
     this.content.classList.add(this.classes.open)
 
     // Render the options
@@ -252,7 +249,7 @@ export default class Slim {
 
     // Placeholder text
     const placeholder: HTMLSpanElement = document.createElement('span')
-    placeholder.classList.add('placeholder')
+    placeholder.classList.add(this.classes.placeholder)
     container.appendChild(placeholder)
 
     // Deselect
@@ -313,18 +310,39 @@ export default class Slim {
       return
     }
 
-    const selected = this.store.getSelectedOptions()
+    const selected = this.store.filter((o: Option): boolean => {
+      return o.selected && !o.placeholder
+    }, false) as Option[]
     const selectedSingle = selected.length > 0 ? selected[0] : null
 
     // If nothing is seleected use settings placeholder text
     if (!selectedSingle) {
-      this.single.placeholder.innerHTML = this.settings.placeholderText
+      // Figure out if there is a placeholder option
+      const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+
+      // If there is a placeholder option use that
+      // If useHtml and html is set, use that
+      // If useHtml is false and text is set, use that
+      // If nothing is set, use the placeholder text
+      let placeholderText = this.settings.placeholderText
+      if (placeholderOption.length) {
+        if (this.settings.useHtml && placeholderOption[0].html !== '') {
+          this.single.placeholder.innerHTML = placeholderOption[0].html
+        }
+        if (!this.settings.useHtml && placeholderOption[0].text !== '') {
+          this.single.placeholder.innerHTML = placeholderOption[0].text
+        }
+      }
+
+      this.single.placeholder.innerHTML = placeholderText
+      this.single.placeholder.classList.add(this.classes.disabled)
       return
     }
 
     // If there is a selected value, set the text to the placeholder
     this.single.placeholder.innerHTML =
-      selectedSingle.html && !this.settings.valuesUseText ? selectedSingle.html : selectedSingle.text
+      selectedSingle.html && !this.settings.useHtml ? selectedSingle.html : selectedSingle.text
+    this.single.placeholder.classList.remove(this.classes.disabled)
   }
 
   // Based upon current selection/settings hide/show deselect
@@ -403,9 +421,13 @@ export default class Slim {
 
     // If selectedOptions is empty set placeholder
     if (selectedOptions.length === 0) {
+      // Figure out if there is a placeholder option
+      const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+
+      // Create placeholder
       const placeholder = document.createElement('span')
       placeholder.classList.add(this.classes.placeholder)
-      placeholder.innerHTML = this.settings.placeholderText
+      placeholder.innerHTML = placeholderOption.length ? placeholderOption[0].text : this.settings.placeholderText
       this.multiple.values.innerHTML = placeholder.outerHTML
       return
     } else {
@@ -464,14 +486,14 @@ export default class Slim {
     value.classList.add(this.classes.value)
     value.dataset.id = option.id
 
-    const text = document.createElement('span')
+    const text = document.createElement('div')
     text.classList.add(this.classes.valueText)
-    text.innerHTML = option.html && this.settings.valuesUseText !== true ? option.html : option.text
+    text.innerHTML = option.html && this.settings.useHtml !== true ? option.html : option.text
     value.appendChild(text)
 
     // Only add deletion if the option is not mandatory
     if (!option.mandatory) {
-      const deleteSpan = document.createElement('span')
+      const deleteSpan = document.createElement('div')
       deleteSpan.classList.add(this.classes.valueDelete)
       deleteSpan.innerHTML = this.settings.deselectLabel
       deleteSpan.onclick = (e) => {
@@ -481,9 +503,9 @@ export default class Slim {
         // By Default we will delete
         let shouldDelete = true
         const before = this.store.getSelected()
-        const after = this.store.getSelected().filter((o) => {
-          return o.id !== option.id
-        })
+        const after = this.store.filter((o) => {
+          return o.selected && o.id !== option.id
+        }, true)
 
         // If there is a beforeDeselect function run it
         if (this.callbacks.beforeDelete) {
@@ -518,6 +540,13 @@ export default class Slim {
     const container = document.createElement('div')
     container.classList.add(this.classes.content)
     return container
+  }
+
+  public moveContent(): void {
+    const containerRect = this.main.getBoundingClientRect()
+    this.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+    this.content.style.left = containerRect.left + window.scrollX + 'px'
+    this.content.style.width = containerRect.width + 'px'
   }
 
   public searchDiv(): Search {
@@ -671,32 +700,7 @@ export default class Slim {
     return searchReturn
   }
 
-  public focusSearchInput(focus: boolean) {
-    if (focus) {
-      this.search.input.focus()
-    } else {
-      this.search.input.blur()
-    }
-  }
-
-  public highlight(str: string, search: any, className: string) {
-    // the completed string will be itself if already set, otherwise, the string that was passed in
-    let completedString: any = str
-    const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
-
-    // If the regex doesn't match the string just exit
-    if (!str.match(regex)) {
-      return str
-    }
-
-    // Otherwise, get to highlighting
-    const matchStartPosition = (str.match(regex) as any).index
-    const matchEndPosition = matchStartPosition + (str.match(regex) as any)[0].toString().length
-    const originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition)
-    completedString = completedString.replace(regex, `<mark class="${className}">${originalTextFoundByRegex}</mark>`)
-    return completedString
-  }
-
+  // highlightUp is used to highlight the previous option in the list
   public highlightUp(): void {
     const highlighted = this.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
     let prev: HTMLDivElement | null = null
@@ -745,6 +749,7 @@ export default class Slim {
     }
   }
 
+  // highlightDown is used to highlight the next option in the list
   public highlightDown(): void {
     const highlighted = this.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
     let next = null
@@ -898,8 +903,9 @@ export default class Slim {
     optionEl.dataset.id = option.id
 
     // Set option content
-    if (this.settings.searchHighlight && option.html && this.search.input.value.trim() !== '') {
-      optionEl.innerHTML = this.highlight(option.html, this.search.input.value, this.classes.searchHighlighter)
+    if (this.settings.searchHighlight && this.search.input.value.trim() !== '') {
+      const textOrHtml = this.settings.useHtml ? option.html : option.text
+      optionEl.innerHTML = this.highlight(textOrHtml, this.search.input.value, this.classes.searchHighlighter)
     } else if (option.html && option.html !== '') {
       optionEl.innerHTML = option.html
     } else {
@@ -912,12 +918,15 @@ export default class Slim {
     }
 
     // If allowed to deselect, null onclick and add disabled
-    if (option.selected || (option.disabled && !this.settings.allowDeselectOption)) {
+    if (
+      (option.selected && !this.settings.allowDeselectOption) ||
+      (option.disabled && !this.settings.allowDeselectOption)
+    ) {
       optionEl.classList.add(this.classes.disabled)
     }
 
     // If option is selected and hideSelectedOption is true, hide it
-    if (option.selected && this.settings.hideSelectedOption) {
+    if (option.selected && this.settings.hideSelected) {
       optionEl.classList.add(this.classes.hide)
     }
 
@@ -968,7 +977,13 @@ export default class Slim {
 
       // If single
       if (!this.settings.isMultiple) {
-        after = [option]
+        if (option.selected) {
+          // If selected after would remove
+          after = []
+        } else {
+          // If not selected after would add
+          after = [option]
+        }
       }
 
       // If no beforeOnChange is set automatically update at end
@@ -995,6 +1010,24 @@ export default class Slim {
     })
 
     return optionEl
+  }
+
+  private highlight(str: string, search: any, className: string) {
+    // the completed string will be itself if already set, otherwise, the string that was passed in
+    let completedString: any = str
+    const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
+
+    // If the regex doesn't match the string just exit
+    if (!str.match(regex)) {
+      return str
+    }
+
+    // Otherwise, get to highlighting
+    const matchStartPosition = (str.match(regex) as any).index
+    const matchEndPosition = matchStartPosition + (str.match(regex) as any)[0].toString().length
+    const originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition)
+    completedString = completedString.replace(regex, `<mark class="${className}">${originalTextFoundByRegex}</mark>`)
+    return completedString
   }
 
   public moveContentAbove(): void {
