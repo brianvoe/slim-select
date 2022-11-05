@@ -24,9 +24,7 @@ export default class Settings {
   public contentPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
-  public allowDeselectOption: boolean
   public hideSelected: boolean
-  public deselectLabel: string
   public useHtml: boolean
   public showOptionTooltips: boolean
   public selectByGroup: boolean
@@ -53,9 +51,7 @@ export default class Settings {
     this.contentPosition = settings.contentPosition || 'auto' // options: auto, up, down
     this.placeholderText = settings.placeholderText || 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
-    this.allowDeselectOption = settings.allowDeselectOption !== undefined ? settings.allowDeselectOption : false
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
-    this.deselectLabel = settings.deselectLabel || 'x'
     this.useHtml = settings.useHtml !== undefined ? settings.useHtml : false
     this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false
     this.selectByGroup = settings.selectByGroup !== undefined ? settings.selectByGroup : false

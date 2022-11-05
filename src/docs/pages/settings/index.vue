@@ -25,12 +25,12 @@ export default defineComponent({
   components: {
     Select,
     Data,
-    DataAttributes,
     Placeholder,
     Deselect,
     Display,
     Mandatory,
     MinMax,
+    DataAttributes,
     Css,
     Styles,
     Html,
@@ -65,39 +65,22 @@ export default defineComponent({
 <template>
   <div id="settings">
     <Select />
-
     <Data />
-
-    <DataAttributes />
-
     <Search />
-
     <Placeholder />
-
     <Deselect />
-
     <Display />
-
     <Mandatory />
-
     <MinMax />
-
+    <DataAttributes />
     <Css />
-
     <Styles />
-
     <Html />
-
     <Search />
-
     <CloseOnSelect />
-
     <ContentPosition />
-
     <ShowTooltip />
-
     <SelectByGroup />
-
     <HideSelected />
   </div>
 </template>

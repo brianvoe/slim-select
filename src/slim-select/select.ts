@@ -170,12 +170,13 @@ export default class Select {
       text: option.text,
       html: option.innerHTML,
       selected: option.selected,
+      display: option.style.display === 'none' ? false : true,
       disabled: option.disabled,
+      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
       placeholder: option.dataset.placeholder === 'true',
       class: option.className,
       style: option.style.cssText,
       data: option.dataset,
-      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
     } as Option
   }
 
@@ -235,11 +236,11 @@ export default class Select {
     if (info.selected) {
       optionEl.selected = info.selected
     }
-    if (info.display === false) {
-      optionEl.style.display = 'none'
-    }
     if (info.disabled) {
       optionEl.disabled = true
+    }
+    if (info.display === false) {
+      optionEl.style.display = 'none'
     }
     if (info.placeholder) {
       optionEl.setAttribute('data-placeholder', 'true')

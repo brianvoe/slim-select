@@ -1,51 +1,61 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'Search',
   mounted() {
-    new SlimSelect({ select: this.$refs.showSearchSingle as HTMLSelectElement, settings: { showSearch: false } })
+    // Single
+    new SlimSelect({
+      select: this.$refs.showSearchSingle as HTMLSelectElement,
+      settings: {
+        showSearch: false,
+      },
+    })
     new SlimSelect({
       select: this.$refs.searchTextSingle as HTMLSelectElement,
       settings: {
-        searchText: 'Sorry nothing to see here',
-      },
-      events: {
-        beforeOpen: () => {
-          console.log('beforeOpen')
-        },
-        beforeClose: () => {
-          console.log('beforeClose')
-        },
-        afterOpen: () => {
-          console.log('afterOpen')
-        },
-        afterClose: () => {
-          console.log('afterClose')
-        },
+        searchText: 'Sorry, nothing to see here',
       },
     })
     new SlimSelect({
       select: this.$refs.searchPlaceholderSingle as HTMLSelectElement,
-      settings: { searchPlaceholder: 'Search for the good stuff!' },
+      settings: {
+        searchPlaceholder: 'Search for the good stuff!',
+      },
     })
     new SlimSelect({
       select: this.$refs.searchHighlightSingle as HTMLSelectElement,
-      settings: { searchHighlight: true },
+      settings: {
+        searchHighlight: true,
+      },
     })
-    new SlimSelect({ select: this.$refs.showSearchMulti as HTMLSelectElement, settings: { showSearch: false } })
+
+    // Multiple
+    new SlimSelect({
+      select: this.$refs.showSearchMulti as HTMLSelectElement,
+      settings: {
+        showSearch: false,
+      },
+    })
     new SlimSelect({
       select: this.$refs.searchTextMulti as HTMLSelectElement,
-      settings: { searchText: 'Sorry nothing to see here' },
+      settings: {
+        searchText: 'Sorry nothing to see here',
+      },
     })
     new SlimSelect({
       select: this.$refs.searchPlaceholderMulti as HTMLSelectElement,
-      settings: { searchPlaceholder: 'Search for the good stuff!' },
+      settings: {
+        searchPlaceholder: 'Search for the good stuff!',
+      },
     })
     new SlimSelect({
       select: this.$refs.searchHighlightMulti as HTMLSelectElement,
-      settings: { searchHighlight: true },
+      settings: {
+        searchHighlight: true,
+      },
     })
   },
 })
@@ -54,16 +64,20 @@ export default defineComponent({
 <template>
   <div class="content">
     <h2 class="header">showSearch / searchText / searchingText / searchHighlight</h2>
-    <p>showSearch is a boolean value that will decide whether or not to show the search. Default is true.</p>
-    <p>searchText is a string value that will show in the event there are no results. Default is 'No Results'.</p>
-    <p>searchingText is a string value that will show during an ajax request. Default is 'Searching...'.</p>
+    <p><b>showSearch</b> - is a boolean value that will decide whether or not to show the search. Default is true.</p>
     <p>
-      searchPlaceholder is a string value that will set the value of the input search placeholder text. Default is
-      'Search'.
+      <b>searchText</b> - is a string value that will show in the event there are no results. Default is 'No Results'.
     </p>
-    <p>searchHighlight is a boolean value that will highlight search results. Default is false.</p>
+    <p>
+      <b>searchingText</b> - is a string value that will show during an fetch search request. Default is 'Searching...'.
+    </p>
+    <p>
+      <b>searchPlaceholder</b> - is a string value that will set the value of the input search placeholder text. Default
+      is 'Search'.
+    </p>
+    <p><b>searchHighlight</b> - is a boolean value that will highlight search results. Default is false.</p>
 
-    <div class="set-content">
+    <div class="set-content" style="padding: 0 0 10px 0">
       <select ref="showSearchSingle">
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
@@ -112,7 +126,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         let slim = new SlimSelect({
-          select: '#search',
+          select: '.element .you #want',
           settings: {
             showSearch: false,
             searchText: 'Sorry nothing to see here',

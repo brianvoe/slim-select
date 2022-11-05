@@ -40,11 +40,11 @@ export interface OptionOptional {
   selected?: boolean
   display?: boolean
   disabled?: boolean
+  mandatory?: boolean
   placeholder?: boolean
   class?: string
   style?: string
   data?: { [key: string]: string }
-  mandatory?: boolean
 }
 
 export class Option {
@@ -66,14 +66,14 @@ export class Option {
     this.value = option.value || ''
     this.text = option.text || ''
     this.html = option.html || ''
-    this.selected = option.selected || false
-    this.display = option.display || true
-    this.disabled = option.disabled || false
-    this.placeholder = option.placeholder || false
+    this.selected = option.selected !== undefined ? option.selected : false
+    this.display = option.display !== undefined ? option.display : true
+    this.disabled = option.disabled !== undefined ? option.disabled : false
+    this.mandatory = option.mandatory !== undefined ? option.mandatory : false
+    this.placeholder = option.placeholder !== undefined ? option.placeholder : false
     this.class = option.class || ''
     this.style = option.style || ''
     this.data = option.data || {}
-    this.mandatory = option.mandatory || false
 
     // If no value is set, set the value to the text
     if (!this.value) {

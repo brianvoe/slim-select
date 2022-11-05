@@ -1,16 +1,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SlimSelect from '../../slim-select'
 
 export default defineComponent({
   name: 'Home',
   mounted() {
-    new SlimSelect({
-      select: this.$refs.slimSingle as HTMLSelectElement,
-    })
-    new SlimSelect({
-      select: this.$refs.slimMulti as HTMLSelectElement,
-    })
+    // new SlimSelect({
+    //   select: this.$refs.slimSingle as HTMLSelectElement,
+    // })
+    // new SlimSelect({
+    //   select: this.$refs.slimMulti as HTMLSelectElement,
+    // })
   },
 })
 </script>

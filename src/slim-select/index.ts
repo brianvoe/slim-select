@@ -88,7 +88,7 @@ export default class SlimSelect {
     // Set select class
     this.select = new Select(this.selectEl)
     this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class)
-    this.select.hideUI()
+    this.select.hideUI() // Hide the original select element
 
     // Set store class
     this.store = new Store(config.data ? config.data : this.select.getData())
@@ -103,7 +103,6 @@ export default class SlimSelect {
       open: this.open.bind(this),
       close: this.close.bind(this),
       addable: this.events.addable ? this.events.addable : undefined,
-      addSelected: this.addSelected.bind(this),
       setSelected: this.setSelected.bind(this),
       addOption: this.addOption.bind(this),
       search: this.search.bind(this),
@@ -119,7 +118,7 @@ export default class SlimSelect {
 
     // Add render after original select element
     if (this.selectEl.parentNode) {
-      this.selectEl.parentNode.insertBefore(this.render.main, this.selectEl.nextSibling)
+      this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling)
     }
 
     // Add onclick listener to document to closeContent if clicked outside
@@ -164,7 +163,7 @@ export default class SlimSelect {
     return this.store.getSelectedOptions()
   }
 
-  public setSelected(value: string | string[]): void {
+  public setSelected(value: string | string[], close: boolean = true): void {
     // Update the store
     this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
 
@@ -173,11 +172,21 @@ export default class SlimSelect {
 
     // Update the render
     this.render.setSelected()
+
+    // Close the content
+    if (close) {
+      this.close()
+    }
   }
 
   public setData(data: DataArrayPartial): void {
+    // Update the store
     this.store.setData(data)
+
+    // Update original select element
     this.select.updateOptions(this.store.getData())
+
+    // Update the render
     this.render.renderOptions(this.store.getData())
   }
 
@@ -191,19 +200,6 @@ export default class SlimSelect {
 
     // Update the render
     this.render.renderOptions(data)
-  }
-
-  public addSelected(value: string): void {
-    // Update the store
-    let selectedValues = this.store.getSelectedValues()
-    selectedValues.push(value)
-    this.store.setSelectedBy('value', selectedValues)
-
-    // Update the select element
-    this.select.setSelected(this.store.getSelectedValues())
-
-    // Update the render
-    this.render.setSelected()
   }
 
   public open(): void {
@@ -230,7 +226,7 @@ export default class SlimSelect {
       this.settings.isOpen = true
 
       // Focus on input field
-      this.render.search.input.focus()
+      this.render.content.search.input.focus()
 
       // Run afterOpen callback
       if (this.events.afterOpen) {
@@ -262,7 +258,7 @@ export default class SlimSelect {
     // Reset the content below
     setTimeout(() => {
       // After content is closed lets blur on the input field
-      this.render.search.input.blur()
+      this.render.content.search.input.blur()
 
       // Run afterClose callback
       if (this.events.afterClose) {
@@ -278,8 +274,8 @@ export default class SlimSelect {
       return
     }
 
-    if (this.render.search.input.value !== value) {
-      this.render.search.input.value = value
+    if (this.render.content.search.input.value !== value) {
+      this.render.content.search.input.value = value
     }
 
     // If not fetch run regular search
@@ -310,6 +306,12 @@ export default class SlimSelect {
     if (this.settings.contentPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
+
+    // Remove the render
+    this.render.destroy()
+
+    // Show the original select element
+    this.select.showUI()
   }
 
   private windowResize: (e: Event) => void = debounce(() => {
@@ -322,12 +324,15 @@ export default class SlimSelect {
 
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce(() => {
+    // If the content is not open, there is no need to move it
     if (!this.settings.isOpen) {
       return
     }
 
+    console.log(this.render.putContent(this.render.content.main, this.settings.isOpen))
+
     // Determine where to put the content
-    if (this.render.putContent(this.render.content, this.settings.isOpen) === 'up') {
+    if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
       this.render.moveContentAbove()
     } else {
       this.render.moveContentBelow()
@@ -337,7 +342,9 @@ export default class SlimSelect {
   // Event listener for document click
   private documentClick: (e: Event) => void = (e: Event) => {
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
-      this.close()
+      if (this.settings.isOpen) {
+        this.close()
+      }
     }
   }
 }

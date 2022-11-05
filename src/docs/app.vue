@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect, { Option } from '../slim-select'
 
 export default defineComponent({
@@ -27,7 +28,7 @@ export default defineComponent({
       select: this.$refs.selectNav as HTMLSelectElement,
       data: this.navData,
       settings: {
-        showSearch: false,
+        // showSearch: false,
       },
       events: {
         afterChange: (newVal) => {
@@ -46,29 +47,6 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-#app {
-  .select-nav {
-    .ss-single-selected {
-      position: relative;
-      z-index: 2000;
-
-      .placeholder {
-        font-weight: bold;
-      }
-    }
-
-    .ss-content {
-      box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-
-      .ss-option {
-        font-weight: bold;
-      }
-    }
-  }
-}
-</style>
-
 <template>
   <div id="app">
     <div class="header">
@@ -83,7 +61,7 @@ export default defineComponent({
         <a href="https://www.npmjs.com/package/slim-select" target="_blank">
           <img src="images/npm.png" />
         </a>
-        <select ref="selectNav"></select>
+        <select ref="selectNav" style="font-weight: bold"></select>
       </div>
     </div>
     <div class="main">

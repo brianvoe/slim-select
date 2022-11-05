@@ -5,7 +5,9 @@ export function generateID(): string {
 
 export function hasClassInTree(element: HTMLElement, className: string) {
   function hasClass(e: HTMLElement, c: string) {
-    if (!(!c || !e || !e.classList || !e.classList.contains(c))) {
+    if (c && e && e.classList && e.classList.contains(c)) {
+      return e
+    } else if (c && e && e.dataset && e.dataset.id && e.dataset.id === className) {
       return e
     }
     return null

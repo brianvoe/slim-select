@@ -1,25 +1,26 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'Mandatory',
   mounted() {
     const mandatorySelect = new SlimSelect({
-      select: '#selectMultiMandatory',
+      select: this.$refs.selectMultiMandatory as HTMLSelectElement,
     })
 
     const mandatoryData = [
-      { value: 'A', text: 'A', mandatory: true },
-      { value: 'B', text: 'B' },
-      { value: 'C', text: 'C' },
+      { value: 'value1', text: 'Value 1', mandatory: true },
+      { value: 'value2', text: 'Value 2' },
+      { value: 'value3', text: 'Value 3' },
     ]
 
     mandatorySelect.setData(mandatoryData)
-    mandatorySelect.setSelected(['A', 'C'])
+    mandatorySelect.setSelected(['value1', 'value3'])
 
     new SlimSelect({
-      select: '#selectMultiMandatory2',
+      select: this.$refs.selectMultiMandatory2 as HTMLSelectElement,
     })
   },
 })
@@ -34,58 +35,57 @@ export default defineComponent({
     </p>
 
     <div class="set-content">
-      <select id="selectMultiMandatory" multiple></select>
+      <select ref="selectMultiMandatory" multiple></select>
     </div>
 
     <pre>
-    <code class="language-javascript">
+      <code class="language-javascript">
         const slim = new SlimSelect({
-            select: '#selectMultiMandatory'
+          select: '.element .you #want'
         });
 
         const data = [
-            { value: 'A', text: 'A', mandatory: true },
-            { value: 'B', text: 'B' },
-            { value: 'C', text: 'C' }
+          { value: 'value1', text: 'Value 1', mandatory: true },
+          { value: 'value2', text: 'Value 2' },
+          { value: 'value3', text: 'Value 3' },
         ]
 
         slim.setData(data)
-        slim.set(["A", "C"])
-    </code>
+        slim.set(["value1", "value3"])
+      </code>
     </pre>
 
     <pre>
-    <code class="language-html">
-        &lt;select id="selectMultiMandatory" multiple&gt;
-        &lt;/select&gt;
-    </code>
+      <code class="language-html">
+        &lt;select id="selectMultiMandatory" multiple&gt;&lt;/select&gt;
+      </code>
     </pre>
 
     <p>Or</p>
     <div class="set-content">
-      <select id="selectMultiMandatory2" multiple>
-        <option value="A" data-mandatory="true" selected>A</option>
-        <option value="B" selected>B</option>
-        <option value="C">C</option>
+      <select ref="selectMultiMandatory2" multiple>
+        <option value="value1" data-mandatory="true" selected>Value 1</option>
+        <option value="value2" selected>Value 2</option>
+        <option value="value3">Value 3</option>
       </select>
     </div>
 
     <pre>
-    <code class="language-javascript">
+      <code class="language-javascript">
         const slim = new SlimSelect({
-            select: '#selectMultiMandatory2'
+          select: '.element .you #want'
         });
-    </code>
+      </code>
     </pre>
 
     <pre>
-    <code class="language-html">
+      <code class="language-html">
         &lt;select id="selectMultiMandatory" multiple&gt;
-        &lt;option value="A" data-mandatory="true" selected&gt;A&lt;/option&gt;
-        &lt;option value="B" selected&gt;B&lt;/option&gt;
-        &lt;option value="C"&gt;C&lt;/option&gt;
+          &lt;option value="value1" data-mandatory="true" selected&gt;Value 1&lt;/option&gt;
+          &lt;option value="value2" selected&gt;Value 2&lt;/option&gt;
+          &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
-    </code>
+      </code>
     </pre>
   </div>
 </template>

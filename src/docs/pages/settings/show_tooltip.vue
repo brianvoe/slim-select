@@ -1,12 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'ShowTooltip',
   mounted() {
     new SlimSelect({
-      select: '#showOptionTooltips',
+      select: this.$refs.showOptionTooltips as HTMLSelectElement,
       settings: {
         showOptionTooltips: true,
       },
@@ -23,7 +24,7 @@ export default defineComponent({
       is equal to the option text content.
     </p>
 
-    <select id="showOptionTooltips">
+    <select ref="showOptionTooltips">
       <option value="value1">Value 1</option>
       <option value="value2">Value 2</option>
       <option value="value3">Value 3</option>

@@ -1,12 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'DataAttributes',
   mounted() {
-    new SlimSelect({ select: '#optionsSingle' })
-    new SlimSelect({ select: '#optionsMultiple' })
+    new SlimSelect({ select: this.$refs.optionsSingle as HTMLSelectElement })
+    new SlimSelect({ select: this.$refs.optionsMultiple as HTMLSelectElement })
   },
 })
 </script>
@@ -20,14 +21,14 @@ export default defineComponent({
     </p>
 
     <div class="set-content">
-      <select id="optionsSingle">
+      <select ref="optionsSingle">
         <option data-placeholder="true"></option>
         <option value="value1" data-info="Here is info">Data Attributes</option>
         <option value="value2" disabled>Disabled Option</option>
         <option value="value3" class="green">Class Green</option>
         <option value="value4" style="color: purple">Inline Style</option>
       </select>
-      <select id="optionsMultiple" multiple>
+      <select ref="optionsMultiple" multiple>
         <option value="value1" data-info="Here is info">Data Attributes</option>
         <option value="value2" disabled>Disabled Option</option>
         <option value="value3" class="green">Class Green</option>

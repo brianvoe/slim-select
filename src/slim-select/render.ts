@@ -5,8 +5,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => OptionOptional | string
-  addSelected: (value: string) => void
-  setSelected: (value: string[]) => void
+  setSelected: (value: string[], close: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   fetch?: (value: string, func: (info: any) => void) => void
@@ -15,27 +14,34 @@ export interface Callbacks {
   beforeDelete?: (neVal: DataArray, oldVal: DataArray) => boolean
 }
 
-export interface Single {
-  container: HTMLDivElement
-  placeholder: HTMLSpanElement
-  deselect: HTMLSpanElement
-  arrowIcon: {
-    container: HTMLSpanElement
-    arrow: HTMLSpanElement
+export interface Main {
+  main: HTMLDivElement
+  values: HTMLDivElement
+  deselect: {
+    main: HTMLDivElement
+    svg: SVGSVGElement
+    path: SVGPathElement
+  }
+  arrow: {
+    main: SVGSVGElement
+    path: SVGPathElement
   }
 }
 
-export interface Multiple {
-  container: HTMLDivElement
-  values: HTMLDivElement
-  add: HTMLDivElement
-  plus: HTMLSpanElement
+export interface Content {
+  main: HTMLDivElement
+  search: Search
+  list: HTMLDivElement
 }
 
 export interface Search {
-  container: HTMLDivElement
+  main: HTMLDivElement
   input: HTMLInputElement
-  addable?: HTMLDivElement
+  addable?: {
+    main: HTMLDivElement
+    svg: SVGSVGElement
+    path: SVGPathElement
+  }
 }
 
 export default class Slim {
@@ -44,40 +50,56 @@ export default class Slim {
   public callbacks: Callbacks
 
   // Elements
-  public main: HTMLDivElement
-  public single: Single | null = null
-  public multiple: Multiple | null = null
-  public content: HTMLDivElement
-  public search: Search
-  public list: HTMLDivElement
+  public main: Main
+  public content: Content
 
   // Classes
   public classes = {
+    // Main
     main: 'ss-main',
-    singleSelected: 'ss-single',
-    multiSelected: 'ss-multi',
+    openAbove: 'ss-open-above',
+    openBelow: 'ss-open-below',
+
+    // Placeholder
     placeholder: 'ss-placeholder',
-    arrow: 'ss-arrow',
-    add: 'ss-add',
-    plus: 'ss-plus',
+
+    // Values
     values: 'ss-values',
+    single: 'ss-single',
     value: 'ss-value',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
+    valueOut: 'ss-value-out',
+
+    // Deselect
+    deselect: 'ss-deselect',
+    deselectPath: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
+
+    // Arrow
+    arrow: 'ss-arrow',
+    arrowClose: 'M10,30 L50,70 L90,30', // Not a class but whatever
+    arrowOpen: 'M10,70 L50,30 L90,70', // Not a class but whatever
+
+    // Content
     content: 'ss-content',
     open: 'ss-open',
-    openAbove: 'ss-open-above',
-    openBelow: 'ss-open-below',
+
+    // Search
     search: 'ss-search',
     searchHighlighter: 'ss-search-highlight',
     addable: 'ss-addable',
+
+    // List options
     list: 'ss-list',
     optgroup: 'ss-optgroup',
     optgroupLabel: 'ss-optgroup-label',
-    optgroupLabelSelectable: 'ss-optgroup-label-selectable',
+    optgroupSelectable: 'ss-optgroup-selectable',
     option: 'ss-option',
     optionSelected: 'ss-option-selected',
+    optionDelete: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
     highlighted: 'ss-highlighted',
+
+    // Misc
     disabled: 'ss-disabled',
     hide: 'ss-hide',
   }
@@ -89,74 +111,43 @@ export default class Slim {
 
     this.main = this.mainDiv()
     this.content = this.contentDiv()
-    this.search = this.searchDiv()
-    this.list = this.listDiv()
 
-    // Setup single or multiple
-    this.single = null
-    this.multiple = null
-    if (this.settings.isMultiple) {
-      this.multiple = this.multipleDiv()
-      this.main.appendChild(this.multiple.container)
-    } else {
-      this.single = this.singleDiv()
-      this.main.appendChild(this.single.container)
-    }
-
-    // Render the placeholder
+    // Render the placeholder and options
     this.setSelected()
 
     // Add content to body
-    this.content.classList.add(this.settings.id)
-    document.body.appendChild(this.content)
-
-    // Add search and list to content
-    this.content.appendChild(this.search.container)
-    this.content.appendChild(this.list)
+    document.body.appendChild(this.content.main)
   }
 
   // Remove disabled classes
   public enable(): void {
     // Set search input to "enabled"
-    this.search.input.disabled = false
+    this.content.search.input.disabled = false
 
     // Remove disabled class
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.remove(this.classes.disabled)
-    } else if (this.single) {
-      this.single.container.classList.remove(this.classes.disabled)
-    }
+    this.main.main.classList.remove(this.classes.disabled)
   }
 
   // Set disabled classes
   public disable(): void {
     // Set search input to disabled
-    this.search.input.disabled = true
+    this.content.search.input.disabled = true
 
     // Add disabled class
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.add(this.classes.disabled)
-    } else if (this.single) {
-      this.single.container.classList.add(this.classes.disabled)
-    }
+    this.main.main.classList.add(this.classes.disabled)
   }
 
   public open(): void {
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.plus.classList.add('ss-cross')
-    } else if (this.single) {
-      this.single.arrowIcon.arrow.classList.remove('arrow-down')
-      this.single.arrowIcon.arrow.classList.add('arrow-up')
-    }
+    this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
 
-    // Add class to single/multiple container
-    this[this.settings.isMultiple ? 'multiple' : 'single']!.container.classList.add(
+    // Add class to main container
+    this.main.main.classList.add(
       this.settings.contentPosition === 'up' ? this.classes.openAbove : this.classes.openBelow,
     )
 
     // move the content in to the right location
     this.moveContent()
-    this.content.classList.add(this.classes.open)
+    this.content.main.classList.add(this.classes.open)
 
     // Render the options
     this.renderOptions(this.store.getData())
@@ -168,7 +159,7 @@ export default class Slim {
       this.moveContentBelow()
     } else {
       // Auto identify where to put it
-      if (this.putContent(this.content, this.settings.isOpen) === 'up') {
+      if (this.putContent(this.content.main, this.settings.isOpen) === 'up') {
         this.moveContentAbove()
       } else {
         this.moveContentBelow()
@@ -179,111 +170,52 @@ export default class Slim {
     const selectedOptions = this.store.getSelectedOptions()
     if (selectedOptions.length) {
       const selectedId = selectedOptions[selectedOptions.length - 1].id
-      const selectedOption = this.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
+      const selectedOption = this.content.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
       if (selectedOption) {
-        this.ensureElementInView(this.list, selectedOption)
+        this.ensureElementInView(this.content.list, selectedOption)
       }
     }
   }
 
   public close(): void {
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.remove(this.classes.openAbove)
-      this.multiple.container.classList.remove(this.classes.openBelow)
-      this.multiple.plus.classList.remove('ss-cross')
-    } else if (this.single) {
-      this.single.container.classList.remove(this.classes.openAbove)
-      this.single.container.classList.remove(this.classes.openBelow)
-      this.single.arrowIcon.arrow.classList.add('arrow-down')
-      this.single.arrowIcon.arrow.classList.remove('arrow-up')
-    }
-    this.content.classList.remove(this.classes.open)
-
-    // Clear out the style after closing animation
-    setTimeout(() => {
-      this.content.removeAttribute('style')
-    }, 200)
+    this.main.main.classList.remove(this.classes.openAbove)
+    this.main.main.classList.remove(this.classes.openBelow)
+    this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
+    this.content.main.classList.remove(this.classes.open)
   }
 
   public setSelected(): void {
-    if (this.settings.isMultiple && this.multiple) {
-      // Multiple needs to just update the values display
-      this.multipleValues()
-    }
-
-    if (!this.settings.isMultiple && this.single) {
-      this.singlePlaceholder()
-    }
+    // Render the values
+    this.renderValues()
 
     // Render the options
     this.renderOptions(this.store.getData())
   }
 
-  public mainDiv(): HTMLDivElement {
+  public mainDiv(): Main {
     // Create main container
-    const container = document.createElement('div') as HTMLDivElement
+    const main = document.createElement('div')
 
     // Add style and classes
-    container.style.cssText = this.settings.style || ''
+    main.style.cssText = this.settings.style !== '' ? this.settings.style : ''
 
     // Clear out classlist
-    container.className = ''
+    main.className = ''
 
     // Loop through config class and add
-    container.classList.add(this.settings.id)
-    container.classList.add(this.classes.main)
+    main.classList.add(this.settings.id)
+    main.classList.add(this.classes.main)
     if (this.settings.class) {
       for (const c of this.settings.class) {
         if (c.trim() !== '') {
-          container.classList.add(c.trim())
+          main.classList.add(c.trim())
         }
       }
     }
 
-    return container
-  }
-
-  public singleDiv(): Single {
-    const container: HTMLDivElement = document.createElement('div')
-    container.classList.add(this.classes.singleSelected)
-
-    // Placeholder text
-    const placeholder: HTMLSpanElement = document.createElement('span')
-    placeholder.classList.add(this.classes.placeholder)
-    container.appendChild(placeholder)
-
-    // Deselect
-    const deselect = document.createElement('span')
-    deselect.innerHTML = this.settings.deselectLabel
-    deselect.classList.add('ss-deselect')
-    deselect.onclick = (e: Event) => {
-      e.stopPropagation()
-
-      // Dont do anything if disabled
-      if (!this.settings.isEnabled) {
-        return
-      }
-
-      this.callbacks.setSelected([''])
-    }
-    container.appendChild(deselect)
-
-    // If allow deselect is false, hide the deselect button
-    if (!this.settings.allowDeselect) {
-      deselect.style.display = 'none'
-    }
-
-    // Arrow
-    const arrowContainer: HTMLSpanElement = document.createElement('span')
-    arrowContainer.classList.add(this.classes.arrow)
-    const arrowIcon = document.createElement('span')
-    arrowIcon.classList.add('arrow-down')
-    arrowContainer.appendChild(arrowIcon)
-    container.appendChild(arrowContainer)
-
-    // Add onclick for container selector div
-    container.onclick = (e: Event) => {
-      e.stopPropagation()
+    // Add onclick for main div
+    main.onclick = (e: Event) => {
+      // e.stopPropagation()
 
       // Dont do anything if disabled
       if (!this.settings.isEnabled) {
@@ -293,23 +225,99 @@ export default class Slim {
       this.settings.isOpen ? this.callbacks.close() : this.callbacks.open()
     }
 
+    // Add values
+    const values = document.createElement('div')
+    values.classList.add(this.classes.values)
+    main.appendChild(values)
+
+    // Add deselect
+    const deselect = document.createElement('div')
+    deselect.classList.add(this.classes.deselect)
+    if (!this.settings.allowDeselect || this.settings.isMultiple) {
+      deselect.classList.add(this.classes.hide)
+    }
+    deselect.onclick = (e: Event) => {
+      e.stopPropagation()
+
+      // Dont do anything if disabled
+      if (!this.settings.isEnabled) {
+        return
+      }
+
+      this.callbacks.setSelected([''], false)
+    }
+
+    // Add deselect svg
+    const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    deselectSvg.setAttribute('viewBox', '0 0 100 100')
+    const deselectPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    deselectPath.setAttribute('d', this.classes.deselectPath)
+    deselectSvg.appendChild(deselectPath)
+    deselect.appendChild(deselectSvg)
+    main.appendChild(deselect)
+
+    // Add arrow
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    arrow.classList.add(this.classes.arrow)
+    arrow.setAttribute('viewBox', '0 0 100 100')
+    const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    arrowPath.setAttribute('d', this.classes.arrowClose)
+    arrow.appendChild(arrowPath)
+    main.appendChild(arrow)
+
     return {
-      container,
-      placeholder,
-      deselect,
-      arrowIcon: {
-        container: arrowContainer,
-        arrow: arrowIcon,
+      main: main,
+      values: values,
+      deselect: {
+        main: deselect,
+        svg: deselectSvg,
+        path: deselectPath,
+      },
+      arrow: {
+        main: arrow,
+        path: arrowPath,
       },
     }
   }
 
-  // Based upon current selection set placeholder text
-  public singlePlaceholder(): void {
-    if (!this.single) {
+  public placeholder(): HTMLDivElement {
+    // Figure out if there is a placeholder option
+    const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+
+    // If there is a placeholder option use that
+    // If useHtml and html is set, use that
+    // If useHtml is false and text is set, use that
+    // If nothing is set, use the placeholder text
+    let placeholderText = this.settings.placeholderText
+    if (placeholderOption.length) {
+      if (this.settings.useHtml && placeholderOption[0].html !== '') {
+        placeholderText = placeholderOption[0].html
+      }
+      if (!this.settings.useHtml && placeholderOption[0].text !== '') {
+        placeholderText = placeholderOption[0].text
+      }
+    }
+
+    // Create placeholder div
+    const placeholder = document.createElement('div')
+    placeholder.classList.add(this.classes.placeholder)
+    placeholder.innerHTML = placeholderText
+    return placeholder
+  }
+
+  // Get selected values and append to multiSelected values container
+  // and remove those who shouldnt exist
+  public renderValues(): void {
+    // If single select set placeholder or selected value
+    if (!this.settings.isMultiple) {
+      this.renderSingleValue()
       return
     }
 
+    this.renderMultipleValues()
+  }
+
+  private renderSingleValue(): void {
     const selected = this.store.filter((o: Option): boolean => {
       return o.selected && !o.placeholder
     }, false) as Option[]
@@ -317,122 +325,40 @@ export default class Slim {
 
     // If nothing is seleected use settings placeholder text
     if (!selectedSingle) {
-      // Figure out if there is a placeholder option
-      const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+      this.main.values.innerHTML = this.placeholder().outerHTML
+    } else {
+      // Create single value container
+      const singleValue = document.createElement('div')
+      singleValue.classList.add(this.classes.single)
+      singleValue.innerHTML = selectedSingle.html && !this.settings.useHtml ? selectedSingle.html : selectedSingle.text
 
-      // If there is a placeholder option use that
-      // If useHtml and html is set, use that
-      // If useHtml is false and text is set, use that
-      // If nothing is set, use the placeholder text
-      let placeholderText = this.settings.placeholderText
-      if (placeholderOption.length) {
-        if (this.settings.useHtml && placeholderOption[0].html !== '') {
-          this.single.placeholder.innerHTML = placeholderOption[0].html
-        }
-        if (!this.settings.useHtml && placeholderOption[0].text !== '') {
-          this.single.placeholder.innerHTML = placeholderOption[0].text
-        }
-      }
-
-      this.single.placeholder.innerHTML = placeholderText
-      this.single.placeholder.classList.add(this.classes.disabled)
-      return
-    }
-
-    // If there is a selected value, set the text to the placeholder
-    this.single.placeholder.innerHTML =
-      selectedSingle.html && !this.settings.useHtml ? selectedSingle.html : selectedSingle.text
-    this.single.placeholder.classList.remove(this.classes.disabled)
-  }
-
-  // Based upon current selection/settings hide/show deselect
-  public singleDeselect(): void {
-    if (!this.single) {
-      return
-    }
-
-    if (!this.settings.allowDeselect) {
-      this.single.deselect.classList.add('ss-hide')
-      return
+      // If there is a selected value, set a single div
+      this.main.values.innerHTML = singleValue.outerHTML
     }
 
     // If allowDeselect is false or selected value is empty just hide deslect
-    if (!this.settings.allowDeselect || !this.store.getSelectedOptions().length) {
-      this.single.deselect.classList.add('ss-hide')
+    if (!this.settings.allowDeselect || !selected.length) {
+      this.main.deselect.main.classList.add(this.classes.hide)
     } else {
-      this.single.deselect.classList.remove('ss-hide')
+      this.main.deselect.main.classList.remove(this.classes.hide)
     }
   }
 
-  public multipleDiv(): Multiple {
-    const container = document.createElement('div')
-    container.classList.add(this.classes.multiSelected)
-
-    const values = document.createElement('div')
-    values.classList.add(this.classes.values)
-    container.appendChild(values)
-
-    const add = document.createElement('div')
-    add.classList.add(this.classes.add)
-    const plus = document.createElement('span')
-    plus.classList.add(this.classes.plus)
-    plus.onclick = (e) => {
-      e.stopPropagation()
-
-      // If its open close it
-      if (this.settings.isOpen) {
-        this.callbacks.close()
-      }
-    }
-    add.appendChild(plus)
-    container.appendChild(add)
-
-    container.onclick = (e: Event) => {
-      if (!this.settings.isEnabled) {
-        return
-      }
-
-      // Open only if you are not clicking on x text
-      const target = e.target as HTMLDivElement
-      if (!target.classList.contains(this.classes.valueDelete)) {
-        this.settings.isOpen ? this.callbacks.close() : this.callbacks.open()
-      }
-    }
-
-    return {
-      container,
-      values,
-      add,
-      plus,
-    }
-  }
-
-  // Get selected values and append to multiSelected values container
-  // and remove those who shouldnt exist
-  public multipleValues(): void {
-    if (!this.multiple) {
-      return
-    }
-
+  private renderMultipleValues(): void {
     // Get various peices of data
-    let currentNodes = this.multiple.values.childNodes as NodeListOf<HTMLDivElement>
-    let selectedOptions = this.store.getSelectedOptions()
-    let selectedIDs = this.store.getSelectedIDs()
+    let currentNodes = this.main.values.childNodes as NodeListOf<HTMLDivElement>
+    let selectedOptions = this.store.filter((opt: Option) => {
+      // Only grab options that are selected and display is true
+      return opt.selected && opt.display
+    }, false) as Option[]
 
     // If selectedOptions is empty set placeholder
     if (selectedOptions.length === 0) {
-      // Figure out if there is a placeholder option
-      const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
-
-      // Create placeholder
-      const placeholder = document.createElement('span')
-      placeholder.classList.add(this.classes.placeholder)
-      placeholder.innerHTML = placeholderOption.length ? placeholderOption[0].text : this.settings.placeholderText
-      this.multiple.values.innerHTML = placeholder.outerHTML
+      this.main.values.innerHTML = this.placeholder().outerHTML
       return
     } else {
       // If there is a placeholder, remove it
-      const placeholder = this.multiple.values.querySelector('.' + this.classes.placeholder)
+      const placeholder = this.main.values.querySelector('.' + this.classes.placeholder)
       if (placeholder) {
         placeholder.remove()
       }
@@ -443,23 +369,29 @@ export default class Slim {
     for (let i = 0; i < currentNodes.length; i++) {
       const node = currentNodes[i]
       const id = node.getAttribute('data-id')
-      if (id && selectedIDs.indexOf(id) === -1) {
-        removeNodes.push(node)
+      if (id) {
+        // Check if id is in selectedOptions
+        const found = selectedOptions.filter((opt: Option) => {
+          return opt.id === id
+        }, false)
+
+        // If not found, add to removeNodes
+        if (!found.length) {
+          removeNodes.push(node)
+        }
       }
     }
 
     // Loop through and remove
     for (const n of removeNodes) {
-      n.classList.add('ss-out')
+      n.classList.add(this.classes.valueOut)
       setTimeout(() => {
-        if (this.multiple) {
-          this.multiple.values.removeChild(n)
-        }
+        this.main.values.removeChild(n)
       }, 100)
     }
 
     // Add values that dont currently exist
-    currentNodes = this.multiple.values.childNodes as NodeListOf<HTMLDivElement>
+    currentNodes = this.main.values.childNodes as NodeListOf<HTMLDivElement>
     for (let d = 0; d < selectedOptions.length; d++) {
       let shouldAdd = true
       for (let i = 0; i < currentNodes.length; i++) {
@@ -471,17 +403,17 @@ export default class Slim {
       // If shouldAdd, insertAdjacentElement it to the values container in the order of the selectedOptions
       if (shouldAdd) {
         if (currentNodes.length === 0) {
-          this.multiple.values.appendChild(this.multipleValueDiv(selectedOptions[d]))
+          this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
         } else if (d === 0) {
-          this.multiple.values.insertBefore(this.multipleValueDiv(selectedOptions[d]), currentNodes[d])
+          this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
         } else {
-          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValueDiv(selectedOptions[d]))
+          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
         }
       }
     }
   }
 
-  public multipleValueDiv(option: Option): HTMLDivElement {
+  public multipleValue(option: Option): HTMLDivElement {
     const value = document.createElement('div')
     value.classList.add(this.classes.value)
     value.dataset.id = option.id
@@ -493,10 +425,9 @@ export default class Slim {
 
     // Only add deletion if the option is not mandatory
     if (!option.mandatory) {
-      const deleteSpan = document.createElement('div')
-      deleteSpan.classList.add(this.classes.valueDelete)
-      deleteSpan.innerHTML = this.settings.deselectLabel
-      deleteSpan.onclick = (e) => {
+      const deleteDiv = document.createElement('div')
+      deleteDiv.classList.add(this.classes.valueDelete)
+      deleteDiv.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -506,6 +437,11 @@ export default class Slim {
         const after = this.store.filter((o) => {
           return o.selected && o.id !== option.id
         }, true)
+
+        // Check if minSelected is set and if after length so, return
+        if (this.settings.minSelected && after.length < this.settings.minSelected) {
+          return
+        }
 
         // If there is a beforeDeselect function run it
         if (this.callbacks.beforeDelete) {
@@ -526,55 +462,93 @@ export default class Slim {
               selectedValues.push(o.value)
             }
           }
-          this.callbacks.setSelected(selectedValues)
+          this.callbacks.setSelected(selectedValues, this.settings.closeOnSelect)
         }
       }
 
-      value.appendChild(deleteSpan)
+      // Add delete svg
+      const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+      deleteSvg.setAttribute('viewBox', '0 0 100 100')
+      const deletePath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      deletePath.setAttribute('d', this.classes.optionDelete)
+      deleteSvg.appendChild(deletePath)
+      deleteDiv.appendChild(deleteSvg)
+
+      value.appendChild(deleteDiv)
     }
 
     return value
   }
 
-  public contentDiv(): HTMLDivElement {
-    const container = document.createElement('div')
-    container.classList.add(this.classes.content)
-    return container
+  public contentDiv(): Content {
+    const main = document.createElement('div')
+    main.classList.add(this.classes.content)
+
+    // Add id to data-id
+    main.dataset.id = this.settings.id
+
+    // Add styles
+    if (this.settings.style !== '') {
+      main.style.cssText = this.settings.style
+    }
+
+    // Add classes
+    if (this.settings.class.length) {
+      for (const c of this.settings.class) {
+        if (c.trim() !== '') {
+          main.classList.add(c.trim())
+        }
+      }
+    }
+
+    // Add search
+    const search = this.searchDiv()
+    main.appendChild(search.main)
+
+    // Add list
+    const list = this.listDiv()
+    main.appendChild(list)
+
+    return {
+      main: main,
+      search: search,
+      list: list,
+    }
   }
 
   public moveContent(): void {
-    const containerRect = this.main.getBoundingClientRect()
-    this.content.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
-    this.content.style.left = containerRect.left + window.scrollX + 'px'
-    this.content.style.width = containerRect.width + 'px'
+    const containerRect = this.main.main.getBoundingClientRect()
+    this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+    this.content.main.style.left = containerRect.left + window.scrollX + 'px'
+    this.content.main.style.width = containerRect.width + 'px'
   }
 
   public searchDiv(): Search {
-    const container = document.createElement('div')
+    const main = document.createElement('div')
     const input = document.createElement('input')
     const addable = document.createElement('div')
-    container.classList.add(this.classes.search)
+    main.classList.add(this.classes.search)
 
     // Setup search return object
     const searchReturn: Search = {
-      container,
+      main,
       input,
     }
 
     // We still want the search to be tabable but not shown
     if (!this.settings.showSearch) {
-      container.classList.add(this.classes.hide)
+      main.classList.add(this.classes.hide)
       input.readOnly = true
     }
 
     input.type = 'search'
     input.placeholder = this.settings.searchPlaceholder
-    input.tabIndex = 0
+    input.tabIndex = -1
     input.setAttribute('aria-label', this.settings.searchPlaceholder)
     input.setAttribute('autocapitalize', 'off')
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
-    input.onclick = (e) => {
+    input.onclick = (e: MouseEvent) => {
       setTimeout(() => {
         const target = e.target as HTMLInputElement
         if (target.value === '') {
@@ -616,7 +590,7 @@ export default class Slim {
           e.stopPropagation()
           return
         }
-        const highlighted = this.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+        const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
         if (highlighted) {
           highlighted.click()
         }
@@ -642,12 +616,16 @@ export default class Slim {
 
       this.callbacks.open()
     }
-    container.appendChild(input)
+    main.appendChild(input)
 
     // If addable is enabled, add the addable div
     if (this.callbacks.addable) {
       addable.classList.add(this.classes.addable)
-      addable.innerHTML = '+'
+      const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+      plus.setAttribute('viewBox', '0 0 100 100')
+      const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      plus.appendChild(plusPath)
+      addable.appendChild(plus)
       addable.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
@@ -655,9 +633,9 @@ export default class Slim {
           return
         }
 
-        const inputValue = this.search.input.value.trim()
+        const inputValue = this.content.search.input.value.trim()
         if (inputValue === '') {
-          this.search.input.focus()
+          this.content.search.input.focus()
           return
         }
 
@@ -678,7 +656,7 @@ export default class Slim {
         }
 
         // Add option to selected
-        this.callbacks.setSelected([inputValue])
+        this.callbacks.setSelected([inputValue], this.settings.closeOnSelect)
 
         // Clear search
         this.callbacks.search('')
@@ -691,10 +669,14 @@ export default class Slim {
           }, 100)
         }
       }
-      container.appendChild(addable)
+      main.appendChild(addable)
 
       // Add the addable to the search return
-      searchReturn.addable = addable
+      searchReturn.addable = {
+        main: addable,
+        svg: plus,
+        path: plusPath,
+      }
     }
 
     return searchReturn
@@ -702,7 +684,7 @@ export default class Slim {
 
   // highlightUp is used to highlight the previous option in the list
   public highlightUp(): void {
-    const highlighted = this.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+    const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
     let prev: HTMLDivElement | null = null
     if (highlighted) {
       prev = highlighted.previousSibling as HTMLDivElement
@@ -715,7 +697,9 @@ export default class Slim {
         }
       }
     } else {
-      const allOptions = this.list.querySelectorAll('.' + this.classes.option + ':not(.' + this.classes.disabled + ')')
+      const allOptions = this.content.list.querySelectorAll(
+        '.' + this.classes.option + ':not(.' + this.classes.disabled + ')',
+      )
       prev = allOptions[allOptions.length - 1] as HTMLDivElement
     }
 
@@ -745,13 +729,13 @@ export default class Slim {
         highlighted.classList.remove(this.classes.highlighted)
       }
       prev.classList.add(this.classes.highlighted)
-      this.ensureElementInView(this.list, prev)
+      this.ensureElementInView(this.content.list, prev)
     }
   }
 
   // highlightDown is used to highlight the next option in the list
   public highlightDown(): void {
-    const highlighted = this.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+    const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
     let next = null
 
     if (highlighted) {
@@ -765,7 +749,7 @@ export default class Slim {
         }
       }
     } else {
-      next = this.list.querySelector(
+      next = this.content.list.querySelector(
         '.' + this.classes.option + ':not(.' + this.classes.disabled + ')',
       ) as HTMLDivElement
     }
@@ -789,23 +773,23 @@ export default class Slim {
         highlighted.classList.remove(this.classes.highlighted)
       }
       next.classList.add(this.classes.highlighted)
-      this.ensureElementInView(this.list, next)
+      this.ensureElementInView(this.content.list, next)
     }
   }
 
   // Create main container that options will reside
   public listDiv(): HTMLDivElement {
-    const list = document.createElement('div')
-    list.classList.add(this.classes.list)
-    list.setAttribute('role', 'listbox')
+    const options = document.createElement('div')
+    options.classList.add(this.classes.list)
+    options.setAttribute('role', 'listbox')
 
-    return list
+    return options
   }
 
   // Take in data and add options to
   public renderOptions(data: DataArray): void {
     // Clear out innerHtml
-    this.list.innerHTML = ''
+    this.content.list.innerHTML = ''
 
     // If ajax and isSearching
     if (this.callbacks.fetch && this.settings.isSearching) {
@@ -813,7 +797,7 @@ export default class Slim {
       searching.classList.add(this.classes.option)
       searching.classList.add(this.classes.disabled)
       searching.innerHTML = this.settings.searchingText
-      this.list.appendChild(searching)
+      this.content.list.appendChild(searching)
       return
     }
 
@@ -823,7 +807,7 @@ export default class Slim {
       noResults.classList.add(this.classes.option)
       noResults.classList.add(this.classes.disabled)
       noResults.innerHTML = this.settings.searchText
-      this.list.appendChild(noResults)
+      this.content.list.appendChild(noResults)
       return
     }
 
@@ -838,7 +822,7 @@ export default class Slim {
         const optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.classes.optgroupLabel)
         if (this.settings.selectByGroup && this.settings.isMultiple) {
-          optgroupLabel.classList.add(this.classes.optgroupLabelSelectable)
+          optgroupLabel.classList.add(this.classes.optgroupSelectable)
         }
         optgroupLabel.innerHTML = d.label
         optgroupEl.appendChild(optgroupLabel)
@@ -863,16 +847,16 @@ export default class Slim {
             })
           }
         }
-        this.list.appendChild(optgroupEl)
+        this.content.list.appendChild(optgroupEl)
       }
 
       if (d instanceof Option) {
-        this.list.appendChild(this.option(d as Option))
+        this.content.list.appendChild(this.option(d as Option))
       }
     }
   }
 
-  // Create single option
+  // Create option
   public option(option: Option): HTMLDivElement {
     // Add hidden placeholder
     if (option.placeholder) {
@@ -903,9 +887,9 @@ export default class Slim {
     optionEl.dataset.id = option.id
 
     // Set option content
-    if (this.settings.searchHighlight && this.search.input.value.trim() !== '') {
+    if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
       const textOrHtml = this.settings.useHtml ? option.html : option.text
-      optionEl.innerHTML = this.highlight(textOrHtml, this.search.input.value, this.classes.searchHighlighter)
+      optionEl.innerHTML = this.highlight(textOrHtml, this.content.search.input.value, this.classes.searchHighlighter)
     } else if (option.html && option.html !== '') {
       optionEl.innerHTML = option.html
     } else {
@@ -918,10 +902,7 @@ export default class Slim {
     }
 
     // If allowed to deselect, null onclick and add disabled
-    if (
-      (option.selected && !this.settings.allowDeselectOption) ||
-      (option.disabled && !this.settings.allowDeselectOption)
-    ) {
+    if ((option.selected && !this.settings.allowDeselect) || (option.disabled && !this.settings.allowDeselect)) {
       optionEl.classList.add(this.classes.disabled)
     }
 
@@ -946,7 +927,7 @@ export default class Slim {
       const elementID = String(element.dataset.id)
 
       // If the option is disabled or selected and the user isnt allowed to deselect
-      if (option.disabled || (option.selected && !this.settings.allowDeselectOption)) {
+      if (option.disabled || (option.selected && !this.settings.allowDeselect)) {
         return
       }
 
@@ -1000,7 +981,10 @@ export default class Slim {
 
       if (shouldUpdate) {
         // Get values from after and set as selected
-        this.callbacks.setSelected(after.map((o: Option) => o.value))
+        this.callbacks.setSelected(
+          after.map((o: Option) => o.value),
+          this.settings.closeOnSelect,
+        )
 
         // callback that the value has changed
         if (this.callbacks.afterChange) {
@@ -1010,6 +994,14 @@ export default class Slim {
     })
 
     return optionEl
+  }
+
+  public destroy(): void {
+    // Remove main
+    this.main.main.remove()
+
+    // Remove content
+    this.content.main.remove()
   }
 
   private highlight(str: string, search: any, className: string) {
@@ -1031,35 +1023,23 @@ export default class Slim {
   }
 
   public moveContentAbove(): void {
-    let selectHeight: number = 0
-    if (this.settings.isMultiple && this.multiple) {
-      selectHeight = this.multiple.container.offsetHeight
-    } else if (this.single) {
-      selectHeight = this.single.container.offsetHeight
-    }
-    const contentHeight = this.content.offsetHeight
-    const height = selectHeight + contentHeight - 1
-    this.content.style.margin = '-' + height + 'px 0 0 0'
-    this.content.style.height = height - selectHeight + 1 + 'px'
-    this.content.style.transformOrigin = 'center bottom'
+    let mainHeight: number = this.main.main.offsetHeight
 
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.remove(this.classes.openBelow)
-      this.multiple.container.classList.add(this.classes.openAbove)
-    } else if (this.single) {
-      this.single.container.classList.remove(this.classes.openBelow)
-      this.single.container.classList.add(this.classes.openAbove)
-    }
+    const contentHeight = this.content.main.offsetHeight
+    const height = mainHeight + contentHeight - 1
+    this.content.main.style.margin = '-' + height + 'px 0px 0px 0px'
+    this.content.main.style.transformOrigin = 'center bottom'
+
+    this.main.main.classList.remove(this.classes.openBelow)
+    this.main.main.classList.add(this.classes.openAbove)
   }
 
   public moveContentBelow(): void {
-    if (this.settings.isMultiple && this.multiple) {
-      this.multiple.container.classList.remove(this.classes.openAbove)
-      this.multiple.container.classList.add(this.classes.openBelow)
-    } else if (this.single) {
-      this.single.container.classList.remove(this.classes.openAbove)
-      this.single.container.classList.add(this.classes.openBelow)
-    }
+    this.content.main.style.margin = '-1px 0px 0px 0px'
+    this.content.main.style.transformOrigin = 'center top'
+
+    this.main.main.classList.remove(this.classes.openAbove)
+    this.main.main.classList.add(this.classes.openBelow)
   }
 
   public ensureElementInView(container: HTMLElement, element: HTMLElement): void {

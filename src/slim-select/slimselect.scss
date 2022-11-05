@@ -1,5 +1,7 @@
 :root {
-  --ss-height: 30px;
+  --ss-height-main: 30px;
+  --ss-height-content: 300px;
+  --ss-search-height: 30px;
   --ss-bg-color: #ffffff;
   --ss-font-color: #666666;
   --ss-font-placeholder-color: #8a8a8a;
@@ -7,10 +9,11 @@
   --ss-primary-color: #5897fb;
   --ss-border-color: #dcdee2;
   --ss-highlight-color: #fffb8c;
+  --ss-animation-timing: 0.2s;
   --ss-border-radius: 4px;
-  --ss-spacing-l: 8px;
-  --ss-spacing-m: 6px;
-  --ss-spacing-s: 4px;
+  --ss-spacing-l: 7px;
+  --ss-spacing-m: 5px;
+  --ss-spacing-s: 3px;
 }
 
 // Animation keyframes
@@ -37,226 +40,159 @@
 
 // Misc classes
 .ss-hide {
-  display: none;
+  display: none !important;
 }
 
 // Main container
 .ss-main {
+  display: flex;
+  flex-direction: row;
   position: relative;
-  display: inline-block;
   user-select: none;
   color: var(--ss-font-color);
   width: 100%;
+  min-height: var(--ss-height-main);
+  padding: var(--ss-spacing-s);
+  cursor: pointer;
+  border: 1px solid var(--ss-border-color);
+  border-radius: var(--ss-border-radius);
+  background-color: var(--ss-bg-color);
+  outline: 0;
+  box-sizing: border-box;
+  transition: background-color var(--ss-animation-timing);
 
-  .ss-single {
-    display: flex;
-    cursor: pointer;
-    width: 100%;
-    height: var(--ss-height);
-    padding: var(--ss-spacing-m);
-    border: 1px solid var(--ss-border-color);
-    border-radius: var(--ss-border-radius);
-    background-color: var(--ss-bg-color);
-    outline: 0;
-    box-sizing: border-box;
-    transition: background-color 0.2s;
+  &.ss-disabled {
+    background-color: var(--ss-border-color);
+    cursor: not-allowed;
 
-    &.ss-disabled {
-      background-color: var(--ss-border-color);
-      cursor: not-allowed;
-    }
-
-    &.ss-open-above {
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
-    }
-    &.ss-open-below {
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 0px;
-    }
-
-    .ss-placeholder {
-      display: flex;
-      flex: 1 1 100%;
-      align-items: center;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      text-align: left;
-      width: calc(100% - 30px);
-      line-height: 1em;
-      user-select: none;
-
-      * {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: auto;
+    .ss-values {
+      .ss-disabled {
+        color: var(--ss-font-color);
       }
 
-      &.ss-disabled {
-        color: var(--ss-disabled-color);
-      }
-    }
-
-    .ss-deselect {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      flex: 0 1 auto;
-      margin: 0 var(--ss-spacing-m) 0 var(--ss-spacing-m);
-      font-weight: bold;
-    }
-
-    .ss-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      flex: 0 1 auto;
-      margin: 0 var(--ss-spacing-m) 0 var(--ss-spacing-m);
-
-      span {
-        border: solid var(--ss-font-color);
-        border-width: 0 2px 2px 0;
-        display: inline-block;
-        padding: 3px;
-        transition: transform 0.2s, margin 0.2s;
-
-        &.arrow-up {
-          transform: rotate(-135deg);
-          margin: 3px 0 0 0;
-        }
-        &.arrow-down {
-          transform: rotate(45deg);
-          margin: -3px 0 0 0;
+      .ss-value {
+        .ss-value-delete {
+          cursor: not-allowed;
         }
       }
     }
   }
 
-  .ss-multi {
-    display: flex;
-    flex-direction: row;
-    cursor: pointer;
-    min-height: var(--ss-height);
-    width: 100%;
-    padding: 0 0 0 3px;
-    border: 1px solid var(--ss-border-color);
-    border-radius: var(--ss-border-radius);
-    background-color: var(--ss-bg-color);
-    outline: 0;
-    box-sizing: border-box;
-    transition: background-color 0.2s;
+  &.ss-open-above {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+  }
+  &.ss-open-below {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
 
-    &.ss-disabled {
-      background-color: var(--ss-border-color);
-      cursor: not-allowed;
+  .ss-values {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--ss-spacing-m);
+    flex: 1 1 100%;
 
-      .ss-values {
-        .ss-disabled {
-          color: var(--ss-font-color);
-        }
+    .ss-placeholder {
+      display: flex;
+      padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s) var(--ss-spacing-m);
+      margin: auto 0px auto 0px;
+      line-height: 1em;
+      align-items: center;
+      width: 100%;
+      color: var(--ss-disabled-color);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-        .ss-value {
-          .ss-value-delete {
-            cursor: not-allowed;
+    .ss-single {
+      display: flex;
+      margin: auto 0px auto var(--ss-spacing-s);
+    }
+
+    .ss-value {
+      display: flex;
+      user-select: none;
+      align-items: center;
+      width: fit-content;
+      font-size: 12px;
+      color: var(--ss-bg-color);
+      background-color: var(--ss-primary-color);
+      border-radius: var(--ss-border-radius);
+      animation-name: ss-scaleIn;
+      animation-duration: var(--ss-animation-timing);
+      animation-timing-function: ease-out;
+      animation-fill-mode: both;
+
+      &.ss-value-out {
+        animation-name: ss-scaleOut;
+        animation-duration: var(--ss-animation-timing);
+        animation-timing-function: ease-out;
+      }
+
+      .ss-value-text {
+        padding: var(--ss-spacing-s) var(--ss-spacing-m);
+      }
+
+      .ss-value-delete {
+        display: flex;
+        align-items: center;
+        width: var(--ss-spacing-l);
+        padding: var(--ss-spacing-s) var(--ss-spacing-m);
+        cursor: pointer;
+        border-left: solid 1px var(--ss-disabled-color);
+
+        svg {
+          path {
+            fill: none;
+            stroke: var(--ss-bg-color);
+            stroke-width: 18;
+            stroke-linecap: round;
+            stroke-linejoin: round;
           }
         }
       }
     }
+  }
 
-    &.ss-open-above {
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
-    }
-    &.ss-open-below {
-      border-bottom-left-radius: 0px;
-      border-bottom-right-radius: 0px;
-    }
+  .ss-deselect {
+    display: flex;
+    align-self: center;
+    justify-content: flex-end;
+    flex: 0 1 auto;
+    width: 8px;
+    height: 8px;
+    margin: 0 var(--ss-spacing-m) 0 var(--ss-spacing-m);
 
-    .ss-values {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      flex: 1 1 100%;
-      width: calc(100% - 30px);
-
-      .ss-placeholder {
-        display: flex;
-        padding: 4px 5px;
-        margin: 2px 0px;
-        line-height: 1em;
-        align-items: center;
-        width: 100%;
-        color: var(--ss-disabled-color);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .ss-value {
-        display: flex;
-        user-select: none;
-        align-items: center;
-        font-size: 12px;
-        margin: 3px 5px 3px 0px;
-        color: var(--ss-bg-color);
-        background-color: var(--ss-primary-color);
-        border-radius: var(--ss-border-radius);
-        animation-name: ss-scaleIn;
-        animation-duration: 0.2s;
-        animation-timing-function: ease-out;
-        animation-fill-mode: both;
-
-        &.ss-out {
-          animation-name: ss-scaleOut;
-          animation-duration: 0.2s;
-          animation-timing-function: ease-out;
-        }
-
-        .ss-value-text {
-          padding: 3px 5px;
-        }
-
-        .ss-value-delete {
-          padding: 3px 5px;
-          cursor: pointer;
-          border-left: solid 1px var(--ss-disabled-color);
-        }
+    svg {
+      path {
+        fill: none;
+        stroke: var(--ss-font-color);
+        stroke-width: 20;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
     }
+  }
 
-    .ss-add {
-      display: flex;
-      flex: 0 1 3px;
-      margin: 9px 12px 0 5px;
+  .ss-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 1 auto;
+    width: 12px;
+    height: 12px;
+    margin: auto var(--ss-spacing-m) auto var(--ss-spacing-m);
 
-      .ss-plus {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: var(--ss-font-color);
-        position: relative;
-        height: 10px;
-        width: 2px;
-        transition: transform 0.2s;
-
-        &:after {
-          background: var(--ss-font-color);
-          content: '';
-          position: absolute;
-          height: 2px;
-          width: 10px;
-          left: -4px;
-          top: 4px;
-        }
-
-        &.ss-cross {
-          transform: rotate(45deg);
-        }
-      }
+    path {
+      fill: none;
+      stroke: var(--ss-font-color);
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition-timing-function: ease-out;
+      transition: var(--ss-animation-timing);
     }
   }
 }
@@ -264,41 +200,28 @@
 // Content container
 .ss-content {
   position: absolute;
-  width: 100%;
-  margin: -1px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  max-height: var(--ss-height-content);
   box-sizing: border-box;
   border: solid 1px var(--ss-border-color);
-  z-index: 1010;
   background-color: var(--ss-bg-color);
   transform-origin: center top;
-  transition: transform 0.2s, opacity 0.2s;
+  transition: transform var(--ss-animation-timing), opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
 
   &.ss-open {
-    display: block;
     opacity: 1;
     transform: scaleY(1);
   }
 
   .ss-search {
+    flex: 0 1 auto;
     display: flex;
     flex-direction: row;
+    height: var(--ss-search-height);
     padding: var(--ss-spacing-l) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
-
-    &.ss-hide {
-      height: 0px;
-      opacity: 0;
-      padding: 0px 0px 0px 0px;
-      margin: 0px 0px 0px 0px;
-
-      input {
-        height: 0px;
-        opacity: 0;
-        padding: 0px 0px 0px 0px;
-        margin: 0px 0px 0px 0px;
-      }
-    }
 
     input {
       display: inline-flex;
@@ -307,7 +230,6 @@
       flex: 1 1 auto;
       width: 100%;
       min-width: 0px;
-      height: 30px;
       padding: var(--ss-spacing-m) var(--ss-spacing-l);
       margin: 0;
       border: 1px solid var(--ss-border-color);
@@ -316,7 +238,6 @@
       outline: 0;
       text-align: left;
       box-sizing: border-box;
-      -webkit-box-sizing: border-box;
 
       &::placeholder {
         color: var(--ss-font-placeholder-color);
@@ -333,39 +254,42 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      font-size: 22px;
-      font-weight: bold;
-      flex: 0 0 30px;
-      height: 30px;
-      margin: 0 0 0 8px;
+      flex: 0 0 var(--ss-search-height);
+      height: var(--ss-search-height);
+      margin: 0 0 0 var(--ss-spacing-l);
       border: 1px solid var(--ss-border-color);
       border-radius: var(--ss-border-radius);
-      box-sizing: border-box;
+
+      svg {
+        path {
+          fill: none;
+          stroke: var(--ss-font-color);
+          stroke-width: 18;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+      }
     }
   }
 
-  .ss-addable {
-    padding-top: 0px;
-  }
-
   .ss-list {
-    max-height: 200px;
+    flex: 1 1 auto;
+    height: auto;
     overflow-x: hidden;
     overflow-y: auto;
-    text-align: left;
 
     .ss-optgroup {
       .ss-optgroup-label {
-        padding: 6px 10px 6px 10px;
+        padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
         font-weight: bold;
       }
 
       .ss-option {
-        padding: 6px 6px 6px 25px;
+        padding: var(--ss-spacing-s) var(--ss-spacing-s) var(--ss-spacing-s) calc(var(--ss-spacing-l) * 3);
       }
     }
 
-    .ss-optgroup-label-selectable {
+    .ss-optgroup-selectable {
       cursor: pointer;
 
       &:hover {
@@ -375,13 +299,9 @@
     }
 
     .ss-option {
-      padding: 6px 10px 6px 10px;
+      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
       cursor: pointer;
       user-select: none;
-
-      * {
-        display: inline-block;
-      }
 
       &:hover,
       &.ss-highlighted {
