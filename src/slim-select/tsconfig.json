@@ -6,6 +6,6 @@
     "removeComments": true /* Do not emit comments to output. */,
     "importHelpers": true /* Import emit helpers from 'tslib'. */
   },
-  "include": ["**/*.ts", "../slim/select2.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["**/*.test.ts"]
 }

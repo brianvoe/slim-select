@@ -1,44 +1,43 @@
 a {
-  color: $primary-color;
+  color: var(--primary-color);
 
   &:hover {
-    color: $secondary-color;
+    color: var(--color-secondary);
   }
 }
 
-h1, h2, h3, h4, h5 {
-  margin: 0 0 10px 0;
-  padding: 0 0 5px 0;
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0 0 var(--spacing-half) 0;
+  padding: 0 0 var(--spacing-quarter) 0;
 }
 
 h2.header {
-  border-bottom: solid 1px $border-color;
+  border-bottom: solid 1px var(--color-border);
 }
 
 p {
-  margin: 0 0 10px 0;
-}
-
-::selection {
-  color: inherit;
-  background: $primary-color;
+  margin: 0 0 var(--spacing-half) 0;
 }
 
 .btn {
   display: inline-block;
-  color: $white;
+  color: var(--color-white);
   height: 20px;
   width: auto;
   max-width: 100%;
   min-width: auto;
-  padding: $spacing-quarter $spacing-half;
+  padding: var(--spacing-quarter) var(--spacing-half);
   cursor: pointer;
-  background-color: $primary-color;
+  background-color: var(--spacing-half);
   text-align: center;
   line-height: 18px;
   user-select: none;
   white-space: nowrap;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   vertical-align: middle;
   box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
   box-sizing: content-box;

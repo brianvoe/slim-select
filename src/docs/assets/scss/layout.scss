@@ -12,29 +12,29 @@ body {
   display: flex;
   justify-content: center;
   font-family: 'Montserrat', sans-serif, Helvetica;
-  font-size: 14px;
+  font-size: var(--font-size);
   padding: 0;
   margin: 0;
-  color: $font-color;
+  color: var(--color-font);
 
   #app {
     display: flex;
     flex-direction: column;
-    min-width: $min-width;
+    min-width: var(--min-width);
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
 
     > .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       flex: 0 1 auto;
-      color: #ffffff;
+      color: var(--color-white);
       margin: 0;
       padding: 15px 0 15px 0;
 
-      @media screen and (max-width: $max-width) {
-        padding: $spacing-half;
+      @media screen and (max-width: 800px) {
+        padding: var(--spacing-half);
       }
       @media screen and (max-width: 600px) {
         align-items: flex-start;
@@ -43,6 +43,7 @@ body {
 
       .text {
         flex: 1 1 100%;
+
         .logo {
           font-size: 40px;
           font-weight: 300;
@@ -57,9 +58,9 @@ body {
         display: flex;
         flex: 0 1 100%;
         width: 100%;
-        color: #666666;
+        color: var(--color-font);
         margin: 0 auto;
-        padding: 8px 0 0 0;
+        padding: var(--spacing-half) 0 0 0;
 
         a,
         img {
@@ -68,9 +69,9 @@ body {
 
         > * {
           flex: 0 1 auto;
-          margin: 0 0 0 8px;
+          margin: 0 0 0 var(--spacing-half);
 
-          @media screen and (max-width: $max-width) {
+          @media screen and (max-width: 800px) {
             &:first-child {
               margin: 0 0 0 0;
             }
@@ -83,38 +84,50 @@ body {
       flex: 0 1 auto;
       display: flex;
       flex-direction: column;
+      gap: var(--spacing-half);
+
+      .contents {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing);
+      }
 
       .content {
         flex: 1 1 auto;
-        padding: 20px;
-        margin: 0 0 20px 0;
-        background-color: #ffffff;
+        padding: var(--spacing);
+        background-color: var(--color-white);
         box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-        border-radius: 4px;
+        border-radius: var(--border-radius);
 
-        @media screen and (max-width: $max-width) {
+        @media screen and (max-width: 800px) {
           box-shadow: none;
           border-radius: 0px;
         }
 
-        > :last-child {
-          margin-bottom: 0px;
+        .select-split {
+          display: flex;
+          flex-direction: row;
+          gap: var(--spacing-half);
+
+          > * {
+            width: 100%;
+          }
         }
       }
     }
 
     .footer {
       color: #ffffff;
-      font-size: 13px;
-      padding: 0 0 12px 0;
+      font-size: var(--font-size);
+      padding: var(--spacing) 0 var(--spacing) 0;
       text-align: center;
 
-      @media screen and (max-width: $max-width) {
-        padding: $spacing-half;
+      @media screen and (max-width: 800px) {
+        padding: var(--spacing);
       }
 
       a {
-        color: #666666;
+        color: var(--color-font);
       }
     }
   }

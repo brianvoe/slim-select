@@ -44,7 +44,7 @@ export interface Search {
   }
 }
 
-export default class Slim {
+export default class Render {
   public settings: Settings
   public store: Store
   public callbacks: Callbacks
@@ -115,26 +115,26 @@ export default class Slim {
     // Render the placeholder and options
     this.setSelected()
 
-    // Add content to body
-    document.body.appendChild(this.content.main)
+    // Add content to the content location settings
+    this.settings.contentLocation.appendChild(this.content.main)
   }
 
   // Remove disabled classes
   public enable(): void {
-    // Set search input to "enabled"
-    this.content.search.input.disabled = false
-
     // Remove disabled class
     this.main.main.classList.remove(this.classes.disabled)
+
+    // Set search input to "enabled"
+    this.content.search.input.disabled = false
   }
 
   // Set disabled classes
   public disable(): void {
-    // Set search input to disabled
-    this.content.search.input.disabled = true
-
     // Add disabled class
     this.main.main.classList.add(this.classes.disabled)
+
+    // Set search input to disabled
+    this.content.search.input.disabled = true
   }
 
   public open(): void {

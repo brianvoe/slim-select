@@ -13,6 +13,7 @@ export default defineComponent({
         { text: 'Home', value: '/', selected: path === '/' },
         { text: 'Installation', value: 'install', selected: path === '/install' },
         { text: 'Select Types', value: 'selects', selected: path === '/selects' },
+        { text: 'Data', value: 'data', selected: path === '/data' },
         { text: 'Settings', value: 'settings', selected: path === '/settings' },
         { text: 'Methods', value: 'methods', selected: path === '/methods' },
       ],
@@ -28,7 +29,7 @@ export default defineComponent({
       select: this.$refs.selectNav as HTMLSelectElement,
       data: this.navData,
       settings: {
-        // showSearch: false,
+        showSearch: false,
       },
       events: {
         afterChange: (newVal) => {

@@ -1,19 +1,31 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SlimSelect from '../../../slim-select'
+
+import SlimSelect from '../../slim-select'
 
 export default defineComponent({
   name: 'Data',
   mounted() {
     new SlimSelect({
       select: this.$refs.dataSingle as HTMLSelectElement,
-      data: [{ placeholder: true, text: 'data placeholder' }, { text: 'Cat' }, { text: 'Dog' }, { text: 'Bird' }],
+      data: [
+        {
+          placeholder: true,
+          text: 'data placeholder',
+        },
+        { text: 'Cat' },
+        { text: 'Dog' },
+        { text: 'Bird' },
+      ],
     })
 
     new SlimSelect({
       select: this.$refs.dataMultiple as HTMLSelectElement,
       data: [
-        { placeholder: true, text: 'data placeholder' },
+        {
+          placeholder: true,
+          text: 'data placeholder',
+        },
         { text: 'Human' },
         {
           label: 'Animals',
@@ -26,16 +38,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
-    <h2 class="header">data</h2>
-    <p>Data is a value that can be set to initialize options in the select dropdown</p>
+  <div id="data">
+    <div class="content">
+      <h2 class="header">data</h2>
+      <p>Data is a value that can be set to initialize options in the select dropdown</p>
 
-    <div class="set-content">
-      <select ref="dataSingle"></select>
-      <select ref="dataMultiple" multiple></select>
-    </div>
+      <div class="select-split">
+        <select ref="dataSingle"></select>
+        <select ref="dataMultiple" multiple></select>
+      </div>
 
-    <pre>
+      <pre>
         <code class="language-javascript">
           new SlimSelect({
             select: '.element .you #want',
@@ -74,8 +87,8 @@ export default defineComponent({
         </code>
       </pre>
 
-    <h4>Data Types</h4>
-    <pre>
+      <h4>Data Types</h4>
+      <pre>
         <code class="language-javascript">
           var optgroup = {
             label: 'label', // Required
@@ -95,5 +108,6 @@ export default defineComponent({
           }
         </code>
       </pre>
+    </div>
   </div>
 </template>

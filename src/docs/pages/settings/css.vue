@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
@@ -12,15 +13,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.select-class {
-  .ss-single-selected {
-    background-color: #5897fb;
-    color: white;
-    border: none;
+.select-class.ss-main {
+  background-color: #5897fb;
+  color: white;
+  border: none;
 
-    .ss-arrow * {
-      border-color: white;
-    }
+  .ss-arrow * {
+    border-color: white;
   }
 }
 

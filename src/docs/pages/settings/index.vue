@@ -3,9 +3,9 @@ import { defineComponent } from 'vue'
 
 // Components
 import CloseOnSelect from './close_on_select.vue'
+import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
 import Css from './css.vue'
-import Data from './data.vue'
 import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
 import Display from './display.vue'
@@ -24,7 +24,7 @@ export default defineComponent({
   name: 'Settings',
   components: {
     Select,
-    Data,
+    ContentLocation,
     Placeholder,
     Deselect,
     Display,
@@ -48,25 +48,15 @@ export default defineComponent({
 #settings {
   .set-content {
     display: flex;
-
-    > * {
-      flex: 0 1 50%;
-      width: 48%;
-      margin: 0 5px 0 0;
-
-      &:last-child {
-        margin: 0 0 0 0;
-      }
-    }
+    gap: var(--spacing-half);
   }
 }
 </style>
 
 <template>
-  <div id="settings">
+  <div id="settings" class="contents">
     <Select />
-    <Data />
-    <Search />
+    <ContentLocation />
     <Placeholder />
     <Deselect />
     <Display />

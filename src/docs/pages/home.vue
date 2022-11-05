@@ -1,15 +1,17 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+import SlimSelect from '../../slim-select'
+
 export default defineComponent({
   name: 'Home',
   mounted() {
-    // new SlimSelect({
-    //   select: this.$refs.slimSingle as HTMLSelectElement,
-    // })
-    // new SlimSelect({
-    //   select: this.$refs.slimMulti as HTMLSelectElement,
-    // })
+    new SlimSelect({
+      select: this.$refs.slimSingle as HTMLSelectElement,
+    })
+    new SlimSelect({
+      select: this.$refs.slimMulti as HTMLSelectElement,
+    })
   },
 })
 </script>
@@ -107,7 +109,7 @@ export default defineComponent({
 
 <template>
   <div id="home-content" class="content">
-    <div class="samples">
+    <div class="samples select-split">
       <div class="single">
         <h2>Single Select</h2>
         <select ref="slimSingle">

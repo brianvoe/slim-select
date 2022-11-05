@@ -1,10 +1,18 @@
-$primary-color: #5897fb;
-$secondary-color: #666666;
-$border-color: #dcdee2;
-$font-color: #666666;
-$white: #ffffff;
-$max-width: 800px;
-$min-width: 360px;
-$spacing: 20px;
-$spacing-half: calc($spacing/2);
-$spacing-quarter: calc($spacing/4);
+:root {
+  // Colors
+  --color-primary: #5897fb;
+  --color-secondary: #666666;
+  --color-border: #dcdee2;
+  --color-font: #666666;
+  --color-white: #ffffff;
+
+  --border-radius: 4px;
+  --font-size: 14px;
+  --max-width: 800px;
+  --min-width: 360px;
+
+  // Spacings
+  --spacing: 16px;
+  --spacing-half: 8px;
+  --spacing-quarter: 4px;
+}

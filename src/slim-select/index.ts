@@ -4,6 +4,7 @@ import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
+// Export everything to main slim select file
 export * from './helper'
 export * from './render'
 export * from './select'
@@ -137,6 +138,9 @@ export default class SlimSelect {
     if (!this.settings.isEnabled) {
       this.disable()
     }
+
+    // Add SlimSelect to select element
+    ;(this.selectEl as any).slim = this
   }
 
   // Set to enabled and remove disabled classes
@@ -329,8 +333,6 @@ export default class SlimSelect {
       return
     }
 
-    console.log(this.render.putContent(this.render.content.main, this.settings.isOpen))
-
     // Determine where to put the content
     if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
       this.render.moveContentAbove()
@@ -341,10 +343,14 @@ export default class SlimSelect {
 
   // Event listener for document click
   private documentClick: (e: Event) => void = (e: Event) => {
+    // If the content is not open, there is no need to close it
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    // Check if the click was on the content by looking at the parents
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
-      if (this.settings.isOpen) {
-        this.close()
-      }
+      this.close()
     }
   }
 }

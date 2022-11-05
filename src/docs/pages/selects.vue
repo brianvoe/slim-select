@@ -12,7 +12,7 @@ export default defineComponent({
         { abv: 'AK', state: 'Alaska' },
         { abv: 'AZ', state: 'Arizona' },
         { abv: 'AR', state: 'Arkansas' },
-        { abv: 'CA', state: 'California', selected: true },
+        { abv: 'CA', state: 'California' },
         { abv: 'CO', state: 'Colorado' },
         { abv: 'CT', state: 'Connecticut' },
         { abv: 'DE', state: 'Delaware' },
@@ -20,7 +20,7 @@ export default defineComponent({
         { abv: 'GA', state: 'Georgia' },
         { abv: 'HI', state: 'Hawaii' },
         { abv: 'ID', state: 'Idaho' },
-        { abv: 'IL', state: 'Illinois', selected: true },
+        { abv: 'IL', state: 'Illinois' },
         { abv: 'IN', state: 'Indiana' },
         { abv: 'IA', state: 'Iowa' },
         { abv: 'KS', state: 'Kansas' },
@@ -49,7 +49,7 @@ export default defineComponent({
         { abv: 'RI', state: 'Rhode Island' },
         { abv: 'SC', state: 'South Carolina' },
         { abv: 'SD', state: 'South Dakota' },
-        { abv: 'TN', state: 'Tennessee' },
+        { abv: 'TN', state: 'Tennessee', selected: true },
         { abv: 'TX', state: 'Texas' },
         { abv: 'UT', state: 'Utah' },
         { abv: 'VT', state: 'Vermont' },
@@ -73,36 +73,23 @@ export default defineComponent({
   mounted() {
     // Single
     new SlimSelect({
-      select: '#single',
+      select: this.$refs.single as HTMLSelectElement,
     })
     new SlimSelect({
-      select: '#single-group',
+      select: this.$refs.singleOptgroup as HTMLSelectElement,
     })
 
     // Multiple
     new SlimSelect({
-      select: '#multiple',
+      select: this.$refs.multiple as HTMLSelectElement,
     })
     const multiGroup = new SlimSelect({
-      select: '#multiple-group',
+      select: this.$refs.multipleOptgroup as HTMLSelectElement,
     })
     multiGroup.setSelected(['Cheese', 'Apple', 'Corn'])
   },
 })
 </script>
-
-<style lang="scss">
-#selects-content {
-  .select-split {
-    display: flex;
-    justify-content: space-between;
-
-    > * {
-      flex: 0 1 49%;
-    }
-  }
-}
-</style>
 
 <template>
   <div id="selects-content">
@@ -114,7 +101,7 @@ export default defineComponent({
       <div class="select-split">
         <div>
           <h4>Options</h4>
-          <select id="single">
+          <select ref="single">
             <option v-for="value in states" :key="value.abv" :value="value.abv" :selected="value.selected">
               {{ value.state }}
             </option>
@@ -122,7 +109,7 @@ export default defineComponent({
         </div>
         <div>
           <h4>Optgroups</h4>
-          <select id="single-group">
+          <select ref="singleOptgroup">
             <optgroup v-for="food in foods" :key="food.label" :label="food.label">
               <option v-for="option in food.options" :key="option" :value="option">{{ option }}</option>
             </optgroup>
@@ -173,7 +160,7 @@ export default defineComponent({
       <div class="select-split">
         <div>
           <h4>Options</h4>
-          <select id="multiple" multiple>
+          <select ref="multiple" multiple>
             <option v-for="value in states" :value="value.abv" :key="value.abv" :selected="value.selected">
               {{ value.state }}
             </option>
@@ -181,7 +168,7 @@ export default defineComponent({
         </div>
         <div>
           <h4>Optgroups</h4>
-          <select id="multiple-group" multiple>
+          <select ref="multipleOptgroup" multiple>
             <optgroup v-for="food in foods" :key="food.label" :label="food.label">
               <option v-for="option in food.options" :key="option" :value="option">{{ option }}</option>
             </optgroup>

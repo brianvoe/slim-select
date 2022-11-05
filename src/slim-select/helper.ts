@@ -5,9 +5,13 @@ export function generateID(): string {
 
 export function hasClassInTree(element: HTMLElement, className: string) {
   function hasClass(e: HTMLElement, c: string) {
+    // If the element has the class return element
     if (c && e && e.classList && e.classList.contains(c)) {
       return e
-    } else if (c && e && e.dataset && e.dataset.id && e.dataset.id === className) {
+    }
+
+    // If the element has a dataset id of the class return element
+    if (c && e && e.dataset && e.dataset.id && e.dataset.id === className) {
       return e
     }
     return null

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
@@ -46,14 +47,14 @@ export default defineComponent({
     </div>
 
     <pre>
-    <code class="language-javascript">
+      <code class="language-javascript">
         new SlimSelect({
           select: '#contentPosition',
           settings: {
             contentPosition: 'auto' // 'auto', 'up' or 'down'
           }
         })
-    </code>
+      </code>
     </pre>
   </div>
 </template>

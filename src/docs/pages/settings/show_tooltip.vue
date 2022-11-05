@@ -34,7 +34,9 @@ export default defineComponent({
       <code class="language-javascript">
         new SlimSelect({
           select: '#showOptionTooltips',
-          showOptionTooltips: true
+          settings: {
+            showOptionTooltips: true,
+          }
         })
       </code>
     </pre>
