@@ -22,7 +22,7 @@ export interface Events {
   fetch?: (value: string, func: (data: DataArrayPartial) => void) => void
   searchFilter?: (opt: Option, search: string) => boolean
   addable?: (value: string) => OptionOptional | string
-  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean
+  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean | void
   afterChange?: (newVal: DataArray) => void
   beforeOpen?: () => void
   afterOpen?: () => void

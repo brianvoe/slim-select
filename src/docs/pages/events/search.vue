@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
@@ -76,7 +77,7 @@ export default defineComponent({
       conditions.
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="ajaxSingle">
         <option data-placeholder="true"></option>
       </select>

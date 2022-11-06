@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
@@ -18,7 +19,7 @@ export default defineComponent({
       Slim select will inherit any styles that were added to the original select element. This includes options as well.
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectStyle" style="color: red">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

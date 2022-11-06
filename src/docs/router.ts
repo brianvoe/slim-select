@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('./pages/settings/index.vue'),
     },
     {
+      path: '/events',
+      name: 'Events',
+      component: () => import('./pages/events/index.vue'),
+    },
+    {
       path: '/methods',
       name: 'Methods',
       component: () => import('./pages/methods.vue'),

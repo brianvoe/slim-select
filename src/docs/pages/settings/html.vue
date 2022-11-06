@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
@@ -106,14 +107,14 @@ export default defineComponent({
       select
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectHtmlSingle"></select>
       <select ref="selectHtmlMulti" multiple></select>
     </div>
-    <div class="set-content" style="padding: 16px 0 0 0">
+    <div class="select-split" style="padding: 16px 0 0 0">
       <h4>Use text for selected values</h4>
     </div>
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectHtmlSingleText"></select>
       <select ref="selectHtmlMultiText" multiple></select>
     </div>

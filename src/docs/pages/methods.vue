@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../slim-select'
 
 export default defineComponent({
@@ -22,60 +23,60 @@ export default defineComponent({
       setOpenCloseSingle: null as any,
       setOpenCloseMultiple: null as any,
       setDestroySingle: null as any,
-      setDestroyMultiple: null as any
+      setDestroyMultiple: null as any,
     }
   },
   mounted() {
     // Selected
     this.selectedSingle = new SlimSelect({
-      select: '#selectedSingle'
+      select: '#selectedSingle',
     })
     this.selectedMultiple = new SlimSelect({
-      select: '#selectedMultiple'
+      select: '#selectedMultiple',
     })
 
     // Set
     this.setSingle = new SlimSelect({
-      select: '#setSingle'
+      select: '#setSingle',
     })
     this.setMultiple = new SlimSelect({
-      select: '#setMultiple'
+      select: '#setMultiple',
     })
 
     // Set Data
     this.setDataSingle = new SlimSelect({
-      select: '#setDataSingle'
+      select: '#setDataSingle',
     })
     this.setDataMultiple = new SlimSelect({
-      select: '#setDataMultiple'
+      select: '#setDataMultiple',
     })
     this.setData()
 
     // Search
     this.setSearchSingle = new SlimSelect({
-      select: '#setSearchSingle'
+      select: '#setSearchSingle',
     })
     this.setSearchMultiple = new SlimSelect({
-      select: '#setSearchMultiple'
+      select: '#setSearchMultiple',
     })
 
     // setSearchText
     this.setSearchTextSingle = new SlimSelect({
-      select: '#setSearchTextSingle'
+      select: '#setSearchTextSingle',
     })
     this.setSearchTextSingle.setSearchText('Sorry No Results Here!!!')
 
     // Enable / Disable
     this.setEnableSingle = new SlimSelect({
-      select: '#setEnableSingle'
+      select: '#setEnableSingle',
     })
     this.setEnableMultiple = new SlimSelect({
-      select: '#setEnableMultiple'
+      select: '#setEnableMultiple',
     })
 
     // Open / Close
     this.setOpenCloseSingle = new SlimSelect({
-      select: '#setOpenCloseSingle'
+      select: '#setOpenCloseSingle',
       // Optional callbacks
       // beforeOpen() { console.log('beforeOpen') },
       // afterOpen() { console.log('afterOpen') },
@@ -83,7 +84,7 @@ export default defineComponent({
       // afterClose() { console.log('afterClose') }
     })
     this.setOpenCloseMultiple = new SlimSelect({
-      select: '#setOpenCloseMultiple'
+      select: '#setOpenCloseMultiple',
       // Optional callbacks
       // beforeOpen() { console.log('beforeOpen') },
       // afterOpen() { console.log('afterOpen') },
@@ -93,10 +94,10 @@ export default defineComponent({
 
     // Destroy
     this.setDestroySingle = new SlimSelect({
-      select: '#setDestroySingle'
+      select: '#setDestroySingle',
     })
     this.setDestroyMultiple = new SlimSelect({
-      select: '#setDestroyMultiple'
+      select: '#setDestroyMultiple',
     })
   },
   methods: {
@@ -113,7 +114,7 @@ export default defineComponent({
       for (let i = 0; i < 10; i++) {
         values.push({
           text: 'Bill Mister',
-          selected: Math.random() < 0.5
+          selected: Math.random() < 0.5,
         })
       }
       this.setDataSingle.setData(values)
@@ -143,45 +144,28 @@ export default defineComponent({
     },
     setCreate() {
       this.setDestroySingle = new SlimSelect({
-        select: '#setDestroySingle'
+        select: '#setDestroySingle',
       })
 
       this.setDestroyMultiple = new SlimSelect({
-        select: '#setDestroyMultiple'
+        select: '#setDestroyMultiple',
       })
     },
     setDestroy() {
       this.setDestroySingle.destroy()
       this.setDestroyMultiple.destroy()
-
-    }
-  }
+    },
+  },
 })
 </script>
-
-<style lang="scss">
-  #methods-content {
-    .set-content {
-      display: flex;
-
-      > * {
-        margin: 0 5px 0 0;
-
-        &:last-child { margin: 0 0 0 5px; }
-      }
-    }
-  }
-</style>
 
 <template>
   <div id="methods-content">
     <div class="content selectedSelects">
       <h2 class="header">selected</h2>
-      <p>
-        The selected method will return a string or array of the currently selected values
-      </p>
+      <p>The selected method will return a string or array of the currently selected values</p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="getSelected">Get Selected</div>
         <select id="selectedSingle">
           <option value="value1">Value 1</option>
@@ -194,9 +178,9 @@ export default defineComponent({
           <option value="value3">Value 3</option>
         </select>
       </div>
-      <div v-if="selectedSingleValue !== ''" style="padding: 8px 0 8px 0;">
-        <div><b>Single Select Value:</b> {{selectedSingleValue}}</div>
-        <div><b>Multi Select Value:</b> {{selectedMultipleValue}}</div>
+      <div v-if="selectedSingleValue !== ''" style="padding: 8px 0 8px 0">
+        <div><b>Single Select Value:</b> {{ selectedSingleValue }}</div>
+        <div><b>Multi Select Value:</b> {{ selectedMultipleValue }}</div>
       </div>
       <pre>
         <code class="language-javascript">
@@ -211,12 +195,11 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">set</h2>
       <p>
-        The set method will take a value and update the original select as well
-        slim select. The value can either be a string or an array of strings
-        depending on if its a single or multi select.
+        The set method will take a value and update the original select as well slim select. The value can either be a
+        string or an array of strings depending on if its a single or multi select.
       </p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="setValue">Set Value</div>
         <select id="setSingle">
           <option value="value1">Value 1</option>
@@ -244,12 +227,14 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">setData</h2>
       <p>
-        The setData method can take in an array of objects. This will set the options
-        of the original select and rerender slim select.
+        The setData method can take in an array of objects. This will set the options of the original select and
+        rerender slim select.
       </p>
-      <p>To get a better break down of possible data options see <router-link to="/options">options/data</router-link></p>
+      <p>
+        To get a better break down of possible data options see <router-link to="/options">options/data</router-link>
+      </p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="setData">Set Data</div>
         <select id="setDataSingle"></select>
         <select id="setDataMultiple" multiple></select>
@@ -271,11 +256,9 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">search</h2>
-      <p>
-        The search method will update the search input field and search the data with the given value.
-      </p>
+      <p>The search method will update the search input field and search the data with the given value.</p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="setSearch">Set Search</div>
         <select id="setSearchSingle">
           <option value="value1">Value 1</option>
@@ -300,11 +283,9 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">setSearchText</h2>
-      <p>
-        The setSearchText method will update the search text value.
-      </p>
+      <p>The setSearchText method will update the search text value.</p>
 
-      <div class="set-content">
+      <div class="select-split">
         <select id="setSearchTextSingle">
           <option value="value1">Value 1</option>
           <option value="value2">Value 2</option>
@@ -329,7 +310,7 @@ export default defineComponent({
         You may also set disabled on your original select and slim-select will pick that up.
       </p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.config.isEnabled">Enable</div>
         <div class="btn" @click="setDisable" v-else>Disable</div>
 
@@ -358,11 +339,9 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">open / close</h2>
-      <p>
-        The open/close methods will do just that.
-      </p>
+      <p>The open/close methods will do just that.</p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="setOpenClose">Open/Close</div>
         <select id="setOpenCloseSingle">
           <option value="value1">Value 1</option>
@@ -395,11 +374,9 @@ export default defineComponent({
 
     <div class="content">
       <h2 class="header">destroy</h2>
-      <p>
-        The destroy method will remove slim-select and display your original select.
-      </p>
+      <p>The destroy method will remove slim-select and display your original select.</p>
 
-      <div class="set-content">
+      <div class="select-split">
         <div class="btn" @click="setCreate">Create</div>
         <div class="btn" @click="setDestroy">Destroy</div>
         <select id="setDestroySingle">

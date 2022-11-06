@@ -77,7 +77,7 @@ export default defineComponent({
     </p>
     <p><b>searchHighlight</b> - is a boolean value that will highlight search results. Default is false.</p>
 
-    <div class="set-content" style="padding: 0 0 var(--spacing-half) 0">
+    <div class="select-split" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="showSearchSingle">
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
@@ -100,7 +100,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="showSearchMulti" multiple>
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>

@@ -28,7 +28,7 @@ export default defineComponent({
       options
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="contentLocation" style="width: 50%">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

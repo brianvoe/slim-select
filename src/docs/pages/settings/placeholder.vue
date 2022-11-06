@@ -31,7 +31,7 @@ export default defineComponent({
       empty option with data-placeholder set to true. Default value is "Select Value".
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="placeholderSingle">
         <option data-placeholder="true"></option>
         <option value="value1">Value 1</option>

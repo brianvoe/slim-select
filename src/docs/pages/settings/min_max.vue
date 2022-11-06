@@ -22,7 +22,7 @@ export default defineComponent({
     <h2 class="header">Min/Max Selected</h2>
     <p>When using multi select you can set a min and/or max on the amount of selections you can have.</p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectMultiMax" multiple>
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

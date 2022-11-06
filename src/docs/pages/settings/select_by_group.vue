@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({

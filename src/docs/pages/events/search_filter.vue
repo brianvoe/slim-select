@@ -1,14 +1,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'SearchFilter',
   mounted() {
     new SlimSelect({
-      select: '#searchFilter',
+      select: this.$refs.searchFilter as HTMLSelectElement,
       events: {
-        // searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search,
+        searchFilter: (option: any, search: any) => option.text.substr(0, search.length) === search,
       },
     })
   },
@@ -21,7 +22,7 @@ export default defineComponent({
     <p>searchFilter option is used to replace the default matching algorithm.</p>
     <p>See methods/setData for the proper object interface of <em>option</em>.</p>
 
-    <select id="searchFilter">
+    <select ref="searchFilter">
       <option value="apple">Apple</option>
       <option value="orange">Orange</option>
       <option value="pineapple">Pineapple</option>
@@ -29,13 +30,13 @@ export default defineComponent({
 
     <pre>
       <code class="language-javascript">
-          new SlimSelect({
+        new SlimSelect({
           select: '#searchFilter',
           // Exact case sensitive start of string match
           searchFilter: (option, search) => {
               return option.text.substr(0, search.length) === search
           }
-          })
+        })
       </code>
     </pre>
   </div>

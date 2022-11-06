@@ -15,6 +15,7 @@ export default defineComponent({
         { text: 'Select Types', value: 'selects', selected: path === '/selects' },
         { text: 'Data', value: 'data', selected: path === '/data' },
         { text: 'Settings', value: 'settings', selected: path === '/settings' },
+        { text: 'Events', value: 'events', selected: path === '/events' },
         { text: 'Methods', value: 'methods', selected: path === '/methods' },
       ],
     }

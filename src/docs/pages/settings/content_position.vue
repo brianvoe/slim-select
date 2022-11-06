@@ -33,7 +33,7 @@ export default defineComponent({
     </p>
     <p>Possible Options: <b>'auto', 'up' or 'down'</b>. Default is <b>'auto'</b></p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="contentPositionUp">
         <option value="up1">Up 1</option>
         <option value="up2">Up 2</option>

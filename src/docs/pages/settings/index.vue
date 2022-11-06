@@ -44,15 +44,6 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-#settings {
-  .set-content {
-    display: flex;
-    gap: var(--spacing-half);
-  }
-}
-</style>
-
 <template>
   <div id="settings" class="contents">
     <Select />

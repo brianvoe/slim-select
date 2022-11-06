@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
@@ -38,7 +39,7 @@ export default defineComponent({
       added.
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="addableSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

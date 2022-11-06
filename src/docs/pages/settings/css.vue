@@ -47,7 +47,7 @@ export default defineComponent({
       well.
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectClass" class="select-class">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

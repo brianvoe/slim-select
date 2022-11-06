@@ -32,7 +32,7 @@ export default defineComponent({
       value.
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="closeOnSelectSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

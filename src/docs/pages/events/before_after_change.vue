@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import SlimSelect, { DataArray } from '../../../slim-select'
 
 export default defineComponent({
@@ -18,7 +19,6 @@ export default defineComponent({
       events: {
         beforeChange: (newValue: DataArray, oldValue: DataArray) => {
           this.beforeChangeSingle = newValue
-          return true
         },
       },
     })
@@ -91,7 +91,7 @@ export default defineComponent({
           events: {
             beforeChange: (newVal, oldVal) => {
               console.log(newVal)
-              return false // this will stop propagation
+              return false // this will stop the change from happening
             }
           }
         })

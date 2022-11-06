@@ -34,7 +34,7 @@ export default defineComponent({
       Note options with mandatory flag is not selected by default, you need select them yourselfs.
     </p>
 
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectMultiMandatory" multiple></select>
     </div>
 
@@ -62,7 +62,7 @@ export default defineComponent({
     </pre>
 
     <p>Or</p>
-    <div class="set-content">
+    <div class="select-split">
       <select ref="selectMultiMandatory2" multiple>
         <option value="value1" data-mandatory="true" selected>Value 1</option>
         <option value="value2" selected>Value 2</option>
