@@ -1,124 +1,145 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { onMounted, Ref, ref } from 'vue'
 
-import SlimSelect from '../../../slim-select'
+import SlimSelect, { Option } from '../../../slim-select'
 
-export default defineComponent({
-  name: 'Search',
-  mounted() {
-    const ajaxSingle = new SlimSelect({
-      select: this.$refs.ajaxSingle as HTMLSelectElement,
-      settings: {
-        placeholderText: 'Search "Graham"',
-        searchingText: 'Searching Users...',
-      },
-      //   ajax(search: any, callback: any) {
-      //     if (search.length < 3) {
-      //       callback('Need 3 characters')
-      //       return
-      //     }
+interface Person {
+  first_name: string
+  last_name: string
+}
 
-      //     fetch('https://jsonplaceholder.typicode.com/users')
-      //       .then((response) => {
-      //         return response.json()
-      //       })
-      //       .then((json) => {
-      //         const data = [] as any
-      //         for (const j of json) {
-      //           data.push({ text: j.name })
-      //         }
+let searchData: Person[] = []
+let searchSingle: Ref<HTMLSelectElement | null> = ref(null)
+let searchMultiple: Ref<HTMLSelectElement | null> = ref(null)
 
-      //         callback(data)
-      //       })
-      //       .catch((error) => {
-      //         callback(false)
-      //       })
-      //   }
-    })
-
-    const ajaxMulti = new SlimSelect({
-      select: this.$refs.ajaxMulti as HTMLSelectElement,
-      settings: {
-        placeholderText: 'Search "Dennis"',
-      },
-      // ajax(search: any, callback: any) {
-      //   fetch('https://jsonplaceholder.typicode.com/users')
-      //     .then((response) => {
-      //       return response.json()
-      //     })
-      //     .then((json) => {
-      //       const data = [] as any
-      //       for (const j of json) {
-      //         data.push({ text: j.name })
-      //       }
-
-      //       setTimeout(() => {
-      //         ajaxMulti.setSearchText('Sorry No Results.')
-      //         callback(data)
-      //       }, 1000)
-      //     })
-      //     .catch((error) => {
-      //       callback(false)
-      //     })
-      // }
-    })
+// Go fetch some gofakeit data via post to json
+fetch('https://api.gofakeit.com/json', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
   },
+  body: JSON.stringify({
+    type: 'array',
+    rowcount: 1000,
+    indent: false,
+    fields: [
+      { name: 'first_name', function: 'firstname', params: {} },
+      { name: 'last_name', function: 'lastname', params: {} },
+    ],
+  }),
 })
+  .then((response) => response.json())
+  .then((data: Person[]) => {
+    searchData = data
+  })
+
+onMounted(() => {
+  new SlimSelect({
+    select: searchSingle.value!,
+    settings: {
+      placeholderText: 'Search First or Last Name',
+      searchingText: 'Searching Users...',
+    },
+    events: {
+      search: searchPromise,
+    },
+  })
+
+  new SlimSelect({
+    select: searchMultiple.value!,
+    settings: {
+      placeholderText: 'Search "Dennis"',
+    },
+    events: {
+      search: searchPromise,
+    },
+  })
+})
+
+function searchPromise(search: string): Promise<Option[]> {
+  console.log(search)
+  return new Promise((resolve, reject) => {
+    if (search.length < 2) {
+      return reject('Search must be at least 2 characters')
+    }
+
+    const results = searchData.filter((person) => {
+      return (
+        person.first_name.toLowerCase().includes(search.toLowerCase()) ||
+        person.last_name.toLowerCase().includes(search.toLowerCase())
+      )
+    })
+
+    if (results.length === 0) {
+      return reject('No results found')
+    }
+
+    // Convert the results to an array of options
+    const options = results.map((person) => {
+      return {
+        text: `${person.first_name} ${person.last_name}`,
+        value: `${person.first_name} ${person.last_name}`,
+      }
+    }) as Option[]
+
+    // Simulate a slow search
+    // setTimeout(() => {
+    resolve(options)
+    // }, 300)
+  })
+}
 </script>
 
 <template>
-  <div class="content">
-    <h2 class="header">ajax</h2>
+  <div id="search" class="content">
+    <h2 class="header">search</h2>
     <p>
-      Slim select allows you to syncronize result values from your ajax requests.<br />
-      Call callback() method with slimselect data, false or string with specific string.<br />
-      <br />
-      When doing fetch request for each ajax call be sure to debounce your request so you are not getting fetch race
-      conditions.
+      Slim select allows you to syncronize result values from your promise response.<br />
+      Call callback() method with slimselect data, false or string with specific string.
     </p>
 
     <div class="select-split">
-      <select ref="ajaxSingle">
+      <select ref="searchSingle">
         <option data-placeholder="true"></option>
       </select>
-      <select ref="ajaxMultiple" multiple></select>
+      <select ref="searchMultiple" multiple></select>
     </div>
 
     <pre>
-        <code class="language-javascript">
-          new SlimSelect({
-            select: '#ajax',
-            searchingText: 'Searching...', // Optional - Will show during ajax request
-            ajax: function (search, callback) {
-              // Check search value. If you dont like it callback(false) or callback('Message String')
-              if (search.length &lt; 3) {
-                callback('Need 3 characters')
-                return
-              }
-
-              // Perform your own ajax request here
-              fetch('https://jsonplaceholder.typicode.com/users')
-              .then(function (response) {
-                return response.json()
-              })
-              .then(function (json) {
-                let data = []
-                for (let i = 0; i &lt; json.length; i++) {
-                  data.push({text: json[i].name})
-                }
-                
-                // Upon successful fetch send data to callback function.
-                // Be sure to send data back in the proper format.
-                // Refer to the method setData for examples of proper format.
-                callback(data)
-              })
-              .catch(function(error) {
-                // If any erros happened send false back through the callback
-                callback(false)
-              })
+      <code class="language-javascript">
+        new SlimSelect({
+          select: '#ajax',
+          searchingText: 'Searching...', // Optional - Will show during ajax request
+          ajax: function (search, callback) {
+            // Check search value. If you dont like it callback(false) or callback('Message String')
+            if (search.length &lt; 3) {
+              callback('Need 3 characters')
+              return
             }
-          })
-        </code>
-      </pre>
+
+            // Perform your own ajax request here
+            fetch('https://jsonplaceholder.typicode.com/users')
+            .then(function (response) {
+              return response.json()
+            })
+            .then(function (json) {
+              let data = []
+              for (let i = 0; i &lt; json.length; i++) {
+                data.push({text: json[i].name})
+              }
+              
+              // Upon successful fetch send data to callback function.
+              // Be sure to send data back in the proper format.
+              // Refer to the method setData for examples of proper format.
+              callback(data)
+            })
+            .catch(function(error) {
+              // If any erros happened send false back through the callback
+              callback(false)
+            })
+          }
+        })
+      </code>
+    </pre>
   </div>
 </template>

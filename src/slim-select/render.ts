@@ -1,3 +1,4 @@
+import { debounce } from './helper'
 import Settings from './settings'
 import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
 
@@ -9,7 +10,7 @@ export interface Callbacks {
   addOption: (option: Option) => void
   search: (search: string) => void
   fetch?: (value: string, func: (info: any) => void) => void
-  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean
+  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean | void
   afterChange?: (newVal: DataArray) => void
   beforeDelete?: (neVal: DataArray, oldVal: DataArray) => boolean
 }
@@ -87,7 +88,9 @@ export default class Render {
     // Search
     search: 'ss-search',
     searchHighlighter: 'ss-search-highlight',
+    searching: 'ss-searching',
     addable: 'ss-addable',
+    addablePath: 'M50,10 L50,90 M10,50 L90,50', // Not a class but whatever
 
     // List options
     list: 'ss-list',
@@ -100,6 +103,7 @@ export default class Render {
     highlighted: 'ss-highlighted',
 
     // Misc
+    error: 'ss-error',
     disabled: 'ss-disabled',
     hide: 'ss-hide',
   }
@@ -108,6 +112,11 @@ export default class Render {
     this.store = store
     this.settings = settings
     this.callbacks = callbacks
+
+    // Wrap search callback with debounce
+    // if (this.callbacks.search) {
+    //   this.callbacks.search = debounce(this.callbacks.search, 200, true)
+    // }
 
     this.main = this.mainDiv()
     this.content = this.contentDiv()
@@ -605,6 +614,7 @@ export default class Render {
           input.value = ''
         }
       }
+
       e.preventDefault()
       e.stopPropagation()
     }
@@ -624,15 +634,19 @@ export default class Render {
       const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       plus.setAttribute('viewBox', '0 0 100 100')
       const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      plusPath.setAttribute('d', this.classes.addablePath)
       plus.appendChild(plusPath)
       addable.appendChild(plus)
       addable.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
+
+        // Do nothing if addable is not set
         if (!this.callbacks.addable) {
           return
         }
 
+        // Grab input value
         const inputValue = this.content.search.input.value.trim()
         if (inputValue === '') {
           this.content.search.input.focus()
@@ -784,6 +798,26 @@ export default class Render {
     options.setAttribute('role', 'listbox')
 
     return options
+  }
+
+  public renderError(error: string) {
+    // Clear out innerHtml
+    this.content.list.innerHTML = ''
+
+    const errorDiv = document.createElement('div')
+    errorDiv.classList.add(this.classes.error)
+    errorDiv.textContent = error
+    this.content.list.appendChild(errorDiv)
+  }
+
+  public renderSearching() {
+    // Clear out innerHtml
+    this.content.list.innerHTML = ''
+
+    const searchingDiv = document.createElement('div')
+    searchingDiv.classList.add(this.classes.searching)
+    searchingDiv.textContent = this.settings.searchingText
+    this.content.list.appendChild(searchingDiv)
   }
 
   // Take in data and add options to
@@ -973,8 +1007,10 @@ export default class Render {
       }
 
       if (this.callbacks.beforeChange) {
-        // Check if beforeChange returns true
-        if (this.callbacks.beforeChange(after, before) === true) {
+        // Check if beforeChange returns false
+        if (this.callbacks.beforeChange(after, before) === false) {
+          shouldUpdate = false
+        } else {
           shouldUpdate = true
         }
       }

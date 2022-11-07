@@ -92,7 +92,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="selects-content">
+  <div id="selects-content" class="contents">
     <div class="content">
       <h2 class="header">Single</h2>
       <p>

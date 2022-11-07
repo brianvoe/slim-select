@@ -1,19 +1,27 @@
 :root {
+  // Heights
   --ss-height-main: 30px;
   --ss-height-content: 300px;
   --ss-search-height: 30px;
+
+  // Colors
   --ss-bg-color: #ffffff;
   --ss-font-color: #666666;
   --ss-font-placeholder-color: #8a8a8a;
-  --ss-disabled-color: #dedede;
+  --ss-disabled-color: #8a8a8a;
   --ss-primary-color: #5897fb;
   --ss-border-color: #dcdee2;
   --ss-highlight-color: #fffb8c;
-  --ss-animation-timing: 0.2s;
-  --ss-border-radius: 4px;
+  --ss-error-color: #dc3545;
+
+  // Spacing
   --ss-spacing-l: 7px;
   --ss-spacing-m: 5px;
   --ss-spacing-s: 3px;
+
+  // Misc
+  --ss-animation-timing: 0.2s;
+  --ss-border-radius: 4px;
 }
 
 // Animation keyframes
@@ -100,7 +108,7 @@
       line-height: 1em;
       align-items: center;
       width: 100%;
-      color: var(--ss-disabled-color);
+      color: var(--ss-font-placeholder-color);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -255,12 +263,20 @@
       align-items: center;
       cursor: pointer;
       flex: 0 0 var(--ss-search-height);
-      height: var(--ss-search-height);
-      margin: 0 0 0 var(--ss-spacing-l);
+      height: auto;
+      margin: 0 0 0 var(--ss-spacing-m);
       border: 1px solid var(--ss-border-color);
       border-radius: var(--ss-border-radius);
 
       svg {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 0 1 auto;
+        width: 12px;
+        height: 12px;
+        margin: auto var(--ss-spacing-m) auto var(--ss-spacing-m);
+
         path {
           fill: none;
           stroke: var(--ss-font-color);
@@ -277,6 +293,16 @@
     height: auto;
     overflow-x: hidden;
     overflow-y: auto;
+
+    .ss-error {
+      color: var(--ss-error-color);
+      padding: var(--ss-spacing-l);
+    }
+
+    .ss-searching {
+      color: var(--ss-font-color);
+      padding: var(--ss-spacing-l);
+    }
 
     .ss-optgroup {
       .ss-optgroup-label {

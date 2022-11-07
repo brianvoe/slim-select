@@ -14,6 +14,7 @@ export function hasClassInTree(element: HTMLElement, className: string) {
     if (c && e && e.dataset && e.dataset.id && e.dataset.id === className) {
       return e
     }
+
     return null
   }
 

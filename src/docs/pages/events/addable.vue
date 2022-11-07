@@ -16,7 +16,7 @@ export default defineComponent({
     })
 
     new SlimSelect({
-      select: this.$refs.addableMulti as HTMLSelectElement,
+      select: this.$refs.addableMultiple as HTMLSelectElement,
       events: {
         addable: (value: string) => {
           return {

@@ -19,7 +19,7 @@ export interface Config {
 }
 
 export interface Events {
-  fetch?: (value: string, func: (data: DataArrayPartial) => void) => void
+  search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial | false | void
   searchFilter?: (opt: Option, search: string) => boolean
   addable?: (value: string) => OptionOptional | string
   beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean | void
@@ -273,6 +273,7 @@ export default class SlimSelect {
 
   // Take in string value and search current options
   public search(value: string): void {
+    console.log('search', value)
     // Only filter data and rerender if value has changed
     if (this.settings.searchValue === value) {
       return
@@ -282,24 +283,69 @@ export default class SlimSelect {
       this.render.content.search.input.value = value
     }
 
-    // If not fetch run regular search
-    if (!this.events.fetch) {
+    // If no search event run regular search
+    if (!this.events.search) {
       this.render.renderOptions(this.store.search(value))
       return
     }
 
-    // Fetch event exists so lets update isSearching settings
+    // Search event exists so lets update isSearching settings
     this.settings.isSearching = true
+    this.render.renderSearching()
 
-    // Call fetch function
-    this.events.fetch(value, (data: DataArrayPartial) => {
-      // Only process if return callback is not false
+    // Based upon the search event deal with the response
+    const searchResp = this.events.search(value, this.store.getData())
+
+    // If the search event returns a promise
+    if (searchResp instanceof Promise) {
+      searchResp
+        .then((data: DataArrayPartial) => {
+          this.settings.isSearching = false
+
+          console.log(data)
+
+          // Update the store
+          this.store.setData(data)
+
+          // Update the original select element
+          this.select.updateOptions(this.store.getData())
+
+          // Update the render
+          this.render.renderValues()
+          this.render.renderOptions(this.store.getData())
+        })
+        .catch((err: Error | string) => {
+          this.settings.isSearching = false
+
+          // Update the store
+          this.store.setData([])
+
+          // Update the original select element
+          this.select.updateOptions(this.store.getData())
+
+          // Update the render
+          this.render.renderValues()
+          this.render.renderError(typeof err === 'string' ? err : err.message)
+        })
+
+      return
+    }
+
+    // If the search event returns a data array
+    if (Array.isArray(searchResp)) {
       this.settings.isSearching = false
-      data.unshift({ text: '', placeholder: true })
-      this.store.setData(data)
-      this.store.search(value)
+
+      // Update the store
+      this.store.setData(searchResp)
+
+      // Update the original select element
+      this.select.updateOptions(this.store.getData())
+
+      // Update the render
+      this.render.renderValues()
       this.render.renderOptions(this.store.getData())
-    })
+      return
+    }
   }
 
   public destroy(): void {

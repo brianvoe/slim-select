@@ -45,6 +45,31 @@ export default defineComponent({
         slim.setSelected(urlPathValue)
       }
     })
+
+    this.$nextTick(() => {
+      let hash = ''
+      let timeout = 0
+      const poll = window.setInterval(function () {
+        timeout++
+        hash = window.location.hash.replace('#', '')
+
+        if (hash !== '') {
+          // Get element of hash
+          const elementToScrollTo = document.getElementById(hash)
+
+          // If element exists scroll to it and stop polling
+          if (elementToScrollTo) {
+            elementToScrollTo.scrollIntoView({ behavior: 'smooth' })
+            window.clearInterval(poll)
+          }
+        }
+
+        if (timeout > 100) {
+          // cancel the interval after 100 attempts (== 10s)
+          window.clearInterval(poll)
+        }
+      }, 100)
+    })
   },
 })
 </script>
