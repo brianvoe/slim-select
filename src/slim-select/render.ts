@@ -9,7 +9,6 @@ export interface Callbacks {
   setSelected: (value: string[], close: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
-  fetch?: (value: string, func: (info: any) => void) => void
   beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean | void
   afterChange?: (newVal: DataArray) => void
   beforeDelete?: (neVal: DataArray, oldVal: DataArray) => boolean
@@ -112,11 +111,6 @@ export default class Render {
     this.store = store
     this.settings = settings
     this.callbacks = callbacks
-
-    // Wrap search callback with debounce
-    // if (this.callbacks.search) {
-    //   this.callbacks.search = debounce(this.callbacks.search, 200, true)
-    // }
 
     this.main = this.mainDiv()
     this.content = this.contentDiv()
@@ -557,6 +551,8 @@ export default class Render {
     input.setAttribute('autocapitalize', 'off')
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
+
+    // Deal with clicking search input field
     input.onclick = (e: MouseEvent) => {
       setTimeout(() => {
         const target = e.target as HTMLInputElement
@@ -565,59 +561,41 @@ export default class Render {
         }
       }, 10)
     }
-    input.onkeydown = (e) => {
-      if (e.key === 'ArrowUp') {
-        if (this.settings.isOpen) {
-          this.callbacks.open()
-        }
-        this.highlightUp()
-        e.preventDefault()
-      } else if (e.key === 'ArrowDown') {
-        if (this.settings.isOpen) {
-          this.callbacks.open()
-        }
-        this.highlightDown()
-        e.preventDefault()
-      } else if (e.key === 'Tab') {
-        if (!this.settings.isOpen) {
-          setTimeout(() => {
-            this.callbacks.close()
-          }, this.settings.timeoutDelay)
-        } else {
-          this.callbacks.close()
-        }
-      } else if (e.key === 'Enter') {
-        e.preventDefault()
-      }
-    }
-    input.onkeyup = (e) => {
+
+    input.oninput = debounce((e: Event) => {
       const target = e.target as HTMLInputElement
-      if (e.key === 'Enter') {
-        if (this.callbacks.addable && e.ctrlKey) {
-          addable.click()
-          e.preventDefault()
-          e.stopPropagation()
-          return
-        }
-        const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
-        if (highlighted) {
-          highlighted.click()
-        }
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        // Cancel out to leave for onkeydown to handle
-      } else if (e.key === 'Escape') {
-        this.callbacks.close()
-      } else {
-        if (this.settings.showSearch && this.settings.isOpen) {
-          this.callbacks.search(target.value)
-        } else {
-          input.value = ''
-        }
+      this.callbacks.search(target.value)
+    }, 100)
+
+    // Deal with keyboard events on search input field
+    input.onkeydown = (e: KeyboardEvent) => {
+      // Convert above if else statemets to switch
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'ArrowDown':
+          this.callbacks.open()
+          e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
+          break
+        case 'Tab':
+        case 'Escape':
+          this.callbacks.close()
+          break
+        case 'Enter':
+          if (this.callbacks.addable && e.ctrlKey) {
+            addable.click()
+          } else {
+            const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+            if (highlighted) {
+              highlighted.click()
+            }
+          }
+          break
       }
 
-      e.preventDefault()
-      e.stopPropagation()
+      return false
     }
+
+    // If focus is on the search input, open the dropdown
     input.onfocus = () => {
       // If we are already open, do nothing
       if (this.settings.isOpen) {
@@ -826,7 +804,7 @@ export default class Render {
     this.content.list.innerHTML = ''
 
     // If ajax and isSearching
-    if (this.callbacks.fetch && this.settings.isSearching) {
+    if (this.settings.isSearching) {
       const searching = document.createElement('div')
       searching.classList.add(this.classes.option)
       searching.classList.add(this.classes.disabled)

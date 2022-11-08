@@ -62,7 +62,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="search" class="content">
     <h2 class="header">showSearch / searchText / searchingText / searchHighlight</h2>
     <p><b>showSearch</b> - is a boolean value that will decide whether or not to show the search. Default is true.</p>
     <p>

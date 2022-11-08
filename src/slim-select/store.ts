@@ -90,6 +90,7 @@ export default class Store {
   }
 
   public setData(data: DataArray | DataArrayPartial) {
+    let dataFinal: DataArray = []
     data.forEach((dataObj: DataObject | DataObjectPartial) => {
       // Optgroup
       if (dataObj instanceof Optgroup || 'label' in dataObj) {
@@ -101,15 +102,17 @@ export default class Store {
         }
 
         if (optOptions.length > 0) {
-          this.data.push(new Optgroup(dataObj))
+          dataFinal.push(new Optgroup(dataObj))
         }
       }
 
       // Option
       if (dataObj instanceof Option || 'text' in dataObj) {
-        this.data.push(new Option(dataObj))
+        dataFinal.push(new Option(dataObj))
       }
     })
+
+    this.data = dataFinal
   }
 
   // Get data will return all the data
