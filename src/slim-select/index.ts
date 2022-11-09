@@ -234,7 +234,9 @@ export default class SlimSelect {
       this.settings.isOpen = true
 
       // Focus on input field only if search is enabled
-      this.render.content.search.input.focus()
+      if (this.settings.showSearch) {
+        this.render.content.search.input.focus()
+      }
 
       // Run afterOpen callback
       if (this.events.afterOpen) {

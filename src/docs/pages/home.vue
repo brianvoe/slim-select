@@ -141,7 +141,8 @@ export default defineComponent({
           <li><img src="images/check-mark.svg" /> Settable Data</li>
           <li><img src="images/check-mark.svg" /> Callback Events</li>
           <li><img src="images/check-mark.svg" /> Placeholders</li>
-          <li><img src="images/check-mark.svg" /> Search</li>
+          <li><img src="images/check-mark.svg" /> Advanced Search</li>
+          <li><img src="images/check-mark.svg" /> Tabbable</li>
           <li><img src="images/check-mark.svg" /> Disable Options</li>
           <li><img src="images/check-mark.svg" /> Light Css</li>
           <li><img src="images/check-mark.svg" /> Light Color Scheme</li>

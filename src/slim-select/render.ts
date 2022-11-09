@@ -220,7 +220,9 @@ export default class Render {
       }
     }
 
-    // Deal with keyboard events on search input field
+    // Deal with keyboard events on the main div
+    // This is to allow for normal selecting
+    // when you may not have a search bar
     main.onkeydown = (e: KeyboardEvent) => {
       // Convert above if else statemets to switch
       switch (e.key) {
@@ -228,6 +230,15 @@ export default class Render {
         case 'ArrowDown':
           this.callbacks.open()
           e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
+          return false
+        case 'Tab':
+          this.callbacks.close()
+          return true // Continue doing normal tabbing
+        case 'Enter':
+          const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          if (highlighted) {
+            highlighted.click()
+          }
           return false
         case 'Escape':
           this.callbacks.close()
@@ -588,6 +599,8 @@ export default class Render {
           e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
           return false
         case 'Tab':
+          // When tabbing focus on main div
+          // and then continuing normal tabbing
           this.settings.isTabbing = true
           this.main.main.focus()
           this.callbacks.close()
@@ -595,7 +608,7 @@ export default class Render {
           setTimeout(() => {
             this.settings.isTabbing = false
           }, 200)
-        // return false
+          return true // Continue doing normal tabbing
         case 'Escape':
           this.callbacks.close()
           return false
