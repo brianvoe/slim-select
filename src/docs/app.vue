@@ -83,10 +83,10 @@ export default defineComponent({
       </div>
       <div class="select-nav">
         <a href="https://github.com/brianvoe/slim-select" target="_blank">
-          <img src="images/github.png" />
+          <img src="./images/github.png" />
         </a>
         <a href="https://www.npmjs.com/package/slim-select" target="_blank">
-          <img src="images/npm.png" />
+          <img src="./images/npm.png" />
         </a>
         <select ref="selectNav" style="font-weight: bold"></select>
       </div>
