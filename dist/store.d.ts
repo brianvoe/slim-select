@@ -21,13 +21,13 @@ export interface OptionOptional {
     selected?: boolean;
     display?: boolean;
     disabled?: boolean;
-    placeholder?: string;
+    mandatory?: boolean;
+    placeholder?: boolean;
     class?: string;
     style?: string;
     data?: {
         [key: string]: string;
     };
-    mandatory?: boolean;
 }
 export declare class Option {
     id: string;
@@ -37,7 +37,7 @@ export declare class Option {
     selected: boolean;
     display: boolean;
     disabled: boolean;
-    placeholder: string;
+    placeholder: boolean;
     class: string;
     style: string;
     data: {
@@ -49,13 +49,16 @@ export declare class Option {
 export default class Store {
     private data;
     constructor(data: DataArrayPartial);
+    partialToFullData(data: DataArrayPartial): DataArray;
     setData(data: DataArray | DataArrayPartial): void;
     getData(): DataArray;
     getDataOptions(): Option[];
+    addOption(option: OptionOptional): void;
     setSelectedBy(selectedType: 'id' | 'value', selectedVals: string[]): void;
     getSelected(): DataArray;
     getSelectedOptions(): Option[];
     getSelectedIDs(): string[];
+    getSelectedValues(): string[];
     getOptionByID(id: string): Option | null;
     search(search: string, searchFilter?: (opt: Option, search: string) => boolean): DataArray;
     filter(filter: {

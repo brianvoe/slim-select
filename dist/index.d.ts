@@ -1,7 +1,7 @@
 import Render from './render';
 import Select from './select';
-import Settings from './settings';
-import Store, { DataArray, Option } from './store';
+import Settings, { SettingsPartial } from './settings';
+import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store';
 export * from './helper';
 export * from './render';
 export * from './select';
@@ -9,15 +9,16 @@ export * from './settings';
 export * from './store';
 export interface Config {
     select: string | Element;
-    data?: DataArray;
-    settings?: Settings;
+    data?: DataArrayPartial;
+    settings?: SettingsPartial;
     events?: Events;
 }
 export interface Events {
-    ajax?: (value: string, func: (info: any) => void) => void;
-    addable?: (value: string) => Option | string;
-    beforeOnChange?: (info: Option | Option[]) => void | boolean;
-    onChange?: (info: Option | Option[]) => void;
+    search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial;
+    searchFilter?: (opt: Option, search: string) => boolean;
+    addable?: (value: string) => OptionOptional | string;
+    beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void;
+    afterChange?: (newVal: Option[]) => void;
     beforeOpen?: () => void;
     afterOpen?: () => void;
     beforeClose?: () => void;
@@ -31,11 +32,19 @@ export default class SlimSelect {
     render: Render;
     events: Events;
     constructor(config: Config);
-    setEvents(events: Events): void;
-    setPosition(position: 'up' | 'down'): void;
     enable(): void;
     disable(): void;
-    destroy(ssid: string): void;
+    getData(): DataArray;
+    getSelected(): DataArray;
+    getSelectedOptions(): Option[];
+    setSelected(value: string | string[], close?: boolean): void;
+    setData(data: DataArrayPartial): void;
+    addOption(option: OptionOptional): void;
+    open(): void;
+    close(): void;
+    search(value: string): void;
+    destroy(): void;
+    private windowResize;
     private windowScroll;
     private documentClick;
 }
