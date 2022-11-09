@@ -25,7 +25,7 @@
 }
 
 // Animation keyframes
-@keyframes ss-scaleIn {
+@keyframes ss-valueIn {
   0% {
     transform: scale(0);
     opacity: 0;
@@ -35,7 +35,7 @@
     opacity: 1;
   }
 }
-@keyframes ss-scaleOut {
+@keyframes ss-valueOut {
   0% {
     transform: scale(1);
     opacity: 1;
@@ -128,22 +128,23 @@
       user-select: none;
       align-items: center;
       width: fit-content;
-      font-size: 12px;
-      color: var(--ss-bg-color);
       background-color: var(--ss-primary-color);
       border-radius: var(--ss-border-radius);
-      animation-name: ss-scaleIn;
+      animation-name: ss-valueIn;
       animation-duration: var(--ss-animation-timing);
       animation-timing-function: ease-out;
       animation-fill-mode: both;
 
       &.ss-value-out {
-        animation-name: ss-scaleOut;
+        animation-name: ss-valueOut;
         animation-duration: var(--ss-animation-timing);
         animation-timing-function: ease-out;
       }
 
       .ss-value-text {
+        font-size: 12px;
+        color: var(--ss-bg-color);
+        line-height: 1;
         padding: var(--ss-spacing-s) var(--ss-spacing-m);
       }
 
