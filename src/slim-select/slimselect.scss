@@ -5,11 +5,11 @@
   --ss-search-height: 30px;
 
   // Colors
+  --ss-primary-color: #5897fb;
   --ss-bg-color: #ffffff;
   --ss-font-color: #666666;
   --ss-font-placeholder-color: #8a8a8a;
   --ss-disabled-color: #8a8a8a;
-  --ss-primary-color: #5897fb;
   --ss-border-color: #dcdee2;
   --ss-highlight-color: #fffb8c;
   --ss-error-color: #dc3545;
@@ -68,6 +68,10 @@
   outline: 0;
   box-sizing: border-box;
   transition: background-color var(--ss-animation-timing);
+
+  &:focus {
+    box-shadow: 0 0 5px var(--ss-primary-color);
+  }
 
   &.ss-disabled {
     background-color: var(--ss-border-color);

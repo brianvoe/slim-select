@@ -59,7 +59,7 @@ onMounted(() => {
   })
 })
 
-function searchPromise(search: string, currentData: Option[]): Promise<Option[]> {
+function searchPromise(search: string, selectedData: DataArray): Promise<Option[]> {
   return new Promise((resolve, reject) => {
     if (search.length < 2) {
       return reject('Search must be at least 2 characters')
@@ -83,10 +83,6 @@ function searchPromise(search: string, currentData: Option[]): Promise<Option[]>
         value: `${person.first_name} ${person.last_name}`,
       }
     }) as Option[]
-
-    // From currentData, grab only the selected options
-    // prepend currentData selected with results
-    options = currentData.filter((option) => option.selected).concat(options)
 
     // Simulate a slow search
     setTimeout(() => {
@@ -145,9 +141,6 @@ function searchPromise(search: string, currentData: Option[]): Promise<Option[]>
                         value: `${person.first_name} ${person.last_name}`,
                       }
                     })
-
-                    // If you want to maintain currently selected options
-                    // you can do so by filtering out the current data
 
                     resolve(options)
                   })

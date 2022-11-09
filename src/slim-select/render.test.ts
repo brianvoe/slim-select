@@ -5,7 +5,7 @@
 'use strict'
 
 import { describe, expect, test } from '@jest/globals'
-import Render from './render'
+import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { DataArray, Option } from './store'
 
@@ -31,11 +31,7 @@ describe('select module', () => {
       beforeChange: (before: DataArray, after: DataArray) => {
         return true
       },
-      beforeDelete: (before: DataArray, after: DataArray) => {
-        return true
-      },
-      deleteByID: (id: string) => {},
-    }
+    } as Callbacks
 
     const render = new Render(settings, store, callbacks)
     expect(render).toBeInstanceOf(Render)

@@ -89,7 +89,7 @@ export default class Store {
     this.setData(data)
   }
 
-  public setData(data: DataArray | DataArrayPartial) {
+  public partialToFullData(data: DataArrayPartial): DataArray {
     let dataFinal: DataArray = []
     data.forEach((dataObj: DataObject | DataObjectPartial) => {
       // Optgroup
@@ -112,7 +112,11 @@ export default class Store {
       }
     })
 
-    this.data = dataFinal
+    return dataFinal
+  }
+
+  public setData(data: DataArray | DataArrayPartial) {
+    this.data = this.partialToFullData(data)
   }
 
   // Get data will return all the data

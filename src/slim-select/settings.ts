@@ -10,8 +10,7 @@ export default class Settings {
   // Dynamic settings
   public isMultiple: boolean = false
   public isOpen: boolean = false
-  public isSearching: boolean = false
-  public searchValue: string = ''
+  public isTabbing: boolean = false
 
   // Fields set from constructor
   public isEnabled: boolean

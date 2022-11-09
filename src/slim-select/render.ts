@@ -9,9 +9,8 @@ export interface Callbacks {
   setSelected: (value: string[], close: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
-  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean | void
-  afterChange?: (newVal: DataArray) => void
-  beforeDelete?: (neVal: DataArray, oldVal: DataArray) => boolean
+  beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
+  afterChange?: (newVal: Option[]) => void
 }
 
 export interface Main {
@@ -115,8 +114,11 @@ export default class Render {
     this.main = this.mainDiv()
     this.content = this.contentDiv()
 
-    // Render the placeholder and options
-    this.setSelected()
+    // Render the values
+    this.renderValues()
+
+    // Render the options
+    this.renderOptions(this.store.getData())
 
     // Add content to the content location settings
     this.settings.contentLocation.appendChild(this.content.main)
@@ -187,17 +189,12 @@ export default class Render {
     this.content.main.classList.remove(this.classes.open)
   }
 
-  public setSelected(): void {
-    // Render the values
-    this.renderValues()
-
-    // Render the options
-    this.renderOptions(this.store.getData())
-  }
-
   public mainDiv(): Main {
     // Create main container
     const main = document.createElement('div')
+
+    // Set tabable to allow tabbing to the element
+    main.tabIndex = 0
 
     // Add style and classes
     main.style.cssText = this.settings.style !== '' ? this.settings.style : ''
@@ -216,10 +213,30 @@ export default class Render {
       }
     }
 
+    // If main gets focus, open the content
+    main.onfocus = () => {
+      if (!this.settings.isTabbing) {
+        this.callbacks.open()
+      }
+    }
+
+    // Deal with keyboard events on search input field
+    main.onkeydown = (e: KeyboardEvent) => {
+      // Convert above if else statemets to switch
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'ArrowDown':
+          this.callbacks.open()
+          e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
+          return false
+        case 'Escape':
+          this.callbacks.close()
+          return false
+      }
+    }
+
     // Add onclick for main div
     main.onclick = (e: Event) => {
-      // e.stopPropagation()
-
       // Dont do anything if disabled
       if (!this.settings.isEnabled) {
         return
@@ -436,8 +453,8 @@ export default class Render {
 
         // By Default we will delete
         let shouldDelete = true
-        const before = this.store.getSelected()
-        const after = this.store.filter((o) => {
+        const before = this.store.getSelectedOptions()
+        const after = before.filter((o) => {
           return o.selected && o.id !== option.id
         }, true)
 
@@ -447,8 +464,8 @@ export default class Render {
         }
 
         // If there is a beforeDeselect function run it
-        if (this.callbacks.beforeDelete) {
-          shouldDelete = this.callbacks.beforeDelete(before, after) === true
+        if (this.callbacks.beforeChange) {
+          shouldDelete = this.callbacks.beforeChange(before, after) === true
         }
 
         if (shouldDelete) {
@@ -466,6 +483,11 @@ export default class Render {
             }
           }
           this.callbacks.setSelected(selectedValues, this.settings.closeOnSelect)
+
+          // Run afterChange callback
+          if (this.callbacks.afterChange) {
+            this.callbacks.afterChange(after)
+          }
         }
       }
 
@@ -552,19 +574,8 @@ export default class Render {
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
 
-    // Deal with clicking search input field
-    input.onclick = (e: MouseEvent) => {
-      setTimeout(() => {
-        const target = e.target as HTMLInputElement
-        if (target.value === '') {
-          this.callbacks.search('')
-        }
-      }, 10)
-    }
-
     input.oninput = debounce((e: Event) => {
-      const target = e.target as HTMLInputElement
-      this.callbacks.search(target.value)
+      this.callbacks.search((e.target as HTMLInputElement).value)
     }, 100)
 
     // Deal with keyboard events on search input field
@@ -575,11 +586,19 @@ export default class Render {
         case 'ArrowDown':
           this.callbacks.open()
           e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
-          break
+          return false
         case 'Tab':
+          this.settings.isTabbing = true
+          this.main.main.focus()
+          this.callbacks.close()
+
+          setTimeout(() => {
+            this.settings.isTabbing = false
+          }, 200)
+        // return false
         case 'Escape':
           this.callbacks.close()
-          break
+          return false
         case 'Enter':
           if (this.callbacks.addable && e.ctrlKey) {
             addable.click()
@@ -589,10 +608,8 @@ export default class Render {
               highlighted.click()
             }
           }
-          break
+          return false
       }
-
-      return false
     }
 
     // If focus is on the search input, open the dropdown
@@ -803,16 +820,6 @@ export default class Render {
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
-    // If ajax and isSearching
-    if (this.settings.isSearching) {
-      const searching = document.createElement('div')
-      searching.classList.add(this.classes.option)
-      searching.classList.add(this.classes.disabled)
-      searching.innerHTML = this.settings.searchingText
-      this.content.list.appendChild(searching)
-      return
-    }
-
     // If no results show no results text
     if (data.length === 0) {
       const noResults = document.createElement('div')
@@ -827,48 +834,50 @@ export default class Render {
     for (const d of data) {
       // Create optgroup
       if (d instanceof Optgroup) {
+        // Create optgroup
         const optgroupEl = document.createElement('div')
         optgroupEl.classList.add(this.classes.optgroup)
 
         // Create label
         const optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.classes.optgroupLabel)
+        optgroupLabel.innerHTML = d.label
+
+        // If selectByGroup is true and isMultiple then add click event to label
         if (this.settings.selectByGroup && this.settings.isMultiple) {
           optgroupLabel.classList.add(this.classes.optgroupSelectable)
+          optgroupLabel.addEventListener('click', (e: MouseEvent) => {
+            e.preventDefault()
+            e.stopPropagation()
+
+            for (const childEl of optgroupEl.children as any as HTMLDivElement[]) {
+              if (childEl.className.indexOf(this.classes.option) !== -1) {
+                childEl.click()
+              }
+            }
+          })
         }
-        optgroupLabel.innerHTML = d.label
+
+        // Add optgroup label
         optgroupEl.appendChild(optgroupLabel)
 
-        const options = d.options
-        if (options) {
-          for (const o of options) {
-            optgroupEl.appendChild(this.option(o))
-          }
-
-          // Selecting all values by clicking the group label
-          if (this.settings.selectByGroup && this.settings.isMultiple) {
-            optgroupLabel.addEventListener('click', (e: MouseEvent) => {
-              e.preventDefault()
-              e.stopPropagation()
-
-              for (const childEl of optgroupEl.children as any as HTMLDivElement[]) {
-                if (childEl.className.indexOf(this.classes.option) !== -1) {
-                  childEl.click()
-                }
-              }
-            })
-          }
+        // Loop through options
+        for (const o of d.options) {
+          optgroupEl.appendChild(this.option(o))
         }
+
+        // Add optgroup to list
         this.content.list.appendChild(optgroupEl)
       }
 
+      // Create option
       if (d instanceof Option) {
         this.content.list.appendChild(this.option(d as Option))
       }
     }
   }
 
-  // Create option
+  // Create option div element
   public option(option: Option): HTMLDivElement {
     // Add hidden placeholder
     if (option.placeholder) {
@@ -878,9 +887,9 @@ export default class Render {
       return placeholder
     }
 
+    // Create option
     const optionEl = document.createElement('div')
-
-    // Add class to div element
+    optionEl.dataset.id = option.id // Dataset id for identifying an option
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
@@ -888,15 +897,9 @@ export default class Render {
         optionEl.classList.add(dataClass)
       })
     }
-
-    // Add style to div element
     if (option.style) {
       optionEl.style.cssText = option.style
     }
-
-    const selectedOptions = this.store.getSelectedOptions()
-
-    optionEl.dataset.id = option.id
 
     // Set option content
     if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
@@ -935,6 +938,8 @@ export default class Render {
       e.preventDefault()
       e.stopPropagation()
 
+      // Setup variables
+      const selectedOptions = this.store.getSelectedOptions()
       const element = e.target as HTMLDivElement
       const elementID = String(element.dataset.id)
 
@@ -952,7 +957,7 @@ export default class Render {
         return
       }
 
-      // Setup
+      // Setup variables
       let shouldUpdate = false
       const before = this.store.getSelectedOptions()
       let after = [] as Option[]
@@ -994,6 +999,12 @@ export default class Render {
       }
 
       if (shouldUpdate) {
+        // Check if the option exists in the store
+        // if not run addOption callback
+        if (!this.store.getOptionByID(elementID)) {
+          this.callbacks.addOption(option)
+        }
+
         // Get values from after and set as selected
         this.callbacks.setSelected(
           after.map((o: Option) => o.value),
@@ -1089,4 +1100,24 @@ export default class Render {
     // default to current position if we cant determine a perfect one
     return 'down'
   }
+
+  // public focusNextElement() {
+  //   //add all elements we want to include in our selection
+  //   var focussableElements =
+  //     'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])'
+  //   if (document.activeElement && document.activeElement.form) {
+  //     var focussable = Array.prototype.filter.call(
+  //       document.activeElement.form.querySelectorAll(focussableElements),
+  //       function (element) {
+  //         //check for visibility while always include the current activeElement
+  //         return element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
+  //       },
+  //     )
+  //     var index = focussable.indexOf(document.activeElement)
+  //     if (index > -1) {
+  //       var nextElement = focussable[index + 1] || focussable[0]
+  //       nextElement.focus()
+  //     }
+  //   }
+  // }
 }

@@ -19,11 +19,11 @@ export interface Config {
 }
 
 export interface Events {
-  search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial | false | void
+  search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
   searchFilter?: (opt: Option, search: string) => boolean
   addable?: (value: string) => OptionOptional | string
-  beforeChange?: (newVal: DataArray, oldVal: DataArray) => boolean | void
-  afterChange?: (newVal: DataArray) => void
+  beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
+  afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void
   afterOpen?: () => void
   beforeClose?: () => void
@@ -41,13 +41,13 @@ export default class SlimSelect {
 
   // Events
   public events = {
-    fetch: undefined,
+    search: undefined,
     searchFilter: (opt: Option, search: string) => {
       return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
     },
     addable: undefined,
-    beforeOnChange: undefined,
-    onChange: undefined,
+    beforeChange: undefined,
+    afterChange: undefined,
     beforeOpen: undefined,
     afterOpen: undefined,
     beforeClose: undefined,
@@ -109,9 +109,6 @@ export default class SlimSelect {
       search: this.search.bind(this),
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange,
-      beforeDelete: (before: DataArray, after: DataArray) => {
-        return true
-      },
     }
 
     // Setup render class
@@ -159,6 +156,10 @@ export default class SlimSelect {
     this.render.disable()
   }
 
+  public getData(): DataArray {
+    return this.store.getData()
+  }
+
   public getSelected(): DataArray {
     return this.store.getSelected()
   }
@@ -170,12 +171,14 @@ export default class SlimSelect {
   public setSelected(value: string | string[], close: boolean = true): void {
     // Update the store
     this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
+    const data = this.store.getData()
 
     // Update the select element
-    this.select.setSelected(this.store.getSelectedValues())
+    this.select.updateOptions(data)
 
     // Update the render
-    this.render.setSelected()
+    this.render.renderValues()
+    this.render.renderOptions(data)
 
     // Close the content
     if (close) {
@@ -203,6 +206,7 @@ export default class SlimSelect {
     this.select.updateOptions(data)
 
     // Update the render
+    this.render.renderValues()
     this.render.renderOptions(data)
   }
 
@@ -229,7 +233,7 @@ export default class SlimSelect {
       // Update settings
       this.settings.isOpen = true
 
-      // Focus on input field
+      // Focus on input field only if search is enabled
       this.render.content.search.input.focus()
 
       // Run afterOpen callback
@@ -273,78 +277,44 @@ export default class SlimSelect {
 
   // Take in string value and search current options
   public search(value: string): void {
-    console.log('search', value)
-    // Only filter data and rerender if value has changed
-    if (this.settings.searchValue === value) {
-      return
-    }
-
+    // If the passed in value is not the same as the search input value
+    // then lets update the search input value
     if (this.render.content.search.input.value !== value) {
       this.render.content.search.input.value = value
     }
 
     // If no search event run regular search
     if (!this.events.search) {
-      this.render.renderOptions(this.store.search(value))
+      // If value is empty then render all options
+      this.render.renderOptions(value === '' ? this.store.getData() : this.store.search(value))
       return
     }
 
-    // Search event exists so lets update isSearching settings
-    this.settings.isSearching = true
+    // Search event exists so lets render the searching text
     this.render.renderSearching()
 
     // Based upon the search event deal with the response
-    const searchResp = this.events.search(value, this.store.getData())
+    const searchResp = this.events.search(value, this.store.getSelected())
 
     // If the search event returns a promise
     if (searchResp instanceof Promise) {
       searchResp
         .then((data: DataArrayPartial) => {
-          this.settings.isSearching = false
-
-          console.log(data)
-
-          // Update the store
-          this.store.setData(data)
-
-          // Update the original select element
-          this.select.updateOptions(this.store.getData())
-
-          // Update the render
-          this.render.renderValues()
-          this.render.renderOptions(this.store.getData())
+          // Update the render with the new data
+          this.render.renderOptions(this.store.partialToFullData(data))
         })
         .catch((err: Error | string) => {
-          this.settings.isSearching = false
-
-          // Update the store
-          this.store.setData([])
-
-          // Update the original select element
-          this.select.updateOptions(this.store.getData())
-
-          // Update the render
-          this.render.renderValues()
+          // Update the render with error
           this.render.renderError(typeof err === 'string' ? err : err.message)
         })
 
       return
-    }
-
-    // If the search event returns a data array
-    if (Array.isArray(searchResp)) {
-      this.settings.isSearching = false
-
-      // Update the store
-      this.store.setData(searchResp)
-
-      // Update the original select element
-      this.select.updateOptions(this.store.getData())
-
-      // Update the render
-      this.render.renderValues()
-      this.render.renderOptions(this.store.getData())
-      return
+    } else if (Array.isArray(searchResp)) {
+      // Update the render options
+      this.render.renderOptions(this.store.partialToFullData(searchResp))
+    } else {
+      // Update the render with error
+      this.render.renderError('Search event must return a promise or an array of data')
     }
   }
 
