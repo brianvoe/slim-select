@@ -229,10 +229,12 @@ export default class Render {
         case 'ArrowUp':
         case 'ArrowDown':
           this.callbacks.open()
-          e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
+          e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
+          this.settings.isTabbing = true
           this.callbacks.close()
+          this.settings.isTabbing = false
           return true // Continue doing normal tabbing
         case 'Enter':
           const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
@@ -596,7 +598,7 @@ export default class Render {
         case 'ArrowUp':
         case 'ArrowDown':
           this.callbacks.open()
-          e.key === 'ArrowDown' ? this.highlightDown() : this.highlightUp()
+          e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
           // When tabbing focus on main div
@@ -704,99 +706,76 @@ export default class Render {
     return searchReturn
   }
 
-  // highlightUp is used to highlight the previous option in the list
-  public highlightUp(): void {
-    const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
-    let prev: HTMLDivElement | null = null
-    if (highlighted) {
-      prev = highlighted.previousSibling as HTMLDivElement
-      while (prev !== null) {
-        if (prev.classList.contains(this.classes.disabled)) {
-          prev = prev.previousSibling as HTMLDivElement
-          continue
-        } else {
-          break
-        }
-      }
-    } else {
-      const allOptions = this.content.list.querySelectorAll(
-        '.' + this.classes.option + ':not(.' + this.classes.disabled + ')',
-      )
-      prev = allOptions[allOptions.length - 1] as HTMLDivElement
+  public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
+    // Put together query string
+    let query = '.' + this.classes.option
+    if (notPlaceholder) {
+      query += ':not(.' + this.classes.placeholder + ')'
+    }
+    if (notDisabled) {
+      query += ':not(.' + this.classes.disabled + ')'
+    }
+    if (notHidden) {
+      query += ':not(.' + this.classes.hide + ')'
     }
 
-    // Do not select if optgroup label
-    if (prev && prev.classList.contains(this.classes.optgroupLabel)) {
-      prev = null
-    }
-
-    // Check if parent is optgroup
-    if (prev === null) {
-      const parent = highlighted.parentNode as HTMLDivElement
-      if (parent.classList.contains(this.classes.optgroup)) {
-        if (parent.previousSibling) {
-          const prevNodes = (parent.previousSibling as HTMLDivElement).querySelectorAll(
-            '.' + this.classes.option + ':not(.' + this.classes.disabled + ')',
-          )
-          if (prevNodes.length) {
-            prev = prevNodes[prevNodes.length - 1] as HTMLDivElement
-          }
-        }
-      }
-    }
-
-    // If previous element exists highlight it
-    if (prev) {
-      if (highlighted) {
-        highlighted.classList.remove(this.classes.highlighted)
-      }
-      prev.classList.add(this.classes.highlighted)
-      this.ensureElementInView(this.content.list, prev)
-    }
+    return Array.from(this.content.list.querySelectorAll(query))
   }
 
-  // highlightDown is used to highlight the next option in the list
-  public highlightDown(): void {
-    const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
-    let next = null
+  // highlightUp is used to highlight the previous option in the list
+  public highlight(dir: 'up' | 'down'): void {
+    // Get full list of options in list
+    const options = this.getOptions(true, true, true)
 
-    if (highlighted) {
-      next = highlighted.nextSibling as HTMLDivElement
-      while (next !== null) {
-        if (next.classList.contains(this.classes.disabled)) {
-          next = next.nextSibling as HTMLDivElement
-          continue
+    // If there are no options, do nothing
+    if (options.length === 0) {
+      return
+    }
+
+    // If length is 1, highlight it
+    if (options.length === 1) {
+      // Check if option doesnt already has highlighted class
+      if (!options[0].classList.contains(this.classes.highlighted)) {
+        options[0].classList.add(this.classes.highlighted)
+        return
+      }
+    }
+
+    // Loop through options and find the highlighted one
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].classList.contains(this.classes.highlighted)) {
+        // Remove highlighted class from current one
+        options[i].classList.remove(this.classes.highlighted)
+
+        // Highlight the next one
+        if (dir === 'down') {
+          if (i + 1 < options.length) {
+            options[i + 1].classList.add(this.classes.highlighted)
+            this.ensureElementInView(this.content.list, options[i + 1])
+          } else {
+            options[0].classList.add(this.classes.highlighted)
+            this.ensureElementInView(this.content.list, options[0])
+          }
         } else {
-          break
+          if (i - 1 >= 0) {
+            options[i - 1].classList.add(this.classes.highlighted)
+            this.ensureElementInView(this.content.list, options[i - 1])
+          } else {
+            options[options.length - 1].classList.add(this.classes.highlighted)
+            this.ensureElementInView(this.content.list, options[options.length - 1])
+          }
         }
-      }
-    } else {
-      next = this.content.list.querySelector(
-        '.' + this.classes.option + ':not(.' + this.classes.disabled + ')',
-      ) as HTMLDivElement
-    }
 
-    // Check if parent is optgroup
-    if (next === null && highlighted !== null) {
-      const parent = highlighted.parentNode as HTMLDivElement
-      if (parent.classList.contains(this.classes.optgroup)) {
-        if (parent.nextSibling) {
-          const sibling = parent.nextSibling as HTMLDivElement
-          next = sibling.querySelector(
-            '.' + this.classes.option + ':not(.' + this.classes.disabled + ')',
-          ) as HTMLDivElement
-        }
+        return
       }
     }
 
-    // If previous element exists highlight it
-    if (next) {
-      if (highlighted) {
-        highlighted.classList.remove(this.classes.highlighted)
-      }
-      next.classList.add(this.classes.highlighted)
-      this.ensureElementInView(this.content.list, next)
-    }
+    // If we get here, there is no highlighted option
+    // So we will highlight the first or last based upon direction
+    options[dir === 'down' ? 0 : options.length - 1].classList.add(this.classes.highlighted)
+
+    // Scroll to highlighted one
+    this.ensureElementInView(this.content.list, options[dir === 'down' ? 0 : options.length - 1])
   }
 
   // Create main container that options will reside
@@ -917,7 +896,11 @@ export default class Render {
     // Set option content
     if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
       const textOrHtml = this.settings.useHtml ? option.html : option.text
-      optionEl.innerHTML = this.highlight(textOrHtml, this.content.search.input.value, this.classes.searchHighlighter)
+      optionEl.innerHTML = this.highlightText(
+        textOrHtml,
+        this.content.search.input.value,
+        this.classes.searchHighlighter,
+      )
     } else if (option.html && option.html !== '') {
       optionEl.innerHTML = option.html
     } else {
@@ -1019,10 +1002,12 @@ export default class Render {
         }
 
         // Get values from after and set as selected
+        this.settings.isTabbing = true
         this.callbacks.setSelected(
           after.map((o: Option) => o.value),
           this.settings.closeOnSelect,
         )
+        this.settings.isTabbing = false
 
         // callback that the value has changed
         if (this.callbacks.afterChange) {
@@ -1042,7 +1027,7 @@ export default class Render {
     this.content.main.remove()
   }
 
-  private highlight(str: string, search: any, className: string) {
+  private highlightText(str: string, search: any, className: string) {
     // the completed string will be itself if already set, otherwise, the string that was passed in
     let completedString: any = str
     const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
@@ -1113,24 +1098,4 @@ export default class Render {
     // default to current position if we cant determine a perfect one
     return 'down'
   }
-
-  // public focusNextElement() {
-  //   //add all elements we want to include in our selection
-  //   var focussableElements =
-  //     'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])'
-  //   if (document.activeElement && document.activeElement.form) {
-  //     var focussable = Array.prototype.filter.call(
-  //       document.activeElement.form.querySelectorAll(focussableElements),
-  //       function (element) {
-  //         //check for visibility while always include the current activeElement
-  //         return element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
-  //       },
-  //     )
-  //     var index = focussable.indexOf(document.activeElement)
-  //     if (index > -1) {
-  //       var nextElement = focussable[index + 1] || focussable[0]
-  //       nextElement.focus()
-  //     }
-  //   }
-  // }
 }

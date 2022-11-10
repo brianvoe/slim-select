@@ -212,12 +212,8 @@ export default class SlimSelect {
 
   public open(): void {
     // Dont open if disabled
-    if (!this.settings.isEnabled) {
-      return
-    }
-
     // Dont do anything if the content is already open
-    if (this.settings.isOpen) {
+    if (!this.settings.isEnabled || this.settings.isOpen) {
       return
     }
 
@@ -265,11 +261,13 @@ export default class SlimSelect {
     // Clear search
     this.search('') // Clear search
 
+    // If we arent tabbing focus back on the main element
+    if (!this.settings.isTabbing) {
+      this.render.main.main.focus()
+    }
+
     // Reset the content below
     setTimeout(() => {
-      // After content is closed lets blur on the input field
-      this.render.content.search.input.blur()
-
       // Run afterClose callback
       if (this.events.afterClose) {
         this.events.afterClose()
@@ -368,7 +366,9 @@ export default class SlimSelect {
 
     // Check if the click was on the content by looking at the parents
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
+      this.settings.isTabbing = true
       this.close()
+      this.settings.isTabbing = false
     }
   }
 }
