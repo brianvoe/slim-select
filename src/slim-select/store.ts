@@ -83,6 +83,7 @@ export class Option {
 }
 
 export default class Store {
+  // Main data set, never null
   private data: DataArray = []
 
   constructor(data: DataArrayPartial) {
