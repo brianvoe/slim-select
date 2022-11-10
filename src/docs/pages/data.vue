@@ -41,53 +41,12 @@ export default defineComponent({
   <div id="data">
     <div class="content">
       <h2 class="header">data</h2>
-      <p>Data is a value that can be set to initialize options in the select dropdown</p>
 
-      <div class="select-split">
-        <select ref="dataSingle"></select>
-        <select ref="dataMultiple" multiple></select>
-      </div>
-
-      <pre>
-        <code class="language-javascript">
-          new SlimSelect({
-            select: '.element .you #want',
-            data: [
-              {text: 'Value 1'},
-              {text: 'Value 2'},
-              {text: 'Value 3'}
-            ],
-            // groups
-            data: [
-              {
-                label: 'Animals',
-                options: [
-                  {text: 'Cat'},
-                  {text: 'Dog'},
-                  {text: 'Bird'}
-                ]
-              }
-            ]
-            // Mix - option and group options
-            data: [
-              {text: 'Human'}, // regular option
-              {
-                label: 'Animals',
-                options: [
-                  {text: 'Cat'},
-                  {text: 'Dog'},
-                  {text: 'Bird'}
-                ]
-              }
-            ]
-          })
-
-          // If you want to set a placeholder set the first object placeholder to true
-          {'placeholder': true, 'text': 'placeholder text'}
-        </code>
-      </pre>
-
-      <h4>Data Types</h4>
+      <h3>Data Types</h3>
+      <p>
+        There are two types of data types. The option which consists of a variation of fields to customize the option.
+        You can also provide an optgroup which has a label and an array of options.
+      </p>
       <pre>
         <code class="language-javascript">
           var optgroup = {
@@ -106,6 +65,65 @@ export default defineComponent({
             style: '', // Optional - default is not set
             data: {} // Optional - If you have data attributes
           }
+        </code>
+      </pre>
+      <br />
+
+      <h3>Data Field</h3>
+      <p>
+        The data field is an array of options and optgroups. The data field can be used in place of the select element.
+        The data field will also be used to update the options in the original select element.
+      </p>
+      <p>
+        The only required field is the text field. The value field will be set to the text field if not set. All other
+        fields are optional and have default values if not set.
+      </p>
+
+      <div class="select-split">
+        <select ref="dataSingle"></select>
+        <select ref="dataMultiple" multiple></select>
+      </div>
+
+      <pre>
+        <code class="language-javascript">
+          new SlimSelect({
+            select: '.element .you #want',
+            
+            // Options
+            data: [
+              {text: 'Value 1'},
+              {text: 'Value 2'},
+              {text: 'Value 3'}
+            ],
+
+            // Optgroup
+            data: [
+              {
+                label: 'Animals',
+                options: [
+                  {text: 'Cat'},
+                  {text: 'Dog'},
+                  {text: 'Bird'}
+                ]
+              }
+            ]
+
+            // Mix - option and group options
+            data: [
+              {text: 'Human'}, // regular option
+              {
+                label: 'Animals',
+                options: [
+                  {text: 'Cat'},
+                  {text: 'Dog'},
+                  {text: 'Bird'}
+                ]
+              }
+            ]
+          })
+
+          // If you want to set a placeholder set the first object placeholder to true
+          {'placeholder': true, 'text': 'placeholder text'}
         </code>
       </pre>
     </div>

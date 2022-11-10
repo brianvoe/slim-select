@@ -149,6 +149,7 @@ export default defineComponent({
           <li><img src="../images/check-mark.svg" /> Style Inheritance</li>
           <li><img src="../images/check-mark.svg" /> Clean Animations</li>
           <li><img src="../images/check-mark.svg" /> Performant</li>
+          <li><img src="../images/check-mark.svg" /> Typescript</li>
         </ul>
       </div>
 
