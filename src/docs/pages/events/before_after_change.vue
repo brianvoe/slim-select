@@ -18,7 +18,7 @@ export default defineComponent({
       select: this.$refs.beforeChangeSingle as HTMLSelectElement,
       events: {
         beforeChange: (newValue: DataArray, oldValue: DataArray) => {
-          this.beforeChangeSingle = newValue
+          this.beforeChangeSingle = oldValue
         },
       },
     })
@@ -27,7 +27,7 @@ export default defineComponent({
       select: this.$refs.beforeChangeMultiple as HTMLSelectElement,
       events: {
         beforeChange: (newValue: DataArray, oldValue: DataArray) => {
-          this.beforeChangeMultiple = newValue
+          this.beforeChangeMultiple = oldValue
           return true
         },
       },
