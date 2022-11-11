@@ -78,7 +78,7 @@ export default defineComponent({
   <div id="app">
     <div class="header">
       <div class="text">
-        <div class="logo">Slim Select</div>
+        <h1 class="logo">Slim Select</h1>
         <div class="tagline">Slim advanced select dropdown</div>
       </div>
       <div class="select-nav">
