@@ -154,7 +154,7 @@
         width: var(--ss-spacing-l);
         padding: var(--ss-spacing-s) var(--ss-spacing-m);
         cursor: pointer;
-        border-left: solid 1px var(--ss-disabled-color);
+        border-left: solid 1px var(--ss-bg-color);
 
         svg {
           path {
