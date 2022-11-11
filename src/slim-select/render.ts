@@ -478,7 +478,7 @@ export default class Render {
 
         // If there is a beforeDeselect function run it
         if (this.callbacks.beforeChange) {
-          shouldDelete = this.callbacks.beforeChange(before, after) === true
+          shouldDelete = this.callbacks.beforeChange(after, before) === true
         }
 
         if (shouldDelete) {
