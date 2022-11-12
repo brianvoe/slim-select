@@ -37,7 +37,7 @@ const router = createRouter({
     {
       path: '/methods',
       name: 'Methods',
-      component: () => import('./pages/methods.vue'),
+      component: () => import('./pages/methods/index.vue'),
     },
   ],
 })

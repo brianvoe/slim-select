@@ -1,0 +1,12 @@
+.alert {
+  position: relative;
+  color: var(--color-font);
+  padding: var(--spacing-half) var(--spacing);
+  margin: 0 0 var(--spacing-half) 0;
+  border-radius: var(--border-radius);
+
+  &.info {
+    background-color: var(--color-alert-info);
+    border-color: var(--color-alert-info-border);
+  }
+}

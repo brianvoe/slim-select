@@ -107,14 +107,14 @@ export default defineComponent({
       select
     </p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="selectHtmlSingle"></select>
       <select ref="selectHtmlMulti" multiple></select>
     </div>
-    <div class="select-split" style="padding: 16px 0 0 0">
+    <div class="row" style="padding: 16px 0 0 0">
       <h4>Use text for selected values</h4>
     </div>
-    <div class="select-split">
+    <div class="row">
       <select ref="selectHtmlSingleText"></select>
       <select ref="selectHtmlMultiText" multiple></select>
     </div>

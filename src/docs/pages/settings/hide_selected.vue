@@ -28,7 +28,7 @@ export default defineComponent({
     <h2 class="header">hideSelected</h2>
     <p>hideSelected setting is used to hide the current selected option in the dropdown.</p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="hideSelectedSingle">
         <option data-placeholder="true"></option>
         <option value="value1">Value 1</option>

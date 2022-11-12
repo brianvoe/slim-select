@@ -935,7 +935,7 @@ export default class Render {
       e.stopPropagation()
 
       // Setup variables
-      const selectedOptions = this.store.getSelectedOptions()
+      const selectedOptions = this.store.getSelected()
       const element = e.target as HTMLDivElement
       const elementID = String(element.dataset.id)
 

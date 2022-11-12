@@ -100,7 +100,7 @@ function searchPromise(search: string, selectedData: DataArray): Promise<Option[
       Call callback() method with slimselect data, false or string with specific string.
     </p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="searchSingle"></select>
       <select ref="searchMultiple" multiple></select>
     </div>

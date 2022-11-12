@@ -29,7 +29,7 @@ export default defineComponent({
     <p>This will allow you to deselect a value on a single/multiple select dropdown.</p>
     <p>Be sure to have an empty option data placeholder so slim select has an empty string value to select.</p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="allowDeselectSingle">
         <option data-placeholder="true"></option>
         <option value="value1">Value 1</option>

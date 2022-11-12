@@ -98,7 +98,7 @@ export default defineComponent({
       <p>
         Basic single select usage with Slim Select is extremely easy. Just set the select value to your select element.
       </p>
-      <div class="select-split">
+      <div class="row">
         <div>
           <h4>Options</h4>
           <select ref="single">
@@ -157,7 +157,7 @@ export default defineComponent({
         Multi selects work just the same as a single select. The only difference is setting the multiple attribute on
         your select.
       </p>
-      <div class="select-split">
+      <div class="row">
         <div>
           <h4>Options</h4>
           <select ref="multiple" multiple>

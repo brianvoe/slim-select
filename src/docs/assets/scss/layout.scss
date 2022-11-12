@@ -106,13 +106,17 @@ body {
           border-radius: 0px;
         }
 
-        .select-split {
+        .row {
           display: flex;
           flex-direction: row;
           gap: var(--spacing-half);
 
           > * {
-            width: 100%;
+            flex: 1 1 auto;
+          }
+
+          .btn {
+            flex: 0 1 auto;
           }
         }
       }

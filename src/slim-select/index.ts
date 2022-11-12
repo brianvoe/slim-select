@@ -160,12 +160,19 @@ export default class SlimSelect {
     return this.store.getData()
   }
 
-  public getSelected(): DataArray {
-    return this.store.getSelected()
+  public setData(data: DataArrayPartial): void {
+    // Update the store
+    this.store.setData(data)
+
+    // Update original select element
+    this.select.updateOptions(this.store.getData())
+
+    // Update the render
+    this.render.renderOptions(this.store.getData())
   }
 
-  public getSelectedOptions(): Option[] {
-    return this.store.getSelectedOptions()
+  public getSelected(): string[] {
+    return this.store.getSelected()
   }
 
   public setSelected(value: string | string[], close: boolean = true): void {
@@ -184,17 +191,6 @@ export default class SlimSelect {
     if (close) {
       this.close()
     }
-  }
-
-  public setData(data: DataArrayPartial): void {
-    // Update the store
-    this.store.setData(data)
-
-    // Update original select element
-    this.select.updateOptions(this.store.getData())
-
-    // Update the render
-    this.render.renderOptions(this.store.getData())
   }
 
   public addOption(option: OptionOptional): void {
@@ -224,21 +220,28 @@ export default class SlimSelect {
 
     this.render.open()
 
+    // Focus on input field only if search is enabled
+    if (this.settings.showSearch) {
+      this.render.content.search.input.focus()
+    }
+
     // setTimeout is for animation completion
     setTimeout(() => {
       // Update settings
       this.settings.isOpen = true
-
-      // Focus on input field only if search is enabled
-      if (this.settings.showSearch) {
-        this.render.content.search.input.focus()
-      }
 
       // Run afterOpen callback
       if (this.events.afterOpen) {
         this.events.afterOpen()
       }
     }, this.settings.timeoutDelay)
+
+    // Start an interval to check if main has moved
+    // in order to keep content close to main
+    if (this.settings.intervalMove) {
+      clearInterval(this.settings.intervalMove)
+    }
+    this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
   }
 
   public close(): void {
@@ -273,6 +276,10 @@ export default class SlimSelect {
         this.events.afterClose()
       }
     }, this.settings.timeoutDelay)
+
+    if (this.settings.intervalMove) {
+      clearInterval(this.settings.intervalMove)
+    }
   }
 
   // Take in string value and search current options
@@ -294,7 +301,7 @@ export default class SlimSelect {
     this.render.renderSearching()
 
     // Based upon the search event deal with the response
-    const searchResp = this.events.search(value, this.store.getSelected())
+    const searchResp = this.events.search(value, this.store.getSelectedOptions())
 
     // If the search event returns a promise
     if (searchResp instanceof Promise) {

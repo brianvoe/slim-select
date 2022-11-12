@@ -157,38 +157,7 @@ export default class Store {
     }
   }
 
-  // Loop through each option and optgroup options
-  // and return an array of all the selected options
-  public getSelected(): DataArray {
-    return this.filter((opt: Option) => {
-      return opt.selected
-    }, true)
-  }
-
-  public getSelectedOptions(): Option[] {
-    return this.filter((opt: Option) => {
-      return opt.selected
-    }, false) as Option[]
-  }
-
-  public getSelectedIDs(): string[] {
-    let selectedOptions = this.getSelected()
-
-    let selectedIDs: string[] = []
-    selectedOptions.forEach((dataObj: DataObject) => {
-      if (dataObj instanceof Optgroup) {
-        dataObj.options.forEach((option: Option) => {
-          selectedIDs.push(option.id)
-        })
-      } else {
-        selectedIDs.push(dataObj.id)
-      }
-    })
-
-    return selectedIDs
-  }
-
-  public getSelectedValues(): string[] {
+  public getSelected(): string[] {
     let selectedOptions = this.getSelectedOptions()
     let selectedValues: string[] = []
 
@@ -198,6 +167,23 @@ export default class Store {
     })
 
     return selectedValues
+  }
+
+  public getSelectedOptions(): Option[] {
+    return this.filter((opt: Option) => {
+      return opt.selected
+    }, false) as Option[]
+  }
+
+  public getSelectedIDs(): string[] {
+    let selectedOptions = this.getSelectedOptions()
+
+    let selectedIDs: string[] = []
+    selectedOptions.forEach((op: Option) => {
+      selectedIDs.push(op.id)
+    })
+
+    return selectedIDs
   }
 
   public getOptionByID(id: string): Option | null {

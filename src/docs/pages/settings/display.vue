@@ -31,7 +31,7 @@ export default defineComponent({
     <h2 class="header">display</h2>
     <p>Allows to hide elements of selected values.</p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="selectdisplay" multiple></select>
     </div>
 
@@ -59,7 +59,7 @@ export default defineComponent({
     </pre>
 
     <p>Or</p>
-    <div class="select-split">
+    <div class="row">
       <select ref="selectdisplay2" multiple>
         <option value="value1" style="display: none" selected>Value 1</option>
         <option value="value2" selected>Value 2</option>

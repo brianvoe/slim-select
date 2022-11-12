@@ -20,7 +20,7 @@ export default defineComponent({
       added to the underlining select options that slim select picked up and used
     </p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="optionsSingle">
         <option data-placeholder="true"></option>
         <option value="value1" data-info="Here is info">Data Attributes</option>

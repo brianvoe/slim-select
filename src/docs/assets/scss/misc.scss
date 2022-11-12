@@ -23,22 +23,112 @@ p {
   margin: 0 0 var(--spacing-half) 0;
 }
 
-.btn {
-  display: inline-block;
-  color: var(--color-white);
-  height: 20px;
-  width: auto;
-  max-width: 100%;
-  min-width: auto;
-  padding: var(--spacing-quarter) var(--spacing-half);
-  cursor: pointer;
-  background-color: var(--spacing-half);
-  text-align: center;
-  line-height: 18px;
-  user-select: none;
-  white-space: nowrap;
-  border-radius: var(--border-radius);
-  vertical-align: middle;
-  box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
-  box-sizing: content-box;
+/////////////
+// Padding //
+/////////////
+
+// Small
+.pad-s {
+  padding: var(--spacing-quarter);
+}
+.pad-t-s {
+  padding-top: var(--spacing-quarter);
+}
+.pad-r-s {
+  padding-right: var(--spacing-quarter);
+}
+.pad-b-s {
+  padding-bottom: var(--spacing-quarter);
+}
+.pad-l-s {
+  padding-left: var(--spacing-quarter);
+}
+
+// Medium
+.pad-m {
+  padding: var(--spacing-half);
+}
+.pad-t-m {
+  padding-top: var(--spacing-half);
+}
+.pad-r-m {
+  padding-right: var(--spacing-half);
+}
+.pad-b-m {
+  padding-bottom: var(--spacing-half);
+}
+.pad-l-m {
+  padding-left: var(--spacing-half);
+}
+
+// Large
+.pad-l {
+  padding: var(--spacing);
+}
+.pad-t-l {
+  padding-top: var(--spacing);
+}
+.pad-r-l {
+  padding-right: var(--spacing);
+}
+.pad-b-l {
+  padding-bottom: var(--spacing);
+}
+.pad-l-l {
+  padding-left: var(--spacing);
+}
+
+////////////
+// Margin //
+////////////
+
+// Small
+.mar-s {
+  margin: var(--spacing-quarter);
+}
+.mar-t-s {
+  margin-top: var(--spacing-quarter);
+}
+.mar-r-s {
+  margin-right: var(--spacing-quarter);
+}
+.mar-b-s {
+  margin-bottom: var(--spacing-quarter);
+}
+.mar-l-s {
+  margin-left: var(--spacing-quarter);
+}
+
+// Medium
+.mar-m {
+  margin: var(--spacing-half);
+}
+.mar-t-m {
+  margin-top: var(--spacing-half);
+}
+.mar-r-m {
+  margin-right: var(--spacing-half);
+}
+.mar-b-m {
+  margin-bottom: var(--spacing-half);
+}
+.mar-l-m {
+  margin-left: var(--spacing-half);
+}
+
+// Large
+.mar-l {
+  margin: var(--spacing);
+}
+.mar-t-l {
+  margin-top: var(--spacing);
+}
+.mar-r-l {
+  margin-right: var(--spacing);
+}
+.mar-b-l {
+  margin-bottom: var(--spacing);
+}
+.mar-l-l {
+  margin-left: var(--spacing);
 }

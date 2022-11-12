@@ -11,6 +11,7 @@ export default class Settings {
   public isMultiple: boolean = false
   public isOpen: boolean = false
   public isTabbing: boolean = false
+  public intervalMove: NodeJS.Timeout | null = null
 
   // Fields set from constructor
   public isEnabled: boolean

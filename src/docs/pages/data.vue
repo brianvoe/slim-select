@@ -79,7 +79,7 @@ export default defineComponent({
         fields are optional and have default values if not set.
       </p>
 
-      <div class="select-split">
+      <div class="row">
         <select ref="dataSingle"></select>
         <select ref="dataMultiple" multiple></select>
       </div>

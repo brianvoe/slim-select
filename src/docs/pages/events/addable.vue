@@ -39,7 +39,7 @@ export default defineComponent({
       added.
     </p>
 
-    <div class="select-split">
+    <div class="row">
       <select ref="addableSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>

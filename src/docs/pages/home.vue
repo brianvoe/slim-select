@@ -109,7 +109,7 @@ export default defineComponent({
 
 <template>
   <div id="home-content" class="content">
-    <div class="samples select-split">
+    <div class="samples row">
       <div class="single">
         <h2>Single Select</h2>
         <select ref="slimSingle">
