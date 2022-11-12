@@ -12,7 +12,7 @@ import Store, { DataArray, Option } from './store'
 describe('select module', () => {
   test('constructor', () => {
     // create a new store with 2 options
-    const store = new Store([
+    const store = new Store('single', [
       { text: 'test1', value: 'test1' },
       { text: 'test2', value: 'test2' },
     ])

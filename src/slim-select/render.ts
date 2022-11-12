@@ -318,15 +318,14 @@ export default class Render {
     const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
 
     // If there is a placeholder option use that
-    // If useHtml and html is set, use that
-    // If useHtml is false and text is set, use that
+    // If placeholder has an html value, use that
+    // If placeholder has a text, use that
     // If nothing is set, use the placeholder text
     let placeholderText = this.settings.placeholderText
     if (placeholderOption.length) {
-      if (this.settings.useHtml && placeholderOption[0].html !== '') {
+      if (placeholderOption[0].html !== '') {
         placeholderText = placeholderOption[0].html
-      }
-      if (!this.settings.useHtml && placeholderOption[0].text !== '') {
+      } else if (placeholderOption[0].text !== '') {
         placeholderText = placeholderOption[0].text
       }
     }
@@ -363,7 +362,7 @@ export default class Render {
       // Create single value container
       const singleValue = document.createElement('div')
       singleValue.classList.add(this.classes.single)
-      singleValue.innerHTML = selectedSingle.html && !this.settings.useHtml ? selectedSingle.html : selectedSingle.text
+      singleValue.innerHTML = selectedSingle.html ? selectedSingle.html : selectedSingle.text
 
       // If there is a selected value, set a single div
       this.main.values.innerHTML = singleValue.outerHTML
@@ -453,7 +452,7 @@ export default class Render {
 
     const text = document.createElement('div')
     text.classList.add(this.classes.valueText)
-    text.innerHTML = option.html && this.settings.useHtml !== true ? option.html : option.text
+    text.innerHTML = option.text // For multiple values always use text
     value.appendChild(text)
 
     // Only add deletion if the option is not mandatory
@@ -895,7 +894,7 @@ export default class Render {
 
     // Set option content
     if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
-      const textOrHtml = this.settings.useHtml ? option.html : option.text
+      const textOrHtml = option.html !== '' ? option.html : option.text
       optionEl.innerHTML = this.highlightText(
         textOrHtml,
         this.content.search.input.value,

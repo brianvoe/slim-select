@@ -28,16 +28,17 @@ export interface Events {
   afterOpen?: () => void
   beforeClose?: () => void
   afterClose?: () => void
+  error?: (err: Error) => void
 }
 
 export default class SlimSelect {
   public selectEl: HTMLSelectElement
 
   // Classes
-  public settings: Settings
-  public select: Select
-  public store: Store
-  public render: Render
+  public settings!: Settings
+  public select!: Select
+  public store!: Store
+  public render!: Render
 
   // Events
   public events = {
@@ -60,10 +61,16 @@ export default class SlimSelect {
       typeof config.select === 'string' ? document.querySelector(config.select) : config.select
     ) as HTMLSelectElement
     if (!this.selectEl) {
-      throw new Error('Could not find select element')
+      if (config.events && config.events.error) {
+        config.events.error(new Error('Could not find select element'))
+      }
+      return
     }
     if (this.selectEl.tagName !== 'SELECT') {
-      throw new Error('Element isnt of type select')
+      if (config.events && config.events.error) {
+        config.events.error(new Error('Element isnt of type select'))
+      }
+      return
     }
 
     // If select already has a slim select id on it lets destroy it first
@@ -92,7 +99,10 @@ export default class SlimSelect {
     this.select.hideUI() // Hide the original select element
 
     // Set store class
-    this.store = new Store(config.data ? config.data : this.select.getData())
+    this.store = new Store(
+      this.settings.isMultiple ? 'multiple' : 'single',
+      config.data ? config.data : this.select.getData(),
+    )
 
     // If data is passed update the original select element
     if (config.data) {
@@ -161,14 +171,25 @@ export default class SlimSelect {
   }
 
   public setData(data: DataArrayPartial): void {
+    // Validate data
+    const err = this.store.validateDataArray(data)
+    if (err) {
+      if (this.events.error) {
+        this.events.error(err)
+      }
+      return
+    }
+
     // Update the store
     this.store.setData(data)
+    const dataClean = this.store.getData()
 
     // Update original select element
-    this.select.updateOptions(this.store.getData())
+    this.select.updateOptions(dataClean)
 
     // Update the render
-    this.render.renderOptions(this.store.getData())
+    this.render.renderValues()
+    this.render.renderOptions(dataClean)
   }
 
   public getSelected(): string[] {
@@ -293,7 +314,9 @@ export default class SlimSelect {
     // If no search event run regular search
     if (!this.events.search) {
       // If value is empty then render all options
-      this.render.renderOptions(value === '' ? this.store.getData() : this.store.search(value))
+      this.render.renderOptions(
+        value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!),
+      )
       return
     }
 
@@ -326,13 +349,15 @@ export default class SlimSelect {
   }
 
   public destroy(): void {
+    // Remove all event listeners
     document.removeEventListener('click', this.documentClick)
-
     window.removeEventListener('resize', this.windowResize, false)
-
     if (this.settings.contentPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
+
+    // Delete the store data
+    this.store.setData([])
 
     // Remove the render
     this.render.destroy()

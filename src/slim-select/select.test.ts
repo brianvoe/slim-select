@@ -71,7 +71,7 @@ describe('select module', () => {
 
     let selectElement = document.getElementById('test') as HTMLSelectElement
     let select = new Select(selectElement)
-    let store = new Store([
+    let store = new Store('single', [
       {
         id: '1',
         value: '1',
