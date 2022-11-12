@@ -6,6 +6,8 @@ export type DataObject = Optgroup | Option
 export type DataArrayPartial = DataObjectPartial[]
 export type DataObjectPartial = OptgroupOptional | OptionOptional
 
+type selectType = 'single' | 'multiple'
+
 export interface OptgroupOptional {
   id?: string
   label: string // Required
@@ -83,11 +85,52 @@ export class Option {
 }
 
 export default class Store {
+  private selectType: selectType = 'single'
+
   // Main data set, never null
   private data: DataArray = []
 
-  constructor(data: DataArrayPartial) {
+  constructor(type: selectType, data: DataArrayPartial) {
+    this.selectType = type
     this.setData(data)
+  }
+
+  // Validate DataArrayPartial
+  public validateDataArray(data: DataArray | DataArrayPartial): Error | null {
+    if (!Array.isArray(data)) {
+      return new Error('Data must be an array')
+    }
+
+    // Loop through each data object
+    for (let dataObj of data) {
+      // Optgroup
+      if (dataObj instanceof Optgroup || 'label' in dataObj) {
+        if (!('label' in dataObj)) {
+          return new Error('Optgroup must have a label')
+        }
+
+        if ('options' in dataObj && dataObj.options) {
+          for (let option of dataObj.options) {
+            return this.validateOption(option)
+          }
+        }
+      } else if (dataObj instanceof Option || 'text' in dataObj) {
+        return this.validateOption(dataObj)
+      } else {
+        return new Error('Data object must be a valid optgroup or option')
+      }
+    }
+
+    return null
+  }
+
+  // Validate Option
+  public validateOption(option: Option | OptionOptional): Error | null {
+    if (!('text' in option)) {
+      return new Error('Option must have a text')
+    }
+
+    return null
   }
 
   public partialToFullData(data: DataArrayPartial): DataArray {
@@ -118,6 +161,12 @@ export default class Store {
 
   public setData(data: DataArray | DataArrayPartial) {
     this.data = this.partialToFullData(data)
+
+    // Run this.data through setSelected by value
+    // to set the selected property and clean any wrong selected
+    if (this.selectType === 'single') {
+      this.setSelectedBy('value', this.getSelected())
+    }
   }
 
   // Get data will return all the data
@@ -132,28 +181,57 @@ export default class Store {
   }
 
   public addOption(option: OptionOptional) {
-    this.data.push(new Option(option))
+    this.setData(this.getData().concat(new Option(option)))
   }
 
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
-  public setSelectedBy(selectedType: 'id' | 'value', selectedVals: string[]) {
+  // but also clean selected by determining selectType
+  public setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]) {
+    let firstOption: Option | null = null
+    let hasSelected = false
+
     for (let dataObj of this.data) {
       // Optgroup
       if (dataObj instanceof Optgroup) {
         for (let option of dataObj.options) {
+          if (!firstOption) {
+            firstOption = option
+          }
+
           if (option[selectedType]) {
-            option.selected = selectedVals.includes(option[selectedType] as string)
+            option.selected = hasSelected ? false : selectedValues.includes(option[selectedType])
+          }
+
+          // If the option is selected, set hasSelected to true
+          // for single based selects
+          if (option.selected && this.selectType === 'single') {
+            hasSelected = true
           }
         }
       }
 
       // Option
       if (dataObj instanceof Option) {
+        if (!firstOption) {
+          firstOption = dataObj
+        }
+
         if (dataObj[selectedType]) {
-          dataObj.selected = selectedVals.includes(dataObj[selectedType] as string)
+          dataObj.selected = hasSelected ? false : selectedValues.includes(dataObj[selectedType])
+        }
+
+        // If the option is selected, set hasSelected to true
+        // for single based selects
+        if (dataObj.selected && this.selectType === 'single') {
+          hasSelected = true
         }
       }
+    }
+
+    // If no options are selected, select the first option
+    if (this.selectType === 'single' && firstOption && !hasSelected) {
+      firstOption.selected = true
     }
   }
 
@@ -195,19 +273,17 @@ export default class Store {
   }
 
   // Take in search string and return filtered list of values
-  public search(search: string, searchFilter?: (opt: Option, search: string) => boolean): DataArray {
+  public search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray {
     search = search.trim()
+
+    // If search is empty, return all data
     if (search === '') {
-      return []
+      return this.getData()
     }
 
+    // Run filter with search function
     return this.filter((opt: Option): boolean => {
-      if (searchFilter) {
-        return searchFilter(opt, search)
-      }
-
-      // If the searchFilter is not set use default
-      return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+      return searchFilter(opt, search)
     }, true)
   }
 
