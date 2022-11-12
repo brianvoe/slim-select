@@ -935,7 +935,7 @@ export default class Render {
 
       // Setup variables
       const selectedOptions = this.store.getSelected()
-      const element = e.target as HTMLDivElement
+      const element = e.currentTarget as HTMLDivElement
       const elementID = String(element.dataset.id)
 
       // If the option is disabled or selected and the user isnt allowed to deselect
