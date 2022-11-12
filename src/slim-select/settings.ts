@@ -26,7 +26,6 @@ export default class Settings {
   public placeholderText: string
   public allowDeselect: boolean
   public hideSelected: boolean
-  public useHtml: boolean
   public showOptionTooltips: boolean
   public selectByGroup: boolean
   public minSelected: number
@@ -54,7 +53,6 @@ export default class Settings {
     this.placeholderText = settings.placeholderText || 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
-    this.useHtml = settings.useHtml !== undefined ? settings.useHtml : false
     this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false
     this.selectByGroup = settings.selectByGroup !== undefined ? settings.selectByGroup : false
     this.minSelected = settings.minSelected || 0
