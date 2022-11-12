@@ -900,7 +900,7 @@ export default class Render {
         this.content.search.input.value,
         this.classes.searchHighlighter,
       )
-    } else if (option.html && option.html !== '') {
+    } else if (option.html !== '') {
       optionEl.innerHTML = option.html
     } else {
       optionEl.textContent = option.text
