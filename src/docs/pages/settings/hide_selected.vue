@@ -45,7 +45,7 @@ export default defineComponent({
     <pre>
         <code class="language-javascript">
           new SlimSelect({
-            select: '.element .you #want',
+            select: '#selectElement',
             hideSelectedOption: true
           })
         </code>

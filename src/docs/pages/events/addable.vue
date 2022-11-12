@@ -55,7 +55,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           // Optional - In the event you want to alter/validate it as a return value
           addable: function (value) {
             // return false or null if you do not want to allow value to be submitted

@@ -34,9 +34,10 @@ export default defineComponent({
 <template>
   <div class="content">
     <h2 class="header">search</h2>
-    <p>The search method will update the search input field and search the data against the value.</p>
+    <p>The search method will update the search input field and search the data against that value.</p>
 
     <div class="row">
+      <div class="btn" @click="setSearch">Set Search</div>
       <select ref="searchSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
@@ -49,12 +50,10 @@ export default defineComponent({
       </select>
     </div>
 
-    <div class="btn" @click="setSearch">Set Search</div>
-
     <pre>
       <code class="language-javascript">
         var select = new SlimSelect({
-          select: '.element .you #want'
+          select: '#selectElement'
         })
         select.search('value')
       </code>

@@ -36,7 +36,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         let slim = new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           settings: {
             minSelected: 2,
             maxSelected: 5,

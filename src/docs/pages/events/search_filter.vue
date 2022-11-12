@@ -31,7 +31,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           events: {
             // Exact case sensitive start of string match
             searchFilter: (option, search) => {

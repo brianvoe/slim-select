@@ -87,7 +87,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           events: {
             beforeChange: (newVal, oldVal) => {
               console.log(newVal)
@@ -127,7 +127,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           events: {
             afterChange: (newVal) => {
               console.log(newVal)

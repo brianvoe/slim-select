@@ -41,7 +41,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         const slim = new SlimSelect({
-          select: '.element .you #want'
+          select: '#selectElement'
         });
 
         const data = [
@@ -73,7 +73,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         const slim = new SlimSelect({
-          select: '.element .you #want'
+          select: '#selectElement'
         });
       </code>
     </pre>

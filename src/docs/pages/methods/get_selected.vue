@@ -68,7 +68,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         var select = new SlimSelect({
-          select: '.element .you #want'
+          select: '#selectElement'
         })
         var values = select.getSelected() // Will return an array of strings
         console.log(values)

@@ -71,7 +71,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         var select = new SlimSelect({
-          select: '.element .you #want'
+          select: '#selectElement'
         })
         var data = select.getData() // Will return an array of options and optgroups
         console.log(data)

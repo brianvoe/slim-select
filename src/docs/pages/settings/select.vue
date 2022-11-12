@@ -17,14 +17,14 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           // or
-          select: document.querySelector('.element .you #want')
+          select: document.querySelector('#selectElement')
         })
 
         // If you already have a currenlty running SlimSelect but lost the reference to it.
         You can access from the original select element.
-        let el = document.querySelector('.element .you #want')
+        let el = document.querySelector('#selectElement')
         el.slim.open() // Or any other options/methods
       </code>
     </pre>

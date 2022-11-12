@@ -108,7 +108,7 @@ function searchPromise(search: string, selectedData: DataArray): Promise<Option[
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '.element .you #want',
+          select: '#selectElement',
           events: {
             search: (search, currentData) => {
               return new Promise((resolve, reject) => {

@@ -59,7 +59,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         var select = new SlimSelect({
-          select: '.element .you #want'
+          select: '#selectElement'
         })
         select.enable()
         // or

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+import Error from './error.vue'
 import BeforeAfterChange from './before_after_change.vue'
 import BeforeAfterOpenClose from './before_after_open_close.vue'
 import Search from './search.vue'
@@ -10,6 +11,7 @@ import Addable from './addable.vue'
 export default defineComponent({
   name: 'Events',
   components: {
+    Error,
     BeforeAfterChange,
     BeforeAfterOpenClose,
     Search,
@@ -21,6 +23,7 @@ export default defineComponent({
 
 <template>
   <div id="events" class="contents">
+    <Error />
     <BeforeAfterChange />
     <BeforeAfterOpenClose />
     <Search />

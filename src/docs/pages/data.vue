@@ -42,7 +42,7 @@ export default defineComponent({
     <div class="content">
       <h2 class="header">data</h2>
 
-      <h3>Data Types</h3>
+      <h3 id="types">Data Types</h3>
       <p>
         There are two types of data types. The option which consists of a variation of fields to customize the option.
         You can also provide an optgroup which has a label and an array of options.
@@ -69,7 +69,7 @@ export default defineComponent({
       </pre>
       <br />
 
-      <h3>Data Field</h3>
+      <h3 id="field">Data Field</h3>
       <p>
         The data field is an array of options and optgroups. The data field can be used in place of the select element.
         The data field will also be used to update the options in the original select element.
@@ -87,7 +87,7 @@ export default defineComponent({
       <pre>
         <code class="language-javascript">
           new SlimSelect({
-            select: '.element .you #want',
+            select: '#selectElement',
             
             // Options
             data: [
