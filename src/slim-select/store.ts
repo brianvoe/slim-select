@@ -199,9 +199,7 @@ export default class Store {
             firstOption = option
           }
 
-          if (option[selectedType]) {
-            option.selected = hasSelected ? false : selectedValues.includes(option[selectedType])
-          }
+          option.selected = hasSelected ? false : selectedValues.includes(option[selectedType])
 
           // If the option is selected, set hasSelected to true
           // for single based selects
@@ -217,9 +215,7 @@ export default class Store {
           firstOption = dataObj
         }
 
-        if (dataObj[selectedType]) {
-          dataObj.selected = hasSelected ? false : selectedValues.includes(dataObj[selectedType])
-        }
+        dataObj.selected = hasSelected ? false : selectedValues.includes(dataObj[selectedType])
 
         // If the option is selected, set hasSelected to true
         // for single based selects
