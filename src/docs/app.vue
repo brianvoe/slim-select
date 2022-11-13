@@ -11,8 +11,8 @@ export default defineComponent({
       year: new Date().getFullYear(),
       navData: [
         { text: 'Home', value: '/', selected: path === '/' },
-        { text: 'Installation', value: 'install', selected: path === '/install' },
-        { text: 'Select Types', value: 'selects', selected: path === '/selects' },
+        { text: 'Install', value: 'install', selected: path === '/install' },
+        { text: 'Selects', value: 'selects', selected: path === '/selects' },
         { text: 'Data', value: 'data', selected: path === '/data' },
         { text: 'Settings', value: 'settings', selected: path === '/settings' },
         { text: 'Events', value: 'events', selected: path === '/events' },

@@ -21,8 +21,15 @@ export default defineComponent({
   },
   methods: {
     setSelected() {
+      this.selectedSingle!.open()
       this.selectedSingle!.setSelected('value2')
+      this.selectedMultiple!.open()
       this.selectedMultiple!.setSelected(['value1', 'value3'])
+
+      setTimeout(() => {
+        this.selectedSingle!.close()
+        this.selectedMultiple!.close()
+      }, 1000)
     },
   },
 })

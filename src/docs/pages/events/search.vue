@@ -124,7 +124,7 @@ function searchPromise(search: string, selectedData: DataArray): Promise<Option[
                   },
                   body: JSON.stringify({
                     type: 'array',
-                    rowcount: 1000,
+                    rowcount: 10,
                     indent: false,
                     fields: [
                       { name: 'first_name', function: 'firstname', params: {} },
