@@ -26,18 +26,22 @@ export default defineComponent({
     },
     destroy() {
       this.destroySingle!.destroy()
+      this.destroySingle = null
       this.destroyMultiple!.destroy()
+      this.destroyMultiple = null
     },
   },
 })
 </script>
 
 <template>
-  <div class="content">
+  <div id="destroy" class="content">
     <h2 class="header">destroy</h2>
     <p>The destroy method will remove slim-select and display your original select.</p>
 
     <div class="row">
+      <div class="btn" @click="create" v-if="!destroySingle">Create</div>
+      <div class="btn" @click="destroy" v-else>Destroy</div>
       <select ref="destroySingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
@@ -50,13 +54,10 @@ export default defineComponent({
       </select>
     </div>
 
-    <div class="btn" @click="create">Create</div>
-    <div class="btn" @click="destroy">Destroy</div>
-
     <pre>
       <code class="language-javascript">
         var select = new SlimSelect({
-          select: '#select'
+          select: '#selectElement'
         })
         select.destroy()
       </code>
