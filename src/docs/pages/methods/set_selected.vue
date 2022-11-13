@@ -36,10 +36,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="setSelected" class="content">
     <h2 class="header">setSelected</h2>
     <p>The setSelected method will set the selected value(s) of the select.</p>
-    <p>SetSelected will accept both string and array of strings.</p>
+    <p>setSelected will accept both string or array of strings.</p>
 
     <div class="row">
       <div class="btn" @click="setSelected">Set Selected</div>
@@ -56,5 +56,15 @@ export default defineComponent({
         <option value="value3">Value 3</option>
       </select>
     </div>
+
+    <pre>
+      <code class="language-javascript">
+        var select = new SlimSelect({
+          select: '#selectElement'
+        })
+        select.setSelected('value1' /* or */ ['value1', 'value3'])
+        console.log(select.getSelected())
+      </code>
+    </pre>
   </div>
 </template>
