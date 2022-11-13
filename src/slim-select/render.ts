@@ -315,7 +315,8 @@ export default class Render {
     if (!trigger) {
       this.settings.triggerFocus = false
     }
-    this.main.main.focus()
+    // Trigger focus but dont scroll to it
+    this.main.main.focus({ preventScroll: true })
     this.settings.triggerFocus = true
   }
 
