@@ -60,8 +60,8 @@ export default defineComponent({
     <h2 class="header">html</h2>
     <p>
       Slim select has the ability to set custom html for the selected values and options dropdown. By default if the
-      html field is set it will use that for the selected values and the options dropdown. For a multiple select it will
-      always use the text field.
+      html field is set it will use that for the selected values and the options dropdown. For a multiple select
+      selected values it will always use the text field.
     </p>
 
     <div class="row">

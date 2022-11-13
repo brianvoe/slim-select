@@ -24,9 +24,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="hideSelected" class="content">
     <h2 class="header">hideSelected</h2>
-    <p>hideSelected setting is used to hide the current selected option in the dropdown.</p>
+    <p>hideSelected setting is used to hide the current selected option in the options dropdown.</p>
 
     <div class="row">
       <select ref="hideSelectedSingle">
@@ -43,13 +43,16 @@ export default defineComponent({
     </div>
 
     <pre>
-        <code class="language-javascript">
-          new SlimSelect({
-            select: '#selectElement',
-            hideSelectedOption: true
-          })
-        </code>
-      </pre>
+      <code class="language-javascript">
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            hideSelected: true,
+          }
+        })
+      </code>
+    </pre>
+
     <pre>
       <code class="language-html">
         &lt;select id="hideSelectedSingle"&gt;
