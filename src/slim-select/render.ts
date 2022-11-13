@@ -6,7 +6,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => OptionOptional | string
-  setSelected: (value: string[], close: boolean) => void
+  setSelected: (value: string[]) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
@@ -215,7 +215,7 @@ export default class Render {
 
     // If main gets focus, open the content
     main.onfocus = () => {
-      if (!this.settings.isTabbing) {
+      if (this.settings.triggerFocus) {
         this.callbacks.open()
       }
     }
@@ -232,9 +232,7 @@ export default class Render {
           e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
-          this.settings.isTabbing = true
           this.callbacks.close()
-          this.settings.isTabbing = false
           return true // Continue doing normal tabbing
         case 'Enter':
           const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
@@ -277,7 +275,7 @@ export default class Render {
         return
       }
 
-      this.callbacks.setSelected([''], false)
+      this.callbacks.setSelected([''])
     }
 
     // Add deselect svg
@@ -311,6 +309,14 @@ export default class Render {
         path: arrowPath,
       },
     }
+  }
+
+  public mainFocus(trigger: boolean): void {
+    if (!trigger) {
+      this.settings.triggerFocus = false
+    }
+    this.main.main.focus()
+    this.settings.triggerFocus = true
   }
 
   public placeholder(): HTMLDivElement {
@@ -494,7 +500,12 @@ export default class Render {
               selectedValues.push(o.value)
             }
           }
-          this.callbacks.setSelected(selectedValues, this.settings.closeOnSelect)
+          this.callbacks.setSelected(selectedValues)
+
+          // Check if we need to close the dropdown
+          if (this.settings.closeOnSelect) {
+            this.callbacks.close()
+          }
 
           // Run afterChange callback
           if (this.callbacks.afterChange) {
@@ -600,15 +611,11 @@ export default class Render {
           e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
-          // When tabbing focus on main div
+          // When tabbing close the dropdown
+          // which will also focus on main div
           // and then continuing normal tabbing
-          this.settings.isTabbing = true
-          this.main.main.focus()
           this.callbacks.close()
 
-          setTimeout(() => {
-            this.settings.isTabbing = false
-          }, 200)
           return true // Continue doing normal tabbing
         case 'Escape':
           this.callbacks.close()
@@ -679,7 +686,7 @@ export default class Render {
         }
 
         // Add option to selected
-        this.callbacks.setSelected([inputValue], this.settings.closeOnSelect)
+        this.callbacks.setSelected([inputValue])
 
         // Clear search
         this.callbacks.search('')
@@ -1001,12 +1008,12 @@ export default class Render {
         }
 
         // Get values from after and set as selected
-        this.settings.isTabbing = true
-        this.callbacks.setSelected(
-          after.map((o: Option) => o.value),
-          this.settings.closeOnSelect,
-        )
-        this.settings.isTabbing = false
+        this.callbacks.setSelected(after.map((o: Option) => o.value))
+
+        // If closeOnSelect is true
+        if (this.settings.closeOnSelect) {
+          this.callbacks.close()
+        }
 
         // callback that the value has changed
         if (this.callbacks.afterChange) {

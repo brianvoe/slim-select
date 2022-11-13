@@ -196,7 +196,7 @@ export default class SlimSelect {
     return this.store.getSelected()
   }
 
-  public setSelected(value: string | string[], close: boolean = true): void {
+  public setSelected(value: string | string[]): void {
     // Update the store
     this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
     const data = this.store.getData()
@@ -207,11 +207,6 @@ export default class SlimSelect {
     // Update the render
     this.render.renderValues()
     this.render.renderOptions(data)
-
-    // Close the content
-    if (close) {
-      this.close()
-    }
   }
 
   public addOption(option: OptionOptional): void {
@@ -286,9 +281,7 @@ export default class SlimSelect {
     this.search('') // Clear search
 
     // If we arent tabbing focus back on the main element
-    if (!this.settings.isTabbing) {
-      this.render.main.main.focus()
-    }
+    this.render.mainFocus(false)
 
     // Reset the content below
     setTimeout(() => {
@@ -398,9 +391,7 @@ export default class SlimSelect {
 
     // Check if the click was on the content by looking at the parents
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
-      this.settings.isTabbing = true
       this.close()
-      this.settings.isTabbing = false
     }
   }
 }
