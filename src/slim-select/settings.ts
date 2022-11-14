@@ -15,6 +15,7 @@ export default class Settings {
 
   // Fields set from constructor
   public isEnabled: boolean
+  public alwaysOpen: boolean
   public showSearch: boolean
   public searchPlaceholder: string
   public searchText: string
@@ -42,6 +43,7 @@ export default class Settings {
     this.class = settings.class || []
 
     this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true
+    this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
     this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'
     this.searchText = settings.searchText || 'No Results'
