@@ -38,11 +38,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="data">
-    <div class="content">
-      <h2 class="header">data</h2>
-
-      <h3 id="types">Data Types</h3>
+  <div id="data" class="contents">
+    <div id="types" class="content">
+      <h2 class="header">Data Types</h2>
       <p>
         There are two types of data types. The option which consists of a variation of fields to customize the option.
         You can also provide an optgroup which has a label and an array of options.
@@ -67,9 +65,10 @@ export default defineComponent({
           }
         </code>
       </pre>
-      <br />
+    </div>
 
-      <h3 id="field">Data Field</h3>
+    <div id="field" class="content">
+      <h2 class="header">Data Field</h2>
       <p>
         The data field is an array of options and optgroups. The data field can be used in place of the select element.
         The data field will also be used to update the options in the original select element.

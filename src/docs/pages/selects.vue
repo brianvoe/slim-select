@@ -92,8 +92,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="selects-content" class="contents">
-    <div class="content">
+  <div id="selects" class="contents">
+    <div id="single" class="content">
       <h2 class="header">Single</h2>
       <p>
         Basic single select usage with Slim Select is extremely easy. Just set the select value to your select element.
@@ -151,7 +151,7 @@ export default defineComponent({
       </pre>
     </div>
 
-    <div class="content">
+    <div id="multiple" class="content">
       <h2 class="header">Multiple</h2>
       <p>
         Multi selects work just the same as a single select. The only difference is setting the multiple attribute on

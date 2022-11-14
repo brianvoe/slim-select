@@ -713,6 +713,14 @@ export default class Render {
     return searchReturn
   }
 
+  public searchFocus(trigger: boolean): void {
+    if (!trigger) {
+      this.settings.triggerFocus = false
+    }
+    this.content.search.input.focus()
+    this.settings.triggerFocus = true
+  }
+
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
     // Put together query string
     let query = '.' + this.classes.option
@@ -1062,6 +1070,8 @@ export default class Render {
 
     this.main.main.classList.remove(this.classes.openBelow)
     this.main.main.classList.add(this.classes.openAbove)
+    this.content.main.classList.remove(this.classes.openBelow)
+    this.content.main.classList.add(this.classes.openAbove)
   }
 
   public moveContentBelow(): void {
@@ -1070,6 +1080,8 @@ export default class Render {
 
     this.main.main.classList.remove(this.classes.openAbove)
     this.main.main.classList.add(this.classes.openBelow)
+    this.content.main.classList.remove(this.classes.openAbove)
+    this.content.main.classList.add(this.classes.openBelow)
   }
 
   public ensureElementInView(container: HTMLElement, element: HTMLElement): void {

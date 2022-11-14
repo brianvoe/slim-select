@@ -18,36 +18,12 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-#install-content {
-  .npm-content {
-    padding: 0 0 30px 0;
-
-    .install-code {
-      max-width: 200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .example-code {
-      max-width: 310px;
-      margin: 0 auto;
-    }
-  }
-
-  .cdn-content {
-    .example-code {
-      max-width: 220px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-}
-</style>
-
 <template>
-  <div id="install-content" class="content">
-    <div class="npm-content">
+  <div id="install" class="contents">
+    <div id="npm" class="content">
       <h2>Npm</h2>
+      <p>Most common usage is npm</p>
+
       <pre class="install-code">
         <code class="language-bash">
           npm install slim-select
@@ -59,32 +35,45 @@ export default defineComponent({
           import SlimSelect from 'slim-select'
 
           new SlimSelect({
-            select: '#slim-select'
+            select: '#selectElement'
           })
         </code>
       </pre>
     </div>
 
-    <div class="cdn-content">
+    <div id="cdn" class="content">
       <h2>Cdn</h2>
+      <p>Cdn has a url link you can grab.</p>
+      <div class="alert info">New releases may be delayed until the next time its indexed</div>
+
       <pre class="install-code">
         <code class="language-html">
-          &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
-          &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.css" rel="stylesheet"&gt;&lt;/link&gt;
-        </code>
-      </pre>
-
-      <pre class="example-code">
-        <code class="language-javascript">
-          new SlimSelect({
-            select: '#slim-select'
-          })
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
+              &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.css" rel="stylesheet"&gt;&lt;/link&gt;
+              
+              &lt;script&gt;
+                new SlimSelect({
+                  select: '#selectElement'
+                })
+              &lt;script&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;select id="selectElement"&gt;
+                &lt;option&gt;Option 1&lt;/option&gt;
+                &lt;option&gt;Option 2&lt;/option&gt;
+                &lt;option&gt;Option 3&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
         </code>
       </pre>
     </div>
 
-    <div class="download-content">
+    <div id="download" class="content">
       <h2>Download</h2>
+      <p>Download the latest minified version of slim select</p>
       <div class="btn" @click="downloadLink()">Click Here To Download</div>
     </div>
   </div>
