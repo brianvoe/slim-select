@@ -1,9 +1,4 @@
 :root {
-  // Heights
-  --ss-height-main: 30px;
-  --ss-height-content: 300px;
-  --ss-search-height: 30px;
-
   // Colors
   --ss-primary-color: #5897fb;
   --ss-bg-color: #ffffff;
@@ -59,7 +54,6 @@
   user-select: none;
   color: var(--ss-font-color);
   width: 100%;
-  min-height: var(--ss-height-main);
   padding: var(--ss-spacing-s);
   cursor: pointer;
   border: 1px solid var(--ss-border-color);
@@ -215,7 +209,6 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  max-height: var(--ss-height-content);
   box-sizing: border-box;
   border: solid 1px var(--ss-border-color);
   background-color: var(--ss-bg-color);
@@ -244,7 +237,6 @@
     flex: 0 1 auto;
     display: flex;
     flex-direction: row;
-    height: var(--ss-search-height);
     padding: var(--ss-spacing-l) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
 
     input {
@@ -278,7 +270,7 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      flex: 0 0 var(--ss-search-height);
+      flex: 0 0 auto;
       height: auto;
       margin: 0 0 0 var(--ss-spacing-m);
       border: 1px solid var(--ss-border-color);

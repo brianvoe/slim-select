@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 
 // Components
+import AlwaysOpen from './always_open.vue'
 import CloseOnSelect from './close_on_select.vue'
 import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
@@ -24,6 +25,7 @@ export default defineComponent({
   name: 'Settings',
   components: {
     Select,
+    AlwaysOpen,
     ContentLocation,
     Placeholder,
     Deselect,
@@ -47,6 +49,7 @@ export default defineComponent({
 <template>
   <div id="settings" class="contents">
     <Select />
+    <AlwaysOpen />
     <ContentLocation />
     <Placeholder />
     <Deselect />

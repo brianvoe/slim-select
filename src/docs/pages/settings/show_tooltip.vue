@@ -33,7 +33,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '#showOptionTooltips',
+          select: '#selectElement',
           settings: {
             showOptionTooltips: true,
           }

@@ -185,6 +185,8 @@ export default class Render {
   public close(): void {
     this.main.main.classList.remove(this.classes.openAbove)
     this.main.main.classList.remove(this.classes.openBelow)
+    this.content.main.classList.remove(this.classes.openAbove)
+    this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
     this.content.main.classList.remove(this.classes.open)
   }

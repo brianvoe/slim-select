@@ -28,7 +28,7 @@ body {
       'main';
     width: 100%;
     height: 100%;
-    padding: var(--spacing-half);
+    padding: var(--spacing-half) var(--spacing-half) 0 var(--spacing-half);
     box-sizing: border-box;
 
     @media (min-width: 700px) {
@@ -136,7 +136,7 @@ body {
       footer {
         grid-area: footer;
         color: var(--color-white);
-        padding: var(--spacing-quarter) 0 0 0;
+        padding: var(--spacing-quarter) 0 var(--spacing-quarter) 0;
         line-height: 1.2;
         font-size: calc(var(--font-size) - 2px);
         text-align: center;

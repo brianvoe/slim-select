@@ -23,7 +23,7 @@ export default defineComponent({
         })
 
         // If you already have a currenlty running SlimSelect but lost the reference to it.
-        You can access from the original select element.
+        // You can access from the original select element.
         let el = document.querySelector('#selectElement')
         el.slim.open() // Or any other options/methods
       </code>
