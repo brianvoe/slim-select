@@ -4,12 +4,15 @@ import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
-// Export everything to main slim select file
+// Export everything except the export default
 export * from './helper'
-export * from './render'
-export * from './select'
 export * from './settings'
+export * from './select'
 export * from './store'
+export * from './render'
+
+// Export all export defaults
+export { Settings, Select, Store, Render }
 
 export interface Config {
   select: string | Element
@@ -146,6 +149,11 @@ export default class SlimSelect {
       this.disable()
     }
 
+    // If alwaysOpnen then open it
+    if (this.settings.alwaysOpen) {
+      this.open()
+    }
+
     // Add SlimSelect to select element
     ;(this.selectEl as any).slim = this
   }
@@ -234,6 +242,7 @@ export default class SlimSelect {
       this.events.beforeOpen()
     }
 
+    // Tell render to open
     this.render.open()
 
     // Focus on input field only if search is enabled
@@ -243,13 +252,13 @@ export default class SlimSelect {
 
     // setTimeout is for animation completion
     setTimeout(() => {
-      // Update settings
-      this.settings.isOpen = true
-
       // Run afterOpen callback
       if (this.events.afterOpen) {
         this.events.afterOpen()
       }
+
+      // Update settings
+      this.settings.isOpen = true
     }, this.settings.timeoutDelay)
 
     // Start an interval to check if main has moved
@@ -262,7 +271,8 @@ export default class SlimSelect {
 
   public close(): void {
     // Dont do anything if the content is already closed
-    if (!this.settings.isOpen) {
+    // Dont do anything if alwaysOpen is true
+    if (!this.settings.isOpen || this.settings.alwaysOpen) {
       return
     }
 
@@ -273,9 +283,6 @@ export default class SlimSelect {
 
     // Tell render to close
     this.render.close()
-
-    // Update settings
-    this.settings.isOpen = false
 
     // Clear search
     this.search('') // Clear search
@@ -289,6 +296,9 @@ export default class SlimSelect {
       if (this.events.afterClose) {
         this.events.afterClose()
       }
+
+      // Update settings
+      this.settings.isOpen = false
     }, this.settings.timeoutDelay)
 
     if (this.settings.intervalMove) {
