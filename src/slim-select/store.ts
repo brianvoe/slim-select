@@ -65,7 +65,7 @@ export class Option {
 
   constructor(option: OptionOptional) {
     this.id = !option.id || option.id === '' ? generateID() : option.id
-    this.value = option.value || ''
+    this.value = option.value === undefined ? option.text : option.value
     this.text = option.text || ''
     this.html = option.html || ''
     this.selected = option.selected !== undefined ? option.selected : false
@@ -76,11 +76,6 @@ export class Option {
     this.class = option.class || ''
     this.style = option.style || ''
     this.data = option.data || {}
-
-    // If no value is set, set the value to the text
-    if (!this.value) {
-      this.value = this.text
-    }
   }
 }
 
