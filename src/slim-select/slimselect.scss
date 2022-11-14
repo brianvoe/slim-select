@@ -219,7 +219,6 @@
   box-sizing: border-box;
   border: solid 1px var(--ss-border-color);
   background-color: var(--ss-bg-color);
-  transform-origin: center top;
   transition: transform var(--ss-animation-timing), opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
@@ -227,6 +226,18 @@
   &.ss-open {
     opacity: 1;
     transform: scaleY(1);
+  }
+
+  &.ss-open-above {
+    transform-origin: center bottom;
+    border-top-left-radius: var(--ss-border-radius);
+    border-top-right-radius: var(--ss-border-radius);
+  }
+
+  &.ss-open-below {
+    transform-origin: center top;
+    border-bottom-left-radius: var(--ss-border-radius);
+    border-bottom-right-radius: var(--ss-border-radius);
   }
 
   .ss-search {
