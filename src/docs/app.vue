@@ -36,6 +36,10 @@ export default defineComponent({
 
         // Settings
         { text: 'Settings', value: 'settings' },
+        { text: 'select', value: 'settings#select', class: 'mar-l-l' },
+        { text: 'alwaysOpen', value: 'settings#alwaysOpen', class: 'mar-l-l' },
+        { text: 'contentLocation', value: 'settings#contentLocation', class: 'mar-l-l' },
+        { text: 'openPosition', value: 'settings#openPosition', class: 'mar-l-l' },
 
         // Events
         { text: 'Events', value: 'events' },

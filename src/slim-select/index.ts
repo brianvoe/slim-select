@@ -4,14 +4,14 @@ import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
-// Export everything except the export default
+// Export everything except the "export default"
 export * from './helper'
 export * from './settings'
 export * from './select'
 export * from './store'
 export * from './render'
 
-// Export all export defaults
+// Export all "export defaults"
 export { Settings, Select, Store, Render }
 
 export interface Config {
@@ -140,7 +140,7 @@ export default class SlimSelect {
 
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
-    if (this.settings.contentPosition === 'auto') {
+    if (this.settings.openPosition === 'auto') {
       window.addEventListener('scroll', this.windowScroll, false)
     }
 
@@ -247,7 +247,7 @@ export default class SlimSelect {
 
     // Focus on input field only if search is enabled
     if (this.settings.showSearch) {
-      this.render.content.search.input.focus()
+      this.render.searchFocus(false)
     }
 
     // setTimeout is for animation completion
@@ -355,7 +355,7 @@ export default class SlimSelect {
     // Remove all event listeners
     document.removeEventListener('click', this.documentClick)
     window.removeEventListener('resize', this.windowResize, false)
-    if (this.settings.contentPosition === 'auto') {
+    if (this.settings.openPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
 
@@ -379,6 +379,7 @@ export default class SlimSelect {
 
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce(() => {
+    console.log('hit')
     // If the content is not open, there is no need to move it
     if (!this.settings.isOpen) {
       return

@@ -17,7 +17,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="contentLocation" class="content">
     <h2 class="header">contentLocation</h2>
     <p>
       contentLocation will allow you to set the location of where the content section of slim select. By default every
@@ -42,7 +42,7 @@ export default defineComponent({
         new SlimSelect({
           select: '#selectElement',
           settings: {
-            contentLocation: document.getElementById('local'), 
+            contentLocation: document.getElementById('local')
           }
         })
       </code>

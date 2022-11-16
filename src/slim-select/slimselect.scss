@@ -206,28 +206,32 @@
 
 // Content container
 .ss-content {
-  position: absolute;
+  position: absolute; // default position
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   border: solid 1px var(--ss-border-color);
   background-color: var(--ss-bg-color);
-  transition: transform var(--ss-animation-timing), opacity var(--ss-animation-timing);
+  transition: height var(--ss-animation-timing), transform var(--ss-animation-timing),
+    opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
 
-  &.ss-open {
-    opacity: 1;
-    transform: scaleY(1);
+  &.ss-relative {
+    position: relative;
   }
 
   &.ss-open-above {
+    opacity: 1;
+    transform: scaleY(1);
     transform-origin: center bottom;
     border-top-left-radius: var(--ss-border-radius);
     border-top-right-radius: var(--ss-border-radius);
   }
 
   &.ss-open-below {
+    opacity: 1;
+    transform: scaleY(1);
     transform-origin: center top;
     border-bottom-left-radius: var(--ss-border-radius);
     border-bottom-right-radius: var(--ss-border-radius);

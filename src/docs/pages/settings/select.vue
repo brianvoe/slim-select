@@ -7,7 +7,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="select" class="content">
     <h2 class="header">select</h2>
     <p>
       The select field is used to identify the select element that will be used to create slim select. You can use any

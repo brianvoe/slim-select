@@ -56,8 +56,6 @@ export default class Render {
   public classes = {
     // Main
     main: 'ss-main',
-    openAbove: 'ss-open-above',
-    openBelow: 'ss-open-below',
 
     // Placeholder
     placeholder: 'ss-placeholder',
@@ -81,7 +79,8 @@ export default class Render {
 
     // Content
     content: 'ss-content',
-    open: 'ss-open',
+    openAbove: 'ss-open-above',
+    openBelow: 'ss-open-below',
 
     // Search
     search: 'ss-search',
@@ -146,21 +145,20 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
 
     // Add class to main container
-    this.main.main.classList.add(
-      this.settings.contentPosition === 'up' ? this.classes.openAbove : this.classes.openBelow,
-    )
+    this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow)
 
     // move the content in to the right location
     this.moveContent()
-    this.content.main.classList.add(this.classes.open)
 
     // Render the options
     this.renderOptions(this.store.getData())
 
     // Check showContent to see if they want to specifically show in a certain direction
-    if (this.settings.contentPosition.toLowerCase() === 'up') {
+    if (this.settings.contentPosition === 'relative') {
+      this.moveContentBelow()
+    } else if (this.settings.openPosition.toLowerCase() === 'up') {
       this.moveContentAbove()
-    } else if (this.settings.contentPosition.toLowerCase() === 'down') {
+    } else if (this.settings.openPosition.toLowerCase() === 'down') {
       this.moveContentBelow()
     } else {
       // Auto identify where to put it
@@ -188,7 +186,6 @@ export default class Render {
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
-    this.content.main.classList.remove(this.classes.open)
   }
 
   public mainDiv(): Main {
@@ -295,6 +292,9 @@ export default class Render {
     arrow.setAttribute('viewBox', '0 0 100 100')
     const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     arrowPath.setAttribute('d', this.classes.arrowClose)
+    if (this.settings.alwaysOpen) {
+      arrow.classList.add(this.classes.hide)
+    }
     arrow.appendChild(arrowPath)
     main.appendChild(arrow)
 
@@ -544,6 +544,9 @@ export default class Render {
     }
 
     // Add classes
+    if (this.settings.contentPosition === 'relative') {
+      main.classList.add('ss-' + this.settings.contentPosition)
+    }
     if (this.settings.class.length) {
       for (const c of this.settings.class) {
         if (c.trim() !== '') {
@@ -568,6 +571,10 @@ export default class Render {
   }
 
   public moveContent(): void {
+    if (this.settings.contentPosition === 'relative') {
+      return
+    }
+
     const containerRect = this.main.main.getBoundingClientRect()
     this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
     this.content.main.style.left = containerRect.left + window.scrollX + 'px'

@@ -7,51 +7,77 @@ export default defineComponent({
   name: 'ContentPosition',
   mounted() {
     new SlimSelect({
-      select: this.$refs.contentPositionUp as HTMLSelectElement,
+      select: this.$refs.contentPositionRelative as HTMLSelectElement,
       settings: {
-        contentPosition: 'up',
+        contentPosition: 'relative',
+        contentLocation: this.$refs.contentPositionRelativeContent as HTMLElement,
       },
     })
 
     new SlimSelect({
-      select: this.$refs.contentPositionDown as HTMLSelectElement,
+      select: this.$refs.contentPositionAbsolute as HTMLSelectElement,
       settings: {
-        contentPosition: 'down',
+        contentPosition: 'absolute',
       },
     })
   },
 })
 </script>
 
-<template>
-  <div class="content">
-    <h2 class="header">contentPosition</h2>
-    <p>
-      contentPosition is a string value that will decide where to show your content when it comes out. By default slim
-      select will try to put the content where it can without going off screen. But you may want to always show it in
-      one direction.
-    </p>
-    <p>Possible Options: <b>'auto', 'up' or 'down'</b>. Default is <b>'auto'</b></p>
+<style lang="scss">
+#contentPosition {
+  .contentPositionRow {
+    .ss-main {
+      height: 30px;
+    }
 
-    <div class="row">
-      <select ref="contentPositionUp">
-        <option value="up1">Up 1</option>
-        <option value="up2">Up 2</option>
-        <option value="up3">Up 3</option>
+    .relative {
+      width: 200px;
+    }
+
+    .absolute {
+      width: 200px;
+    }
+  }
+}
+</style>
+
+<template>
+  <div id="contentPosition" class="content">
+    <h2 class="header">contentPosition</h2>
+    <p>contentPosition will set the css position to either relative. Default is <b>'absolute'</b></p>
+
+    <div class="alert info">
+      If you do use relative position be sure to set the contentLocation to an element that will work best for your use
+      case. Otherwise SlimSelect will add you content to the body of the html. See example usage below.
+    </div>
+
+    <div class="row contentPositionRow">
+      <select ref="contentPositionRelative" class="relative">
+        <option data-placeholder="true">Relative</option>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
       </select>
-      <select ref="contentPositionDown">
-        <option value="down1">Down 1</option>
-        <option value="down2">Down 2</option>
-        <option value="down3">Down 3</option>
+      <div ref="contentPositionRelativeContent"></div>
+      <select ref="contentPositionAbsolute" class="absolute">
+        <option data-placeholder="true">Absolute</option>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
       </select>
     </div>
 
     <pre>
       <code class="language-javascript">
         new SlimSelect({
-          select: '#contentPosition',
+          select: '#selectElement',
           settings: {
-            contentPosition: 'auto' // 'auto', 'up' or 'down'
+            contentPosition: 'relative' // 'absolute' or 'relative'
+
+            // To help with relative positioning 
+            // you can set the contentLocation
+            contentLocation: document.getElementById('local')
           }
         })
       </code>

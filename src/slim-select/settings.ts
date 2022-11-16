@@ -23,7 +23,8 @@ export default class Settings {
   public searchHighlight: boolean
   public closeOnSelect: boolean
   public contentLocation: HTMLElement
-  public contentPosition: 'auto' | 'up' | 'down'
+  public contentPosition: 'relative' | 'absolute'
+  public openPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
   public hideSelected: boolean
@@ -51,7 +52,8 @@ export default class Settings {
     this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false
     this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
     this.contentLocation = settings.contentLocation || document.body
-    this.contentPosition = settings.contentPosition || 'auto' // options: auto, up, down
+    this.contentPosition = settings.contentPosition || 'absolute'
+    this.openPosition = settings.openPosition || 'auto' // options: auto, up, down
     this.placeholderText = settings.placeholderText || 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false

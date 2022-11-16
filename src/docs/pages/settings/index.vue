@@ -14,6 +14,7 @@ import HideSelected from './hide_selected.vue'
 import Html from './html.vue'
 import Mandatory from './mandatory.vue'
 import MinMax from './min_max.vue'
+import OpenPosition from './open_position.vue'
 import Placeholder from './placeholder.vue'
 import Search from './search.vue'
 import Select from './select.vue'
@@ -27,6 +28,8 @@ export default defineComponent({
     Select,
     AlwaysOpen,
     ContentLocation,
+    ContentPosition,
+    OpenPosition,
     Placeholder,
     Deselect,
     Display,
@@ -38,7 +41,6 @@ export default defineComponent({
     Html,
     Search,
     CloseOnSelect,
-    ContentPosition,
     ShowTooltip,
     SelectByGroup,
     HideSelected,
@@ -51,6 +53,8 @@ export default defineComponent({
     <Select />
     <AlwaysOpen />
     <ContentLocation />
+    <ContentPosition />
+    <OpenPosition />
     <Placeholder />
     <Deselect />
     <Display />
@@ -62,7 +66,6 @@ export default defineComponent({
     <Html />
     <Search />
     <CloseOnSelect />
-    <ContentPosition />
     <ShowTooltip />
     <SelectByGroup />
     <HideSelected />
