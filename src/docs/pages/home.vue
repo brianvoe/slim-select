@@ -5,43 +5,77 @@ import SlimSelect from '../../slim-select'
 
 export default defineComponent({
   name: 'Home',
+  data() {
+    return {
+      single: null as SlimSelect | null,
+      multiple: null as SlimSelect | null,
+    }
+  },
   mounted() {
-    const single = new SlimSelect({
+    this.single = new SlimSelect({
       select: this.$refs.slimSingle as HTMLSelectElement,
     })
-    const multiple = new SlimSelect({
+    this.multiple = new SlimSelect({
       select: this.$refs.slimMulti as HTMLSelectElement,
     })
 
     setTimeout(() => {
-      single.open()
+      if (this.single) {
+        this.single.open()
+      }
       setTimeout(() => {
-        single.setSelected('best')
+        if (this.single) {
+          this.single.setSelected('best')
+        }
       }, 500)
       setTimeout(() => {
-        single.setSelected('select')
+        if (this.single) {
+          this.single.setSelected('select')
+        }
       }, 1000)
       setTimeout(() => {
-        single.setSelected('ever')
+        if (this.single) {
+          this.single.setSelected('ever')
+        }
       }, 1500)
       setTimeout(() => {
-        single.close()
+        if (this.single) {
+          this.single.close()
+        }
       }, 2000)
 
-      multiple.open()
+      if (this.multiple) {
+        this.multiple.open()
+      }
       setTimeout(() => {
-        multiple.setSelected(['best'])
+        if (this.multiple) {
+          this.multiple.setSelected(['best'])
+        }
       }, 500)
       setTimeout(() => {
-        multiple.setSelected(['best', 'select'])
+        if (this.multiple) {
+          this.multiple.setSelected(['best', 'select'])
+        }
       }, 1000)
       setTimeout(() => {
-        multiple.setSelected(['best', 'select', 'ever'])
+        if (this.multiple) {
+          this.multiple.setSelected(['best', 'select', 'ever'])
+        }
       }, 1500)
       setTimeout(() => {
-        multiple.close()
+        if (this.multiple) {
+          this.multiple.close()
+        }
       }, 2000)
     }, 500)
+  },
+  unmounted() {
+    if (this.single) {
+      this.single.destroy()
+    }
+    if (this.multiple) {
+      this.multiple.destroy()
+    }
   },
 })
 </script>

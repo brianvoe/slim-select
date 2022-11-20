@@ -88,6 +88,18 @@ export default defineComponent({
     })
 
     this.$router.afterEach(() => {
+      if (this.$route.query.p) {
+        // Delay router push to allow for
+        // other things to happen first
+        setTimeout(() => {
+          if (this.$route.query.p) {
+            this.$router.push({ path: this.$route.query.p.toString(), hash: this.$route.hash })
+          }
+        }, 200)
+
+        return
+      }
+
       // After route change get the hash and scroll to element in main
       setTimeout(() => {
         const hash = this.$route.hash
@@ -113,7 +125,7 @@ export default defineComponent({
             })
           }
         }
-      }, 100)
+      }, 200)
     })
 
     this.setDemensions()
@@ -121,6 +133,8 @@ export default defineComponent({
   },
   unmounted() {
     window.removeEventListener('resize', this.navDebounce)
+
+    this.nav?.destroy()
   },
   watch: {
     width() {
