@@ -1,22 +1,39 @@
+h1 {
+  font-size: 40px;
+  margin: 0 0 var(--spacing-half) 0;
+  padding: 0 0 var(--spacing-quarter) 0;
+}
+h2 {
+  font-size: 32px;
+  margin: 0 0 var(--spacing-half) 0;
+  padding: 0 0 var(--spacing-quarter) 0;
+
+  .header {
+    border-bottom: solid 1px var(--color-border);
+  }
+}
+h3 {
+  font-size: 24px;
+  margin: 0 0 var(--spacing-half) 0;
+  padding: 0 0 var(--spacing-quarter) 0;
+}
+h4 {
+  font-size: 20px;
+  margin: 0 0 var(--spacing-half) 0;
+  padding: 0 0 var(--spacing-quarter) 0;
+}
+h5 {
+  font-size: 16px;
+  margin: 0 0 var(--spacing-half) 0;
+  padding: 0 0 var(--spacing-quarter) 0;
+}
+
 a {
   color: var(--primary-color);
 
   &:hover {
     color: var(--color-secondary);
   }
-}
-
-h1,
-h2,
-h3,
-h4,
-h5 {
-  margin: 0 0 var(--spacing-half) 0;
-  padding: 0 0 var(--spacing-quarter) 0;
-}
-
-h2.header {
-  border-bottom: solid 1px var(--color-border);
 }
 
 p {

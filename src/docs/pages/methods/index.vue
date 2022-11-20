@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select'
-
 import GetSelected from './get_selected.vue'
 import SetSelected from './set_selected.vue'
 import GetData from './get_data.vue'

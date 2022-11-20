@@ -91,6 +91,14 @@ export default defineComponent({
       // After route change get the hash and scroll to element in main
       setTimeout(() => {
         const hash = this.$route.hash
+        if (hash === '') {
+          window.scroll({
+            top: 0,
+            behavior: 'smooth',
+          })
+        }
+
+        // If hash is not empty scroll to element
         if (hash) {
           const el = document.querySelector(hash) as HTMLElement
           if (el) {
