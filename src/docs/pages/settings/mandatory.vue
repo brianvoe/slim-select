@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="mandatory" class="content">
     <h2 class="header">mandatory</h2>
     <p>
       When using multi select you can set a mandatory on the option to prevent capability to deselect particular option.

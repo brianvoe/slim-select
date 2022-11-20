@@ -2,12 +2,16 @@
   // Colors
   --ss-primary-color: #5897fb;
   --ss-bg-color: #ffffff;
-  --ss-font-color: #666666;
-  --ss-font-placeholder-color: #8a8a8a;
+  --ss-font-color: #4d4d4d;
+  --ss-font-placeholder-color: #8d8d8d;
   --ss-disabled-color: #8a8a8a;
   --ss-border-color: #dcdee2;
   --ss-highlight-color: #fffb8c;
   --ss-error-color: #dc3545;
+
+  // Heights
+  --ss-main-height: 30px;
+  --ss-content-height: 300px;
 
   // Spacing
   --ss-spacing-l: 7px;
@@ -53,6 +57,7 @@
   position: relative;
   user-select: none;
   color: var(--ss-font-color);
+  min-height: var(--ss-main-height);
   width: 100%;
   padding: var(--ss-spacing-s);
   cursor: pointer;
@@ -208,17 +213,22 @@
 .ss-content {
   position: absolute; // default position
   display: flex;
+  height: auto;
   flex-direction: column;
+  width: auto;
+  max-height: var(--ss-content-height);
   box-sizing: border-box;
   border: solid 1px var(--ss-border-color);
   background-color: var(--ss-bg-color);
-  transition: height var(--ss-animation-timing), transform var(--ss-animation-timing),
-    opacity var(--ss-animation-timing);
+  transition: transform var(--ss-animation-timing), opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
+  overflow: hidden;
+  z-index: 10000;
 
   &.ss-relative {
     position: relative;
+    height: 100%;
   }
 
   &.ss-open-above {

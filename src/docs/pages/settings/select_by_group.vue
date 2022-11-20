@@ -17,7 +17,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="selectByGroup" class="content">
     <h2 class="header">selectByGroup</h2>
     <p>
       selectByGroup option is used to enable the selection of all options under a specific group by clicking that option

@@ -26,7 +26,7 @@ export default defineComponent({
 
 <style lang="scss">
 #contentPosition {
-  .contentPositionRow {
+  .row {
     .ss-main {
       height: 30px;
     }
@@ -52,7 +52,7 @@ export default defineComponent({
       case. Otherwise SlimSelect will add you content to the body of the html. See example usage below.
     </div>
 
-    <div class="row contentPositionRow">
+    <div class="row">
       <select ref="contentPositionRelative" class="relative">
         <option data-placeholder="true">Relative</option>
         <option value="value1">Value 1</option>

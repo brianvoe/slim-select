@@ -24,7 +24,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="placeholder" class="content">
     <h2 class="header">placeholderText</h2>
     <p>
       Placeholders consists of setting the placeholder option value. The only difference is single selects require an

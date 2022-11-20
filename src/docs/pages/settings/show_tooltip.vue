@@ -17,7 +17,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="showOptionTooltips" class="content">
     <h2 class="header">showOptionTooltips</h2>
     <p>
       showOptionTooltips option is used to active displaying the on-hover tooltips for select options. The tooltip text

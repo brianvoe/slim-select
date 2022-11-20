@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="display" class="content">
     <h2 class="header">display</h2>
     <p>Allows to hide elements of selected values.</p>
 

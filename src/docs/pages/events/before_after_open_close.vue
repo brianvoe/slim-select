@@ -72,7 +72,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="open" class="content">
     <h2 class="header">beforeOpen / afterOpen / beforeClose / afterClose</h2>
     <p>
       The beforeOpen, afterOpen, beforeClose, and afterClose events will fire before and after the select is opened and

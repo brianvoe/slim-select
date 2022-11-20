@@ -55,7 +55,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="beforeChange" class="content">
     <h2 class="header">beforeChange</h2>
     <p>
       beforeOnChange will trigger a callback on an option click and will allow you the ability to halt if the value it
@@ -99,7 +99,7 @@ export default defineComponent({
     </pre>
   </div>
 
-  <div class="content">
+  <div id="afterChange" class="content">
     <h2 class="header">afterChange</h2>
     <p>afterChange will trigger a callback after the value of the select dropdown has changed.</p>
 

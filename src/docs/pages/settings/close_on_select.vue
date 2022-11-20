@@ -25,7 +25,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="closeOnSelect" class="content">
     <h2 class="header">closeOnSelect</h2>
     <p>
       closeOnSelect is a boolean value in which determines whether or not to close the content area upon selecting a

@@ -40,7 +40,7 @@ export default defineComponent({
 </style>
 
 <template>
-  <div class="content">
+  <div id="cssClass" class="content">
     <h2 class="header">css class</h2>
     <p>
       Slim select will inherit any classes that were added to the original select element. This includes options as

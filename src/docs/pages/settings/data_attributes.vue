@@ -13,7 +13,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="dataAttributes" class="content">
     <h2 class="header">Data Attributes</h2>
     <p>
       Slim select will take on attributes of the original as best as possible. Below are example usages of attributes

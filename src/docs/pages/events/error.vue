@@ -30,7 +30,7 @@ export default defineComponent({
     <p>The error event is fired when an error occurs. The error message is passed as the first argument.</p>
     <div class="alert info">
       If you are are having issues with slim select finding the select element. Try delaying new SlimSelect() call as
-      the select dom element might not be ready yet.
+      the select dom element might not be available yet.
     </div>
 
     <div v-if="errMsg !== ''"><b>Error:</b> {{ errMsg }}</div>

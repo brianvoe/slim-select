@@ -17,7 +17,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="searchFilter" class="content">
     <h2 class="header">searchFilter</h2>
     <p>searchFilter event is used to replace the default matching algorithm.</p>
     <p>See Data for the proper object interface of <em>option</em>.</p>

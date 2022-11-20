@@ -31,7 +31,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="getSelected" class="content">
     <h2 class="header">getSelected</h2>
     <p>The getSelected method will return an array of the currently selected value strings.</p>
 

@@ -18,7 +18,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="minmax" class="content">
     <h2 class="header">Min/Max Selected</h2>
     <p>When using multi select you can set a min and/or max on the amount of selections you can have.</p>
 

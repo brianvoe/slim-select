@@ -31,7 +31,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="addable" class="content">
     <h2 class="header">addable</h2>
     <p>Slim select has the ability to dynamically add options via the search input field</p>
     <p>

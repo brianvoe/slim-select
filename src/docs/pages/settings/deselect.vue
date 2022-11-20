@@ -24,7 +24,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="allowDeselect" class="content">
     <h2 class="header">allowDeselect</h2>
     <p>This will allow you to deselect a value on a single/multiple select dropdown.</p>
     <p>Be sure to have an empty option data placeholder so slim select has an empty string value to select.</p>

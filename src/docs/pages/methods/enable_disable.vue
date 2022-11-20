@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="enableDisable" class="content">
     <h2 class="header">enable / disable</h2>
     <p>
       These methods will enable or disable the select dropdown.

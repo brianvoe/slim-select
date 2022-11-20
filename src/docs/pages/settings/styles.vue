@@ -13,7 +13,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="inlineStyles" class="content">
     <h2 class="header">inline styles</h2>
     <p>
       Slim select will inherit any styles that were added to the original select element. This includes options as well.

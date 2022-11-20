@@ -23,7 +23,7 @@ export interface Config {
 
 export interface Events {
   search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
-  searchFilter?: (opt: Option, search: string) => boolean
+  searchFilter?: (option: Option, search: string) => boolean
   addable?: (value: string) => OptionOptional | string
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
   afterChange?: (newVal: Option[]) => void
@@ -379,14 +379,24 @@ export default class SlimSelect {
 
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce(() => {
-    console.log('hit')
     // If the content is not open, there is no need to move it
     if (!this.settings.isOpen) {
       return
     }
 
+    // If openContent is not auto set content
+    if (this.settings.openPosition === 'down') {
+      this.render.moveContentBelow()
+      return
+    } else if (this.settings.openPosition === 'up') {
+      this.render.moveContentAbove()
+      return
+    }
+
     // Determine where to put the content
-    if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
+    if (this.settings.contentPosition === 'relative') {
+      this.render.moveContentBelow()
+    } else if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
       this.render.moveContentAbove()
     } else {
       this.render.moveContentBelow()

@@ -31,7 +31,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="getData" class="content">
     <h2 class="header">getData</h2>
     <p>The getData method will return an array of the full data set.</p>
 

@@ -32,7 +32,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="content">
+  <div id="search" class="content">
     <h2 class="header">search</h2>
     <p>The search method will update the search input field and search the data against that value.</p>
 

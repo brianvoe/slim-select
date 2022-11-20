@@ -14,6 +14,8 @@ export default class Settings {
   public intervalMove: NodeJS.Timeout | null = null
 
   // Fields set from constructor
+  public mainHeight: number = 30
+  public contentHeight: number = 0
   public isEnabled: boolean
   public alwaysOpen: boolean
   public showSearch: boolean
