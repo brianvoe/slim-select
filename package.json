@@ -1,19 +1,19 @@
 {
   "name": "slim-select",
   "description": "Slim advanced select dropdown",
-  "version": "1.27.1",
+  "version": "2.0.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
-  "main": "dist/slimselect.min.js",
-  "module": "dist/slimselect.esm.js",
-  "unpkg": "dist/slimselect.min.js",
+  "main": "dist/slimselect.js",
+  "module": "dist/slimselect.es.js",
+  "unpkg": "dist/slimselect.js",
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
-  "style": "dist/slimselect.min.css",
+  "style": "dist/slimselect.css",
   "sass": "src/slim-select/slimselect.scss",
   "repository": {
     "type": "git",
