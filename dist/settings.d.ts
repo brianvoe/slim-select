@@ -1,12 +1,17 @@
-export declare type SettingsPartial = Partial<Settings>;
+/// <reference types="node" />
+export type SettingsPartial = Partial<Settings>;
 export default class Settings {
     id: string;
     style: string;
     class: string[];
     isMultiple: boolean;
     isOpen: boolean;
-    isTabbing: boolean;
+    triggerFocus: boolean;
+    intervalMove: NodeJS.Timeout | null;
+    mainHeight: number;
+    contentHeight: number;
     isEnabled: boolean;
+    alwaysOpen: boolean;
     showSearch: boolean;
     searchPlaceholder: string;
     searchText: string;
@@ -14,11 +19,11 @@ export default class Settings {
     searchHighlight: boolean;
     closeOnSelect: boolean;
     contentLocation: HTMLElement;
-    contentPosition: 'auto' | 'up' | 'down';
+    contentPosition: 'relative' | 'absolute';
+    openPosition: 'auto' | 'up' | 'down';
     placeholderText: string;
     allowDeselect: boolean;
     hideSelected: boolean;
-    useHtml: boolean;
     showOptionTooltips: boolean;
     selectByGroup: boolean;
     minSelected: number;

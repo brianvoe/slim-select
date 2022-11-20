@@ -4,7 +4,7 @@ export interface Callbacks {
     open: () => void;
     close: () => void;
     addable?: (value: string) => OptionOptional | string;
-    setSelected: (value: string[], close: boolean) => void;
+    setSelected: (value: string[]) => void;
     addOption: (option: Option) => void;
     search: (search: string) => void;
     beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void;
@@ -45,8 +45,6 @@ export default class Render {
     content: Content;
     classes: {
         main: string;
-        openAbove: string;
-        openBelow: string;
         placeholder: string;
         values: string;
         single: string;
@@ -60,7 +58,8 @@ export default class Render {
         arrowClose: string;
         arrowOpen: string;
         content: string;
-        open: string;
+        openAbove: string;
+        openBelow: string;
         search: string;
         searchHighlighter: string;
         searching: string;
@@ -84,6 +83,7 @@ export default class Render {
     open(): void;
     close(): void;
     mainDiv(): Main;
+    mainFocus(trigger: boolean): void;
     placeholder(): HTMLDivElement;
     renderValues(): void;
     private renderSingleValue;
@@ -92,15 +92,16 @@ export default class Render {
     contentDiv(): Content;
     moveContent(): void;
     searchDiv(): Search;
-    highlightUp(): void;
-    highlightDown(): void;
+    searchFocus(trigger: boolean): void;
+    getOptions(notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean): HTMLDivElement[];
+    highlight(dir: 'up' | 'down'): void;
     listDiv(): HTMLDivElement;
     renderError(error: string): void;
     renderSearching(): void;
     renderOptions(data: DataArray): void;
     option(option: Option): HTMLDivElement;
     destroy(): void;
-    private highlight;
+    private highlightText;
     moveContentAbove(): void;
     moveContentBelow(): void;
     ensureElementInView(container: HTMLElement, element: HTMLElement): void;
