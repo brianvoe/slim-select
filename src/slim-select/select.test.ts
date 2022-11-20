@@ -106,7 +106,7 @@ describe('select module', () => {
     expect(data[0].selected).toBe(true)
 
     let didChange = false
-    select.addChangeFunc(() => {
+    select.addValueChangeListener(() => {
       didChange = true
     })
 
@@ -137,7 +137,7 @@ describe('select module', () => {
     expect(data.length).toBe(3)
 
     let didChange = false
-    select.addChangeFunc(() => {
+    select.addSelectChangeListener(() => {
       didChange = true
     })
 
