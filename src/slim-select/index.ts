@@ -101,6 +101,16 @@ export default class SlimSelect {
     this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class)
     this.select.hideUI() // Hide the original select element
 
+    // Add select listeners
+    this.select.addSelectChangeListener((data: DataArray) => {
+      // Run set data from the values given
+      this.setData(data)
+    })
+    this.select.addValueChangeListener((values: string[]) => {
+      // Run set selected from the values given
+      this.setSelected(values)
+    })
+
     // Set store class
     this.store = new Store(
       this.settings.isMultiple ? 'multiple' : 'single',
@@ -366,7 +376,7 @@ export default class SlimSelect {
     this.render.destroy()
 
     // Show the original select element
-    this.select.showUI()
+    this.select.destroy()
   }
 
   private windowResize: (e: Event) => void = debounce(() => {

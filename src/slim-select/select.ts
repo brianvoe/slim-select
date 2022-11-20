@@ -1,12 +1,13 @@
 import { generateID, kebabCase } from './helper'
-import { DataArray, Optgroup, Option } from './store'
+import { DataArray, DataObject, Optgroup, Option } from './store'
 
 export default class Select {
   public select: HTMLSelectElement
   public listen: boolean = false
 
   // Mutation observer fields
-  public changeFunc?: (data: DataArray) => void
+  public onSelectChange?: (data: DataArray) => void
+  public onValueChange?: (value: string[]) => void
   private observer: MutationObserver | null = null
 
   constructor(select: HTMLSelectElement) {
@@ -54,44 +55,38 @@ export default class Select {
   }
 
   // Add change listener to original select
-  public addChangeFunc(func: (data: DataArray) => void): void {
-    this.changeFunc = func
+  public addSelectChangeListener(func: (data: DataArray) => void): void {
+    this.onSelectChange = func
     this.addObserver()
     this.connectObserver()
     this.changeListen(true) // Last start listening
   }
 
   // remove change listener from original select
-  public removeChangeFunc(): void {
+  public removeSelectChangeListener(): void {
     this.changeListen(false) // First stop listening
-    this.changeFunc = undefined
+    this.onSelectChange = undefined
   }
 
-  public setSelected(value: string[]): void {
-    // Loop through options and set selected
-    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
-    for (const o of options) {
-      if (o.nodeName === 'OPTGROUP') {
-        const optgroup = o as HTMLOptGroupElement
-        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
-        for (const oo of optgroupOptions) {
-          if (oo.nodeName === 'OPTION') {
-            const option = oo as HTMLOptionElement
-            option.selected = value.includes(option.value)
-          }
-        }
-      }
+  public addValueChangeListener(func: (value: string[]) => void): void {
+    this.onValueChange = func
+    this.select.addEventListener('change', this.valueChange.bind(this))
+  }
 
-      if (o.nodeName === 'OPTION') {
-        const option = o as HTMLOptionElement
-        option.selected = value.includes(option.value)
-      }
+  public removeValueChangeListener(): void {
+    this.onValueChange = undefined
+    this.select.removeEventListener('change', this.valueChange.bind(this))
+  }
+
+  public valueChange(ev: Event): any {
+    if (this.onValueChange) {
+      this.onValueChange(this.getSelectedValues())
     }
   }
 
   private observeWrapper(mutations: MutationRecord[]): void {
-    if (this.changeFunc) {
-      this.changeFunc(this.getData())
+    if (this.onSelectChange) {
+      this.onSelectChange(this.getData())
     }
   }
 
@@ -162,6 +157,35 @@ export default class Select {
     return data
   }
 
+  public getSelectedValues(): string[] {
+    let values = []
+
+    // Loop through options and set selected
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTGROUP') {
+        const optgroupOptions = o.childNodes as any as HTMLOptionElement[]
+        for (const oo of optgroupOptions) {
+          if (oo.nodeName === 'OPTION') {
+            const option = oo as HTMLOptionElement
+            if (option.selected) {
+              values.push(option.value)
+            }
+          }
+        }
+      }
+
+      if (o.nodeName === 'OPTION') {
+        const option = o as HTMLOptionElement
+        if (option.selected) {
+          values.push(option.value)
+        }
+      }
+    }
+
+    return values
+  }
+
   // From passed in option pull pieces of usable information
   public getDataFromOption(option: HTMLOptionElement): Option {
     return {
@@ -180,7 +204,32 @@ export default class Select {
     } as Option
   }
 
+  public setSelected(value: string[]): void {
+    // Loop through options and set selected
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTGROUP') {
+        const optgroup = o as HTMLOptGroupElement
+        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
+        for (const oo of optgroupOptions) {
+          if (oo.nodeName === 'OPTION') {
+            const option = oo as HTMLOptionElement
+            option.selected = value.includes(option.value)
+          }
+        }
+      }
+
+      if (o.nodeName === 'OPTION') {
+        const option = o as HTMLOptionElement
+        option.selected = value.includes(option.value)
+      }
+    }
+  }
+
   public updateSelect(id?: string, style?: string, classes?: string[]): void {
+    // Stop listening to changes
+    this.changeListen(false)
+
     // Update id
     if (id) {
       this.select.id = id
@@ -200,9 +249,15 @@ export default class Select {
         }
       })
     }
+
+    // Start listening to changes
+    this.changeListen(true)
   }
 
   public updateOptions(data: DataArray): void {
+    // Stop listening to changes
+    this.changeListen(false)
+
     // Clear out select
     this.select.innerHTML = ''
 
@@ -215,6 +270,9 @@ export default class Select {
         this.select.appendChild(this.createOption(d))
       }
     }
+
+    // Start listening to changes
+    this.changeListen(true)
   }
 
   public createOptgroup(optgroup: Optgroup): HTMLOptGroupElement {
@@ -260,5 +318,15 @@ export default class Select {
     }
 
     return optionEl
+  }
+
+  public destroy() {
+    this.changeListen(false)
+    this.disconnectObserver()
+    this.removeSelectChangeListener()
+    this.removeValueChangeListener()
+
+    // show the original select
+    this.showUI()
   }
 }
