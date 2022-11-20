@@ -1,531 +1,428 @@
-import { Config } from './config'
-import { Select } from './select'
-import { Slim } from './slim'
-import { Data, dataArray, Option, validateData } from './data'
-import { hasClassInTree, putContent, debounce, ensureElementInView } from './helper'
+import { debounce, hasClassInTree } from './helper'
+import Render from './render'
+import Select from './select'
+import Settings, { SettingsPartial } from './settings'
+import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
-interface Constructor {
+// Export everything except the "export default"
+export * from './helper'
+export * from './settings'
+export * from './select'
+export * from './store'
+export * from './render'
+
+// Export all "export defaults"
+export { Settings, Select, Store, Render }
+
+export interface Config {
   select: string | Element
-  data?: dataArray
-  showSearch?: boolean
-  searchPlaceholder?: string
-  searchText?: string
-  searchingText?: string
-  searchFocus?: boolean
-  searchHighlight?: boolean
-  searchFilter?: (opt: Option, search: string) => boolean
-  closeOnSelect?: boolean
-  showContent?: string
-  placeholder?: string
-  allowDeselect?: boolean
-  allowDeselectOption?: boolean
-  hideSelectedOption?: boolean
-  deselectLabel?: string
-  isEnabled?: boolean
-  valuesUseText?: boolean // Use text value when showing selected value
-  showOptionTooltips?: boolean
-  selectByGroup?: boolean
-  limit?: number
-  timeoutDelay?: number
-  addToBody?: boolean
+  data?: DataArrayPartial
+  settings?: SettingsPartial
+  events?: Events
+}
 
-  // Events
-  ajax?: (value: string, func: (info: any) => void) => void
-  addable?: (value: string) => Option | string
-  beforeOnChange?: (info: Option | Option[]) => void | boolean
-  onChange?: (info: Option | Option[]) => void
+export interface Events {
+  search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
+  searchFilter?: (option: Option, search: string) => boolean
+  addable?: (value: string) => OptionOptional | string
+  beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
+  afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void
   afterOpen?: () => void
   beforeClose?: () => void
   afterClose?: () => void
+  error?: (err: Error) => void
 }
 
 export default class SlimSelect {
-  public config: Config
-  public select: Select
-  public data: Data
-  public slim: Slim
-  public ajax: ((value: string, func: (info: any) => void) => void) | null = null
-  public addable: ((value: string) => Option | string) | null = null
-  public beforeOnChange: ((info: Option) => void | boolean) | null = null
-  public onChange: ((info: Option) => void) | null = null
-  public beforeOpen: (() => void) | null = null
-  public afterOpen: (() => void) | null = null
-  public beforeClose: (() => void) | null = null
-  public afterClose: (() => void) | null = null
+  public selectEl: HTMLSelectElement
 
-  private windowScroll: (e: Event) => void = debounce((e: Event) => {
-    if (this.data.contentOpen) {
-      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
-        this.moveContentAbove()
-      } else {
-        this.moveContentBelow()
+  // Classes
+  public settings!: Settings
+  public select!: Select
+  public store!: Store
+  public render!: Render
+
+  // Events
+  public events = {
+    search: undefined,
+    searchFilter: (opt: Option, search: string) => {
+      return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+    },
+    addable: undefined,
+    beforeChange: undefined,
+    afterChange: undefined,
+    beforeOpen: undefined,
+    afterOpen: undefined,
+    beforeClose: undefined,
+    afterClose: undefined,
+  } as Events
+
+  constructor(config: Config) {
+    // Make sure you get the right element
+    this.selectEl = (
+      typeof config.select === 'string' ? document.querySelector(config.select) : config.select
+    ) as HTMLSelectElement
+    if (!this.selectEl) {
+      if (config.events && config.events.error) {
+        config.events.error(new Error('Could not find select element'))
       }
+      return
     }
-  })
-
-  constructor(info: Constructor) {
-    const selectElement = this.validate(info)
+    if (this.selectEl.tagName !== 'SELECT') {
+      if (config.events && config.events.error) {
+        config.events.error(new Error('Element isnt of type select'))
+      }
+      return
+    }
 
     // If select already has a slim select id on it lets destroy it first
-    if (selectElement.dataset.ssid) { this.destroy(selectElement.dataset.ssid) }
-
-    // Set ajax function if passed in
-    if (info.ajax) { this.ajax = info.ajax }
-
-    // Add addable if option is passed in
-    if (info.addable) { this.addable = info.addable }
-
-    this.config = new Config({
-      select: selectElement,
-      isAjax: (info.ajax ? true : false),
-      showSearch: info.showSearch,
-      searchPlaceholder: info.searchPlaceholder,
-      searchText: info.searchText,
-      searchingText: info.searchingText,
-      searchFocus: info.searchFocus,
-      searchHighlight: info.searchHighlight,
-      searchFilter: info.searchFilter,
-      closeOnSelect: info.closeOnSelect,
-      showContent: info.showContent,
-      placeholderText: info.placeholder,
-      allowDeselect: info.allowDeselect,
-      allowDeselectOption: info.allowDeselectOption,
-      hideSelectedOption: info.hideSelectedOption,
-      deselectLabel: info.deselectLabel,
-      isEnabled: info.isEnabled,
-      valuesUseText: info.valuesUseText,
-      showOptionTooltips: info.showOptionTooltips,
-      selectByGroup: info.selectByGroup,
-      limit: info.limit,
-      timeoutDelay: info.timeoutDelay,
-      addToBody: info.addToBody
-    })
-
-    this.select = new Select({
-      select: selectElement,
-      main: this
-    })
-
-    this.data = new Data({ main: this })
-    this.slim = new Slim({ main: this })
-
-    // Add after original select element
-    if (this.select.element.parentNode) {
-      this.select.element.parentNode.insertBefore(this.slim.container, this.select.element.nextSibling)
+    if (this.selectEl.dataset.ssid) {
+      this.destroy()
     }
 
-    // If data is passed in lets set it
-    // and thus will start the render
-    if (info.data) {
-      this.setData(info.data)
-    } else {
-      // Do an initial render on startup
-      this.render()
+    // Set settings
+    this.settings = new Settings(config.settings)
+
+    // Set events
+    for (const key in config.events) {
+      if (config.events.hasOwnProperty(key)) {
+        ;(this.events as { [key: string]: any })[key] = (config.events as { [key: string]: any })[key]
+      }
+    }
+
+    // Upate settings with type, style and classname
+    this.settings.isMultiple = this.selectEl.multiple
+    this.settings.style = this.selectEl.style.cssText
+    this.settings.class = this.selectEl.className.split(' ')
+
+    // Set select class
+    this.select = new Select(this.selectEl)
+    this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class)
+    this.select.hideUI() // Hide the original select element
+
+    // Add select listeners
+    this.select.addSelectChangeListener((data: DataArray) => {
+      // Run set data from the values given
+      this.setData(data)
+    })
+    this.select.addValueChangeListener((values: string[]) => {
+      // Run set selected from the values given
+      this.setSelected(values)
+    })
+
+    // Set store class
+    this.store = new Store(
+      this.settings.isMultiple ? 'multiple' : 'single',
+      config.data ? config.data : this.select.getData(),
+    )
+
+    // If data is passed update the original select element
+    if (config.data) {
+      this.select.updateOptions(this.store.getData())
+    }
+
+    // Set render callbacks
+    const callbacks = {
+      open: this.open.bind(this),
+      close: this.close.bind(this),
+      addable: this.events.addable ? this.events.addable : undefined,
+      setSelected: this.setSelected.bind(this),
+      addOption: this.addOption.bind(this),
+      search: this.search.bind(this),
+      beforeChange: this.events.beforeChange,
+      afterChange: this.events.afterChange,
+    }
+
+    // Setup render class
+    this.render = new Render(this.settings, this.store, callbacks)
+
+    // Add render after original select element
+    if (this.selectEl.parentNode) {
+      this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling)
     }
 
     // Add onclick listener to document to closeContent if clicked outside
     document.addEventListener('click', this.documentClick)
 
+    // Add window resize listener to moveContent if window size changes
+    window.addEventListener('resize', this.windowResize, false)
+
     // If the user wants to show the content forcibly on a specific side,
     // there is no need to listen for scroll events
-    if (this.config.showContent === 'auto') {
+    if (this.settings.openPosition === 'auto') {
       window.addEventListener('scroll', this.windowScroll, false)
     }
 
-    // Add event callbacks after everthing has been created
-    if (info.beforeOnChange) { this.beforeOnChange = info.beforeOnChange }
-    if (info.onChange) { this.onChange = info.onChange }
-    if (info.beforeOpen) { this.beforeOpen = info.beforeOpen }
-    if (info.afterOpen) { this.afterOpen = info.afterOpen }
-    if (info.beforeClose) { this.beforeClose = info.beforeClose }
-    if (info.afterClose) { this.afterClose = info.afterClose }
-
     // If disabled lets call it
-    if (!this.config.isEnabled) { this.disable() }
+    if (!this.settings.isEnabled) {
+      this.disable()
+    }
+
+    // If alwaysOpnen then open it
+    if (this.settings.alwaysOpen) {
+      this.open()
+    }
+
+    // Add SlimSelect to select element
+    ;(this.selectEl as any).slim = this
   }
 
-  public validate(info: Constructor) {
-    const select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select) as HTMLSelectElement
-    if (!select) { throw new Error('Could not find select element') }
-    if (select.tagName !== 'SELECT') { throw new Error('Element isnt of type select') }
-    return select
+  // Set to enabled and remove disabled classes
+  public enable(): void {
+    this.settings.isEnabled = true
+
+    this.select.enable()
+    this.render.enable()
   }
 
-  public selected(): string | string[] {
-    if (this.config.isMultiple) {
-      const selected = this.data.getSelected() as Option[]
-      const outputSelected: string[] = []
-      for (const s of selected) {
-        outputSelected.push(s.value as string)
+  // Set to disabled and add disabled classes
+  public disable(): void {
+    this.settings.isEnabled = false
+
+    this.select.disable()
+    this.render.disable()
+  }
+
+  public getData(): DataArray {
+    return this.store.getData()
+  }
+
+  public setData(data: DataArrayPartial): void {
+    // Validate data
+    const err = this.store.validateDataArray(data)
+    if (err) {
+      if (this.events.error) {
+        this.events.error(err)
       }
-      return outputSelected
-    } else {
-      const selected = this.data.getSelected() as Option
-      return (selected ? selected.value as string : '')
-    }
-  }
-
-  // Sets value of the select, adds it to data and original select
-  public set(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
-    if (this.config.isMultiple && !Array.isArray(value)) {
-      this.data.addToSelected(value, type)
-    } else {
-      this.data.setSelected(value, type)
-    }
-    this.select.setValue()
-    this.data.onDataChange() // Trigger on change callback
-    this.render()
-
-    // Close when all options are selected and hidden
-    if (this.config.hideSelectedOption && this.config.isMultiple && (this.data.getSelected() as Option[]).length === this.data.data.length) {
-      close = true
+      return
     }
 
-    if (close) { this.close() }
+    // Update the store
+    this.store.setData(data)
+    const dataClean = this.store.getData()
+
+    // Update original select element
+    this.select.updateOptions(dataClean)
+
+    // Update the render
+    this.render.renderValues()
+    this.render.renderOptions(dataClean)
   }
 
-  // setSelected is just mapped to the set method
-  public setSelected(value: string | string[], type: string = 'value', close: boolean = true, render: boolean = true) {
-    this.set(value, type, close, render)
+  public getSelected(): string[] {
+    return this.store.getSelected()
   }
 
-  public setData(data: dataArray) {
-    // Validate data if passed in
-    const isValid = validateData(data)
-    if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
+  public setSelected(value: string | string[]): void {
+    // Update the store
+    this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
+    const data = this.store.getData()
 
-    const newData = JSON.parse(JSON.stringify(data))
-    const selected = this.data.getSelected()
+    // Update the select element
+    this.select.updateOptions(data)
 
-    // Check newData to make sure value is set
-    // If not set from text
-    for (let i = 0; i < newData.length; i++) {
-      if (!newData[i].value && !newData[i].placeholder) {
-        newData[i].value = newData[i].text
-      }
-    }
-
-    // If its an ajax type keep selected values
-    if (this.config.isAjax && selected) {
-      if (this.config.isMultiple) {
-        const reverseSelected = (selected as Option[]).reverse()
-        for (const r of reverseSelected) {
-          newData.unshift(r)
-        }
-      } else {
-        newData.unshift(selected)
-
-        // Look for duplicate selected if so remove it
-        for (let i = 0; i < newData.length; i++) {
-          if (!newData[i].placeholder && newData[i].value === (selected as Option).value && newData[i].text === (selected as Option).text) {
-            newData.splice(i, 1)
-          }
-        }
-
-        // Add placeholder if it doesnt already have one
-        let hasPlaceholder = false
-        for (let i = 0; i < newData.length; i++) {
-          if (newData[i].placeholder) {
-            hasPlaceholder = true
-          }
-        }
-        if (!hasPlaceholder) {
-          newData.unshift({ text: '', placeholder: true })
-        }
-      }
-    }
-
-    this.select.create(newData)
-    this.data.parseSelectData()
-    this.data.setSelectedFromSelect()
+    // Update the render
+    this.render.renderValues()
+    this.render.renderOptions(data)
   }
 
-  // addData will append to the current data set
-  public addData(data: Option) {
-    // Validate data if passed in
-    const isValid = validateData([data])
-    if (!isValid) { console.error('Validation problem on: #' + this.select.element.id); return } // If data passed in is not valid DO NOT parse, set and render
+  public addOption(option: OptionOptional): void {
+    // Add option to store
+    this.store.addOption(option)
+    const data = this.store.getData()
 
-    this.data.add(this.data.newOption(data))
-    this.select.create(this.data.data)
-    this.data.parseSelectData()
-    this.data.setSelectedFromSelect()
-    this.render()
+    // Update the select element
+    this.select.updateOptions(data)
+
+    // Update the render
+    this.render.renderValues()
+    this.render.renderOptions(data)
   }
 
-  // Open content section
   public open(): void {
     // Dont open if disabled
-    if (!this.config.isEnabled) { return }
-
     // Dont do anything if the content is already open
-    if (this.data.contentOpen) { return }
-
-    // Dont open when all options are selected and hidden
-    if (this.config.hideSelectedOption && this.config.isMultiple && (this.data.getSelected() as Option[]).length === this.data.data.length) { return }
+    if (!this.settings.isEnabled || this.settings.isOpen) {
+      return
+    }
 
     // Run beforeOpen callback
-    if (this.beforeOpen) { this.beforeOpen() }
-
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.plus.classList.add('ss-cross')
-    } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-down')
-      this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-up')
-    }
-    (this.slim as any)[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow))
-
-    if (this.config.addToBody) {
-      // move the content in to the right location
-      const containerRect = this.slim.container.getBoundingClientRect()
-      this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px'
-      this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px'
-      this.slim.content.style.width = containerRect.width + 'px'
-    }
-    this.slim.content.classList.add(this.config.open)
-
-    // Check showContent to see if they want to specifically show in a certain direction
-    if (this.config.showContent.toLowerCase() === 'up') {
-      this.moveContentAbove()
-    } else if (this.config.showContent.toLowerCase() === 'down') {
-      this.moveContentBelow()
-    } else {
-      // Auto identify where to put it
-      if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
-        this.moveContentAbove()
-      } else {
-        this.moveContentBelow()
-      }
+    if (this.events.beforeOpen) {
+      this.events.beforeOpen()
     }
 
-    // Move to selected option for single option
-    if (!this.config.isMultiple) {
-      const selected = this.data.getSelected() as Option
-      if (selected) {
-        const selectedId = selected.id
-        const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
-        if (selectedOption) {
-          ensureElementInView(this.slim.list, selectedOption)
-        }
-      }
+    // Tell render to open
+    this.render.open()
+
+    // Focus on input field only if search is enabled
+    if (this.settings.showSearch) {
+      this.render.searchFocus(false)
     }
 
     // setTimeout is for animation completion
     setTimeout(() => {
-      this.data.contentOpen = true
-
-      // Focus on input field
-      if (this.config.searchFocus) {
-        this.slim.search.input.focus()
-      }
-
       // Run afterOpen callback
-      if (this.afterOpen) {
-        this.afterOpen()
+      if (this.events.afterOpen) {
+        this.events.afterOpen()
       }
-    }, this.config.timeoutDelay)
+
+      // Update settings
+      this.settings.isOpen = true
+    }, this.settings.timeoutDelay)
+
+    // Start an interval to check if main has moved
+    // in order to keep content close to main
+    if (this.settings.intervalMove) {
+      clearInterval(this.settings.intervalMove)
+    }
+    this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
   }
 
-  // Close content section
   public close(): void {
     // Dont do anything if the content is already closed
-    if (!this.data.contentOpen) { return }
+    // Dont do anything if alwaysOpen is true
+    if (!this.settings.isOpen || this.settings.alwaysOpen) {
+      return
+    }
 
     // Run beforeClose calback
-    if (this.beforeClose) { this.beforeClose() }
-
-    // this.slim.search.input.blur() // Removed due to safari quirk
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.openAbove)
-      this.slim.multiSelected.container.classList.remove(this.config.openBelow)
-      this.slim.multiSelected.plus.classList.remove('ss-cross')
-    } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.openAbove)
-      this.slim.singleSelected.container.classList.remove(this.config.openBelow)
-      this.slim.singleSelected.arrowIcon.arrow.classList.add('arrow-down')
-      this.slim.singleSelected.arrowIcon.arrow.classList.remove('arrow-up')
+    if (this.events.beforeClose) {
+      this.events.beforeClose()
     }
-    this.slim.content.classList.remove(this.config.open)
-    this.data.contentOpen = false
 
+    // Tell render to close
+    this.render.close()
+
+    // Clear search
     this.search('') // Clear search
+
+    // If we arent tabbing focus back on the main element
+    this.render.mainFocus(false)
 
     // Reset the content below
     setTimeout(() => {
-      this.slim.content.removeAttribute('style')
-      this.data.contentPosition = 'below'
-
-      if (this.config.isMultiple && this.slim.multiSelected) {
-        this.slim.multiSelected.container.classList.remove(this.config.openAbove)
-        this.slim.multiSelected.container.classList.remove(this.config.openBelow)
-      } else if (this.slim.singleSelected) {
-        this.slim.singleSelected.container.classList.remove(this.config.openAbove)
-        this.slim.singleSelected.container.classList.remove(this.config.openBelow)
+      // Run afterClose callback
+      if (this.events.afterClose) {
+        this.events.afterClose()
       }
 
-      // After content is closed lets blur on the input field
-      this.slim.search.input.blur()
+      // Update settings
+      this.settings.isOpen = false
+    }, this.settings.timeoutDelay)
 
-      // Run afterClose callback
-      if (this.afterClose) { this.afterClose() }
-    }, this.config.timeoutDelay)
-  }
-
-  public moveContentAbove(): void {
-    let selectHeight: number = 0
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      selectHeight = this.slim.multiSelected.container.offsetHeight
-    } else if (this.slim.singleSelected) {
-      selectHeight = this.slim.singleSelected.container.offsetHeight
+    if (this.settings.intervalMove) {
+      clearInterval(this.settings.intervalMove)
     }
-    const contentHeight = this.slim.content.offsetHeight
-    const height = selectHeight + contentHeight - 1
-    this.slim.content.style.margin = '-' + height + 'px 0 0 0'
-    this.slim.content.style.height = (height - selectHeight + 1) + 'px'
-    this.slim.content.style.transformOrigin = 'center bottom'
-    this.data.contentPosition = 'above'
-
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.openBelow)
-      this.slim.multiSelected.container.classList.add(this.config.openAbove)
-    } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.openBelow)
-      this.slim.singleSelected.container.classList.add(this.config.openAbove)
-    }
-  }
-
-  public moveContentBelow(): void {
-    this.data.contentPosition = 'below'
-
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.openAbove)
-      this.slim.multiSelected.container.classList.add(this.config.openBelow)
-    } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.openAbove)
-      this.slim.singleSelected.container.classList.add(this.config.openBelow)
-    }
-  }
-
-  // Set to enabled, remove disabled classes and removed disabled from original select
-  public enable(): void {
-    this.config.isEnabled = true
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.remove(this.config.disabled)
-    } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.remove(this.config.disabled)
-    }
-
-    // Disable original select but dont trigger observer
-    this.select.triggerMutationObserver = false
-    this.select.element.disabled = false
-    this.slim.search.input.disabled = false
-    this.select.triggerMutationObserver = true
-  }
-
-  // Set to disabled, add disabled classes and add disabled to original select
-  public disable(): void {
-    this.config.isEnabled = false
-    if (this.config.isMultiple && this.slim.multiSelected) {
-      this.slim.multiSelected.container.classList.add(this.config.disabled)
-    } else if (this.slim.singleSelected) {
-      this.slim.singleSelected.container.classList.add(this.config.disabled)
-    }
-
-    // Enable original select but dont trigger observer
-    this.select.triggerMutationObserver = false
-    this.select.element.disabled = true
-    this.slim.search.input.disabled = true
-    this.select.triggerMutationObserver = true
   }
 
   // Take in string value and search current options
   public search(value: string): void {
-    // Only filter data and rerender if value has changed
-    if (this.data.searchValue === value) { return }
+    // If the passed in value is not the same as the search input value
+    // then lets update the search input value
+    if (this.render.content.search.input.value !== value) {
+      this.render.content.search.input.value = value
+    }
 
-    this.slim.search.input.value = value
-    if (this.config.isAjax) {
-      const master = this
-      this.config.isSearching = true
-      this.render()
+    // If no search event run regular search
+    if (!this.events.search) {
+      // If value is empty then render all options
+      this.render.renderOptions(
+        value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!),
+      )
+      return
+    }
 
-      // If ajax call it
-      if (this.ajax) {
-        this.ajax(value, (info: any) => {
-          // Only process if return callback is not false
-          master.config.isSearching = false
-          if (Array.isArray(info)) {
-            info.unshift({ text: '', placeholder: true })
-            master.setData(info)
-            master.data.search(value)
-            master.render()
-          } else if (typeof info === 'string') {
-            master.slim.options(info)
-          } else {
-            master.render()
-          }
+    // Search event exists so lets render the searching text
+    this.render.renderSearching()
+
+    // Based upon the search event deal with the response
+    const searchResp = this.events.search(value, this.store.getSelectedOptions())
+
+    // If the search event returns a promise
+    if (searchResp instanceof Promise) {
+      searchResp
+        .then((data: DataArrayPartial) => {
+          // Update the render with the new data
+          this.render.renderOptions(this.store.partialToFullData(data))
         })
-      }
+        .catch((err: Error | string) => {
+          // Update the render with error
+          this.render.renderError(typeof err === 'string' ? err : err.message)
+        })
+
+      return
+    } else if (Array.isArray(searchResp)) {
+      // Update the render options
+      this.render.renderOptions(this.store.partialToFullData(searchResp))
     } else {
-      this.data.search(value)
-      this.render()
+      // Update the render with error
+      this.render.renderError('Search event must return a promise or an array of data')
     }
   }
 
-  public setSearchText(text: string): void {
-    this.config.searchText = text
-  }
-
-  public render(): void {
-    if (this.config.isMultiple) {
-      this.slim.values()
-    } else {
-      this.slim.placeholder()
-      this.slim.deselect()
-    }
-    this.slim.options()
-  }
-
-  // Display original select again and remove slim
-  public destroy(id: string | null = null): void {
-    const slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container)
-    const select = (id ? document.querySelector(`[data-ssid=${id}]`) as HTMLSelectElement : this.select.element)
-    // If there is no slim dont do anything
-    if (!slim || !select) { return }
-
-
+  public destroy(): void {
+    // Remove all event listeners
     document.removeEventListener('click', this.documentClick)
-
-    if (this.config.showContent === 'auto') {
+    window.removeEventListener('resize', this.windowResize, false)
+    if (this.settings.openPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
 
-    // Show original select
-    select.style.display = ''
-    delete select.dataset.ssid
+    // Delete the store data
+    this.store.setData([])
 
-    // Remove slim from original select dropdown
-    const el = select as any
-    el.slim = null
+    // Remove the render
+    this.render.destroy()
 
-    // Remove slim select
-    if (slim.parentElement) {
-      slim.parentElement.removeChild(slim)
-    }
-
-    // remove the content if it was added to the document body
-    if (this.config.addToBody) {
-      const slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content)
-      if (!slimContent) { return }
-      document.body.removeChild(slimContent)
-    }
+    // Show the original select element
+    this.select.destroy()
   }
 
+  private windowResize: (e: Event) => void = debounce(() => {
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    this.render.moveContent()
+  })
+
+  // Event listener for window scrolling
+  private windowScroll: (e: Event) => void = debounce(() => {
+    // If the content is not open, there is no need to move it
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    // If openContent is not auto set content
+    if (this.settings.openPosition === 'down') {
+      this.render.moveContentBelow()
+      return
+    } else if (this.settings.openPosition === 'up') {
+      this.render.moveContentAbove()
+      return
+    }
+
+    // Determine where to put the content
+    if (this.settings.contentPosition === 'relative') {
+      this.render.moveContentBelow()
+    } else if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
+      this.render.moveContentAbove()
+    } else {
+      this.render.moveContentBelow()
+    }
+  })
+
+  // Event listener for document click
   private documentClick: (e: Event) => void = (e: Event) => {
-    if (e.target && !hasClassInTree(e.target as HTMLElement, this.config.id)) {
+    // If the content is not open, there is no need to close it
+    if (!this.settings.isOpen) {
+      return
+    }
+
+    // Check if the click was on the content by looking at the parents
+    if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
       this.close()
     }
   }
-
 }

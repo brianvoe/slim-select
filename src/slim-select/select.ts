@@ -1,149 +1,311 @@
-import SlimSelect from './index'
-import { Option, Optgroup, dataArray } from './data'
-import { kebabCase } from './helper'
+import { generateID, kebabCase } from './helper'
+import { DataArray, DataObject, Optgroup, Option } from './store'
 
-interface Constructor {
-  select: HTMLSelectElement
-  main: SlimSelect
-}
+export default class Select {
+  public select: HTMLSelectElement
+  public listen: boolean = false
 
-export class Select {
-  public element: HTMLSelectElement
-  public main: SlimSelect
-  public mutationObserver: MutationObserver | null
-  public triggerMutationObserver: boolean = true
-  constructor(info: Constructor) {
-    this.element = info.select
-    this.main = info.main
+  // Mutation observer fields
+  public onSelectChange?: (data: DataArray) => void
+  public onValueChange?: (value: string[]) => void
+  private observer: MutationObserver | null = null
 
-    // If original select is set to disabled lets make sure slim is too
-    if (this.element.disabled) { this.main.config.isEnabled = false }
-
-    this.addAttributes()
-    this.addEventListeners()
-    this.mutationObserver = null
-    this.addMutationObserver()
-
-    // Add slim to original select dropdown
-    const el = this.element as any
-    el.slim = info.main
+  constructor(select: HTMLSelectElement) {
+    this.select = select
   }
 
-  public setValue(): void {
-    if (!this.main.data.getSelected()) { return }
+  // Set to enabled
+  public enable(): void {
+    // Disable original select but dont trigger observer
+    this.disconnectObserver()
+    this.select.disabled = false
+    this.connectObserver()
+  }
 
-    if (this.main.config.isMultiple) {
-      // If multiple loop through options and set selected
-      const selected = this.main.data.getSelected() as Option[]
-      const options = this.element.options as any as HTMLOptionElement[]
-      for (const o of options) {
-        o.selected = false
-        for (const s of selected) {
-          if (s.value === o.value) {
-            o.selected = true
-          }
-        }
-      }
+  // Set to disabled
+  public disable(): void {
+    // Enable original select but dont trigger observer
+    this.disconnectObserver()
+    this.select.disabled = true
+    this.connectObserver()
+  }
+
+  // Set misc attributes on the main select element
+  public hideUI(): void {
+    this.select.tabIndex = -1
+    this.select.style.display = 'none'
+    this.select.setAttribute('aria-hidden', 'true')
+  }
+
+  public showUI(): void {
+    this.select.removeAttribute('tabindex')
+    this.select.style.display = ''
+    this.select.removeAttribute('aria-hidden')
+  }
+
+  public changeListen(on: boolean) {
+    this.listen = on
+
+    // Deal with some observer situations
+    if (this.listen) {
+      this.connectObserver()
     } else {
-      // If single select simply set value
-      const selected = this.main.data.getSelected() as any
-      this.element.value = (selected ? selected.value : '')
+      this.disconnectObserver()
     }
-
-    // Do not trigger onChange callbacks for this event listener
-    this.main.data.isOnChangeEnabled = false
-    this.element.dispatchEvent(new CustomEvent('change', { bubbles: true }))
-    this.main.data.isOnChangeEnabled = true
   }
 
-  public addAttributes() {
-    this.element.tabIndex = -1
-    this.element.style.display = 'none'
-
-    // Add slim select id
-    this.element.dataset.ssid = this.main.config.id
-    this.element.setAttribute('aria-hidden', 'true')
+  // Add change listener to original select
+  public addSelectChangeListener(func: (data: DataArray) => void): void {
+    this.onSelectChange = func
+    this.addObserver()
+    this.connectObserver()
+    this.changeListen(true) // Last start listening
   }
 
-  // Add onChange listener to original select
-  public addEventListeners() {
-    this.element.addEventListener('change', (e: Event) => {
-      this.main.data.setSelectedFromSelect()
-      this.main.render()
-    })
+  // remove change listener from original select
+  public removeSelectChangeListener(): void {
+    this.changeListen(false) // First stop listening
+    this.onSelectChange = undefined
+  }
+
+  public addValueChangeListener(func: (value: string[]) => void): void {
+    this.onValueChange = func
+    this.select.addEventListener('change', this.valueChange.bind(this))
+  }
+
+  public removeValueChangeListener(): void {
+    this.onValueChange = undefined
+    this.select.removeEventListener('change', this.valueChange.bind(this))
+  }
+
+  public valueChange(ev: Event): any {
+    if (this.onValueChange) {
+      this.onValueChange(this.getSelectedValues())
+    }
+  }
+
+  private observeWrapper(mutations: MutationRecord[]): void {
+    if (this.onSelectChange) {
+      this.onSelectChange(this.getData())
+    }
   }
 
   // Add MutationObserver to select
-  public addMutationObserver(): void {
-    // Only add if not in ajax mode
-    if (this.main.config.isAjax) { return }
+  private addObserver(): void {
+    // If mutation observer already exists then disconnect and
+    if (this.observer) {
+      this.disconnectObserver()
+      this.observer = null
+    }
 
-    this.mutationObserver = new MutationObserver((mutations) => {
-      if (!this.triggerMutationObserver) {return}
+    // If anything changes in the select then update the data
+    this.observer = new MutationObserver(this.observeWrapper)
+  }
 
-      this.main.data.parseSelectData()
-      this.main.data.setSelectedFromSelect()
-      this.main.render()
-
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          this.main.slim.updateContainerDivClass(this.main.slim.container)
-        }
+  private connectObserver(): void {
+    if (this.observer) {
+      this.observer.observe(this.select, {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true,
       })
-    })
-
-    this.observeMutationObserver()
-  }
-
-  public observeMutationObserver(): void {
-    if (!this.mutationObserver) { return }
-
-    this.mutationObserver.observe(this.element, {
-      attributes: true,
-      childList: true,
-      characterData: true
-    })
-  }
-
-  public disconnectMutationObserver(): void {
-    if (this.mutationObserver) {
-      this.mutationObserver.disconnect()
     }
   }
 
-  // Create select element and optgroup/options
-  public create(data: dataArray): void {
-    // Clear out select
-    this.element.innerHTML = ''
+  private disconnectObserver(): void {
+    if (this.observer) {
+      this.observer.disconnect()
+    }
+  }
 
-    for (const d of data) {
-      if (d.hasOwnProperty('options')) {
-        const optgroupObject = d as Optgroup
-        const optgroupEl = document.createElement('optgroup') as HTMLOptGroupElement
-        optgroupEl.label = optgroupObject.label
-        if (optgroupObject.options) {
-          for (const oo of optgroupObject.options) {
-            optgroupEl.appendChild(this.createOption(oo))
+  // From the select element pull optgroup and options into data
+  public getData(): DataArray {
+    let data = []
+
+    // Loop through nodes and get data
+    const nodes = this.select.childNodes as any as HTMLOptGroupElement[] | HTMLOptionElement[]
+    for (const n of nodes) {
+      // Optgroup
+      if (n.nodeName === 'OPTGROUP') {
+        data.push(this.getDataFromOptgroup(n as HTMLOptGroupElement))
+      }
+
+      // Option
+      if (n.nodeName === 'OPTION') {
+        data.push(this.getDataFromOption(n as HTMLOptionElement))
+      }
+    }
+
+    return data
+  }
+
+  public getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup {
+    let data = {
+      id: '',
+      label: optgroup.label,
+      options: [],
+    } as Optgroup
+
+    const options = optgroup.childNodes as any as HTMLOptionElement[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTION') {
+        data.options.push(this.getDataFromOption(o as HTMLOptionElement))
+      }
+    }
+
+    return data
+  }
+
+  public getSelectedValues(): string[] {
+    let values = []
+
+    // Loop through options and set selected
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTGROUP') {
+        const optgroupOptions = o.childNodes as any as HTMLOptionElement[]
+        for (const oo of optgroupOptions) {
+          if (oo.nodeName === 'OPTION') {
+            const option = oo as HTMLOptionElement
+            if (option.selected) {
+              values.push(option.value)
+            }
           }
         }
-        this.element.appendChild(optgroupEl)
-      } else {
-        this.element.appendChild(this.createOption(d))
+      }
+
+      if (o.nodeName === 'OPTION') {
+        const option = o as HTMLOptionElement
+        if (option.selected) {
+          values.push(option.value)
+        }
+      }
+    }
+
+    return values
+  }
+
+  // From passed in option pull pieces of usable information
+  public getDataFromOption(option: HTMLOptionElement): Option {
+    return {
+      id: (option.dataset ? option.dataset.id : false) || generateID(),
+      value: option.value,
+      text: option.text,
+      html: option.innerHTML,
+      selected: option.selected,
+      display: option.style.display === 'none' ? false : true,
+      disabled: option.disabled,
+      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
+      placeholder: option.dataset.placeholder === 'true',
+      class: option.className,
+      style: option.style.cssText,
+      data: option.dataset,
+    } as Option
+  }
+
+  public setSelected(value: string[]): void {
+    // Loop through options and set selected
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTGROUP') {
+        const optgroup = o as HTMLOptGroupElement
+        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
+        for (const oo of optgroupOptions) {
+          if (oo.nodeName === 'OPTION') {
+            const option = oo as HTMLOptionElement
+            option.selected = value.includes(option.value)
+          }
+        }
+      }
+
+      if (o.nodeName === 'OPTION') {
+        const option = o as HTMLOptionElement
+        option.selected = value.includes(option.value)
       }
     }
   }
 
-  public createOption(info: any): HTMLOptionElement {
+  public updateSelect(id?: string, style?: string, classes?: string[]): void {
+    // Stop listening to changes
+    this.changeListen(false)
+
+    // Update id
+    if (id) {
+      this.select.id = id
+    }
+
+    // Update style
+    if (style) {
+      this.select.style.cssText = style
+    }
+
+    // Update classes
+    if (classes) {
+      this.select.className = ''
+      classes.forEach((c) => {
+        if (c.trim() !== '') {
+          this.select.classList.add(c.trim())
+        }
+      })
+    }
+
+    // Start listening to changes
+    this.changeListen(true)
+  }
+
+  public updateOptions(data: DataArray): void {
+    // Stop listening to changes
+    this.changeListen(false)
+
+    // Clear out select
+    this.select.innerHTML = ''
+
+    for (const d of data) {
+      if (d instanceof Optgroup) {
+        this.select.appendChild(this.createOptgroup(d))
+      }
+
+      if (d instanceof Option) {
+        this.select.appendChild(this.createOption(d))
+      }
+    }
+
+    // Start listening to changes
+    this.changeListen(true)
+  }
+
+  public createOptgroup(optgroup: Optgroup): HTMLOptGroupElement {
+    const optgroupEl = document.createElement('optgroup')
+    optgroupEl.id = optgroup.id
+    optgroupEl.label = optgroup.label
+    if (optgroup.options) {
+      for (const o of optgroup.options) {
+        optgroupEl.appendChild(this.createOption(o))
+      }
+    }
+    return optgroupEl
+  }
+
+  public createOption(info: Option): HTMLOptionElement {
     const optionEl = document.createElement('option')
     optionEl.value = info.value !== '' ? info.value : info.text
-    optionEl.innerHTML = info.innerHTML || info.text
-    if (info.selected) { optionEl.selected = info.selected }
+    optionEl.innerHTML = info.html || info.text
+    if (info.selected) {
+      optionEl.selected = info.selected
+    }
+    if (info.disabled) {
+      optionEl.disabled = true
+    }
     if (info.display === false) {
       optionEl.style.display = 'none'
     }
-    if (info.disabled) { optionEl.disabled = true }
-    if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }
-    if (info.mandatory) { optionEl.setAttribute('data-mandatory', 'true') }
+    if (info.placeholder) {
+      optionEl.setAttribute('data-placeholder', 'true')
+    }
+    if (info.mandatory) {
+      optionEl.setAttribute('data-mandatory', 'true')
+    }
     if (info.class) {
       info.class.split(' ').forEach((optionClass: string) => {
         optionEl.classList.add(optionClass)
@@ -156,5 +318,15 @@ export class Select {
     }
 
     return optionEl
+  }
+
+  public destroy() {
+    this.changeListen(false)
+    this.disconnectObserver()
+    this.removeSelectChangeListener()
+    this.removeValueChangeListener()
+
+    // show the original select
+    this.showUI()
   }
 }

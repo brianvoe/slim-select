@@ -1,98 +1,207 @@
-<script>
-  import SlimSelect from '@/slim-select'
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-  export default {
-    data() {
-      const path = this.$route.path
-      return {
-        year: new Date().getFullYear(),
-        navData: [
-          {text: 'Home', value: '/', selected: (path === '/')},
-          {text: 'Installation', value: 'install', selected: (path === '/install')},
-          {text: 'Select Types', value: 'selects', selected: (path === '/selects')},
-          {text: 'Options', value: 'options', selected: (path === '/options')},
-          {text: 'Methods', value: 'methods', selected: (path === '/methods')}
-        ]
-      }
-    },
-    mounted() {
-      // Lets redirect to path
-      if (this.$route.query.p) {
-        this.$router.push({ path: this.$route.query.p })
-      }
+import SlimSelect, { debounce, Settings } from '../slim-select'
 
-      const slim = new SlimSelect({
-        select: '#select-nav',
-        showSearch: false,
-        onChange: (info) => {
-          if (!this.$route.path.includes(info.value)) {
-            this.$router.push({ path: info.value })
+export default defineComponent({
+  name: 'App',
+  data() {
+    return {
+      nav: null as SlimSelect | null,
+      navDebounce: debounce(() => {
+        this.setDemensions()
+      }, 100),
+      year: new Date().getFullYear(),
+      width: 0,
+      height: 0,
+
+      navData: [
+        { text: 'Home', value: '/', class: 'label' },
+
+        // Install
+        { text: 'Install', value: 'install', class: 'label' },
+        { text: 'npm', value: 'install#npm', class: 'mar-l-l' },
+        { text: 'cdn', value: 'install#cdn', class: 'mar-l-l' },
+        { text: 'download', value: 'install#download', class: 'mar-l-l' },
+
+        // Select
+        { text: 'Selects', value: 'selects', class: 'label' },
+        { text: 'single', value: 'selects#single', class: 'mar-l-l' },
+        { text: 'multiple', value: 'selects#multiple', class: 'mar-l-l' },
+
+        // Data
+        { text: 'Data', value: 'data', class: 'label' },
+        { text: 'types', value: 'data#types', class: 'mar-l-l' },
+        { text: 'field', value: 'data#field', class: 'mar-l-l' },
+
+        // Settings
+        { text: 'Settings', value: 'settings', class: 'label' },
+        { text: 'select', value: 'settings#select', class: 'mar-l-l' },
+        { text: 'alwaysOpen', value: 'settings#alwaysOpen', class: 'mar-l-l' },
+        { text: 'contentLocation', value: 'settings#contentLocation', class: 'mar-l-l' },
+        { text: 'contentPosition', value: 'settings#contentPosition', class: 'mar-l-l' },
+        { text: 'openPosition', value: 'settings#openPosition', class: 'mar-l-l' },
+        { text: 'placeholder', value: 'settings#placeholder', class: 'mar-l-l' },
+        { text: 'allowDeselect', value: 'settings#allowDeselect', class: 'mar-l-l' },
+        { text: 'display', value: 'settings#display', class: 'mar-l-l' },
+        { text: 'mandatory', value: 'settings#mandatory', class: 'mar-l-l' },
+        { text: 'minmax', value: 'settings#minmax', class: 'mar-l-l' },
+        { text: 'dataAttributes', value: 'settings#dataAttributes', class: 'mar-l-l' },
+        { text: 'cssClass', value: 'settings#cssClass', class: 'mar-l-l' },
+        { text: 'inlineStyles', value: 'settings#inlineStyles', class: 'mar-l-l' },
+        { text: 'html', value: 'settings#html', class: 'mar-l-l' },
+        { text: 'search', value: 'settings#search', class: 'mar-l-l' },
+        { text: 'closeOnSelect', value: 'settings#closeOnSelect', class: 'mar-l-l' },
+        { text: 'showOptionTooltips', value: 'settings#showOptionTooltips', class: 'mar-l-l' },
+        { text: 'selectByGroup', value: 'settings#selectByGroup', class: 'mar-l-l' },
+        { text: 'hideSelected', value: 'settings#hideSelected', class: 'mar-l-l' },
+
+        // Events
+        { text: 'Events', value: 'events', class: 'label' },
+        { text: 'error', value: 'events#error', class: 'mar-l-l' },
+        { text: 'beforeChange', value: 'events#beforeChange', class: 'mar-l-l' },
+        { text: 'afterChange', value: 'events#afterChange', class: 'mar-l-l' },
+        { text: 'open', value: 'events#open', class: 'mar-l-l' },
+        { text: 'search', value: 'events#search', class: 'mar-l-l' },
+        { text: 'searchFilter', value: 'events#searchFilter', class: 'mar-l-l' },
+        { text: 'addable', value: 'events#addable', class: 'mar-l-l' },
+
+        // Methods
+        { text: 'Methods', value: 'methods', class: 'label' },
+        { text: 'getSelected', value: 'methods#getSelected', class: 'mar-l-l' },
+        { text: 'setSelected', value: 'methods#setSelected', class: 'mar-l-l' },
+        { text: 'getData', value: 'methods#getData', class: 'mar-l-l' },
+        { text: 'setData', value: 'methods#setData', class: 'mar-l-l' },
+        { text: 'enableDisable', value: 'methods#enableDisable', class: 'mar-l-l' },
+        { text: 'search', value: 'methods#search', class: 'mar-l-l' },
+        { text: 'destroy', value: 'methods#destroy', class: 'mar-l-l' },
+      ],
+    }
+  },
+  mounted() {
+    this.runNav()
+
+    this.$router.isReady().then(() => {
+      if (this.nav) {
+        this.nav.setSelected(this.$router.currentRoute.value.fullPath.replace('/', ''))
+      }
+    })
+
+    this.$router.afterEach(() => {
+      // After route change get the hash and scroll to element in main
+      setTimeout(() => {
+        const hash = this.$route.hash
+        if (hash === '') {
+          window.scroll({
+            top: 0,
+            behavior: 'smooth',
+          })
+        }
+
+        // If hash is not empty scroll to element
+        if (hash) {
+          const el = document.querySelector(hash) as HTMLElement
+          if (el) {
+            // get header height
+            const header = document.querySelector('header') as HTMLElement
+            const nav = document.querySelector('nav') as HTMLElement
+            const headerHeight = header ? header.clientHeight + (window.innerWidth < 700 ? nav.clientHeight : 0) + 8 : 0
+
+            window.scroll({
+              top: el.offsetTop - headerHeight, // header height + padding
+              behavior: 'smooth',
+            })
           }
         }
-      })
-      slim.setData(this.navData)
+      }, 100)
+    })
 
-      this.$router.onReady(() => {
-        const urlPathValue = this.$route.path.replace('/', '')
-        if (urlPathValue !== '') {
-          slim.setSelected(urlPathValue)
-        }
+    this.setDemensions()
+    window.addEventListener('resize', this.navDebounce)
+  },
+  unmounted() {
+    window.removeEventListener('resize', this.navDebounce)
+  },
+  watch: {
+    width() {
+      this.runNav()
+    },
+  },
+  methods: {
+    setDemensions(): void {
+      this.width = document.documentElement.clientWidth
+      this.height = document.documentElement.clientHeight
+    },
+    runNav() {
+      if (this.nav) {
+        this.nav.destroy()
+        this.nav = null
+      }
+
+      let settings = {
+        searchHighlight: true,
+        openContent: 'below',
+      } as Partial<Settings>
+
+      if (this.width > 700) {
+        settings.alwaysOpen = true
+        settings.contentPosition = 'relative'
+        settings.contentLocation = this.$refs.navContent as HTMLDivElement
+      }
+
+      this.nav = new SlimSelect({
+        select: this.$refs.nav as HTMLSelectElement,
+        data: this.navData,
+        settings: settings,
+        events: {
+          afterChange: (newVal) => {
+            const value = newVal[0].value
+            const split = value.split('#')
+            const val = split[0]
+            const hash = split[1] ? '#' + split[1] : undefined
+            this.$router.push({ path: val, hash: hash })
+          },
+        },
       })
-    }
-  }
+    },
+  },
+})
 </script>
 
-<style lang="scss">
-  #app {
-    .select-nav {
-      .ss-single-selected {
-        position: relative;
-        z-index: 2000;
-
-        .placeholder {
-          font-weight: bold;
-        }
-      }
-
-      .ss-content {
-        box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-
-        .ss-option {
-          font-weight: bold;
-        }
-      }
-    }
-  }
-</style>
-
 <template>
-  <div id="app">
-    <div class="header">
+  <header>
+    <div class="top">
       <div class="text">
-        <div class="logo">
-          Slim Select
-        </div>
-        <div class="tagline">
-          Slim advanced select dropdown
-        </div>
+        <h1 class="logo">Slim Select</h1>
       </div>
-      <div class="select-nav">
+      <div class="socials">
         <a href="https://github.com/brianvoe/slim-select" target="_blank">
-          <img src="images/github.png" />
+          <img src="./images/github.png" />
         </a>
         <a href="https://www.npmjs.com/package/slim-select" target="_blank">
-          <img src="images/npm.png" />
+          <img src="./images/npm.png" />
         </a>
-        <select id="select-nav"></select>
       </div>
     </div>
-    <div class="main">
-      <transition name="fade" mode="out-in" appear>
-        <router-view></router-view>
-      </transition>
+    <div class="bar">
+      <div class="tagline">Advanced select dropdown</div>
+      <div class="drop">
+        <svg viewBox="0 0 100 100">
+          <path d="M10,30 L50,70 L90,30" />
+        </svg>
+      </div>
     </div>
-    <div class="footer">
-      © {{year}} <a href="http://webiswhatido.com" style="color: #ffffff;" target="_blank">Brian Voelker</a>. Slim Select is under the MIT license.
-    </div>
-  </div>
+  </header>
+  <nav>
+    <select ref="nav"></select>
+    <div class="nav-content" ref="navContent"></div>
+  </nav>
+  <main>
+    <router-view />
+    <footer>
+      © {{ year }} <a href="http://webiswhatido.com" style="color: #ffffff" target="_blank">Brian Voelker</a>.
+      <br />
+      Slim Select is under the MIT license.
+    </footer>
+  </main>
 </template>

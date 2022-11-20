@@ -1,7 +1,17 @@
 {
-  "editor.formatOnSave": false,
-  "extensions.ignoreRecommendations": false,
-  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "tslint.autoFixOnSave": true
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": false,
+    "source.sortMembers": true
+  }
 }
