@@ -1,6 +1,8 @@
-# Slim Select 
+# Slim Select 2
+
 ## slimselectjs.com
-Slim advanced select dropdown
+
+Advanced select dropdown
 
 [![Build Status](https://travis-ci.org/brianvoe/slim-select.svg?branch=master)](https://travis-ci.org/brianvoe/slim-select)
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
@@ -12,9 +14,10 @@ For documentation and examples on all features see: http://slimselectjs.com
 ![](https://raw.githubusercontent.com/brianvoe/slim-select/master/slimselect.gif)
 
 ## Features
+
 - No Dependencies
-- JS: 35.4kb - 9kb gzip
-- CSS: 6.09kb - 1kb gzip
+- JS: 29kb - 5kb gzip
+- CSS: 7kb - 1kb gzip
 - Single Select
 - Multi Select
 - User Addable Options
@@ -29,16 +32,10 @@ For documentation and examples on all features see: http://slimselectjs.com
 - Style and Class Inheritance
 - Clean Animations
 - Performant
-
-## Browsers
-- IE 11+
-- Edge 13+
-- Chrome 30+
-- FireFox 25+
-- Opera 25+
-- Safari 9+
+- Typescript
 
 ## Installation
+
 ```bash
 npm install slim-select
 ```
@@ -46,20 +43,20 @@ npm install slim-select
 ### or
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.css"> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.js"></script>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.css"
+/>
 ```
 
 ## Usage
+
 ```javascript
 import SlimSelect from 'slim-select'
 
 new SlimSelect({
-  select: '#slim-select'
+  select: '#slim-select',
 })
 ```
-
-## Testing
-Browser testing has been provided by
-
-<img src="https://digitalscientists.com/system/images/1448/original/logo-browserstack.png" width="300" />
