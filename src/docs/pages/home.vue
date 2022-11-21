@@ -142,7 +142,7 @@ export default defineComponent({
   <div id="home" class="content">
     <div class="samples row">
       <div class="single">
-        <h2>Single Select 2</h2>
+        <h2>Single Select</h2>
         <select ref="slimSingle">
           <option data-placeholder="true"></option>
           <option value="best">Best</option>

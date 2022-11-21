@@ -186,7 +186,7 @@ export default defineComponent({
   <header>
     <div class="top">
       <div class="text">
-        <h1 class="logo">Slim Select</h1>
+        <h1 class="logo">Slim Select <small>2.0</small></h1>
       </div>
       <div class="socials">
         <a href="https://github.com/brianvoe/slim-select" target="_blank">
