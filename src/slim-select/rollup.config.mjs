@@ -4,10 +4,11 @@ import { terser } from 'rollup-plugin-terser'
 export default {
   input: './index.ts',
   output: [
+    // Default umd
     {
       name: 'SlimSelect',
       file: '../../dist/slimselect.js',
-      format: 'es',
+      format: 'umd',
       sourcemap: true,
     },
     {

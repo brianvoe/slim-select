@@ -1,5 +1,5 @@
 /// <reference types="node" />
-export type SettingsPartial = Partial<Settings>;
+export declare type SettingsPartial = Partial<Settings>;
 export default class Settings {
     id: string;
     style: string;

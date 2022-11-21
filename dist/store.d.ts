@@ -1,8 +1,8 @@
-export type DataArray = DataObject[];
-export type DataObject = Optgroup | Option;
-export type DataArrayPartial = DataObjectPartial[];
-export type DataObjectPartial = OptgroupOptional | OptionOptional;
-type selectType = 'single' | 'multiple';
+export declare type DataArray = DataObject[];
+export declare type DataObject = Optgroup | Option;
+export declare type DataArrayPartial = DataObjectPartial[];
+export declare type DataObjectPartial = OptgroupOptional | OptionOptional;
+declare type selectType = 'single' | 'multiple';
 export interface OptgroupOptional {
     id?: string;
     label: string;

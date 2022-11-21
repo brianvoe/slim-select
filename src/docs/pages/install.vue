@@ -44,14 +44,18 @@ export default defineComponent({
     <div id="cdn" class="content">
       <h2>Cdn</h2>
       <p>Cdn has a url link you can grab.</p>
+      <p>
+        See full list of available options.
+        <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a>
+      </p>
       <div class="alert info">New releases may be delayed until the next time its indexed</div>
 
       <pre class="install-code">
         <code class="language-html">
           &lt;html&gt;
             &lt;head&gt;
-              &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.js"&gt;&lt;/script&gt;
-              &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.min.css" rel="stylesheet"&gt;&lt;/link&gt;
+              &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.js"&gt;&lt;/script&gt;
+              &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
               
               &lt;script&gt;
                 new SlimSelect({
