@@ -1,4 +1,4 @@
-import { generateID, kebabCase } from './helper'
+import { generateID, kebabCase } from './helpers'
 import { DataArray, DataObject, Optgroup, Option } from './store'
 
 export default class Select {

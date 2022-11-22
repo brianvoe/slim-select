@@ -39,6 +39,11 @@ const router = createRouter({
       name: 'Methods',
       component: () => import('./pages/methods/index.vue'),
     },
+    {
+      path: '/frameworks',
+      name: 'Frameworks',
+      component: () => import('./pages/frameworks/index.vue'),
+    },
   ],
 })
 

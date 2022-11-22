@@ -2,12 +2,6 @@ import Render from './render';
 import Select from './select';
 import Settings, { SettingsPartial } from './settings';
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store';
-export * from './helper';
-export * from './settings';
-export * from './select';
-export * from './store';
-export * from './render';
-export { Settings, Select, Store, Render };
 export interface Config {
     select: string | Element;
     data?: DataArrayPartial;

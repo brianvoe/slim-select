@@ -1,61 +1,43 @@
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, onBeforeUnmount } from 'vue'
-import SlimSelect from '../slim-select'
+import { defineComponent } from 'vue'
+
+import SlimSelect, { Config } from '../slim-select'
 
 export default defineComponent({
   name: 'SlimSelect',
   props: {
-    options: {
-      type: Array,
-      required: true,
-    },
-    value: {
-      type: [String, Number, Array],
-      required: true,
-    },
-    config: {
+    settings: {
       type: Object,
-      required: false,
     },
   },
-  emits: ['update:value'],
-  setup(props, { emit }) {
-    const selectRef = ref(null)
-    let select: SlimSelect
-
-    const updateValue = (value: string | number | string[] | number[]) => {
-      emit('update:value', value)
-    }
-
-    const updateSelect = () => {
-      select.set(props.value)
-    }
-
-    const initSelect = () => {
-      select = new SlimSelect(selectRef.value, {
-        ...props.config,
-        onChange: updateValue,
-      })
-    }
-
-    onMounted(() => {
-      initSelect()
-    })
-
-    onBeforeUnmount(() => {
-      select.destroy()
-    })
-
-    watch(
-      () => props.value,
-      () => {
-        updateSelect()
-      },
-    )
-
+  data() {
     return {
-      selectRef,
+      slim: null as SlimSelect | null,
     }
-  }
+  },
+  mounted() {
+    let config = {
+      select: this.$refs.slim as HTMLSelectElement,
+    } as Config
+
+    // If props are passed in, merge them with the config
+    if (this.settings) {
+      config.settings = this.settings
+    }
+
+    // Initialize SlimSelect
+    this.slim = new SlimSelect(config)
+  },
+  beforeUnmount() {
+    if (this.slim) {
+      this.slim.destroy()
+    }
+  },
 })
 </script>
+
+<template>
+  <select ref="slim">
+    <slot />
+  </select>
+</template>
