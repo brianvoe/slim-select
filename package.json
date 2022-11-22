@@ -28,7 +28,6 @@
     "multiselect"
   ],
   "scripts": {
-    "jestinit": "ts-jest config:init",
     "dev": "vite --port=1111",
     "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
     "build": "npm run build:clean && npm run build:docs && npm run build:library",
