@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect, { debounce, Settings } from '../slim-select'
+import SlimSelect from '../slim-select'
+import Settings from '../slim-select/settings'
+import { debounce } from '../slim-select/helpers'
 
 export default defineComponent({
   name: 'App',
@@ -75,6 +77,10 @@ export default defineComponent({
         { text: 'enableDisable', value: 'methods#enableDisable', class: 'mar-l-l' },
         { text: 'search', value: 'methods#search', class: 'mar-l-l' },
         { text: 'destroy', value: 'methods#destroy', class: 'mar-l-l' },
+
+        // Frameworks
+        // { text: 'Frameworks', value: 'frameworks', class: 'label' },
+        // { text: 'vue', value: 'frameworks#vue', class: 'mar-l-l' },
       ],
     }
   },
