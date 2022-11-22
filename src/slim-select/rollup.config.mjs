@@ -18,6 +18,7 @@ export default [
       resolve(),
       commonjs(),
       babel({
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
         babelrc: false,
         presets: [
@@ -54,6 +55,7 @@ export default [
       resolve(),
       commonjs(),
       babel({
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
       }),
     ],
@@ -79,6 +81,7 @@ export default [
       resolve(),
       commonjs(),
       babel({
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
       }),
       terser(),
@@ -97,6 +100,7 @@ export default [
       resolve(),
       commonjs(),
       babel({
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
       }),
     ],
@@ -115,6 +119,7 @@ export default [
       resolve(),
       commonjs(),
       babel({
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
       }),
     ],
