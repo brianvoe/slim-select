@@ -1,4 +1,4 @@
-import { debounce } from './helper'
+import { debounce } from './helpers'
 import Settings from './settings'
 import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
 

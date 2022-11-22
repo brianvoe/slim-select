@@ -1,18 +1,8 @@
-import { debounce, hasClassInTree } from './helper'
+import { debounce, hasClassInTree } from './helpers'
 import Render from './render'
 import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
-
-// Export everything except the "export default"
-export * from './helper'
-export * from './settings'
-export * from './select'
-export * from './store'
-export * from './render'
-
-// Export all "export defaults"
-export { Settings, Select, Store, Render }
 
 export interface Config {
   select: string | Element

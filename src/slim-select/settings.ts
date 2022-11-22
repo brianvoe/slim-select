@@ -1,4 +1,4 @@
-import { generateID } from './helper'
+import { generateID } from './helpers'
 
 export type SettingsPartial = Partial<Settings>
 
