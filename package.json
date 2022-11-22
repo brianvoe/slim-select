@@ -11,7 +11,7 @@
   "main": "dist/slimselect.cjs.js",
   "browser": "dist/slimselect.umd.js",
   "module": "dist/slimselect.es.js",
-  "unpkg": "dist/slimselect.umd.js",
+  "unpkg": "dist/slimselect.umd.min.js",
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "style": "dist/slimselect.css",
