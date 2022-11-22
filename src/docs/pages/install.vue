@@ -43,19 +43,36 @@ export default defineComponent({
 
     <div id="cdn" class="content">
       <h2>Cdn</h2>
-      <p>Cdn has a url link you can grab.</p>
       <p>
-        See full list of available options.
-        <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a>
+        Cdn has a url link you can grab. Cdn exists on both
+        <a target="_blank" href="https://cdnjs.com">cdnjs.com</a> and
+        <a target="_blank" href="https://unpkg.com">unpkg.com</a>
       </p>
+      <p>
+        See full list of available options.<br />
+        <strong>cdnjs</strong> -
+        <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a><br />
+        <strong>unpkg</strong> -
+        <a target="_blank" href="https://unpkg.com/browse/slim-select/dist/"
+          >https://unpkg.com/browse/slim-select/dist/</a
+        >
+      </p>
+      <ul>
+        <li>slimselct.js - UMD unminified</li>
+        <li>slimselct.min.js - UMD minified</li>
+        <li>slimselect.cjs.js - CommonJS (for Node) and ES module (for bundlers) build</li>
+        <li>slimselect.umd.js - UMD build for browsers</li>
+        <li>slimselect.es.js - ES module build for modern browsers</li>
+        <li>slimselect.global.js - IIFE build for modern browsers</li>
+      </ul>
       <div class="alert info">New releases may be delayed until the next time its indexed</div>
 
       <pre class="install-code">
         <code class="language-html">
           &lt;html&gt;
             &lt;head&gt;
-              &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.js"&gt;&lt;/script&gt;
-              &lt;link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/{{version}}/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
+              &lt;script src="unpkg.com/slim-select@{{version}}/dist/slimselect.min.js"&gt;&lt;/script&gt;
+              &lt;link href="unpkg.com/slim-select@{{version}}/dist/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
               
               &lt;script&gt;
                 new SlimSelect({
@@ -77,7 +94,11 @@ export default defineComponent({
 
     <div id="download" class="content">
       <h2>Download</h2>
-      <p>Download the latest minified version of slim select</p>
+      <p>Download the latest minified umd version of slim select</p>
+      <p>
+        See full list of available downloadable options.
+        <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a>
+      </p>
       <div class="btn" @click="downloadLink()">Click Here To Download</div>
     </div>
   </div>
