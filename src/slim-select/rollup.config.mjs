@@ -5,7 +5,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
 
 export default [
-  // CommonJS (for Node) and ES module (for bundlers) build.
+  // CommonJS (for Node) and ES module (for bundlers) build
   {
     input: './index.ts',
     output: {
@@ -62,11 +62,18 @@ export default [
   // UMD build for browsers minified with terser
   {
     input: './index.ts',
-    output: {
-      name: 'SlimSelect',
-      file: '../../dist/slimselect.umd.min.js',
-      format: 'umd',
-    },
+    output: [
+      {
+        name: 'SlimSelect',
+        file: '../../dist/slimselect.min.js',
+        format: 'umd',
+      },
+      {
+        name: 'SlimSelect',
+        file: '../../dist/slimselect.umd.min.js',
+        format: 'umd',
+      },
+    ],
     plugins: [
       typescript(),
       resolve(),
