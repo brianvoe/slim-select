@@ -397,7 +397,21 @@ class Render {
             if (!this.settings.isEnabled) {
                 return;
             }
-            this.callbacks.setSelected(['']);
+            let shouldDelete = true;
+            const before = this.store.getSelectedOptions();
+            const after = [];
+            if (this.callbacks.beforeChange) {
+                shouldDelete = this.callbacks.beforeChange(after, before) === true;
+            }
+            if (shouldDelete) {
+                this.callbacks.setSelected(['']);
+                if (this.settings.closeOnSelect) {
+                    this.callbacks.close();
+                }
+                if (this.callbacks.afterChange) {
+                    this.callbacks.afterChange(after);
+                }
+            }
         };
         const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         deselectSvg.setAttribute('viewBox', '0 0 100 100');
@@ -1100,7 +1114,9 @@ class Select {
     }
     observeWrapper(mutations) {
         if (this.onSelectChange) {
+            this.changeListen(false);
             this.onSelectChange(this.getData());
+            this.changeListen(true);
         }
     }
     addObserver() {
@@ -1108,15 +1124,12 @@ class Select {
             this.disconnectObserver();
             this.observer = null;
         }
-        this.observer = new MutationObserver(this.observeWrapper);
+        this.observer = new MutationObserver(this.observeWrapper.bind(this));
     }
     connectObserver() {
         if (this.observer) {
             this.observer.observe(this.select, {
-                attributes: true,
                 childList: true,
-                characterData: true,
-                subtree: true,
             });
         }
     }
@@ -1610,6 +1623,21 @@ var script = defineComponent({
         if (this.slim) {
             this.slim.destroy();
         }
+    },
+    watch: {
+        data: {
+            handler: function (newData) {
+                if (this.slim) {
+                    this.slim.setData(newData);
+                }
+            },
+            deep: true,
+        },
+    },
+    methods: {
+        getSlimSelect() {
+            return this.slim;
+        },
     },
 });
 
