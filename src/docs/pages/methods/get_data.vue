@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect, { DataArray } from '../../../slim-select'
+import SlimSelect from '../../../slim-select'
+import { DataArray } from '../../../slim-select/store'
 
 export default defineComponent({
   name: 'GetData',
