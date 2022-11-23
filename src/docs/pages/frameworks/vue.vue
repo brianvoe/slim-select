@@ -4,6 +4,7 @@ import { defineComponent } from 'vue'
 // We need to import from the root of the package
 // Because if we use @slim-select/vue then we loose
 // hot reloading of the file changes
+import SlimSelectJS from '../../../slim-select'
 import SlimSelect from '../../../vue/slimselect.vue'
 import Settings from '../../../slim-select/settings'
 import { Option, OptionOptional } from '../../../slim-select/store'
@@ -45,6 +46,22 @@ export default defineComponent({
     // randomSlim.select.showUI()
   },
   methods: {
+    changeData() {
+      const dataSingle = this.$refs.dataSingle as any
+      const dataSingleSlim = dataSingle.getSlimSelect() as SlimSelectJS
+      dataSingleSlim.open()
+      const dataMultiple = this.$refs.dataMultiple as any
+      const dataMultipleSlim = dataMultiple.getSlimSelect() as SlimSelectJS
+      dataMultipleSlim.open()
+
+      setTimeout(() => {
+        this.data = [
+          { value: 'value4', text: 'Value 4' },
+          { value: 'value5', text: 'Value 5' },
+          { value: 'value6', text: 'Value 6' },
+        ]
+      }, 500)
+    },
     afterChange(newVal: Option[]) {
       this.afterChangeData = newVal
     },
@@ -226,8 +243,9 @@ export default defineComponent({
     </div>
 
     <div class="row">
-      <SlimSelect :data="data" />
-      <SlimSelect :data="data" multiple />
+      <div class="btn info" @click="changeData">Change data</div>
+      <SlimSelect ref="dataSingle" :data="data" />
+      <SlimSelect ref="dataMultiple" :data="data" multiple />
     </div>
 
     <pre>
