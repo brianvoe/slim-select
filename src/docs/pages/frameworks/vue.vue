@@ -12,9 +12,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="error" class="content">
+  <div id="vue" class="content">
     <h2 class="header">Vue</h2>
 
+    <h3>Install</h3>
+    <p>The vue component is in a sub package under SlimSelect</p>
+    <pre>
+      <code class="language-bash">
+        npm install slim-select@vue
+      </code>
+    </pre>
+    <br />
+
+    <h3>Simple example</h3>
     <div class="row">
       <SlimSelect>
         <option value="1">Option 1</option>
@@ -25,14 +35,25 @@ export default defineComponent({
 
     <pre>
       <code class="language-javascript">
-        var select = new SlimSelect({
-          select: '#selectElement',
-          events: {
-            error: function(err) {
-              console.error(err)
-            }
-          }
+        import { defineComponent } from 'vue'
+        import SlimSelect from 'slim-select/vue'
+
+        export default defineComponent({
+          name: 'Vue',
+          components: {
+            SlimSelect,
+          },
         })
+      </code>
+    </pre>
+
+    <pre>
+      <code class="language-html">
+        &lt;SlimSelect&gt;
+          &lt;option value="1"&gt;Option 1&lt;/option&gt;
+          &lt;option value="2"&gt;Option 2&lt;/option&gt;
+          &lt;option value="3"&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
       </code>
     </pre>
   </div>

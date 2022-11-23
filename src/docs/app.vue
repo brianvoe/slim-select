@@ -79,8 +79,8 @@ export default defineComponent({
         { text: 'destroy', value: 'methods#destroy', class: 'mar-l-l' },
 
         // Frameworks
-        // { text: 'Frameworks', value: 'frameworks', class: 'label' },
-        // { text: 'vue', value: 'frameworks#vue', class: 'mar-l-l' },
+        { text: 'Frameworks', value: 'frameworks', class: 'label' },
+        { text: 'vue', value: 'frameworks#vue', class: 'mar-l-l' },
       ],
     }
   },
