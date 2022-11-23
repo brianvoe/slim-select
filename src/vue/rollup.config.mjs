@@ -1,4 +1,6 @@
 import vue from 'rollup-plugin-vue'
+import resolve from '@rollup/plugin-node-resolve'
+import typescript from 'rollup-plugin-typescript2'
 
 export default [
   // ESM build to be used with webpack/rollup.
@@ -9,8 +11,9 @@ export default [
       file: './dist/slimselectvue.es.js',
     },
     external: ['vue', 'slim-select'],
-    plugins: [vue()],
+    plugins: [resolve(), typescript({ clean: true }), vue()],
   },
+
   // SSR build.
   {
     input: './slimselect.vue',
@@ -20,8 +23,9 @@ export default [
       file: './dist/slimselectvue.ssr.js',
     },
     external: ['vue', 'slim-select'],
-    plugins: [vue({ template: { optimizeSSR: true } })],
+    plugins: [resolve(), typescript({ clean: true }), vue({ template: { optimizeSSR: true } })],
   },
+
   // Browser build.
   {
     input: './slimselect.vue',
@@ -35,6 +39,6 @@ export default [
       },
     },
     external: ['vue', 'slim-select'],
-    plugins: [vue()],
+    plugins: [resolve(), typescript({ clean: true }), vue()],
   },
 ]
