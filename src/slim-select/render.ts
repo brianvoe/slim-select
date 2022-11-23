@@ -266,6 +266,8 @@ export default class Render {
     if (!this.settings.allowDeselect || this.settings.isMultiple) {
       deselect.classList.add(this.classes.hide)
     }
+
+    // Add deselect onclick event
     deselect.onclick = (e: Event) => {
       e.stopPropagation()
 
@@ -274,7 +276,29 @@ export default class Render {
         return
       }
 
-      this.callbacks.setSelected([''])
+      // By Default we will delete
+      let shouldDelete = true
+      const before = this.store.getSelectedOptions()
+      const after = [] as Option[]
+
+      // Add beforeChange callback
+      if (this.callbacks.beforeChange) {
+        shouldDelete = this.callbacks.beforeChange(after, before) === true
+      }
+
+      if (shouldDelete) {
+        this.callbacks.setSelected([''])
+
+        // Check if we need to close the dropdown
+        if (this.settings.closeOnSelect) {
+          this.callbacks.close()
+        }
+
+        // Run afterChange callback
+        if (this.callbacks.afterChange) {
+          this.callbacks.afterChange(after)
+        }
+      }
     }
 
     // Add deselect svg
@@ -466,8 +490,11 @@ export default class Render {
 
     // Only add deletion if the option is not mandatory
     if (!option.mandatory) {
+      // Create delete div element
       const deleteDiv = document.createElement('div')
       deleteDiv.classList.add(this.classes.valueDelete)
+
+      // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()

@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect, { DataArray } from '../../../slim-select'
+import SlimSelect from '../../../slim-select'
+import { DataArray } from '../../../slim-select/store'
 
 export default defineComponent({
   name: 'BeforeAfterChange',
@@ -16,9 +17,13 @@ export default defineComponent({
   mounted() {
     new SlimSelect({
       select: this.$refs.beforeChangeSingle as HTMLSelectElement,
+      settings: {
+        allowDeselect: true,
+      },
       events: {
         beforeChange: (newValue: DataArray, oldValue: DataArray) => {
           this.beforeChangeSingle = oldValue
+          return true
         },
       },
     })
@@ -66,11 +71,16 @@ export default defineComponent({
       Returning nothing or true will allow it to continue as normal.
     </p>
 
+    <div class="alert info">
+      Be sure to return true to allow for the change to happen. False or nothing to cancel change.
+    </div>
+
     <div v-if="beforeChangeSingle">
       <strong>Before change: {{ beforeChangeSingle }}</strong>
     </div>
 
     <select ref="beforeChangeSingle">
+      <option data-placeholder="true">Select Option</option>
       <option value="value1">Value 1</option>
       <option value="value2">Value 2</option>
       <option value="value3">Value 3</option>
