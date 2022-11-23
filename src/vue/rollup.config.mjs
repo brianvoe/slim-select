@@ -1,0 +1,40 @@
+import vue from 'rollup-plugin-vue'
+
+export default [
+  // ESM build to be used with webpack/rollup.
+  {
+    input: './slimselect.vue',
+    output: {
+      format: 'es',
+      file: './dist/slimselectvue.es.js',
+    },
+    external: ['vue', 'slim-select'],
+    plugins: [vue()],
+  },
+  // SSR build.
+  {
+    input: './slimselect.vue',
+    output: {
+      exports: 'auto',
+      format: 'cjs',
+      file: './dist/slimselectvue.ssr.js',
+    },
+    external: ['vue', 'slim-select'],
+    plugins: [vue({ template: { optimizeSSR: true } })],
+  },
+  // Browser build.
+  {
+    input: './slimselect.vue',
+    output: {
+      name: 'SlimSelectVue',
+      format: 'iife',
+      file: './dist/slimselectvue.global.js',
+      globals: {
+        vue: 'vue',
+        'slim-select': 'slim-select',
+      },
+    },
+    external: ['vue', 'slim-select'],
+    plugins: [vue()],
+  },
+]

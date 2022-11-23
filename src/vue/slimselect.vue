@@ -1,28 +1,44 @@
-<script lang="ts">
+<script>
 import { defineComponent } from 'vue'
 
-import SlimSelect, { Config } from '../slim-select'
+import SlimSelect from 'slim-select'
 
 export default defineComponent({
   name: 'SlimSelect',
   props: {
+    data: {
+      type: Array,
+    },
     settings: {
+      type: Object,
+    },
+    events: {
       type: Object,
     },
   },
   data() {
     return {
-      slim: null as SlimSelect | null,
+      slim: null,
     }
   },
   mounted() {
     let config = {
-      select: this.$refs.slim as HTMLSelectElement,
-    } as Config
+      select: this.$refs.slim,
+    }
 
-    // If props are passed in, merge them with the config
+    // If data is passed in, use it
+    if (this.data) {
+      config.data = this.data
+    }
+
+    // If settings are passed in, use it
     if (this.settings) {
       config.settings = this.settings
+    }
+
+    // If events are passed in, use it
+    if (this.events) {
+      config.events = this.events
     }
 
     // Initialize SlimSelect
