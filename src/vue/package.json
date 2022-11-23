@@ -1,5 +1,6 @@
 {
   "name": "@slim-select/vue",
+  "private": false,
   "version": "1.0.0",
   "description": "Vue integration",
   "repository": {
@@ -10,7 +11,7 @@
     "vue"
   ],
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
-  "homepage": "https://slimselectjs.com",
+  "homepage": "https://slimselectjs.com/frameworks#vue",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
