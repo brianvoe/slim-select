@@ -1,5 +1,5 @@
 import { generateID, kebabCase } from './helpers'
-import { DataArray, DataObject, Optgroup, Option } from './store'
+import { DataArray, Optgroup, Option } from './store'
 
 export default class Select {
   public select: HTMLSelectElement
@@ -86,7 +86,11 @@ export default class Select {
 
   private observeWrapper(mutations: MutationRecord[]): void {
     if (this.onSelectChange) {
+      // Just in case this triggers a change in the select
+      // we want to stop listening to it while we run onSelectChange
+      this.changeListen(false)
       this.onSelectChange(this.getData())
+      this.changeListen(true)
     }
   }
 
@@ -99,16 +103,21 @@ export default class Select {
     }
 
     // If anything changes in the select then update the data
-    this.observer = new MutationObserver(this.observeWrapper)
+    this.observer = new MutationObserver(this.observeWrapper.bind(this))
   }
 
+  // Start observing the select
   private connectObserver(): void {
     if (this.observer) {
       this.observer.observe(this.select, {
-        attributes: true,
+        // For now we only care about if the children change
         childList: true,
-        characterData: true,
-        subtree: true,
+
+        // We dont care about attributes for now
+        // might need to add this later
+        // attributes: true,
+        // characterData: true,
+        // subtree: true,
       })
     }
   }
