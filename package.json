@@ -8,7 +8,7 @@
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
-  "main": "dist/slimselect.cjs.js",
+  "main": "dist/slimselect.ssr.js",
   "browser": "dist/slimselect.umd.js",
   "module": "dist/slimselect.es.js",
   "unpkg": "dist/slimselect.umd.min.js",
@@ -16,6 +16,9 @@
   "typings": "dist/index.d.ts",
   "style": "dist/slimselect.css",
   "sass": "src/slim-select/slimselect.scss",
+  "workspaces": [
+    "src/vue"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
@@ -36,6 +39,7 @@
     "build:library": "npm run build:library:js && npm run build:library:css",
     "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
     "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
+    "build:vue": "npm run build --workspace=src/vue",
     "test": "jest"
   },
   "devDependencies": {
@@ -55,6 +59,7 @@
     "prismjs": "^1.29.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.79.1",
+    "rollup-plugin-vue": "^6.0.0",
     "sass": "^1.56.1",
     "ts-jest": "^29.0.3",
     "tslib": "^2.4.1",
