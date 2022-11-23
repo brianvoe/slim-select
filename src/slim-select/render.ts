@@ -5,7 +5,7 @@ import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
 export interface Callbacks {
   open: () => void
   close: () => void
-  addable?: (value: string) => OptionOptional | string
+  addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string
   setSelected: (value: string[]) => void
   addOption: (option: Option) => void
   search: (search: string) => void
@@ -656,13 +656,18 @@ export default class Render {
 
     // If addable is enabled, add the addable div
     if (this.callbacks.addable) {
+      // Add main class
       addable.classList.add(this.classes.addable)
+
+      // Add svg icon
       const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       plus.setAttribute('viewBox', '0 0 100 100')
       const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       plusPath.setAttribute('d', this.classes.addablePath)
       plus.appendChild(plusPath)
       addable.appendChild(plus)
+
+      // Add click event to addable div
       addable.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
@@ -679,35 +684,61 @@ export default class Render {
           return
         }
 
+        // Run finish will be ran at the end of the addable function.
+        // Reason its in a function is so we can run it after the
+        // addable function is done for promise based addables
+        const runFinish = (oo: OptionOptional) => {
+          let newOption = new Option(oo)
+
+          // Call addOption to add the new option
+          this.callbacks.addOption(newOption)
+
+          // set selected value for single and multiple
+          if (this.settings.isMultiple) {
+            let values = this.store.getSelected()
+            values.push(newOption.value)
+            this.callbacks.setSelected(values)
+          } else {
+            this.callbacks.setSelected([newOption.value])
+          }
+
+          // Clear search
+          this.callbacks.search('')
+
+          // Close it only if closeOnSelect = true
+          if (this.settings.closeOnSelect) {
+            setTimeout(() => {
+              // Give it a little padding for a better looking animation
+              this.callbacks.close()
+            }, 100)
+          }
+        }
+
         // Call addable callback
         const addableValue = this.callbacks.addable(inputValue)
 
-        // If the addableValue is a string, we will add it as a new option
-        // Otherwise we will assume it is an option object
-        if (typeof addableValue === 'string') {
-          this.callbacks.addOption(
-            new Option({
-              text: addableValue,
-              value: addableValue,
-            }),
-          )
+        // If addableValue is a promise, wait for it to resolve
+        if (addableValue instanceof Promise) {
+          addableValue.then((value) => {
+            if (typeof value === 'string') {
+              runFinish({
+                text: value,
+                value: value,
+              })
+            } else {
+              runFinish(value)
+            }
+          })
+        } else if (typeof addableValue === 'string') {
+          runFinish({
+            text: addableValue,
+            value: addableValue,
+          })
         } else {
-          this.callbacks.addOption(new Option(addableValue))
+          runFinish(addableValue)
         }
 
-        // Add option to selected
-        this.callbacks.setSelected([inputValue])
-
-        // Clear search
-        this.callbacks.search('')
-
-        // Close it only if closeOnSelect = true
-        if (this.settings.closeOnSelect) {
-          setTimeout(() => {
-            // Give it a little padding for a better looking animation
-            this.callbacks.close()
-          }, 100)
-        }
+        return
       }
       main.appendChild(addable)
 
