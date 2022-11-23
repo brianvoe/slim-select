@@ -35,6 +35,9 @@ export default defineComponent({
 
     new SlimSelect({
       select: this.$refs.afterChangeSingle as HTMLSelectElement,
+      settings: {
+        allowDeselect: true,
+      },
       events: {
         afterChange: (value: DataArray) => {
           this.afterChangeSingle = value
@@ -108,6 +111,7 @@ export default defineComponent({
     </div>
 
     <select ref="afterChangeSingle">
+      <option data-placeholder="true">Select Option</option>
       <option value="value1">Value 1</option>
       <option value="value2">Value 2</option>
       <option value="value3">Value 3</option>
