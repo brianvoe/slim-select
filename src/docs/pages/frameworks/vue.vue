@@ -1,9 +1,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '@slim-select/vue'
+// We need to import from the root of the package
+// Because if we use @slim-select/vue then we loose
+// hot reloading of the file changes
+import SlimSelect from '../../../vue/slimselect.vue'
 import Settings from '../../../slim-select/settings'
-import { Option } from '../../../slim-select/store'
+import { Option, OptionOptional } from '../../../slim-select/store'
+import { Events } from '../../../slim-select'
+
+interface Person {
+  id: string
+  first_name: string
+  last_name: string
+  selected: number
+}
 
 export default defineComponent({
   name: 'Vue',
@@ -20,15 +31,65 @@ export default defineComponent({
         { value: 'value2', text: 'Value 2' },
         { value: 'value3', text: 'Value 3' },
       ],
-      afterChangeData: [] as Option[],
+      dynamicData: [] as OptionOptional[],
+      afterChangeData: [] as OptionOptional[],
       events: {
         afterChange: this.afterChange,
-      },
+      } as Events,
     }
+  },
+  mounted() {
+    // Show the original select for debugging
+    // const randomComponent = this.$refs.randomDynamic as any
+    // const randomSlim = randomComponent.getSlimSelect()
+    // randomSlim.select.showUI()
   },
   methods: {
     afterChange(newVal: Option[]) {
       this.afterChangeData = newVal
+    },
+    randomDynamicData() {
+      // Go fetch some gofakeit data via post to json
+      fetch('https://api.gofakeit.com/json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'array',
+          rowcount: 20,
+          indent: false,
+          fields: [
+            {
+              name: 'key',
+              function: 'password',
+              params: {
+                lower: true,
+                upper: true,
+                numeric: true,
+                special: false,
+                space: false,
+                length: 10,
+              },
+            },
+            { name: 'first_name', function: 'firstname', params: {} },
+            { name: 'last_name', function: 'lastname', params: {} },
+            { name: 'selected', function: 'number', params: { min: 1, max: 10 } },
+          ],
+        }),
+      })
+        .then((response) => response.json())
+        .then((data: Person[]) => {
+          // Map the data to the format slim select expects
+          this.dynamicData = data.map((person: Person) => {
+            return {
+              id: person.id,
+              text: `${person.first_name} ${person.last_name}`,
+              value: `${person.first_name} ${person.last_name}`,
+              selected: person.selected >= 8,
+            } as OptionOptional
+          })
+        })
     },
   },
 })
@@ -126,11 +187,9 @@ export default defineComponent({
           },
           data() {
             return {
-              data: [
-                { value: 'value1', text: 'Value 1' },
-                { value: 'value2', text: 'Value 2' },
-                { value: 'value3', text: 'Value 3' },
-              ],
+              settings: {
+                showSearch: false,
+              }
             }
           },
         })
@@ -163,7 +222,7 @@ export default defineComponent({
     </p>
     <div class="alert info">
       You may pass data as a prop if you would like. But you can also have reactive options that when options change the
-      select will update as well. This is done by SlimSelect mutation observer.
+      select will update as well. See Reactivity below for more info.
     </div>
 
     <div class="row">
@@ -182,9 +241,11 @@ export default defineComponent({
           },
           data() {
             return {
-              settings: {
-                showSearch: false,
-              },
+              data: [
+                { value: 'value1', text: 'Value 1' },
+                { value: 'value2', text: 'Value 2' },
+                { value: 'value3', text: 'Value 3' },
+              ],
             }
           },
         })
@@ -235,10 +296,13 @@ export default defineComponent({
           },
           data() {
             return {
-              events: {
-                afterChange: this.afterChange,
-              },
+              data: [],
             }
+          },
+          methods: {
+            afterChange(newVal) {
+              console.log(newVal)
+            },
           },
         })
       </code>
@@ -256,6 +320,66 @@ export default defineComponent({
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+      </code>
+    </pre>
+
+    <br />
+    <div class="separator"></div>
+    <br />
+
+    <h3>Reactivity</h3>
+    <p>
+      Slim select will look out for any options changes that happen to the select options and SlimSelect will update
+      accordingly. This is done via mutation observers.
+    </p>
+
+    <div class="row">
+      <div class="btn info" @click="randomDynamicData">Change data</div>
+      <SlimSelect ref="randomDynamic">
+        <option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected">{{ d.text }}</option>
+      </SlimSelect>
+
+      <SlimSelect multiple>
+        <option v-for="d in dynamicData" :value="d.value" :selected="d.selected">{{ d.text }}</option>
+      </SlimSelect>
+    </div>
+
+    <pre>
+      <code class="language-javascript">
+        import { defineComponent } from 'vue'
+        import SlimSelect from '@slim-select/vue'
+
+        export default defineComponent({
+          components: {
+            SlimSelect,
+          },
+          data() {
+            return {
+              dynamicData: []
+            }
+          },
+          methods: {
+            changeData() {
+              this.dynamicData = [
+                { id: 1, value: 1, text: 'Option 1', selected: true },
+                { id: 2, value: 2, text: 'Option 2', selected: false },
+                { id: 3, value: 3, text: 'Option 3', selected: false },
+              ]
+            },
+          },
+        })
+      </code>
+    </pre>
+
+    <pre>
+      <code class="language-html">
+        &lt;SlimSelect :events="events"&gt;
+          &lt;option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected"&gt;&#123;&#123; d.text &#125;&#125;&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+
+        &lt;SlimSelect :events="events" multiple&gt;
+          &lt;option v-for="d in dynamicData" :value="d.value" :selected="d.selected"&gt;&#123;&#123; d.text &#125;&#125;&lt;/option&gt;
         &lt;/SlimSelect&gt;
       </code>
     </pre>
