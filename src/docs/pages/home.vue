@@ -95,41 +95,44 @@ export default defineComponent({
     }
   }
 
-  .callouts {
-    display: flex;
-    padding: 20px 0 0 0;
-
-    .features {
-      flex: 1 1 auto;
+  .support {
+    .links {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      gap: var(--spacing);
+    }
+  }
 
-      .header {
-        padding: 0 0 var(--spacing) 0;
-      }
+  .features {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
 
-      .row {
-        justify-content: space-around;
+    .header {
+      padding: 0 0 var(--spacing) 0;
+    }
 
-        .list {
+    .row {
+      justify-content: space-around;
+
+      .list {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        padding: 0px;
+        width: 200px;
+        margin: 0 auto;
+
+        li {
           display: flex;
-          flex-direction: column;
-          list-style: none;
-          padding: 0px;
-          width: 200px;
-          margin: 0 auto;
+          align-items: center;
+          padding: 0 0 5px 0;
+          font-weight: bold;
+          font-size: 20px;
 
-          li {
-            display: flex;
-            align-items: center;
-            padding: 0 0 5px 0;
-            font-weight: bold;
-            font-size: 20px;
-
-            img {
-              width: 20px;
-              padding: 0 8px 0 0;
-            }
+          img {
+            width: 20px;
+            padding: 0 8px 0 0;
           }
         }
       }
@@ -160,34 +163,78 @@ export default defineComponent({
       </div>
     </div>
 
-    <div class="callouts">
-      <div class="features">
-        <div class="header"><h2>Features</h2></div>
+    <br />
 
-        <div class="row">
-          <ul class="list">
-            <li><img src="../assets/images/check-mark.svg" /> No Dependencies</li>
-            <li><img src="../assets/images/check-mark.svg" /> ~30kb - ~5kb gzip</li>
-            <li><img src="../assets/images/check-mark.svg" /> Single Select</li>
-            <li><img src="../assets/images/check-mark.svg" /> Multiple Select</li>
-            <li><img src="../assets/images/check-mark.svg" /> Addable Options</li>
-            <li><img src="../assets/images/check-mark.svg" /> Html Options</li>
-            <li><img src="../assets/images/check-mark.svg" /> Settable Data</li>
-            <li><img src="../assets/images/check-mark.svg" /> Callback Events</li>
-            <li><img src="../assets/images/check-mark.svg" /> Placeholders</li>
-          </ul>
-          <ul class="list">
-            <li><img src="../assets/images/check-mark.svg" /> Advanced Search</li>
-            <li><img src="../assets/images/check-mark.svg" /> Tabbable</li>
-            <li><img src="../assets/images/check-mark.svg" /> Disable Options</li>
-            <li><img src="../assets/images/check-mark.svg" /> Light Css</li>
-            <li><img src="../assets/images/check-mark.svg" /> Light Color Scheme</li>
-            <li><img src="../assets/images/check-mark.svg" /> Style Inheritance</li>
-            <li><img src="../assets/images/check-mark.svg" /> Clean Animations</li>
-            <li><img src="../assets/images/check-mark.svg" /> Performant</li>
-            <li><img src="../assets/images/check-mark.svg" /> Typescript</li>
-          </ul>
-        </div>
+    <div class="support">
+      <h2 class="header">Support</h2>
+      <p>Help support creators that make development easier!</p>
+      <div class="links">
+        <iframe
+          src="https://github.com/sponsors/brianvoe/button"
+          title="Sponsor brianvoe"
+          height="35"
+          width="116"
+          style="border: 0"
+        ></iframe>
+        <a href="https://www.buymeacoffee.com/brianvoe" target="_blank"
+          ><img
+            src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png"
+            alt="Buy Me A Coffee"
+            style="height: auto !important; width: auto !important"
+        /></a>
+      </div>
+    </div>
+
+    <br />
+    <div class="separator" />
+    <br />
+
+    <div class="features">
+      <h2 class="header">Features</h2>
+
+      <div class="row">
+        <ul class="list">
+          <li><img src="../assets/images/check-mark.svg" /> No Dependencies</li>
+          <li><img src="../assets/images/check-mark.svg" /> ~30kb - ~5kb gzip</li>
+          <li><img src="../assets/images/check-mark.svg" /> Single Select</li>
+          <li><img src="../assets/images/check-mark.svg" /> Multiple Select</li>
+          <li><img src="../assets/images/check-mark.svg" /> Addable Options</li>
+          <li><img src="../assets/images/check-mark.svg" /> Html Options</li>
+          <li><img src="../assets/images/check-mark.svg" /> Settable Data</li>
+          <li><img src="../assets/images/check-mark.svg" /> Callback Events</li>
+          <li><img src="../assets/images/check-mark.svg" /> Placeholders</li>
+        </ul>
+        <ul class="list">
+          <li><img src="../assets/images/check-mark.svg" /> Advanced Search</li>
+          <li><img src="../assets/images/check-mark.svg" /> Tabbable</li>
+          <li><img src="../assets/images/check-mark.svg" /> Disable Options</li>
+          <li><img src="../assets/images/check-mark.svg" /> Light Css</li>
+          <li><img src="../assets/images/check-mark.svg" /> Light Color Scheme</li>
+          <li><img src="../assets/images/check-mark.svg" /> Style Inheritance</li>
+          <li><img src="../assets/images/check-mark.svg" /> Clean Animations</li>
+          <li><img src="../assets/images/check-mark.svg" /> Performant</li>
+          <li><img src="../assets/images/check-mark.svg" /> Typescript</li>
+        </ul>
+      </div>
+    </div>
+
+    <br />
+    <div class="separator" />
+    <br />
+
+    <div class="frameworks">
+      <h2 class="header">Frameworks</h2>
+      <p>
+        SlimSelect is in the process of adding a few framework integrations.<br />
+        If you are an expert in any specific framework and would like to help out, please reach out!
+      </p>
+      <div class="row frameworks">
+        <router-link to="frameworks#vue">
+          <svg viewBox="0 0 128 128" width="100" height="100">
+            <path fill="#42b883" d="M78.8,10L64,35.4L49.2,10H0l64,110l64-110C128,10,78.8,10,78.8,10z"></path>
+            <path fill="#35495e" d="M78.8,10L64,35.4L49.2,10H25.6L64,76l38.4-66H78.8z"></path>
+          </svg>
+        </router-link>
       </div>
     </div>
   </div>
