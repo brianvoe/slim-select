@@ -10,7 +10,10 @@ export default defineComponent({
       select: this.$refs.addableSingle as HTMLSelectElement,
       events: {
         addable: (value: string) => {
-          return value
+          return {
+            text: value,
+            value: value.toLowerCase(),
+          }
         },
       },
     })
@@ -19,10 +22,14 @@ export default defineComponent({
       select: this.$refs.addableMultiple as HTMLSelectElement,
       events: {
         addable: (value: string) => {
-          return {
-            text: value,
-            value: value.toLowerCase(),
-          }
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                text: value,
+                value: value,
+              })
+            }, 100)
+          })
         },
       },
     })
@@ -65,11 +72,20 @@ export default defineComponent({
               // Return the value string
               return value // Optional - value alteration // ex: value.toLowerCase()
 
-              // Optional - Return a valid data object. See methods/setData for list of valid options
+              // Optional - Return a valid data object. 
+              // See methods/setData for list of valid options
               return {
                 text: value,
                 value: value.toLowerCase()
               }
+
+              // Optional - Return a promise with either a string or data object
+              return new Promise((resolve) => {
+                resolve({
+                  text: value,
+                  value: value,
+                })
+              })
             }
           }
         })

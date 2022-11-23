@@ -1,0 +1,27 @@
+{
+  "name": "@slim-select/vue",
+  "version": "1.0.0",
+  "description": "Vue integration",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brianvoe/slim-select.git"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
+  "homepage": "https://slimselectjs.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brianvoe/slim-select/issues"
+  },
+  "main": "dist/slimselectvue.ssr.js",
+  "browser": "dist/slimselect.global.js",
+  "module": "dist/slimselectvue.es.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

@@ -166,26 +166,26 @@ export default defineComponent({
 
         <div class="row">
           <ul class="list">
-            <li><img src="../images/check-mark.svg" /> No Dependencies</li>
-            <li><img src="../images/check-mark.svg" /> ~30kb - ~5kb gzip</li>
-            <li><img src="../images/check-mark.svg" /> Single Select</li>
-            <li><img src="../images/check-mark.svg" /> Multiple Select</li>
-            <li><img src="../images/check-mark.svg" /> Addable Options</li>
-            <li><img src="../images/check-mark.svg" /> Html Options</li>
-            <li><img src="../images/check-mark.svg" /> Settable Data</li>
-            <li><img src="../images/check-mark.svg" /> Callback Events</li>
-            <li><img src="../images/check-mark.svg" /> Placeholders</li>
+            <li><img src="../assets/images/check-mark.svg" /> No Dependencies</li>
+            <li><img src="../assets/images/check-mark.svg" /> ~30kb - ~5kb gzip</li>
+            <li><img src="../assets/images/check-mark.svg" /> Single Select</li>
+            <li><img src="../assets/images/check-mark.svg" /> Multiple Select</li>
+            <li><img src="../assets/images/check-mark.svg" /> Addable Options</li>
+            <li><img src="../assets/images/check-mark.svg" /> Html Options</li>
+            <li><img src="../assets/images/check-mark.svg" /> Settable Data</li>
+            <li><img src="../assets/images/check-mark.svg" /> Callback Events</li>
+            <li><img src="../assets/images/check-mark.svg" /> Placeholders</li>
           </ul>
           <ul class="list">
-            <li><img src="../images/check-mark.svg" /> Advanced Search</li>
-            <li><img src="../images/check-mark.svg" /> Tabbable</li>
-            <li><img src="../images/check-mark.svg" /> Disable Options</li>
-            <li><img src="../images/check-mark.svg" /> Light Css</li>
-            <li><img src="../images/check-mark.svg" /> Light Color Scheme</li>
-            <li><img src="../images/check-mark.svg" /> Style Inheritance</li>
-            <li><img src="../images/check-mark.svg" /> Clean Animations</li>
-            <li><img src="../images/check-mark.svg" /> Performant</li>
-            <li><img src="../images/check-mark.svg" /> Typescript</li>
+            <li><img src="../assets/images/check-mark.svg" /> Advanced Search</li>
+            <li><img src="../assets/images/check-mark.svg" /> Tabbable</li>
+            <li><img src="../assets/images/check-mark.svg" /> Disable Options</li>
+            <li><img src="../assets/images/check-mark.svg" /> Light Css</li>
+            <li><img src="../assets/images/check-mark.svg" /> Light Color Scheme</li>
+            <li><img src="../assets/images/check-mark.svg" /> Style Inheritance</li>
+            <li><img src="../assets/images/check-mark.svg" /> Clean Animations</li>
+            <li><img src="../assets/images/check-mark.svg" /> Performant</li>
+            <li><img src="../assets/images/check-mark.svg" /> Typescript</li>
           </ul>
         </div>
       </div>

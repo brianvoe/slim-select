@@ -14,7 +14,7 @@ export interface Config {
 export interface Events {
   search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
   searchFilter?: (option: Option, search: string) => boolean
-  addable?: (value: string) => OptionOptional | string
+  addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
   afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void

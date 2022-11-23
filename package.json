@@ -1,14 +1,14 @@
 {
   "name": "slim-select",
   "description": "Slim advanced select dropdown",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
-  "main": "dist/slimselect.cjs.js",
+  "main": "dist/slimselect.ssr.js",
   "browser": "dist/slimselect.umd.js",
   "module": "dist/slimselect.es.js",
   "unpkg": "dist/slimselect.umd.min.js",
@@ -16,6 +16,9 @@
   "typings": "dist/index.d.ts",
   "style": "dist/slimselect.css",
   "sass": "src/slim-select/slimselect.scss",
+  "workspaces": [
+    "src/vue"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brianvoe/slim-select.git"
@@ -30,12 +33,14 @@
   "scripts": {
     "dev": "vite --port=1111",
     "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
-    "build": "npm run build:clean && npm run build:docs && npm run build:library",
+    "build": "npm run build:clean && npm run build:docs && npm run build:library && npm run build:frameworks",
     "build:clean": "rimraf ./dist/*",
     "build:docs": "vite build",
     "build:library": "npm run build:library:js && npm run build:library:css",
     "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
     "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
+    "build:frameworks": "npm run build --workspaces",
+    "publish": "npm publish && npm publish --workspaces",
     "test": "jest"
   },
   "devDependencies": {
@@ -45,6 +50,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.1.0",
     "@rollup/plugin-typescript": "^9.0.2",
+    "@slim-select/vue": "workspace:src/vue",
     "@types/downloadjs": "^1.4.3",
     "@vitejs/plugin-vue": "^3.2.0",
     "clipboard": "^2.0.11",
@@ -55,6 +61,8 @@
     "prismjs": "^1.29.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.79.1",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "rollup-plugin-vue": "^6.0.0",
     "sass": "^1.56.1",
     "ts-jest": "^29.0.3",
     "tslib": "^2.4.1",

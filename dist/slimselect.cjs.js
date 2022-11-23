@@ -397,7 +397,21 @@ class Render {
             if (!this.settings.isEnabled) {
                 return;
             }
-            this.callbacks.setSelected(['']);
+            let shouldDelete = true;
+            const before = this.store.getSelectedOptions();
+            const after = [];
+            if (this.callbacks.beforeChange) {
+                shouldDelete = this.callbacks.beforeChange(after, before) === true;
+            }
+            if (shouldDelete) {
+                this.callbacks.setSelected(['']);
+                if (this.settings.closeOnSelect) {
+                    this.callbacks.close();
+                }
+                if (this.callbacks.afterChange) {
+                    this.callbacks.afterChange(after);
+                }
+            }
         };
         const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         deselectSvg.setAttribute('viewBox', '0 0 100 100');
@@ -703,23 +717,48 @@ class Render {
                     this.content.search.input.focus();
                     return;
                 }
+                const runFinish = (oo) => {
+                    let newOption = new Option(oo);
+                    this.callbacks.addOption(newOption);
+                    if (this.settings.isMultiple) {
+                        let values = this.store.getSelected();
+                        values.push(newOption.value);
+                        this.callbacks.setSelected(values);
+                    }
+                    else {
+                        this.callbacks.setSelected([newOption.value]);
+                    }
+                    this.callbacks.search('');
+                    if (this.settings.closeOnSelect) {
+                        setTimeout(() => {
+                            this.callbacks.close();
+                        }, 100);
+                    }
+                };
                 const addableValue = this.callbacks.addable(inputValue);
-                if (typeof addableValue === 'string') {
-                    this.callbacks.addOption(new Option({
+                if (addableValue instanceof Promise) {
+                    addableValue.then((value) => {
+                        if (typeof value === 'string') {
+                            runFinish({
+                                text: value,
+                                value: value,
+                            });
+                        }
+                        else {
+                            runFinish(value);
+                        }
+                    });
+                }
+                else if (typeof addableValue === 'string') {
+                    runFinish({
                         text: addableValue,
                         value: addableValue,
-                    }));
+                    });
                 }
                 else {
-                    this.callbacks.addOption(new Option(addableValue));
+                    runFinish(addableValue);
                 }
-                this.callbacks.setSelected([inputValue]);
-                this.callbacks.search('');
-                if (this.settings.closeOnSelect) {
-                    setTimeout(() => {
-                        this.callbacks.close();
-                    }, 100);
-                }
+                return;
             };
             main.appendChild(addable);
             searchReturn.addable = {
@@ -1075,7 +1114,9 @@ class Select {
     }
     observeWrapper(mutations) {
         if (this.onSelectChange) {
+            this.changeListen(false);
             this.onSelectChange(this.getData());
+            this.changeListen(true);
         }
     }
     addObserver() {
@@ -1083,15 +1124,12 @@ class Select {
             this.disconnectObserver();
             this.observer = null;
         }
-        this.observer = new MutationObserver(this.observeWrapper);
+        this.observer = new MutationObserver(this.observeWrapper.bind(this));
     }
     connectObserver() {
         if (this.observer) {
             this.observer.observe(this.select, {
-                attributes: true,
                 childList: true,
-                characterData: true,
-                subtree: true,
             });
         }
     }

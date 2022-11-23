@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, Ref, ref } from 'vue'
 
-import SlimSelect, { DataArray, Option } from '../../../slim-select'
+import SlimSelect from '../../../slim-select'
+import { DataArray, Option } from '../../../slim-select/store'
 
 interface Person {
   first_name: string

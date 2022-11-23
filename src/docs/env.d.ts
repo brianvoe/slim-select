@@ -7,6 +7,7 @@ declare module '*.vue' {
   export default component
 }
 
+declare module '@slim-select/vue'
 declare module 'chance'
 declare module 'prismjs'
 declare module 'prismjs/*'

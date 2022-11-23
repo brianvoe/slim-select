@@ -40,6 +40,13 @@ p {
   margin: 0 0 var(--spacing-half) 0;
 }
 
+.separator {
+  height: 1px;
+  width: 100%;
+  margin: var(--spacing-half) 0 var(--spacing-half) 0;
+  background-color: var(--color-border);
+}
+
 .bold {
   font-weight: bold;
 }

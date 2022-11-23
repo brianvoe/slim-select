@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true /* Enable all strict type-checking options. */,
+    "declaration": false /* Generates corresponding '.d.ts' file. */,
+    "outDir": "./dist", // Output to dist folder
+    "removeComments": true /* Do not emit comments to output. */,
+    "importHelpers": true /* Import emit helpers from 'tslib'. */
+  },
+  "include": ["**/**.ts", "**/*.vue"],
+  "exclude": ["./dist", "../slim-select/*"]
+}
