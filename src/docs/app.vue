@@ -55,7 +55,7 @@ export default defineComponent({
         { text: 'search', value: 'settings#search', class: 'mar-l-l' },
         { text: 'closeOnSelect', value: 'settings#closeOnSelect', class: 'mar-l-l' },
         { text: 'showOptionTooltips', value: 'settings#showOptionTooltips', class: 'mar-l-l' },
-        { text: 'selectByGroup', value: 'settings#selectByGroup', class: 'mar-l-l' },
+        { text: 'selectAll', value: 'settings#selectAll', class: 'mar-l-l' },
         { text: 'hideSelected', value: 'settings#hideSelected', class: 'mar-l-l' },
 
         // Events

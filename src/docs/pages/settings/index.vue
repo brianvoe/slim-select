@@ -18,7 +18,7 @@ import OpenPosition from './open_position.vue'
 import Placeholder from './placeholder.vue'
 import Search from './search.vue'
 import Select from './select.vue'
-import SelectByGroup from './select_by_group.vue'
+import SelectAll from './select_all.vue'
 import ShowTooltip from './show_tooltip.vue'
 import Styles from './styles.vue'
 
@@ -42,7 +42,7 @@ export default defineComponent({
     Search,
     CloseOnSelect,
     ShowTooltip,
-    SelectByGroup,
+    SelectAll,
     HideSelected,
   },
 })
@@ -67,7 +67,7 @@ export default defineComponent({
     <Search />
     <CloseOnSelect />
     <ShowTooltip />
-    <SelectByGroup />
+    <SelectAll />
     <HideSelected />
   </div>
 </template>

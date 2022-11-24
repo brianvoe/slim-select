@@ -1,12 +1,12 @@
 import { generateID, kebabCase } from './helpers'
-import { DataArray, Optgroup, Option } from './store'
+import { DataArray, DataArrayPartial, Optgroup, OptgroupOptional, Option } from './store'
 
 export default class Select {
   public select: HTMLSelectElement
   public listen: boolean = false
 
   // Mutation observer fields
-  public onSelectChange?: (data: DataArray) => void
+  public onSelectChange?: (data: DataArrayPartial) => void
   public onValueChange?: (value: string[]) => void
   private observer: MutationObserver | null = null
 
@@ -55,7 +55,7 @@ export default class Select {
   }
 
   // Add change listener to original select
-  public addSelectChangeListener(func: (data: DataArray) => void): void {
+  public addSelectChangeListener(func: (data: DataArrayPartial) => void): void {
     this.onSelectChange = func
     this.addObserver()
     this.connectObserver()
@@ -129,8 +129,8 @@ export default class Select {
   }
 
   // From the select element pull optgroup and options into data
-  public getData(): DataArray {
-    let data = []
+  public getData(): DataArrayPartial {
+    let data = [] as DataArrayPartial
 
     // Loop through nodes and get data
     const nodes = this.select.childNodes as any as HTMLOptGroupElement[] | HTMLOptionElement[]
@@ -149,21 +149,41 @@ export default class Select {
     return data
   }
 
-  public getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup {
+  public getDataFromOptgroup(optgroup: HTMLOptGroupElement): OptgroupOptional {
     let data = {
-      id: '',
+      id: (optgroup.dataset ? optgroup.dataset.id : false) || '',
       label: optgroup.label,
+      selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
+      closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
       options: [],
-    } as Optgroup
+    } as OptgroupOptional
 
     const options = optgroup.childNodes as any as HTMLOptionElement[]
     for (const o of options) {
       if (o.nodeName === 'OPTION') {
-        data.options.push(this.getDataFromOption(o as HTMLOptionElement))
+        data.options!.push(this.getDataFromOption(o as HTMLOptionElement))
       }
     }
 
     return data
+  }
+
+  // From passed in option pull pieces of usable information
+  public getDataFromOption(option: HTMLOptionElement): Option {
+    return {
+      id: (option.dataset ? option.dataset.id : false) || '',
+      value: option.value,
+      text: option.text,
+      html: option.innerHTML,
+      selected: option.selected,
+      display: option.style.display === 'none' ? false : true,
+      disabled: option.disabled,
+      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
+      placeholder: option.dataset.placeholder === 'true',
+      class: option.className,
+      style: option.style.cssText,
+      data: option.dataset,
+    } as Option
   }
 
   public getSelectedValues(): string[] {
@@ -193,24 +213,6 @@ export default class Select {
     }
 
     return values
-  }
-
-  // From passed in option pull pieces of usable information
-  public getDataFromOption(option: HTMLOptionElement): Option {
-    return {
-      id: (option.dataset ? option.dataset.id : false) || generateID(),
-      value: option.value,
-      text: option.text,
-      html: option.innerHTML,
-      selected: option.selected,
-      display: option.style.display === 'none' ? false : true,
-      disabled: option.disabled,
-      mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
-      placeholder: option.dataset.placeholder === 'true',
-      class: option.className,
-      style: option.style.cssText,
-      data: option.dataset,
-    } as Option
   }
 
   public setSelected(value: string[]): void {
@@ -288,6 +290,12 @@ export default class Select {
     const optgroupEl = document.createElement('optgroup')
     optgroupEl.id = optgroup.id
     optgroupEl.label = optgroup.label
+    if (optgroup.selectAll) {
+      optgroupEl.dataset.selectAll = 'true'
+    }
+    if (optgroup.closable !== 'off') {
+      optgroupEl.dataset.closable = optgroup.closable
+    }
     if (optgroup.options) {
       for (const o of optgroup.options) {
         optgroupEl.appendChild(this.createOption(o))

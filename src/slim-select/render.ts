@@ -89,17 +89,30 @@ export default class Render {
     addable: 'ss-addable',
     addablePath: 'M50,10 L50,90 M10,50 L90,50', // Not a class but whatever
 
-    // List options
+    // List optgroups/options
     list: 'ss-list',
+
+    // Optgroup
     optgroup: 'ss-optgroup',
     optgroupLabel: 'ss-optgroup-label',
-    optgroupSelectable: 'ss-optgroup-selectable',
+    optgroupLabelText: 'ss-optgroup-label-text',
+    optgroupActions: 'ss-optgroup-actions',
+    optgroupSelectAll: 'ss-selectall', // optgroup select all
+    optgroupSelectAllBox: 'M60,10 L10,10 L10,90 L90,90 L90,50', // Not a class but whatever
+    optgroupSelectAllCheck: 'M30,45 L50,70 L90,10', // Not a class but whatever
+    optgroupClosable: 'ss-optgroup-closable',
+    optgroupOpen: 'ss-optgroup-open',
+    optgroupOpenPath: 'M10,30 L50,70 L90,30', // Not a class but whatever
+    optgroupClose: 'ss-optgroup-close',
+    optgroupClosePath: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
+
+    // Option
     option: 'ss-option',
-    optionSelected: 'ss-option-selected',
     optionDelete: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
     highlighted: 'ss-highlighted',
 
     // Misc
+    selected: 'ss-selected',
     error: 'ss-error',
     disabled: 'ss-disabled',
     hide: 'ss-hide',
@@ -112,12 +125,6 @@ export default class Render {
 
     this.main = this.mainDiv()
     this.content = this.contentDiv()
-
-    // Render the values
-    this.renderValues()
-
-    // Render the options
-    this.renderOptions(this.store.getData())
 
     // Add content to the content location settings
     this.settings.contentLocation.appendChild(this.content.main)
@@ -915,21 +922,121 @@ export default class Render {
         // Create label
         const optgroupLabel = document.createElement('div')
         optgroupLabel.classList.add(this.classes.optgroupLabel)
-        optgroupLabel.innerHTML = d.label
+        optgroupEl.appendChild(optgroupLabel)
+
+        // Create label text div element
+        const optgroupLabelText = document.createElement('div')
+        optgroupLabelText.classList.add(this.classes.optgroupLabelText)
+        optgroupLabelText.textContent = d.label
+        optgroupLabel.appendChild(optgroupLabelText)
+
+        // Create options container
+        const optgroupActions = document.createElement('div')
+        optgroupActions.classList.add(this.classes.optgroupActions)
+        optgroupLabel.appendChild(optgroupActions)
 
         // If selectByGroup is true and isMultiple then add click event to label
-        if (this.settings.selectByGroup && this.settings.isMultiple) {
-          optgroupLabel.classList.add(this.classes.optgroupSelectable)
-          optgroupLabel.addEventListener('click', (e: MouseEvent) => {
+        if (this.settings.isMultiple && d.selectAll) {
+          // Create new div to hold a checkbox svg
+          const selectAll = document.createElement('div')
+          selectAll.classList.add(this.classes.optgroupSelectAll)
+
+          // Check options and if all are selected, if so add class selected
+          let allSelected = true
+          for (const o of d.options) {
+            if (!o.selected) {
+              allSelected = false
+              break
+            }
+          }
+
+          // Add class if all selected
+          if (allSelected) {
+            selectAll.classList.add(this.classes.selected)
+          }
+
+          // Add select all text span
+          const selectAllText = document.createElement('span')
+          selectAllText.textContent = 'Select All'
+          selectAll.appendChild(selectAllText)
+
+          // Create new svg for checkbox
+          const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+          selectAllSvg.setAttribute('viewBox', '0 0 100 100')
+          selectAll.appendChild(selectAllSvg)
+
+          // Create new path for box
+          const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox)
+          selectAllSvg.appendChild(selectAllBox)
+
+          // Create new path for check
+          const selectAllCheck = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          selectAllCheck.setAttribute('d', this.classes.optgroupSelectAllCheck)
+          selectAllSvg.appendChild(selectAllCheck)
+
+          // Add click event listener to select all
+          selectAll.addEventListener('click', (e: MouseEvent) => {
             e.preventDefault()
             e.stopPropagation()
 
-            for (const childEl of optgroupEl.children as any as HTMLDivElement[]) {
-              if (childEl.className.indexOf(this.classes.option) !== -1) {
-                childEl.click()
-              }
+            // Get the store current selected values
+            const currentSelected = this.store.getSelected()
+
+            // If all selected, remove all options from selected
+            // call setSelected and return
+            if (allSelected) {
+              // Put together new list minus all options in this optgroup
+              const newSelected = currentSelected.filter((s) => {
+                for (const o of d.options) {
+                  if (s === o.value) {
+                    return false
+                  }
+                }
+
+                return true
+              })
+
+              this.callbacks.setSelected(newSelected)
+              return
+            } else {
+              // Put together new list with all options in this optgroup
+              const newSelected = currentSelected.concat(d.options.map((o) => o.value))
+
+              this.callbacks.setSelected(newSelected)
             }
           })
+
+          // Append select all to label
+          optgroupActions.appendChild(selectAll)
+        }
+
+        // If optgroup has collapsable
+        if (d.closable !== 'off') {
+          // Create new div to hold a checkbox svg
+          const optgroupClosable = document.createElement('div')
+          optgroupClosable.classList.add(this.classes.optgroupClosable)
+
+          // Add primary open or close class to optgroupEl
+          optgroupEl.classList.add(d.closable === 'open' ? this.classes.optgroupOpen : this.classes.optgroupClose)
+
+          // Add click event listener to close
+          optgroupClosable.addEventListener('click', (e: MouseEvent) => {
+            e.preventDefault()
+            e.stopPropagation()
+
+            // If optgroup is closed, open it
+            if (optgroupEl.classList.contains(this.classes.optgroupClose)) {
+              optgroupEl.classList.remove(this.classes.optgroupClose)
+              optgroupEl.classList.add(this.classes.optgroupOpen)
+            } else {
+              optgroupEl.classList.remove(this.classes.optgroupOpen)
+              optgroupEl.classList.add(this.classes.optgroupClose)
+            }
+          })
+
+          // Append close to label
+          optgroupActions.appendChild(optgroupClosable)
         }
 
         // Add optgroup label
@@ -1006,9 +1113,9 @@ export default class Render {
 
     // If option is selected
     if (option.selected) {
-      optionEl.classList.add(this.classes.optionSelected)
+      optionEl.classList.add(this.classes.selected)
     } else {
-      optionEl.classList.remove(this.classes.optionSelected)
+      optionEl.classList.remove(this.classes.selected)
     }
 
     // Add click event listener

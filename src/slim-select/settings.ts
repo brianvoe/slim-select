@@ -14,8 +14,6 @@ export default class Settings {
   public intervalMove: NodeJS.Timeout | null = null
 
   // Fields set from constructor
-  public mainHeight: number = 30
-  public contentHeight: number = 0
   public isEnabled: boolean
   public alwaysOpen: boolean
   public showSearch: boolean
@@ -31,7 +29,6 @@ export default class Settings {
   public allowDeselect: boolean
   public hideSelected: boolean
   public showOptionTooltips: boolean
-  public selectByGroup: boolean
   public minSelected: number
   public maxSelected: number
   public timeoutDelay: number
@@ -60,7 +57,6 @@ export default class Settings {
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
     this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false
-    this.selectByGroup = settings.selectByGroup !== undefined ? settings.selectByGroup : false
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200
