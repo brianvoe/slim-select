@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 
 // Components
 import AlwaysOpen from './always_open.vue'
+import Closable from './closable.vue'
 import CloseOnSelect from './close_on_select.vue'
 import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
@@ -43,6 +44,7 @@ export default defineComponent({
     CloseOnSelect,
     ShowTooltip,
     SelectAll,
+    Closable,
     HideSelected,
   },
 })
@@ -68,6 +70,7 @@ export default defineComponent({
     <CloseOnSelect />
     <ShowTooltip />
     <SelectAll />
+    <Closable />
     <HideSelected />
   </div>
 </template>

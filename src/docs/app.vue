@@ -56,6 +56,7 @@ export default defineComponent({
         { text: 'closeOnSelect', value: 'settings#closeOnSelect', class: 'mar-l-l' },
         { text: 'showOptionTooltips', value: 'settings#showOptionTooltips', class: 'mar-l-l' },
         { text: 'selectAll', value: 'settings#selectAll', class: 'mar-l-l' },
+        { text: 'closable', value: 'settings#closable', class: 'mar-l-l' },
         { text: 'hideSelected', value: 'settings#hideSelected', class: 'mar-l-l' },
 
         // Events
