@@ -314,7 +314,9 @@ export default defineComponent({
           },
           data() {
             return {
-              data: [],
+              events: {
+                afterChange: this.afterChange,
+              },
             }
           },
           methods: {

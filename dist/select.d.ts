@@ -1,8 +1,8 @@
-import { DataArray, Optgroup, Option } from './store';
+import { DataArray, DataArrayPartial, Optgroup, OptgroupOptional, Option } from './store';
 export default class Select {
     select: HTMLSelectElement;
     listen: boolean;
-    onSelectChange?: (data: DataArray) => void;
+    onSelectChange?: (data: DataArrayPartial) => void;
     onValueChange?: (value: string[]) => void;
     private observer;
     constructor(select: HTMLSelectElement);
@@ -11,7 +11,7 @@ export default class Select {
     hideUI(): void;
     showUI(): void;
     changeListen(on: boolean): void;
-    addSelectChangeListener(func: (data: DataArray) => void): void;
+    addSelectChangeListener(func: (data: DataArrayPartial) => void): void;
     removeSelectChangeListener(): void;
     addValueChangeListener(func: (value: string[]) => void): void;
     removeValueChangeListener(): void;
@@ -20,10 +20,10 @@ export default class Select {
     private addObserver;
     private connectObserver;
     private disconnectObserver;
-    getData(): DataArray;
-    getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup;
-    getSelectedValues(): string[];
+    getData(): DataArrayPartial;
+    getDataFromOptgroup(optgroup: HTMLOptGroupElement): OptgroupOptional;
     getDataFromOption(option: HTMLOptionElement): Option;
+    getSelectedValues(): string[];
     setSelected(value: string[]): void;
     updateSelect(id?: string, style?: string, classes?: string[]): void;
     updateOptions(data: DataArray): void;

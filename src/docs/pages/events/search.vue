@@ -60,7 +60,7 @@ onMounted(() => {
   })
 })
 
-function searchPromise(search: string, selectedData: DataArray): Promise<Option[]> {
+function searchPromise(search: string, currentData: DataArray): Promise<Option[]> {
   return new Promise((resolve, reject) => {
     if (search.length < 2) {
       return reject('Search must be at least 2 characters')
@@ -77,13 +77,20 @@ function searchPromise(search: string, selectedData: DataArray): Promise<Option[
       return reject('No results found')
     }
 
-    // Convert the results to an array of options
-    let options = results.map((person) => {
-      return {
-        text: `${person.first_name} ${person.last_name}`,
-        value: `${person.first_name} ${person.last_name}`,
-      }
-    }) as Option[]
+    // Take the results and create an array of options excluding any that are already selected in currentData
+    const options = results
+      .filter((person) => {
+        return !currentData.some((data) => {
+          // check if option has a value property
+          return data instanceof Option && data.value === `${person.first_name} ${person.last_name}`
+        })
+      })
+      .map((person) => {
+        return {
+          text: `${person.first_name} ${person.last_name}`,
+          value: `${person.first_name} ${person.last_name}`,
+        } as Option
+      })
 
     // Simulate a slow search
     setTimeout(() => {
@@ -135,13 +142,20 @@ function searchPromise(search: string, selectedData: DataArray): Promise<Option[
                 })
                   .then((response) => response.json())
                   .then((data) => {
-                    // Take data and generate array of options
-                    const options = data.map((person) => {
-                      return {
-                        text: `${person.first_name} ${person.last_name}`,
-                        value: `${person.first_name} ${person.last_name}`,
-                      }
-                    })
+                    // Take the data and create an array of options 
+                    // excluding any that are already selected in currentData
+                    const options = data
+                      .filter((person) => {
+                        return !currentData.some((optionData) => {
+                          return optionData.value === `${person.first_name} ${person.last_name}`
+                        })
+                      })
+                      .map((person) => {
+                        return {
+                          text: `${person.first_name} ${person.last_name}`,
+                          value: `${person.first_name} ${person.last_name}`,
+                        }
+                      })
 
                     resolve(options)
                   })

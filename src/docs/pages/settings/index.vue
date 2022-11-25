@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 
 // Components
 import AlwaysOpen from './always_open.vue'
+import Closable from './closable.vue'
 import CloseOnSelect from './close_on_select.vue'
 import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
@@ -18,7 +19,7 @@ import OpenPosition from './open_position.vue'
 import Placeholder from './placeholder.vue'
 import Search from './search.vue'
 import Select from './select.vue'
-import SelectByGroup from './select_by_group.vue'
+import SelectAll from './select_all.vue'
 import ShowTooltip from './show_tooltip.vue'
 import Styles from './styles.vue'
 
@@ -42,7 +43,8 @@ export default defineComponent({
     Search,
     CloseOnSelect,
     ShowTooltip,
-    SelectByGroup,
+    SelectAll,
+    Closable,
     HideSelected,
   },
 })
@@ -67,7 +69,8 @@ export default defineComponent({
     <Search />
     <CloseOnSelect />
     <ShowTooltip />
-    <SelectByGroup />
+    <SelectAll />
+    <Closable />
     <HideSelected />
   </div>
 </template>

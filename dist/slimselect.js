@@ -57,6 +57,8 @@
         constructor(optgroup) {
             this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id;
             this.label = optgroup.label || '';
+            this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll;
+            this.closable = optgroup.closable || 'off';
             this.options = [];
             if (optgroup.options) {
                 for (const o of optgroup.options) {
@@ -203,6 +205,14 @@
             });
             return selectedIDs;
         }
+        getOptgroupByID(id) {
+            for (let dataObj of this.data) {
+                if (dataObj instanceof Optgroup && dataObj.id === id) {
+                    return dataObj;
+                }
+            }
+            return null;
+        }
         getOptionByID(id) {
             let options = this.filter((opt) => {
                 return opt.id === id;
@@ -237,7 +247,7 @@
                             }
                         });
                         if (optOptions.length > 0) {
-                            dataSearch.push(new Optgroup({ id: dataObj.id, label: dataObj.label, options: optOptions }));
+                            dataSearch.push(new Optgroup(dataObj));
                         }
                     }
                 }
@@ -278,11 +288,18 @@
                 list: 'ss-list',
                 optgroup: 'ss-optgroup',
                 optgroupLabel: 'ss-optgroup-label',
-                optgroupSelectable: 'ss-optgroup-selectable',
+                optgroupLabelText: 'ss-optgroup-label-text',
+                optgroupActions: 'ss-optgroup-actions',
+                optgroupSelectAll: 'ss-selectall',
+                optgroupSelectAllBox: 'M60,10 L10,10 L10,90 L90,90 L90,50',
+                optgroupSelectAllCheck: 'M30,45 L50,70 L90,10',
+                optgroupClosable: 'ss-closable',
                 option: 'ss-option',
-                optionSelected: 'ss-option-selected',
                 optionDelete: 'M10,10 L90,90 M10,90 L90,10',
                 highlighted: 'ss-highlighted',
+                open: 'ss-open',
+                close: 'ss-close',
+                selected: 'ss-selected',
                 error: 'ss-error',
                 disabled: 'ss-disabled',
                 hide: 'ss-hide',
@@ -292,8 +309,6 @@
             this.callbacks = callbacks;
             this.main = this.mainDiv();
             this.content = this.contentDiv();
-            this.renderValues();
-            this.renderOptions(this.store.getData());
             this.settings.contentLocation.appendChild(this.content.main);
         }
         enable() {
@@ -806,25 +821,23 @@
             }
             for (let i = 0; i < options.length; i++) {
                 if (options[i].classList.contains(this.classes.highlighted)) {
-                    options[i].classList.remove(this.classes.highlighted);
-                    if (dir === 'down') {
-                        if (i + 1 < options.length) {
-                            options[i + 1].classList.add(this.classes.highlighted);
-                            this.ensureElementInView(this.content.list, options[i + 1]);
-                        }
-                        else {
-                            options[0].classList.add(this.classes.highlighted);
-                            this.ensureElementInView(this.content.list, options[0]);
+                    const prevOption = options[i];
+                    prevOption.classList.remove(this.classes.highlighted);
+                    const prevParent = prevOption.parentElement;
+                    if (prevParent && prevParent.classList.contains(this.classes.open)) {
+                        const optgroupLabel = prevParent.querySelector('.' + this.classes.optgroupLabel);
+                        if (optgroupLabel) {
+                            optgroupLabel.click();
                         }
                     }
-                    else {
-                        if (i - 1 >= 0) {
-                            options[i - 1].classList.add(this.classes.highlighted);
-                            this.ensureElementInView(this.content.list, options[i - 1]);
-                        }
-                        else {
-                            options[options.length - 1].classList.add(this.classes.highlighted);
-                            this.ensureElementInView(this.content.list, options[options.length - 1]);
+                    let selectOption = options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1];
+                    selectOption.classList.add(this.classes.highlighted);
+                    this.ensureElementInView(this.content.list, selectOption);
+                    const selectParent = selectOption.parentElement;
+                    if (selectParent && selectParent.classList.contains(this.classes.close)) {
+                        const optgroupLabel = selectParent.querySelector('.' + this.classes.optgroupLabel);
+                        if (optgroupLabel) {
+                            optgroupLabel.click();
                         }
                     }
                     return;
@@ -869,18 +882,95 @@
                     optgroupEl.classList.add(this.classes.optgroup);
                     const optgroupLabel = document.createElement('div');
                     optgroupLabel.classList.add(this.classes.optgroupLabel);
-                    optgroupLabel.innerHTML = d.label;
-                    if (this.settings.selectByGroup && this.settings.isMultiple) {
-                        optgroupLabel.classList.add(this.classes.optgroupSelectable);
+                    optgroupEl.appendChild(optgroupLabel);
+                    const optgroupLabelText = document.createElement('div');
+                    optgroupLabelText.classList.add(this.classes.optgroupLabelText);
+                    optgroupLabelText.textContent = d.label;
+                    optgroupLabel.appendChild(optgroupLabelText);
+                    const optgroupActions = document.createElement('div');
+                    optgroupActions.classList.add(this.classes.optgroupActions);
+                    optgroupLabel.appendChild(optgroupActions);
+                    if (this.settings.isMultiple && d.selectAll) {
+                        const selectAll = document.createElement('div');
+                        selectAll.classList.add(this.classes.optgroupSelectAll);
+                        let allSelected = true;
+                        for (const o of d.options) {
+                            if (!o.selected) {
+                                allSelected = false;
+                                break;
+                            }
+                        }
+                        if (allSelected) {
+                            selectAll.classList.add(this.classes.selected);
+                        }
+                        const selectAllText = document.createElement('span');
+                        selectAllText.textContent = 'Select All';
+                        selectAll.appendChild(selectAllText);
+                        const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        selectAllSvg.setAttribute('viewBox', '0 0 100 100');
+                        selectAll.appendChild(selectAllSvg);
+                        const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox);
+                        selectAllSvg.appendChild(selectAllBox);
+                        const selectAllCheck = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        selectAllCheck.setAttribute('d', this.classes.optgroupSelectAllCheck);
+                        selectAllSvg.appendChild(selectAllCheck);
+                        selectAll.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const currentSelected = this.store.getSelected();
+                            if (allSelected) {
+                                const newSelected = currentSelected.filter((s) => {
+                                    for (const o of d.options) {
+                                        if (s === o.value) {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                });
+                                this.callbacks.setSelected(newSelected);
+                                return;
+                            }
+                            else {
+                                const newSelected = currentSelected.concat(d.options.map((o) => o.value));
+                                this.callbacks.setSelected(newSelected);
+                            }
+                        });
+                        optgroupActions.appendChild(selectAll);
+                    }
+                    if (d.closable !== 'off') {
+                        const optgroupClosable = document.createElement('div');
+                        optgroupClosable.classList.add(this.classes.optgroupClosable);
+                        const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100');
+                        optgroupClosableSvg.classList.add(this.classes.arrow);
+                        optgroupClosable.appendChild(optgroupClosableSvg);
+                        const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        optgroupClosableArrow.setAttribute('d', this.classes.arrow);
+                        optgroupClosableSvg.appendChild(optgroupClosableArrow);
+                        if (d.closable === 'open') {
+                            optgroupEl.classList.add(this.classes.open);
+                            optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen);
+                        }
+                        else if (d.closable === 'close') {
+                            optgroupEl.classList.add(this.classes.close);
+                            optgroupClosableArrow.setAttribute('d', this.classes.arrowClose);
+                        }
                         optgroupLabel.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            for (const childEl of optgroupEl.children) {
-                                if (childEl.className.indexOf(this.classes.option) !== -1) {
-                                    childEl.click();
-                                }
+                            if (optgroupEl.classList.contains(this.classes.close)) {
+                                optgroupEl.classList.remove(this.classes.close);
+                                optgroupEl.classList.add(this.classes.open);
+                                optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen);
+                            }
+                            else {
+                                optgroupEl.classList.remove(this.classes.open);
+                                optgroupEl.classList.add(this.classes.close);
+                                optgroupClosableArrow.setAttribute('d', this.classes.arrowClose);
                             }
                         });
+                        optgroupActions.appendChild(optgroupClosable);
                     }
                     optgroupEl.appendChild(optgroupLabel);
                     for (const o of d.options) {
@@ -932,10 +1022,10 @@
                 optionEl.classList.add(this.classes.hide);
             }
             if (option.selected) {
-                optionEl.classList.add(this.classes.optionSelected);
+                optionEl.classList.add(this.classes.selected);
             }
             else {
-                optionEl.classList.remove(this.classes.optionSelected);
+                optionEl.classList.remove(this.classes.selected);
             }
             optionEl.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1157,8 +1247,10 @@
         }
         getDataFromOptgroup(optgroup) {
             let data = {
-                id: '',
+                id: (optgroup.dataset ? optgroup.dataset.id : false) || '',
                 label: optgroup.label,
+                selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
+                closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
                 options: [],
             };
             const options = optgroup.childNodes;
@@ -1168,6 +1260,22 @@
                 }
             }
             return data;
+        }
+        getDataFromOption(option) {
+            return {
+                id: (option.dataset ? option.dataset.id : false) || '',
+                value: option.value,
+                text: option.text,
+                html: option.innerHTML,
+                selected: option.selected,
+                display: option.style.display === 'none' ? false : true,
+                disabled: option.disabled,
+                mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
+                placeholder: option.dataset.placeholder === 'true',
+                class: option.className,
+                style: option.style.cssText,
+                data: option.dataset,
+            };
         }
         getSelectedValues() {
             let values = [];
@@ -1192,22 +1300,6 @@
                 }
             }
             return values;
-        }
-        getDataFromOption(option) {
-            return {
-                id: (option.dataset ? option.dataset.id : false) || generateID(),
-                value: option.value,
-                text: option.text,
-                html: option.innerHTML,
-                selected: option.selected,
-                display: option.style.display === 'none' ? false : true,
-                disabled: option.disabled,
-                mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
-                placeholder: option.dataset.placeholder === 'true',
-                class: option.className,
-                style: option.style.cssText,
-                data: option.dataset,
-            };
         }
         setSelected(value) {
             const options = this.select.childNodes;
@@ -1263,6 +1355,12 @@
             const optgroupEl = document.createElement('optgroup');
             optgroupEl.id = optgroup.id;
             optgroupEl.label = optgroup.label;
+            if (optgroup.selectAll) {
+                optgroupEl.dataset.selectAll = 'true';
+            }
+            if (optgroup.closable !== 'off') {
+                optgroupEl.dataset.closable = optgroup.closable;
+            }
             if (optgroup.options) {
                 for (const o of optgroup.options) {
                     optgroupEl.appendChild(this.createOption(o));
@@ -1319,8 +1417,6 @@
             this.isOpen = false;
             this.triggerFocus = true;
             this.intervalMove = null;
-            this.mainHeight = 30;
-            this.contentHeight = 0;
             if (!settings) {
                 settings = {};
             }
@@ -1342,7 +1438,6 @@
             this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
             this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
             this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
-            this.selectByGroup = settings.selectByGroup !== undefined ? settings.selectByGroup : false;
             this.minSelected = settings.minSelected || 0;
             this.maxSelected = settings.maxSelected || 1000;
             this.timeoutDelay = settings.timeoutDelay || 200;
@@ -1449,6 +1544,8 @@
                 afterChange: this.events.afterChange,
             };
             this.render = new Render(this.settings, this.store, callbacks);
+            this.render.renderValues();
+            this.render.renderOptions(this.store.getData());
             if (this.selectEl.parentNode) {
                 this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling);
             }

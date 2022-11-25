@@ -7,6 +7,7 @@
   --ss-disabled-color: #8a8a8a;
   --ss-border-color: #dcdee2;
   --ss-highlight-color: #fffb8c;
+  --ss-success-color: #00b755;
   --ss-error-color: #dc3545;
 
   // Heights
@@ -334,9 +335,117 @@
     }
 
     .ss-optgroup {
+      // If optgroup is open, show the options
+      &.ss-open {
+        .ss-option {
+        }
+      }
+
+      // If optgroup has close, hide all options
+      &.ss-close {
+        .ss-option {
+          display: none !important;
+        }
+      }
+
       .ss-optgroup-label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
-        font-weight: bold;
+
+        .ss-optgroup-label-text {
+          flex: 1 1 auto;
+          font-weight: bold;
+          color: var(--ss-font-color);
+        }
+
+        // If optgroup has arrow, make label clickable
+        &:has(.ss-arrow) {
+          cursor: pointer;
+        }
+
+        .ss-optgroup-actions {
+          flex: 0 1 auto;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: var(--ss-spacing-m);
+
+          .ss-selectall {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+
+            &:hover {
+              opacity: 0.5;
+            }
+
+            &.ss-selected {
+              svg {
+                path {
+                  stroke: var(--ss-error-color);
+                }
+              }
+            }
+
+            span {
+              flex: 0 1 auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: calc(100% * 0.6);
+              text-align: center;
+              padding: 0 var(--ss-spacing-s) 0 0;
+            }
+
+            svg {
+              flex: 0 1 auto;
+              width: 13px;
+              height: 13px;
+
+              path {
+                fill: none;
+                stroke: var(--ss-success-color);
+                stroke-linecap: round;
+                stroke-linejoin: round;
+              }
+
+              &:first-child {
+                stroke-width: 5;
+              }
+              &:last-child {
+                stroke-width: 11;
+              }
+            }
+          }
+
+          .ss-closable {
+            flex: 0 1 auto;
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+
+            .ss-arrow {
+              flex: 1 1 auto;
+              width: 10px;
+              height: 10px;
+
+              path {
+                fill: none;
+                stroke: var(--ss-font-color);
+                stroke-width: 18;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                transition-timing-function: ease-out;
+                transition: var(--ss-animation-timing);
+              }
+            }
+          }
+        }
       }
 
       .ss-option {
@@ -344,16 +453,8 @@
       }
     }
 
-    .ss-optgroup-selectable {
-      cursor: pointer;
-
-      &:hover {
-        color: var(--ss-bg-color);
-        background-color: var(--ss-primary-color);
-      }
-    }
-
     .ss-option {
+      display: flex;
       padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
       cursor: pointer;
       user-select: none;
@@ -370,7 +471,7 @@
         background-color: var(--ss-bg-color);
       }
 
-      &:not(.ss-disabled).ss-option-selected {
+      &:not(.ss-disabled).ss-selected {
         color: var(--ss-font-color);
         background-color: var(--ss-highlight-color);
       }

@@ -11,17 +11,23 @@ type selectType = 'single' | 'multiple'
 export interface OptgroupOptional {
   id?: string
   label: string // Required
+  selectAll?: boolean
+  closable?: 'off' | 'open' | 'close'
   options?: OptionOptional[]
 }
 
 export class Optgroup {
   public id: string
   public label: string
+  public selectAll: boolean
+  public closable: 'off' | 'open' | 'close'
   public options: Option[]
 
   constructor(optgroup: OptgroupOptional) {
     this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id
     this.label = optgroup.label || ''
+    this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll
+    this.closable = optgroup.closable || 'off'
 
     // If options exist, loop through options and create new option class
     // and set the options to the optgroup options field
@@ -255,6 +261,18 @@ export default class Store {
     return selectedIDs
   }
 
+  public getOptgroupByID(id: string): Optgroup | null {
+    // Loop through each data object
+    // and if optgroup is found, return it
+    for (let dataObj of this.data) {
+      if (dataObj instanceof Optgroup && dataObj.id === id) {
+        return dataObj
+      }
+    }
+
+    return null
+  }
+
   public getOptionByID(id: string): Option | null {
     let options = this.filter((opt: Option) => {
       return opt.id === id
@@ -302,7 +320,7 @@ export default class Store {
           })
 
           if (optOptions.length > 0) {
-            dataSearch.push(new Optgroup({ id: dataObj.id, label: dataObj.label, options: optOptions }))
+            dataSearch.push(new Optgroup(dataObj))
           }
         }
       }

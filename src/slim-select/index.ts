@@ -92,7 +92,7 @@ export default class SlimSelect {
     this.select.hideUI() // Hide the original select element
 
     // Add select listeners
-    this.select.addSelectChangeListener((data: DataArray) => {
+    this.select.addSelectChangeListener((data: DataArrayPartial) => {
       // Run set data from the values given
       this.setData(data)
     })
@@ -126,6 +126,8 @@ export default class SlimSelect {
 
     // Setup render class
     this.render = new Render(this.settings, this.store, callbacks)
+    this.render.renderValues()
+    this.render.renderOptions(this.store.getData())
 
     // Add render after original select element
     if (this.selectEl.parentNode) {
