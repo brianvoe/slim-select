@@ -49,6 +49,8 @@ export default defineComponent({
         <code class="language-javascript">
           var optgroup = {
             label: 'label', // Required
+            selectAll: false, // Optional - default false
+            closabel: 'off', // Optional - default 'off' - 'off', 'open', 'close'
             options: [] // Required - value is an array of options
           }
 
@@ -57,7 +59,9 @@ export default defineComponent({
             value: 'value', // Optional - value will be set by text if not set
             html: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
             selected: false, // Optional - default is false
+            display: true, // Optional - default is true
             disabled: false, // Optional - default is false
+            mandatory: false, // Optional - default is false
             placeholder: false, // Optional - default is false
             class: '', // Optional - default is not set
             style: '', // Optional - default is not set
