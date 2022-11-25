@@ -1,0 +1,13 @@
+node_modules/
+.vscode/
+.github/
+
+coverage/
+
+docs/
+src/docs/
+
+public/
+
+/slimselect.gif
+/*.tgz
