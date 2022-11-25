@@ -4,6 +4,7 @@ import { defineComponent } from 'vue'
 import SlimSelect from '../slim-select'
 import Settings from '../slim-select/settings'
 import { debounce } from '../slim-select/helpers'
+import { DataArray } from '../slim-select/store'
 
 export default defineComponent({
   name: 'App',
@@ -21,68 +22,101 @@ export default defineComponent({
         { text: 'Home', value: '/', class: 'label' },
 
         // Install
-        { text: 'Install', value: 'install', class: 'label' },
-        { text: 'npm', value: 'install#npm', class: 'mar-l-l' },
-        { text: 'cdn', value: 'install#cdn', class: 'mar-l-l' },
-        { text: 'download', value: 'install#download', class: 'mar-l-l' },
+        {
+          label: 'Install',
+          closable: 'close',
+          options: [
+            { text: 'npm', value: 'install#npm' },
+            { text: 'cdn', value: 'install#cdn' },
+            { text: 'download', value: 'install#download' },
+          ],
+        },
 
         // Select
-        { text: 'Selects', value: 'selects', class: 'label' },
-        { text: 'single', value: 'selects#single', class: 'mar-l-l' },
-        { text: 'multiple', value: 'selects#multiple', class: 'mar-l-l' },
+        {
+          label: 'Selects',
+          closable: 'close',
+          options: [
+            { text: 'single', value: 'selects#single' },
+            { text: 'multiple', value: 'selects#multiple' },
+          ],
+        },
 
         // Data
-        { text: 'Data', value: 'data', class: 'label' },
-        { text: 'types', value: 'data#types', class: 'mar-l-l' },
-        { text: 'field', value: 'data#field', class: 'mar-l-l' },
+        {
+          label: 'Data',
+          closable: 'close',
+          options: [
+            { text: 'types', value: 'data#types' },
+            { text: 'field', value: 'data#field' },
+          ],
+        },
 
         // Settings
-        { text: 'Settings', value: 'settings', class: 'label' },
-        { text: 'select', value: 'settings#select', class: 'mar-l-l' },
-        { text: 'alwaysOpen', value: 'settings#alwaysOpen', class: 'mar-l-l' },
-        { text: 'contentLocation', value: 'settings#contentLocation', class: 'mar-l-l' },
-        { text: 'contentPosition', value: 'settings#contentPosition', class: 'mar-l-l' },
-        { text: 'openPosition', value: 'settings#openPosition', class: 'mar-l-l' },
-        { text: 'placeholder', value: 'settings#placeholder', class: 'mar-l-l' },
-        { text: 'allowDeselect', value: 'settings#allowDeselect', class: 'mar-l-l' },
-        { text: 'display', value: 'settings#display', class: 'mar-l-l' },
-        { text: 'mandatory', value: 'settings#mandatory', class: 'mar-l-l' },
-        { text: 'minmax', value: 'settings#minmax', class: 'mar-l-l' },
-        { text: 'dataAttributes', value: 'settings#dataAttributes', class: 'mar-l-l' },
-        { text: 'cssClass', value: 'settings#cssClass', class: 'mar-l-l' },
-        { text: 'inlineStyles', value: 'settings#inlineStyles', class: 'mar-l-l' },
-        { text: 'html', value: 'settings#html', class: 'mar-l-l' },
-        { text: 'search', value: 'settings#search', class: 'mar-l-l' },
-        { text: 'closeOnSelect', value: 'settings#closeOnSelect', class: 'mar-l-l' },
-        { text: 'showOptionTooltips', value: 'settings#showOptionTooltips', class: 'mar-l-l' },
-        { text: 'selectAll', value: 'settings#selectAll', class: 'mar-l-l' },
-        { text: 'closable', value: 'settings#closable', class: 'mar-l-l' },
-        { text: 'hideSelected', value: 'settings#hideSelected', class: 'mar-l-l' },
+        {
+          label: 'Settings',
+          closable: 'close',
+          options: [
+            { text: 'select', value: 'settings#select' },
+            { text: 'alwaysOpen', value: 'settings#alwaysOpen' },
+            { text: 'contentLocation', value: 'settings#contentLocation' },
+            { text: 'contentPosition', value: 'settings#contentPosition' },
+            { text: 'openPosition', value: 'settings#openPosition' },
+            { text: 'placeholder', value: 'settings#placeholder' },
+            { text: 'allowDeselect', value: 'settings#allowDeselect' },
+            { text: 'display', value: 'settings#display' },
+            { text: 'mandatory', value: 'settings#mandatory' },
+            { text: 'minmax', value: 'settings#minmax' },
+            { text: 'dataAttributes', value: 'settings#dataAttributes' },
+            { text: 'cssClass', value: 'settings#cssClass' },
+            { text: 'inlineStyles', value: 'settings#inlineStyles' },
+            { text: 'html', value: 'settings#html' },
+            { text: 'search', value: 'settings#search' },
+            { text: 'closeOnSelect', value: 'settings#closeOnSelect' },
+            { text: 'showOptionTooltips', value: 'settings#showOptionTooltips' },
+            { text: 'selectAll', value: 'settings#selectAll' },
+            { text: 'closable', value: 'settings#closable' },
+            { text: 'hideSelected', value: 'settings#hideSelected' },
+          ],
+        },
 
         // Events
-        { text: 'Events', value: 'events', class: 'label' },
-        { text: 'error', value: 'events#error', class: 'mar-l-l' },
-        { text: 'beforeChange', value: 'events#beforeChange', class: 'mar-l-l' },
-        { text: 'afterChange', value: 'events#afterChange', class: 'mar-l-l' },
-        { text: 'open', value: 'events#open', class: 'mar-l-l' },
-        { text: 'search', value: 'events#search', class: 'mar-l-l' },
-        { text: 'searchFilter', value: 'events#searchFilter', class: 'mar-l-l' },
-        { text: 'addable', value: 'events#addable', class: 'mar-l-l' },
+        {
+          label: 'Events',
+          closable: 'close',
+          options: [
+            { text: 'error', value: 'events#error' },
+            { text: 'beforeChange', value: 'events#beforeChange' },
+            { text: 'afterChange', value: 'events#afterChange' },
+            { text: 'open', value: 'events#open' },
+            { text: 'search', value: 'events#search' },
+            { text: 'searchFilter', value: 'events#searchFilter' },
+            { text: 'addable', value: 'events#addable' },
+          ],
+        },
 
         // Methods
-        { text: 'Methods', value: 'methods', class: 'label' },
-        { text: 'getSelected', value: 'methods#getSelected', class: 'mar-l-l' },
-        { text: 'setSelected', value: 'methods#setSelected', class: 'mar-l-l' },
-        { text: 'getData', value: 'methods#getData', class: 'mar-l-l' },
-        { text: 'setData', value: 'methods#setData', class: 'mar-l-l' },
-        { text: 'enableDisable', value: 'methods#enableDisable', class: 'mar-l-l' },
-        { text: 'search', value: 'methods#search', class: 'mar-l-l' },
-        { text: 'destroy', value: 'methods#destroy', class: 'mar-l-l' },
+        {
+          label: 'Methods',
+          closable: 'close',
+          options: [
+            { text: 'getSelected', value: 'methods#getSelected' },
+            { text: 'setSelected', value: 'methods#setSelected' },
+            { text: 'getData', value: 'methods#getData' },
+            { text: 'setData', value: 'methods#setData' },
+            { text: 'enableDisable', value: 'methods#enableDisable' },
+            { text: 'search', value: 'methods#search' },
+            { text: 'destroy', value: 'methods#destroy' },
+          ],
+        },
 
         // Frameworks
-        { text: 'Frameworks', value: 'frameworks', class: 'label' },
-        { text: 'vue', value: 'frameworks#vue', class: 'mar-l-l' },
-      ],
+        {
+          label: 'Frameworks',
+          closable: 'close',
+          options: [{ text: 'vue', value: 'frameworks#vue' }],
+        },
+      ] as DataArray,
     }
   },
   mounted() {

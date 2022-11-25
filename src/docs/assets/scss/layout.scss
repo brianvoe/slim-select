@@ -156,7 +156,7 @@ body {
       top: calc(var(--height-header) + var(--spacing-half));
       width: var(--width-nav);
       max-width: var(--width-max);
-      height: calc(100vh - var(--height-header) - var(--spacing));
+      max-height: calc(100vh - var(--height-header) - var(--spacing));
       overflow: hidden;
       z-index: 100000;
 
