@@ -100,11 +100,7 @@ export default class Render {
     optgroupSelectAll: 'ss-selectall', // optgroup select all
     optgroupSelectAllBox: 'M60,10 L10,10 L10,90 L90,90 L90,50', // Not a class but whatever
     optgroupSelectAllCheck: 'M30,45 L50,70 L90,10', // Not a class but whatever
-    optgroupClosable: 'ss-optgroup-closable',
-    optgroupOpen: 'ss-optgroup-open',
-    optgroupOpenPath: 'M10,30 L50,70 L90,30', // Not a class but whatever
-    optgroupClose: 'ss-optgroup-close',
-    optgroupClosePath: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
+    optgroupClosable: 'ss-closable',
 
     // Option
     option: 'ss-option',
@@ -112,6 +108,8 @@ export default class Render {
     highlighted: 'ss-highlighted',
 
     // Misc
+    open: 'ss-open',
+    close: 'ss-close',
     selected: 'ss-selected',
     error: 'ss-error',
     disabled: 'ss-disabled',
@@ -833,25 +831,31 @@ export default class Render {
     // Loop through options and find the highlighted one
     for (let i = 0; i < options.length; i++) {
       if (options[i].classList.contains(this.classes.highlighted)) {
+        const prevOption = options[i]
         // Remove highlighted class from current one
-        options[i].classList.remove(this.classes.highlighted)
+        prevOption.classList.remove(this.classes.highlighted)
+
+        // If previous option has parent classes ss-optgroup with ss-open then click it
+        const prevParent = prevOption.parentElement
+        if (prevParent && prevParent.classList.contains(this.classes.open)) {
+          const optgroupLabel = prevParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
+          if (optgroupLabel) {
+            optgroupLabel.click()
+          }
+        }
 
         // Highlight the next one
-        if (dir === 'down') {
-          if (i + 1 < options.length) {
-            options[i + 1].classList.add(this.classes.highlighted)
-            this.ensureElementInView(this.content.list, options[i + 1])
-          } else {
-            options[0].classList.add(this.classes.highlighted)
-            this.ensureElementInView(this.content.list, options[0])
-          }
-        } else {
-          if (i - 1 >= 0) {
-            options[i - 1].classList.add(this.classes.highlighted)
-            this.ensureElementInView(this.content.list, options[i - 1])
-          } else {
-            options[options.length - 1].classList.add(this.classes.highlighted)
-            this.ensureElementInView(this.content.list, options[options.length - 1])
+        let selectOption =
+          options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1]
+        selectOption.classList.add(this.classes.highlighted)
+        this.ensureElementInView(this.content.list, selectOption)
+
+        // If selected option has parent classes ss-optgroup with ss-close then click it
+        const selectParent = selectOption.parentElement
+        if (selectParent && selectParent.classList.contains(this.classes.close)) {
+          const optgroupLabel = selectParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
+          if (optgroupLabel) {
+            optgroupLabel.click()
           }
         }
 
@@ -1017,21 +1021,40 @@ export default class Render {
           const optgroupClosable = document.createElement('div')
           optgroupClosable.classList.add(this.classes.optgroupClosable)
 
+          // Create svg arrow
+          const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+          optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100')
+          optgroupClosableSvg.classList.add(this.classes.arrow)
+          optgroupClosable.appendChild(optgroupClosableSvg)
+
+          // Create new path for arrow
+          const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          optgroupClosableArrow.setAttribute('d', this.classes.arrow)
+          optgroupClosableSvg.appendChild(optgroupClosableArrow)
+
           // Add primary open or close class to optgroupEl
-          optgroupEl.classList.add(d.closable === 'open' ? this.classes.optgroupOpen : this.classes.optgroupClose)
+          if (d.closable === 'open') {
+            optgroupEl.classList.add(this.classes.open)
+            optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
+          } else if (d.closable === 'close') {
+            optgroupEl.classList.add(this.classes.close)
+            optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
+          }
 
           // Add click event listener to close
-          optgroupClosable.addEventListener('click', (e: MouseEvent) => {
+          optgroupLabel.addEventListener('click', (e: MouseEvent) => {
             e.preventDefault()
             e.stopPropagation()
 
             // If optgroup is closed, open it
-            if (optgroupEl.classList.contains(this.classes.optgroupClose)) {
-              optgroupEl.classList.remove(this.classes.optgroupClose)
-              optgroupEl.classList.add(this.classes.optgroupOpen)
+            if (optgroupEl.classList.contains(this.classes.close)) {
+              optgroupEl.classList.remove(this.classes.close)
+              optgroupEl.classList.add(this.classes.open)
+              optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
             } else {
-              optgroupEl.classList.remove(this.classes.optgroupOpen)
-              optgroupEl.classList.add(this.classes.optgroupClose)
+              optgroupEl.classList.remove(this.classes.open)
+              optgroupEl.classList.add(this.classes.close)
+              optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
             }
           })
 

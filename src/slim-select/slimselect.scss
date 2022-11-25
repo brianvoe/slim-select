@@ -361,13 +361,18 @@
           color: var(--ss-font-color);
         }
 
+        // If optgroup has arrow, make label clickable
+        &:has(.ss-arrow) {
+          cursor: pointer;
+        }
+
         .ss-optgroup-actions {
           flex: 0 1 auto;
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: center;
-          gap: var(--ss-spacing-s);
+          gap: var(--ss-spacing-m);
 
           .ss-selectall {
             flex: 0 0 auto;
@@ -392,15 +397,15 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              font-size: calc(100% * 0.8);
+              font-size: calc(100% * 0.6);
               text-align: center;
+              padding: 0 var(--ss-spacing-s) 0 0;
             }
 
             svg {
               flex: 0 1 auto;
               width: 13px;
               height: 13px;
-              margin: auto var(--ss-spacing-m) auto var(--ss-spacing-m);
 
               path {
                 fill: none;
@@ -419,11 +424,25 @@
           }
 
           .ss-closable {
+            flex: 0 1 auto;
+            display: flex;
+            flex-direction: row;
             cursor: pointer;
 
-            &:hover {
-              color: var(--ss-bg-color);
-              background-color: var(--ss-primary-color);
+            .ss-arrow {
+              flex: 1 1 auto;
+              width: 10px;
+              height: 10px;
+
+              path {
+                fill: none;
+                stroke: var(--ss-font-color);
+                stroke-width: 18;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                transition-timing-function: ease-out;
+                transition: var(--ss-animation-timing);
+              }
             }
           }
         }
@@ -435,6 +454,7 @@
     }
 
     .ss-option {
+      display: flex;
       padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
       cursor: pointer;
       user-select: none;
