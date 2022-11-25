@@ -21,7 +21,7 @@ export default defineComponent({
       or false. If set to true, a select all option will be added to the top of the selected values. If set to false or
       not set at all, no select all action will be added to the optgroup.
     </p>
-    <div class="alert info">You can set selectAll either by data or by html dataset add to the optgroup element</div>
+    <div class="alert info">You can set selectAll either by data or by html dataset added to the optgroup element</div>
 
     <select ref="selectAll" multiple>
       <optgroup label="Label 1" data-selectall="true">
