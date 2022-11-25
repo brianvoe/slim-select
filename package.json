@@ -40,7 +40,6 @@
     "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
     "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
     "build:frameworks": "npm run build --workspaces",
-    "publish": "npm publish && npm publish --workspace=src/vue --access public",
     "test": "jest"
   },
   "devDependencies": {
