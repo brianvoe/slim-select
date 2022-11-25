@@ -945,7 +945,11 @@ var SlimSelect = (function () {
                         const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                         optgroupClosableArrow.setAttribute('d', this.classes.arrow);
                         optgroupClosableSvg.appendChild(optgroupClosableArrow);
-                        if (d.closable === 'open') {
+                        if (d.options.some((o) => o.selected)) {
+                            optgroupClosable.classList.add(this.classes.open);
+                            optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen);
+                        }
+                        else if (d.closable === 'open') {
                             optgroupEl.classList.add(this.classes.open);
                             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen);
                         }
