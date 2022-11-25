@@ -6,11 +6,15 @@ type selectType = 'single' | 'multiple';
 export interface OptgroupOptional {
     id?: string;
     label: string;
+    selectAll?: boolean;
+    closable?: 'off' | 'open' | 'close';
     options?: OptionOptional[];
 }
 export declare class Optgroup {
     id: string;
     label: string;
+    selectAll: boolean;
+    closable: 'off' | 'open' | 'close';
     options: Option[];
     constructor(optgroup: OptgroupOptional);
 }
@@ -62,6 +66,7 @@ export default class Store {
     getSelected(): string[];
     getSelectedOptions(): Option[];
     getSelectedIDs(): string[];
+    getOptgroupByID(id: string): Optgroup | null;
     getOptionByID(id: string): Option | null;
     search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray;
     filter(filter: {

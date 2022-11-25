@@ -8,8 +8,6 @@ export default class Settings {
     isOpen: boolean;
     triggerFocus: boolean;
     intervalMove: NodeJS.Timeout | null;
-    mainHeight: number;
-    contentHeight: number;
     isEnabled: boolean;
     alwaysOpen: boolean;
     showSearch: boolean;
@@ -25,7 +23,6 @@ export default class Settings {
     allowDeselect: boolean;
     hideSelected: boolean;
     showOptionTooltips: boolean;
-    selectByGroup: boolean;
     minSelected: number;
     maxSelected: number;
     timeoutDelay: number;
