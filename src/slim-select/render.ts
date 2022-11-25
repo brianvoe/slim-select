@@ -1032,8 +1032,11 @@ export default class Render {
           optgroupClosableArrow.setAttribute('d', this.classes.arrow)
           optgroupClosableSvg.appendChild(optgroupClosableArrow)
 
-          // Add primary open or close class to optgroupEl
-          if (d.closable === 'open') {
+          // If any options are selected, set optgroup to open
+          if (d.options.some((o) => o.selected)) {
+            optgroupClosable.classList.add(this.classes.open)
+            optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
+          } else if (d.closable === 'open') {
             optgroupEl.classList.add(this.classes.open)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'close') {
