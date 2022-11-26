@@ -11,7 +11,7 @@ export default [
       file: './dist/slimselectvue.es.js',
     },
     external: ['vue', 'slim-select'],
-    plugins: [resolve(), typescript(), vue()],
+    plugins: [resolve(), typescript({ clean: true }), vue()],
   },
 
   // SSR build.
@@ -23,7 +23,7 @@ export default [
       file: './dist/slimselectvue.ssr.js',
     },
     external: ['vue', 'slim-select'],
-    plugins: [resolve(), typescript(), vue({ template: { optimizeSSR: true } })],
+    plugins: [resolve(), typescript({ clean: true }), vue({ template: { optimizeSSR: true } })],
   },
 
   // Browser build.
@@ -39,6 +39,6 @@ export default [
       },
     },
     external: ['vue', 'slim-select'],
-    plugins: [resolve(), typescript(), vue()],
+    plugins: [resolve(), typescript({ clean: true }), vue()],
   },
 ]
