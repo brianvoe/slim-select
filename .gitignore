@@ -9,3 +9,5 @@ coverage
 
 # Log files
 npm-debug.log*
+
+*.tgz
