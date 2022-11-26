@@ -1029,7 +1029,6 @@ export default class Render {
 
           // Create new path for arrow
           const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-          optgroupClosableArrow.setAttribute('d', this.classes.arrow)
           optgroupClosableSvg.appendChild(optgroupClosableArrow)
 
           // If any options are selected, set optgroup to open
