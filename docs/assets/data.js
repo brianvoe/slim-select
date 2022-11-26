@@ -2,7 +2,7 @@ import{d as n,S as a,_ as l,o,c as s,a as e,f as t}from"./index.js";const i=n({n
           var optgroup = {
             label: 'label', // Required
             selectAll: false, // Optional - default false
-            closabel: 'off', // Optional - default 'off' - 'off', 'open', 'close'
+            closable: 'off', // Optional - default 'off' - 'off', 'open', 'close'
             options: [] // Required - value is an array of options
           }
 

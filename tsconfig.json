@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist",
     "declaration": true,
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -12,7 +15,11 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "importHelpers": true,
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "slim-select": ["src/slim-select"],
+      "@slim-select/vue": ["src/vue"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["dist/", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"]
 }
