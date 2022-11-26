@@ -1,7 +1,7 @@
 {
   "name": "@slim-select/vue",
   "private": false,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Vue integration",
   "repository": {
     "type": "git",
@@ -19,8 +19,7 @@
   "main": "dist/slimselectvue.ssr.js",
   "browser": "dist/slimselect.global.js",
   "module": "dist/slimselectvue.es.js",
-  "types": "dist/index.d.ts",
-  "typings": "dist/index.d.ts",
+  "types": "dist/vue/slimselect.vue.d.ts",
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"

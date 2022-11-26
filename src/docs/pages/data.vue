@@ -50,7 +50,7 @@ export default defineComponent({
           var optgroup = {
             label: 'label', // Required
             selectAll: false, // Optional - default false
-            closabel: 'off', // Optional - default 'off' - 'off', 'open', 'close'
+            closable: 'off', // Optional - default 'off' - 'off', 'open', 'close'
             options: [] // Required - value is an array of options
           }
 
