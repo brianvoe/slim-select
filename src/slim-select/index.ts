@@ -1,8 +1,8 @@
-import { debounce, hasClassInTree } from './helpers'
+import Settings, { SettingsPartial } from './settings'
 import Render from './render'
 import Select from './select'
-import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
+import { debounce, hasClassInTree, isEqual } from './helpers'
 
 export interface Config {
   select: string | Element
@@ -181,6 +181,9 @@ export default class SlimSelect {
   }
 
   public setData(data: DataArrayPartial): void {
+    // Get original selected values
+    const selected = this.store.getSelected()
+
     // Validate data
     const err = this.store.validateDataArray(data)
     if (err) {
@@ -200,6 +203,11 @@ export default class SlimSelect {
     // Update the render
     this.render.renderValues()
     this.render.renderOptions(dataClean)
+
+    // Trigger afterChange event, if it doesnt equal the original selected values
+    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+      this.events.afterChange(this.store.getSelectedOptions())
+    }
   }
 
   public getSelected(): string[] {
@@ -207,6 +215,9 @@ export default class SlimSelect {
   }
 
   public setSelected(value: string | string[]): void {
+    // Get original selected values
+    const selected = this.store.getSelected()
+
     // Update the store
     this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
     const data = this.store.getData()
@@ -217,9 +228,17 @@ export default class SlimSelect {
     // Update the render
     this.render.renderValues()
     this.render.renderOptions(data)
+
+    // Trigger afterChange event, if it doesnt equal the original selected values
+    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+      this.events.afterChange(this.store.getSelectedOptions())
+    }
   }
 
   public addOption(option: OptionOptional): void {
+    // Get original selected values
+    const selected = this.store.getSelected()
+
     // Add option to store
     this.store.addOption(option)
     const data = this.store.getData()
@@ -230,6 +249,11 @@ export default class SlimSelect {
     // Update the render
     this.render.renderValues()
     this.render.renderOptions(data)
+
+    // Trigger afterChange event, if it doesnt equal the original selected values
+    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+      this.events.afterChange(this.store.getSelectedOptions())
+    }
   }
 
   public open(): void {

@@ -70,7 +70,10 @@ export default class Select {
 
   public addValueChangeListener(func: (value: string[]) => void): void {
     this.onValueChange = func
-    this.select.addEventListener('change', this.valueChange.bind(this))
+    this.select.addEventListener('change', this.valueChange.bind(this), {
+      // allow bubbling of event
+      passive: true,
+    })
   }
 
   public removeValueChangeListener(): void {
@@ -78,10 +81,13 @@ export default class Select {
     this.select.removeEventListener('change', this.valueChange.bind(this))
   }
 
-  public valueChange(ev: Event): any {
-    if (this.onValueChange) {
+  public valueChange(ev: Event): boolean {
+    if (this.listen && this.onValueChange) {
       this.onValueChange(this.getSelectedValues())
     }
+
+    // Allow bubbling back to other change event listeners
+    return true
   }
 
   private observeWrapper(mutations: MutationRecord[]): void {
@@ -281,6 +287,9 @@ export default class Select {
         this.select.appendChild(this.createOption(d))
       }
     }
+
+    // Trigger change event on original select
+    this.select.dispatchEvent(new Event('change'))
 
     // Start listening to changes
     this.changeListen(true)

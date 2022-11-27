@@ -24,6 +24,13 @@ export default defineComponent({
   },
   data() {
     return {
+      // v-model data for some selects
+      simpleSingle: '',
+      simpleMultiple: [] as string[],
+      dynamicSingle: '',
+      dynamicMultiple: [] as string[],
+
+      // Misc
       settings: {
         showSearch: false,
       } as Settings,
@@ -41,9 +48,12 @@ export default defineComponent({
   },
   mounted() {
     // Show the original select for debugging
-    // const randomComponent = this.$refs.randomDynamic as any
-    // const randomSlim = randomComponent.getSlimSelect()
-    // randomSlim.select.showUI()
+    // const compSingle = this.$refs.simpleSingle as any
+    // const slimSingle = compSingle.getSlimSelect()
+    // slimSingle.select.showUI()
+    // const compMultiple = this.$refs.simpleMultiple as any
+    // const slimMultiple = compMultiple.getSlimSelect()
+    // slimMultiple.select.showUI()
   },
   methods: {
     changeData() {
@@ -117,7 +127,10 @@ export default defineComponent({
     <h2 class="header">Vue</h2>
 
     <h3>Install</h3>
-    <p>The vue component is in a sub package under SlimSelect</p>
+    <p>
+      The vue component is in a sub package under SlimSelect. All functionality still work in the implementation. I have
+      also added a v-model bind capability to it as well.
+    </p>
     <pre>
       <code class="language-bash">
         npm install @slim-select/vue
@@ -127,17 +140,23 @@ export default defineComponent({
 
     <h3>Simple example</h3>
     <div class="row">
-      <SlimSelect>
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <div>
+        <div><strong>Value</strong> {{ simpleSingle }}</div>
+        <SlimSelect v-model="simpleSingle" ref="simpleSingle">
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+        </SlimSelect>
+      </div>
 
-      <SlimSelect multiple>
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <div>
+        <div><strong>Value</strong> {{ simpleMultiple }}</div>
+        <SlimSelect v-model="simpleMultiple" ref="simpleMultiple" multiple>
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+        </SlimSelect>
+      </div>
     </div>
 
     <pre>
@@ -149,19 +168,25 @@ export default defineComponent({
           components: {
             SlimSelect,
           },
+          data() {
+            return {
+              single: '',
+              multiple: []
+            }
+          }
         })
       </code>
     </pre>
 
     <pre>
       <code class="language-html">
-        &lt;SlimSelect&gt;
+        &lt;SlimSelect v-model="single"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
         &lt;/SlimSelect&gt;
 
-        &lt;SlimSelect multiple&gt;
+        &lt;SlimSelect v-model="multiple" multiple&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
@@ -356,13 +381,19 @@ export default defineComponent({
 
     <div class="row">
       <div class="btn info" @click="randomDynamicData">Change data</div>
-      <SlimSelect ref="randomDynamic">
-        <option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected">{{ d.text }}</option>
-      </SlimSelect>
+      <div>
+        <div><strong>Value:</strong> {{ dynamicSingle }}</div>
+        <SlimSelect v-model="dynamicSingle">
+          <option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected">{{ d.text }}</option>
+        </SlimSelect>
+      </div>
 
-      <SlimSelect multiple>
-        <option v-for="d in dynamicData" :value="d.value" :selected="d.selected">{{ d.text }}</option>
-      </SlimSelect>
+      <div>
+        <div><strong>Value:</strong> {{ dynamicMultiple }}</div>
+        <SlimSelect v-model="dynamicMultiple" multiple>
+          <option v-for="d in dynamicData" :value="d.value" :selected="d.selected">{{ d.text }}</option>
+        </SlimSelect>
+      </div>
     </div>
 
     <pre>
@@ -376,6 +407,8 @@ export default defineComponent({
           },
           data() {
             return {
+              singleValue: '',
+              mutipleValue: [],
               dynamicData: []
             }
           },
@@ -394,11 +427,11 @@ export default defineComponent({
 
     <pre>
       <code class="language-html">
-        &lt;SlimSelect :events="events"&gt;
+        &lt;SlimSelect v-model="singleValue"&gt;
           &lt;option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected"&gt;&#123;&#123; d.text &#125;&#125;&lt;/option&gt;
         &lt;/SlimSelect&gt;
 
-        &lt;SlimSelect :events="events" multiple&gt;
+        &lt;SlimSelect v-model="mutipleValue" multiple&gt;
           &lt;option v-for="d in dynamicData" :value="d.value" :selected="d.selected"&gt;&#123;&#123; d.text &#125;&#125;&lt;/option&gt;
         &lt;/SlimSelect&gt;
       </code>

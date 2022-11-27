@@ -46,9 +46,48 @@ function debounce(func, wait = 50, immediate = false) {
         }
     };
 }
+function isEqual(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
 function kebabCase(str) {
     const result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (match) => '-' + match.toLowerCase());
     return str[0] === str[0].toUpperCase() ? result.substring(1) : result;
+}
+
+class Settings {
+    constructor(settings) {
+        this.id = '';
+        this.style = '';
+        this.class = [];
+        this.isMultiple = false;
+        this.isOpen = false;
+        this.triggerFocus = true;
+        this.intervalMove = null;
+        if (!settings) {
+            settings = {};
+        }
+        this.id = 'ss-' + generateID();
+        this.style = settings.style || '';
+        this.class = settings.class || [];
+        this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true;
+        this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
+        this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+        this.searchPlaceholder = settings.searchPlaceholder || 'Search';
+        this.searchText = settings.searchText || 'No Results';
+        this.searchingText = settings.searchingText || 'Searching...';
+        this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false;
+        this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true;
+        this.contentLocation = settings.contentLocation || document.body;
+        this.contentPosition = settings.contentPosition || 'absolute';
+        this.openPosition = settings.openPosition || 'auto';
+        this.placeholderText = settings.placeholderText || 'Select Value';
+        this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
+        this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
+        this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
+        this.minSelected = settings.minSelected || 0;
+        this.maxSelected = settings.maxSelected || 1000;
+        this.timeoutDelay = settings.timeoutDelay || 200;
+    }
 }
 
 class Optgroup {
@@ -944,7 +983,6 @@ class Render {
                     optgroupClosableSvg.classList.add(this.classes.arrow);
                     optgroupClosable.appendChild(optgroupClosableSvg);
                     const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    optgroupClosableArrow.setAttribute('d', this.classes.arrow);
                     optgroupClosableSvg.appendChild(optgroupClosableArrow);
                     if (d.options.some((o) => o.selected)) {
                         optgroupClosable.classList.add(this.classes.open);
@@ -1197,16 +1235,19 @@ class Select {
     }
     addValueChangeListener(func) {
         this.onValueChange = func;
-        this.select.addEventListener('change', this.valueChange.bind(this));
+        this.select.addEventListener('change', this.valueChange.bind(this), {
+            passive: true,
+        });
     }
     removeValueChangeListener() {
         this.onValueChange = undefined;
         this.select.removeEventListener('change', this.valueChange.bind(this));
     }
     valueChange(ev) {
-        if (this.onValueChange) {
+        if (this.listen && this.onValueChange) {
             this.onValueChange(this.getSelectedValues());
         }
+        return true;
     }
     observeWrapper(mutations) {
         if (this.onSelectChange) {
@@ -1351,6 +1392,7 @@ class Select {
                 this.select.appendChild(this.createOption(d));
             }
         }
+        this.select.dispatchEvent(new Event('change'));
         this.changeListen(true);
     }
     createOptgroup(optgroup) {
@@ -1407,42 +1449,6 @@ class Select {
         this.removeSelectChangeListener();
         this.removeValueChangeListener();
         this.showUI();
-    }
-}
-
-class Settings {
-    constructor(settings) {
-        this.id = '';
-        this.style = '';
-        this.class = [];
-        this.isMultiple = false;
-        this.isOpen = false;
-        this.triggerFocus = true;
-        this.intervalMove = null;
-        if (!settings) {
-            settings = {};
-        }
-        this.id = 'ss-' + generateID();
-        this.style = settings.style || '';
-        this.class = settings.class || [];
-        this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true;
-        this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
-        this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
-        this.searchPlaceholder = settings.searchPlaceholder || 'Search';
-        this.searchText = settings.searchText || 'No Results';
-        this.searchingText = settings.searchingText || 'Searching...';
-        this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false;
-        this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true;
-        this.contentLocation = settings.contentLocation || document.body;
-        this.contentPosition = settings.contentPosition || 'absolute';
-        this.openPosition = settings.openPosition || 'auto';
-        this.placeholderText = settings.placeholderText || 'Select Value';
-        this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
-        this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
-        this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
-        this.minSelected = settings.minSelected || 0;
-        this.maxSelected = settings.maxSelected || 1000;
-        this.timeoutDelay = settings.timeoutDelay || 200;
     }
 }
 
@@ -1578,6 +1584,7 @@ class SlimSelect {
         return this.store.getData();
     }
     setData(data) {
+        const selected = this.store.getSelected();
         const err = this.store.validateDataArray(data);
         if (err) {
             if (this.events.error) {
@@ -1590,23 +1597,34 @@ class SlimSelect {
         this.select.updateOptions(dataClean);
         this.render.renderValues();
         this.render.renderOptions(dataClean);
+        if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+            this.events.afterChange(this.store.getSelectedOptions());
+        }
     }
     getSelected() {
         return this.store.getSelected();
     }
     setSelected(value) {
+        const selected = this.store.getSelected();
         this.store.setSelectedBy('value', Array.isArray(value) ? value : [value]);
         const data = this.store.getData();
         this.select.updateOptions(data);
         this.render.renderValues();
         this.render.renderOptions(data);
+        if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+            this.events.afterChange(this.store.getSelectedOptions());
+        }
     }
     addOption(option) {
+        const selected = this.store.getSelected();
         this.store.addOption(option);
         const data = this.store.getData();
         this.select.updateOptions(data);
         this.render.renderValues();
         this.render.renderOptions(data);
+        if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+            this.events.afterChange(this.store.getSelectedOptions());
+        }
     }
     open() {
         if (!this.settings.isEnabled || this.settings.isOpen) {
@@ -1692,6 +1710,13 @@ class SlimSelect {
 var script = vue.defineComponent({
     name: 'SlimSelect',
     props: {
+        modelValue: {
+            type: [String, Array, undefined],
+        },
+        multiple: {
+            type: Boolean,
+            default: false,
+        },
         data: {
             type: Array,
         },
@@ -1702,6 +1727,7 @@ var script = vue.defineComponent({
             type: Object,
         },
     },
+    emits: ['update:modelValue'],
     data() {
         return {
             slim: null,
@@ -1720,7 +1746,24 @@ var script = vue.defineComponent({
         if (this.events) {
             config.events = this.events;
         }
+        if (!config.events) {
+            config.events = {};
+        }
+        const ogAfterChange = config.events.afterChange;
+        config.events.afterChange = (newVal) => {
+            const value = this.multiple ? newVal.map((option) => option.value) : newVal[0].value;
+            if (this.value !== value) {
+                this.value = value;
+            }
+            if (config.events && ogAfterChange) {
+                ogAfterChange(newVal);
+            }
+        };
         this.slim = new SlimSelect(config);
+        let selected = this.$props.multiple ? this.slim.getSelected() : this.slim.getSelected()[0];
+        if (this.value !== selected) {
+            this.value = selected;
+        }
     },
     beforeUnmount() {
         if (this.slim) {
@@ -1737,6 +1780,27 @@ var script = vue.defineComponent({
             deep: true,
         },
     },
+    computed: {
+        value: {
+            get() {
+                const multi = this.$props.multiple;
+                const val = this.$props.modelValue;
+                if (val === undefined) {
+                    return multi ? [] : '';
+                }
+                if (multi && typeof val === 'string') {
+                    return [val];
+                }
+                if (!multi && Array.isArray(val)) {
+                    return val[0];
+                }
+                return multi ? [] : '';
+            },
+            set(value) {
+                this.$emit('update:modelValue', value);
+            },
+        },
+    },
     methods: {
         getSlimSelect() {
             return this.slim;
@@ -1744,12 +1808,15 @@ var script = vue.defineComponent({
     },
 });
 
-const _hoisted_1 = { ref: "slim" };
+const _hoisted_1 = ["multiple"];
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (vue.openBlock(), vue.createElementBlock("select", _hoisted_1, [
+  return (vue.openBlock(), vue.createElementBlock("select", {
+    multiple: _ctx.multiple,
+    ref: "slim"
+  }, [
     vue.renderSlot(_ctx.$slots, "default")
-  ], 512 /* NEED_PATCH */))
+  ], 8 /* PROPS */, _hoisted_1))
 }
 
 script.render = render;
