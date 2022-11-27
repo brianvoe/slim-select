@@ -15,7 +15,7 @@ export default class Select {
     removeSelectChangeListener(): void;
     addValueChangeListener(func: (value: string[]) => void): void;
     removeValueChangeListener(): void;
-    valueChange(ev: Event): any;
+    valueChange(ev: Event): boolean;
     private observeWrapper;
     private addObserver;
     private connectObserver;

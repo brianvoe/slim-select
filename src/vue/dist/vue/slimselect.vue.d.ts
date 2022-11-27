@@ -2,8 +2,15 @@
 import { PropType } from 'vue';
 import SlimSelect, { Events } from '../slim-select';
 import Settings from '../slim-select/settings';
-import { DataArrayPartial } from '../slim-select/store';
+import { DataArrayPartial, Option } from '../slim-select/store';
 declare const _default: import("vue").DefineComponent<{
+    modelValue: {
+        type: PropType<string | string[] | undefined>;
+    };
+    multiple: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     data: {
         type: PropType<DataArrayPartial>;
     };
@@ -15,7 +22,12 @@ declare const _default: import("vue").DefineComponent<{
     };
 }, unknown, {
     slim: SlimSelect | null;
-}, {}, {
+}, {
+    value: {
+        get(): string | string[];
+        set(value: string | string[]): void;
+    };
+}, {
     getSlimSelect(): {
         selectEl: HTMLSelectElement;
         settings: {
@@ -65,34 +77,34 @@ declare const _default: import("vue").DefineComponent<{
             removeSelectChangeListener: () => void;
             addValueChangeListener: (func: (value: string[]) => void) => void;
             removeValueChangeListener: () => void;
-            valueChange: (ev: Event) => any;
+            valueChange: (ev: Event) => boolean;
             getData: () => DataArrayPartial;
             getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => import("../slim-select/store").OptgroupOptional;
-            getDataFromOption: (option: HTMLOptionElement) => import("../slim-select/store").Option;
+            getDataFromOption: (option: HTMLOptionElement) => Option;
             getSelectedValues: () => string[];
             setSelected: (value: string[]) => void;
             updateSelect: (id?: string | undefined, style?: string | undefined, classes?: string[] | undefined) => void;
             updateOptions: (data: import("../slim-select/store").DataArray) => void;
             createOptgroup: (optgroup: import("../slim-select/store").Optgroup) => HTMLOptGroupElement;
-            createOption: (info: import("../slim-select/store").Option) => HTMLOptionElement;
+            createOption: (info: Option) => HTMLOptionElement;
             destroy: () => void;
         };
         store: {
             validateDataArray: (data: DataArrayPartial | import("../slim-select/store").DataArray) => Error | null;
-            validateOption: (option: import("../slim-select/store").OptionOptional | import("../slim-select/store").Option) => Error | null;
+            validateOption: (option: import("../slim-select/store").OptionOptional | Option) => Error | null;
             partialToFullData: (data: DataArrayPartial) => import("../slim-select/store").DataArray;
             setData: (data: DataArrayPartial | import("../slim-select/store").DataArray) => void;
             getData: () => import("../slim-select/store").DataArray;
-            getDataOptions: () => import("../slim-select/store").Option[];
+            getDataOptions: () => Option[];
             addOption: (option: import("../slim-select/store").OptionOptional) => void;
             setSelectedBy: (selectedType: "value" | "id", selectedValues: string[]) => void;
             getSelected: () => string[];
-            getSelectedOptions: () => import("../slim-select/store").Option[];
+            getSelectedOptions: () => Option[];
             getSelectedIDs: () => string[];
             getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
-            getOptionByID: (id: string) => import("../slim-select/store").Option | null;
-            search: (search: string, searchFilter: (opt: import("../slim-select/store").Option, search: string) => boolean) => import("../slim-select/store").DataArray;
-            filter: (filter: ((opt: import("../slim-select/store").Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
+            getOptionByID: (id: string) => Option | null;
+            search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
+            filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
         };
         render: {
             settings: {
@@ -130,30 +142,30 @@ declare const _default: import("vue").DefineComponent<{
             };
             store: {
                 validateDataArray: (data: DataArrayPartial | import("../slim-select/store").DataArray) => Error | null;
-                validateOption: (option: import("../slim-select/store").OptionOptional | import("../slim-select/store").Option) => Error | null;
+                validateOption: (option: import("../slim-select/store").OptionOptional | Option) => Error | null;
                 partialToFullData: (data: DataArrayPartial) => import("../slim-select/store").DataArray;
                 setData: (data: DataArrayPartial | import("../slim-select/store").DataArray) => void;
                 getData: () => import("../slim-select/store").DataArray;
-                getDataOptions: () => import("../slim-select/store").Option[];
+                getDataOptions: () => Option[];
                 addOption: (option: import("../slim-select/store").OptionOptional) => void;
                 setSelectedBy: (selectedType: "value" | "id", selectedValues: string[]) => void;
                 getSelected: () => string[];
-                getSelectedOptions: () => import("../slim-select/store").Option[];
+                getSelectedOptions: () => Option[];
                 getSelectedIDs: () => string[];
                 getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
-                getOptionByID: (id: string) => import("../slim-select/store").Option | null;
-                search: (search: string, searchFilter: (opt: import("../slim-select/store").Option, search: string) => boolean) => import("../slim-select/store").DataArray;
-                filter: (filter: ((opt: import("../slim-select/store").Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
+                getOptionByID: (id: string) => Option | null;
+                search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
+                filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
             };
             callbacks: {
                 open: () => void;
                 close: () => void;
                 addable?: ((value: string) => string | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional>) | undefined;
                 setSelected: (value: string[]) => void;
-                addOption: (option: import("../slim-select/store").Option) => void;
+                addOption: (option: Option) => void;
                 search: (search: string) => void;
-                beforeChange?: ((newVal: import("../slim-select/store").Option[], oldVal: import("../slim-select/store").Option[]) => boolean | void) | undefined;
-                afterChange?: ((newVal: import("../slim-select/store").Option[]) => void) | undefined;
+                beforeChange?: ((newVal: Option[], oldVal: Option[]) => boolean | void) | undefined;
+                afterChange?: ((newVal: Option[]) => void) | undefined;
             };
             main: {
                 main: HTMLDivElement;
@@ -230,7 +242,7 @@ declare const _default: import("vue").DefineComponent<{
             mainFocus: (trigger: boolean) => void;
             placeholder: () => HTMLDivElement;
             renderValues: () => void;
-            multipleValue: (option: import("../slim-select/store").Option) => HTMLDivElement;
+            multipleValue: (option: Option) => HTMLDivElement;
             contentDiv: () => import("../slim-select/render").Content;
             moveContent: () => void;
             searchDiv: () => import("../slim-select/render").Search;
@@ -241,7 +253,7 @@ declare const _default: import("vue").DefineComponent<{
             renderError: (error: string) => void;
             renderSearching: () => void;
             renderOptions: (data: import("../slim-select/store").DataArray) => void;
-            option: (option: import("../slim-select/store").Option) => HTMLDivElement;
+            option: (option: Option) => HTMLDivElement;
             destroy: () => void;
             moveContentAbove: () => void;
             moveContentBelow: () => void;
@@ -250,10 +262,10 @@ declare const _default: import("vue").DefineComponent<{
         };
         events: {
             search?: ((searchValue: string, currentData: import("../slim-select/store").DataArray) => DataArrayPartial | Promise<DataArrayPartial>) | undefined;
-            searchFilter?: ((option: import("../slim-select/store").Option, search: string) => boolean) | undefined;
+            searchFilter?: ((option: Option, search: string) => boolean) | undefined;
             addable?: ((value: string) => string | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional>) | undefined;
-            beforeChange?: ((newVal: import("../slim-select/store").Option[], oldVal: import("../slim-select/store").Option[]) => boolean | void) | undefined;
-            afterChange?: ((newVal: import("../slim-select/store").Option[]) => void) | undefined;
+            beforeChange?: ((newVal: Option[], oldVal: Option[]) => boolean | void) | undefined;
+            afterChange?: ((newVal: Option[]) => void) | undefined;
             beforeOpen?: (() => void) | undefined;
             afterOpen?: (() => void) | undefined;
             beforeClose?: (() => void) | undefined;
@@ -272,7 +284,14 @@ declare const _default: import("vue").DefineComponent<{
         search: (value: string) => void;
         destroy: () => void;
     } | null;
-}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {}, string, import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+    modelValue: {
+        type: PropType<string | string[] | undefined>;
+    };
+    multiple: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     data: {
         type: PropType<DataArrayPartial>;
     };
@@ -282,5 +301,9 @@ declare const _default: import("vue").DefineComponent<{
     events: {
         type: PropType<Events>;
     };
-}>>, {}>;
+}>> & {
+    "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
+}, {
+    multiple: boolean;
+}>;
 export default _default;
