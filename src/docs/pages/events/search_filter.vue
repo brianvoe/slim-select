@@ -33,9 +33,14 @@ export default defineComponent({
         new SlimSelect({
           select: '#selectElement',
           events: {
-            // Exact case sensitive start of string match
+            // Example: Exact case sensitive start of string match
             searchFilter: (option, search) => {
               return option.text.substr(0, search.length) === search
+            }
+
+            // Default
+            searchFilter: (option, search) => {
+              return option.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
             }
           }
         })
