@@ -267,23 +267,21 @@ class Store {
         const dataSearch = [];
         this.data.forEach((dataObj) => {
             if (dataObj instanceof Optgroup) {
-                if (!includeOptgroup) {
-                    dataObj.options.forEach((option) => {
-                        if (filter && filter(option)) {
-                            dataSearch.push(option);
+                let optOptions = [];
+                dataObj.options.forEach((option) => {
+                    if (!filter || filter(option)) {
+                        if (!includeOptgroup) {
+                            dataSearch.push(new Option(option));
                         }
-                    });
-                }
-                else {
-                    let optOptions = [];
-                    dataObj.options.forEach((option) => {
-                        if (!filter || filter(option)) {
+                        else {
                             optOptions.push(new Option(option));
                         }
-                    });
-                    if (optOptions.length > 0) {
-                        dataSearch.push(new Optgroup(dataObj));
                     }
+                });
+                if (optOptions.length > 0) {
+                    let optgroup = new Optgroup(dataObj);
+                    optgroup.options = optOptions;
+                    dataSearch.push(optgroup);
                 }
             }
             if (dataObj instanceof Option) {
