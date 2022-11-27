@@ -303,25 +303,28 @@ export default class Store {
     this.data.forEach((dataObj: DataObject) => {
       // Optgroup
       if (dataObj instanceof Optgroup) {
-        // If you dont want to include optgroups
-        if (!includeOptgroup) {
-          // Loop through each option and check if it meets the filter requirements
-          dataObj.options.forEach((option: Option) => {
-            if (filter && filter(option)) {
-              dataSearch.push(option)
-            }
-          })
-        } else {
-          let optOptions: Option[] = []
-          dataObj.options.forEach((option: Option) => {
-            if (!filter || filter(option)) {
+        let optOptions: Option[] = []
+        dataObj.options.forEach((option: Option) => {
+          if (!filter || filter(option)) {
+            // If you dont want to include optgroups
+            // just push to the dataSearch array
+            if (!includeOptgroup) {
+              dataSearch.push(new Option(option))
+            } else {
               optOptions.push(new Option(option))
             }
-          })
-
-          if (optOptions.length > 0) {
-            dataSearch.push(new Optgroup(dataObj))
           }
+        })
+
+        // If we pushed any options to the optOptions array
+        // push the optgroup to the dataSearch array
+        if (optOptions.length > 0) {
+          // Create new optgroup with the new options
+          let optgroup = new Optgroup(dataObj)
+          optgroup.options = optOptions
+
+          // Push optgroup to dataSearch
+          dataSearch.push(optgroup)
         }
       }
 
