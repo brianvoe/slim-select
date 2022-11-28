@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 
 import SlimSelect, { Config, Events } from '../slim-select'
-import Settings from '../slim-select/settings'
+import { SettingsPartial } from '../slim-select/settings'
 import { DataArrayPartial, Option } from '../slim-select/store'
 
 export default defineComponent({
@@ -19,7 +19,7 @@ export default defineComponent({
       type: Array as PropType<DataArrayPartial>,
     },
     settings: {
-      type: Object as PropType<Settings>,
+      type: Object as PropType<SettingsPartial>,
     },
     events: {
       type: Object as PropType<Events>,
