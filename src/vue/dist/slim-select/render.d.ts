@@ -49,6 +49,8 @@ export default class Render {
         values: string;
         single: string;
         value: string;
+        valueChipsHidden: string;
+        valueSelectionCounter: string;
         valueText: string;
         valueDelete: string;
         valueOut: string;

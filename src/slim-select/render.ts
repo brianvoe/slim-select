@@ -64,6 +64,7 @@ export default class Render {
     values: 'ss-values',
     single: 'ss-single',
     value: 'ss-value',
+    valueSelectionCounter: 'ss-selection-counter',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
     valueOut: 'ss-value-out',
@@ -415,7 +416,7 @@ export default class Render {
   }
 
   private renderMultipleValues(): void {
-    // Get various peices of data
+    // Get various pieces of data
     let currentNodes = this.main.values.childNodes as NodeListOf<HTMLDivElement>
     let selectedOptions = this.store.filter((opt: Option) => {
       // Only grab options that are selected and display is true
@@ -431,6 +432,23 @@ export default class Render {
       const placeholder = this.main.values.querySelector('.' + this.classes.placeholder)
       if (placeholder) {
         placeholder.remove()
+      }
+    }
+
+    if (selectedOptions.length > this.settings.maxValuesShown) {
+      // Creating the element that shows the number of selected items
+      const singleValue = document.createElement('div')
+      singleValue.classList.add(this.classes.valueSelectionCounter)
+      singleValue.textContent = this.settings.maxValuesMessage.replace('$NUMBER', selectedOptions.length.toString())
+
+      // If there is a selected value, set a single div
+      this.main.values.innerHTML = singleValue.outerHTML
+      return
+    } else {
+      // If there is a message, remove it
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.valueSelectionCounter)
+      if (maxValuesMessage) {
+        maxValuesMessage.remove()
       }
     }
 
