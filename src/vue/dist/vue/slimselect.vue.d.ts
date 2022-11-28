@@ -62,6 +62,8 @@ declare const _default: import("vue").DefineComponent<{
             minSelected: number;
             maxSelected: number;
             timeoutDelay: number;
+            selectedChipsLimit: number;
+            selectedChipsLimitMessage: string;
         };
         select: {
             select: HTMLSelectElement;
@@ -139,6 +141,8 @@ declare const _default: import("vue").DefineComponent<{
                 minSelected: number;
                 maxSelected: number;
                 timeoutDelay: number;
+                selectedChipsLimit: number;
+                selectedChipsLimitMessage: string;
             };
             store: {
                 validateDataArray: (data: DataArrayPartial | import("../slim-select/store").DataArray) => Error | null;
@@ -199,6 +203,8 @@ declare const _default: import("vue").DefineComponent<{
                 values: string;
                 single: string;
                 value: string;
+                valueChipsHidden: string;
+                valueSelectionCounter: string;
                 valueText: string;
                 valueDelete: string;
                 valueOut: string;

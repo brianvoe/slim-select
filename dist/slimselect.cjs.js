@@ -85,6 +85,8 @@ class Settings {
         this.minSelected = settings.minSelected || 0;
         this.maxSelected = settings.maxSelected || 1000;
         this.timeoutDelay = settings.timeoutDelay || 200;
+        this.selectedChipsLimit = settings.selectedChipsLimit || 20;
+        this.selectedChipsLimitMessage = settings.selectedChipsLimitMessage || '$NUMBER selected';
     }
 }
 
@@ -302,6 +304,8 @@ class Render {
             values: 'ss-values',
             single: 'ss-single',
             value: 'ss-value',
+            valueChipsHidden: 'ss-hide-chips',
+            valueSelectionCounter: '.ss-selection-counter',
             valueText: 'ss-value-text',
             valueDelete: 'ss-value-delete',
             valueOut: 'ss-value-out',
@@ -439,6 +443,9 @@ class Render {
         const values = document.createElement('div');
         values.classList.add(this.classes.values);
         main.appendChild(values);
+        const singleValue = document.createElement('div');
+        singleValue.classList.add("ss-selection-counter");
+        values.appendChild(singleValue);
         const deselect = document.createElement('div');
         deselect.classList.add(this.classes.deselect);
         if (!this.settings.allowDeselect || this.settings.isMultiple) {
@@ -600,6 +607,13 @@ class Render {
                     currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]));
                 }
             }
+        }
+        if (selectedOptions.length > this.settings.selectedChipsLimit) {
+            this.main.values.classList.add(this.classes.valueChipsHidden);
+            this.main.values.querySelector(this.classes.valueSelectionCounter).textContent = this.settings.selectedChipsLimitMessage.replace('$NUMBER', selectedOptions.length.toString());
+        }
+        else if (selectedOptions.length <= this.settings.selectedChipsLimit) {
+            this.main.values.classList.remove(this.classes.valueChipsHidden);
         }
     }
     multipleValue(option) {
@@ -1445,6 +1459,47 @@ class Select {
         this.removeSelectChangeListener();
         this.removeValueChangeListener();
         this.showUI();
+    }
+}
+
+class Settings {
+    constructor(settings) {
+        this.id = '';
+        this.style = '';
+        this.class = [];
+        this.isMultiple = false;
+        this.isOpen = false;
+        this.triggerFocus = true;
+        this.intervalMove = null;
+        this.mainHeight = 30;
+        this.contentHeight = 0;
+        if (!settings) {
+            settings = {};
+        }
+        this.id = 'ss-' + generateID();
+        this.style = settings.style || '';
+        this.class = settings.class || [];
+        this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true;
+        this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
+        this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+        this.searchPlaceholder = settings.searchPlaceholder || 'Search';
+        this.searchText = settings.searchText || 'No Results';
+        this.searchingText = settings.searchingText || 'Searching...';
+        this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false;
+        this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true;
+        this.contentLocation = settings.contentLocation || document.body;
+        this.contentPosition = settings.contentPosition || 'absolute';
+        this.openPosition = settings.openPosition || 'auto';
+        this.placeholderText = settings.placeholderText || 'Select Value';
+        this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
+        this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
+        this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
+        this.selectByGroup = settings.selectByGroup !== undefined ? settings.selectByGroup : false;
+        this.minSelected = settings.minSelected || 0;
+        this.maxSelected = settings.maxSelected || 1000;
+        this.timeoutDelay = settings.timeoutDelay || 200;
+        this.selectedChipsLimit = settings.selectedChipsLimit || 20;
+        this.selectedChipsLimitMessage = settings.selectedChipsLimitMessage || '$NUMBER selected';
     }
 }
 

@@ -87,6 +87,8 @@ class Settings {
         this.minSelected = settings.minSelected || 0;
         this.maxSelected = settings.maxSelected || 1000;
         this.timeoutDelay = settings.timeoutDelay || 200;
+        this.selectedChipsLimit = settings.selectedChipsLimit || 20;
+        this.selectedChipsLimitMessage = settings.selectedChipsLimitMessage || '$NUMBER selected';
     }
 }
 
@@ -304,6 +306,8 @@ class Render {
             values: 'ss-values',
             single: 'ss-single',
             value: 'ss-value',
+            valueChipsHidden: 'ss-hide-chips',
+            valueSelectionCounter: '.ss-selection-counter',
             valueText: 'ss-value-text',
             valueDelete: 'ss-value-delete',
             valueOut: 'ss-value-out',
@@ -441,6 +445,9 @@ class Render {
         const values = document.createElement('div');
         values.classList.add(this.classes.values);
         main.appendChild(values);
+        const singleValue = document.createElement('div');
+        singleValue.classList.add("ss-selection-counter");
+        values.appendChild(singleValue);
         const deselect = document.createElement('div');
         deselect.classList.add(this.classes.deselect);
         if (!this.settings.allowDeselect || this.settings.isMultiple) {
@@ -602,6 +609,13 @@ class Render {
                     currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]));
                 }
             }
+        }
+        if (selectedOptions.length > this.settings.selectedChipsLimit) {
+            this.main.values.classList.add(this.classes.valueChipsHidden);
+            this.main.values.querySelector(this.classes.valueSelectionCounter).textContent = this.settings.selectedChipsLimitMessage.replace('$NUMBER', selectedOptions.length.toString());
+        }
+        else if (selectedOptions.length <= this.settings.selectedChipsLimit) {
+            this.main.values.classList.remove(this.classes.valueChipsHidden);
         }
     }
     multipleValue(option) {

@@ -26,5 +26,7 @@ export default class Settings {
     minSelected: number;
     maxSelected: number;
     timeoutDelay: number;
+    selectedChipsLimit: number;
+    selectedChipsLimitMessage: string;
     constructor(settings?: SettingsPartial);
 }

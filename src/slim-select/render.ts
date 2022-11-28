@@ -64,6 +64,8 @@ export default class Render {
     values: 'ss-values',
     single: 'ss-single',
     value: 'ss-value',
+    valueChipsHidden: 'ss-hide-chips',
+    valueSelectionCounter: '.ss-selection-counter',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
     valueOut: 'ss-value-out',
@@ -264,6 +266,13 @@ export default class Render {
     const values = document.createElement('div')
     values.classList.add(this.classes.values)
     main.appendChild(values)
+
+    // Creating the element that shows the number of selected items
+    const singleValue = document.createElement('div')
+    singleValue.classList.add("ss-selection-counter")
+    
+    // If there is a selected value, set a single div
+    values.appendChild(singleValue)
 
     // Add deselect
     const deselect = document.createElement('div')
@@ -480,6 +489,18 @@ export default class Render {
           currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
         }
       }
+    }
+
+    
+
+    // If the number of selected items goes above the threshold, hide the chips
+    if (selectedOptions.length > this.settings.selectedChipsLimit) {
+      this.main.values.classList.add(this.classes.valueChipsHidden)
+      this.main.values.querySelector(this.classes.valueSelectionCounter)!.textContent = this.settings.selectedChipsLimitMessage.replace('$NUMBER', selectedOptions.length.toString())
+
+    // If the number of selected items goes below the threshold, show the chips and remove the selected values element
+    } else if (selectedOptions.length <= this.settings.selectedChipsLimit) {
+      this.main.values.classList.remove(this.classes.valueChipsHidden)
     }
   }
 
