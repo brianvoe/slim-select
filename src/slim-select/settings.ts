@@ -63,6 +63,6 @@ export default class Settings {
     this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200
     this.maxValuesShown = settings.maxValuesShown || 20
-    this.maxValuesMessage = settings.maxValuesMessage || '$NUMBER selected'
+    this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
   }
 }

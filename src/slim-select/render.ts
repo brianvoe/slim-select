@@ -63,8 +63,8 @@ export default class Render {
     // Values
     values: 'ss-values',
     single: 'ss-single',
+    max: 'ss-max',
     value: 'ss-value',
-    valueSelectionCounter: 'ss-selection-counter',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
     valueOut: 'ss-value-out',
@@ -435,18 +435,19 @@ export default class Render {
       }
     }
 
+    // If selectedOptions is greater than maxItems, set maxValuesMessage
     if (selectedOptions.length > this.settings.maxValuesShown) {
       // Creating the element that shows the number of selected items
       const singleValue = document.createElement('div')
-      singleValue.classList.add(this.classes.valueSelectionCounter)
-      singleValue.textContent = this.settings.maxValuesMessage.replace('$NUMBER', selectedOptions.length.toString())
+      singleValue.classList.add(this.classes.max)
+      singleValue.textContent = this.settings.maxValuesMessage.replace('{number}', selectedOptions.length.toString())
 
       // If there is a selected value, set a single div
       this.main.values.innerHTML = singleValue.outerHTML
       return
     } else {
       // If there is a message, remove it
-      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.valueSelectionCounter)
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.max)
       if (maxValuesMessage) {
         maxValuesMessage.remove()
       }

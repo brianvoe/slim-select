@@ -6,13 +6,13 @@ import SlimSelect from '../../../slim-select'
 export default defineComponent({
   name: 'MaxValuesShown',
   mounted() {
-    const maxValuesShownSelect = new SlimSelect({
+    new SlimSelect({
+      select: this.$refs.maxValuesShown as HTMLSelectElement,
       settings: {
         maxValuesShown: 5,
-        maxValuesMessage: '$NUMBER selected',
+        maxValuesMessage: '{number} selected',
         allowDeselect: true,
       },
-      select: this.$refs.maxValuesShown as HTMLSelectElement,
     })
   },
 })
@@ -23,9 +23,10 @@ export default defineComponent({
     <h2 class="header">maxValuesShown</h2>
     <p>
       When using multiselect you can set a threshold so when selecting more items than the input value, the items will
-      not display as chips, but the 'n selected' will be displayed. The text that will be displayed can be
-      customized with the use of '$NUMBER' in the maxValuesMessage setting.
+      not display as values, but the 'n selected' will be displayed. The text that will be displayed can be customized
+      with the use of '{number}' in the maxValuesMessage setting.
     </p>
+    <p><strong>Default:</strong> 20</p>
 
     <div class="row">
       <select ref="maxValuesShown" multiple>
@@ -34,7 +35,7 @@ export default defineComponent({
         <option value="value3" selected>Value 3</option>
         <option value="value4" selected>Value 4</option>
         <option value="value5" selected>Value 5</option>
-        <option value="value6">Value 6</option>
+        <option value="value6" selected>Value 6</option>
         <option value="value7">Value 7</option>
         <option value="value8">Value 8</option>
       </select>
@@ -42,11 +43,11 @@ export default defineComponent({
 
     <pre>
       <code class="language-javascript">
-        const slim = new SlimSelect({
+        new SlimSelect({
           select: '#selectElement',
           settings: {
-            maxValuesShown: 5,
-            maxValuesMessage: '$NUMBER selected',
+            maxValuesShown: 5, // Default 20
+            maxValuesMessage: '{number} values selected', // Default '{number} selected'
           },
         });
       </code>
