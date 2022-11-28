@@ -23,8 +23,8 @@ export default defineComponent({
     <h2 class="header">selectedChipsLimit</h2>
     <p>
       When using multiselect you can set a threshold so when selecting more items than the input value, the items will
-      not display as chips, but the 'Selected (n items)' will be displayed. The text that will be displayed can be
-      customized with the use of '$NUMBER' in the valuesThresholdFormat setting.
+      not display as chips, but the 'n selected' will be displayed. The text that will be displayed can be
+      customized with the use of '$NUMBER' in the selectedChipsLimitMessage setting.
     </p>
 
     <div class="row">
