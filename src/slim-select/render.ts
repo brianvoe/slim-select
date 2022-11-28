@@ -65,7 +65,7 @@ export default class Render {
     single: 'ss-single',
     value: 'ss-value',
     valueChipsHidden: 'ss-hide-chips',
-    valueSelectionCounter: '.ss-selection-counter',
+    valueSelectionCounter: 'ss-selection-counter',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
     valueOut: 'ss-value-out',
@@ -269,7 +269,7 @@ export default class Render {
 
     // Creating the element that shows the number of selected items
     const singleValue = document.createElement('div')
-    singleValue.classList.add("ss-selection-counter")
+    singleValue.classList.add(this.classes.valueSelectionCounter)
     
     // If there is a selected value, set a single div
     values.appendChild(singleValue)
