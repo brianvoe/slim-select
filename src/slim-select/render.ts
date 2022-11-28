@@ -64,7 +64,6 @@ export default class Render {
     values: 'ss-values',
     single: 'ss-single',
     value: 'ss-value',
-    valueChipsHidden: 'ss-hide-chips',
     valueSelectionCounter: 'ss-selection-counter',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
@@ -267,13 +266,6 @@ export default class Render {
     values.classList.add(this.classes.values)
     main.appendChild(values)
 
-    // Creating the element that shows the number of selected items
-    const singleValue = document.createElement('div')
-    singleValue.classList.add(this.classes.valueSelectionCounter)
-    
-    // If there is a selected value, set a single div
-    values.appendChild(singleValue)
-
     // Add deselect
     const deselect = document.createElement('div')
     deselect.classList.add(this.classes.deselect)
@@ -424,7 +416,7 @@ export default class Render {
   }
 
   private renderMultipleValues(): void {
-    // Get various peices of data
+    // Get various pieces of data
     let currentNodes = this.main.values.childNodes as NodeListOf<HTMLDivElement>
     let selectedOptions = this.store.filter((opt: Option) => {
       // Only grab options that are selected and display is true
@@ -440,6 +432,23 @@ export default class Render {
       const placeholder = this.main.values.querySelector('.' + this.classes.placeholder)
       if (placeholder) {
         placeholder.remove()
+      }
+    }
+
+    if (selectedOptions.length > this.settings.maxValuesShown) {
+      // Creating the element that shows the number of selected items
+      const singleValue = document.createElement('div')
+      singleValue.classList.add(this.classes.valueSelectionCounter)
+      singleValue.textContent = this.settings.maxValuesMessage.replace('$NUMBER', selectedOptions.length.toString())
+
+      // If there is a selected value, set a single div
+      this.main.values.innerHTML = singleValue.outerHTML
+      return
+    } else {
+      // If there is a message, remove it
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.valueSelectionCounter)
+      if (maxValuesMessage) {
+        maxValuesMessage.remove()
       }
     }
 
@@ -489,18 +498,6 @@ export default class Render {
           currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
         }
       }
-    }
-
-    
-
-    // If the number of selected items goes above the threshold, hide the chips
-    if (selectedOptions.length > this.settings.selectedChipsLimit) {
-      this.main.values.classList.add(this.classes.valueChipsHidden)
-      this.main.values.querySelector(this.classes.valueSelectionCounter)!.textContent = this.settings.selectedChipsLimitMessage.replace('$NUMBER', selectedOptions.length.toString())
-
-    // If the number of selected items goes below the threshold, show the chips and remove the selected values element
-    } else if (selectedOptions.length <= this.settings.selectedChipsLimit) {
-      this.main.values.classList.remove(this.classes.valueChipsHidden)
     }
   }
 

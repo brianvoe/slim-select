@@ -12,7 +12,7 @@ import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
 import Display from './display.vue'
 import HideSelected from './hide_selected.vue'
-import SelectedChipsLimit from './selected_chips_limit.vue'
+import MaxValuesShown from './max_values_shown.vue'
 import Html from './html.vue'
 import Mandatory from './mandatory.vue'
 import MinMax from './min_max.vue'
@@ -38,7 +38,7 @@ export default defineComponent({
     Mandatory,
     MinMax,
     DataAttributes,
-    SelectedChipsLimit,
+    MaxValuesShown,
     Css,
     Styles,
     Html,
@@ -74,6 +74,6 @@ export default defineComponent({
     <SelectAll />
     <Closable />
     <HideSelected />
-    <SelectedChipsLimit />
+    <MaxValuesShown />
   </div>
 </template>

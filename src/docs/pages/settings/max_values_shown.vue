@@ -4,31 +4,31 @@ import { defineComponent } from 'vue'
 import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
-  name: 'SelectedChipsLimit',
+  name: 'MaxValuesShown',
   mounted() {
-    const selectedChipsLimitSelect = new SlimSelect({
+    const maxValuesShownSelect = new SlimSelect({
       settings: {
-        selectedChipsLimit: 5,
-        selectedChipsLimitMessage: '$NUMBER selected',
+        maxValuesShown: 5,
+        maxValuesMessage: '$NUMBER selected',
         allowDeselect: true,
       },
-      select: this.$refs.selectedChipsLimit as HTMLSelectElement,
+      select: this.$refs.maxValuesShown as HTMLSelectElement,
     })
   },
 })
 </script>
 
 <template>
-  <div id="selectedChipsLimit" class="content">
-    <h2 class="header">selectedChipsLimit</h2>
+  <div id="maxValuesShown" class="content">
+    <h2 class="header">maxValuesShown</h2>
     <p>
       When using multiselect you can set a threshold so when selecting more items than the input value, the items will
       not display as chips, but the 'n selected' will be displayed. The text that will be displayed can be
-      customized with the use of '$NUMBER' in the selectedChipsLimitMessage setting.
+      customized with the use of '$NUMBER' in the maxValuesMessage setting.
     </p>
 
     <div class="row">
-      <select ref="selectedChipsLimit" multiple>
+      <select ref="maxValuesShown" multiple>
         <option value="value1" selected>Value 1</option>
         <option value="value2" selected>Value 2</option>
         <option value="value3" selected>Value 3</option>
@@ -45,8 +45,8 @@ export default defineComponent({
         const slim = new SlimSelect({
           select: '#selectElement',
           settings: {
-            selectedChipsLimit: 5,
-            selectedChipsLimitMessage: '$NUMBER selected',
+            maxValuesShown: 5,
+            maxValuesMessage: '$NUMBER selected',
           },
         });
       </code>
@@ -54,7 +54,7 @@ export default defineComponent({
 
     <pre>
       <code class="language-html">
-        &lt;select id="selectedChipsLimit" multiple&gt;
+        &lt;select id="maxValuesShown" multiple&gt;
           &lt;option value="value1" selected&gt;Value 1&lt;/option&gt;
           &lt;option value="value2" selected&gt;Value 2&lt;/option&gt;
           &lt;option value="value3" selected&gt;Value 3&lt;/option&gt;

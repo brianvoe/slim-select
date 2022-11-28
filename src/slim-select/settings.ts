@@ -32,8 +32,8 @@ export default class Settings {
   public minSelected: number
   public maxSelected: number
   public timeoutDelay: number
-  public selectedChipsLimit: number
-  public selectedChipsLimitMessage: string
+  public maxValuesShown: number
+  public maxValuesMessage: string
 
   constructor(settings?: SettingsPartial) {
     if (!settings) {
@@ -62,7 +62,7 @@ export default class Settings {
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200
-    this.selectedChipsLimit = settings.selectedChipsLimit || 20
-    this.selectedChipsLimitMessage = settings.selectedChipsLimitMessage || '$NUMBER selected'
+    this.maxValuesShown = settings.maxValuesShown || 20
+    this.maxValuesMessage = settings.maxValuesMessage || '$NUMBER selected'
   }
 }

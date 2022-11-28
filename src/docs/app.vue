@@ -77,7 +77,7 @@ export default defineComponent({
             { text: 'selectAll', value: 'settings#selectAll' },
             { text: 'closable', value: 'settings#closable' },
             { text: 'hideSelected', value: 'settings#hideSelected' },
-            { text: 'selectedChipsLimit', value: 'settings#selectedChipsLimit' },
+            { text: 'maxValuesShown', value: 'settings#maxValuesShown' },
           ],
         },
 

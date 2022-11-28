@@ -105,21 +105,9 @@
     gap: var(--ss-spacing-m);
     flex: 1 1 100%;
 
-    &.ss-hide-chips {
-
-      .ss-value {
-        display: none;
-      }
-
-      .ss-selection-counter {
-        display: flex;
-        margin: auto 0px auto var(--ss-spacing-s);
-      }
-
-    }
-
     .ss-selection-counter {
-      display: none;
+      display: flex;
+      margin: auto 0px auto var(--ss-spacing-s);
     }
 
     .ss-placeholder {
