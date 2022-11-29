@@ -254,7 +254,7 @@ export default class Render {
     // Add onclick for main div
     main.onclick = (e: Event) => {
       // Dont do anything if disabled
-      if (!this.settings.isEnabled) {
+      if (this.settings.disabled) {
         return
       }
 
@@ -278,7 +278,7 @@ export default class Render {
       e.stopPropagation()
 
       // Dont do anything if disabled
-      if (!this.settings.isEnabled) {
+      if (this.settings.disabled) {
         return
       }
 
@@ -522,6 +522,11 @@ export default class Render {
       deleteDiv.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
+
+        // Dont do anything if disabled
+        if (this.settings.disabled) {
+          return
+        }
 
         // By Default we will delete
         let shouldDelete = true

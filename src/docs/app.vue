@@ -65,6 +65,7 @@ export default defineComponent({
             { text: 'placeholder', value: 'settings#placeholder' },
             { text: 'allowDeselect', value: 'settings#allowDeselect' },
             { text: 'display', value: 'settings#display' },
+            { text: 'disabled', value: 'settings#disabled' },
             { text: 'mandatory', value: 'settings#mandatory' },
             { text: 'minmax', value: 'settings#minmax' },
             { text: 'dataAttributes', value: 'settings#dataAttributes' },

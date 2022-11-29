@@ -14,7 +14,7 @@ export default class Settings {
   public intervalMove: NodeJS.Timeout | null = null
 
   // Fields set from constructor
-  public isEnabled: boolean
+  public disabled: boolean
   public alwaysOpen: boolean
   public showSearch: boolean
   public searchPlaceholder: string
@@ -44,7 +44,7 @@ export default class Settings {
     this.style = settings.style || ''
     this.class = settings.class || []
 
-    this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true
+    this.disabled = settings.disabled !== undefined ? settings.disabled : false
     this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
     this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'

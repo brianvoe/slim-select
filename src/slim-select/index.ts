@@ -82,6 +82,7 @@ export default class SlimSelect {
     }
 
     // Upate settings with type, style and classname
+    this.settings.disabled = config.settings?.disabled ? config.settings.disabled : this.selectEl.disabled
     this.settings.isMultiple = this.selectEl.multiple
     this.settings.style = this.selectEl.style.cssText
     this.settings.class = this.selectEl.className.split(' ')
@@ -147,7 +148,7 @@ export default class SlimSelect {
     }
 
     // If disabled lets call it
-    if (!this.settings.isEnabled) {
+    if (this.settings.disabled) {
       this.disable()
     }
 
@@ -162,7 +163,7 @@ export default class SlimSelect {
 
   // Set to enabled and remove disabled classes
   public enable(): void {
-    this.settings.isEnabled = true
+    this.settings.disabled = false
 
     this.select.enable()
     this.render.enable()
@@ -170,7 +171,7 @@ export default class SlimSelect {
 
   // Set to disabled and add disabled classes
   public disable(): void {
-    this.settings.isEnabled = false
+    this.settings.disabled = true
 
     this.select.disable()
     this.render.disable()
@@ -259,7 +260,7 @@ export default class SlimSelect {
   public open(): void {
     // Dont open if disabled
     // Dont do anything if the content is already open
-    if (!this.settings.isEnabled || this.settings.isOpen) {
+    if (this.settings.disabled || this.settings.isOpen) {
       return
     }
 
