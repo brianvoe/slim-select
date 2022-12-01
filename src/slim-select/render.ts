@@ -1133,9 +1133,8 @@ export default class Render {
 
     // Set option content
     if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
-      const textOrHtml = option.html !== '' ? option.html : option.text
       optionEl.innerHTML = this.highlightText(
-        textOrHtml,
+        option.html !== '' ? option.html : option.text,
         this.content.search.input.value,
         this.classes.searchHighlighter,
       )
@@ -1182,11 +1181,11 @@ export default class Render {
         return
       }
 
-      // Check limit and do nothing if limit is reached
+      // Check limit and do nothing if limit is reached and the option is not selected
+      // Also check reverse for min limit and is selected
       if (
-        this.settings.isMultiple &&
-        Array.isArray(selectedOptions) &&
-        this.settings.maxSelected <= selectedOptions.length
+        (this.settings.isMultiple && this.settings.maxSelected <= selectedOptions.length && !option.selected) ||
+        (this.settings.isMultiple && this.settings.minSelected >= selectedOptions.length && option.selected)
       ) {
         return
       }
