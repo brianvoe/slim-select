@@ -159,21 +159,8 @@ export default class Render {
     // Render the options
     this.renderOptions(this.store.getData())
 
-    // Check showContent to see if they want to specifically show in a certain direction
-    if (this.settings.contentPosition === 'relative') {
-      this.moveContentBelow()
-    } else if (this.settings.openPosition.toLowerCase() === 'up') {
-      this.moveContentAbove()
-    } else if (this.settings.openPosition.toLowerCase() === 'down') {
-      this.moveContentBelow()
-    } else {
-      // Auto identify where to put it
-      if (this.putContent(this.content.main, this.settings.isOpen) === 'up') {
-        this.moveContentAbove()
-      } else {
-        this.moveContentBelow()
-      }
-    }
+    // Move the content in to the right location
+    this.moveContent()
 
     // Move to last selected option
     const selectedOptions = this.store.getSelectedOptions()
@@ -627,14 +614,27 @@ export default class Render {
   }
 
   public moveContent(): void {
+    // If contentPosition is relative, dont move the content anywhere other than below
     if (this.settings.contentPosition === 'relative') {
+      this.moveContentBelow()
       return
     }
 
-    const containerRect = this.main.main.getBoundingClientRect()
-    this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
-    this.content.main.style.left = containerRect.left + window.scrollX + 'px'
-    this.content.main.style.width = containerRect.width + 'px'
+    // If openContent is not auto set content
+    if (this.settings.openPosition === 'down') {
+      this.moveContentBelow()
+      return
+    } else if (this.settings.openPosition === 'up') {
+      this.moveContentAbove()
+      return
+    }
+
+    // Auto - Determine where to put the content
+    if (this.putContent() === 'up') {
+      this.moveContentAbove()
+    } else {
+      this.moveContentBelow()
+    }
   }
 
   public searchDiv(): Search {
@@ -1282,27 +1282,40 @@ export default class Render {
   }
 
   public moveContentAbove(): void {
-    let mainHeight: number = this.main.main.offsetHeight
-
+    // Get main and content height
+    const mainHeight = this.main.main.offsetHeight
     const contentHeight = this.content.main.offsetHeight
-    const height = mainHeight + contentHeight - 1
-    this.content.main.style.margin = '-' + height + 'px 0px 0px 0px'
-    this.content.main.style.transformOrigin = 'center bottom'
 
+    // Set classes
     this.main.main.classList.remove(this.classes.openBelow)
     this.main.main.classList.add(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.content.main.classList.add(this.classes.openAbove)
+
+    // Set the content position
+    const containerRect = this.main.main.getBoundingClientRect()
+    this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
+    this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+    this.content.main.style.left = containerRect.left + window.scrollX + 'px'
+    this.content.main.style.width = containerRect.width + 'px'
   }
 
   public moveContentBelow(): void {
-    this.content.main.style.margin = '-1px 0px 0px 0px'
-    this.content.main.style.transformOrigin = 'center top'
-
+    // Set classes
     this.main.main.classList.remove(this.classes.openAbove)
     this.main.main.classList.add(this.classes.openBelow)
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.add(this.classes.openBelow)
+
+    // Set the content position
+    const containerRect = this.main.main.getBoundingClientRect()
+    this.content.main.style.margin = '-1px 0px 0px 0px'
+    // Dont do anything if the content is relative
+    if (this.settings.contentPosition !== 'relative') {
+      this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+      this.content.main.style.left = containerRect.left + window.scrollX + 'px'
+      this.content.main.style.width = containerRect.width + 'px'
+    }
   }
 
   public ensureElementInView(container: HTMLElement, element: HTMLElement): void {
@@ -1322,20 +1335,28 @@ export default class Render {
     }
   }
 
-  public putContent(el: HTMLElement, isOpen: boolean): 'up' | 'down' {
-    const height = el.offsetHeight
-    const rect = el.getBoundingClientRect()
-    const elemTop = isOpen ? rect.top : rect.top - height
-    const elemBottom = isOpen ? rect.bottom : rect.bottom + height
+  public putContent(): 'up' | 'down' {
+    // Get main and content height
+    const mainHeight = this.main.main.offsetHeight
+    const mainRect = this.main.main.getBoundingClientRect()
+    const contentHeight = this.content.main.offsetHeight
 
-    if (elemTop <= 0) {
-      return 'down'
-    }
-    if (elemBottom >= window.innerHeight) {
-      return 'up'
+    // From bottom of mainHeight figure out if content will fit below without going below the window
+    const spaceBelow = window.innerHeight - (mainRect.top + mainHeight)
+
+    // If space below is less than content height
+    if (spaceBelow <= contentHeight) {
+      // If space above is more than content height
+      if (mainRect.top > contentHeight) {
+        // Move content above
+        return 'up'
+      } else {
+        // Move content below
+        return 'down'
+      }
     }
 
-    // default to current position if we cant determine a perfect one
+    // Move content below
     return 'down'
   }
 }

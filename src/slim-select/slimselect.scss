@@ -256,6 +256,7 @@
   }
 
   &.ss-open-above {
+    flex-direction: column-reverse;
     opacity: 1;
     transform: scaleY(1);
     transform-origin: center bottom;

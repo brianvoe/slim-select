@@ -290,10 +290,12 @@ export default class SlimSelect {
 
     // Start an interval to check if main has moved
     // in order to keep content close to main
-    if (this.settings.intervalMove) {
-      clearInterval(this.settings.intervalMove)
+    if (this.settings.contentPosition === 'absolute') {
+      if (this.settings.intervalMove) {
+        clearInterval(this.settings.intervalMove)
+      }
+      this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
     }
-    this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
   }
 
   public close(): void {
@@ -411,23 +413,7 @@ export default class SlimSelect {
       return
     }
 
-    // If openContent is not auto set content
-    if (this.settings.openPosition === 'down') {
-      this.render.moveContentBelow()
-      return
-    } else if (this.settings.openPosition === 'up') {
-      this.render.moveContentAbove()
-      return
-    }
-
-    // Determine where to put the content
-    if (this.settings.contentPosition === 'relative') {
-      this.render.moveContentBelow()
-    } else if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
-      this.render.moveContentAbove()
-    } else {
-      this.render.moveContentBelow()
-    }
+    this.render.moveContent()
   })
 
   // Event listener for document click
