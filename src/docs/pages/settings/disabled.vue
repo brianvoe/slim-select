@@ -18,6 +18,21 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.disabledMultiple as HTMLSelectElement,
     })
+
+    // Disable option via data
+    new SlimSelect({
+      select: this.$refs.disabledOptionSingle as HTMLSelectElement,
+      data: [
+        { text: 'Option 1', value: 'option1' },
+        { text: 'Option 2', value: 'option2', disabled: true },
+        { text: 'Option 3', value: 'option3' },
+      ],
+    })
+
+    // Disable via disabled html attribute
+    new SlimSelect({
+      select: this.$refs.disabledOptionMultiple as HTMLSelectElement,
+    })
   },
 })
 </script>
@@ -25,7 +40,7 @@ export default defineComponent({
 <template>
   <div id="disabled" class="content">
     <h2 class="header">disabled</h2>
-    <p>Allows the ability to disable</p>
+    <p>Allows the ability to disable the select dropdown as well as individual options</p>
     <div class="alert info">Methods also are provided to enable and disable SlimSelect via method call.</div>
 
     <div class="row">
@@ -37,6 +52,21 @@ export default defineComponent({
       <select ref="disabledMultiple" multiple disabled>
         <option value="value1" selected>Value 1</option>
         <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+
+    <br />
+
+    <div class="row">
+      <select ref="disabledOptionSingle">
+        <option value="value1" selected>Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select ref="disabledOptionMultiple" multiple>
+        <option value="value1" selected>Value 1</option>
+        <option value="value2" disabled>Value 2</option>
         <option value="value3">Value 3</option>
       </select>
     </div>
