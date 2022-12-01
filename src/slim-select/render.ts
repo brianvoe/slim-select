@@ -932,8 +932,7 @@ export default class Render {
     // If no results show no results text
     if (data.length === 0) {
       const noResults = document.createElement('div')
-      noResults.classList.add(this.classes.option)
-      noResults.classList.add(this.classes.disabled)
+      noResults.classList.add(this.classes.search)
       noResults.innerHTML = this.settings.searchText
       this.content.list.appendChild(noResults)
       return
@@ -1150,7 +1149,7 @@ export default class Render {
     }
 
     // If allowed to deselect, null onclick and add disabled
-    if ((option.selected && !this.settings.allowDeselect) || (option.disabled && !this.settings.allowDeselect)) {
+    if (option.disabled) {
       optionEl.classList.add(this.classes.disabled)
     }
 
