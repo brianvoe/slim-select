@@ -116,14 +116,9 @@ export default class Select {
   private connectObserver(): void {
     if (this.observer) {
       this.observer.observe(this.select, {
-        // For now we only care about if the children change
-        childList: true,
-
-        // We dont care about attributes for now
-        // might need to add this later
-        // attributes: true,
-        // characterData: true,
-        // subtree: true,
+        subtree: true, // subtree for optgroups options
+        childList: true, // children changes
+        attributes: true, // attributes changes
       })
     }
   }
@@ -157,7 +152,7 @@ export default class Select {
 
   public getDataFromOptgroup(optgroup: HTMLOptGroupElement): OptgroupOptional {
     let data = {
-      id: (optgroup.dataset ? optgroup.dataset.id : false) || '',
+      id: optgroup.id,
       label: optgroup.label,
       selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
       closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
@@ -177,10 +172,10 @@ export default class Select {
   // From passed in option pull pieces of usable information
   public getDataFromOption(option: HTMLOptionElement): Option {
     return {
-      id: (option.dataset ? option.dataset.id : false) || '',
+      id: option.id,
       value: option.value,
       text: option.text,
-      html: option.innerHTML,
+      html: option.dataset && option.dataset.html ? option.dataset.html : '',
       selected: option.selected,
       display: option.style.display === 'none' ? false : true,
       disabled: option.disabled,
@@ -315,8 +310,12 @@ export default class Select {
 
   public createOption(info: Option): HTMLOptionElement {
     const optionEl = document.createElement('option')
+    optionEl.id = info.id
     optionEl.value = info.value
-    optionEl.innerHTML = info.html || info.text
+    optionEl.innerHTML = info.text
+    if (info.html !== '') {
+      optionEl.setAttribute('data-html', info.html)
+    }
     if (info.selected) {
       optionEl.selected = info.selected
     }
