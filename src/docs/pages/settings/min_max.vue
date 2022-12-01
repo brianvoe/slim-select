@@ -9,8 +9,15 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.selectMultiMax as HTMLSelectElement,
       settings: {
+        allowDeselect: true,
+        closeOnSelect: false,
         minSelected: 2,
         maxSelected: 5,
+      },
+      events: {
+        addable: (value: string): string => {
+          return value
+        },
       },
     })
   },
