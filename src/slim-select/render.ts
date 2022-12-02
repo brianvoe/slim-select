@@ -1054,8 +1054,8 @@ export default class Render {
           const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path')
           optgroupClosableSvg.appendChild(optgroupClosableArrow)
 
-          // If any options are selected, set optgroup to open
-          if (d.options.some((o) => o.selected)) {
+          // If any options are selected or someone is searching, set optgroup to open
+          if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
             optgroupClosable.classList.add(this.classes.open)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
