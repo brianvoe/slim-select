@@ -33,6 +33,23 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.disabledOptionMultiple as HTMLSelectElement,
     })
+
+    // Disable via disabled html attribute
+    const dynamic = new SlimSelect({
+      select: this.$refs.disabledDynamicSingle as HTMLSelectElement,
+    })
+
+    // Show the original select for disabledDynamicMultiple
+    dynamic.select.showUI()
+  },
+  methods: {
+    enableDisableDynamic() {
+      const dis = this.$refs.disabledDynamicSingle as HTMLSelectElement
+      // Disable via method
+      if (dis) {
+        dis.disabled = !dis.disabled
+      }
+    },
   },
 })
 </script>
@@ -67,6 +84,17 @@ export default defineComponent({
       <select ref="disabledOptionMultiple" multiple>
         <option value="value1" selected>Value 1</option>
         <option value="value2" disabled>Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+
+    <br />
+
+    <div class="row">
+      <div class="btn" @click="enableDisableDynamic">Enable/Disable Original Select</div>
+      <select ref="disabledDynamicSingle">
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
       </select>
     </div>

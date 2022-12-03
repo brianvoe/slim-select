@@ -93,14 +93,21 @@ export default class SlimSelect {
     this.select.hideUI() // Hide the original select element
 
     // Add select listeners
-    this.select.addSelectChangeListener((data: DataArrayPartial) => {
-      // Run set data from the values given
-      this.setData(data)
-    })
-    this.select.addValueChangeListener((values: string[]) => {
+    this.select.onValueChange = (values: string[]) => {
       // Run set selected from the values given
       this.setSelected(values)
-    })
+    }
+    this.select.onDisabledChange = (disabled: boolean) => {
+      if (disabled) {
+        this.disable()
+      } else {
+        this.enable()
+      }
+    }
+    this.select.onOptionsChange = (data: DataArrayPartial) => {
+      // Run set data from the values given
+      this.setData(data)
+    }
 
     // Set store class
     this.store = new Store(
@@ -228,7 +235,14 @@ export default class SlimSelect {
 
     // Update the render
     this.render.renderValues()
-    this.render.renderOptions(data)
+
+    // If there is a search input value lets run through the search again
+    // Otherwise we will just render the options from store data
+    if (this.render.content.search.input.value !== '') {
+      this.search(this.render.content.search.input.value)
+    } else {
+      this.render.renderOptions(data)
+    }
 
     // Trigger afterChange event, if it doesnt equal the original selected values
     if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {

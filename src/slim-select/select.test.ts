@@ -109,7 +109,7 @@ describe('select module', () => {
     expect(data[0].selected).toBe(true)
 
     const callback = jest.fn()
-    select.addValueChangeListener(callback)
+    select.onValueChange = callback
 
     // Change the value
     selectElement.value = '2'
@@ -142,7 +142,7 @@ describe('select module', () => {
     expect(data[0].selected).toBe(true)
 
     const callback = jest.fn()
-    select.addValueChangeListener(callback)
+    select.onValueChange = callback
 
     selectElement.innerHTML = `<option value="4">Four</option>
         <option value="5" selected>Five</option>
@@ -171,7 +171,7 @@ describe('select module', () => {
     expect(data.length).toBe(3)
 
     const callback = jest.fn()
-    select.addSelectChangeListener(callback)
+    select.onOptionsChange = callback
 
     selectElement.innerHTML = '<option value="1">One</option><option value="2">Two</option>'
 
@@ -203,7 +203,7 @@ describe('select module', () => {
     expect(dataOptgroup.length).toBe(2)
 
     const callback = jest.fn()
-    select.addSelectChangeListener(callback)
+    select.onOptionsChange = callback
 
     let selectOptgroup = document.getElementById('test_optgroup') as HTMLOptGroupElement
     selectOptgroup.innerHTML = '<option value="8">Eight</option><option value="9">Nine</option>'
@@ -234,7 +234,7 @@ describe('select module', () => {
     expect(data[0].text).toBe('One')
 
     const callback = jest.fn()
-    select.addSelectChangeListener(callback)
+    select.onOptionsChange = callback
 
     let option = selectElement.options[0]
     option.text = 'New One'
@@ -264,7 +264,7 @@ describe('select module', () => {
     expect(dataOptgroup[0].options[0].text).toBe('One')
 
     const callback = jest.fn()
-    select.addSelectChangeListener(callback)
+    select.onOptionsChange = callback
 
     let selectOption = document.getElementById('test_option') as HTMLOptionElement
     selectOption.text = 'New One'

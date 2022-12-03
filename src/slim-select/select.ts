@@ -1,36 +1,42 @@
-import { generateID, kebabCase } from './helpers'
+import { kebabCase } from './helpers'
 import { DataArray, DataArrayPartial, Optgroup, OptgroupOptional, Option } from './store'
 
 export default class Select {
   public select: HTMLSelectElement
-  public listen: boolean = false
 
   // Mutation observer fields
-  public onSelectChange?: (data: DataArrayPartial) => void
   public onValueChange?: (value: string[]) => void
+  public onDisabledChange?: (disabled: boolean) => void
+  public onOptionsChange?: (data: DataArrayPartial) => void
+
+  // Change observers
+  public listen: boolean = false
   private observer: MutationObserver | null = null
 
   constructor(select: HTMLSelectElement) {
     this.select = select
+
+    // Add change event listener
+    this.select.addEventListener('change', this.valueChange.bind(this), {
+      // allow bubbling of event
+      passive: true,
+    })
+
+    // Initiate mutation observer
+    this.observer = new MutationObserver(this.observeCall.bind(this))
+
+    // Start listening for changes
+    this.changeListen(true)
   }
 
-  // Set to enabled
   public enable(): void {
-    // Disable original select but dont trigger observer
-    this.disconnectObserver()
     this.select.disabled = false
-    this.connectObserver()
   }
 
-  // Set to disabled
   public disable(): void {
-    // Enable original select but dont trigger observer
-    this.disconnectObserver()
     this.select.disabled = true
-    this.connectObserver()
   }
 
-  // Set misc attributes on the main select element
   public hideUI(): void {
     this.select.tabIndex = -1
     this.select.style.display = 'none'
@@ -43,44 +49,30 @@ export default class Select {
     this.select.removeAttribute('aria-hidden')
   }
 
-  public changeListen(on: boolean) {
-    this.listen = on
+  public changeListen(listen: boolean) {
+    this.listen = listen
 
-    // Deal with some observer situations
-    if (this.listen) {
-      this.connectObserver()
-    } else {
-      this.disconnectObserver()
+    // Start listening for changes
+    if (listen) {
+      if (this.observer) {
+        this.observer.observe(this.select, {
+          subtree: true, // subtree for optgroups options
+          childList: true, // children changes
+          attributes: true, // attributes changes
+        })
+      }
+    }
+
+    // Stop listening for changes
+    if (!listen) {
+      if (this.observer) {
+        this.observer.disconnect()
+      }
     }
   }
 
-  // Add change listener to original select
-  public addSelectChangeListener(func: (data: DataArrayPartial) => void): void {
-    this.onSelectChange = func
-    this.addObserver()
-    this.connectObserver()
-    this.changeListen(true) // Last start listening
-  }
-
-  // remove change listener from original select
-  public removeSelectChangeListener(): void {
-    this.changeListen(false) // First stop listening
-    this.onSelectChange = undefined
-  }
-
-  public addValueChangeListener(func: (value: string[]) => void): void {
-    this.onValueChange = func
-    this.select.addEventListener('change', this.valueChange.bind(this), {
-      // allow bubbling of event
-      passive: true,
-    })
-  }
-
-  public removeValueChangeListener(): void {
-    this.onValueChange = undefined
-    this.select.removeEventListener('change', this.valueChange.bind(this))
-  }
-
+  // This function get triggers when the select value changes
+  // and will call the onValueChange function if it exists
   public valueChange(ev: Event): boolean {
     if (this.listen && this.onValueChange) {
       this.onValueChange(this.getSelectedValues())
@@ -90,42 +82,43 @@ export default class Select {
     return true
   }
 
-  private observeWrapper(mutations: MutationRecord[]): void {
-    if (this.onSelectChange) {
-      // Just in case this triggers a change in the select
-      // we want to stop listening to it while we run onSelectChange
+  private observeCall(mutations: MutationRecord[]): void {
+    // If we are not listeing do nothing
+    if (!this.listen) {
+      return
+    }
+
+    let disabledChanged = false
+    let optgroupOptionChanged = false
+
+    // Loop through mutations and check various things
+    for (const m of mutations) {
+      // Check if its the select
+      if (m.target === this.select) {
+        // Check if disabled has changed
+        if (m.attributeName === 'disabled') {
+          disabledChanged = true
+        }
+      }
+
+      // Check if its an optgroup or option
+      if (m.target.nodeName === 'OPTGROUP' || m.target.nodeName === 'OPTION') {
+        optgroupOptionChanged = true
+      }
+    }
+
+    // If disabled has changed then call the disabled change function
+    if (disabledChanged && this.onDisabledChange) {
       this.changeListen(false)
-      this.onSelectChange(this.getData())
+      this.onDisabledChange(this.select.disabled)
       this.changeListen(true)
     }
-  }
 
-  // Add MutationObserver to select
-  private addObserver(): void {
-    // If mutation observer already exists then disconnect and
-    if (this.observer) {
-      this.disconnectObserver()
-      this.observer = null
-    }
-
-    // If anything changes in the select then update the data
-    this.observer = new MutationObserver(this.observeWrapper.bind(this))
-  }
-
-  // Start observing the select
-  private connectObserver(): void {
-    if (this.observer) {
-      this.observer.observe(this.select, {
-        subtree: true, // subtree for optgroups options
-        childList: true, // children changes
-        attributes: true, // attributes changes
-      })
-    }
-  }
-
-  private disconnectObserver(): void {
-    if (this.observer) {
-      this.observer.disconnect()
+    // If optgroup or option has changed then call the select change function
+    if (optgroupOptionChanged && this.onOptionsChange) {
+      this.changeListen(false)
+      this.onOptionsChange(this.getData())
+      this.changeListen(true)
     }
   }
 
@@ -217,6 +210,9 @@ export default class Select {
   }
 
   public setSelected(value: string[]): void {
+    // Stop listening to changes
+    this.changeListen(false)
+
     // Loop through options and set selected
     const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
     for (const o of options) {
@@ -236,6 +232,9 @@ export default class Select {
         option.selected = value.includes(option.value)
       }
     }
+
+    // Stop listening to changes
+    this.changeListen(true)
   }
 
   public updateSelect(id?: string, style?: string, classes?: string[]): void {
@@ -347,9 +346,15 @@ export default class Select {
 
   public destroy() {
     this.changeListen(false)
-    this.disconnectObserver()
-    this.removeSelectChangeListener()
-    this.removeValueChangeListener()
+
+    // Remove event change listener
+    this.select.removeEventListener('change', this.valueChange.bind(this))
+
+    // Disconnect observer and null
+    if (this.observer) {
+      this.observer.disconnect()
+      this.observer = null
+    }
 
     // show the original select
     this.showUI()
