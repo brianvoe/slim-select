@@ -68,7 +68,7 @@ var SlimSelectVue = (function (vue) {
           this.id = 'ss-' + generateID();
           this.style = settings.style || '';
           this.class = settings.class || [];
-          this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true;
+          this.disabled = settings.disabled !== undefined ? settings.disabled : false;
           this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
           this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
           this.searchPlaceholder = settings.searchPlaceholder || 'Search';
@@ -86,8 +86,8 @@ var SlimSelectVue = (function (vue) {
           this.minSelected = settings.minSelected || 0;
           this.maxSelected = settings.maxSelected || 1000;
           this.timeoutDelay = settings.timeoutDelay || 200;
-          this.selectedChipsLimit = settings.selectedChipsLimit || 20;
-          this.selectedChipsLimitMessage = settings.selectedChipsLimitMessage || '$NUMBER selected';
+          this.maxValuesShown = settings.maxValuesShown || 20;
+          this.maxValuesMessage = settings.maxValuesMessage || '{number} selected';
       }
   }
 
@@ -304,9 +304,8 @@ var SlimSelectVue = (function (vue) {
               placeholder: 'ss-placeholder',
               values: 'ss-values',
               single: 'ss-single',
+              max: 'ss-max',
               value: 'ss-value',
-              valueChipsHidden: 'ss-hide-chips',
-              valueSelectionCounter: '.ss-selection-counter',
               valueText: 'ss-value-text',
               valueDelete: 'ss-value-delete',
               valueOut: 'ss-value-out',
@@ -362,23 +361,7 @@ var SlimSelectVue = (function (vue) {
           this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow);
           this.moveContent();
           this.renderOptions(this.store.getData());
-          if (this.settings.contentPosition === 'relative') {
-              this.moveContentBelow();
-          }
-          else if (this.settings.openPosition.toLowerCase() === 'up') {
-              this.moveContentAbove();
-          }
-          else if (this.settings.openPosition.toLowerCase() === 'down') {
-              this.moveContentBelow();
-          }
-          else {
-              if (this.putContent(this.content.main, this.settings.isOpen) === 'up') {
-                  this.moveContentAbove();
-              }
-              else {
-                  this.moveContentBelow();
-              }
-          }
+          this.moveContent();
           const selectedOptions = this.store.getSelectedOptions();
           if (selectedOptions.length) {
               const selectedId = selectedOptions[selectedOptions.length - 1].id;
@@ -436,7 +419,7 @@ var SlimSelectVue = (function (vue) {
               }
           };
           main.onclick = (e) => {
-              if (!this.settings.isEnabled) {
+              if (this.settings.disabled) {
                   return;
               }
               this.settings.isOpen ? this.callbacks.close() : this.callbacks.open();
@@ -444,9 +427,6 @@ var SlimSelectVue = (function (vue) {
           const values = document.createElement('div');
           values.classList.add(this.classes.values);
           main.appendChild(values);
-          const singleValue = document.createElement('div');
-          singleValue.classList.add("ss-selection-counter");
-          values.appendChild(singleValue);
           const deselect = document.createElement('div');
           deselect.classList.add(this.classes.deselect);
           if (!this.settings.allowDeselect || this.settings.isMultiple) {
@@ -454,7 +434,7 @@ var SlimSelectVue = (function (vue) {
           }
           deselect.onclick = (e) => {
               e.stopPropagation();
-              if (!this.settings.isEnabled) {
+              if (this.settings.disabled) {
                   return;
               }
               let shouldDelete = true;
@@ -570,6 +550,19 @@ var SlimSelectVue = (function (vue) {
                   placeholder.remove();
               }
           }
+          if (selectedOptions.length > this.settings.maxValuesShown) {
+              const singleValue = document.createElement('div');
+              singleValue.classList.add(this.classes.max);
+              singleValue.textContent = this.settings.maxValuesMessage.replace('{number}', selectedOptions.length.toString());
+              this.main.values.innerHTML = singleValue.outerHTML;
+              return;
+          }
+          else {
+              const maxValuesMessage = this.main.values.querySelector('.' + this.classes.max);
+              if (maxValuesMessage) {
+                  maxValuesMessage.remove();
+              }
+          }
           let removeNodes = [];
           for (let i = 0; i < currentNodes.length; i++) {
               const node = currentNodes[i];
@@ -609,13 +602,6 @@ var SlimSelectVue = (function (vue) {
                   }
               }
           }
-          if (selectedOptions.length > this.settings.selectedChipsLimit) {
-              this.main.values.classList.add(this.classes.valueChipsHidden);
-              this.main.values.querySelector(this.classes.valueSelectionCounter).textContent = this.settings.selectedChipsLimitMessage.replace('$NUMBER', selectedOptions.length.toString());
-          }
-          else if (selectedOptions.length <= this.settings.selectedChipsLimit) {
-              this.main.values.classList.remove(this.classes.valueChipsHidden);
-          }
       }
       multipleValue(option) {
           const value = document.createElement('div');
@@ -631,6 +617,9 @@ var SlimSelectVue = (function (vue) {
               deleteDiv.onclick = (e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  if (this.settings.disabled) {
+                      return;
+                  }
                   let shouldDelete = true;
                   const before = this.store.getSelectedOptions();
                   const after = before.filter((o) => {
@@ -702,12 +691,23 @@ var SlimSelectVue = (function (vue) {
       }
       moveContent() {
           if (this.settings.contentPosition === 'relative') {
+              this.moveContentBelow();
               return;
           }
-          const containerRect = this.main.main.getBoundingClientRect();
-          this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px';
-          this.content.main.style.left = containerRect.left + window.scrollX + 'px';
-          this.content.main.style.width = containerRect.width + 'px';
+          if (this.settings.openPosition === 'down') {
+              this.moveContentBelow();
+              return;
+          }
+          else if (this.settings.openPosition === 'up') {
+              this.moveContentAbove();
+              return;
+          }
+          if (this.putContent() === 'up') {
+              this.moveContentAbove();
+          }
+          else {
+              this.moveContentBelow();
+          }
       }
       searchDiv() {
           const main = document.createElement('div');
@@ -918,8 +918,7 @@ var SlimSelectVue = (function (vue) {
           this.content.list.innerHTML = '';
           if (data.length === 0) {
               const noResults = document.createElement('div');
-              noResults.classList.add(this.classes.option);
-              noResults.classList.add(this.classes.disabled);
+              noResults.classList.add(this.classes.search);
               noResults.innerHTML = this.settings.searchText;
               this.content.list.appendChild(noResults);
               return;
@@ -995,7 +994,7 @@ var SlimSelectVue = (function (vue) {
                       optgroupClosable.appendChild(optgroupClosableSvg);
                       const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                       optgroupClosableSvg.appendChild(optgroupClosableArrow);
-                      if (d.options.some((o) => o.selected)) {
+                      if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
                           optgroupClosable.classList.add(this.classes.open);
                           optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen);
                       }
@@ -1054,8 +1053,7 @@ var SlimSelectVue = (function (vue) {
               optionEl.style.cssText = option.style;
           }
           if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
-              const textOrHtml = option.html !== '' ? option.html : option.text;
-              optionEl.innerHTML = this.highlightText(textOrHtml, this.content.search.input.value, this.classes.searchHighlighter);
+              optionEl.innerHTML = this.highlightText(option.html !== '' ? option.html : option.text, this.content.search.input.value, this.classes.searchHighlighter);
           }
           else if (option.html !== '') {
               optionEl.innerHTML = option.html;
@@ -1066,7 +1064,7 @@ var SlimSelectVue = (function (vue) {
           if (this.settings.showOptionTooltips && optionEl.textContent) {
               optionEl.setAttribute('title', optionEl.textContent);
           }
-          if ((option.selected && !this.settings.allowDeselect) || (option.disabled && !this.settings.allowDeselect)) {
+          if (option.disabled) {
               optionEl.classList.add(this.classes.disabled);
           }
           if (option.selected && this.settings.hideSelected) {
@@ -1087,9 +1085,8 @@ var SlimSelectVue = (function (vue) {
               if (option.disabled || (option.selected && !this.settings.allowDeselect)) {
                   return;
               }
-              if (this.settings.isMultiple &&
-                  Array.isArray(selectedOptions) &&
-                  this.settings.maxSelected <= selectedOptions.length) {
+              if ((this.settings.isMultiple && this.settings.maxSelected <= selectedOptions.length && !option.selected) ||
+                  (this.settings.isMultiple && this.settings.minSelected >= selectedOptions.length && option.selected)) {
                   return;
               }
               let shouldUpdate = false;
@@ -1154,23 +1151,30 @@ var SlimSelectVue = (function (vue) {
           return completedString;
       }
       moveContentAbove() {
-          let mainHeight = this.main.main.offsetHeight;
+          const mainHeight = this.main.main.offsetHeight;
           const contentHeight = this.content.main.offsetHeight;
-          const height = mainHeight + contentHeight - 1;
-          this.content.main.style.margin = '-' + height + 'px 0px 0px 0px';
-          this.content.main.style.transformOrigin = 'center bottom';
           this.main.main.classList.remove(this.classes.openBelow);
           this.main.main.classList.add(this.classes.openAbove);
           this.content.main.classList.remove(this.classes.openBelow);
           this.content.main.classList.add(this.classes.openAbove);
+          const containerRect = this.main.main.getBoundingClientRect();
+          this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px';
+          this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px';
+          this.content.main.style.left = containerRect.left + window.scrollX + 'px';
+          this.content.main.style.width = containerRect.width + 'px';
       }
       moveContentBelow() {
-          this.content.main.style.margin = '-1px 0px 0px 0px';
-          this.content.main.style.transformOrigin = 'center top';
           this.main.main.classList.remove(this.classes.openAbove);
           this.main.main.classList.add(this.classes.openBelow);
           this.content.main.classList.remove(this.classes.openAbove);
           this.content.main.classList.add(this.classes.openBelow);
+          const containerRect = this.main.main.getBoundingClientRect();
+          this.content.main.style.margin = '-1px 0px 0px 0px';
+          if (this.settings.contentPosition !== 'relative') {
+              this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px';
+              this.content.main.style.left = containerRect.left + window.scrollX + 'px';
+              this.content.main.style.width = containerRect.width + 'px';
+          }
       }
       ensureElementInView(container, element) {
           const cTop = container.scrollTop + container.offsetTop;
@@ -1184,16 +1188,18 @@ var SlimSelectVue = (function (vue) {
               container.scrollTop += eBottom - cBottom;
           }
       }
-      putContent(el, isOpen) {
-          const height = el.offsetHeight;
-          const rect = el.getBoundingClientRect();
-          const elemTop = isOpen ? rect.top : rect.top - height;
-          const elemBottom = isOpen ? rect.bottom : rect.bottom + height;
-          if (elemTop <= 0) {
-              return 'down';
-          }
-          if (elemBottom >= window.innerHeight) {
-              return 'up';
+      putContent() {
+          const mainHeight = this.main.main.offsetHeight;
+          const mainRect = this.main.main.getBoundingClientRect();
+          const contentHeight = this.content.main.offsetHeight;
+          const spaceBelow = window.innerHeight - (mainRect.top + mainHeight);
+          if (spaceBelow <= contentHeight) {
+              if (mainRect.top > contentHeight) {
+                  return 'up';
+              }
+              else {
+                  return 'down';
+              }
           }
           return 'down';
       }
@@ -1204,16 +1210,17 @@ var SlimSelectVue = (function (vue) {
           this.listen = false;
           this.observer = null;
           this.select = select;
+          this.select.addEventListener('change', this.valueChange.bind(this), {
+              passive: true,
+          });
+          this.observer = new MutationObserver(this.observeCall.bind(this));
+          this.changeListen(true);
       }
       enable() {
-          this.disconnectObserver();
           this.select.disabled = false;
-          this.connectObserver();
       }
       disable() {
-          this.disconnectObserver();
           this.select.disabled = true;
-          this.connectObserver();
       }
       hideUI() {
           this.select.tabIndex = -1;
@@ -1225,34 +1232,22 @@ var SlimSelectVue = (function (vue) {
           this.select.style.display = '';
           this.select.removeAttribute('aria-hidden');
       }
-      changeListen(on) {
-          this.listen = on;
-          if (this.listen) {
-              this.connectObserver();
+      changeListen(listen) {
+          this.listen = listen;
+          if (listen) {
+              if (this.observer) {
+                  this.observer.observe(this.select, {
+                      subtree: true,
+                      childList: true,
+                      attributes: true,
+                  });
+              }
           }
-          else {
-              this.disconnectObserver();
+          if (!listen) {
+              if (this.observer) {
+                  this.observer.disconnect();
+              }
           }
-      }
-      addSelectChangeListener(func) {
-          this.onSelectChange = func;
-          this.addObserver();
-          this.connectObserver();
-          this.changeListen(true);
-      }
-      removeSelectChangeListener() {
-          this.changeListen(false);
-          this.onSelectChange = undefined;
-      }
-      addValueChangeListener(func) {
-          this.onValueChange = func;
-          this.select.addEventListener('change', this.valueChange.bind(this), {
-              passive: true,
-          });
-      }
-      removeValueChangeListener() {
-          this.onValueChange = undefined;
-          this.select.removeEventListener('change', this.valueChange.bind(this));
       }
       valueChange(ev) {
           if (this.listen && this.onValueChange) {
@@ -1260,30 +1255,31 @@ var SlimSelectVue = (function (vue) {
           }
           return true;
       }
-      observeWrapper(mutations) {
-          if (this.onSelectChange) {
+      observeCall(mutations) {
+          if (!this.listen) {
+              return;
+          }
+          let disabledChanged = false;
+          let optgroupOptionChanged = false;
+          for (const m of mutations) {
+              if (m.target === this.select) {
+                  if (m.attributeName === 'disabled') {
+                      disabledChanged = true;
+                  }
+              }
+              if (m.target.nodeName === 'OPTGROUP' || m.target.nodeName === 'OPTION') {
+                  optgroupOptionChanged = true;
+              }
+          }
+          if (disabledChanged && this.onDisabledChange) {
               this.changeListen(false);
-              this.onSelectChange(this.getData());
+              this.onDisabledChange(this.select.disabled);
               this.changeListen(true);
           }
-      }
-      addObserver() {
-          if (this.observer) {
-              this.disconnectObserver();
-              this.observer = null;
-          }
-          this.observer = new MutationObserver(this.observeWrapper.bind(this));
-      }
-      connectObserver() {
-          if (this.observer) {
-              this.observer.observe(this.select, {
-                  childList: true,
-              });
-          }
-      }
-      disconnectObserver() {
-          if (this.observer) {
-              this.observer.disconnect();
+          if (optgroupOptionChanged && this.onOptionsChange) {
+              this.changeListen(false);
+              this.onOptionsChange(this.getData());
+              this.changeListen(true);
           }
       }
       getData() {
@@ -1301,7 +1297,7 @@ var SlimSelectVue = (function (vue) {
       }
       getDataFromOptgroup(optgroup) {
           let data = {
-              id: (optgroup.dataset ? optgroup.dataset.id : false) || '',
+              id: optgroup.id,
               label: optgroup.label,
               selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
               closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
@@ -1317,10 +1313,10 @@ var SlimSelectVue = (function (vue) {
       }
       getDataFromOption(option) {
           return {
-              id: (option.dataset ? option.dataset.id : false) || '',
+              id: option.id,
               value: option.value,
               text: option.text,
-              html: option.innerHTML,
+              html: option.dataset && option.dataset.html ? option.dataset.html : '',
               selected: option.selected,
               display: option.style.display === 'none' ? false : true,
               disabled: option.disabled,
@@ -1356,6 +1352,7 @@ var SlimSelectVue = (function (vue) {
           return values;
       }
       setSelected(value) {
+          this.changeListen(false);
           const options = this.select.childNodes;
           for (const o of options) {
               if (o.nodeName === 'OPTGROUP') {
@@ -1373,6 +1370,7 @@ var SlimSelectVue = (function (vue) {
                   option.selected = value.includes(option.value);
               }
           }
+          this.changeListen(true);
       }
       updateSelect(id, style, classes) {
           this.changeListen(false);
@@ -1425,8 +1423,12 @@ var SlimSelectVue = (function (vue) {
       }
       createOption(info) {
           const optionEl = document.createElement('option');
-          optionEl.value = info.value !== '' ? info.value : info.text;
-          optionEl.innerHTML = info.html || info.text;
+          optionEl.id = info.id;
+          optionEl.value = info.value;
+          optionEl.innerHTML = info.text;
+          if (info.html !== '') {
+              optionEl.setAttribute('data-html', info.html);
+          }
           if (info.selected) {
               optionEl.selected = info.selected;
           }
@@ -1456,15 +1458,18 @@ var SlimSelectVue = (function (vue) {
       }
       destroy() {
           this.changeListen(false);
-          this.disconnectObserver();
-          this.removeSelectChangeListener();
-          this.removeValueChangeListener();
+          this.select.removeEventListener('change', this.valueChange.bind(this));
+          if (this.observer) {
+              this.observer.disconnect();
+              this.observer = null;
+          }
           this.showUI();
       }
   }
 
   class SlimSelect {
       constructor(config) {
+          var _a;
           this.events = {
               search: undefined,
               searchFilter: (opt, search) => {
@@ -1488,23 +1493,7 @@ var SlimSelectVue = (function (vue) {
               if (!this.settings.isOpen) {
                   return;
               }
-              if (this.settings.openPosition === 'down') {
-                  this.render.moveContentBelow();
-                  return;
-              }
-              else if (this.settings.openPosition === 'up') {
-                  this.render.moveContentAbove();
-                  return;
-              }
-              if (this.settings.contentPosition === 'relative') {
-                  this.render.moveContentBelow();
-              }
-              else if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
-                  this.render.moveContentAbove();
-              }
-              else {
-                  this.render.moveContentBelow();
-              }
+              this.render.moveContent();
           });
           this.documentClick = (e) => {
               if (!this.settings.isOpen) {
@@ -1536,18 +1525,27 @@ var SlimSelectVue = (function (vue) {
                   this.events[key] = config.events[key];
               }
           }
+          this.settings.disabled = ((_a = config.settings) === null || _a === void 0 ? void 0 : _a.disabled) ? config.settings.disabled : this.selectEl.disabled;
           this.settings.isMultiple = this.selectEl.multiple;
           this.settings.style = this.selectEl.style.cssText;
           this.settings.class = this.selectEl.className.split(' ');
           this.select = new Select(this.selectEl);
           this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class);
           this.select.hideUI();
-          this.select.addSelectChangeListener((data) => {
-              this.setData(data);
-          });
-          this.select.addValueChangeListener((values) => {
+          this.select.onValueChange = (values) => {
               this.setSelected(values);
-          });
+          };
+          this.select.onDisabledChange = (disabled) => {
+              if (disabled) {
+                  this.disable();
+              }
+              else {
+                  this.enable();
+              }
+          };
+          this.select.onOptionsChange = (data) => {
+              this.setData(data);
+          };
           this.store = new Store(this.settings.isMultiple ? 'multiple' : 'single', config.data ? config.data : this.select.getData());
           if (config.data) {
               this.select.updateOptions(this.store.getData());
@@ -1573,7 +1571,7 @@ var SlimSelectVue = (function (vue) {
           if (this.settings.openPosition === 'auto') {
               window.addEventListener('scroll', this.windowScroll, false);
           }
-          if (!this.settings.isEnabled) {
+          if (this.settings.disabled) {
               this.disable();
           }
           if (this.settings.alwaysOpen) {
@@ -1582,12 +1580,12 @@ var SlimSelectVue = (function (vue) {
           this.selectEl.slim = this;
       }
       enable() {
-          this.settings.isEnabled = true;
+          this.settings.disabled = false;
           this.select.enable();
           this.render.enable();
       }
       disable() {
-          this.settings.isEnabled = false;
+          this.settings.disabled = true;
           this.select.disable();
           this.render.disable();
       }
@@ -1621,7 +1619,12 @@ var SlimSelectVue = (function (vue) {
           const data = this.store.getData();
           this.select.updateOptions(data);
           this.render.renderValues();
-          this.render.renderOptions(data);
+          if (this.render.content.search.input.value !== '') {
+              this.search(this.render.content.search.input.value);
+          }
+          else {
+              this.render.renderOptions(data);
+          }
           if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
               this.events.afterChange(this.store.getSelectedOptions());
           }
@@ -1638,7 +1641,7 @@ var SlimSelectVue = (function (vue) {
           }
       }
       open() {
-          if (!this.settings.isEnabled || this.settings.isOpen) {
+          if (this.settings.disabled || this.settings.isOpen) {
               return;
           }
           if (this.events.beforeOpen) {
@@ -1654,10 +1657,12 @@ var SlimSelectVue = (function (vue) {
               }
               this.settings.isOpen = true;
           }, this.settings.timeoutDelay);
-          if (this.settings.intervalMove) {
-              clearInterval(this.settings.intervalMove);
+          if (this.settings.contentPosition === 'absolute') {
+              if (this.settings.intervalMove) {
+                  clearInterval(this.settings.intervalMove);
+              }
+              this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500);
           }
-          this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500);
       }
       close() {
           if (!this.settings.isOpen || this.settings.alwaysOpen) {
@@ -1773,7 +1778,7 @@ var SlimSelectVue = (function (vue) {
           this.slim = new SlimSelect(config);
           let selected = this.$props.multiple ? this.slim.getSelected() : this.slim.getSelected()[0];
           if (this.value !== selected) {
-              this.value = selected;
+              this.slim.setSelected(this.value);
           }
       },
       beforeUnmount() {
@@ -1782,6 +1787,13 @@ var SlimSelectVue = (function (vue) {
           }
       },
       watch: {
+          modelValue: {
+              handler: function (newVal) {
+                  var _a;
+                  (_a = this.slim) === null || _a === void 0 ? void 0 : _a.setSelected(this.getCleanValue(newVal));
+              },
+              immediate: true,
+          },
           data: {
               handler: function (newData) {
                   if (this.slim) {
@@ -1794,18 +1806,7 @@ var SlimSelectVue = (function (vue) {
       computed: {
           value: {
               get() {
-                  const multi = this.$props.multiple;
-                  const val = this.$props.modelValue;
-                  if (val === undefined) {
-                      return multi ? [] : '';
-                  }
-                  if (multi && typeof val === 'string') {
-                      return [val];
-                  }
-                  if (!multi && Array.isArray(val)) {
-                      return val[0];
-                  }
-                  return multi ? [] : '';
+                  return this.getCleanValue(this.$props.modelValue);
               },
               set(value) {
                   this.$emit('update:modelValue', value);
@@ -1815,6 +1816,16 @@ var SlimSelectVue = (function (vue) {
       methods: {
           getSlimSelect() {
               return this.slim;
+          },
+          getCleanValue(val) {
+              const multi = this.$props.multiple;
+              if (typeof val === 'string') {
+                  return multi ? [val] : val;
+              }
+              if (Array.isArray(val)) {
+                  return multi ? val : val[0];
+              }
+              return multi ? [] : '';
           },
       },
   });

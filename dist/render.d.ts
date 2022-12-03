@@ -48,9 +48,8 @@ export default class Render {
         placeholder: string;
         values: string;
         single: string;
+        max: string;
         value: string;
-        valueChipsHidden: string;
-        valueSelectionCounter: string;
         valueText: string;
         valueDelete: string;
         valueOut: string;
@@ -114,5 +113,5 @@ export default class Render {
     moveContentAbove(): void;
     moveContentBelow(): void;
     ensureElementInView(container: HTMLElement, element: HTMLElement): void;
-    putContent(el: HTMLElement, isOpen: boolean): 'up' | 'down';
+    putContent(): 'up' | 'down';
 }

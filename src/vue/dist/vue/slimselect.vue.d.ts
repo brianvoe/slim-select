@@ -1,7 +1,6 @@
 /// <reference types="node" />
 import { PropType } from 'vue';
 import SlimSelect, { Events } from '../slim-select';
-import Settings from '../slim-select/settings';
 import { DataArrayPartial, Option } from '../slim-select/store';
 declare const _default: import("vue").DefineComponent<{
     modelValue: {
@@ -15,7 +14,7 @@ declare const _default: import("vue").DefineComponent<{
         type: PropType<DataArrayPartial>;
     };
     settings: {
-        type: PropType<Settings>;
+        type: PropType<Partial<import("../slim-select/settings").default>>;
     };
     events: {
         type: PropType<Events>;
@@ -44,7 +43,7 @@ declare const _default: import("vue").DefineComponent<{
                 ref: () => NodeJS.Timeout;
                 unref: () => NodeJS.Timeout;
             } | null;
-            isEnabled: boolean;
+            disabled: boolean;
             alwaysOpen: boolean;
             showSearch: boolean;
             searchPlaceholder: string;
@@ -62,23 +61,20 @@ declare const _default: import("vue").DefineComponent<{
             minSelected: number;
             maxSelected: number;
             timeoutDelay: number;
-            selectedChipsLimit: number;
-            selectedChipsLimitMessage: string;
+            maxValuesShown: number;
+            maxValuesMessage: string;
         };
         select: {
             select: HTMLSelectElement;
-            listen: boolean;
-            onSelectChange?: ((data: DataArrayPartial) => void) | undefined;
             onValueChange?: ((value: string[]) => void) | undefined;
+            onDisabledChange?: ((disabled: boolean) => void) | undefined;
+            onOptionsChange?: ((data: DataArrayPartial) => void) | undefined;
+            listen: boolean;
             enable: () => void;
             disable: () => void;
             hideUI: () => void;
             showUI: () => void;
-            changeListen: (on: boolean) => void;
-            addSelectChangeListener: (func: (data: DataArrayPartial) => void) => void;
-            removeSelectChangeListener: () => void;
-            addValueChangeListener: (func: (value: string[]) => void) => void;
-            removeValueChangeListener: () => void;
+            changeListen: (listen: boolean) => void;
             valueChange: (ev: Event) => boolean;
             getData: () => DataArrayPartial;
             getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => import("../slim-select/store").OptgroupOptional;
@@ -99,7 +95,7 @@ declare const _default: import("vue").DefineComponent<{
             getData: () => import("../slim-select/store").DataArray;
             getDataOptions: () => Option[];
             addOption: (option: import("../slim-select/store").OptionOptional) => void;
-            setSelectedBy: (selectedType: "value" | "id", selectedValues: string[]) => void;
+            setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
             getSelected: () => string[];
             getSelectedOptions: () => Option[];
             getSelectedIDs: () => string[];
@@ -123,7 +119,7 @@ declare const _default: import("vue").DefineComponent<{
                     ref: () => NodeJS.Timeout;
                     unref: () => NodeJS.Timeout;
                 } | null;
-                isEnabled: boolean;
+                disabled: boolean;
                 alwaysOpen: boolean;
                 showSearch: boolean;
                 searchPlaceholder: string;
@@ -141,8 +137,8 @@ declare const _default: import("vue").DefineComponent<{
                 minSelected: number;
                 maxSelected: number;
                 timeoutDelay: number;
-                selectedChipsLimit: number;
-                selectedChipsLimitMessage: string;
+                maxValuesShown: number;
+                maxValuesMessage: string;
             };
             store: {
                 validateDataArray: (data: DataArrayPartial | import("../slim-select/store").DataArray) => Error | null;
@@ -152,7 +148,7 @@ declare const _default: import("vue").DefineComponent<{
                 getData: () => import("../slim-select/store").DataArray;
                 getDataOptions: () => Option[];
                 addOption: (option: import("../slim-select/store").OptionOptional) => void;
-                setSelectedBy: (selectedType: "value" | "id", selectedValues: string[]) => void;
+                setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
                 getSelected: () => string[];
                 getSelectedOptions: () => Option[];
                 getSelectedIDs: () => string[];
@@ -202,9 +198,8 @@ declare const _default: import("vue").DefineComponent<{
                 placeholder: string;
                 values: string;
                 single: string;
+                max: string;
                 value: string;
-                valueChipsHidden: string;
-                valueSelectionCounter: string;
                 valueText: string;
                 valueDelete: string;
                 valueOut: string;
@@ -264,7 +259,7 @@ declare const _default: import("vue").DefineComponent<{
             moveContentAbove: () => void;
             moveContentBelow: () => void;
             ensureElementInView: (container: HTMLElement, element: HTMLElement) => void;
-            putContent: (el: HTMLElement, isOpen: boolean) => "up" | "down";
+            putContent: () => "up" | "down";
         };
         events: {
             search?: ((searchValue: string, currentData: import("../slim-select/store").DataArray) => DataArrayPartial | Promise<DataArrayPartial>) | undefined;
@@ -290,6 +285,7 @@ declare const _default: import("vue").DefineComponent<{
         search: (value: string) => void;
         destroy: () => void;
     } | null;
+    getCleanValue(val: string | string[] | undefined): string | string[];
 }, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     modelValue: {
         type: PropType<string | string[] | undefined>;
@@ -302,7 +298,7 @@ declare const _default: import("vue").DefineComponent<{
         type: PropType<DataArrayPartial>;
     };
     settings: {
-        type: PropType<Settings>;
+        type: PropType<Partial<import("../slim-select/settings").default>>;
     };
     events: {
         type: PropType<Events>;

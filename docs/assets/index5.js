@@ -1,7 +1,7 @@
-import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w as s,i as V,F as f,h as S}from"./index.js";const C=v({name:"SlimSelect",props:{modelValue:{type:[String,Array,void 0]},multiple:{type:Boolean,default:!1},data:{type:Array},settings:{type:Object},events:{type:Object}},emits:["update:modelValue"],data(){return{slim:null}},mounted(){let t={select:this.$refs.slim};this.data&&(t.data=this.data),this.settings&&(t.settings=this.settings),this.events&&(t.events=this.events),t.events||(t.events={});const n=t.events.afterChange;t.events.afterChange=p=>{const r=this.multiple?p.map(h=>h.value):p[0].value;this.value!==r&&(this.value=r),t.events&&n&&n(p)},this.slim=new y(t);let m=this.$props.multiple?this.slim.getSelected():this.slim.getSelected()[0];this.value!==m&&(this.value=m)},beforeUnmount(){this.slim&&this.slim.destroy()},watch:{data:{handler:function(t){this.slim&&this.slim.setData(t)},deep:!0}},computed:{value:{get(){const t=this.$props.multiple,n=this.$props.modelValue;return n===void 0?t?[]:"":t&&typeof n=="string"?[n]:!t&&Array.isArray(n)?n[0]:t?[]:""},set(t){this.$emit("update:modelValue",t)}}},methods:{getSlimSelect(){return this.slim}}}),$=["multiple"];function b(t,n,m,p,r,h){return u(),d("select",{multiple:t.multiple,ref:"slim"},[O(t.$slots,"default")],8,$)}const w=_(C,[["render",b]]),D=v({name:"Vue",components:{SlimSelect:w},data(){return{simpleSingle:"",simpleMultiple:[],dynamicSingle:"",dynamicMultiple:[],settings:{showSearch:!1},data:[{value:"value1",text:"Value 1"},{value:"value2",text:"Value 2"},{value:"value3",text:"Value 3"}],dynamicData:[],afterChangeData:[],events:{afterChange:this.afterChange}}},mounted(){},methods:{changeData(){this.$refs.dataSingle.getSlimSelect().open(),this.$refs.dataMultiple.getSlimSelect().open(),setTimeout(()=>{this.data=[{value:"value4",text:"Value 4"},{value:"value5",text:"Value 5"},{value:"value6",text:"Value 6"}]},500)},afterChange(t){this.afterChangeData=t},randomDynamicData(){fetch("https://api.gofakeit.com/json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"array",rowcount:20,indent:!1,fields:[{name:"key",function:"password",params:{lower:!0,upper:!0,numeric:!0,special:!1,space:!1,length:10}},{name:"first_name",function:"firstname",params:{}},{name:"last_name",function:"lastname",params:{}},{name:"selected",function:"number",params:{min:1,max:10}}]})}).then(t=>t.json()).then(t=>{this.dynamicData=t.map(n=>({id:n.id,text:`${n.first_name} ${n.last_name}`,value:`${n.first_name} ${n.last_name}`,selected:n.selected>=8}))})}}}),j={id:"vue",class:"content"},k=e("h2",{class:"header"},"Vue",-1),M=e("h3",null,"Install",-1),A=e("p",null," The vue component is in a sub package under SlimSelect. All functionality still work in the implementation. I have also added a v-model bind capability to it as well. ",-1),T=e("pre",null,[l("      "),e("code",{class:"language-bash"},`
+import{d as v,S,_,o as r,c as m,l as f,r as g,a as t,f as o,t as h,b as i,w as a,i as O,e as V}from"./index.js";const b=v({name:"SlimSelect",props:{modelValue:{type:[String,Array,void 0]},multiple:{type:Boolean,default:!1},data:{type:Array},settings:{type:Object},events:{type:Object}},emits:["update:modelValue"],data(){return{slim:null}},mounted(){let e={select:this.$refs.slim};this.data&&(e.data=this.data),this.settings&&(e.settings=this.settings),this.events&&(e.events=this.events),e.events||(e.events={});const n=e.events.afterChange;e.events.afterChange=s=>{const p=this.multiple?s.map(c=>c.value):s[0].value;this.value!==p&&(this.value=p),e.events&&n&&n(s)},this.slim=new S(e);let u=this.$props.multiple?this.slim.getSelected():this.slim.getSelected()[0];this.value!==u&&this.slim.setSelected(this.value)},beforeUnmount(){this.slim&&this.slim.destroy()},watch:{modelValue:{handler:function(e){var n;(n=this.slim)==null||n.setSelected(this.getCleanValue(e))},immediate:!0},data:{handler:function(e){this.slim&&this.slim.setData(e)},deep:!0}},computed:{value:{get(){return this.getCleanValue(this.$props.modelValue)},set(e){this.$emit("update:modelValue",e)}}},methods:{getSlimSelect(){return this.slim},getCleanValue(e){const n=this.$props.multiple;return typeof e=="string"?n?[e]:e:Array.isArray(e)?n?e:e[0]:n?[]:""}}}),y=["multiple"];function C(e,n,u,s,p,c){return r(),m("select",{multiple:e.multiple,ref:"slim"},[f(e.$slots,"default")],8,y)}const w=_(b,[["render",C]]),$=v({name:"Vue",components:{SlimSelect:w},data(){return{simpleSingle:"2",simpleMultiple:["2","3"],settings:{showSearch:!1},data:[{value:"value1",text:"Value 1"},{value:"value2",text:"Value 2"},{value:"value3",text:"Value 3"}],afterChangeData:[],events:{afterChange:this.afterChange}}},mounted(){},methods:{changeData(){this.$refs.dataSingle.getSlimSelect().open(),this.$refs.dataMultiple.getSlimSelect().open(),setTimeout(()=>{this.data=[{value:"value4",text:"Value 4"},{value:"value5",text:"Value 5"},{value:"value6",text:"Value 6"}]},500)},afterChange(e){this.afterChangeData=e}}}),q={id:"vue",class:"content"},k=t("h2",{class:"header"},"Vue",-1),j=t("h3",null,"Install",-1),D=t("p",null," The vue component is in a sub package under SlimSelect. All functionality still work in the implementation. I have also added a v-model bind capability to it as well. ",-1),M=t("pre",null,[o("      "),t("code",{class:"language-bash"},`
         npm install @slim-select/vue
-      `),l(`
-    `)],-1),B=e("br",null,null,-1),N=e("h3",null,"Simple example",-1),U={class:"row"},x=e("strong",null,"Value",-1),E=e("option",{value:"1"},"Option 1",-1),F=e("option",{value:"2"},"Option 2",-1),I=e("option",{value:"3"},"Option 3",-1),R=e("strong",null,"Value",-1),J=e("option",{value:"1"},"Option 1",-1),L=e("option",{value:"2"},"Option 2",-1),P=e("option",{value:"3"},"Option 3",-1),Y=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+      `),o(`
+    `)],-1),A=t("br",null,null,-1),B=t("h3",null,"Simple example",-1),N={class:"row"},T=t("strong",null,"Value",-1),x=t("option",{value:"all"},"All",-1),E=t("option",{value:"1"},"Option 1",-1),I=t("option",{value:"2"},"Option 2",-1),U=t("option",{value:"3"},"Option 3",-1),R=t("strong",null,"Value",-1),H=t("option",{value:"1"},"Option 1",-1),Y=t("option",{value:"2"},"Option 2",-1),z=t("option",{value:"3"},"Option 3",-1),F=t("pre",null,[o("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '@slim-select/vue'
 
@@ -11,13 +11,13 @@ import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w
           },
           data() {
             return {
-              single: '',
-              multiple: []
+              single: '2',
+              multiple: ['2', '3']
             }
           }
         })
-      `),l(`
-    `)],-1),q=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),o(`
+    `)],-1),G=t("pre",null,[o("      "),t("code",{class:"language-html"},`
         <SlimSelect v-model="single">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -29,8 +29,8 @@ import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </SlimSelect>
-      `),l(`
-    `)],-1),z=e("br",null,null,-1),G=e("div",{class:"separator"},null,-1),H=e("br",null,null,-1),K=e("h3",null,"Settings",-1),Q=e("p",null," Settings just like its passed as an object in normal SlimSelct will also be passed as an object to the component prop ",-1),W={class:"row"},X=e("option",{value:"1"},"Option 1",-1),Z=e("option",{value:"2"},"Option 2",-1),ee=e("option",{value:"3"},"Option 3",-1),te=e("option",{value:"1"},"Option 1",-1),ne=e("option",{value:"2"},"Option 2",-1),le=e("option",{value:"3"},"Option 3",-1),oe=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+      `),o(`
+    `)],-1),J=t("br",null,null,-1),K=t("div",{class:"separator"},null,-1),L=t("br",null,null,-1),P=t("h3",null,"Settings",-1),Q=t("p",null," Settings just like its passed as an object in normal SlimSelct will also be passed as an object to the component prop ",-1),W={class:"row"},X=t("option",{value:"1"},"Option 1",-1),Z=t("option",{value:"2"},"Option 2",-1),tt=t("option",{value:"3"},"Option 3",-1),et=t("option",{value:"1"},"Option 1",-1),nt=t("option",{value:"2"},"Option 2",-1),ot=t("option",{value:"3"},"Option 3",-1),lt=t("pre",null,[o("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '@slim-select/vue'
 
@@ -46,8 +46,8 @@ import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w
             }
           },
         })
-      `),l(`
-    `)],-1),ie=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),o(`
+    `)],-1),it=t("pre",null,[o("      "),t("code",{class:"language-html"},`
         <SlimSelect :settings="settings">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -59,8 +59,8 @@ import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </SlimSelect>
-      `),l(`
-    `)],-1),ae=e("br",null,null,-1),se=e("div",{class:"separator"},null,-1),ue=e("br",null,null,-1),de=e("h3",null,"Data",-1),pe=e("p",null," Data just like its passed as an array in normal SlimSelct will also be passed as an array to the component prop. ",-1),ce=e("div",{class:"alert info"}," You may pass data as a prop if you would like. But you can also have reactive options that when options change the select will update as well. See Reactivity below for more info. ",-1),me={class:"row"},re=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+      `),o(`
+    `)],-1),st=t("br",null,null,-1),at=t("div",{class:"separator"},null,-1),ut=t("br",null,null,-1),pt=t("h3",null,"Data",-1),dt=t("p",null," Data just like its passed as an array in normal SlimSelct will also be passed as an array to the component prop. ",-1),ct=t("div",{class:"alert info"}," You may pass data as a prop if you would like. But you can also have reactive options that when options change the select will update as well. See Reactivity below for more info. ",-1),rt={class:"row"},mt=t("pre",null,[o("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '@slim-select/vue'
 
@@ -78,15 +78,15 @@ import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w
             }
           },
         })
-      `),l(`
-    `)],-1),he=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),o(`
+    `)],-1),ht=t("pre",null,[o("      "),t("code",{class:"language-html"},`
         <SlimSelect :data="data" />
 
         <SlimSelect :data="data" multiple />
-      `),l(`
-    `)],-1),ve=e("br",null,null,-1),_e=e("div",{class:"separator"},null,-1),fe=e("br",null,null,-1),Se=e("h3",null,"Events",-1),ge=e("p",null," Events just like its passed as an object in normal SlimSelct will also be passed as an object to the component prop. ",-1),ye={key:0},Oe=e("strong",null,"afterChange:",-1),Ve={class:"row"},Ce=e("option",{value:"1"},"Option 1",-1),$e=e("option",{value:"2"},"Option 2",-1),be=e("option",{value:"3"},"Option 3",-1),we=e("option",{value:"1"},"Option 1",-1),De=e("option",{value:"2"},"Option 2",-1),je=e("option",{value:"3"},"Option 3",-1),ke=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
-        import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
+      `),o(`
+    `)],-1),vt=t("br",null,null,-1),_t=t("div",{class:"separator"},null,-1),gt=t("br",null,null,-1),St=t("h3",null,"Events",-1),ft=t("p",null," Events just like its passed as an object in normal SlimSelct will also be passed as an object to the component prop. ",-1),Ot={key:0},Vt=t("strong",null,"afterChange:",-1),bt={class:"row"},yt=t("option",{value:"1"},"Option 1",-1),Ct=t("option",{value:"2"},"Option 2",-1),wt=t("option",{value:"3"},"Option 3",-1),$t=t("option",{value:"1"},"Option 1",-1),qt=t("option",{value:"2"},"Option 2",-1),kt=t("option",{value:"3"},"Option 3",-1),jt=V(`<pre>      <code class="language-javascript">
+        import { defineComponent } from &#39;vue&#39;
+        import SlimSelect from &#39;@slim-select/vue&#39;
 
         export default defineComponent({
           components: {
@@ -105,53 +105,27 @@ import{d as v,S as y,_,o as u,c as d,l as O,r as g,a as e,f as l,t as c,b as a,w
             },
           },
         })
-      `),l(`
-    `)],-1),Me=e("pre",null,[l("      "),e("code",{class:"language-html"},`
-        <SlimSelect :events="events">
-          <option value="1">Option 1</option>
-          <option value="2">Option 2</option>
-          <option value="3">Option 3</option>
-        </SlimSelect>
+      </code>
+    </pre><pre>      <code class="language-html">
+        &lt;SlimSelect :events=&quot;events&quot;&gt;
+          &lt;option value=&quot;1&quot;&gt;Option 1&lt;/option&gt;
+          &lt;option value=&quot;2&quot;&gt;Option 2&lt;/option&gt;
+          &lt;option value=&quot;3&quot;&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
 
-        <SlimSelect :events="events" multiple>
-          <option value="1">Option 1</option>
-          <option value="2">Option 2</option>
-          <option value="3">Option 3</option>
-        </SlimSelect>
-      `),l(`
-    `)],-1),Ae=e("br",null,null,-1),Te=e("div",{class:"separator"},null,-1),Be=e("br",null,null,-1),Ne=e("h3",null,"Reactivity",-1),Ue=e("p",null," Slim select will look out for any options changes that happen to the select options and SlimSelect will update accordingly. This is done via mutation observers. ",-1),xe={class:"row"},Ee=e("strong",null,"Value:",-1),Fe=["value","selected"],Ie=e("strong",null,"Value:",-1),Re=["value","selected"],Je=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
-        import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
+        &lt;SlimSelect :events=&quot;events&quot; multiple&gt;
+          &lt;option value=&quot;1&quot;&gt;Option 1&lt;/option&gt;
+          &lt;option value=&quot;2&quot;&gt;Option 2&lt;/option&gt;
+          &lt;option value=&quot;3&quot;&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+      </code>
+    </pre><br><div class="separator"></div><br><h3>Reactivity</h3><p> Slim select handles the underlying select option alterations for you. But the issue is that if you allow Vue to also handle the select option alterations then you will have two things trying to alter the select options and that will cause Vue to error out. So for now you can add static options to the SlimSelect component but then no more altering after that. Any dynamic data should be passed into the data prop. </p><div class="alert info">That being said props added to the main SlimSelect component can be dynamic.</div><p> If anyone knows how to deal with this in a reasonable way please go the <a target="_blank" href="https://github.com/brianvoe/slim-select/issues/386">github repo</a> and submit a pr. </p><pre>      <code class="language-html">
+        &lt;SlimSelect v-model=&quot;value&quot;&gt;
 
-        export default defineComponent({
-          components: {
-            SlimSelect,
-          },
-          data() {
-            return {
-              singleValue: '',
-              mutipleValue: [],
-              dynamicData: []
-            }
-          },
-          methods: {
-            changeData() {
-              this.dynamicData = [
-                { id: 1, value: 1, text: 'Option 1', selected: true },
-                { id: 2, value: 2, text: 'Option 2', selected: false },
-                { id: 3, value: 3, text: 'Option 3', selected: false },
-              ]
-            },
-          },
-        })
-      `),l(`
-    `)],-1),Le=e("pre",null,[l("      "),e("code",{class:"language-html"},`
-        <SlimSelect v-model="singleValue">
-          <option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected">{{ d.text }}</option>
-        </SlimSelect>
-
-        <SlimSelect v-model="mutipleValue" multiple>
-          <option v-for="d in dynamicData" :value="d.value" :selected="d.selected">{{ d.text }}</option>
-        </SlimSelect>
-      `),l(`
-    `)],-1);function Pe(t,n,m,p,r,h){const i=g("SlimSelect");return u(),d("div",j,[k,M,A,T,B,N,e("div",U,[e("div",null,[e("div",null,[x,l(" "+c(t.simpleSingle),1)]),a(i,{modelValue:t.simpleSingle,"onUpdate:modelValue":n[0]||(n[0]=o=>t.simpleSingle=o),ref:"simpleSingle"},{default:s(()=>[E,F,I]),_:1},8,["modelValue"])]),e("div",null,[e("div",null,[R,l(" "+c(t.simpleMultiple),1)]),a(i,{modelValue:t.simpleMultiple,"onUpdate:modelValue":n[1]||(n[1]=o=>t.simpleMultiple=o),ref:"simpleMultiple",multiple:""},{default:s(()=>[J,L,P]),_:1},8,["modelValue"])])]),Y,q,z,G,H,K,Q,e("div",W,[a(i,{settings:t.settings},{default:s(()=>[X,Z,ee]),_:1},8,["settings"]),a(i,{settings:t.settings,multiple:""},{default:s(()=>[te,ne,le]),_:1},8,["settings"])]),oe,ie,ae,se,ue,de,pe,ce,e("div",me,[e("div",{class:"btn info",onClick:n[2]||(n[2]=(...o)=>t.changeData&&t.changeData(...o))},"Change data"),a(i,{ref:"dataSingle",data:t.data},null,8,["data"]),a(i,{ref:"dataMultiple",data:t.data,multiple:""},null,8,["data"])]),re,he,ve,_e,fe,Se,ge,t.afterChangeData.length?(u(),d("div",ye,[Oe,l(" "+c(t.afterChangeData),1)])):V("",!0),e("div",Ve,[a(i,{events:t.events},{default:s(()=>[Ce,$e,be]),_:1},8,["events"]),a(i,{events:t.events,multiple:""},{default:s(()=>[we,De,je]),_:1},8,["events"])]),ke,Me,Ae,Te,Be,Ne,Ue,e("div",xe,[e("div",{class:"btn info",onClick:n[3]||(n[3]=(...o)=>t.randomDynamicData&&t.randomDynamicData(...o))},"Change data"),e("div",null,[e("div",null,[Ee,l(" "+c(t.dynamicSingle),1)]),a(i,{modelValue:t.dynamicSingle,"onUpdate:modelValue":n[4]||(n[4]=o=>t.dynamicSingle=o)},{default:s(()=>[(u(!0),d(f,null,S(t.dynamicData,o=>(u(),d("option",{key:o.id,value:o.value,selected:o.selected},c(o.text),9,Fe))),128))]),_:1},8,["modelValue"])]),e("div",null,[e("div",null,[Ie,l(" "+c(t.dynamicMultiple),1)]),a(i,{modelValue:t.dynamicMultiple,"onUpdate:modelValue":n[5]||(n[5]=o=>t.dynamicMultiple=o),multiple:""},{default:s(()=>[(u(!0),d(f,null,S(t.dynamicData,o=>(u(),d("option",{value:o.value,selected:o.selected},c(o.text),9,Re))),256))]),_:1},8,["modelValue"])])]),Je,Le])}const Ye=_(D,[["render",Pe]]),qe=v({name:"Events",components:{Vue:Ye}}),ze={id:"frameworks",class:"contents"};function Ge(t,n,m,p,r,h){const i=g("Vue");return u(),d("div",ze,[a(i)])}const Ke=_(qe,[["render",Ge]]);export{Ke as default};
+          //////////////////////
+          // DON&#39;T DO THIS!!! //
+          //////////////////////
+          &lt;option v-for=&quot;d in data&quot; :key=&quot;d.id&quot; :value=&quot;d.value&quot; :selected=&quot;d.selected&quot;&gt;{{ d.text }}&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+      </code>
+    </pre>`,10);function Dt(e,n,u,s,p,c){const l=g("SlimSelect");return r(),m("div",q,[k,j,D,M,A,B,t("div",N,[t("div",null,[t("div",null,[T,o(" "+h(e.simpleSingle),1)]),i(l,{modelValue:e.simpleSingle,"onUpdate:modelValue":n[0]||(n[0]=d=>e.simpleSingle=d),ref:"simpleSingle"},{default:a(()=>[x,E,I,U]),_:1},8,["modelValue"])]),t("div",null,[t("div",null,[R,o(" "+h(e.simpleMultiple),1)]),i(l,{modelValue:e.simpleMultiple,"onUpdate:modelValue":n[1]||(n[1]=d=>e.simpleMultiple=d),ref:"simpleMultiple",multiple:""},{default:a(()=>[H,Y,z]),_:1},8,["modelValue"])])]),F,G,J,K,L,P,Q,t("div",W,[i(l,{settings:e.settings},{default:a(()=>[X,Z,tt]),_:1},8,["settings"]),i(l,{settings:e.settings,multiple:""},{default:a(()=>[et,nt,ot]),_:1},8,["settings"])]),lt,it,st,at,ut,pt,dt,ct,t("div",rt,[t("div",{class:"btn info",onClick:n[2]||(n[2]=(...d)=>e.changeData&&e.changeData(...d))},"Change data"),i(l,{ref:"dataSingle",data:e.data},null,8,["data"]),i(l,{ref:"dataMultiple",data:e.data,multiple:""},null,8,["data"])]),mt,ht,vt,_t,gt,St,ft,e.afterChangeData.length?(r(),m("div",Ot,[Vt,o(" "+h(e.afterChangeData),1)])):O("",!0),t("div",bt,[i(l,{events:e.events},{default:a(()=>[yt,Ct,wt]),_:1},8,["events"]),i(l,{events:e.events,multiple:""},{default:a(()=>[$t,qt,kt]),_:1},8,["events"])]),jt])}const Mt=_($,[["render",Dt]]),At=v({name:"Events",components:{Vue:Mt}}),Bt={id:"frameworks",class:"contents"};function Nt(e,n,u,s,p,c){const l=g("Vue");return r(),m("div",Bt,[i(l)])}const xt=_(At,[["render",Nt]]);export{xt as default};

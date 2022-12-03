@@ -8,7 +8,7 @@ export default class Settings {
     isOpen: boolean;
     triggerFocus: boolean;
     intervalMove: NodeJS.Timeout | null;
-    isEnabled: boolean;
+    disabled: boolean;
     alwaysOpen: boolean;
     showSearch: boolean;
     searchPlaceholder: string;
@@ -26,7 +26,7 @@ export default class Settings {
     minSelected: number;
     maxSelected: number;
     timeoutDelay: number;
-    selectedChipsLimit: number;
-    selectedChipsLimitMessage: string;
+    maxValuesShown: number;
+    maxValuesMessage: string;
     constructor(settings?: SettingsPartial);
 }
