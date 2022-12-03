@@ -63,6 +63,7 @@ export default class Render {
     // Values
     values: 'ss-values',
     single: 'ss-single',
+    max: 'ss-max',
     value: 'ss-value',
     valueText: 'ss-value-text',
     valueDelete: 'ss-value-delete',
@@ -158,21 +159,8 @@ export default class Render {
     // Render the options
     this.renderOptions(this.store.getData())
 
-    // Check showContent to see if they want to specifically show in a certain direction
-    if (this.settings.contentPosition === 'relative') {
-      this.moveContentBelow()
-    } else if (this.settings.openPosition.toLowerCase() === 'up') {
-      this.moveContentAbove()
-    } else if (this.settings.openPosition.toLowerCase() === 'down') {
-      this.moveContentBelow()
-    } else {
-      // Auto identify where to put it
-      if (this.putContent(this.content.main, this.settings.isOpen) === 'up') {
-        this.moveContentAbove()
-      } else {
-        this.moveContentBelow()
-      }
-    }
+    // Move the content in to the right location
+    this.moveContent()
 
     // Move to last selected option
     const selectedOptions = this.store.getSelectedOptions()
@@ -253,7 +241,7 @@ export default class Render {
     // Add onclick for main div
     main.onclick = (e: Event) => {
       // Dont do anything if disabled
-      if (!this.settings.isEnabled) {
+      if (this.settings.disabled) {
         return
       }
 
@@ -277,7 +265,7 @@ export default class Render {
       e.stopPropagation()
 
       // Dont do anything if disabled
-      if (!this.settings.isEnabled) {
+      if (this.settings.disabled) {
         return
       }
 
@@ -415,7 +403,7 @@ export default class Render {
   }
 
   private renderMultipleValues(): void {
-    // Get various peices of data
+    // Get various pieces of data
     let currentNodes = this.main.values.childNodes as NodeListOf<HTMLDivElement>
     let selectedOptions = this.store.filter((opt: Option) => {
       // Only grab options that are selected and display is true
@@ -431,6 +419,24 @@ export default class Render {
       const placeholder = this.main.values.querySelector('.' + this.classes.placeholder)
       if (placeholder) {
         placeholder.remove()
+      }
+    }
+
+    // If selectedOptions is greater than maxItems, set maxValuesMessage
+    if (selectedOptions.length > this.settings.maxValuesShown) {
+      // Creating the element that shows the number of selected items
+      const singleValue = document.createElement('div')
+      singleValue.classList.add(this.classes.max)
+      singleValue.textContent = this.settings.maxValuesMessage.replace('{number}', selectedOptions.length.toString())
+
+      // If there is a selected value, set a single div
+      this.main.values.innerHTML = singleValue.outerHTML
+      return
+    } else {
+      // If there is a message, remove it
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.max)
+      if (maxValuesMessage) {
+        maxValuesMessage.remove()
       }
     }
 
@@ -503,6 +509,11 @@ export default class Render {
       deleteDiv.onclick = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
+
+        // Dont do anything if disabled
+        if (this.settings.disabled) {
+          return
+        }
 
         // By Default we will delete
         let shouldDelete = true
@@ -603,14 +614,27 @@ export default class Render {
   }
 
   public moveContent(): void {
+    // If contentPosition is relative, dont move the content anywhere other than below
     if (this.settings.contentPosition === 'relative') {
+      this.moveContentBelow()
       return
     }
 
-    const containerRect = this.main.main.getBoundingClientRect()
-    this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
-    this.content.main.style.left = containerRect.left + window.scrollX + 'px'
-    this.content.main.style.width = containerRect.width + 'px'
+    // If openContent is not auto set content
+    if (this.settings.openPosition === 'down') {
+      this.moveContentBelow()
+      return
+    } else if (this.settings.openPosition === 'up') {
+      this.moveContentAbove()
+      return
+    }
+
+    // Auto - Determine where to put the content
+    if (this.putContent() === 'up') {
+      this.moveContentAbove()
+    } else {
+      this.moveContentBelow()
+    }
   }
 
   public searchDiv(): Search {
@@ -908,8 +932,7 @@ export default class Render {
     // If no results show no results text
     if (data.length === 0) {
       const noResults = document.createElement('div')
-      noResults.classList.add(this.classes.option)
-      noResults.classList.add(this.classes.disabled)
+      noResults.classList.add(this.classes.search)
       noResults.innerHTML = this.settings.searchText
       this.content.list.appendChild(noResults)
       return
@@ -1031,8 +1054,8 @@ export default class Render {
           const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path')
           optgroupClosableSvg.appendChild(optgroupClosableArrow)
 
-          // If any options are selected, set optgroup to open
-          if (d.options.some((o) => o.selected)) {
+          // If any options are selected or someone is searching, set optgroup to open
+          if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
             optgroupClosable.classList.add(this.classes.open)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
@@ -1109,9 +1132,8 @@ export default class Render {
 
     // Set option content
     if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
-      const textOrHtml = option.html !== '' ? option.html : option.text
       optionEl.innerHTML = this.highlightText(
-        textOrHtml,
+        option.html !== '' ? option.html : option.text,
         this.content.search.input.value,
         this.classes.searchHighlighter,
       )
@@ -1127,7 +1149,7 @@ export default class Render {
     }
 
     // If allowed to deselect, null onclick and add disabled
-    if ((option.selected && !this.settings.allowDeselect) || (option.disabled && !this.settings.allowDeselect)) {
+    if (option.disabled) {
       optionEl.classList.add(this.classes.disabled)
     }
 
@@ -1158,11 +1180,11 @@ export default class Render {
         return
       }
 
-      // Check limit and do nothing if limit is reached
+      // Check limit and do nothing if limit is reached and the option is not selected
+      // Also check reverse for min limit and is selected
       if (
-        this.settings.isMultiple &&
-        Array.isArray(selectedOptions) &&
-        this.settings.maxSelected <= selectedOptions.length
+        (this.settings.isMultiple && this.settings.maxSelected <= selectedOptions.length && !option.selected) ||
+        (this.settings.isMultiple && this.settings.minSelected >= selectedOptions.length && option.selected)
       ) {
         return
       }
@@ -1260,27 +1282,40 @@ export default class Render {
   }
 
   public moveContentAbove(): void {
-    let mainHeight: number = this.main.main.offsetHeight
-
+    // Get main and content height
+    const mainHeight = this.main.main.offsetHeight
     const contentHeight = this.content.main.offsetHeight
-    const height = mainHeight + contentHeight - 1
-    this.content.main.style.margin = '-' + height + 'px 0px 0px 0px'
-    this.content.main.style.transformOrigin = 'center bottom'
 
+    // Set classes
     this.main.main.classList.remove(this.classes.openBelow)
     this.main.main.classList.add(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.content.main.classList.add(this.classes.openAbove)
+
+    // Set the content position
+    const containerRect = this.main.main.getBoundingClientRect()
+    this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
+    this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+    this.content.main.style.left = containerRect.left + window.scrollX + 'px'
+    this.content.main.style.width = containerRect.width + 'px'
   }
 
   public moveContentBelow(): void {
-    this.content.main.style.margin = '-1px 0px 0px 0px'
-    this.content.main.style.transformOrigin = 'center top'
-
+    // Set classes
     this.main.main.classList.remove(this.classes.openAbove)
     this.main.main.classList.add(this.classes.openBelow)
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.add(this.classes.openBelow)
+
+    // Set the content position
+    const containerRect = this.main.main.getBoundingClientRect()
+    this.content.main.style.margin = '-1px 0px 0px 0px'
+    // Dont do anything if the content is relative
+    if (this.settings.contentPosition !== 'relative') {
+      this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px'
+      this.content.main.style.left = containerRect.left + window.scrollX + 'px'
+      this.content.main.style.width = containerRect.width + 'px'
+    }
   }
 
   public ensureElementInView(container: HTMLElement, element: HTMLElement): void {
@@ -1300,20 +1335,28 @@ export default class Render {
     }
   }
 
-  public putContent(el: HTMLElement, isOpen: boolean): 'up' | 'down' {
-    const height = el.offsetHeight
-    const rect = el.getBoundingClientRect()
-    const elemTop = isOpen ? rect.top : rect.top - height
-    const elemBottom = isOpen ? rect.bottom : rect.bottom + height
+  public putContent(): 'up' | 'down' {
+    // Get main and content height
+    const mainHeight = this.main.main.offsetHeight
+    const mainRect = this.main.main.getBoundingClientRect()
+    const contentHeight = this.content.main.offsetHeight
 
-    if (elemTop <= 0) {
-      return 'down'
-    }
-    if (elemBottom >= window.innerHeight) {
-      return 'up'
+    // From bottom of mainHeight figure out if content will fit below without going below the window
+    const spaceBelow = window.innerHeight - (mainRect.top + mainHeight)
+
+    // If space below is less than content height
+    if (spaceBelow <= contentHeight) {
+      // If space above is more than content height
+      if (mainRect.top > contentHeight) {
+        // Move content above
+        return 'up'
+      } else {
+        // Move content below
+        return 'down'
+      }
     }
 
-    // default to current position if we cant determine a perfect one
+    // Move content below
     return 'down'
   }
 }

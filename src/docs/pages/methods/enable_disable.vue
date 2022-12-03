@@ -42,7 +42,7 @@ export default defineComponent({
     </p>
 
     <div class="row">
-      <div class="btn" @click="setEnable" v-if="setEnableSingle && !setEnableSingle.settings.isEnabled">Enable</div>
+      <div class="btn" @click="setEnable" v-if="setEnableSingle && setEnableSingle.settings.disabled">Enable</div>
       <div class="btn" @click="setDisable" v-else>Disable</div>
 
       <select ref="setEnableSingle" disabled>

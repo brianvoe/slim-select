@@ -1,18 +1,15 @@
 <script lang="ts">
 import download from 'downloadjs'
 import { defineComponent } from 'vue'
-import packageJson from '../../../package.json'
 
 export default defineComponent({
   name: 'Install',
-  data: () => {
-    return {
-      version: packageJson.version,
-    }
-  },
   methods: {
-    downloadLink() {
-      download(`https://cdnjs.cloudflare.com/ajax/libs/slim-select/${this.version}/slimselect.min.js`)
+    downloadJs() {
+      download(`https://unpkg.com/slim-select@latest/dist/slimselect.min.js`)
+    },
+    downloadCss() {
+      download(`https://unpkg.com/slim-select@latest/dist/slimselect.css`)
     },
   },
 })
@@ -71,8 +68,8 @@ export default defineComponent({
         <code class="language-html">
           &lt;html&gt;
             &lt;head&gt;
-              &lt;script src="unpkg.com/slim-select@{{version}}/dist/slimselect.min.js"&gt;&lt;/script&gt;
-              &lt;link href="unpkg.com/slim-select@{{version}}/dist/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
+              &lt;script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"&gt;&lt;/script&gt;
+              &lt;link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
               
               &lt;script&gt;
                 new SlimSelect({
@@ -99,7 +96,8 @@ export default defineComponent({
         See full list of available downloadable options.
         <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a>
       </p>
-      <div class="btn" @click="downloadLink()">Click Here To Download</div>
+      <div class="btn" @click="downloadJs()">Download js</div>
+      <div class="btn" @click="downloadCss()">Download css</div>
     </div>
   </div>
 </template>

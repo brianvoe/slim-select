@@ -11,7 +11,9 @@ import Css from './css.vue'
 import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
 import Display from './display.vue'
+import Disabled from './disabled.vue'
 import HideSelected from './hide_selected.vue'
+import MaxValuesShown from './max_values_shown.vue'
 import Html from './html.vue'
 import Mandatory from './mandatory.vue'
 import MinMax from './min_max.vue'
@@ -34,9 +36,11 @@ export default defineComponent({
     Placeholder,
     Deselect,
     Display,
+    Disabled,
     Mandatory,
     MinMax,
     DataAttributes,
+    MaxValuesShown,
     Css,
     Styles,
     Html,
@@ -60,6 +64,7 @@ export default defineComponent({
     <Placeholder />
     <Deselect />
     <Display />
+    <Disabled />
     <Mandatory />
     <MinMax />
     <DataAttributes />
@@ -72,5 +77,6 @@ export default defineComponent({
     <SelectAll />
     <Closable />
     <HideSelected />
+    <MaxValuesShown />
   </div>
 </template>

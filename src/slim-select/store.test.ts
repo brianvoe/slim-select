@@ -117,6 +117,28 @@ describe('store module', () => {
     expect((data[0] as Option).selected).toBe(true)
   })
 
+  test('set data and set selected to empty string', () => {
+    let store = new Store('single', [
+      {
+        text: 'all',
+        value: '',
+      },
+      {
+        text: 'Value 1',
+        value: '1',
+        selected: true,
+      },
+    ])
+    store.setSelectedBy('value', [''])
+
+    let data = store.getData()
+
+    // Make sure data has one item and that it has the correct text
+    expect(data.length).toBe(2)
+    expect((data[0] as Option).text).toBe('all')
+    expect((data[0] as Option).selected).toBe(true)
+  })
+
   test('set data and set selected by value multiple for single element', () => {
     let store = new Store('single', [
       {

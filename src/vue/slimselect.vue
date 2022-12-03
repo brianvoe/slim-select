@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 
 import SlimSelect, { Config, Events } from '../slim-select'
-import Settings from '../slim-select/settings'
+import { SettingsPartial } from '../slim-select/settings'
 import { DataArrayPartial, Option } from '../slim-select/store'
 
 export default defineComponent({
@@ -19,7 +19,7 @@ export default defineComponent({
       type: Array as PropType<DataArrayPartial>,
     },
     settings: {
-      type: Object as PropType<Settings>,
+      type: Object as PropType<SettingsPartial>,
     },
     events: {
       type: Object as PropType<Events>,
@@ -54,7 +54,7 @@ export default defineComponent({
       config.events = {}
     }
 
-    // Wrap config.events.afterChange to run emitUpdateSelectedValues
+    // Wrap config.events.afterChange to run value update
     const ogAfterChange = config.events.afterChange
     config.events.afterChange = (newVal: Option[]) => {
       const value = this.multiple ? newVal.map((option) => option.value) : newVal[0].value
@@ -79,7 +79,7 @@ export default defineComponent({
     // Check if modelValue is the same as the value of the select
     if (this.value !== selected) {
       // If not, set the value of the select to the modelValue
-      this.value = selected
+      this.slim.setSelected(this.value)
     }
   },
   beforeUnmount() {
@@ -88,6 +88,13 @@ export default defineComponent({
     }
   },
   watch: {
+    modelValue: {
+      handler: function (newVal: string | string[] | undefined) {
+        // Set the value of the select to the newVal
+        this.slim?.setSelected(this.getCleanValue(newVal))
+      },
+      immediate: true,
+    },
     data: {
       handler: function (newData) {
         if (this.slim) {
@@ -100,25 +107,7 @@ export default defineComponent({
   computed: {
     value: {
       get(): string | string[] {
-        const multi = this.$props.multiple
-        const val = this.$props.modelValue
-
-        // If modelValue is undefined, return empty string or array
-        if (val === undefined) {
-          return multi ? [] : ''
-        }
-
-        // If its multiple and the modelValue is a string, return an array with the string
-        if (multi && typeof val === 'string') {
-          return [val]
-        }
-
-        // If its not multiple and the modelValue is an array, return the first item
-        if (!multi && Array.isArray(val)) {
-          return val[0]
-        }
-
-        return multi ? [] : ''
+        return this.getCleanValue(this.$props.modelValue)
       },
       set(value: string | string[]) {
         this.$emit('update:modelValue', value)
@@ -129,6 +118,21 @@ export default defineComponent({
     // This allows via a ref to call the SlimSelect methods
     getSlimSelect() {
       return this.slim
+    },
+    getCleanValue(val: string | string[] | undefined): string | string[] {
+      const multi = this.$props.multiple
+
+      // If its multiple and the modelValue is a string, return an array with the string
+      if (typeof val === 'string') {
+        return multi ? [val] : val
+      }
+
+      // If its not multiple and the modelValue is an array, return the first item
+      if (Array.isArray(val)) {
+        return multi ? val : val[0]
+      }
+
+      return multi ? [] : ''
     },
   },
 })

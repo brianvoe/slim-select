@@ -1,8 +1,8 @@
 <script lang="ts">
-import { Option } from 'src/slim-select/store'
 import { defineComponent } from 'vue'
 
 import SlimSelect from '../../../slim-select'
+import { Option } from '../../../slim-select/store'
 
 export default defineComponent({
   name: 'SearchFilter',

@@ -82,6 +82,7 @@ export default class SlimSelect {
     }
 
     // Upate settings with type, style and classname
+    this.settings.disabled = config.settings?.disabled ? config.settings.disabled : this.selectEl.disabled
     this.settings.isMultiple = this.selectEl.multiple
     this.settings.style = this.selectEl.style.cssText
     this.settings.class = this.selectEl.className.split(' ')
@@ -92,14 +93,21 @@ export default class SlimSelect {
     this.select.hideUI() // Hide the original select element
 
     // Add select listeners
-    this.select.addSelectChangeListener((data: DataArrayPartial) => {
-      // Run set data from the values given
-      this.setData(data)
-    })
-    this.select.addValueChangeListener((values: string[]) => {
+    this.select.onValueChange = (values: string[]) => {
       // Run set selected from the values given
       this.setSelected(values)
-    })
+    }
+    this.select.onDisabledChange = (disabled: boolean) => {
+      if (disabled) {
+        this.disable()
+      } else {
+        this.enable()
+      }
+    }
+    this.select.onOptionsChange = (data: DataArrayPartial) => {
+      // Run set data from the values given
+      this.setData(data)
+    }
 
     // Set store class
     this.store = new Store(
@@ -147,7 +155,7 @@ export default class SlimSelect {
     }
 
     // If disabled lets call it
-    if (!this.settings.isEnabled) {
+    if (this.settings.disabled) {
       this.disable()
     }
 
@@ -162,7 +170,7 @@ export default class SlimSelect {
 
   // Set to enabled and remove disabled classes
   public enable(): void {
-    this.settings.isEnabled = true
+    this.settings.disabled = false
 
     this.select.enable()
     this.render.enable()
@@ -170,7 +178,7 @@ export default class SlimSelect {
 
   // Set to disabled and add disabled classes
   public disable(): void {
-    this.settings.isEnabled = false
+    this.settings.disabled = true
 
     this.select.disable()
     this.render.disable()
@@ -227,7 +235,14 @@ export default class SlimSelect {
 
     // Update the render
     this.render.renderValues()
-    this.render.renderOptions(data)
+
+    // If there is a search input value lets run through the search again
+    // Otherwise we will just render the options from store data
+    if (this.render.content.search.input.value !== '') {
+      this.search(this.render.content.search.input.value)
+    } else {
+      this.render.renderOptions(data)
+    }
 
     // Trigger afterChange event, if it doesnt equal the original selected values
     if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
@@ -259,7 +274,7 @@ export default class SlimSelect {
   public open(): void {
     // Dont open if disabled
     // Dont do anything if the content is already open
-    if (!this.settings.isEnabled || this.settings.isOpen) {
+    if (this.settings.disabled || this.settings.isOpen) {
       return
     }
 
@@ -289,10 +304,12 @@ export default class SlimSelect {
 
     // Start an interval to check if main has moved
     // in order to keep content close to main
-    if (this.settings.intervalMove) {
-      clearInterval(this.settings.intervalMove)
+    if (this.settings.contentPosition === 'absolute') {
+      if (this.settings.intervalMove) {
+        clearInterval(this.settings.intervalMove)
+      }
+      this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
     }
-    this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
   }
 
   public close(): void {
@@ -410,23 +427,7 @@ export default class SlimSelect {
       return
     }
 
-    // If openContent is not auto set content
-    if (this.settings.openPosition === 'down') {
-      this.render.moveContentBelow()
-      return
-    } else if (this.settings.openPosition === 'up') {
-      this.render.moveContentAbove()
-      return
-    }
-
-    // Determine where to put the content
-    if (this.settings.contentPosition === 'relative') {
-      this.render.moveContentBelow()
-    } else if (this.render.putContent(this.render.content.main, this.settings.isOpen) === 'up') {
-      this.render.moveContentAbove()
-    } else {
-      this.render.moveContentBelow()
-    }
+    this.render.moveContent()
   })
 
   // Event listener for document click

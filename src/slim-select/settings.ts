@@ -14,7 +14,7 @@ export default class Settings {
   public intervalMove: NodeJS.Timeout | null = null
 
   // Fields set from constructor
-  public isEnabled: boolean
+  public disabled: boolean
   public alwaysOpen: boolean
   public showSearch: boolean
   public searchPlaceholder: string
@@ -32,6 +32,8 @@ export default class Settings {
   public minSelected: number
   public maxSelected: number
   public timeoutDelay: number
+  public maxValuesShown: number
+  public maxValuesMessage: string
 
   constructor(settings?: SettingsPartial) {
     if (!settings) {
@@ -42,7 +44,7 @@ export default class Settings {
     this.style = settings.style || ''
     this.class = settings.class || []
 
-    this.isEnabled = settings.isEnabled !== undefined ? settings.isEnabled : true
+    this.disabled = settings.disabled !== undefined ? settings.disabled : false
     this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
     this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'
@@ -60,5 +62,7 @@ export default class Settings {
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200
+    this.maxValuesShown = settings.maxValuesShown || 20
+    this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
   }
 }

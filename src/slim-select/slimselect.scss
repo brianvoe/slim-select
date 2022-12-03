@@ -4,7 +4,7 @@
   --ss-bg-color: #ffffff;
   --ss-font-color: #4d4d4d;
   --ss-font-placeholder-color: #8d8d8d;
-  --ss-disabled-color: #8a8a8a;
+  --ss-disabled-color: #dcdee2;
   --ss-border-color: #dcdee2;
   --ss-highlight-color: #fffb8c;
   --ss-success-color: #00b755;
@@ -74,7 +74,7 @@
   }
 
   &.ss-disabled {
-    background-color: var(--ss-border-color);
+    background-color: var(--ss-disabled-color);
     cursor: not-allowed;
 
     .ss-values {
@@ -118,11 +118,27 @@
       white-space: nowrap;
     }
 
+    // Max is used to display max number of values
+    .ss-max {
+      display: flex;
+      user-select: none;
+      align-items: center;
+      width: fit-content;
+      font-size: 12px;
+      color: var(--ss-bg-color);
+      line-height: 1;
+      padding: var(--ss-spacing-s) var(--ss-spacing-m);
+      background-color: var(--ss-primary-color);
+      border-radius: var(--ss-border-radius);
+    }
+
+    // Used for single select selected value
     .ss-single {
       display: flex;
       margin: auto 0px auto var(--ss-spacing-s);
     }
 
+    // Used for the selected values
     .ss-value {
       display: flex;
       user-select: none;
@@ -231,6 +247,7 @@
   transition: transform var(--ss-animation-timing), opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
+  transform-origin: center top;
   overflow: hidden;
   z-index: 10000;
 
@@ -240,6 +257,7 @@
   }
 
   &.ss-open-above {
+    flex-direction: column-reverse;
     opacity: 1;
     transform: scaleY(1);
     transform-origin: center bottom;
@@ -456,26 +474,31 @@
     .ss-option {
       display: flex;
       padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
+      color: var(--ss-font-color);
       cursor: pointer;
       user-select: none;
 
-      &:hover,
-      &.ss-highlighted {
+      &:hover {
+        color: var(--ss-bg-color);
+        background-color: var(--ss-primary-color);
+      }
+
+      &.ss-highlighted,
+      &:not(.ss-disabled).ss-selected {
         color: var(--ss-bg-color);
         background-color: var(--ss-primary-color);
       }
 
       &.ss-disabled {
         cursor: not-allowed;
-        color: var(--ss-disabled-color);
-        background-color: var(--ss-bg-color);
+        background-color: var(--ss-disabled-color);
+
+        &:hover {
+          color: var(--ss-font-color);
+        }
       }
 
-      &:not(.ss-disabled).ss-selected {
-        color: var(--ss-font-color);
-        background-color: var(--ss-highlight-color);
-      }
-
+      // Sub div wrapper for highlighting text
       .ss-search-highlight {
         background-color: var(--ss-highlight-color);
       }

@@ -25,10 +25,8 @@ export default defineComponent({
   data() {
     return {
       // v-model data for some selects
-      simpleSingle: '',
-      simpleMultiple: [] as string[],
-      dynamicSingle: '',
-      dynamicMultiple: [] as string[],
+      simpleSingle: '2',
+      simpleMultiple: ['2', '3'] as string[],
 
       // Misc
       settings: {
@@ -39,7 +37,6 @@ export default defineComponent({
         { value: 'value2', text: 'Value 2' },
         { value: 'value3', text: 'Value 3' },
       ],
-      dynamicData: [] as OptionOptional[],
       afterChangeData: [] as OptionOptional[],
       events: {
         afterChange: this.afterChange,
@@ -47,10 +44,14 @@ export default defineComponent({
     }
   },
   mounted() {
-    // Show the original select for debugging
+    // // Show the original select for debugging
     // const compSingle = this.$refs.simpleSingle as any
-    // const slimSingle = compSingle.getSlimSelect()
+    // const slimSingle = compSingle.getSlimSelect() as SlimSelectJS
     // slimSingle.select.showUI()
+    // setTimeout(() => {
+    //   slimSingle.select.select.value = ''
+    //   slimSingle.select.select.dispatchEvent(new Event('change'))
+    // }, 1000)
     // const compMultiple = this.$refs.simpleMultiple as any
     // const slimMultiple = compMultiple.getSlimSelect()
     // slimMultiple.select.showUI()
@@ -60,6 +61,7 @@ export default defineComponent({
       const dataSingle = this.$refs.dataSingle as any
       const dataSingleSlim = dataSingle.getSlimSelect() as SlimSelectJS
       dataSingleSlim.open()
+
       const dataMultiple = this.$refs.dataMultiple as any
       const dataMultipleSlim = dataMultiple.getSlimSelect() as SlimSelectJS
       dataMultipleSlim.open()
@@ -74,49 +76,6 @@ export default defineComponent({
     },
     afterChange(newVal: Option[]) {
       this.afterChangeData = newVal
-    },
-    randomDynamicData() {
-      // Go fetch some gofakeit data via post to json
-      fetch('https://api.gofakeit.com/json', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: 'array',
-          rowcount: 20,
-          indent: false,
-          fields: [
-            {
-              name: 'key',
-              function: 'password',
-              params: {
-                lower: true,
-                upper: true,
-                numeric: true,
-                special: false,
-                space: false,
-                length: 10,
-              },
-            },
-            { name: 'first_name', function: 'firstname', params: {} },
-            { name: 'last_name', function: 'lastname', params: {} },
-            { name: 'selected', function: 'number', params: { min: 1, max: 10 } },
-          ],
-        }),
-      })
-        .then((response) => response.json())
-        .then((data: Person[]) => {
-          // Map the data to the format slim select expects
-          this.dynamicData = data.map((person: Person) => {
-            return {
-              id: person.id,
-              text: `${person.first_name} ${person.last_name}`,
-              value: `${person.first_name} ${person.last_name}`,
-              selected: person.selected >= 8,
-            } as OptionOptional
-          })
-        })
     },
   },
 })
@@ -141,8 +100,10 @@ export default defineComponent({
     <h3>Simple example</h3>
     <div class="row">
       <div>
+        <!-- <div class="btn" @click="simpleSingle = '2'">Set v-model</div> -->
         <div><strong>Value</strong> {{ simpleSingle }}</div>
         <SlimSelect v-model="simpleSingle" ref="simpleSingle">
+          <option value="all">All</option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
@@ -170,8 +131,8 @@ export default defineComponent({
           },
           data() {
             return {
-              single: '',
-              multiple: []
+              single: '2',
+              multiple: ['2', '3']
             }
           }
         })
@@ -375,64 +336,27 @@ export default defineComponent({
 
     <h3>Reactivity</h3>
     <p>
-      Slim select will look out for any options changes that happen to the select options and SlimSelect will update
-      accordingly. This is done via mutation observers.
+      Slim select handles the underlying select option alterations for you. But the issue is that if you allow Vue to
+      also handle the select option alterations then you will have two things trying to alter the select options and
+      that will cause Vue to error out. So for now you can add static options to the SlimSelect component but then no
+      more altering after that. Any dynamic data should be passed into the data prop.
     </p>
 
-    <div class="row">
-      <div class="btn info" @click="randomDynamicData">Change data</div>
-      <div>
-        <div><strong>Value:</strong> {{ dynamicSingle }}</div>
-        <SlimSelect v-model="dynamicSingle">
-          <option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected">{{ d.text }}</option>
-        </SlimSelect>
-      </div>
+    <div class="alert info">That being said props added to the main SlimSelect component can be dynamic.</div>
 
-      <div>
-        <div><strong>Value:</strong> {{ dynamicMultiple }}</div>
-        <SlimSelect v-model="dynamicMultiple" multiple>
-          <option v-for="d in dynamicData" :value="d.value" :selected="d.selected">{{ d.text }}</option>
-        </SlimSelect>
-      </div>
-    </div>
-
-    <pre>
-      <code class="language-javascript">
-        import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
-
-        export default defineComponent({
-          components: {
-            SlimSelect,
-          },
-          data() {
-            return {
-              singleValue: '',
-              mutipleValue: [],
-              dynamicData: []
-            }
-          },
-          methods: {
-            changeData() {
-              this.dynamicData = [
-                { id: 1, value: 1, text: 'Option 1', selected: true },
-                { id: 2, value: 2, text: 'Option 2', selected: false },
-                { id: 3, value: 3, text: 'Option 3', selected: false },
-              ]
-            },
-          },
-        })
-      </code>
-    </pre>
+    <p>
+      If anyone knows how to deal with this in a reasonable way please go the
+      <a target="_blank" href="https://github.com/brianvoe/slim-select/issues/386">github repo</a> and submit a pr.
+    </p>
 
     <pre>
       <code class="language-html">
-        &lt;SlimSelect v-model="singleValue"&gt;
-          &lt;option v-for="d in dynamicData" :key="d.id" :value="d.value" :selected="d.selected"&gt;&#123;&#123; d.text &#125;&#125;&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect v-model="value"&gt;
 
-        &lt;SlimSelect v-model="mutipleValue" multiple&gt;
-          &lt;option v-for="d in dynamicData" :value="d.value" :selected="d.selected"&gt;&#123;&#123; d.text &#125;&#125;&lt;/option&gt;
+          //////////////////////
+          // DON'T DO THIS!!! //
+          //////////////////////
+          &lt;option v-for="d in data" :key="d.id" :value="d.value" :selected="d.selected"&gt;&lcub;&lcub; d.text &rcub;&rcub;&lt;/option&gt;
         &lt;/SlimSelect&gt;
       </code>
     </pre>

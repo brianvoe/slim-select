@@ -65,6 +65,7 @@ export default defineComponent({
             { text: 'placeholder', value: 'settings#placeholder' },
             { text: 'allowDeselect', value: 'settings#allowDeselect' },
             { text: 'display', value: 'settings#display' },
+            { text: 'disabled', value: 'settings#disabled' },
             { text: 'mandatory', value: 'settings#mandatory' },
             { text: 'minmax', value: 'settings#minmax' },
             { text: 'dataAttributes', value: 'settings#dataAttributes' },
@@ -77,6 +78,7 @@ export default defineComponent({
             { text: 'selectAll', value: 'settings#selectAll' },
             { text: 'closable', value: 'settings#closable' },
             { text: 'hideSelected', value: 'settings#hideSelected' },
+            { text: 'maxValuesShown', value: 'settings#maxValuesShown' },
           ],
         },
 

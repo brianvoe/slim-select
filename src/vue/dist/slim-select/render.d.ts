@@ -48,6 +48,7 @@ export default class Render {
         placeholder: string;
         values: string;
         single: string;
+        max: string;
         value: string;
         valueText: string;
         valueDelete: string;
@@ -112,5 +113,5 @@ export default class Render {
     moveContentAbove(): void;
     moveContentBelow(): void;
     ensureElementInView(container: HTMLElement, element: HTMLElement): void;
-    putContent(el: HTMLElement, isOpen: boolean): 'up' | 'down';
+    putContent(): 'up' | 'down';
 }
