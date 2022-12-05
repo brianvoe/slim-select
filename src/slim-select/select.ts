@@ -241,9 +241,9 @@ export default class Select {
     // Stop listening to changes
     this.changeListen(false)
 
-    // Update id
+    // Update id, only if the id isnt already set
     if (id) {
-      this.select.dataset.ssid = id
+      this.select.dataset.id = id
     }
 
     // Update style
@@ -356,7 +356,10 @@ export default class Select {
       this.observer = null
     }
 
-    // show the original select
+    // Remove dataset id from original select
+    delete this.select.dataset.id
+
+    // Show the original select
     this.showUI()
   }
 }
