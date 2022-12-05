@@ -1,0 +1,7 @@
+.ss-main,
+.ss-content {
+  &.error {
+    border: solid 1px red !important;
+    color: red !important;
+  }
+}
