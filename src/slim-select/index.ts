@@ -183,11 +183,6 @@ export default class SlimSelect {
     this.select.disable()
     this.render.disable()
   }
-  // Set to disabled and add disabled classes
-  public readOnly(): void {
-    this.settings.disabled = true
-    this.render.disable()
-  }
 
   public getData(): DataArray {
     return this.store.getData()
