@@ -156,9 +156,6 @@ export default class Render {
     // move the content in to the right location
     this.moveContent()
 
-    // Render the options
-    this.renderOptions(this.store.getData())
-
     // Move the content in to the right location
     this.moveContent()
 
