@@ -335,8 +335,8 @@ export default class Render {
       this.settings.triggerFocus = false
     }
     // Trigger focus but dont scroll to it
-    this.main.main.focus({ preventScroll: true })
-    this.settings.triggerFocus = true
+    //this.main.main.focus({ preventScroll: true })
+    //this.settings.triggerFocus = true
   }
 
   public placeholder(): HTMLDivElement {
