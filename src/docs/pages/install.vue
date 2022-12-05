@@ -70,12 +70,6 @@ export default defineComponent({
             &lt;head&gt;
               &lt;script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"&gt;&lt;/script&gt;
               &lt;link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
-              
-              &lt;script&gt;
-                new SlimSelect({
-                  select: '#selectElement'
-                })
-              &lt;script&gt;
             &lt;/head&gt;
             &lt;body&gt;
               &lt;select id="selectElement"&gt;
@@ -83,6 +77,11 @@ export default defineComponent({
                 &lt;option&gt;Option 2&lt;/option&gt;
                 &lt;option&gt;Option 3&lt;/option&gt;
               &lt;/select&gt;
+              &lt;script&gt;
+                new SlimSelect({
+                  select: '#selectElement'
+                })
+              &lt;/script&gt;
             &lt;/body&gt;
           &lt;/html&gt;
         </code>
