@@ -97,6 +97,13 @@ export default class SlimSelect {
       // Run set selected from the values given
       this.setSelected(values)
     }
+    this.select.onClassChange = (classes: string[]) => {
+      // Update settings with new class
+      this.settings.class = classes
+
+      // Run render updateClassStyles
+      this.render.updateClassStyles()
+    }
     this.select.onDisabledChange = (disabled: boolean) => {
       if (disabled) {
         this.disable()

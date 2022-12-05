@@ -125,6 +125,9 @@ export default class Render {
     this.main = this.mainDiv()
     this.content = this.contentDiv()
 
+    // Add classes and styles to main/content
+    this.updateClassStyles()
+
     // Add content to the content location settings
     this.settings.contentLocation.appendChild(this.content.main)
   }
@@ -175,29 +178,48 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
   }
 
+  public updateClassStyles(): void {
+    // Clear all classes and styles
+    this.main.main.className = ''
+    this.main.main.removeAttribute('style')
+    this.content.main.className = ''
+    this.content.main.removeAttribute('style')
+
+    // Make sure main/content has its base class
+    this.main.main.classList.add(this.classes.main)
+    this.content.main.classList.add(this.classes.content)
+
+    // Add styles
+    if (this.settings.style !== '') {
+      this.content.main.style.cssText = this.settings.style
+    }
+
+    // Add classes
+    if (this.settings.class.length) {
+      for (const c of this.settings.class) {
+        if (c.trim() !== '') {
+          this.main.main.classList.add(c.trim())
+          this.content.main.classList.add(c.trim())
+        }
+      }
+    }
+
+    // Misc classes
+    // Add content position class
+    if (this.settings.contentPosition === 'relative') {
+      this.content.main.classList.add('ss-' + this.settings.contentPosition)
+    }
+  }
+
   public mainDiv(): Main {
     // Create main container
     const main = document.createElement('div')
 
+    // Add id to data-id
+    main.dataset.id = this.settings.id
+
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
-
-    // Add style and classes
-    main.style.cssText = this.settings.style !== '' ? this.settings.style : ''
-
-    // Clear out classlist
-    main.className = ''
-
-    // Loop through config class and add
-    main.classList.add(this.settings.id)
-    main.classList.add(this.classes.main)
-    if (this.settings.class) {
-      for (const c of this.settings.class) {
-        if (c.trim() !== '') {
-          main.classList.add(c.trim())
-        }
-      }
-    }
 
     // If main gets focus, open the content
     main.onfocus = () => {
@@ -570,27 +592,9 @@ export default class Render {
 
   public contentDiv(): Content {
     const main = document.createElement('div')
-    main.classList.add(this.classes.content)
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-
-    // Add styles
-    if (this.settings.style !== '') {
-      main.style.cssText = this.settings.style
-    }
-
-    // Add classes
-    if (this.settings.contentPosition === 'relative') {
-      main.classList.add('ss-' + this.settings.contentPosition)
-    }
-    if (this.settings.class.length) {
-      for (const c of this.settings.class) {
-        if (c.trim() !== '') {
-          main.classList.add(c.trim())
-        }
-      }
-    }
 
     // Add search
     const search = this.searchDiv()

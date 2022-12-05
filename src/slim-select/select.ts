@@ -6,6 +6,7 @@ export default class Select {
 
   // Mutation observer fields
   public onValueChange?: (value: string[]) => void
+  public onClassChange?: (classes: string[]) => void
   public onDisabledChange?: (disabled: boolean) => void
   public onOptionsChange?: (data: DataArrayPartial) => void
 
@@ -88,6 +89,7 @@ export default class Select {
       return
     }
 
+    let classChanged = false
     let disabledChanged = false
     let optgroupOptionChanged = false
 
@@ -99,12 +101,22 @@ export default class Select {
         if (m.attributeName === 'disabled') {
           disabledChanged = true
         }
+
+        // Check if class has changed
+        if (m.attributeName === 'class') {
+          classChanged = true
+        }
       }
 
       // Check if its an optgroup or option
       if (m.target.nodeName === 'OPTGROUP' || m.target.nodeName === 'OPTION') {
         optgroupOptionChanged = true
       }
+    }
+
+    // If class has changed then call the class change function
+    if (classChanged && this.onClassChange) {
+      this.onClassChange(this.select.className.split(' '))
     }
 
     // If disabled has changed then call the disabled change function
