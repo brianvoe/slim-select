@@ -156,9 +156,6 @@ export default class Render {
     // move the content in to the right location
     this.moveContent()
 
-    // Move the content in to the right location
-    this.moveContent()
-
     // Move to last selected option
     const selectedOptions = this.store.getSelectedOptions()
     if (selectedOptions.length) {
