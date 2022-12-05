@@ -222,7 +222,7 @@ export default class SlimSelect {
     return this.store.getSelected()
   }
 
-  public setSelected(value: string | string[]): void {
+  public setSelected(value: string | string[], runAfterChange = true): void {
     // Get original selected values
     const selected = this.store.getSelected()
 
@@ -245,7 +245,7 @@ export default class SlimSelect {
     }
 
     // Trigger afterChange event, if it doesnt equal the original selected values
-    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+    if (runAfterChange && this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
       this.events.afterChange(this.store.getSelectedOptions())
     }
   }
