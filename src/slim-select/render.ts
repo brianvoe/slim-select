@@ -280,7 +280,7 @@ export default class Render {
       }
 
       if (shouldDelete) {
-        this.callbacks.setSelected([''], false)
+        this.callbacks.setSelected([''])
 
         // Check if we need to close the dropdown
         if (this.settings.closeOnSelect) {
@@ -546,7 +546,7 @@ export default class Render {
               selectedValues.push(o.value)
             }
           }
-          this.callbacks.setSelected(selectedValues, false)
+          this.callbacks.setSelected(selectedValues)
 
           // Check if we need to close the dropdown
           if (this.settings.closeOnSelect) {
@@ -1238,7 +1238,7 @@ export default class Render {
         }
 
         // Get values from after and set as selected
-        this.callbacks.setSelected(after.map((o: Option) => o.value), false)
+        this.callbacks.setSelected(after.map((o: Option) => o.value))
 
         // If closeOnSelect is true
         if (this.settings.closeOnSelect) {
