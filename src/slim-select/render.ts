@@ -1142,6 +1142,11 @@ export default class Render {
       optionEl.setAttribute('title', optionEl.textContent)
     }
 
+    // If option is disabled
+    if (!option.display) {
+      optionEl.classList.add(this.classes.hide)
+    }
+
     // If allowed to deselect, null onclick and add disabled
     if (option.disabled) {
       optionEl.classList.add(this.classes.disabled)
