@@ -243,7 +243,7 @@ export default class Select {
 
     // Update id
     if (id) {
-      this.select.id = id
+      this.select.dataset.ssid = id
     }
 
     // Update style
