@@ -6,7 +6,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string
-  setSelected: (value: string[]) => void
+  setSelected: (value: string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
@@ -750,9 +750,9 @@ export default class Render {
           if (this.settings.isMultiple) {
             let values = this.store.getSelected()
             values.push(newOption.value)
-            this.callbacks.setSelected(values)
+            this.callbacks.setSelected(values, true)
           } else {
-            this.callbacks.setSelected([newOption.value])
+            this.callbacks.setSelected([newOption.value], true)
           }
 
           // Clear search
@@ -1021,13 +1021,13 @@ export default class Render {
                 return true
               })
 
-              this.callbacks.setSelected(newSelected)
+              this.callbacks.setSelected(newSelected, true)
               return
             } else {
               // Put together new list with all options in this optgroup
               const newSelected = currentSelected.concat(d.options.map((o) => o.value))
 
-              this.callbacks.setSelected(newSelected)
+              this.callbacks.setSelected(newSelected, true)
             }
           })
 
@@ -1235,7 +1235,10 @@ export default class Render {
         }
 
         // Get values from after and set as selected
-        this.callbacks.setSelected(after.map((o: Option) => o.value), false)
+        this.callbacks.setSelected(
+          after.map((o: Option) => o.value),
+          false,
+        )
 
         // If closeOnSelect is true
         if (this.settings.closeOnSelect) {
