@@ -343,6 +343,7 @@ class Render {
         this.callbacks = callbacks;
         this.main = this.mainDiv();
         this.content = this.contentDiv();
+        this.updateClassStyles();
         this.settings.contentLocation.appendChild(this.content.main);
     }
     enable() {
@@ -356,8 +357,6 @@ class Render {
     open() {
         this.main.arrow.path.setAttribute('d', this.classes.arrowOpen);
         this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow);
-        this.moveContent();
-        this.renderOptions(this.store.getData());
         this.moveContent();
         const selectedOptions = this.store.getSelectedOptions();
         if (selectedOptions.length) {
@@ -375,20 +374,32 @@ class Render {
         this.content.main.classList.remove(this.classes.openBelow);
         this.main.arrow.path.setAttribute('d', this.classes.arrowClose);
     }
-    mainDiv() {
-        const main = document.createElement('div');
-        main.tabIndex = 0;
-        main.style.cssText = this.settings.style !== '' ? this.settings.style : '';
-        main.className = '';
-        main.classList.add(this.settings.id);
-        main.classList.add(this.classes.main);
-        if (this.settings.class) {
+    updateClassStyles() {
+        this.main.main.className = '';
+        this.main.main.removeAttribute('style');
+        this.content.main.className = '';
+        this.content.main.removeAttribute('style');
+        this.main.main.classList.add(this.classes.main);
+        this.content.main.classList.add(this.classes.content);
+        if (this.settings.style !== '') {
+            this.content.main.style.cssText = this.settings.style;
+        }
+        if (this.settings.class.length) {
             for (const c of this.settings.class) {
                 if (c.trim() !== '') {
-                    main.classList.add(c.trim());
+                    this.main.main.classList.add(c.trim());
+                    this.content.main.classList.add(c.trim());
                 }
             }
         }
+        if (this.settings.contentPosition === 'relative') {
+            this.content.main.classList.add('ss-' + this.settings.contentPosition);
+        }
+    }
+    mainDiv() {
+        const main = document.createElement('div');
+        main.dataset.id = this.settings.id;
+        main.tabIndex = 0;
         main.onfocus = () => {
             if (this.settings.triggerFocus) {
                 this.callbacks.open();
@@ -441,7 +452,7 @@ class Render {
                 shouldDelete = this.callbacks.beforeChange(after, before) === true;
             }
             if (shouldDelete) {
-                this.callbacks.setSelected(['']);
+                this.callbacks.setSelected([''], false);
                 if (this.settings.closeOnSelect) {
                     this.callbacks.close();
                 }
@@ -640,7 +651,7 @@ class Render {
                             selectedValues.push(o.value);
                         }
                     }
-                    this.callbacks.setSelected(selectedValues);
+                    this.callbacks.setSelected(selectedValues, false);
                     if (this.settings.closeOnSelect) {
                         this.callbacks.close();
                     }
@@ -661,21 +672,7 @@ class Render {
     }
     contentDiv() {
         const main = document.createElement('div');
-        main.classList.add(this.classes.content);
         main.dataset.id = this.settings.id;
-        if (this.settings.style !== '') {
-            main.style.cssText = this.settings.style;
-        }
-        if (this.settings.contentPosition === 'relative') {
-            main.classList.add('ss-' + this.settings.contentPosition);
-        }
-        if (this.settings.class.length) {
-            for (const c of this.settings.class) {
-                if (c.trim() !== '') {
-                    main.classList.add(c.trim());
-                }
-            }
-        }
         const search = this.searchDiv();
         main.appendChild(search.main);
         const list = this.listDiv();
@@ -787,10 +784,10 @@ class Render {
                     if (this.settings.isMultiple) {
                         let values = this.store.getSelected();
                         values.push(newOption.value);
-                        this.callbacks.setSelected(values);
+                        this.callbacks.setSelected(values, true);
                     }
                     else {
-                        this.callbacks.setSelected([newOption.value]);
+                        this.callbacks.setSelected([newOption.value], true);
                     }
                     this.callbacks.search('');
                     if (this.settings.closeOnSelect) {
@@ -972,12 +969,12 @@ class Render {
                                 }
                                 return true;
                             });
-                            this.callbacks.setSelected(newSelected);
+                            this.callbacks.setSelected(newSelected, true);
                             return;
                         }
                         else {
                             const newSelected = currentSelected.concat(d.options.map((o) => o.value));
-                            this.callbacks.setSelected(newSelected);
+                            this.callbacks.setSelected(newSelected, true);
                         }
                     });
                     optgroupActions.appendChild(selectAll);
@@ -1061,6 +1058,9 @@ class Render {
         if (this.settings.showOptionTooltips && optionEl.textContent) {
             optionEl.setAttribute('title', optionEl.textContent);
         }
+        if (!option.display) {
+            optionEl.classList.add(this.classes.hide);
+        }
         if (option.disabled) {
             optionEl.classList.add(this.classes.disabled);
         }
@@ -1120,7 +1120,7 @@ class Render {
                 if (!this.store.getOptionByID(elementID)) {
                     this.callbacks.addOption(option);
                 }
-                this.callbacks.setSelected(after.map((o) => o.value));
+                this.callbacks.setSelected(after.map((o) => o.value), false);
                 if (this.settings.closeOnSelect) {
                     this.callbacks.close();
                 }
@@ -1256,6 +1256,7 @@ class Select {
         if (!this.listen) {
             return;
         }
+        let classChanged = false;
         let disabledChanged = false;
         let optgroupOptionChanged = false;
         for (const m of mutations) {
@@ -1263,10 +1264,16 @@ class Select {
                 if (m.attributeName === 'disabled') {
                     disabledChanged = true;
                 }
+                if (m.attributeName === 'class') {
+                    classChanged = true;
+                }
             }
             if (m.target.nodeName === 'OPTGROUP' || m.target.nodeName === 'OPTION') {
                 optgroupOptionChanged = true;
             }
+        }
+        if (classChanged && this.onClassChange) {
+            this.onClassChange(this.select.className.split(' '));
         }
         if (disabledChanged && this.onDisabledChange) {
             this.changeListen(false);
@@ -1372,7 +1379,7 @@ class Select {
     updateSelect(id, style, classes) {
         this.changeListen(false);
         if (id) {
-            this.select.id = id;
+            this.select.dataset.id = id;
         }
         if (style) {
             this.select.style.cssText = style;
@@ -1460,6 +1467,7 @@ class Select {
             this.observer.disconnect();
             this.observer = null;
         }
+        delete this.select.dataset.id;
         this.showUI();
     }
 }
@@ -1531,6 +1539,10 @@ class SlimSelect {
         this.select.hideUI();
         this.select.onValueChange = (values) => {
             this.setSelected(values);
+        };
+        this.select.onClassChange = (classes) => {
+            this.settings.class = classes;
+            this.render.updateClassStyles();
         };
         this.select.onDisabledChange = (disabled) => {
             if (disabled) {
@@ -1610,7 +1622,7 @@ class SlimSelect {
     getSelected() {
         return this.store.getSelected();
     }
-    setSelected(value) {
+    setSelected(value, runAfterChange = true) {
         const selected = this.store.getSelected();
         this.store.setSelectedBy('value', Array.isArray(value) ? value : [value]);
         const data = this.store.getData();
@@ -1622,7 +1634,7 @@ class SlimSelect {
         else {
             this.render.renderOptions(data);
         }
-        if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+        if (runAfterChange && this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
             this.events.afterChange(this.store.getSelectedOptions());
         }
     }
@@ -1669,7 +1681,9 @@ class SlimSelect {
             this.events.beforeClose();
         }
         this.render.close();
-        this.search('');
+        if (this.render.content.search.input.value !== '') {
+            this.search('');
+        }
         this.render.mainFocus(false);
         setTimeout(() => {
             if (this.events.afterClose) {

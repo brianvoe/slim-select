@@ -97,6 +97,13 @@ export default class SlimSelect {
       // Run set selected from the values given
       this.setSelected(values)
     }
+    this.select.onClassChange = (classes: string[]) => {
+      // Update settings with new class
+      this.settings.class = classes
+
+      // Run render updateClassStyles
+      this.render.updateClassStyles()
+    }
     this.select.onDisabledChange = (disabled: boolean) => {
       if (disabled) {
         this.disable()
@@ -222,7 +229,7 @@ export default class SlimSelect {
     return this.store.getSelected()
   }
 
-  public setSelected(value: string | string[]): void {
+  public setSelected(value: string | string[], runAfterChange = true): void {
     // Get original selected values
     const selected = this.store.getSelected()
 
@@ -245,7 +252,7 @@ export default class SlimSelect {
     }
 
     // Trigger afterChange event, if it doesnt equal the original selected values
-    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+    if (runAfterChange && this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
       this.events.afterChange(this.store.getSelectedOptions())
     }
   }
@@ -327,8 +334,10 @@ export default class SlimSelect {
     // Tell render to close
     this.render.close()
 
-    // Clear search
-    this.search('') // Clear search
+    // Clear search only if not empty
+    if (this.render.content.search.input.value !== '') {
+      this.search('') // Clear search
+    }
 
     // If we arent tabbing focus back on the main element
     this.render.mainFocus(false)

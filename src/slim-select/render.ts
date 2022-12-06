@@ -6,7 +6,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string
-  setSelected: (value: string[]) => void
+  setSelected: (value: string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
@@ -125,6 +125,9 @@ export default class Render {
     this.main = this.mainDiv()
     this.content = this.contentDiv()
 
+    // Add classes and styles to main/content
+    this.updateClassStyles()
+
     // Add content to the content location settings
     this.settings.contentLocation.appendChild(this.content.main)
   }
@@ -156,12 +159,6 @@ export default class Render {
     // move the content in to the right location
     this.moveContent()
 
-    // Render the options
-    this.renderOptions(this.store.getData())
-
-    // Move the content in to the right location
-    this.moveContent()
-
     // Move to last selected option
     const selectedOptions = this.store.getSelectedOptions()
     if (selectedOptions.length) {
@@ -181,29 +178,48 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
   }
 
+  public updateClassStyles(): void {
+    // Clear all classes and styles
+    this.main.main.className = ''
+    this.main.main.removeAttribute('style')
+    this.content.main.className = ''
+    this.content.main.removeAttribute('style')
+
+    // Make sure main/content has its base class
+    this.main.main.classList.add(this.classes.main)
+    this.content.main.classList.add(this.classes.content)
+
+    // Add styles
+    if (this.settings.style !== '') {
+      this.content.main.style.cssText = this.settings.style
+    }
+
+    // Add classes
+    if (this.settings.class.length) {
+      for (const c of this.settings.class) {
+        if (c.trim() !== '') {
+          this.main.main.classList.add(c.trim())
+          this.content.main.classList.add(c.trim())
+        }
+      }
+    }
+
+    // Misc classes
+    // Add content position class
+    if (this.settings.contentPosition === 'relative') {
+      this.content.main.classList.add('ss-' + this.settings.contentPosition)
+    }
+  }
+
   public mainDiv(): Main {
     // Create main container
     const main = document.createElement('div')
 
+    // Add id to data-id
+    main.dataset.id = this.settings.id
+
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
-
-    // Add style and classes
-    main.style.cssText = this.settings.style !== '' ? this.settings.style : ''
-
-    // Clear out classlist
-    main.className = ''
-
-    // Loop through config class and add
-    main.classList.add(this.settings.id)
-    main.classList.add(this.classes.main)
-    if (this.settings.class) {
-      for (const c of this.settings.class) {
-        if (c.trim() !== '') {
-          main.classList.add(c.trim())
-        }
-      }
-    }
 
     // If main gets focus, open the content
     main.onfocus = () => {
@@ -280,7 +296,7 @@ export default class Render {
       }
 
       if (shouldDelete) {
-        this.callbacks.setSelected([''])
+        this.callbacks.setSelected([''], false)
 
         // Check if we need to close the dropdown
         if (this.settings.closeOnSelect) {
@@ -546,7 +562,7 @@ export default class Render {
               selectedValues.push(o.value)
             }
           }
-          this.callbacks.setSelected(selectedValues)
+          this.callbacks.setSelected(selectedValues, false)
 
           // Check if we need to close the dropdown
           if (this.settings.closeOnSelect) {
@@ -576,27 +592,9 @@ export default class Render {
 
   public contentDiv(): Content {
     const main = document.createElement('div')
-    main.classList.add(this.classes.content)
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-
-    // Add styles
-    if (this.settings.style !== '') {
-      main.style.cssText = this.settings.style
-    }
-
-    // Add classes
-    if (this.settings.contentPosition === 'relative') {
-      main.classList.add('ss-' + this.settings.contentPosition)
-    }
-    if (this.settings.class.length) {
-      for (const c of this.settings.class) {
-        if (c.trim() !== '') {
-          main.classList.add(c.trim())
-        }
-      }
-    }
 
     // Add search
     const search = this.searchDiv()
@@ -753,9 +751,9 @@ export default class Render {
           if (this.settings.isMultiple) {
             let values = this.store.getSelected()
             values.push(newOption.value)
-            this.callbacks.setSelected(values)
+            this.callbacks.setSelected(values, true)
           } else {
-            this.callbacks.setSelected([newOption.value])
+            this.callbacks.setSelected([newOption.value], true)
           }
 
           // Clear search
@@ -1024,13 +1022,13 @@ export default class Render {
                 return true
               })
 
-              this.callbacks.setSelected(newSelected)
+              this.callbacks.setSelected(newSelected, true)
               return
             } else {
               // Put together new list with all options in this optgroup
               const newSelected = currentSelected.concat(d.options.map((o) => o.value))
 
-              this.callbacks.setSelected(newSelected)
+              this.callbacks.setSelected(newSelected, true)
             }
           })
 
@@ -1148,6 +1146,11 @@ export default class Render {
       optionEl.setAttribute('title', optionEl.textContent)
     }
 
+    // If option is disabled
+    if (!option.display) {
+      optionEl.classList.add(this.classes.hide)
+    }
+
     // If allowed to deselect, null onclick and add disabled
     if (option.disabled) {
       optionEl.classList.add(this.classes.disabled)
@@ -1238,7 +1241,10 @@ export default class Render {
         }
 
         // Get values from after and set as selected
-        this.callbacks.setSelected(after.map((o: Option) => o.value))
+        this.callbacks.setSelected(
+          after.map((o: Option) => o.value),
+          false,
+        )
 
         // If closeOnSelect is true
         if (this.settings.closeOnSelect) {

@@ -15,12 +15,6 @@ Use Save As... to download, then click back to return to this page.`)&&(location
             &lt;head&gt;
               &lt;script src=&quot;https://unpkg.com/slim-select@latest/dist/slimselect.min.js&quot;&gt;&lt;/script&gt;
               &lt;link href=&quot;https://unpkg.com/slim-select@latest/dist/slimselect.css&quot; rel=&quot;stylesheet&quot;&gt;&lt;/link&gt;
-              
-              &lt;script&gt;
-                new SlimSelect({
-                  select: &#39;#selectElement&#39;
-                })
-              &lt;script&gt;
             &lt;/head&gt;
             &lt;body&gt;
               &lt;select id=&quot;selectElement&quot;&gt;
@@ -28,6 +22,11 @@ Use Save As... to download, then click back to return to this page.`)&&(location
                 &lt;option&gt;Option 2&lt;/option&gt;
                 &lt;option&gt;Option 3&lt;/option&gt;
               &lt;/select&gt;
+              &lt;script&gt;
+                new SlimSelect({
+                  select: &#39;#selectElement&#39;
+                })
+              &lt;/script&gt;
             &lt;/body&gt;
           &lt;/html&gt;
         </code>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // We need to import from the root of the package
 // Because if we use @slim-select/vue then we loose
@@ -10,13 +10,6 @@ import Settings from '../../../slim-select/settings'
 import { Option, OptionOptional } from '../../../slim-select/store'
 import { Events } from '../../../slim-select'
 
-interface Person {
-  id: string
-  first_name: string
-  last_name: string
-  selected: number
-}
-
 export default defineComponent({
   name: 'Vue',
   components: {
@@ -26,7 +19,7 @@ export default defineComponent({
     return {
       // v-model data for some selects
       simpleSingle: '2',
-      simpleMultiple: ['2', '3'] as string[],
+      simpleMultiple: ['2', '3'],
 
       // Misc
       settings: {
@@ -41,6 +34,12 @@ export default defineComponent({
       events: {
         afterChange: this.afterChange,
       } as Events,
+
+      // Dealing with disabled
+      isDisabled: false,
+
+      // Dealing with class attribute
+      errorClass: '',
     }
   },
   mounted() {
@@ -323,6 +322,53 @@ export default defineComponent({
         &lt;/SlimSelect&gt;
 
         &lt;SlimSelect :events="events" multiple&gt;
+          &lt;option value="1"&gt;Option 1&lt;/option&gt;
+          &lt;option value="2"&gt;Option 2&lt;/option&gt;
+          &lt;option value="3"&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+      </code>
+    </pre>
+
+    <br />
+    <div class="separator"></div>
+    <br />
+
+    <h3>Attributes</h3>
+    <p>There are certain attributes that are reactive to changes</p>
+
+    <h4>disabled</h4>
+    <div class="row">
+      <div class="btn" @click="isDisabled = !isDisabled">Toggle Disabled</div>
+      <SlimSelect :disabled="isDisabled">
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+      </SlimSelect>
+    </div>
+
+    <pre>
+      <code class="language-html">
+        &lt;SlimSelect :disabled="isDisabled"&gt;
+          &lt;option value="1"&gt;Option 1&lt;/option&gt;
+          &lt;option value="2"&gt;Option 2&lt;/option&gt;
+          &lt;option value="3"&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+      </code>
+    </pre>
+
+    <h4>class</h4>
+    <div class="row">
+      <div class="btn" @click="errorClass = errorClass === '' ? 'error' : ''">Toggle Error</div>
+      <SlimSelect class="dynamicClass" :class="errorClass">
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+      </SlimSelect>
+    </div>
+
+    <pre>
+      <code class="language-html">
+        &lt;SlimSelect :class="myClass"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
