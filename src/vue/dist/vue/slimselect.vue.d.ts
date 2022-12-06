@@ -67,6 +67,7 @@ declare const _default: import("vue").DefineComponent<{
         select: {
             select: HTMLSelectElement;
             onValueChange?: ((value: string[]) => void) | undefined;
+            onClassChange?: ((classes: string[]) => void) | undefined;
             onDisabledChange?: ((disabled: boolean) => void) | undefined;
             onOptionsChange?: ((data: DataArrayPartial) => void) | undefined;
             listen: boolean;
@@ -161,7 +162,7 @@ declare const _default: import("vue").DefineComponent<{
                 open: () => void;
                 close: () => void;
                 addable?: ((value: string) => string | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional>) | undefined;
-                setSelected: (value: string[]) => void;
+                setSelected: (value: string[], runAfterChange: boolean) => void;
                 addOption: (option: Option) => void;
                 search: (search: string) => void;
                 beforeChange?: ((newVal: Option[], oldVal: Option[]) => boolean | void) | undefined;
@@ -239,6 +240,7 @@ declare const _default: import("vue").DefineComponent<{
             disable: () => void;
             open: () => void;
             close: () => void;
+            updateClassStyles: () => void;
             mainDiv: () => import("../slim-select/render").Main;
             mainFocus: (trigger: boolean) => void;
             placeholder: () => HTMLDivElement;
@@ -278,7 +280,7 @@ declare const _default: import("vue").DefineComponent<{
         getData: () => import("../slim-select/store").DataArray;
         setData: (data: DataArrayPartial) => void;
         getSelected: () => string[];
-        setSelected: (value: string | string[]) => void;
+        setSelected: (value: string | string[], runAfterChange?: boolean) => void;
         addOption: (option: import("../slim-select/store").OptionOptional) => void;
         open: () => void;
         close: () => void;

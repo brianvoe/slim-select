@@ -2,6 +2,7 @@ import { DataArray, DataArrayPartial, Optgroup, OptgroupOptional, Option } from 
 export default class Select {
     select: HTMLSelectElement;
     onValueChange?: (value: string[]) => void;
+    onClassChange?: (classes: string[]) => void;
     onDisabledChange?: (disabled: boolean) => void;
     onOptionsChange?: (data: DataArrayPartial) => void;
     listen: boolean;
