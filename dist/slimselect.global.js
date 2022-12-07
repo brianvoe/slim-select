@@ -79,7 +79,7 @@ var SlimSelect = (function () {
             this.contentLocation = settings.contentLocation || document.body;
             this.contentPosition = settings.contentPosition || 'absolute';
             this.openPosition = settings.openPosition || 'auto';
-            this.placeholderText = settings.placeholderText || 'Select Value';
+            this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value';
             this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
             this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
             this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
@@ -1528,8 +1528,15 @@ var SlimSelect = (function () {
                 this.destroy();
             }
             this.settings = new Settings(config.settings);
+            const debounceEvents = ['afterChange', 'beforeOpen', 'afterOpen', 'beforeClose', 'afterClose'];
             for (const key in config.events) {
-                if (config.events.hasOwnProperty(key)) {
+                if (!config.events.hasOwnProperty(key)) {
+                    continue;
+                }
+                if (debounceEvents.indexOf(key) !== -1) {
+                    this.events[key] = debounce(config.events[key], 100);
+                }
+                else {
                     this.events[key] = config.events[key];
                 }
             }
