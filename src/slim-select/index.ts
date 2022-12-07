@@ -75,8 +75,17 @@ export default class SlimSelect {
     this.settings = new Settings(config.settings)
 
     // Set events
+    const debounceEvents = ['afterChange', 'beforeOpen', 'afterOpen', 'beforeClose', 'afterClose']
     for (const key in config.events) {
-      if (config.events.hasOwnProperty(key)) {
+      // Check if key exists in events
+      if (!config.events.hasOwnProperty(key)) {
+        continue
+      }
+
+      // Check if key is in debounceEvents
+      if (debounceEvents.indexOf(key) !== -1) {
+        ;(this.events as { [key: string]: any })[key] = debounce((config.events as { [key: string]: any })[key], 100)
+      } else {
         ;(this.events as { [key: string]: any })[key] = (config.events as { [key: string]: any })[key]
       }
     }
