@@ -18,15 +18,19 @@ export default defineComponent({
       select: this.$refs.beforeAfterOpenCloseSingle as HTMLSelectElement,
       events: {
         beforeOpen: () => {
+          console.log('before open')
           this.setState('single', 'beforeOpen')
         },
         afterOpen: () => {
+          console.log('after open')
           this.setState('single', 'afterOpen')
         },
         beforeClose: () => {
+          console.log('before close')
           this.setState('single', 'beforeClose')
         },
         afterClose: () => {
+          console.log('after close')
           this.setState('single', 'afterClose')
         },
       },
@@ -36,15 +40,19 @@ export default defineComponent({
       select: this.$refs.beforeAfterOpenCloseMultiple as HTMLSelectElement,
       events: {
         beforeOpen: () => {
+          console.log('before open')
           this.setState('multiple', 'beforeOpen')
         },
         afterOpen: () => {
+          console.log('after open')
           this.setState('multiple', 'afterOpen')
         },
         beforeClose: () => {
+          console.log('before close')
           this.setState('multiple', 'beforeClose')
         },
         afterClose: () => {
+          console.log('after close')
           this.setState('multiple', 'afterClose')
         },
       },

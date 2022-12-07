@@ -19,6 +19,13 @@ export default defineComponent({
         placeholderText: 'Custom Placeholder Text',
       },
     })
+
+    new SlimSelect({
+      select: this.$refs.placeholderNone as HTMLSelectElement,
+      settings: {
+        placeholderText: '',
+      },
+    })
   },
 })
 </script>
@@ -30,6 +37,9 @@ export default defineComponent({
       Placeholders consists of setting the placeholder option value. The only difference is single selects require an
       empty option with data-placeholder set to true. Default value is "Select Value".
     </p>
+    <div class="alert info">
+      Notice you can also set placeholder to empty if that is what you would like to do as well.
+    </div>
 
     <div class="row">
       <select ref="placeholderSingle">
@@ -39,6 +49,12 @@ export default defineComponent({
         <option value="value3">Value 3</option>
       </select>
       <select ref="placeholderMultiple" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select ref="placeholderNone">
+        <option data-placeholder="true"></option>
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
