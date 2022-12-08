@@ -223,7 +223,7 @@ export default class Render {
 
     // If main gets focus, open the content
     main.onfocus = () => {
-      if (this.settings.triggerFocus) {
+      if (this.settings.triggerFocus && this.settings.isWindowFocused) {
         this.callbacks.open()
       }
     }

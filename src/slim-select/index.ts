@@ -170,6 +170,9 @@ export default class SlimSelect {
       window.addEventListener('scroll', this.windowScroll, false)
     }
 
+    // Add window visibility change listener to closeContent if window is hidden
+    document.addEventListener('visibilitychange', this.windowVisibilityChange)
+
     // If disabled lets call it
     if (this.settings.disabled) {
       this.disable()
@@ -421,6 +424,7 @@ export default class SlimSelect {
     if (this.settings.openPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
+    document.removeEventListener('visibilitychange', this.windowVisibilityChange)
 
     // Delete the store data
     this.store.setData([])
@@ -460,6 +464,18 @@ export default class SlimSelect {
     // Check if the click was on the content by looking at the parents
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
       this.close()
+    }
+  }
+
+  // Event Listener for window visibility change
+  private windowVisibilityChange: (e: Event) => void = () => {
+    if (document.hidden) {
+      this.settings.isWindowFocused = false
+      this.close()
+    } else {
+      setTimeout(() => {
+        this.settings.isWindowFocused = true
+      }, 20)
     }
   }
 }
