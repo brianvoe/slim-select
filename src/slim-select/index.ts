@@ -270,8 +270,10 @@ export default class SlimSelect {
     // Get original selected values
     const selected = this.store.getSelected()
 
-    // Add option to store
-    this.store.addOption(option)
+    // Add option to store if it does not already include the option
+    if (!this.store.getDataOptions().some((o) => o.value === (option.value ?? option.text))) {
+      this.store.addOption(option)
+    }
     const data = this.store.getData()
 
     // Update the select element
