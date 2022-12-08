@@ -10,6 +10,7 @@ export default class Settings {
   // Dynamic settings
   public isMultiple: boolean = false
   public isOpen: boolean = false
+  public isWindowFocused: boolean = true
   public triggerFocus: boolean = true
   public intervalMove: NodeJS.Timeout | null = null
 

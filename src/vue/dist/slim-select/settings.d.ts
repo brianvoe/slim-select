@@ -6,6 +6,7 @@ export default class Settings {
     class: string[];
     isMultiple: boolean;
     isOpen: boolean;
+    isWindowFocused: boolean;
     triggerFocus: boolean;
     intervalMove: NodeJS.Timeout | null;
     disabled: boolean;
