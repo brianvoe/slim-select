@@ -60,6 +60,7 @@ var SlimSelectVue = (function (vue) {
           this.class = [];
           this.isMultiple = false;
           this.isOpen = false;
+          this.isWindowFocused = true;
           this.triggerFocus = true;
           this.intervalMove = null;
           if (!settings) {
@@ -404,7 +405,7 @@ var SlimSelectVue = (function (vue) {
           main.dataset.id = this.settings.id;
           main.tabIndex = 0;
           main.onfocus = () => {
-              if (this.settings.triggerFocus) {
+              if (this.settings.triggerFocus && this.settings.isWindowFocused) {
                   this.callbacks.open();
               }
           };
@@ -1511,6 +1512,17 @@ var SlimSelectVue = (function (vue) {
                   this.close();
               }
           };
+          this.windowVisibilityChange = () => {
+              if (document.hidden) {
+                  this.settings.isWindowFocused = false;
+                  this.close();
+              }
+              else {
+                  setTimeout(() => {
+                      this.settings.isWindowFocused = true;
+                  }, 20);
+              }
+          };
           this.selectEl = (typeof config.select === 'string' ? document.querySelector(config.select) : config.select);
           if (!this.selectEl) {
               if (config.events && config.events.error) {
@@ -1590,6 +1602,7 @@ var SlimSelectVue = (function (vue) {
           if (this.settings.openPosition === 'auto') {
               window.addEventListener('scroll', this.windowScroll, false);
           }
+          document.addEventListener('visibilitychange', this.windowVisibilityChange);
           if (this.settings.disabled) {
               this.disable();
           }
@@ -1650,7 +1663,9 @@ var SlimSelectVue = (function (vue) {
       }
       addOption(option) {
           const selected = this.store.getSelected();
-          this.store.addOption(option);
+          if (!this.store.getDataOptions().some((o) => { var _a; return o.value === ((_a = option.value) !== null && _a !== void 0 ? _a : option.text); })) {
+              this.store.addOption(option);
+          }
           const data = this.store.getData();
           this.select.updateOptions(data);
           this.render.renderValues();
@@ -1738,6 +1753,7 @@ var SlimSelectVue = (function (vue) {
           if (this.settings.openPosition === 'auto') {
               window.removeEventListener('scroll', this.windowScroll, false);
           }
+          document.removeEventListener('visibilitychange', this.windowVisibilityChange);
           this.store.setData([]);
           this.render.destroy();
           this.select.destroy();

@@ -35,6 +35,7 @@ declare const _default: import("vue").DefineComponent<{
             class: string[];
             isMultiple: boolean;
             isOpen: boolean;
+            isWindowFocused: boolean;
             triggerFocus: boolean;
             intervalMove: {
                 hasRef: () => boolean;
@@ -112,6 +113,7 @@ declare const _default: import("vue").DefineComponent<{
                 class: string[];
                 isMultiple: boolean;
                 isOpen: boolean;
+                isWindowFocused: boolean;
                 triggerFocus: boolean;
                 intervalMove: {
                     hasRef: () => boolean;

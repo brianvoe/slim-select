@@ -42,4 +42,5 @@ export default class SlimSelect {
     private windowResize;
     private windowScroll;
     private documentClick;
+    private windowVisibilityChange;
 }
