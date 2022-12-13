@@ -520,9 +520,9 @@ export default class Render {
       // Create delete div element
       const deleteDiv = document.createElement('div')
       deleteDiv.classList.add(this.classes.valueDelete)
+      deleteDiv.setAttribute('tabindex', '0')
 
-      // Add delete onclick event
-      deleteDiv.onclick = (e: Event) => {
+      const removeValue = (e: Event) => {
         e.preventDefault()
         e.stopPropagation()
 
@@ -574,6 +574,18 @@ export default class Render {
             this.callbacks.afterChange(after)
           }
         }
+      }
+
+      // Add accesibility delete event
+      deleteDiv.onkeyup = (e: KeyboardEvent) => {
+        if (e.key == 'Enter') {
+          removeValue(e);
+        }
+      }
+
+      // Add delete onclick event
+      deleteDiv.onclick = (e: Event) => {
+        removeValue(e)
       }
 
       // Add delete svg
