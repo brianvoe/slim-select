@@ -37,8 +37,8 @@ onMounted(() => {
 }
 #carbonads {
   display: flex;
-  max-width: 330px;
-  background-color: #ffffff;
+  max-width: 100%;
+  background-color: var(--color-ads-background);
   box-shadow: none;
   z-index: 100;
 }

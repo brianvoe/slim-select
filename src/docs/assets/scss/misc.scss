@@ -45,6 +45,12 @@ p {
   width: 100%;
   margin: var(--spacing-half) 0 var(--spacing-half) 0;
   background-color: var(--color-border);
+
+  &.vertical {
+    width: 1px;
+    height: 100%;
+    margin: 0 var(--spacing-half) 0 var(--spacing-half);
+  }
 }
 
 .bold {
