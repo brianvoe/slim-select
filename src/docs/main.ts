@@ -1,6 +1,4 @@
-import '../../node_modules/prismjs/themes/prism-okaidia.css'
 import './assets/scss/index.scss'
-import '../slim-select/slimselect.scss'
 
 import { createApp } from 'vue'
 import router from './router'

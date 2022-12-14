@@ -16,6 +16,7 @@
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
+  "type": "module",
   "main": "dist/slimselectvue.ssr.js",
   "browser": "dist/slimselect.global.js",
   "module": "dist/slimselectvue.es.js",

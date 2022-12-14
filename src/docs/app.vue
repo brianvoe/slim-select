@@ -5,9 +5,13 @@ import SlimSelect from '../slim-select'
 import Settings from '../slim-select/settings'
 import { debounce } from '../slim-select/helpers'
 import { DataArray } from '../slim-select/store'
+import CarbonAds from './components/carbonads.vue'
 
 export default defineComponent({
   name: 'App',
+  components: {
+    CarbonAds,
+  },
   data() {
     return {
       nav: null as SlimSelect | null,
@@ -252,6 +256,7 @@ export default defineComponent({
   <nav>
     <select ref="nav"></select>
     <div class="nav-content" ref="navContent"></div>
+    <CarbonAds />
   </nav>
   <main>
     <router-view />

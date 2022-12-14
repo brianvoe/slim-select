@@ -2,9 +2,13 @@
 import { defineComponent } from 'vue'
 
 import SlimSelect from '../../slim-select'
+import CarbonAds from '../components/carbonads.vue'
 
 export default defineComponent({
   name: 'Home',
+  components: {
+    CarbonAds,
+  },
   data() {
     return {
       single: null as SlimSelect | null,
@@ -184,6 +188,12 @@ export default defineComponent({
         /></a>
       </div>
     </div>
+
+    <br />
+    <div class="separator" />
+    <br />
+
+    <CarbonAds />
 
     <br />
     <div class="separator" />
