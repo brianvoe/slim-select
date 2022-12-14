@@ -5,18 +5,23 @@ import { ref, onMounted } from 'vue'
 const container = ref<HTMLDivElement | null>(null)
 const code = 'CWYDT23U'
 const placement = 'slimselectjscom'
+let hasInitalized = false
 
 // no need to account for option changes during dev, we can just
 // refresh the page
 onMounted(() => {
-  const s = document.createElement('script')
-  s.id = '_carbonads_js'
-  s.src = `//cdn.carbonads.com/carbon.js?serve=${code}&placement=${placement}`
-  s.async = true
+  if (!hasInitalized) {
+    hasInitalized = true
 
-  // Add the script to the container ref element
-  if (container.value) {
-    container.value.appendChild(s)
+    const s = document.createElement('script')
+    s.id = '_carbonads_js'
+    s.src = `//cdn.carbonads.com/carbon.js?serve=${code}&placement=${placement}`
+    s.async = true
+
+    // Add the script to the container ref element
+    if (container.value) {
+      container.value.appendChild(s)
+    }
   }
 })
 </script>
@@ -33,8 +38,8 @@ onMounted(() => {
 #carbonads {
   display: flex;
   max-width: 330px;
-  background-color: hsl(0, 0%, 98%);
-  box-shadow: 0 1px 4px 1px hsla(0, 0%, 0%, 0.1);
+  background-color: #ffffff;
+  box-shadow: none;
   z-index: 100;
 }
 #carbonads a {
@@ -51,25 +56,26 @@ onMounted(() => {
 }
 #carbonads .carbon-wrap {
   display: flex;
+  flex-direction: column;
 }
 #carbonads .carbon-img {
   display: block;
-  margin: 0;
+  margin-bottom: 0;
   line-height: 1;
 }
 #carbonads .carbon-img img {
   display: block;
 }
 #carbonads .carbon-text {
-  font-size: 13px;
-  padding: 10px;
+  font-size: 12px;
+  padding: var(--spacing-quarter);
   margin-bottom: 16px;
   line-height: 1.5;
   text-align: left;
 }
 #carbonads .carbon-poweredby {
   display: block;
-  padding: 6px 8px;
+  padding: var(--spacing-quarter);
   background: #f1f1f2;
   text-align: center;
   text-transform: uppercase;
