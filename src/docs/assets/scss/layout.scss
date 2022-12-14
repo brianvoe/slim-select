@@ -175,13 +175,15 @@ body {
       .nav-content {
         flex: 1 1 auto;
         overflow: hidden;
+        padding: 0 0 var(--spacing-quarter) 0;
 
         @media (max-width: 700px) {
           display: none;
         }
 
         .ss-content {
-          max-height: calc(100vh - var(--height-header) - var(--height-nav) - var(--spacing));
+          // Slim select height 100vh - header - nav - carbon ad
+          max-height: calc(100vh - var(--height-header) - var(--height-nav) - 200px);
 
           .label {
             font-weight: bold;
