@@ -175,7 +175,7 @@ body {
       .nav-content {
         flex: 1 1 auto;
         overflow: hidden;
-        padding: 0 0 var(--spacing-quarter) 0;
+        padding: 0 0 var(--spacing-half) 0;
 
         @media (max-width: 700px) {
           display: none;
