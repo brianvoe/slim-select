@@ -107,6 +107,12 @@ export default defineComponent({
     }
   }
 
+  .ads {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-half);
+  }
+
   .features {
     flex: 1 1 auto;
     display: flex;
@@ -193,7 +199,11 @@ export default defineComponent({
     <div class="separator" />
     <br />
 
-    <CarbonAds />
+    <div class="ads">
+      <CarbonAds />
+      <div class="separator vertical" />
+      <CarbonAds />
+    </div>
 
     <br />
     <div class="separator" />

@@ -1,4 +1,4 @@
-import{d as n,S as a,_ as l,a as o,c as s,e,h as t}from"./index.js";const i=n({name:"Data",mounted(){new a({select:this.$refs.dataSingle,data:[{placeholder:!0,text:"data placeholder"},{text:"Cat"},{text:"Dog"},{text:"Bird"}]}),new a({select:this.$refs.dataMultiple,data:[{placeholder:!0,text:"data placeholder"},{text:"Human"},{label:"Animals",options:[{text:"Cat"},{text:"Dog"},{text:"Bird"}]}]})}}),d={id:"data",class:"contents"},p=e("div",{id:"types",class:"content"},[e("h2",{class:"header"},"Data Types"),e("p",null," There are two types of data types. The option which consists of a variation of fields to customize the option. You can also provide an optgroup which has a label and an array of options. "),e("pre",null,[t("        "),e("code",{class:"language-javascript"},`
+import{d as n,S as a,a as l,o,c as s,b as e,g as t}from"./index.js";const i=n({name:"Data",mounted(){new a({select:this.$refs.dataSingle,data:[{placeholder:!0,text:"data placeholder"},{text:"Cat"},{text:"Dog"},{text:"Bird"}]}),new a({select:this.$refs.dataMultiple,data:[{placeholder:!0,text:"data placeholder"},{text:"Human"},{label:"Animals",options:[{text:"Cat"},{text:"Dog"},{text:"Bird"}]}]})}}),d={id:"data",class:"contents"},p=e("div",{id:"types",class:"content"},[e("h2",{class:"header"},"Data Types"),e("p",null," There are two types of data types. The option which consists of a variation of fields to customize the option. You can also provide an optgroup which has a label and an array of options. "),e("pre",null,[t("        "),e("code",{class:"language-javascript"},`
           var optgroup = {
             label: 'label', // Required
             selectAll: false, // Optional - default false
@@ -60,4 +60,4 @@ import{d as n,S as a,_ as l,a as o,c as s,e,h as t}from"./index.js";const i=n({n
           // If you want to set a placeholder set the first object placeholder to true
           {'placeholder': true, 'text': 'placeholder text'}
         `),t(`
-      `)],-1);function b(v,g,y,O,w,T){return o(),s("div",d,[p,e("div",r,[c,u,f,e("div",h,[e("select",x,null,512),e("select",_,null,512)]),m])])}const D=l(i,[["render",b]]);export{D as default};
+      `)],-1);function b(g,v,y,O,w,T){return o(),s("div",d,[p,e("div",r,[c,u,f,e("div",h,[e("select",x,null,512),e("select",_,null,512)]),m])])}const D=l(i,[["render",b]]);export{D as default};
