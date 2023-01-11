@@ -233,12 +233,6 @@ export default class Render {
 
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
-    // If main gets focus, open the content
-    main.onfocus = () => {
-      if (this.settings.triggerFocus && this.settings.isWindowFocused) {
-        this.callbacks.open()
-      }
-    }
 
     // Deal with keyboard events on the main div
     // This is to allow for normal selecting
@@ -255,6 +249,8 @@ export default class Render {
           this.callbacks.close()
           return true // Continue doing normal tabbing
         case 'Enter':
+        case ' ':
+          this.callbacks.open()
           const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
           if (highlighted) {
             highlighted.click()
@@ -698,6 +694,7 @@ export default class Render {
           this.callbacks.close()
           return false
         case 'Enter':
+        case ' ':
           if (this.callbacks.addable && e.ctrlKey) {
             addable.click()
           } else {

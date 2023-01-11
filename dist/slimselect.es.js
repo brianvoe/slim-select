@@ -412,11 +412,6 @@ class Render {
         main.dataset.id = this.settings.id;
         main.id = this.settings.id;
         main.tabIndex = 0;
-        main.onfocus = () => {
-            if (this.settings.triggerFocus && this.settings.isWindowFocused) {
-                this.callbacks.open();
-            }
-        };
         main.onkeydown = (e) => {
             switch (e.key) {
                 case 'ArrowUp':
@@ -428,6 +423,8 @@ class Render {
                     this.callbacks.close();
                     return true;
                 case 'Enter':
+                case ' ':
+                    this.callbacks.open();
                     const highlighted = this.content.list.querySelector('.' + this.classes.highlighted);
                     if (highlighted) {
                         highlighted.click();
@@ -753,6 +750,7 @@ class Render {
                     this.callbacks.close();
                     return false;
                 case 'Enter':
+                case ' ':
                     if (this.callbacks.addable && e.ctrlKey) {
                         addable.click();
                     }
