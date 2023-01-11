@@ -351,6 +351,7 @@
             this.main = this.mainDiv();
             this.content = this.contentDiv();
             this.updateClassStyles();
+            this.updateAriaAttributes();
             this.settings.contentLocation.appendChild(this.content.main);
         }
         enable() {
@@ -364,6 +365,7 @@
         open() {
             this.main.arrow.path.setAttribute('d', this.classes.arrowOpen);
             this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow);
+            this.main.main.setAttribute('aria-expanded', 'true');
             this.moveContent();
             const selectedOptions = this.store.getSelectedOptions();
             if (selectedOptions.length) {
@@ -377,6 +379,7 @@
         close() {
             this.main.main.classList.remove(this.classes.openAbove);
             this.main.main.classList.remove(this.classes.openBelow);
+            this.main.main.setAttribute('aria-expanded', 'false');
             this.content.main.classList.remove(this.classes.openAbove);
             this.content.main.classList.remove(this.classes.openBelow);
             this.main.arrow.path.setAttribute('d', this.classes.arrowClose);
@@ -403,9 +406,17 @@
                 this.content.main.classList.add('ss-' + this.settings.contentPosition);
             }
         }
+        updateAriaAttributes() {
+            this.main.main.role = 'combobox';
+            this.main.main.setAttribute('aria-haspopup', 'listbox');
+            this.main.main.setAttribute('aria-controls', this.content.main.id);
+            this.main.main.setAttribute('aria-expanded', 'false');
+            this.content.main.setAttribute('role', 'listbox');
+        }
         mainDiv() {
             const main = document.createElement('div');
             main.dataset.id = this.settings.id;
+            main.id = this.settings.id;
             main.tabIndex = 0;
             main.onfocus = () => {
                 if (this.settings.triggerFocus && this.settings.isWindowFocused) {
@@ -680,6 +691,7 @@
         contentDiv() {
             const main = document.createElement('div');
             main.dataset.id = this.settings.id;
+            main.id = this.settings.id;
             const search = this.searchDiv();
             main.appendChild(search.main);
             const list = this.listDiv();
@@ -898,7 +910,6 @@
         listDiv() {
             const options = document.createElement('div');
             options.classList.add(this.classes.list);
-            options.setAttribute('role', 'listbox');
             return options;
         }
         renderError(error) {
@@ -1043,6 +1054,7 @@
             }
             const optionEl = document.createElement('div');
             optionEl.dataset.id = option.id;
+            optionEl.id = option.id;
             optionEl.classList.add(this.classes.option);
             optionEl.setAttribute('role', 'option');
             if (option.class) {
@@ -1076,9 +1088,12 @@
             }
             if (option.selected) {
                 optionEl.classList.add(this.classes.selected);
+                optionEl.setAttribute('aria-selected', 'true');
+                this.main.main.setAttribute('aria-activedescendant', optionEl.id);
             }
             else {
                 optionEl.classList.remove(this.classes.selected);
+                optionEl.setAttribute('aria-selected', 'false');
             }
             optionEl.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1597,6 +1612,14 @@
             this.render = new Render(this.settings, this.store, callbacks);
             this.render.renderValues();
             this.render.renderOptions(this.store.getData());
+            const selectAriaLabel = this.selectEl.getAttribute('aria-label');
+            const selectAriaLabelledBy = this.selectEl.getAttribute('aria-labelledby');
+            if (selectAriaLabel) {
+                this.render.main.main.setAttribute('aria-label', selectAriaLabel);
+            }
+            else if (selectAriaLabelledBy) {
+                this.render.main.main.setAttribute('aria-labelledby', selectAriaLabelledBy);
+            }
             if (this.selectEl.parentNode) {
                 this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling);
             }

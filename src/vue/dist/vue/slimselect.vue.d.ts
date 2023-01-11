@@ -243,6 +243,7 @@ declare const _default: import("vue").DefineComponent<{
             open: () => void;
             close: () => void;
             updateClassStyles: () => void;
+            updateAriaAttributes: () => void;
             mainDiv: () => import("../slim-select/render").Main;
             mainFocus: (trigger: boolean) => void;
             placeholder: () => HTMLDivElement;
