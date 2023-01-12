@@ -151,8 +151,8 @@ export default defineComponent({
   <div id="home" class="content">
     <div class="samples row">
       <div class="single">
-        <h2>Single Select</h2>
-        <select ref="slimSingle">
+        <h2 id="sample-select-header">Single Select</h2>
+        <select ref="slimSingle" aria-labelledby="sample-select-header">
           <option data-placeholder="true"></option>
           <option value="best">Best</option>
           <option value="select">Select</option>
