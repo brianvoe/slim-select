@@ -496,11 +496,13 @@ var SlimSelect = (function () {
                 },
             };
         }
-        mainFocus(trigger) {
+        mainFocus(trigger, eventType) {
             if (!trigger) {
                 this.settings.triggerFocus = false;
             }
-            this.main.main.focus({ preventScroll: true });
+            if (eventType !== 'click') {
+                this.main.main.focus({ preventScroll: true });
+            }
             this.settings.triggerFocus = true;
         }
         placeholder() {
@@ -1509,7 +1511,7 @@ var SlimSelect = (function () {
                     return;
                 }
                 if (e.target && !hasClassInTree(e.target, this.settings.id)) {
-                    this.close();
+                    this.close(e.type);
                 }
             };
             this.windowVisibilityChange = () => {
@@ -1698,7 +1700,7 @@ var SlimSelect = (function () {
                 this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500);
             }
         }
-        close() {
+        close(eventType = null) {
             if (!this.settings.isOpen || this.settings.alwaysOpen) {
                 return;
             }
@@ -1709,7 +1711,7 @@ var SlimSelect = (function () {
             if (this.render.content.search.input.value !== '') {
                 this.search('');
             }
-            this.render.mainFocus(false);
+            this.render.mainFocus(false, eventType);
             setTimeout(() => {
                 if (this.events.afterClose) {
                     this.events.afterClose();

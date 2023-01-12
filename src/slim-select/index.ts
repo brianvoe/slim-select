@@ -333,7 +333,7 @@ export default class SlimSelect {
     }
   }
 
-  public close(): void {
+  public close(eventType:string|null=null): void {
     // Dont do anything if the content is already closed
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
@@ -354,7 +354,7 @@ export default class SlimSelect {
     }
 
     // If we arent tabbing focus back on the main element
-    this.render.mainFocus(false)
+    this.render.mainFocus(false, eventType)
 
     // Reset the content below
     setTimeout(() => {
@@ -463,7 +463,7 @@ export default class SlimSelect {
 
     // Check if the click was on the content by looking at the parents
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
-      this.close()
+      this.close(e.type)
     }
   }
 
