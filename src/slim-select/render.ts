@@ -127,6 +127,7 @@ export default class Render {
 
     // Add classes and styles to main/content
     this.updateClassStyles()
+    this.updateAriaAttributes()
 
     // Add content to the content location settings
     this.settings.contentLocation.appendChild(this.content.main)
@@ -155,6 +156,7 @@ export default class Render {
 
     // Add class to main container
     this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow)
+    this.main.main.setAttribute('aria-expanded', 'true')
 
     // move the content in to the right location
     this.moveContent()
@@ -173,6 +175,7 @@ export default class Render {
   public close(): void {
     this.main.main.classList.remove(this.classes.openAbove)
     this.main.main.classList.remove(this.classes.openBelow)
+    this.main.main.setAttribute('aria-expanded', 'false')
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
@@ -211,22 +214,25 @@ export default class Render {
     }
   }
 
+  public updateAriaAttributes() {
+    this.main.main.role = 'combobox'
+    this.main.main.setAttribute('aria-haspopup', 'listbox')
+    this.main.main.setAttribute('aria-controls', this.content.main.id)
+    this.main.main.setAttribute('aria-expanded', 'false')
+    this.content.main.setAttribute('role', 'listbox')
+    // do an aria-labelledby here maybe
+  }
+
   public mainDiv(): Main {
     // Create main container
     const main = document.createElement('div')
 
     // Add id to data-id
     main.dataset.id = this.settings.id
+    main.id = this.settings.id
 
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
-
-    // If main gets focus, open the content
-    main.onfocus = () => {
-      if (this.settings.triggerFocus && this.settings.isWindowFocused) {
-        this.callbacks.open()
-      }
-    }
 
     // Deal with keyboard events on the main div
     // This is to allow for normal selecting
@@ -243,6 +249,8 @@ export default class Render {
           this.callbacks.close()
           return true // Continue doing normal tabbing
         case 'Enter':
+        case ' ':
+          this.callbacks.open()
           const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
           if (highlighted) {
             highlighted.click()
@@ -595,6 +603,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
+    main.id = this.settings.id
 
     // Add search
     const search = this.searchDiv()
@@ -685,6 +694,7 @@ export default class Render {
           this.callbacks.close()
           return false
         case 'Enter':
+        case ' ':
           if (this.callbacks.addable && e.ctrlKey) {
             addable.click()
           } else {
@@ -897,7 +907,6 @@ export default class Render {
   public listDiv(): HTMLDivElement {
     const options = document.createElement('div')
     options.classList.add(this.classes.list)
-    options.setAttribute('role', 'listbox')
 
     return options
   }
@@ -1117,6 +1126,7 @@ export default class Render {
     // Create option
     const optionEl = document.createElement('div')
     optionEl.dataset.id = option.id // Dataset id for identifying an option
+    optionEl.id = option.id
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
@@ -1164,8 +1174,11 @@ export default class Render {
     // If option is selected
     if (option.selected) {
       optionEl.classList.add(this.classes.selected)
+      optionEl.setAttribute('aria-selected', 'true')
+      this.main.main.setAttribute('aria-activedescendant', optionEl.id)
     } else {
       optionEl.classList.remove(this.classes.selected)
+      optionEl.setAttribute('aria-selected', 'false')
     }
 
     // Add click event listener

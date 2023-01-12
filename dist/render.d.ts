@@ -91,6 +91,7 @@ export default class Render {
     open(): void;
     close(): void;
     updateClassStyles(): void;
+    updateAriaAttributes(): void;
     mainDiv(): Main;
     mainFocus(trigger: boolean): void;
     placeholder(): HTMLDivElement;
