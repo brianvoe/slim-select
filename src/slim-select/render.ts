@@ -354,12 +354,17 @@ export default class Render {
     }
   }
 
-  public mainFocus(trigger: boolean): void {
+  public mainFocus(trigger: boolean, eventType: string | null): void {
     if (!trigger) {
       this.settings.triggerFocus = false
     }
     // Trigger focus but dont scroll to it
-    this.main.main.focus({ preventScroll: true })
+    // Need for prevent refocus the element if event is not keyboard event.
+    // For example if event is mouse click or tachpad click this condition prevent refocus on element
+    // because click by mouse change focus position and not need return focus to element.
+    if (eventType !== 'click') {
+      this.main.main.focus({ preventScroll: true })
+    }
     this.settings.triggerFocus = true
   }
 

@@ -93,7 +93,7 @@ export default class Render {
     updateClassStyles(): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
-    mainFocus(trigger: boolean): void;
+    mainFocus(trigger: boolean, eventType: string | null): void;
     placeholder(): HTMLDivElement;
     renderValues(): void;
     private renderSingleValue;

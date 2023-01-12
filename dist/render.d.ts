@@ -1,3 +1,4 @@
+
 import Settings from './settings';
 import Store, { DataArray, Option, OptionOptional } from './store';
 export interface Callbacks {

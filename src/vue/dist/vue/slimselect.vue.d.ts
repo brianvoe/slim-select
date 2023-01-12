@@ -245,7 +245,7 @@ declare const _default: import("vue").DefineComponent<{
             updateClassStyles: () => void;
             updateAriaAttributes: () => void;
             mainDiv: () => import("../slim-select/render").Main;
-            mainFocus: (trigger: boolean) => void;
+            mainFocus: (trigger: boolean, eventType: string | null) => void;
             placeholder: () => HTMLDivElement;
             renderValues: () => void;
             multipleValue: (option: Option) => HTMLDivElement;
@@ -286,7 +286,7 @@ declare const _default: import("vue").DefineComponent<{
         setSelected: (value: string | string[], runAfterChange?: boolean) => void;
         addOption: (option: import("../slim-select/store").OptionOptional) => void;
         open: () => void;
-        close: () => void;
+        close: (eventType?: string | null) => void;
         search: (value: string) => void;
         destroy: () => void;
     } | null;
