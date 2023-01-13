@@ -98,8 +98,22 @@ export default defineComponent({
   .support {
     .links {
       display: flex;
+      height: 50px;
       flex-direction: row;
       gap: var(--spacing);
+      overflow: hidden;
+
+      .github-sponsor {
+        height: 100%;
+        width: 200px;
+        border: 0;
+        color-scheme: dark; // Makes iframe background white
+      }
+
+      .buycoffee img {
+        height: 100%;
+        width: auto;
+      }
     }
   }
 
@@ -151,8 +165,8 @@ export default defineComponent({
   <div id="home" class="content">
     <div class="samples row">
       <div class="single">
-        <h2>Single Select</h2>
-        <select ref="slimSingle">
+        <h2 id="sample-select-header">Single Select</h2>
+        <select ref="slimSingle" aria-labelledby="sample-select-header">
           <option data-placeholder="true"></option>
           <option value="best">Best</option>
           <option value="select">Select</option>
@@ -176,18 +190,13 @@ export default defineComponent({
       <p>Help support creators that make development easier!</p>
       <div class="links">
         <iframe
+          class="github-sponsor"
           src="https://github.com/sponsors/brianvoe/button"
           title="Sponsor brianvoe"
-          height="35"
-          width="116"
-          style="border: 0"
         ></iframe>
-        <a href="https://www.buymeacoffee.com/brianvoe" target="_blank"
-          ><img
-            src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png"
-            alt="Buy Me A Coffee"
-            style="height: auto !important; width: auto !important"
-        /></a>
+        <a class="buycoffee" href="https://www.buymeacoffee.com/brianvoe" target="_blank">
+          <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" />
+        </a>
       </div>
     </div>
 

@@ -36,7 +36,7 @@ export default class SlimSelect {
     setSelected(value: string | string[], runAfterChange?: boolean): void;
     addOption(option: OptionOptional): void;
     open(): void;
-    close(): void;
+    close(eventType?: string | null): void;
     search(value: string): void;
     destroy(): void;
     private windowResize;

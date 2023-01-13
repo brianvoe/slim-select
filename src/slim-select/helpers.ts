@@ -31,9 +31,10 @@ export function hasClassInTree(element: HTMLElement, className: string) {
   return hasClass(element, className) || parentByClass(element, className)
 }
 
-export function debounce(func: (...params: any[]) => void, wait = 50, immediate = false): () => void {
+// debounce will call the last requested function after the wait time
+export function debounce<T extends (...args: any[]) => void>(func: T, wait = 50, immediate = false): () => void {
   let timeout: any
-  return function (this: any, ...args: any[]) {
+  return function (this: any, ...args: any[]): void {
     const context = self
     const later = () => {
       timeout = null
@@ -48,6 +49,15 @@ export function debounce(func: (...params: any[]) => void, wait = 50, immediate 
       func.apply(context, args)
     }
   }
+}
+
+// reverseDebounce will call the function on the first call and then debounce
+function reverseDebounce<T extends (...args: any[]) => void>(func: T, timeout: number): T {
+  let timer: NodeJS.Timeout | null = null
+  return function (...args: any[]): void {
+    if (!timer) func(...args)
+    timer = setTimeout(() => (timer = null), timeout)
+  } as T
 }
 
 export function isEqual(a: any, b: any) {

@@ -153,6 +153,16 @@ export default class SlimSelect {
     this.render.renderValues()
     this.render.renderOptions(this.store.getData())
 
+    // Add aria-label or aria-labelledby if exists
+    const selectAriaLabel = this.selectEl.getAttribute('aria-label')
+    const selectAriaLabelledBy = this.selectEl.getAttribute('aria-labelledby')
+
+    if (selectAriaLabel) {
+      this.render.main.main.setAttribute('aria-label', selectAriaLabel)
+    } else if (selectAriaLabelledBy) {
+      this.render.main.main.setAttribute('aria-labelledby', selectAriaLabelledBy)
+    }
+
     // Add render after original select element
     if (this.selectEl.parentNode) {
       this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling)
@@ -333,7 +343,7 @@ export default class SlimSelect {
     }
   }
 
-  public close(): void {
+  public close(eventType:string|null=null): void {
     // Dont do anything if the content is already closed
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
@@ -354,7 +364,7 @@ export default class SlimSelect {
     }
 
     // If we arent tabbing focus back on the main element
-    this.render.mainFocus(false)
+    this.render.mainFocus(false, eventType)
 
     // Reset the content below
     setTimeout(() => {
@@ -463,7 +473,7 @@ export default class SlimSelect {
 
     // Check if the click was on the content by looking at the parents
     if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
-      this.close()
+      this.close(e.type)
     }
   }
 
