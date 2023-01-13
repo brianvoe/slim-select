@@ -35,6 +35,7 @@ declare const _default: import("vue").DefineComponent<{
             class: string[];
             isMultiple: boolean;
             isOpen: boolean;
+            isFullOpen: boolean;
             intervalMove: {
                 hasRef: () => boolean;
                 refresh: () => NodeJS.Timeout;
@@ -111,6 +112,7 @@ declare const _default: import("vue").DefineComponent<{
                 class: string[];
                 isMultiple: boolean;
                 isOpen: boolean;
+                isFullOpen: boolean;
                 intervalMove: {
                     hasRef: () => boolean;
                     refresh: () => NodeJS.Timeout;

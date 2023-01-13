@@ -63,6 +63,7 @@
             this.class = [];
             this.isMultiple = false;
             this.isOpen = false;
+            this.isFullOpen = false;
             this.intervalMove = null;
             if (!settings) {
                 settings = {};
@@ -1494,13 +1495,13 @@
                 afterClose: undefined,
             };
             this.windowResize = debounce(() => {
-                if (!this.settings.isOpen) {
+                if (!this.settings.isOpen && !this.settings.isFullOpen) {
                     return;
                 }
                 this.render.moveContent();
             });
             this.windowScroll = debounce(() => {
-                if (!this.settings.isOpen) {
+                if (!this.settings.isOpen && !this.settings.isFullOpen) {
                     return;
                 }
                 this.render.moveContent();
@@ -1688,11 +1689,14 @@
             if (this.settings.showSearch) {
                 this.render.searchFocus();
             }
+            this.settings.isOpen = true;
             setTimeout(() => {
                 if (this.events.afterOpen) {
                     this.events.afterOpen();
                 }
-                this.settings.isOpen = true;
+                if (this.settings.isOpen) {
+                    this.settings.isFullOpen = true;
+                }
             }, this.settings.timeoutDelay);
             if (this.settings.contentPosition === 'absolute') {
                 if (this.settings.intervalMove) {
@@ -1713,11 +1717,12 @@
                 this.search('');
             }
             this.render.mainFocus(eventType);
+            this.settings.isOpen = false;
+            this.settings.isFullOpen = false;
             setTimeout(() => {
                 if (this.events.afterClose) {
                     this.events.afterClose();
                 }
-                this.settings.isOpen = false;
             }, this.settings.timeoutDelay);
             if (this.settings.intervalMove) {
                 clearInterval(this.settings.intervalMove);

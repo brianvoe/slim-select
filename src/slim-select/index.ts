@@ -322,6 +322,7 @@ export default class SlimSelect {
       this.render.searchFocus()
     }
 
+    this.settings.isOpen = true
     // setTimeout is for animation completion
     setTimeout(() => {
       // Run afterOpen callback
@@ -330,7 +331,11 @@ export default class SlimSelect {
       }
 
       // Update settings
-      this.settings.isOpen = true
+      // Prevent overide if user close fast without wait full open
+      // For detail see issue https://github.com/brianvoe/slim-select/issues/397
+      if (this.settings.isOpen) {
+        this.settings.isFullOpen = true
+      }
     }, this.settings.timeoutDelay)
 
     // Start an interval to check if main has moved
@@ -366,15 +371,15 @@ export default class SlimSelect {
     // If we arent tabbing focus back on the main element
     this.render.mainFocus(eventType)
 
+    // Update settings
+    this.settings.isOpen = false
+    this.settings.isFullOpen = false
     // Reset the content below
     setTimeout(() => {
       // Run afterClose callback
       if (this.events.afterClose) {
         this.events.afterClose()
       }
-
-      // Update settings
-      this.settings.isOpen = false
     }, this.settings.timeoutDelay)
 
     if (this.settings.intervalMove) {
@@ -447,7 +452,7 @@ export default class SlimSelect {
   }
 
   private windowResize: (e: Event) => void = debounce(() => {
-    if (!this.settings.isOpen) {
+    if (!this.settings.isOpen && !this.settings.isFullOpen) {
       return
     }
 
@@ -457,7 +462,7 @@ export default class SlimSelect {
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce(() => {
     // If the content is not open, there is no need to move it
-    if (!this.settings.isOpen) {
+    if (!this.settings.isOpen && !this.settings.isFullOpen) {
       return
     }
 

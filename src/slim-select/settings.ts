@@ -10,6 +10,7 @@ export default class Settings {
   // Dynamic settings
   public isMultiple: boolean = false
   public isOpen: boolean = false
+  public isFullOpen: boolean = false
   public intervalMove: NodeJS.Timeout | null = null
 
   // Fields set from constructor

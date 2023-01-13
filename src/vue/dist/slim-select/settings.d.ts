@@ -6,6 +6,7 @@ export default class Settings {
     class: string[];
     isMultiple: boolean;
     isOpen: boolean;
+    isFullOpen: boolean;
     intervalMove: NodeJS.Timeout | null;
     disabled: boolean;
     alwaysOpen: boolean;
