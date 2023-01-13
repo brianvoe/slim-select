@@ -1,4 +1,3 @@
-
 import Settings from './settings';
 import Store, { DataArray, Option, OptionOptional } from './store';
 export interface Callbacks {
@@ -94,7 +93,7 @@ export default class Render {
     updateClassStyles(): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
-    mainFocus(trigger: boolean): void;
+    mainFocus(trigger: boolean, eventType: string | null): void;
     placeholder(): HTMLDivElement;
     renderValues(): void;
     private renderSingleValue;
