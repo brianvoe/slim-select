@@ -60,8 +60,6 @@ var SlimSelectVue = (function (vue) {
           this.class = [];
           this.isMultiple = false;
           this.isOpen = false;
-          this.isWindowFocused = true;
-          this.triggerFocus = true;
           this.intervalMove = null;
           if (!settings) {
               settings = {};
@@ -504,14 +502,10 @@ var SlimSelectVue = (function (vue) {
               },
           };
       }
-      mainFocus(trigger, eventType) {
-          if (!trigger) {
-              this.settings.triggerFocus = false;
-          }
+      mainFocus(eventType) {
           if (eventType !== 'click') {
               this.main.main.focus({ preventScroll: true });
           }
-          this.settings.triggerFocus = true;
       }
       placeholder() {
           const placeholderOption = this.store.filter((o) => o.placeholder, false);
@@ -745,7 +739,6 @@ var SlimSelectVue = (function (vue) {
               switch (e.key) {
                   case 'ArrowUp':
                   case 'ArrowDown':
-                      this.callbacks.open();
                       e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up');
                       return false;
                   case 'Tab':
@@ -767,12 +760,6 @@ var SlimSelectVue = (function (vue) {
                       }
                       return false;
               }
-          };
-          input.onfocus = () => {
-              if (this.settings.isOpen) {
-                  return;
-              }
-              this.callbacks.open();
           };
           main.appendChild(input);
           if (this.callbacks.addable) {
@@ -846,12 +833,8 @@ var SlimSelectVue = (function (vue) {
           }
           return searchReturn;
       }
-      searchFocus(trigger) {
-          if (!trigger) {
-              this.settings.triggerFocus = false;
-          }
+      searchFocus() {
           this.content.search.input.focus();
-          this.settings.triggerFocus = true;
       }
       getOptions(notPlaceholder = false, notDisabled = false, notHidden = false) {
           let query = '.' + this.classes.option;
@@ -1529,13 +1512,7 @@ var SlimSelectVue = (function (vue) {
           };
           this.windowVisibilityChange = () => {
               if (document.hidden) {
-                  this.settings.isWindowFocused = false;
                   this.close();
-              }
-              else {
-                  setTimeout(() => {
-                      this.settings.isWindowFocused = true;
-                  }, 20);
               }
           };
           this.selectEl = (typeof config.select === 'string' ? document.querySelector(config.select) : config.select);
@@ -1706,7 +1683,7 @@ var SlimSelectVue = (function (vue) {
           }
           this.render.open();
           if (this.settings.showSearch) {
-              this.render.searchFocus(false);
+              this.render.searchFocus();
           }
           setTimeout(() => {
               if (this.events.afterOpen) {
@@ -1732,7 +1709,7 @@ var SlimSelectVue = (function (vue) {
           if (this.render.content.search.input.value !== '') {
               this.search('');
           }
-          this.render.mainFocus(false, eventType);
+          this.render.mainFocus(eventType);
           setTimeout(() => {
               if (this.events.afterClose) {
                   this.events.afterClose();

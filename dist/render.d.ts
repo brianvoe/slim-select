@@ -1,4 +1,3 @@
-
 import Settings from './settings';
 import Store, { DataArray, Option, OptionOptional } from './store';
 export interface Callbacks {
@@ -94,7 +93,7 @@ export default class Render {
     updateClassStyles(): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
-    mainFocus(trigger: boolean): void;
+    mainFocus(eventType: string | null): void;
     placeholder(): HTMLDivElement;
     renderValues(): void;
     private renderSingleValue;
@@ -103,7 +102,7 @@ export default class Render {
     contentDiv(): Content;
     moveContent(): void;
     searchDiv(): Search;
-    searchFocus(trigger: boolean): void;
+    searchFocus(): void;
     getOptions(notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean): HTMLDivElement[];
     highlight(dir: 'up' | 'down'): void;
     listDiv(): HTMLDivElement;

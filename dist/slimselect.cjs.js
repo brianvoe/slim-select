@@ -59,8 +59,6 @@ class Settings {
         this.class = [];
         this.isMultiple = false;
         this.isOpen = false;
-        this.isWindowFocused = true;
-        this.triggerFocus = true;
         this.intervalMove = null;
         if (!settings) {
             settings = {};
@@ -503,12 +501,10 @@ class Render {
             },
         };
     }
-    mainFocus(trigger) {
-        if (!trigger) {
-            this.settings.triggerFocus = false;
+    mainFocus(eventType) {
+        if (eventType !== 'click') {
+            this.main.main.focus({ preventScroll: true });
         }
-        this.main.main.focus({ preventScroll: true });
-        this.settings.triggerFocus = true;
     }
     placeholder() {
         const placeholderOption = this.store.filter((o) => o.placeholder, false);
@@ -742,7 +738,6 @@ class Render {
             switch (e.key) {
                 case 'ArrowUp':
                 case 'ArrowDown':
-                    this.callbacks.open();
                     e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up');
                     return false;
                 case 'Tab':
@@ -764,12 +759,6 @@ class Render {
                     }
                     return false;
             }
-        };
-        input.onfocus = () => {
-            if (this.settings.isOpen) {
-                return;
-            }
-            this.callbacks.open();
         };
         main.appendChild(input);
         if (this.callbacks.addable) {
@@ -843,12 +832,8 @@ class Render {
         }
         return searchReturn;
     }
-    searchFocus(trigger) {
-        if (!trigger) {
-            this.settings.triggerFocus = false;
-        }
+    searchFocus() {
         this.content.search.input.focus();
-        this.settings.triggerFocus = true;
     }
     getOptions(notPlaceholder = false, notDisabled = false, notHidden = false) {
         let query = '.' + this.classes.option;
@@ -1521,18 +1506,12 @@ class SlimSelect {
                 return;
             }
             if (e.target && !hasClassInTree(e.target, this.settings.id)) {
-                this.close();
+                this.close(e.type);
             }
         };
         this.windowVisibilityChange = () => {
             if (document.hidden) {
-                this.settings.isWindowFocused = false;
                 this.close();
-            }
-            else {
-                setTimeout(() => {
-                    this.settings.isWindowFocused = true;
-                }, 20);
             }
         };
         this.selectEl = (typeof config.select === 'string' ? document.querySelector(config.select) : config.select);
@@ -1703,7 +1682,7 @@ class SlimSelect {
         }
         this.render.open();
         if (this.settings.showSearch) {
-            this.render.searchFocus(false);
+            this.render.searchFocus();
         }
         setTimeout(() => {
             if (this.events.afterOpen) {
@@ -1718,7 +1697,7 @@ class SlimSelect {
             this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500);
         }
     }
-    close() {
+    close(eventType = null) {
         if (!this.settings.isOpen || this.settings.alwaysOpen) {
             return;
         }
@@ -1729,7 +1708,7 @@ class SlimSelect {
         if (this.render.content.search.input.value !== '') {
             this.search('');
         }
-        this.render.mainFocus(false);
+        this.render.mainFocus(eventType);
         setTimeout(() => {
             if (this.events.afterClose) {
                 this.events.afterClose();

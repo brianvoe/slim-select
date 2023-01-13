@@ -319,7 +319,7 @@ export default class SlimSelect {
 
     // Focus on input field only if search is enabled
     if (this.settings.showSearch) {
-      this.render.searchFocus(false)
+      this.render.searchFocus()
     }
 
     // setTimeout is for animation completion
@@ -343,7 +343,7 @@ export default class SlimSelect {
     }
   }
 
-  public close(eventType:string|null=null): void {
+  public close(eventType: string | null = null): void {
     // Dont do anything if the content is already closed
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
@@ -364,7 +364,7 @@ export default class SlimSelect {
     }
 
     // If we arent tabbing focus back on the main element
-    this.render.mainFocus(false, eventType)
+    this.render.mainFocus(eventType)
 
     // Reset the content below
     setTimeout(() => {
@@ -480,12 +480,7 @@ export default class SlimSelect {
   // Event Listener for window visibility change
   private windowVisibilityChange: (e: Event) => void = () => {
     if (document.hidden) {
-      this.settings.isWindowFocused = false
       this.close()
-    } else {
-      setTimeout(() => {
-        this.settings.isWindowFocused = true
-      }, 20)
     }
   }
 }

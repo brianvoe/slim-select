@@ -35,8 +35,6 @@ declare const _default: import("vue").DefineComponent<{
             class: string[];
             isMultiple: boolean;
             isOpen: boolean;
-            isWindowFocused: boolean;
-            triggerFocus: boolean;
             intervalMove: {
                 hasRef: () => boolean;
                 refresh: () => NodeJS.Timeout;
@@ -113,8 +111,6 @@ declare const _default: import("vue").DefineComponent<{
                 class: string[];
                 isMultiple: boolean;
                 isOpen: boolean;
-                isWindowFocused: boolean;
-                triggerFocus: boolean;
                 intervalMove: {
                     hasRef: () => boolean;
                     refresh: () => NodeJS.Timeout;
@@ -245,14 +241,14 @@ declare const _default: import("vue").DefineComponent<{
             updateClassStyles: () => void;
             updateAriaAttributes: () => void;
             mainDiv: () => import("../slim-select/render").Main;
-            mainFocus: (trigger: boolean, eventType: string | null) => void;
+            mainFocus: (eventType: string | null) => void;
             placeholder: () => HTMLDivElement;
             renderValues: () => void;
             multipleValue: (option: Option) => HTMLDivElement;
             contentDiv: () => import("../slim-select/render").Content;
             moveContent: () => void;
             searchDiv: () => import("../slim-select/render").Search;
-            searchFocus: (trigger: boolean) => void;
+            searchFocus: () => void;
             getOptions: (notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean) => HTMLDivElement[];
             highlight: (dir: "up" | "down") => void;
             listDiv: () => HTMLDivElement;
