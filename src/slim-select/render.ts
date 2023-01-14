@@ -354,10 +354,7 @@ export default class Render {
     }
   }
 
-  public mainFocus(trigger: boolean, eventType: string | null): void {
-    if (!trigger) {
-      this.settings.triggerFocus = false
-    }
+  public mainFocus(eventType: string | null): void {
     // Trigger focus but dont scroll to it
     // Need for prevent refocus the element if event is not keyboard event.
     // For example if event is mouse click or tachpad click this condition prevent refocus on element
@@ -365,7 +362,6 @@ export default class Render {
     if (eventType !== 'click') {
       this.main.main.focus({ preventScroll: true })
     }
-    this.settings.triggerFocus = true
   }
 
   public placeholder(): HTMLDivElement {
@@ -685,7 +681,6 @@ export default class Render {
       switch (e.key) {
         case 'ArrowUp':
         case 'ArrowDown':
-          this.callbacks.open()
           e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
@@ -712,15 +707,6 @@ export default class Render {
       }
     }
 
-    // If focus is on the search input, open the dropdown
-    input.onfocus = () => {
-      // If we are already open, do nothing
-      if (this.settings.isOpen) {
-        return
-      }
-
-      this.callbacks.open()
-    }
     main.appendChild(input)
 
     // If addable is enabled, add the addable div
@@ -822,12 +808,8 @@ export default class Render {
     return searchReturn
   }
 
-  public searchFocus(trigger: boolean): void {
-    if (!trigger) {
-      this.settings.triggerFocus = false
-    }
+  public searchFocus(): void {
     this.content.search.input.focus()
-    this.settings.triggerFocus = true
   }
 
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
