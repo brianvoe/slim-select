@@ -319,9 +319,10 @@ export default class SlimSelect {
 
     // Focus on input field only if search is enabled
     if (this.settings.showSearch) {
-      this.render.searchFocus(false)
+      this.render.searchFocus()
     }
 
+    this.settings.isOpen = true
     // setTimeout is for animation completion
     setTimeout(() => {
       // Run afterOpen callback
@@ -330,7 +331,11 @@ export default class SlimSelect {
       }
 
       // Update settings
-      this.settings.isOpen = true
+      // Prevent overide if user close fast without wait full open
+      // For detail see issue https://github.com/brianvoe/slim-select/issues/397
+      if (this.settings.isOpen) {
+        this.settings.isFullOpen = true
+      }
     }, this.settings.timeoutDelay)
 
     // Start an interval to check if main has moved
@@ -343,7 +348,7 @@ export default class SlimSelect {
     }
   }
 
-  public close(eventType:string|null=null): void {
+  public close(eventType: string | null = null): void {
     // Dont do anything if the content is already closed
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
@@ -364,17 +369,17 @@ export default class SlimSelect {
     }
 
     // If we arent tabbing focus back on the main element
-    this.render.mainFocus(false, eventType)
+    this.render.mainFocus(eventType)
 
+    // Update settings
+    this.settings.isOpen = false
+    this.settings.isFullOpen = false
     // Reset the content below
     setTimeout(() => {
       // Run afterClose callback
       if (this.events.afterClose) {
         this.events.afterClose()
       }
-
-      // Update settings
-      this.settings.isOpen = false
     }, this.settings.timeoutDelay)
 
     if (this.settings.intervalMove) {
@@ -447,7 +452,7 @@ export default class SlimSelect {
   }
 
   private windowResize: (e: Event) => void = debounce(() => {
-    if (!this.settings.isOpen) {
+    if (!this.settings.isOpen && !this.settings.isFullOpen) {
       return
     }
 
@@ -457,7 +462,7 @@ export default class SlimSelect {
   // Event listener for window scrolling
   private windowScroll: (e: Event) => void = debounce(() => {
     // If the content is not open, there is no need to move it
-    if (!this.settings.isOpen) {
+    if (!this.settings.isOpen && !this.settings.isFullOpen) {
       return
     }
 
@@ -480,12 +485,7 @@ export default class SlimSelect {
   // Event Listener for window visibility change
   private windowVisibilityChange: (e: Event) => void = () => {
     if (document.hidden) {
-      this.settings.isWindowFocused = false
       this.close()
-    } else {
-      setTimeout(() => {
-        this.settings.isWindowFocused = true
-      }, 20)
     }
   }
 }

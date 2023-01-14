@@ -57,8 +57,7 @@ class Settings {
         this.class = [];
         this.isMultiple = false;
         this.isOpen = false;
-        this.isWindowFocused = true;
-        this.triggerFocus = true;
+        this.isFullOpen = false;
         this.intervalMove = null;
         if (!settings) {
             settings = {};
@@ -501,14 +500,10 @@ class Render {
             },
         };
     }
-    mainFocus(trigger, eventType) {
-        if (!trigger) {
-            this.settings.triggerFocus = false;
-        }
+    mainFocus(eventType) {
         if (eventType !== 'click') {
             this.main.main.focus({ preventScroll: true });
         }
-        this.settings.triggerFocus = true;
     }
     placeholder() {
         const placeholderOption = this.store.filter((o) => o.placeholder, false);
@@ -742,7 +737,6 @@ class Render {
             switch (e.key) {
                 case 'ArrowUp':
                 case 'ArrowDown':
-                    this.callbacks.open();
                     e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up');
                     return false;
                 case 'Tab':
@@ -764,12 +758,6 @@ class Render {
                     }
                     return false;
             }
-        };
-        input.onfocus = () => {
-            if (this.settings.isOpen) {
-                return;
-            }
-            this.callbacks.open();
         };
         main.appendChild(input);
         if (this.callbacks.addable) {
@@ -843,12 +831,8 @@ class Render {
         }
         return searchReturn;
     }
-    searchFocus(trigger) {
-        if (!trigger) {
-            this.settings.triggerFocus = false;
-        }
+    searchFocus() {
         this.content.search.input.focus();
-        this.settings.triggerFocus = true;
     }
     getOptions(notPlaceholder = false, notDisabled = false, notHidden = false) {
         let query = '.' + this.classes.option;
@@ -1505,13 +1489,13 @@ class SlimSelect {
             afterClose: undefined,
         };
         this.windowResize = debounce(() => {
-            if (!this.settings.isOpen) {
+            if (!this.settings.isOpen && !this.settings.isFullOpen) {
                 return;
             }
             this.render.moveContent();
         });
         this.windowScroll = debounce(() => {
-            if (!this.settings.isOpen) {
+            if (!this.settings.isOpen && !this.settings.isFullOpen) {
                 return;
             }
             this.render.moveContent();
@@ -1526,13 +1510,7 @@ class SlimSelect {
         };
         this.windowVisibilityChange = () => {
             if (document.hidden) {
-                this.settings.isWindowFocused = false;
                 this.close();
-            }
-            else {
-                setTimeout(() => {
-                    this.settings.isWindowFocused = true;
-                }, 20);
             }
         };
         this.selectEl = (typeof config.select === 'string' ? document.querySelector(config.select) : config.select);
@@ -1703,13 +1681,16 @@ class SlimSelect {
         }
         this.render.open();
         if (this.settings.showSearch) {
-            this.render.searchFocus(false);
+            this.render.searchFocus();
         }
+        this.settings.isOpen = true;
         setTimeout(() => {
             if (this.events.afterOpen) {
                 this.events.afterOpen();
             }
-            this.settings.isOpen = true;
+            if (this.settings.isOpen) {
+                this.settings.isFullOpen = true;
+            }
         }, this.settings.timeoutDelay);
         if (this.settings.contentPosition === 'absolute') {
             if (this.settings.intervalMove) {
@@ -1729,12 +1710,13 @@ class SlimSelect {
         if (this.render.content.search.input.value !== '') {
             this.search('');
         }
-        this.render.mainFocus(false, eventType);
+        this.render.mainFocus(eventType);
+        this.settings.isOpen = false;
+        this.settings.isFullOpen = false;
         setTimeout(() => {
             if (this.events.afterClose) {
                 this.events.afterClose();
             }
-            this.settings.isOpen = false;
         }, this.settings.timeoutDelay);
         if (this.settings.intervalMove) {
             clearInterval(this.settings.intervalMove);
