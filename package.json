@@ -9,8 +9,7 @@
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
   "type": "module",
-  "main": "dist/slimselect.ssr.js",
-  "browser": "dist/slimselect.umd.js",
+  "main": "dist/slimselect.js",
   "module": "dist/slimselect.es.js",
   "unpkg": "dist/slimselect.umd.min.js",
   "types": "dist/index.d.ts",
