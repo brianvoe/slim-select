@@ -751,14 +751,16 @@ class Render {
                 case ' ':
                     if (this.callbacks.addable && e.ctrlKey) {
                         addable.click();
+                        return false;
                     }
                     else {
                         const highlighted = this.content.list.querySelector('.' + this.classes.highlighted);
                         if (highlighted) {
                             highlighted.click();
+                            return false;
                         }
                     }
-                    return false;
+                    return true;
             }
         };
         main.appendChild(input);
