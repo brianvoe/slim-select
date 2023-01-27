@@ -1773,3 +1773,5 @@
     return SlimSelect;
 
 }));
+
+export default SlimSelect;
