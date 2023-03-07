@@ -16,6 +16,12 @@
   "types": "dist/index.d.ts",
   "style": "dist/slimselect.css",
   "sass": "src/slim-select/slimselect.scss",
+  "exports": {
+    ".": {
+      "require": "./dist/slimselect.umd.js",
+      "import": "./dist/slimselect.es.js"
+    }
+  },
   "workspaces": [
     "src/vue"
   ],
