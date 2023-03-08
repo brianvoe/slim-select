@@ -173,6 +173,7 @@
         padding: var(--ss-spacing-s) var(--ss-spacing-m);
         cursor: pointer;
         border-left: solid 1px var(--ss-bg-color);
+        box-sizing: content-box;
 
         svg {
           height: var(--ss-spacing-l);
