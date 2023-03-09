@@ -391,6 +391,7 @@
             this.main.main.classList.add(this.classes.main);
             this.content.main.classList.add(this.classes.content);
             if (this.settings.style !== '') {
+                this.main.main.style.cssText = this.settings.style;
                 this.content.main.style.cssText = this.settings.style;
             }
             if (this.settings.class.length) {
