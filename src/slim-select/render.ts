@@ -194,6 +194,7 @@ export default class Render {
 
     // Add styles
     if (this.settings.style !== '') {
+      this.main.main.style.cssText = this.settings.style
       this.content.main.style.cssText = this.settings.style
     }
 
