@@ -10,6 +10,8 @@ export default defineComponent({
       select: this.$refs.addableSingle as HTMLSelectElement,
       events: {
         addable: (value: string) => {
+          // return false
+
           return {
             text: value,
             value: value.toLowerCase(),

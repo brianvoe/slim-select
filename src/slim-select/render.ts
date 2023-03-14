@@ -5,7 +5,7 @@ import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
 export interface Callbacks {
   open: () => void
   close: () => void
-  addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string
+  addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null
   setSelected: (value: string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
@@ -774,6 +774,11 @@ export default class Render {
 
         // Call addable callback
         const addableValue = this.callbacks.addable(inputValue)
+
+        // If addableValue is false, undefined or null, do nothing
+        if (addableValue === false || addableValue === undefined || addableValue === null) {
+          return
+        }
 
         // If addableValue is a promise, wait for it to resolve
         if (addableValue instanceof Promise) {
