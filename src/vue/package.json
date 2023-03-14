@@ -1,7 +1,7 @@
 {
   "name": "@slim-select/vue",
   "private": false,
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Vue integration",
   "repository": {
     "type": "git",

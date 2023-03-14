@@ -804,6 +804,9 @@ var SlimSelectVue = (function (vue) {
                       }
                   };
                   const addableValue = this.callbacks.addable(inputValue);
+                  if (addableValue === false || addableValue === undefined || addableValue === null) {
+                      return;
+                  }
                   if (addableValue instanceof Promise) {
                       addableValue.then((value) => {
                           if (typeof value === 'string') {
