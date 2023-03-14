@@ -3,7 +3,7 @@ import Store, { DataArray, Option, OptionOptional } from './store';
 export interface Callbacks {
     open: () => void;
     close: () => void;
-    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string;
+    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null;
     setSelected: (value: string[], runAfterChange: boolean) => void;
     addOption: (option: Option) => void;
     search: (search: string) => void;

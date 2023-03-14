@@ -161,7 +161,7 @@ declare const _default: import("vue").DefineComponent<{
             callbacks: {
                 open: () => void;
                 close: () => void;
-                addable?: ((value: string) => string | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional>) | undefined;
+                addable?: ((value: string) => string | false | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional> | null | undefined) | undefined;
                 setSelected: (value: string[], runAfterChange: boolean) => void;
                 addOption: (option: Option) => void;
                 search: (search: string) => void;
@@ -267,7 +267,7 @@ declare const _default: import("vue").DefineComponent<{
         events: {
             search?: ((searchValue: string, currentData: import("../slim-select/store").DataArray) => DataArrayPartial | Promise<DataArrayPartial>) | undefined;
             searchFilter?: ((option: Option, search: string) => boolean) | undefined;
-            addable?: ((value: string) => string | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional>) | undefined;
+            addable?: ((value: string) => string | false | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional> | null | undefined) | undefined;
             beforeChange?: ((newVal: Option[], oldVal: Option[]) => boolean | void) | undefined;
             afterChange?: ((newVal: Option[]) => void) | undefined;
             beforeOpen?: (() => void) | undefined;
