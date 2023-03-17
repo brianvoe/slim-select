@@ -542,7 +542,12 @@ class Render {
         else {
             const singleValue = document.createElement('div');
             singleValue.classList.add(this.classes.single);
-            singleValue.innerHTML = selectedSingle.html ? selectedSingle.html : selectedSingle.text;
+            if (selectedSingle.html) {
+                singleValue.innerHTML = selectedSingle.html;
+            }
+            else {
+                singleValue.innerText = selectedSingle.text;
+            }
             this.main.values.innerHTML = singleValue.outerHTML;
         }
         if (!this.settings.allowDeselect || !selected.length) {
@@ -626,7 +631,7 @@ class Render {
         value.dataset.id = option.id;
         const text = document.createElement('div');
         text.classList.add(this.classes.valueText);
-        text.innerHTML = option.text;
+        text.innerText = option.text;
         value.appendChild(text);
         if (!option.mandatory) {
             const deleteDiv = document.createElement('div');
