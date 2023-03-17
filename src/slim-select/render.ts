@@ -414,7 +414,11 @@ export default class Render {
       // Create single value container
       const singleValue = document.createElement('div')
       singleValue.classList.add(this.classes.single)
-      singleValue.innerHTML = selectedSingle.html ? selectedSingle.html : selectedSingle.text
+      if (selectedSingle.html) {
+        singleValue.innerHTML = selectedSingle.html
+      } else {
+        singleValue.innerText = selectedSingle.text
+      }
 
       // If there is a selected value, set a single div
       this.main.values.innerHTML = singleValue.outerHTML
@@ -522,7 +526,7 @@ export default class Render {
 
     const text = document.createElement('div')
     text.classList.add(this.classes.valueText)
-    text.innerHTML = option.text // For multiple values always use text
+    text.innerText = option.text // For multiple values always use text
     value.appendChild(text)
 
     // Only add deletion if the option is not mandatory
