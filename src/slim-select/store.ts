@@ -338,4 +338,8 @@ export default class Store {
 
     return dataSearch
   }
+
+  public getSelectType(): string {
+    return this.selectType
+  }
 }

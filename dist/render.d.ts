@@ -116,4 +116,5 @@ export default class Render {
     moveContentBelow(): void;
     ensureElementInView(container: HTMLElement, element: HTMLElement): void;
     putContent(): 'up' | 'down';
+    updateDeselectAll(): void;
 }
