@@ -1395,17 +1395,21 @@ export default class Render {
 
   // Updates deselect based on item count and allowDeselect setting
   public updateDeselectAll(): void {
-    if (this.store && this.settings) {
-      const selected = this.store.getSelectedOptions()
-      const hasNoSelectedItems = selected && selected.length <= 0
-      const isMultiple = this.settings.isMultiple
-      const allowDeselect = !this.settings.allowDeselect
+    if (!this.store || !this.settings) {
+      return
+    }
+    const selected = this.store.getSelectedOptions()
+    const hasSelectedItems = selected && selected.length > 0
+    const isMultiple = this.settings.isMultiple
+    const allowDeselect = this.settings.allowDeselect
 
-      if (allowDeselect || (isMultiple && hasNoSelectedItems)) {
-        this.main.deselect.main.classList.add(this.classes.hide)
-      } else {
-        this.main.deselect.main.classList.remove(this.classes.hide)
-      }
+    const deselectButton = this.main.deselect.main
+    const hideClass = this.classes.hide
+
+    if (allowDeselect && !(isMultiple && !hasSelectedItems)) {
+      deselectButton.classList.remove(hideClass)
+    } else {
+      deselectButton.classList.add(hideClass)
     }
   }
 }
