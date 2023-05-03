@@ -120,7 +120,10 @@ export default defineComponent({
         {
           label: 'Frameworks',
           closable: 'close',
-          options: [{ text: 'vue', value: 'frameworks#vue' }],
+          options: [
+            { text: 'vue', value: 'frameworks#vue' },
+            { text: 'react', value: 'frameworks#react' },
+          ],
         },
       ] as DataArray,
     }

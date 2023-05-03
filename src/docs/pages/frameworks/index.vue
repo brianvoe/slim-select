@@ -2,11 +2,13 @@
 import { defineComponent } from 'vue'
 
 import Vue from './vue.vue'
+import React from './react.vue'
 
 export default defineComponent({
   name: 'Events',
   components: {
     Vue,
+    React,
   },
 })
 </script>
@@ -14,5 +16,6 @@ export default defineComponent({
 <template>
   <div id="frameworks" class="contents">
     <Vue />
+    <React />
   </div>
 </template>
