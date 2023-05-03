@@ -281,8 +281,13 @@ export default class Render {
     // Add deselect
     const deselect = document.createElement('div')
     deselect.classList.add(this.classes.deselect)
-    if (!this.settings.allowDeselect || this.settings.isMultiple) {
+
+    // Check if deselect is to be shown or not
+    const selectedOptions = this.store?.getSelectedOptions()
+    if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
       deselect.classList.add(this.classes.hide)
+    } else {
+      deselect.classList.remove(this.classes.hide)
     }
 
     // Add deselect onclick event
@@ -305,7 +310,12 @@ export default class Render {
       }
 
       if (shouldDelete) {
-        this.callbacks.setSelected([''], false)
+        if (this.settings.isMultiple) {
+          this.callbacks.setSelected([], false)
+          this.updateDeselectAll()
+        } else {
+          this.callbacks.setSelected([''], false)
+        }
 
         // Check if we need to close the dropdown
         if (this.settings.closeOnSelect) {
@@ -424,7 +434,7 @@ export default class Render {
       this.main.values.innerHTML = singleValue.outerHTML
     }
 
-    // If allowDeselect is false or selected value is empty just hide deslect
+    // If allowDeselect is false or selected value is empty just hide deselect
     if (!this.settings.allowDeselect || !selected.length) {
       this.main.deselect.main.classList.add(this.classes.hide)
     } else {
@@ -492,7 +502,9 @@ export default class Render {
     for (const n of removeNodes) {
       n.classList.add(this.classes.valueOut)
       setTimeout(() => {
-        this.main.values.removeChild(n)
+        if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
+          this.main.values.removeChild(n)
+        }
       }, 100)
     }
 
@@ -517,6 +529,7 @@ export default class Render {
         }
       }
     }
+    this.updateDeselectAll()
   }
 
   public multipleValue(option: Option): HTMLDivElement {
@@ -587,6 +600,8 @@ export default class Render {
           if (this.callbacks.afterChange) {
             this.callbacks.afterChange(after)
           }
+
+          this.updateDeselectAll()
         }
       }
 
@@ -1376,5 +1391,19 @@ export default class Render {
 
     // Move content below
     return 'down'
+  }
+
+  // Updates deselect based on item count and allowDeselect setting
+  public updateDeselectAll(): void {
+    if (this.store) {
+      const selected = this.store.getSelectedOptions()
+      if (!this.settings.allowDeselect || (this.settings.isMultiple && selected && selected.length <= 0)) {
+        this.main.deselect.main.classList.add(this.classes.hide)
+      } else {
+        this.main.deselect.main.classList.remove(this.classes.hide)
+      }
+    } else {
+      this.main.deselect.main.classList.add(this.classes.hide)
+    }
   }
 }
