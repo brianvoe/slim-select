@@ -72,5 +72,6 @@ export default class Store {
     filter(filter: {
         (opt: Option): boolean;
     } | null, includeOptgroup: boolean): DataArray;
+    getSelectType(): string;
 }
 export {};

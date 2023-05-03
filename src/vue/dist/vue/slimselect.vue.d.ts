@@ -104,6 +104,7 @@ declare const _default: import("vue").DefineComponent<{
             getOptionByID: (id: string) => Option | null;
             search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
             filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
+            getSelectType: () => string;
         };
         render: {
             settings: {
@@ -157,6 +158,7 @@ declare const _default: import("vue").DefineComponent<{
                 getOptionByID: (id: string) => Option | null;
                 search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
                 filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
+                getSelectType: () => string;
             };
             callbacks: {
                 open: () => void;
@@ -263,6 +265,7 @@ declare const _default: import("vue").DefineComponent<{
             moveContentBelow: () => void;
             ensureElementInView: (container: HTMLElement, element: HTMLElement) => void;
             putContent: () => "up" | "down";
+            updateDeselectAll: () => void;
         };
         events: {
             search?: ((searchValue: string, currentData: import("../slim-select/store").DataArray) => DataArrayPartial | Promise<DataArrayPartial>) | undefined;

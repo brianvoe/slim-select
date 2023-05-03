@@ -295,6 +295,9 @@ var SlimSelect = (function () {
             });
             return dataSearch;
         }
+        getSelectType() {
+            return this.selectType;
+        }
     }
 
     class Render {
@@ -411,6 +414,7 @@ var SlimSelect = (function () {
             this.content.main.setAttribute('role', 'listbox');
         }
         mainDiv() {
+            var _a;
             const main = document.createElement('div');
             main.dataset.id = this.settings.id;
             main.id = this.settings.id;
@@ -449,8 +453,12 @@ var SlimSelect = (function () {
             main.appendChild(values);
             const deselect = document.createElement('div');
             deselect.classList.add(this.classes.deselect);
-            if (!this.settings.allowDeselect || this.settings.isMultiple) {
+            const selectedOptions = (_a = this.store) === null || _a === void 0 ? void 0 : _a.getSelectedOptions();
+            if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
                 deselect.classList.add(this.classes.hide);
+            }
+            else {
+                deselect.classList.remove(this.classes.hide);
             }
             deselect.onclick = (e) => {
                 e.stopPropagation();
@@ -464,7 +472,13 @@ var SlimSelect = (function () {
                     shouldDelete = this.callbacks.beforeChange(after, before) === true;
                 }
                 if (shouldDelete) {
-                    this.callbacks.setSelected([''], false);
+                    if (this.settings.isMultiple) {
+                        this.callbacks.setSelected([], false);
+                        this.updateDeselectAll();
+                    }
+                    else {
+                        this.callbacks.setSelected([''], false);
+                    }
                     if (this.settings.closeOnSelect) {
                         this.callbacks.close();
                     }
@@ -602,7 +616,9 @@ var SlimSelect = (function () {
             for (const n of removeNodes) {
                 n.classList.add(this.classes.valueOut);
                 setTimeout(() => {
-                    this.main.values.removeChild(n);
+                    if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
+                        this.main.values.removeChild(n);
+                    }
                 }, 100);
             }
             currentNodes = this.main.values.childNodes;
@@ -625,6 +641,7 @@ var SlimSelect = (function () {
                     }
                 }
             }
+            this.updateDeselectAll();
         }
         multipleValue(option) {
             const value = document.createElement('div');
@@ -673,6 +690,7 @@ var SlimSelect = (function () {
                         if (this.callbacks.afterChange) {
                             this.callbacks.afterChange(after);
                         }
+                        this.updateDeselectAll();
                     }
                 };
                 const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -1213,6 +1231,23 @@ var SlimSelect = (function () {
                 }
             }
             return 'down';
+        }
+        updateDeselectAll() {
+            if (!this.store || !this.settings) {
+                return;
+            }
+            const selected = this.store.getSelectedOptions();
+            const hasSelectedItems = selected && selected.length > 0;
+            const isMultiple = this.settings.isMultiple;
+            const allowDeselect = this.settings.allowDeselect;
+            const deselectButton = this.main.deselect.main;
+            const hideClass = this.classes.hide;
+            if (allowDeselect && !(isMultiple && !hasSelectedItems)) {
+                deselectButton.classList.remove(hideClass);
+            }
+            else {
+                deselectButton.classList.add(hideClass);
+            }
         }
     }
 
