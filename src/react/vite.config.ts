@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import { babel } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
+import dts from 'vite-plugin-dts'
 
 const formatNameMap = {
   iife: 'global',
@@ -12,7 +13,13 @@ const formatNameMap = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+      skipDiagnostics: true,
+    }),
+  ],
   build: {
     target: 'es2018',
     lib: {

@@ -437,6 +437,7 @@ var SlimSelectVue = (function (vue) {
                       this.callbacks.close();
                       return false;
               }
+              return false;
           };
           main.onclick = (e) => {
               if (this.settings.disabled) {
@@ -769,6 +770,7 @@ var SlimSelectVue = (function (vue) {
                       }
                       return true;
               }
+              return false;
           };
           main.appendChild(input);
           if (this.callbacks.addable) {

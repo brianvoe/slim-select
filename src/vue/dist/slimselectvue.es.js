@@ -436,6 +436,7 @@ class Render {
                     this.callbacks.close();
                     return false;
             }
+            return false;
         };
         main.onclick = (e) => {
             if (this.settings.disabled) {
@@ -768,6 +769,7 @@ class Render {
                     }
                     return true;
             }
+            return false;
         };
         main.appendChild(input);
         if (this.callbacks.addable) {

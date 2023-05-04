@@ -1,78 +1,69 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import { useEffect } from 'react'
 
-import SlimSelect, { Events, Config, Option } from '../../slim-select'
+import SlimSelect, { Events, Config } from '../../slim-select'
 import { SettingsPartial } from '../../slim-select/settings'
-import { DataArrayPartial } from '../../slim-select/store'
+import { DataArrayPartial, Option } from '../../slim-select/store'
 import '../../slim-select/slimselect.scss'
 
 export type SlimSelectProps = {
+  id?: string | undefined
   modelValue?: string | string[] | undefined
   multiple?: boolean
   data?: DataArrayPartial
   settings?: SettingsPartial
   events?: Events
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 export interface SlimSelectRef {
-  get: () => string | string[]
   set: (newValue: string | string[]) => void
+  // Potentially call other functions on SlimSelect that have not been exposed via Ref yet
+  getSlimSelectInstance: () => SlimSelect
 }
 
 const SlimSelectComponent = (
-  { modelValue, multiple = false, data, settings, events, children }: SlimSelectProps,
+  { id = undefined, modelValue, multiple = false, data, settings, events, children }: SlimSelectProps,
   ref: React.Ref<any>,
-) => {
-  const slim = useRef(null)
+): JSX.Element => {
+  const slimHTMLElement = useRef(null)
   const slimSelect = useRef<SlimSelect>()
-  const [value, setValue] = useState<string | string[]>('')
+  const value = useRef<any>()
 
   useEffect(() => {
     const config = {
-      select: slim.current as unknown as Element,
+      select: slimHTMLElement.current as unknown as Element,
+      events: {},
     } as Config
 
     // If data is passed in, use it
     if (data) {
       config.data = data
     }
-
     // If settings are passed in, use it
     if (settings) {
       config.settings = settings
     }
-
-    const newEvents = {
-      afterChange: function (newVal: Option[]) {
-        setValue(value)
-        if (events && typeof events.afterChange === 'function') {
-          events.afterChange(newVal)
-        }
-      },
-    }
     // If events are passed in, use it
     if (events) {
-      config.events = { ...events, ...newEvents }
+      config.events = events
     }
-    if (!config.events) {
+    // Satisfy tsc
+    if (config.events == undefined) {
       config.events = {}
     }
 
     // Wrap config.events.afterChange to run value update
-    const ogAfterChange = config.events.afterChange
-    config.events.afterChange = function (newVal: Option[]) {
-      console.log('MULTIPLE', multiple)
-      if (Array.isArray(newVal) && newVal.length > 0) {
-        const newvalue = multiple ? newVal.map((option) => option?.value) : newVal[0].value
+    const originalPropAfterChange = config.events.afterChange
 
-        // Check if value is different from modelValue
-        if (value !== newvalue) {
-          setValue(newvalue)
+    config.events.afterChange = function (newSelectedOption: Option[]): void {
+      if (Array.isArray(newSelectedOption) && newSelectedOption.length > 0) {
+        const stringValue = multiple ? newSelectedOption.map((option) => option.value) : newSelectedOption[0].value
+        if (value.current !== stringValue) {
+          value.current = stringValue
         }
-
         // If they had an original afterChange, run it
-        if (config.events && ogAfterChange) {
-          ogAfterChange(newVal)
+        if (config.events && originalPropAfterChange && typeof originalPropAfterChange === 'function') {
+          originalPropAfterChange(newSelectedOption)
         }
       }
     }
@@ -91,6 +82,7 @@ const SlimSelectComponent = (
       ;(slimSelect.current as SlimSelect).setSelected(modelValue)
     }
 
+    // Destroy SlimSelect on unmount
     return () => {
       if (slimSelect.current) {
         ;(slimSelect.current as SlimSelect)?.destroy()
@@ -117,28 +109,39 @@ const SlimSelectComponent = (
     [multiple],
   )
 
+  useEffect(() => {
+    if (modelValue) {
+      ;(slimSelect.current as SlimSelect)?.setSelected(getCleanValue(modelValue))
+    }
+  }, [modelValue, getCleanValue])
+
+  useEffect(() => {
+    if (data) {
+      ;(slimSelect.current as SlimSelect)?.setData(data)
+    }
+  }, [data])
+
   useImperativeHandle(
     ref,
     () => {
       return {
-        get() {
-          return getCleanValue(value)
+        set(newValue: string | string[]): void {
+          ;(slimSelect.current as SlimSelect)?.setSelected(newValue)
         },
-        set(newValue: string | string[]) {
-          setValue(newValue)
+        getSlimSelectInstance(): SlimSelect {
+          return slimSelect.current as SlimSelect
         },
       } as SlimSelectRef
     },
-    [value, getCleanValue],
+    [],
   )
 
   return (
-    <div>
-      <select multiple={multiple} ref={slim}>
+    <>
+      <select id={id} data-testid={id} multiple={multiple} ref={slimHTMLElement}>
         {children}
       </select>
-      {value}
-    </div>
+    </>
   )
 }
 
