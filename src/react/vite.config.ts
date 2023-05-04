@@ -21,7 +21,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    target: 'es2018',
+    target: 'modules',
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: 'src/index.ts',
@@ -33,7 +33,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['react', 'react-dom'],
+      // external: ['react', 'react-dom'],
       plugins: [
         peerDepsExternal(),
         babel({
@@ -44,7 +44,6 @@ export default defineConfig({
         commonjs(),
       ],
       output: {
-        // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           react: 'React',

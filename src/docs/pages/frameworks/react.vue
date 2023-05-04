@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'React',
@@ -19,6 +19,7 @@ export default defineComponent({
         npm install @slim-select/react
       </code>
     </pre>
+    <div id="react-root"></div>
     <br />
   </div>
 </template>

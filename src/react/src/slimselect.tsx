@@ -7,6 +7,7 @@ import { DataArrayPartial, Option } from '../../slim-select/store'
 import '../../slim-select/slimselect.scss'
 
 export type SlimSelectProps = {
+  style?: React.CSSProperties
   id?: string | undefined
   modelValue?: string | string[] | undefined
   multiple?: boolean
@@ -21,10 +22,9 @@ export interface SlimSelectRef {
   getSlimSelectInstance: () => SlimSelect
 }
 
-const SlimSelectComponent = (
-  { id = undefined, modelValue, multiple = false, data, settings, events, children }: SlimSelectProps,
-  ref: React.Ref<any>,
-): JSX.Element => {
+const SlimSelectComponent = (props: SlimSelectProps, ref: React.Ref<any>): JSX.Element => {
+  const { id = undefined, modelValue, style = {}, multiple = false, data, settings, events, children } = props
+
   const slimHTMLElement = useRef(null)
   const slimSelect = useRef<SlimSelect>()
   const value = useRef<any>()
@@ -138,7 +138,7 @@ const SlimSelectComponent = (
 
   return (
     <>
-      <select id={id} data-testid={id} multiple={multiple} ref={slimHTMLElement}>
+      <select style={style} id={id} data-testid={id} multiple={multiple} ref={slimHTMLElement}>
         {children}
       </select>
     </>
