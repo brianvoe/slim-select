@@ -20,7 +20,8 @@
     ".": {
       "require": "./dist/slimselect.umd.js",
       "import": "./dist/slimselect.es.js"
-    }
+    },
+    "./styles": "./dist/slimselect.css"
   },
   "workspaces": [
     "src/vue"
