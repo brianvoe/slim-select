@@ -39,7 +39,7 @@ export default defineConfig({
         babel({
           babelHelpers: 'bundled',
           presets: ['@babel/preset-env', '@babel/preset-react'],
-          exclude: /node_modules/,
+          exclude: '../../node_modules/',
         }),
         commonjs(),
       ],

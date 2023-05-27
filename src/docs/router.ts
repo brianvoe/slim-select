@@ -40,9 +40,14 @@ const router = createRouter({
       component: () => import('./pages/methods/index.vue'),
     },
     {
-      path: '/frameworks',
-      name: 'Frameworks',
-      component: () => import('./pages/frameworks/index.vue'),
+      path: '/vue',
+      name: 'Vue',
+      component: () => import('./pages/frameworks/vue.vue'),
+    },
+    {
+      path: '/react',
+      name: 'React',
+      component: () => import('./pages/frameworks/react.vue'),
     },
   ],
 })

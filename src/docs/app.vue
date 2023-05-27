@@ -121,8 +121,8 @@ export default defineComponent({
           label: 'Frameworks',
           closable: 'close',
           options: [
-            { text: 'vue', value: 'frameworks#vue' },
-            { text: 'react', value: 'frameworks#react' },
+            { text: 'vue', value: 'vue' },
+            { text: 'react', value: 'react' },
           ],
         },
       ] as DataArray,
