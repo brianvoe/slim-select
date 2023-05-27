@@ -160,7 +160,7 @@ export default defineComponent({
 
     <h3>Settings</h3>
     <p>
-      Settings just like its passed as an object in normal SlimSelct will also be passed as an object to the component
+      Settings just like its passed as an object in normal SlimSelect will also be passed as an object to the component
       prop
     </p>
 

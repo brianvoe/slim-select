@@ -53,7 +53,7 @@ const ShowComponent = () => {
         </div>
       </div>
       <div className="code-toolbar">
-        <pre className="language-bash">
+        <pre className="language-javascript">
           <code className="language-javascript">
             import React from &quot;react&quot; <br />
             import SlimSelect from &quot;@slim-select/react&quot; <br />
@@ -68,8 +68,46 @@ const ShowComponent = () => {
             modelValue= {`{`}simpleSingle{`}`}
             <br />
             events={`{{ afterChange: (values) => setSimpleSingle(values[0].value as unknown as string) }}`}
+            &gt; <br />
+            &lt;option value=&quot;all&quot;&gt;All&lt;/option&gt; <br />
+            &lt;option value=&quot;1&quot;&gt;Option 1&lt;/option&gt; <br />
+            &lt;option value=&quot;2&quot;&gt;Option 2&lt;/option&gt; <br />
+            &lt;option value=&quot;3&quot;&gt;Option 3&lt;/option&gt; <br />
+            &lt;/SlimSelect&gt; <br /> ){`}`}
+          </code>
+        </pre>
+      </div>
+
+      <br />
+      <div className="separator"></div>
+      <br />
+
+      <h3>Attributes</h3>
+      <p>There are certain attributes that are reactive to changes</p>
+
+      <h4>disabled</h4>
+      <SlimSelect settings={{ disabled: true }}>
+        <option value={'1'}>Option 1</option>
+        <option value={'2'}>Option 2</option>
+        <option value={'3'}>Value 3</option>
+      </SlimSelect>
+      <div className="code-toolbar">
+        <pre className="language-javascript">
+          <code className="language-javascript">
+            import React from &quot;react&quot; <br />
+            import SlimSelect from &quot;@slim-select/react&quot; <br />
+            import {`{`} useState {`}`} from &quot;react&quot;
             <br />
-            ref={`{`}null{`}`} &gt; <br />
+            <br />
+            export default MySelect = () {`=>`} {`{`}
+            <br />
+            const [simpleSingle, setSimpleSingle] = useState(&quot;2&quot;) <br />
+            return ( <br />
+            &lt;SlimSelect <br />
+            settings={`{`}
+            {`{`}disabled: true {`}`}
+            {`}`}&gt;
+            <br />
             &lt;option value=&quot;all&quot;&gt;All&lt;/option&gt; <br />
             &lt;option value=&quot;1&quot;&gt;Option 1&lt;/option&gt; <br />
             &lt;option value=&quot;2&quot;&gt;Option 2&lt;/option&gt; <br />
@@ -90,7 +128,6 @@ const timeout = document.getElementById('app') ? 100 : 0
           <ShowComponent />
         </React.StrictMode>,
       )
-      //clearInterval(interval)
     }
   }, timeout)
 })()
