@@ -313,5 +313,5 @@ declare const _default: import("vue").DefineComponent<{
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
 }, {
     multiple: boolean;
-}>;
+}, {}>;
 export default _default;
