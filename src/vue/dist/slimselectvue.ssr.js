@@ -97,6 +97,7 @@ class Optgroup {
         this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id;
         this.label = optgroup.label || '';
         this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll;
+        this.selectAllText = optgroup.selectAllText || 'Select All';
         this.closable = optgroup.closable || 'off';
         this.options = [];
         if (optgroup.options) {
@@ -974,7 +975,7 @@ class Render {
                         selectAll.classList.add(this.classes.selected);
                     }
                     const selectAllText = document.createElement('span');
-                    selectAllText.textContent = 'Select All';
+                    selectAllText.textContent = d.selectAllText;
                     selectAll.appendChild(selectAllText);
                     const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     selectAllSvg.setAttribute('viewBox', '0 0 100 100');
@@ -1003,7 +1004,13 @@ class Render {
                         }
                         else {
                             const newSelected = currentSelected.concat(d.options.map((o) => o.value));
+                            for (const o of d.options) {
+                                if (!this.store.getOptionByID(o.id)) {
+                                    this.callbacks.addOption(o);
+                                }
+                            }
                             this.callbacks.setSelected(newSelected, true);
+                            return;
                         }
                     });
                     optgroupActions.appendChild(selectAll);
@@ -1354,6 +1361,7 @@ class Select {
             id: optgroup.id,
             label: optgroup.label,
             selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
+            selectAllText: optgroup.dataset ? optgroup.dataset.selectalltext : 'Select all',
             closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
             options: [],
         };

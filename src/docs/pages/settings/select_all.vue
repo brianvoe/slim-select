@@ -21,10 +21,11 @@ export default defineComponent({
       or false. If set to true, a select all option will be added to the top of the selected values. If set to false or
       not set at all, no select all action will be added to the optgroup.
     </p>
-    <div class="alert info">You can set selectAll either by data or by html dataset added to the optgroup element</div>
+    <p>selectAllText is a setting that can be used to change the text of the select all optgroup.</p>
+    <div class="alert info">You can set selectAll/selectAllText either by data or by html dataset added to the optgroup element</div>
 
     <select ref="selectAll" multiple>
-      <optgroup label="Label 1" data-selectall="true">
+      <optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
@@ -46,6 +47,7 @@ export default defineComponent({
             {
               label: 'Label 1',
               selectAll: true,
+              selectAllText: 'Select them all!',
               options: [
                 { text: 'Option 1', value: '1' },
                 { text: 'Option 2', value: '2' },
@@ -71,7 +73,7 @@ export default defineComponent({
     <pre>
       <code class="language-html">
         &lt;select ref="selectAll" multiple&gt;
-          &lt;optgroup label="Label 1" data-selectall="true"&gt;
+          &lt;optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!"&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;
             &lt;option value="value3"&gt;Value 3&lt;/option&gt;

@@ -1005,7 +1005,7 @@ export default class Render {
 
           // Add select all text span
           const selectAllText = document.createElement('span')
-          selectAllText.textContent = 'Select All'
+          selectAllText.textContent = d.selectAllText
           selectAll.appendChild(selectAllText)
 
           // Create new svg for checkbox
@@ -1051,7 +1051,16 @@ export default class Render {
               // Put together new list with all options in this optgroup
               const newSelected = currentSelected.concat(d.options.map((o) => o.value))
 
+              // Loop through options and if they don't exist in the store
+              // run addOption callback
+              for (const o of d.options) {
+                if (!this.store.getOptionByID(o.id)) {
+                  this.callbacks.addOption(o)
+                }
+              }
+
               this.callbacks.setSelected(newSelected, true)
+              return
             }
           })
 

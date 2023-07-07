@@ -7,6 +7,7 @@ export interface OptgroupOptional {
     id?: string;
     label: string;
     selectAll?: boolean;
+    selectAllText?: string;
     closable?: 'off' | 'open' | 'close';
     options?: OptionOptional[];
 }
@@ -14,6 +15,7 @@ export declare class Optgroup {
     id: string;
     label: string;
     selectAll: boolean;
+    selectAllText: string;
     closable: 'off' | 'open' | 'close';
     options: Option[];
     constructor(optgroup: OptgroupOptional);

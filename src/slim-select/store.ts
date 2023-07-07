@@ -12,6 +12,7 @@ export interface OptgroupOptional {
   id?: string
   label: string // Required
   selectAll?: boolean
+  selectAllText?: string
   closable?: 'off' | 'open' | 'close'
   options?: OptionOptional[]
 }
@@ -20,6 +21,7 @@ export class Optgroup {
   public id: string
   public label: string
   public selectAll: boolean
+  public selectAllText: string
   public closable: 'off' | 'open' | 'close'
   public options: Option[]
 
@@ -27,6 +29,7 @@ export class Optgroup {
     this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id
     this.label = optgroup.label || ''
     this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll
+    this.selectAllText = optgroup.selectAllText || 'Select All'
     this.closable = optgroup.closable || 'off'
 
     // If options exist, loop through options and create new option class
