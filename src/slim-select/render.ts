@@ -1005,7 +1005,7 @@ export default class Render {
 
           // Add select all text span
           const selectAllText = document.createElement('span')
-          selectAllText.textContent = 'Select All'
+          selectAllText.textContent = this.settings.selectAllText
           selectAll.appendChild(selectAllText)
 
           // Create new svg for checkbox

@@ -21,6 +21,7 @@ export default class Settings {
   public searchText: string
   public searchingText: string
   public searchHighlight: boolean
+  public selectAllText: string
   public closeOnSelect: boolean
   public contentLocation: HTMLElement
   public contentPosition: 'relative' | 'absolute'
@@ -51,6 +52,7 @@ export default class Settings {
     this.searchText = settings.searchText || 'No Results'
     this.searchingText = settings.searchingText || 'Searching...'
     this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false
+    this.selectAllText = settings.selectAllText || 'Select All'
     this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
     this.contentLocation = settings.contentLocation || document.body
     this.contentPosition = settings.contentPosition || 'absolute'
