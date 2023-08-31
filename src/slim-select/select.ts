@@ -23,11 +23,22 @@ export default class Select {
       passive: true,
     })
 
+    // Add change event listener
+    this.select.addEventListener('slim:updated', this.updateOptionsList.bind(this), {
+      // allow bubbling of event
+      passive: true,
+    })
+
     // Initiate mutation observer
     this.observer = new MutationObserver(this.observeCall.bind(this))
 
     // Start listening for changes
     this.changeListen(true)
+  }
+
+  private updateOptionsList(ev: Event): void {
+    const {detail} = (ev as CustomEvent<Option[]|Optgroup[]>)
+    if (this.onOptionsChange) this.onOptionsChange(detail)
   }
 
   public enable(): void {
