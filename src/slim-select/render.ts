@@ -424,6 +424,7 @@ export default class Render {
       // Create single value container
       const singleValue = document.createElement('div')
       singleValue.classList.add(this.classes.single)
+      singleValue.dataset.value = selectedSingle.value
       if (selectedSingle.html) {
         singleValue.innerHTML = selectedSingle.html
       } else {
@@ -536,6 +537,7 @@ export default class Render {
     const value = document.createElement('div')
     value.classList.add(this.classes.value)
     value.dataset.id = option.id
+    value.dataset.value = option.value
 
     const text = document.createElement('div')
     text.classList.add(this.classes.valueText)
