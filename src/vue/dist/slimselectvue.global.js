@@ -558,6 +558,7 @@ var SlimSelectVue = (function (vue) {
           else {
               const singleValue = document.createElement('div');
               singleValue.classList.add(this.classes.single);
+              singleValue.dataset.value = selectedSingle.value;
               if (selectedSingle.html) {
                   singleValue.innerHTML = selectedSingle.html;
               }
@@ -648,6 +649,7 @@ var SlimSelectVue = (function (vue) {
           const value = document.createElement('div');
           value.classList.add(this.classes.value);
           value.dataset.id = option.id;
+          value.dataset.value = option.value;
           const text = document.createElement('div');
           text.classList.add(this.classes.valueText);
           text.innerText = option.text;
@@ -1266,8 +1268,16 @@ var SlimSelectVue = (function (vue) {
           this.select.addEventListener('change', this.valueChange.bind(this), {
               passive: true,
           });
+          this.select.addEventListener('slim:updated', this.updateOptionsList.bind(this), {
+              passive: true,
+          });
           this.observer = new MutationObserver(this.observeCall.bind(this));
           this.changeListen(true);
+      }
+      updateOptionsList(ev) {
+          const { detail } = ev;
+          if (this.onOptionsChange)
+              this.onOptionsChange(detail);
       }
       enable() {
           this.select.disabled = false;
