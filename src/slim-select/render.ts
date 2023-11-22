@@ -624,7 +624,6 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
 
     // Add search
     const search = this.searchDiv()

@@ -708,7 +708,6 @@ class Render {
     contentDiv() {
         const main = document.createElement('div');
         main.dataset.id = this.settings.id;
-        main.id = this.settings.id;
         const search = this.searchDiv();
         main.appendChild(search.main);
         const list = this.listDiv();
