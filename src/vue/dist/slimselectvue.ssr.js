@@ -72,6 +72,7 @@ class Settings {
         this.disabled = settings.disabled !== undefined ? settings.disabled : false;
         this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
         this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+        this.ariaLabel = settings.ariaLabel || 'Combobox';
         this.searchPlaceholder = settings.searchPlaceholder || 'Search';
         this.searchText = settings.searchText || 'No Results';
         this.searchingText = settings.searchingText || 'Searching...';
@@ -420,6 +421,7 @@ class Render {
         const main = document.createElement('div');
         main.dataset.id = this.settings.id;
         main.id = this.settings.id;
+        main.setAttribute('aria-label', this.settings.ariaLabel);
         main.tabIndex = 0;
         main.onkeydown = (e) => {
             switch (e.key) {
