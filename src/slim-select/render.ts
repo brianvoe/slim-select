@@ -232,6 +232,9 @@ export default class Render {
     main.dataset.id = this.settings.id
     main.id = this.settings.id
 
+    // Add label
+    main.setAttribute('aria-label', this.settings.ariaLabel)
+
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
 
@@ -869,15 +872,34 @@ export default class Render {
 
     // If length is 1, highlight it
     if (options.length === 1) {
-      // Check if option doesnt already has highlighted class
+      // Check if option doesnt already have highlighted class
       if (!options[0].classList.contains(this.classes.highlighted)) {
         options[0].classList.add(this.classes.highlighted)
         return
       }
     }
 
+    // Loop through options and see if there are no highlighted ones
+    let highlighted = false
+    for (const o of options) {
+      if (o.classList.contains(this.classes.highlighted)) {
+        highlighted = true
+      }
+    }
+
+    // If no highlighted, see if any are selected and if so highlight selected first one
+    if (!highlighted) {
+      for (const o of options) {
+        if (o.classList.contains(this.classes.selected)) {
+          o.classList.add(this.classes.highlighted)
+          break
+        }
+      }
+    }
+
     // Loop through options and find the highlighted one
     for (let i = 0; i < options.length; i++) {
+      // Found highlighted option
       if (options[i].classList.contains(this.classes.highlighted)) {
         const prevOption = options[i]
         // Remove highlighted class from current one
