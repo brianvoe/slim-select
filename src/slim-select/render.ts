@@ -264,6 +264,7 @@ export default class Render {
           this.callbacks.close()
           return false
       }
+
       return false
     }
 
@@ -731,7 +732,8 @@ export default class Render {
           }
           return true
       }
-      return false
+
+      return true // Allow normal typing
     }
 
     main.appendChild(input)
