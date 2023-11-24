@@ -1265,7 +1265,8 @@ var SlimSelectVue = (function (vue) {
           this.listen = false;
           this.observer = null;
           this.select = select;
-          this.select.addEventListener('change', this.valueChange.bind(this), {
+          this.valueChange = this.valueChange.bind(this);
+          this.select.addEventListener('change', this.valueChange, {
               passive: true,
           });
           this.observer = new MutationObserver(this.observeCall.bind(this));
@@ -1521,7 +1522,7 @@ var SlimSelectVue = (function (vue) {
       }
       destroy() {
           this.changeListen(false);
-          this.select.removeEventListener('change', this.valueChange.bind(this));
+          this.select.removeEventListener('change', this.valueChange);
           if (this.observer) {
               this.observer.disconnect();
               this.observer = null;
