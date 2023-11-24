@@ -46,6 +46,7 @@ declare const _default: import("vue").DefineComponent<{
             disabled: boolean;
             alwaysOpen: boolean;
             showSearch: boolean;
+            ariaLabel: string;
             searchPlaceholder: string;
             searchText: string;
             searchingText: string;
@@ -124,6 +125,7 @@ declare const _default: import("vue").DefineComponent<{
                 disabled: boolean;
                 alwaysOpen: boolean;
                 showSearch: boolean;
+                ariaLabel: string;
                 searchPlaceholder: string;
                 searchText: string;
                 searchingText: string;
