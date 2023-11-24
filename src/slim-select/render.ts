@@ -241,7 +241,7 @@ export default class Render {
     // Deal with keyboard events on the main div
     // This is to allow for normal selecting
     // when you may not have a search bar
-    main.onkeydown = (e: KeyboardEvent) => {
+    main.onkeydown = (e: KeyboardEvent): boolean => {
       // Convert above if else statemets to switch
       switch (e.key) {
         case 'ArrowUp':
@@ -264,10 +264,11 @@ export default class Render {
           this.callbacks.close()
           return false
       }
+      return false
     }
 
     // Add onclick for main div
-    main.onclick = (e: Event) => {
+    main.onclick = (e: Event): void => {
       // Dont do anything if disabled
       if (this.settings.disabled) {
         return
@@ -699,7 +700,7 @@ export default class Render {
     }, 100)
 
     // Deal with keyboard events on search input field
-    input.onkeydown = (e: KeyboardEvent) => {
+    input.onkeydown = (e: KeyboardEvent): boolean => {
       // Convert above if else statemets to switch
       switch (e.key) {
         case 'ArrowUp':
@@ -730,6 +731,7 @@ export default class Render {
           }
           return true
       }
+      return false
     }
 
     main.appendChild(input)
