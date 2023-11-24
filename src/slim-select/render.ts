@@ -232,6 +232,9 @@ export default class Render {
     main.dataset.id = this.settings.id
     main.id = this.settings.id
 
+    // Add label
+    main.setAttribute('aria-label', this.settings.ariaLabel)
+
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
 
