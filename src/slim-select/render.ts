@@ -230,7 +230,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
+    main.id = this.settings.id+'-main'
 
     // Add label
     main.setAttribute('aria-label', this.settings.ariaLabel)
@@ -629,7 +629,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
+    main.id = this.settings.id + '-content'
 
     // Add search
     const search = this.searchDiv()
