@@ -68,6 +68,7 @@ class Settings {
         this.disabled = settings.disabled !== undefined ? settings.disabled : false;
         this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
         this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+        this.ariaLabel = settings.ariaLabel || 'Combobox';
         this.searchPlaceholder = settings.searchPlaceholder || 'Search';
         this.searchText = settings.searchText || 'No Results';
         this.searchingText = settings.searchingText || 'Searching...';
@@ -93,6 +94,7 @@ class Optgroup {
         this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id;
         this.label = optgroup.label || '';
         this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll;
+        this.selectAllText = optgroup.selectAllText || 'Select All';
         this.closable = optgroup.closable || 'off';
         this.options = [];
         if (optgroup.options) {
@@ -292,6 +294,9 @@ class Store {
         });
         return dataSearch;
     }
+    getSelectType() {
+        return this.selectType;
+    }
 }
 
 class Render {
@@ -408,9 +413,11 @@ class Render {
         this.content.main.setAttribute('role', 'listbox');
     }
     mainDiv() {
+        var _a;
         const main = document.createElement('div');
         main.dataset.id = this.settings.id;
         main.id = this.settings.id;
+        main.setAttribute('aria-label', this.settings.ariaLabel);
         main.tabIndex = 0;
         main.onkeydown = (e) => {
             switch (e.key) {
@@ -446,8 +453,12 @@ class Render {
         main.appendChild(values);
         const deselect = document.createElement('div');
         deselect.classList.add(this.classes.deselect);
-        if (!this.settings.allowDeselect || this.settings.isMultiple) {
+        const selectedOptions = (_a = this.store) === null || _a === void 0 ? void 0 : _a.getSelectedOptions();
+        if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
             deselect.classList.add(this.classes.hide);
+        }
+        else {
+            deselect.classList.remove(this.classes.hide);
         }
         deselect.onclick = (e) => {
             e.stopPropagation();
@@ -461,7 +472,13 @@ class Render {
                 shouldDelete = this.callbacks.beforeChange(after, before) === true;
             }
             if (shouldDelete) {
-                this.callbacks.setSelected([''], false);
+                if (this.settings.isMultiple) {
+                    this.callbacks.setSelected([], false);
+                    this.updateDeselectAll();
+                }
+                else {
+                    this.callbacks.setSelected([''], false);
+                }
                 if (this.settings.closeOnSelect) {
                     this.callbacks.close();
                 }
@@ -599,7 +616,9 @@ class Render {
         for (const n of removeNodes) {
             n.classList.add(this.classes.valueOut);
             setTimeout(() => {
-                this.main.values.removeChild(n);
+                if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
+                    this.main.values.removeChild(n);
+                }
             }, 100);
         }
         currentNodes = this.main.values.childNodes;
@@ -622,6 +641,7 @@ class Render {
                 }
             }
         }
+        this.updateDeselectAll();
     }
     multipleValue(option) {
         const value = document.createElement('div');
@@ -670,6 +690,7 @@ class Render {
                     if (this.callbacks.afterChange) {
                         this.callbacks.afterChange(after);
                     }
+                    this.updateDeselectAll();
                 }
             };
             const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -952,7 +973,7 @@ class Render {
                         selectAll.classList.add(this.classes.selected);
                     }
                     const selectAllText = document.createElement('span');
-                    selectAllText.textContent = 'Select All';
+                    selectAllText.textContent = d.selectAllText;
                     selectAll.appendChild(selectAllText);
                     const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     selectAllSvg.setAttribute('viewBox', '0 0 100 100');
@@ -981,7 +1002,13 @@ class Render {
                         }
                         else {
                             const newSelected = currentSelected.concat(d.options.map((o) => o.value));
+                            for (const o of d.options) {
+                                if (!this.store.getOptionByID(o.id)) {
+                                    this.callbacks.addOption(o);
+                                }
+                            }
                             this.callbacks.setSelected(newSelected, true);
+                            return;
                         }
                     });
                     optgroupActions.appendChild(selectAll);
@@ -1211,6 +1238,23 @@ class Render {
         }
         return 'down';
     }
+    updateDeselectAll() {
+        if (!this.store || !this.settings) {
+            return;
+        }
+        const selected = this.store.getSelectedOptions();
+        const hasSelectedItems = selected && selected.length > 0;
+        const isMultiple = this.settings.isMultiple;
+        const allowDeselect = this.settings.allowDeselect;
+        const deselectButton = this.main.deselect.main;
+        const hideClass = this.classes.hide;
+        if (allowDeselect && !(isMultiple && !hasSelectedItems)) {
+            deselectButton.classList.remove(hideClass);
+        }
+        else {
+            deselectButton.classList.add(hideClass);
+        }
+    }
 }
 
 class Select {
@@ -1218,7 +1262,8 @@ class Select {
         this.listen = false;
         this.observer = null;
         this.select = select;
-        this.select.addEventListener('change', this.valueChange.bind(this), {
+        this.valueChange = this.valueChange.bind(this);
+        this.select.addEventListener('change', this.valueChange, {
             passive: true,
         });
         this.observer = new MutationObserver(this.observeCall.bind(this));
@@ -1315,6 +1360,7 @@ class Select {
             id: optgroup.id,
             label: optgroup.label,
             selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
+            selectAllText: optgroup.dataset ? optgroup.dataset.selectalltext : 'Select all',
             closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
             options: [],
         };
@@ -1473,7 +1519,7 @@ class Select {
     }
     destroy() {
         this.changeListen(false);
-        this.select.removeEventListener('change', this.valueChange.bind(this));
+        this.select.removeEventListener('change', this.valueChange);
         if (this.observer) {
             this.observer.disconnect();
             this.observer = null;

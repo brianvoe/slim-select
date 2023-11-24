@@ -2,14 +2,10 @@
   "editor.formatOnSave": true,
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "eslint.validate": ["javascript", "typescript", "vue"],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
     "source.fixAll": true,
     "source.organizeImports": false,
     "source.sortMembers": true

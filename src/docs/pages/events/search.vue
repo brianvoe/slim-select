@@ -2,7 +2,7 @@
 import { onMounted, Ref, ref } from 'vue'
 
 import SlimSelect from '../../../slim-select'
-import { DataArray, Option } from '../../../slim-select/store'
+import { DataArray, DataArrayPartial, Option } from '../../../slim-select/store'
 
 interface Person {
   first_name: string
@@ -50,6 +50,7 @@ onMounted(() => {
   new SlimSelect({
     select: searchMultiple.value!,
     settings: {
+      closeOnSelect: false,
       placeholderText: 'Search First or Last Name',
       searchingText: 'Searching Users...',
       searchHighlight: true,
@@ -60,7 +61,7 @@ onMounted(() => {
   })
 })
 
-function searchPromise(search: string, currentData: DataArray): Promise<Option[]> {
+function searchPromise(search: string, currentData: DataArray): Promise<DataArrayPartial> {
   return new Promise((resolve, reject) => {
     if (search.length < 2) {
       return reject('Search must be at least 2 characters')
@@ -94,7 +95,7 @@ function searchPromise(search: string, currentData: DataArray): Promise<Option[]
 
     // Simulate a slow search
     setTimeout(() => {
-      resolve(options)
+      resolve([{label: 'Results', selectAll: true, options: options}])
     }, 300)
   })
 }

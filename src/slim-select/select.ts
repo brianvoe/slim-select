@@ -17,8 +17,9 @@ export default class Select {
   constructor(select: HTMLSelectElement) {
     this.select = select
 
+    this.valueChange = this.valueChange.bind(this)
     // Add change event listener
-    this.select.addEventListener('change', this.valueChange.bind(this), {
+    this.select.addEventListener('change', this.valueChange, {
       // allow bubbling of event
       passive: true,
     })
@@ -160,6 +161,7 @@ export default class Select {
       id: optgroup.id,
       label: optgroup.label,
       selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
+      selectAllText: optgroup.dataset ? optgroup.dataset.selectalltext : 'Select all',
       closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
       options: [],
     } as OptgroupOptional
@@ -360,7 +362,7 @@ export default class Select {
     this.changeListen(false)
 
     // Remove event change listener
-    this.select.removeEventListener('change', this.valueChange.bind(this))
+    this.select.removeEventListener('change', this.valueChange)
 
     // Disconnect observer and null
     if (this.observer) {
