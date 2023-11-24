@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { PropType } from 'vue';
 import SlimSelect, { Events } from '../slim-select';
 import { DataArrayPartial, Option } from '../slim-select/store';
@@ -37,11 +38,12 @@ declare const _default: import("vue").DefineComponent<{
             isOpen: boolean;
             isFullOpen: boolean;
             intervalMove: {
+                ref: () => NodeJS.Timeout;
+                unref: () => NodeJS.Timeout;
                 hasRef: () => boolean;
                 refresh: () => NodeJS.Timeout;
                 [Symbol.toPrimitive]: () => number;
-                ref: () => NodeJS.Timeout;
-                unref: () => NodeJS.Timeout;
+                [Symbol.dispose]: () => void;
             } | null;
             disabled: boolean;
             alwaysOpen: boolean;
@@ -116,11 +118,12 @@ declare const _default: import("vue").DefineComponent<{
                 isOpen: boolean;
                 isFullOpen: boolean;
                 intervalMove: {
+                    ref: () => NodeJS.Timeout;
+                    unref: () => NodeJS.Timeout;
                     hasRef: () => boolean;
                     refresh: () => NodeJS.Timeout;
                     [Symbol.toPrimitive]: () => number;
-                    ref: () => NodeJS.Timeout;
-                    unref: () => NodeJS.Timeout;
+                    [Symbol.dispose]: () => void;
                 } | null;
                 disabled: boolean;
                 alwaysOpen: boolean;

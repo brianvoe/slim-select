@@ -1,0 +1,1 @@
+import{d as e,_ as t,o,c,a as n}from"./index.js";const s=e({name:"React",components:{},mounted(){}}),a={id:"react-root"},r=n("div",{id:"react-hide"},null,-1),d=[r];function _(i,p,m,f,l,u){return o(),c("div",a,d)}const $=t(s,[["render",_]]);export{$ as default};

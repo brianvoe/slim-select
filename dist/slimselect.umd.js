@@ -447,6 +447,7 @@
                         this.callbacks.close();
                         return false;
                 }
+                return false;
             };
             main.onclick = (e) => {
                 if (this.settings.disabled) {
@@ -793,6 +794,7 @@
                         }
                         return true;
                 }
+                return false;
             };
             main.appendChild(input);
             if (this.callbacks.addable) {
@@ -894,6 +896,20 @@
                 if (!options[0].classList.contains(this.classes.highlighted)) {
                     options[0].classList.add(this.classes.highlighted);
                     return;
+                }
+            }
+            let highlighted = false;
+            for (const o of options) {
+                if (o.classList.contains(this.classes.highlighted)) {
+                    highlighted = true;
+                }
+            }
+            if (!highlighted) {
+                for (const o of options) {
+                    if (o.classList.contains(this.classes.selected)) {
+                        o.classList.add(this.classes.highlighted);
+                        break;
+                    }
                 }
             }
             for (let i = 0; i < options.length; i++) {
