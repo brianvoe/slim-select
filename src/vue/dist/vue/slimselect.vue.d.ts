@@ -105,9 +105,10 @@ declare const _default: import("vue").DefineComponent<{
             getSelectedIDs: () => string[];
             getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
             getOptionByID: (id: string) => Option | null;
+            getSelectType: () => string;
+            getFirstOption: () => Option | null;
             search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
             filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
-            getSelectType: () => string;
         };
         render: {
             settings: {
@@ -161,15 +162,16 @@ declare const _default: import("vue").DefineComponent<{
                 getSelectedIDs: () => string[];
                 getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
                 getOptionByID: (id: string) => Option | null;
+                getSelectType: () => string;
+                getFirstOption: () => Option | null;
                 search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
                 filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
-                getSelectType: () => string;
             };
             callbacks: {
                 open: () => void;
                 close: () => void;
                 addable?: ((value: string) => string | false | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional> | null | undefined) | undefined;
-                setSelected: (value: string[], runAfterChange: boolean) => void;
+                setSelected: (value: string | string[], runAfterChange: boolean) => void;
                 addOption: (option: Option) => void;
                 search: (search: string) => void;
                 beforeChange?: ((newVal: Option[], oldVal: Option[]) => boolean | void) | undefined;

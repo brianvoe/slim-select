@@ -259,6 +259,24 @@ var SlimSelect = (function () {
             }, false);
             return options.length ? options[0] : null;
         }
+        getSelectType() {
+            return this.selectType;
+        }
+        getFirstOption() {
+            let option = null;
+            for (let dataObj of this.data) {
+                if (dataObj instanceof Optgroup) {
+                    option = dataObj.options[0];
+                }
+                else if (dataObj instanceof Option) {
+                    option = dataObj;
+                }
+                if (option) {
+                    break;
+                }
+            }
+            return option;
+        }
         search(search, searchFilter) {
             search = search.trim();
             if (search === '') {
@@ -296,9 +314,6 @@ var SlimSelect = (function () {
                 }
             });
             return dataSearch;
-        }
-        getSelectType() {
-            return this.selectType;
         }
     }
 
@@ -419,7 +434,6 @@ var SlimSelect = (function () {
             var _a;
             const main = document.createElement('div');
             main.dataset.id = this.settings.id;
-            main.id = this.settings.id;
             main.setAttribute('aria-label', this.settings.ariaLabel);
             main.tabIndex = 0;
             main.onkeydown = (e) => {
@@ -481,13 +495,15 @@ var SlimSelect = (function () {
                         this.updateDeselectAll();
                     }
                     else {
-                        this.callbacks.setSelected([''], false);
+                        const firstOption = this.store.getFirstOption();
+                        const value = firstOption ? firstOption.value : '';
+                        this.callbacks.setSelected(value, false);
                     }
                     if (this.settings.closeOnSelect) {
                         this.callbacks.close();
                     }
                     if (this.callbacks.afterChange) {
-                        this.callbacks.afterChange(after);
+                        this.callbacks.afterChange(this.store.getSelectedOptions());
                     }
                 }
             };
@@ -710,7 +726,6 @@ var SlimSelect = (function () {
         contentDiv() {
             const main = document.createElement('div');
             main.dataset.id = this.settings.id;
-            main.id = this.settings.id;
             const search = this.searchDiv();
             main.appendChild(search.main);
             const list = this.listDiv();
@@ -791,7 +806,7 @@ var SlimSelect = (function () {
                         }
                         return true;
                 }
-                return false;
+                return true;
             };
             main.appendChild(input);
             if (this.callbacks.addable) {
