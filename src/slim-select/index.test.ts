@@ -5,8 +5,8 @@
 'use strict'
 import { describe, expect, test } from '@jest/globals'
 import SlimSelect from './'
-import { OptionOptional } from 'src/vue/dist/slim-select/store'
-import { Config } from 'src/vue/dist/slim-select'
+import { OptionOptional } from './store'
+import { Config } from './index'
 
 describe('SlimSelect Module', () => {
   test('constructor', () => {
