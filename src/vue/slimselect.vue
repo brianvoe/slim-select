@@ -47,12 +47,7 @@ export default defineComponent({
     }
 
     // If events are passed in, use it
-    if (this.events) {
-      config.events = this.events
-    }
-    if (!config.events) {
-      config.events = {}
-    }
+    config.events = this.events || {}
 
     // Wrap config.events.afterChange to run value update
     const ogAfterChange = config.events.afterChange
