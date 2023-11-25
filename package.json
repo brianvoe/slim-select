@@ -18,8 +18,9 @@
   "sass": "src/slim-select/slimselect.scss",
   "exports": {
     ".": {
+      "import": "./dist/slimselect.js",
       "require": "./dist/slimselect.umd.js",
-      "import": "./dist/slimselect.es.js"
+      "types": "./dist/*.d.ts"
     },
     "./styles": "./dist/slimselect.css"
   },
