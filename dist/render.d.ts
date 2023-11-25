@@ -4,7 +4,7 @@ export interface Callbacks {
     open: () => void;
     close: () => void;
     addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null;
-    setSelected: (value: string[], runAfterChange: boolean) => void;
+    setSelected: (value: string | string[], runAfterChange: boolean) => void;
     addOption: (option: Option) => void;
     search: (search: string) => void;
     beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void;

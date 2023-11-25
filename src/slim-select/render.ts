@@ -6,7 +6,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null
-  setSelected: (value: string[], runAfterChange: boolean) => void
+  setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
@@ -230,7 +230,10 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
+    // main.id = this.settings.id+'-main' // Remove for now as it is not needed
+
+    // Add label
+    main.setAttribute('aria-label', this.settings.ariaLabel)
 
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
@@ -238,7 +241,7 @@ export default class Render {
     // Deal with keyboard events on the main div
     // This is to allow for normal selecting
     // when you may not have a search bar
-    main.onkeydown = (e: KeyboardEvent) => {
+    main.onkeydown = (e: KeyboardEvent): boolean => {
       // Convert above if else statemets to switch
       switch (e.key) {
         case 'ArrowUp':
@@ -261,10 +264,12 @@ export default class Render {
           this.callbacks.close()
           return false
       }
+
+      return false
     }
 
     // Add onclick for main div
-    main.onclick = (e: Event) => {
+    main.onclick = (e: Event): void => {
       // Dont do anything if disabled
       if (this.settings.disabled) {
         return
@@ -314,7 +319,11 @@ export default class Render {
           this.callbacks.setSelected([], false)
           this.updateDeselectAll()
         } else {
-          this.callbacks.setSelected([''], false)
+          // Get first option and set it as selected
+          const firstOption = this.store.getFirstOption()
+          const value = firstOption ? firstOption.value : ''
+
+          this.callbacks.setSelected(value, false)
         }
 
         // Check if we need to close the dropdown
@@ -324,7 +333,7 @@ export default class Render {
 
         // Run afterChange callback
         if (this.callbacks.afterChange) {
-          this.callbacks.afterChange(after)
+          this.callbacks.afterChange(this.store.getSelectedOptions())
         }
       }
     }
@@ -624,7 +633,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
+    // main.id = this.settings.id + '-content' // Remove for now as it is not needed
 
     // Add search
     const search = this.searchDiv()
@@ -696,7 +705,7 @@ export default class Render {
     }, 100)
 
     // Deal with keyboard events on search input field
-    input.onkeydown = (e: KeyboardEvent) => {
+    input.onkeydown = (e: KeyboardEvent): boolean => {
       // Convert above if else statemets to switch
       switch (e.key) {
         case 'ArrowUp':
@@ -727,6 +736,8 @@ export default class Render {
           }
           return true
       }
+
+      return true // Allow normal typing
     }
 
     main.appendChild(input)
@@ -867,15 +878,34 @@ export default class Render {
 
     // If length is 1, highlight it
     if (options.length === 1) {
-      // Check if option doesnt already has highlighted class
+      // Check if option doesnt already have highlighted class
       if (!options[0].classList.contains(this.classes.highlighted)) {
         options[0].classList.add(this.classes.highlighted)
         return
       }
     }
 
+    // Loop through options and see if there are no highlighted ones
+    let highlighted = false
+    for (const o of options) {
+      if (o.classList.contains(this.classes.highlighted)) {
+        highlighted = true
+      }
+    }
+
+    // If no highlighted, see if any are selected and if so highlight selected first one
+    if (!highlighted) {
+      for (const o of options) {
+        if (o.classList.contains(this.classes.selected)) {
+          o.classList.add(this.classes.highlighted)
+          break
+        }
+      }
+    }
+
     // Loop through options and find the highlighted one
     for (let i = 0; i < options.length; i++) {
+      // Found highlighted option
       if (options[i].classList.contains(this.classes.highlighted)) {
         const prevOption = options[i]
         // Remove highlighted class from current one

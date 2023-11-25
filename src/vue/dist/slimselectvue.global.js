@@ -71,6 +71,7 @@ var SlimSelectVue = (function (vue) {
           this.disabled = settings.disabled !== undefined ? settings.disabled : false;
           this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
           this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+          this.ariaLabel = settings.ariaLabel || 'Combobox';
           this.searchPlaceholder = settings.searchPlaceholder || 'Search';
           this.searchText = settings.searchText || 'No Results';
           this.searchingText = settings.searchingText || 'Searching...';
@@ -258,6 +259,24 @@ var SlimSelectVue = (function (vue) {
           }, false);
           return options.length ? options[0] : null;
       }
+      getSelectType() {
+          return this.selectType;
+      }
+      getFirstOption() {
+          let option = null;
+          for (let dataObj of this.data) {
+              if (dataObj instanceof Optgroup) {
+                  option = dataObj.options[0];
+              }
+              else if (dataObj instanceof Option) {
+                  option = dataObj;
+              }
+              if (option) {
+                  break;
+              }
+          }
+          return option;
+      }
       search(search, searchFilter) {
           search = search.trim();
           if (search === '') {
@@ -295,9 +314,6 @@ var SlimSelectVue = (function (vue) {
               }
           });
           return dataSearch;
-      }
-      getSelectType() {
-          return this.selectType;
       }
   }
 
@@ -418,7 +434,7 @@ var SlimSelectVue = (function (vue) {
           var _a;
           const main = document.createElement('div');
           main.dataset.id = this.settings.id;
-          main.id = this.settings.id;
+          main.setAttribute('aria-label', this.settings.ariaLabel);
           main.tabIndex = 0;
           main.onkeydown = (e) => {
               switch (e.key) {
@@ -442,6 +458,7 @@ var SlimSelectVue = (function (vue) {
                       this.callbacks.close();
                       return false;
               }
+              return false;
           };
           main.onclick = (e) => {
               if (this.settings.disabled) {
@@ -478,13 +495,15 @@ var SlimSelectVue = (function (vue) {
                       this.updateDeselectAll();
                   }
                   else {
-                      this.callbacks.setSelected([''], false);
+                      const firstOption = this.store.getFirstOption();
+                      const value = firstOption ? firstOption.value : '';
+                      this.callbacks.setSelected(value, false);
                   }
                   if (this.settings.closeOnSelect) {
                       this.callbacks.close();
                   }
                   if (this.callbacks.afterChange) {
-                      this.callbacks.afterChange(after);
+                      this.callbacks.afterChange(this.store.getSelectedOptions());
                   }
               }
           };
@@ -707,7 +726,6 @@ var SlimSelectVue = (function (vue) {
       contentDiv() {
           const main = document.createElement('div');
           main.dataset.id = this.settings.id;
-          main.id = this.settings.id;
           const search = this.searchDiv();
           main.appendChild(search.main);
           const list = this.listDiv();
@@ -788,6 +806,7 @@ var SlimSelectVue = (function (vue) {
                       }
                       return true;
               }
+              return true;
           };
           main.appendChild(input);
           if (this.callbacks.addable) {
@@ -889,6 +908,20 @@ var SlimSelectVue = (function (vue) {
               if (!options[0].classList.contains(this.classes.highlighted)) {
                   options[0].classList.add(this.classes.highlighted);
                   return;
+              }
+          }
+          let highlighted = false;
+          for (const o of options) {
+              if (o.classList.contains(this.classes.highlighted)) {
+                  highlighted = true;
+              }
+          }
+          if (!highlighted) {
+              for (const o of options) {
+                  if (o.classList.contains(this.classes.selected)) {
+                      o.classList.add(this.classes.highlighted);
+                      break;
+                  }
               }
           }
           for (let i = 0; i < options.length; i++) {
@@ -1263,7 +1296,8 @@ var SlimSelectVue = (function (vue) {
           this.listen = false;
           this.observer = null;
           this.select = select;
-          this.select.addEventListener('change', this.valueChange.bind(this), {
+          this.valueChange = this.valueChange.bind(this);
+          this.select.addEventListener('change', this.valueChange, {
               passive: true,
           });
           this.observer = new MutationObserver(this.observeCall.bind(this));
@@ -1519,7 +1553,7 @@ var SlimSelectVue = (function (vue) {
       }
       destroy() {
           this.changeListen(false);
-          this.select.removeEventListener('change', this.valueChange.bind(this));
+          this.select.removeEventListener('change', this.valueChange);
           if (this.observer) {
               this.observer.disconnect();
               this.observer = null;
@@ -1855,15 +1889,10 @@ var SlimSelectVue = (function (vue) {
           if (this.settings) {
               config.settings = this.settings;
           }
-          if (this.events) {
-              config.events = this.events;
-          }
-          if (!config.events) {
-              config.events = {};
-          }
+          config.events = this.events || {};
           const ogAfterChange = config.events.afterChange;
           config.events.afterChange = (newVal) => {
-              const value = this.multiple ? newVal.map((option) => option.value) : newVal[0].value;
+              const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : '';
               if (this.value !== value) {
                   this.value = value;
               }

@@ -47,17 +47,12 @@ export default defineComponent({
     }
 
     // If events are passed in, use it
-    if (this.events) {
-      config.events = this.events
-    }
-    if (!config.events) {
-      config.events = {}
-    }
+    config.events = this.events || {}
 
     // Wrap config.events.afterChange to run value update
     const ogAfterChange = config.events.afterChange
     config.events.afterChange = (newVal: Option[]) => {
-      const value = this.multiple ? newVal.map((option) => option.value) : newVal[0].value
+      const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : '';
 
       // Check if value is different from modelValue
       if (this.value !== value) {

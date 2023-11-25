@@ -2,8 +2,7 @@
 import { onMounted, Ref, ref } from 'vue'
 
 import SlimSelect from '../../../slim-select'
-import { DataArray, Option } from '../../../slim-select/store'
-import { DataArrayPartial } from 'src/vue/dist/slim-select/store';
+import { DataArray, DataArrayPartial, Option } from '../../../slim-select/store'
 
 interface Person {
   first_name: string

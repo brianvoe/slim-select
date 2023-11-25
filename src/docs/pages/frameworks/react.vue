@@ -1,18 +1,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import Vue from './vue.vue'
-
 export default defineComponent({
-  name: 'Events',
-  components: {
-    Vue,
-  },
+  name: 'React',
+  components: {},
+  mounted() {},
 })
 </script>
 
 <template>
-  <div id="frameworks" class="contents">
-    <Vue />
+  <div id="react-root">
+    <div id="react-hide"></div>
   </div>
 </template>

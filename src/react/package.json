@@ -1,0 +1,32 @@
+{
+  "name": "@slim-select/react",
+  "private": false,
+  "description": "React integration",
+  "version": "1.0.0",
+  "keywords": [
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brianvoe/slim-select.git"
+  },
+  "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
+  "homepage": "https://slimselectjs.com/frameworks#vue",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "test": "jest --config jestconfig.json",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs"
+  },
+  "main": "dist/slimselectreact.ssr.js",
+  "browser": "dist/slimselect.global.js",
+  "module": "dist/slimselectreact.es.js",
+  "types": "dist/slimselect.react.d.ts",
+  "files": [
+    "dist"
+  ]
+}

@@ -70,10 +70,11 @@ export default class Store {
     getSelectedIDs(): string[];
     getOptgroupByID(id: string): Optgroup | null;
     getOptionByID(id: string): Option | null;
+    getSelectType(): string;
+    getFirstOption(): Option | null;
     search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray;
     filter(filter: {
         (opt: Option): boolean;
     } | null, includeOptgroup: boolean): DataArray;
-    getSelectType(): string;
 }
 export {};

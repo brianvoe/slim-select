@@ -40,6 +40,7 @@ export default defineComponent({
     <h2 class="header">setSelected</h2>
     <p>The setSelected method will set the selected value(s) of the select.</p>
     <p>setSelected will accept both string or array of strings.</p>
+    <p>setSelected also takes in a second optional boolean param in the event you dont want to trigger the afterChange callback</p>
 
     <div class="row">
       <div class="btn" @click="setSelected">Set Selected</div>
@@ -64,6 +65,9 @@ export default defineComponent({
         })
         select.setSelected('value1' /* or */ ['value1', 'value3'])
         console.log(select.getSelected())
+
+        // To not trigger the afterChange callback
+        select.setSelected('value1', false)
       </code>
     </pre>
   </div>
