@@ -9,6 +9,7 @@
   --ss-highlight-color: #fffb8c;
   --ss-success-color: #00b755;
   --ss-error-color: #dc3545;
+  --ss-focus-color: #5897fb;
 
   // Heights
   --ss-main-height: 30px;
@@ -71,7 +72,7 @@
   overflow: hidden;
 
   &:focus {
-    box-shadow: 0 0 5px var(--ss-primary-color);
+    box-shadow: 0 0 5px var(--ss-focus-color);
   }
 
   &.ss-disabled {
@@ -303,7 +304,7 @@
       }
 
       &:focus {
-        box-shadow: 0 0 5px var(--ss-primary-color);
+        box-shadow: 0 0 5px var(--ss-focus-color);
       }
     }
 
