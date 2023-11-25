@@ -284,6 +284,26 @@ export default class Store {
     return options.length ? options[0] : null
   }
 
+  public getSelectType(): string {
+    return this.selectType
+  }
+
+  public getFirstOption(): Option | null {
+    let option: Option | null = null
+    for (let dataObj of this.data) {
+      if (dataObj instanceof Optgroup) {
+        option = dataObj.options[0]
+      } else if (dataObj instanceof Option) {
+        option = dataObj
+      }
+
+      if (option) {
+        break
+      }
+    }
+    return option
+  }
+
   // Take in search string and return filtered list of values
   public search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray {
     search = search.trim()
@@ -342,7 +362,4 @@ export default class Store {
     return dataSearch
   }
 
-  public getSelectType(): string {
-    return this.selectType
-  }
 }
