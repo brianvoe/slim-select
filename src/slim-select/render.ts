@@ -6,7 +6,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null
-  setSelected: (value: string[], runAfterChange: boolean) => void
+  setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
@@ -230,7 +230,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id+'-main'
+    // main.id = this.settings.id+'-main' // Remove for now as it is not needed
 
     // Add label
     main.setAttribute('aria-label', this.settings.ariaLabel)
@@ -319,7 +319,11 @@ export default class Render {
           this.callbacks.setSelected([], false)
           this.updateDeselectAll()
         } else {
-          this.callbacks.setSelected([''], false)
+          // Get first option and set it as selected
+          const firstOption = this.store.getFirstOption()
+          const value = firstOption ? firstOption.value : ''
+
+          this.callbacks.setSelected(value, false)
         }
 
         // Check if we need to close the dropdown
@@ -329,7 +333,7 @@ export default class Render {
 
         // Run afterChange callback
         if (this.callbacks.afterChange) {
-          this.callbacks.afterChange(after)
+          this.callbacks.afterChange(this.store.getSelectedOptions())
         }
       }
     }
@@ -629,7 +633,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id + '-content'
+    // main.id = this.settings.id + '-content' // Remove for now as it is not needed
 
     // Add search
     const search = this.searchDiv()
