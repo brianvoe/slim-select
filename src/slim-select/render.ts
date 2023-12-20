@@ -529,13 +529,20 @@ export default class Render {
 
       // If shouldAdd, insertAdjacentElement it to the values container in the order of the selectedOptions
       if (shouldAdd) {
-        if (currentNodes.length === 0) {
+        // If keepOrder is true, we will just append it to the end
+        if (this.settings.keepOrder) {
           this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
-        } else if (d === 0) {
-          this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
         } else {
-          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
+          // else we will insert it in the order of the selectedOptions
+          if (currentNodes.length === 0) {
+            this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
+          } else if (d === 0) {
+            this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
+          } else {
+            currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
+          }
         }
+
       }
     }
     this.updateDeselectAll()
