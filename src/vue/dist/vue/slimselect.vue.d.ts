@@ -60,6 +60,7 @@ declare const _default: import("vue").DefineComponent<{
             placeholderText: string;
             allowDeselect: boolean;
             hideSelected: boolean;
+            keepOrder: boolean;
             showOptionTooltips: boolean;
             minSelected: number;
             maxSelected: number;
@@ -141,6 +142,7 @@ declare const _default: import("vue").DefineComponent<{
                 placeholderText: string;
                 allowDeselect: boolean;
                 hideSelected: boolean;
+                keepOrder: boolean;
                 showOptionTooltips: boolean;
                 minSelected: number;
                 maxSelected: number;

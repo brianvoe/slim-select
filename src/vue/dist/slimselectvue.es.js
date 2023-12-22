@@ -52,45 +52,6 @@ function kebabCase(str) {
     return str[0] === str[0].toUpperCase() ? result.substring(1) : result;
 }
 
-class Settings {
-    constructor(settings) {
-        this.id = '';
-        this.style = '';
-        this.class = [];
-        this.isMultiple = false;
-        this.isOpen = false;
-        this.isFullOpen = false;
-        this.intervalMove = null;
-        if (!settings) {
-            settings = {};
-        }
-        this.id = 'ss-' + generateID();
-        this.style = settings.style || '';
-        this.class = settings.class || [];
-        this.disabled = settings.disabled !== undefined ? settings.disabled : false;
-        this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
-        this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
-        this.ariaLabel = settings.ariaLabel || 'Combobox';
-        this.searchPlaceholder = settings.searchPlaceholder || 'Search';
-        this.searchText = settings.searchText || 'No Results';
-        this.searchingText = settings.searchingText || 'Searching...';
-        this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false;
-        this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true;
-        this.contentLocation = settings.contentLocation || document.body;
-        this.contentPosition = settings.contentPosition || 'absolute';
-        this.openPosition = settings.openPosition || 'auto';
-        this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value';
-        this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
-        this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
-        this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
-        this.minSelected = settings.minSelected || 0;
-        this.maxSelected = settings.maxSelected || 1000;
-        this.timeoutDelay = settings.timeoutDelay || 200;
-        this.maxValuesShown = settings.maxValuesShown || 20;
-        this.maxValuesMessage = settings.maxValuesMessage || '{number} selected';
-    }
-}
-
 class Optgroup {
     constructor(optgroup) {
         this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id;
@@ -649,14 +610,19 @@ class Render {
                 }
             }
             if (shouldAdd) {
-                if (currentNodes.length === 0) {
+                if (this.settings.keepOrder) {
                     this.main.values.appendChild(this.multipleValue(selectedOptions[d]));
                 }
-                else if (d === 0) {
-                    this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d]);
-                }
                 else {
-                    currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]));
+                    if (currentNodes.length === 0) {
+                        this.main.values.appendChild(this.multipleValue(selectedOptions[d]));
+                    }
+                    else if (d === 0) {
+                        this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d]);
+                    }
+                    else {
+                        currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]));
+                    }
                 }
             }
         }
@@ -1562,6 +1528,46 @@ class Select {
     }
 }
 
+class Settings {
+    constructor(settings) {
+        this.id = '';
+        this.style = '';
+        this.class = [];
+        this.isMultiple = false;
+        this.isOpen = false;
+        this.isFullOpen = false;
+        this.intervalMove = null;
+        if (!settings) {
+            settings = {};
+        }
+        this.id = 'ss-' + generateID();
+        this.style = settings.style || '';
+        this.class = settings.class || [];
+        this.disabled = settings.disabled !== undefined ? settings.disabled : false;
+        this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
+        this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+        this.ariaLabel = settings.ariaLabel || 'Combobox';
+        this.searchPlaceholder = settings.searchPlaceholder || 'Search';
+        this.searchText = settings.searchText || 'No Results';
+        this.searchingText = settings.searchingText || 'Searching...';
+        this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false;
+        this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true;
+        this.contentLocation = settings.contentLocation || document.body;
+        this.contentPosition = settings.contentPosition || 'absolute';
+        this.openPosition = settings.openPosition || 'auto';
+        this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value';
+        this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
+        this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
+        this.keepOrder = settings.keepOrder !== undefined ? settings.keepOrder : false;
+        this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false;
+        this.minSelected = settings.minSelected || 0;
+        this.maxSelected = settings.maxSelected || 1000;
+        this.timeoutDelay = settings.timeoutDelay || 200;
+        this.maxValuesShown = settings.maxValuesShown || 20;
+        this.maxValuesMessage = settings.maxValuesMessage || '{number} selected';
+    }
+}
+
 class SlimSelect {
     constructor(config) {
         var _a;
@@ -1661,7 +1667,7 @@ class SlimSelect {
         if (config.data) {
             this.select.updateOptions(this.store.getData());
         }
-        const callbacks = {
+        const renderCallbacks = {
             open: this.open.bind(this),
             close: this.close.bind(this),
             addable: this.events.addable ? this.events.addable : undefined,
@@ -1671,7 +1677,7 @@ class SlimSelect {
             beforeChange: this.events.beforeChange,
             afterChange: this.events.afterChange,
         };
-        this.render = new Render(this.settings, this.store, callbacks);
+        this.render = new Render(this.settings, this.store, renderCallbacks);
         this.render.renderValues();
         this.render.renderOptions(this.store.getData());
         const selectAriaLabel = this.selectEl.getAttribute('aria-label');
@@ -1685,7 +1691,6 @@ class SlimSelect {
         if (this.selectEl.parentNode) {
             this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling);
         }
-        document.addEventListener('click', this.documentClick);
         window.addEventListener('resize', this.windowResize, false);
         if (this.settings.openPosition === 'auto') {
             window.addEventListener('scroll', this.windowScroll, false);
@@ -1781,6 +1786,7 @@ class SlimSelect {
             if (this.settings.isOpen) {
                 this.settings.isFullOpen = true;
             }
+            document.addEventListener('click', this.documentClick);
         }, this.settings.timeoutDelay);
         if (this.settings.contentPosition === 'absolute') {
             if (this.settings.intervalMove) {
@@ -1807,6 +1813,7 @@ class SlimSelect {
             if (this.events.afterClose) {
                 this.events.afterClose();
             }
+            document.removeEventListener('click', this.documentClick);
         }, this.settings.timeoutDelay);
         if (this.settings.intervalMove) {
             clearInterval(this.settings.intervalMove);
