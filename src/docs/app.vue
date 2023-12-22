@@ -112,6 +112,7 @@ export default defineComponent({
             { text: 'getData', value: 'methods#getData' },
             { text: 'setData', value: 'methods#setData' },
             { text: 'enableDisable', value: 'methods#enableDisable' },
+            { text: 'openClose', value: 'methods#openClose' },
             { text: 'search', value: 'methods#search' },
             { text: 'destroy', value: 'methods#destroy' },
           ],

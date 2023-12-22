@@ -5,7 +5,7 @@ import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'Search',
-  data() {
+  setup() {
     return {
       searchSingle: null as SlimSelect | null,
       searchMultiple: null as SlimSelect | null,
@@ -37,7 +37,7 @@ export default defineComponent({
     <p>The search method will update the search input field and search the data against that value.</p>
 
     <div class="row">
-      <div class="btn" @click="setSearch">Set Search</div>
+      <div class="btn" @click="setSearch()">Set Search</div>
       <select ref="searchSingle">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
