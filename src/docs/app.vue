@@ -2,8 +2,8 @@
 import { defineComponent } from 'vue'
 
 import SlimSelect from '../slim-select'
-import Settings from '../slim-select/settings'
 import { debounce } from '../slim-select/helpers'
+import Settings from '../slim-select/settings'
 import { DataArray } from '../slim-select/store'
 import CarbonAd from './components/carbonad.vue'
 
@@ -76,6 +76,7 @@ export default defineComponent({
             { text: 'cssClass', value: 'settings#cssClass' },
             { text: 'inlineStyles', value: 'settings#inlineStyles' },
             { text: 'html', value: 'settings#html' },
+            { text: 'keepOrder', value: 'settings#keepOrder'},
             { text: 'search', value: 'settings#search' },
             { text: 'closeOnSelect', value: 'settings#closeOnSelect' },
             { text: 'showOptionTooltips', value: 'settings#showOptionTooltips' },
@@ -111,6 +112,7 @@ export default defineComponent({
             { text: 'getData', value: 'methods#getData' },
             { text: 'setData', value: 'methods#setData' },
             { text: 'enableDisable', value: 'methods#enableDisable' },
+            { text: 'openClose', value: 'methods#openClose' },
             { text: 'search', value: 'methods#search' },
             { text: 'destroy', value: 'methods#destroy' },
           ],

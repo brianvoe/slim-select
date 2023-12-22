@@ -1,8 +1,8 @@
-import Settings, { SettingsPartial } from './settings'
+import { debounce, hasClassInTree, isEqual } from './helpers'
 import Render from './render'
 import Select from './select'
+import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
-import { debounce, hasClassInTree, isEqual } from './helpers'
 
 export interface Config {
   select: string | Element
@@ -136,8 +136,8 @@ export default class SlimSelect {
       this.select.updateOptions(this.store.getData())
     }
 
-    // Set render callbacks
-    const callbacks = {
+    // Set render renderCallbacks
+    const renderCallbacks = {
       open: this.open.bind(this),
       close: this.close.bind(this),
       addable: this.events.addable ? this.events.addable : undefined,
@@ -149,7 +149,7 @@ export default class SlimSelect {
     }
 
     // Setup render class
-    this.render = new Render(this.settings, this.store, callbacks)
+    this.render = new Render(this.settings, this.store, renderCallbacks)
     this.render.renderValues()
     this.render.renderOptions(this.store.getData())
 
@@ -167,9 +167,6 @@ export default class SlimSelect {
     if (this.selectEl.parentNode) {
       this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling)
     }
-
-    // Add onclick listener to document to closeContent if clicked outside
-    document.addEventListener('click', this.documentClick)
 
     // Add window resize listener to moveContent if window size changes
     window.addEventListener('resize', this.windowResize, false)
@@ -336,6 +333,9 @@ export default class SlimSelect {
       if (this.settings.isOpen) {
         this.settings.isFullOpen = true
       }
+
+      // Add onclick listener to document to closeContent if clicked outside
+      document.addEventListener('click', this.documentClick)
     }, this.settings.timeoutDelay)
 
     // Start an interval to check if main has moved
@@ -380,6 +380,9 @@ export default class SlimSelect {
       if (this.events.afterClose) {
         this.events.afterClose()
       }
+
+      // Add onclick listener to document to closeContent if clicked outside
+      document.removeEventListener('click', this.documentClick)
     }, this.settings.timeoutDelay)
 
     if (this.settings.intervalMove) {

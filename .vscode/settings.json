@@ -5,9 +5,9 @@
   "eslint.validate": ["javascript", "typescript", "vue"],
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.fixAll": true,
-    "source.organizeImports": false,
-    "source.sortMembers": true
+    "source.fixAll.eslint": "always",
+    "source.fixAll": "always",
+    "source.organizeImports": "always",
+    "source.sortMembers": "always"
   }
 }

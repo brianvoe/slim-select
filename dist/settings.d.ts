@@ -23,6 +23,7 @@ export default class Settings {
     placeholderText: string;
     allowDeselect: boolean;
     hideSelected: boolean;
+    keepOrder: boolean;
     showOptionTooltips: boolean;
     minSelected: number;
     maxSelected: number;

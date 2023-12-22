@@ -29,6 +29,7 @@ export default class Settings {
   public placeholderText: string
   public allowDeselect: boolean
   public hideSelected: boolean
+  public keepOrder: boolean
   public showOptionTooltips: boolean
   public minSelected: number
   public maxSelected: number
@@ -60,6 +61,7 @@ export default class Settings {
     this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
+    this.keepOrder = settings.keepOrder !== undefined ? settings.keepOrder : false
     this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000

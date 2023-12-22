@@ -10,12 +10,13 @@ import ContentPosition from './content_position.vue'
 import Css from './css.vue'
 import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
-import Display from './display.vue'
 import Disabled from './disabled.vue'
+import Display from './display.vue'
 import HideSelected from './hide_selected.vue'
-import MaxValuesShown from './max_values_shown.vue'
 import Html from './html.vue'
+import KeepOrder from './keep_order.vue'
 import Mandatory from './mandatory.vue'
+import MaxValuesShown from './max_values_shown.vue'
 import MinMax from './min_max.vue'
 import OpenPosition from './open_position.vue'
 import Placeholder from './placeholder.vue'
@@ -44,6 +45,7 @@ export default defineComponent({
     Css,
     Styles,
     Html,
+    KeepOrder,
     Search,
     CloseOnSelect,
     ShowTooltip,
@@ -71,6 +73,7 @@ export default defineComponent({
     <Css />
     <Styles />
     <Html />
+    <KeepOrder />
     <Search />
     <CloseOnSelect />
     <ShowTooltip />

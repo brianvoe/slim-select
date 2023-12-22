@@ -1,13 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import GetSelected from './get_selected.vue'
-import SetSelected from './set_selected.vue'
-import GetData from './get_data.vue'
-import SetData from './set_data.vue'
-import EnableDisable from './enable_disable.vue'
-import Search from './search.vue'
 import Destroy from './destroy.vue'
+import EnableDisable from './enable_disable.vue'
+import GetData from './get_data.vue'
+import GetSelected from './get_selected.vue'
+import OpenClose from './open_close.vue'
+import Search from './search.vue'
+import SetData from './set_data.vue'
+import SetSelected from './set_selected.vue'
 
 export default defineComponent({
   name: 'Methods',
@@ -17,6 +18,7 @@ export default defineComponent({
     GetData,
     SetData,
     EnableDisable,
+    OpenClose,
     Search,
     Destroy,
   },
@@ -30,6 +32,7 @@ export default defineComponent({
     <GetData />
     <SetData />
     <EnableDisable />
+    <OpenClose />
     <Search />
     <Destroy />
   </div>
