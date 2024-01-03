@@ -301,7 +301,7 @@ declare const _default: import("vue").DefineComponent<{
         destroy: () => void;
     } | null;
     getCleanValue(val: string | string[] | undefined): string | string[];
-}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").PublicProps, Readonly<import("vue").ExtractPropTypes<{
     modelValue: {
         type: PropType<string | string[] | undefined>;
     };

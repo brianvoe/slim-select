@@ -16,7 +16,7 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.placeholderMultiple as HTMLSelectElement,
       settings: {
-        placeholderText: 'Custom Placeholder Text',
+        placeholderText: 'Make Selection',
       },
     })
 

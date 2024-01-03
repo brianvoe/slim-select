@@ -418,6 +418,8 @@ export default class Render {
     }
 
     this.renderMultipleValues()
+
+    this.updateDeselectAll()
   }
 
   private renderSingleValue(): void {
@@ -542,10 +544,8 @@ export default class Render {
             currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
           }
         }
-
       }
     }
-    this.updateDeselectAll()
   }
 
   public multipleValue(option: Option): HTMLDivElement {

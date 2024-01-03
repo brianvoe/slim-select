@@ -525,6 +525,7 @@ class Render {
             return;
         }
         this.renderMultipleValues();
+        this.updateDeselectAll();
     }
     renderSingleValue() {
         const selected = this.store.filter((o) => {
@@ -626,7 +627,6 @@ class Render {
                 }
             }
         }
-        this.updateDeselectAll();
     }
     multipleValue(option) {
         const value = document.createElement('div');

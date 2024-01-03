@@ -526,6 +526,7 @@ var SlimSelect = (function () {
                 return;
             }
             this.renderMultipleValues();
+            this.updateDeselectAll();
         }
         renderSingleValue() {
             const selected = this.store.filter((o) => {
@@ -627,7 +628,6 @@ var SlimSelect = (function () {
                     }
                 }
             }
-            this.updateDeselectAll();
         }
         multipleValue(option) {
             const value = document.createElement('div');

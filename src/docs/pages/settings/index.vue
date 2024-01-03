@@ -64,6 +64,7 @@ export default defineComponent({
     <ContentPosition />
     <OpenPosition />
     <Placeholder />
+    <SelectAll />
     <Deselect />
     <Display />
     <Disabled />
@@ -77,7 +78,6 @@ export default defineComponent({
     <Search />
     <CloseOnSelect />
     <ShowTooltip />
-    <SelectAll />
     <Closable />
     <HideSelected />
     <MaxValuesShown />
