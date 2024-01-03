@@ -193,12 +193,12 @@
   }
 
   .ss-deselect {
-    display: flex;
-    align-self: center;
-    justify-content: flex-end;
     flex: 0 1 auto;
-    width: 8px;
-    height: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: auto;
     margin: 0 var(--ss-spacing-m) 0 var(--ss-spacing-m);
 
     svg {
@@ -216,10 +216,10 @@
   }
 
   .ss-arrow {
+    flex: 0 1 auto;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    flex: 0 1 auto;
     width: 12px;
     height: 12px;
     margin: auto var(--ss-spacing-m) auto var(--ss-spacing-m);
@@ -356,12 +356,6 @@
     }
 
     .ss-optgroup {
-      // If optgroup is open, show the options
-      &.ss-open {
-        .ss-option {
-        }
-      }
-
       // If optgroup has close, hide all options
       &.ss-close {
         .ss-option {
