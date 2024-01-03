@@ -1,7 +1,7 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue';
 
-import SlimSelect from '../../../slim-select'
+import SlimSelect from '../../../slim-select';
 
 export default defineComponent({
   name: 'SelectAll',
