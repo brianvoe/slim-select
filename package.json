@@ -49,10 +49,6 @@
     "build:frameworks": "npm run build --workspaces",
     "test": "jest"
   },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-babel": "^6.0.4",
@@ -87,6 +83,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.1.1",
     "prismjs": "^1.29.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
     "rollup": "^4.9.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
