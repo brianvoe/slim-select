@@ -70,6 +70,7 @@ class Settings {
         this.disabled = settings.disabled !== undefined ? settings.disabled : false;
         this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
         this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+        this.focusSearch = settings.focusSearch !== undefined ? settings.focusSearch : true;
         this.ariaLabel = settings.ariaLabel || 'Combobox';
         this.searchPlaceholder = settings.searchPlaceholder || 'Search';
         this.searchText = settings.searchText || 'No Results';
@@ -1739,7 +1740,7 @@ class SlimSelect {
             this.events.beforeOpen();
         }
         this.render.open();
-        if (this.settings.showSearch) {
+        if (this.settings.showSearch && this.settings.focusSearch) {
             this.render.searchFocus();
         }
         this.settings.isOpen = true;

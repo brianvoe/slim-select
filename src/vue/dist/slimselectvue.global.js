@@ -71,6 +71,7 @@ var SlimSelectVue = (function (vue) {
           this.disabled = settings.disabled !== undefined ? settings.disabled : false;
           this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
           this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+          this.focusSearch = settings.focusSearch !== undefined ? settings.focusSearch : true;
           this.ariaLabel = settings.ariaLabel || 'Combobox';
           this.searchPlaceholder = settings.searchPlaceholder || 'Search';
           this.searchText = settings.searchText || 'No Results';
@@ -1740,7 +1741,7 @@ var SlimSelectVue = (function (vue) {
               this.events.beforeOpen();
           }
           this.render.open();
-          if (this.settings.showSearch) {
+          if (this.settings.showSearch && this.settings.focusSearch) {
               this.render.searchFocus();
           }
           this.settings.isOpen = true;
@@ -1866,7 +1867,7 @@ var SlimSelectVue = (function (vue) {
           }
           const ogAfterChange = config.events.afterChange;
           config.events.afterChange = (newVal) => {
-              const value = this.multiple ? newVal.map((option) => option.value) : newVal[0].value;
+              const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : '';
               if (this.value !== value) {
                   this.value = value;
               }

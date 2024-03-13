@@ -11,6 +11,7 @@ export default class Settings {
     disabled: boolean;
     alwaysOpen: boolean;
     showSearch: boolean;
+    focusSearch: boolean;
     ariaLabel: string;
     searchPlaceholder: string;
     searchText: string;
