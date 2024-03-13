@@ -17,6 +17,7 @@ export default class Settings {
   public disabled: boolean
   public alwaysOpen: boolean
   public showSearch: boolean
+  public focusSearch: boolean
   public ariaLabel: string
   public searchPlaceholder: string
   public searchText: string
@@ -48,6 +49,7 @@ export default class Settings {
     this.disabled = settings.disabled !== undefined ? settings.disabled : false
     this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
     this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
+    this.focusSearch = settings.focusSearch !== undefined ? settings.focusSearch : true
     this.ariaLabel = settings.ariaLabel || 'Combobox'
     this.searchPlaceholder = settings.searchPlaceholder || 'Search'
     this.searchText = settings.searchText || 'No Results'
