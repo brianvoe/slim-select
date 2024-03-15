@@ -78,7 +78,7 @@ export default defineComponent({
             { text: 'cssClass', value: 'settings#cssClass' },
             { text: 'inlineStyles', value: 'settings#inlineStyles' },
             { text: 'html', value: 'settings#html' },
-            { text: 'keepOrder', value: 'settings#keepOrder'},
+            { text: 'keepOrder', value: 'settings#keepOrder' },
             { text: 'search', value: 'settings#search' },
             { text: 'closeOnSelect', value: 'settings#closeOnSelect' },
             { text: 'showOptionTooltips', value: 'settings#showOptionTooltips' },
@@ -183,9 +183,11 @@ export default defineComponent({
 
     this.setDemensions()
     window.addEventListener('resize', this.navDebounce)
+    window.addEventListener('nav-updated', this.updateNav)
   },
   unmounted() {
     window.removeEventListener('resize', this.navDebounce)
+    window.removeEventListener('nav-updated', this.updateNav)
 
     this.nav?.destroy()
   },
@@ -230,6 +232,13 @@ export default defineComponent({
           },
         },
       })
+    },
+    updateNav() {
+      setTimeout(() => {
+        if (this.nav) {
+          this.nav.setSelected(this.$router.currentRoute.value.fullPath.replace('/', ''))
+        }
+      }, 0)
     },
   },
 })
