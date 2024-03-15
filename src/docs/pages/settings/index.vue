@@ -8,6 +8,7 @@ import CloseOnSelect from './close_on_select.vue'
 import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
 import Css from './css.vue'
+import CssClasses from './css_classes.vue'
 import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
 import Disabled from './disabled.vue'
@@ -30,6 +31,7 @@ export default defineComponent({
   name: 'Settings',
   components: {
     Select,
+    CssClasses,
     AlwaysOpen,
     ContentLocation,
     ContentPosition,
@@ -59,6 +61,7 @@ export default defineComponent({
 <template>
   <div id="settings" class="contents">
     <Select />
+    <CssClasses />
     <AlwaysOpen />
     <ContentLocation />
     <ContentPosition />

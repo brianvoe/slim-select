@@ -62,6 +62,7 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'select', value: 'settings#select' },
+            { text: 'cssClasses', value: 'settings#cssClasses' },
             { text: 'alwaysOpen', value: 'settings#alwaysOpen' },
             { text: 'contentLocation', value: 'settings#contentLocation' },
             { text: 'contentPosition', value: 'settings#contentPosition' },

@@ -1,6 +1,7 @@
 import { debounce } from './helpers'
 import Settings from './settings'
 import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
+import CssClasses from './css_classes'
 
 export interface Callbacks {
   open: () => void
@@ -53,73 +54,12 @@ export default class Render {
   public content: Content
 
   // Classes
-  public classes = {
-    // Main
-    main: 'ss-main',
+  public classes: CssClasses
 
-    // Placeholder
-    placeholder: 'ss-placeholder',
-
-    // Values
-    values: 'ss-values',
-    single: 'ss-single',
-    max: 'ss-max',
-    value: 'ss-value',
-    valueText: 'ss-value-text',
-    valueDelete: 'ss-value-delete',
-    valueOut: 'ss-value-out',
-
-    // Deselect
-    deselect: 'ss-deselect',
-    deselectPath: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
-
-    // Arrow
-    arrow: 'ss-arrow',
-    arrowClose: 'M10,30 L50,70 L90,30', // Not a class but whatever
-    arrowOpen: 'M10,70 L50,30 L90,70', // Not a class but whatever
-
-    // Content
-    content: 'ss-content',
-    openAbove: 'ss-open-above',
-    openBelow: 'ss-open-below',
-
-    // Search
-    search: 'ss-search',
-    searchHighlighter: 'ss-search-highlight',
-    searching: 'ss-searching',
-    addable: 'ss-addable',
-    addablePath: 'M50,10 L50,90 M10,50 L90,50', // Not a class but whatever
-
-    // List optgroups/options
-    list: 'ss-list',
-
-    // Optgroup
-    optgroup: 'ss-optgroup',
-    optgroupLabel: 'ss-optgroup-label',
-    optgroupLabelText: 'ss-optgroup-label-text',
-    optgroupActions: 'ss-optgroup-actions',
-    optgroupSelectAll: 'ss-selectall', // optgroup select all
-    optgroupSelectAllBox: 'M60,10 L10,10 L10,90 L90,90 L90,50', // Not a class but whatever
-    optgroupSelectAllCheck: 'M30,45 L50,70 L90,10', // Not a class but whatever
-    optgroupClosable: 'ss-closable',
-
-    // Option
-    option: 'ss-option',
-    optionDelete: 'M10,10 L90,90 M10,90 L90,10', // Not a class but whatever
-    highlighted: 'ss-highlighted',
-
-    // Misc
-    open: 'ss-open',
-    close: 'ss-close',
-    selected: 'ss-selected',
-    error: 'ss-error',
-    disabled: 'ss-disabled',
-    hide: 'ss-hide',
-  }
-
-  constructor(settings: Required<Settings>, store: Store, callbacks: Callbacks) {
+  constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks) {
     this.store = store
     this.settings = settings
+    this.classes = classes
     this.callbacks = callbacks
 
     this.main = this.mainDiv()
