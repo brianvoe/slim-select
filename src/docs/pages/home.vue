@@ -77,6 +77,11 @@ export default defineComponent({
       this.multiple.destroy()
     }
   },
+  methods: {
+    handleClick() {
+      window.dispatchEvent(new Event('nav-updated'))
+    },
+  },
 })
 </script>
 
@@ -156,6 +161,13 @@ export default defineComponent({
           }
         }
       }
+    }
+  }
+
+  .frameworks {
+    .framework-items {
+      display: flex;
+      flex-direction: row;
     }
   }
 }
@@ -243,8 +255,8 @@ export default defineComponent({
         SlimSelect is in the process of adding a few framework integrations.<br />
         If you are an expert in any specific framework and would like to help out, please reach out!
       </p>
-      <div class="row frameworks">
-        <router-link to="frameworks#vue">
+      <div class="framework-items">
+        <router-link to="/vue" @click="handleClick">
           <svg viewBox="0 0 128 128" width="100" height="100">
             <path fill="#42b883" d="M78.8,10L64,35.4L49.2,10H0l64,110l64-110C128,10,78.8,10,78.8,10z"></path>
             <path fill="#35495e" d="M78.8,10L64,35.4L49.2,10H25.6L64,76l38.4-66H78.8z"></path>
