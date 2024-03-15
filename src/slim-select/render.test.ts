@@ -8,6 +8,7 @@ import { describe, expect, test } from '@jest/globals'
 import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { DataArray, Option } from './store'
+import CssClasses from './css_classes'
 
 describe('select module', () => {
   test('constructor', () => {
@@ -19,6 +20,7 @@ describe('select module', () => {
 
     // default settings
     const settings = new Settings()
+    const classes = new CssClasses()
 
     // default callbacks
     const callbacks = {
@@ -33,7 +35,7 @@ describe('select module', () => {
       },
     } as Callbacks
 
-    const render = new Render(settings, store, callbacks)
+    const render = new Render(settings, classes, store, callbacks)
     expect(render).toBeInstanceOf(Render)
   })
 })
