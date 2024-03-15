@@ -133,6 +133,7 @@ new SlimSelect({
     disabled: false,
     alwaysOpen: false,
     showSearch: true,
+    focusSearch: true,
     searchPlaceholder: 'Search',
     searchText: 'No Results',
     searchingText: 'Searching...',

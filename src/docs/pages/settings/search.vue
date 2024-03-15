@@ -14,6 +14,12 @@ export default defineComponent({
       },
     })
     new SlimSelect({
+      select: this.$refs.focusSearchSingle as HTMLSelectElement,
+      settings: {
+        focusSearch: false,
+      },
+    })
+    new SlimSelect({
       select: this.$refs.searchTextSingle as HTMLSelectElement,
       settings: {
         searchText: 'Sorry, nothing to see here',
@@ -40,6 +46,12 @@ export default defineComponent({
       },
     })
     new SlimSelect({
+      select: this.$refs.focusSearchMulti as HTMLSelectElement,
+      settings: {
+        focusSearch: false,
+      },
+    })
+    new SlimSelect({
       select: this.$refs.searchTextMulti as HTMLSelectElement,
       settings: {
         searchText: 'Sorry nothing to see here',
@@ -63,8 +75,9 @@ export default defineComponent({
 
 <template>
   <div id="search" class="content">
-    <h2 class="header">showSearch / searchText / searchingText / searchHighlight</h2>
+    <h2 class="header">showSearch / focusSearch / searchText / searchingText / searchHighlight</h2>
     <p><b>showSearch</b> - is a boolean value that will decide whether or not to show the search. Default is true.</p>
+    <p><b>focusSearch</b> - is a boolean value that will decide whether or not to focus on the search on open. Default is true.</p>
     <p>
       <b>searchText</b> - is a string value that will show in the event there are no results. Default is 'No Results'.
     </p>
@@ -79,6 +92,11 @@ export default defineComponent({
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="showSearchSingle">
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+        <option value="bird">Bird</option>
+      </select>
+      <select ref="focusSearchSingle">
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
         <option value="bird">Bird</option>
@@ -102,6 +120,11 @@ export default defineComponent({
 
     <div class="row">
       <select ref="showSearchMulti" multiple>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+        <option value="bird">Bird</option>
+      </select>
+      <select ref="focusSearchMulti" multiple>
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
         <option value="bird">Bird</option>
