@@ -115,11 +115,17 @@ export default class Store {
 
         if ('options' in dataObj && dataObj.options) {
           for (let option of dataObj.options) {
-            return this.validateOption(option)
+            const validationError = this.validateOption(option)
+            if (validationError) {
+              return validationError
+            }
           }
         }
       } else if (dataObj instanceof Option || 'text' in dataObj) {
-        return this.validateOption(dataObj)
+        const validationError = this.validateOption(dataObj)
+        if (validationError) {
+          return validationError
+        }
       } else {
         return new Error('Data object must be a valid optgroup or option')
       }
@@ -253,29 +259,6 @@ export default class Store {
     }, false) as Option[]
   }
 
-  public getSelectedIDs(): string[] {
-    let selectedOptions = this.getSelectedOptions()
-
-    let selectedIDs: string[] = []
-    selectedOptions.forEach((op: Option) => {
-      selectedIDs.push(op.id)
-    })
-
-    return selectedIDs
-  }
-
-  public getOptgroupByID(id: string): Optgroup | null {
-    // Loop through each data object
-    // and if optgroup is found, return it
-    for (let dataObj of this.data) {
-      if (dataObj instanceof Optgroup && dataObj.id === id) {
-        return dataObj
-      }
-    }
-
-    return null
-  }
-
   public getOptionByID(id: string): Option | null {
     let options = this.filter((opt: Option) => {
       return opt.id === id
@@ -361,5 +344,4 @@ export default class Store {
 
     return dataSearch
   }
-
 }
