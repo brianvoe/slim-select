@@ -1,0 +1,24 @@
+name: 'Code coverage'
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - '**/dist/**'
+      - '**/*.md'
+      - '.github/**'
+      - '.vscode/**'
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - '**/dist/**'
+      - '**/*.md'
+      - '.github/**'
+      - '.vscode/**'
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ArtiomTr/jest-coverage-report-action@v2

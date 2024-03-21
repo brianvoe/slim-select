@@ -5,4 +5,10 @@ module.exports = {
   testEnvironment: 'jsdom',
   testMatch: ['**/*.test.ts'],
   roots: ['./src/slim-select'],
+  reporters: process.env.CI ? [['github-actions', {silent: false}], 'summary'] : ['default'],
+  coverageThreshold: {
+    global: {
+      lines: 75,
+    },
+  },
 }
