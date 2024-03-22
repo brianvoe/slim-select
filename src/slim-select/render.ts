@@ -1186,7 +1186,6 @@ export default class Render {
     // Create option
     const optionEl = document.createElement('div')
     optionEl.dataset.id = option.id // Dataset id for identifying an option
-    optionEl.id = option.id
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
