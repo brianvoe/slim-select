@@ -495,7 +495,7 @@ export default class Render {
 
     const text = document.createElement('div')
     text.classList.add(this.classes.valueText)
-    text.innerText = option.text // For multiple values always use text
+    text.textContent = option.text // For multiple values always use text
     value.appendChild(text)
 
     // Only add deletion if the option is not mandatory
