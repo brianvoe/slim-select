@@ -76,7 +76,7 @@ describe('helpers module', () => {
       const debounced_function = debounce(callback)
       debounced_function()
 
-      await new Promise(r => setTimeout(r, 100))
+      await new Promise((r) => setTimeout(r, 100))
 
       expect(callback).toHaveBeenCalled()
       expect(callback).toHaveBeenCalledTimes(1)
@@ -87,10 +87,10 @@ describe('helpers module', () => {
       const debounced_function = debounce(callback, 100)
       debounced_function()
 
-      await new Promise(r => setTimeout(r, 50))
+      await new Promise((r) => setTimeout(r, 50))
       expect(callback).not.toHaveBeenCalled()
 
-      await new Promise(r => setTimeout(r, 50))
+      await new Promise((r) => setTimeout(r, 50))
       expect(callback).toHaveBeenCalled()
       expect(callback).toHaveBeenCalledTimes(1)
     })
@@ -100,10 +100,10 @@ describe('helpers module', () => {
       const debounced_function = debounce(callback, 10)
       debounced_function()
 
-      await new Promise(r => setTimeout(r, 5))
+      await new Promise((r) => setTimeout(r, 5))
       expect(callback).not.toHaveBeenCalled()
 
-      await new Promise(r => setTimeout(r, 5))
+      await new Promise((r) => setTimeout(r, 5))
       expect(callback).toHaveBeenCalled()
       expect(callback).toHaveBeenCalledTimes(1)
     })
@@ -118,13 +118,12 @@ describe('helpers module', () => {
     })
 
     test('debounce respects order of calls', async () => {
-      const callback = jest.fn(() => {
-      })
+      const callback = jest.fn(() => {})
       const debounced_function: (a: number) => void = debounce(callback)
       debounced_function(0)
       debounced_function(1)
 
-      await new Promise(r => setTimeout(r, 50))
+      await new Promise((r) => setTimeout(r, 50))
       expect(callback).toHaveBeenCalledTimes(1)
       expect(callback.mock.calls[0]).toStrictEqual([1])
     })

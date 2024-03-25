@@ -52,7 +52,7 @@ export function hasClassInTree(element: HTMLElement, className: string): HTMLEle
  */
 export function debounce<T extends (...args: any[]) => void>(func: T, wait = 50, immediate = false): () => void {
   let timeout: any
-  return function(this: any, ...args: any[]): void {
+  return function (this: any, ...args: any[]): void {
     const context = self
     const later = () => {
       timeout = null
