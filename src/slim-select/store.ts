@@ -259,6 +259,29 @@ export default class Store {
     }, false) as Option[]
   }
 
+  public getSelectedIDs(): string[] {
+    let selectedOptions = this.getSelectedOptions()
+
+    let selectedIDs: string[] = []
+    selectedOptions.forEach((op: Option) => {
+      selectedIDs.push(op.id)
+    })
+
+    return selectedIDs
+  }
+
+  public getOptgroupByID(id: string): Optgroup | null {
+    // Loop through each data object
+    // and if optgroup is found, return it
+    for (let dataObj of this.data) {
+      if (dataObj instanceof Optgroup && dataObj.id === id) {
+        return dataObj
+      }
+    }
+
+    return null
+  }
+
   public getOptionByID(id: string): Option | null {
     let options = this.filter((opt: Option) => {
       return opt.id === id
