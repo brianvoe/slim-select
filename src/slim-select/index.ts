@@ -8,8 +8,8 @@ import CssClasses, { CssClassesPartial } from './css_classes'
 export interface Config {
   select: string | Element
   data?: DataArrayPartial
-  settings?: SettingsPartial,
-  cssClasses?: CssClassesPartial,
+  settings?: SettingsPartial
+  cssClasses?: CssClassesPartial
   events?: Events
 }
 
