@@ -85,7 +85,7 @@ export default class Select {
   }
 
   private observeCall(mutations: MutationRecord[]): void {
-    // Do nothing if we are not listening
+    // If we are not listening, do nothing.
     if (!this.listen) {
       return
     }
