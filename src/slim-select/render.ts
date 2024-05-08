@@ -1285,7 +1285,7 @@ export default class Render {
   private highlightText(str: string, search: any, className: string) {
     // the completed string will be itself if already set, otherwise, the string that was passed in
     let completedString: any = str
-    const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
+    const regex = new RegExp('(?![^<]*>)(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
 
     // If the regex doesn't match the string just exit
     if (!str.match(regex)) {
