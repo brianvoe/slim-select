@@ -265,7 +265,7 @@ export default class Render {
           return false
       }
 
-      return false
+      return true
     }
 
     // Add onclick for main div
