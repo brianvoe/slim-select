@@ -310,7 +310,7 @@ export default class Select {
     }
 
     // Trigger change event on original select
-    this.select.dispatchEvent(new Event('change'), { bubbles: true })
+    this.select.dispatchEvent(new Event('change', { bubbles: true }))
 
     // Start listening to changes
     this.changeListen(true)
