@@ -102,9 +102,9 @@ export default class SlimSelect {
     this.select.hideUI() // Hide the original select element
 
     // Add select listeners
-    this.select.onValueChange = (values: string[]) => {
+    this.select.onValueChange = (options: Option[]) => {
       // Run set selected from the values given
-      this.setSelected(values)
+      this.setSelected(options.map(option => option.id))
     }
     this.select.onClassChange = (classes: string[]) => {
       // Update settings with new class
@@ -248,12 +248,12 @@ export default class SlimSelect {
     return this.store.getSelected()
   }
 
-  public setSelected(value: string | string[], runAfterChange = true): void {
+  public setSelected(id: string | string[], runAfterChange = true): void {
     // Get original selected values
     const selected = this.store.getSelected()
 
     // Update the store
-    this.store.setSelectedBy('value', Array.isArray(value) ? value : [value])
+    this.store.setSelectedBy('id', Array.isArray(id) ? id : [id])
     const data = this.store.getData()
 
     // Update the select element

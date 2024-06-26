@@ -321,9 +321,9 @@ export default class Render {
         } else {
           // Get first option and set it as selected
           const firstOption = this.store.getFirstOption()
-          const value = firstOption ? firstOption.value : ''
+          const id = firstOption ? firstOption.id : ''
 
-          this.callbacks.setSelected(value, false)
+          this.callbacks.setSelected(id, false)
         }
 
         // Check if we need to close the dropdown
@@ -592,20 +592,20 @@ export default class Render {
         }
 
         if (shouldDelete) {
-          // Loop through after and append values to a variable called selected
-          let selectedValues: string[] = []
+          // Loop through after and append ids to a variable called selected
+          let selectedIds: string[] = []
           for (const o of after) {
             if (o instanceof Optgroup) {
               for (const c of o.options) {
-                selectedValues.push(c.value)
+                selectedIds.push(c.id)
               }
             }
 
             if (o instanceof Option) {
-              selectedValues.push(o.value)
+              selectedIds.push(o.id)
             }
           }
-          this.callbacks.setSelected(selectedValues, false)
+          this.callbacks.setSelected(selectedIds, false)
 
           // Check if we need to close the dropdown
           if (this.settings.closeOnSelect) {
@@ -790,11 +790,11 @@ export default class Render {
 
           // set selected value for single and multiple
           if (this.settings.isMultiple) {
-            let values = this.store.getSelected()
-            values.push(newOption.value)
-            this.callbacks.setSelected(values, true)
+            let ids = this.store.getSelected()
+            ids.push(newOption.id)
+            this.callbacks.setSelected(ids, true)
           } else {
-            this.callbacks.setSelected([newOption.value], true)
+            this.callbacks.setSelected([newOption.id], true)
           }
 
           // Clear search
@@ -1074,7 +1074,7 @@ export default class Render {
               // Put together new list minus all options in this optgroup
               const newSelected = currentSelected.filter((s) => {
                 for (const o of d.options) {
-                  if (s === o.value) {
+                  if (s === o.id) {
                     return false
                   }
                 }
@@ -1086,7 +1086,7 @@ export default class Render {
               return
             } else {
               // Put together new list with all options in this optgroup
-              const newSelected = currentSelected.concat(d.options.map((o) => o.value))
+              const newSelected = currentSelected.concat(d.options.map((o) => o.id))
 
               // Loop through options and if they don't exist in the store
               // run addOption callback
@@ -1315,7 +1315,7 @@ export default class Render {
 
         // Get values from after and set as selected
         this.callbacks.setSelected(
-          after.map((o: Option) => o.value),
+          after.map((o: Option) => o.id),
           false,
         )
 

@@ -147,7 +147,7 @@
         setData(data) {
             this.data = this.partialToFullData(data);
             if (this.selectType === 'single') {
-                this.setSelectedBy('value', this.getSelected());
+                this.setSelectedBy('id', this.getSelected());
             }
         }
         getData() {
@@ -189,25 +189,12 @@
             }
         }
         getSelected() {
-            let selectedOptions = this.getSelectedOptions();
-            let selectedValues = [];
-            selectedOptions.forEach((option) => {
-                selectedValues.push(option.value);
-            });
-            return selectedValues;
+            return this.getSelectedOptions().map(option => option.id);
         }
         getSelectedOptions() {
             return this.filter((opt) => {
                 return opt.selected;
             }, false);
-        }
-        getSelectedIDs() {
-            let selectedOptions = this.getSelectedOptions();
-            let selectedIDs = [];
-            selectedOptions.forEach((op) => {
-                selectedIDs.push(op.id);
-            });
-            return selectedIDs;
         }
         getOptgroupByID(id) {
             for (let dataObj of this.data) {
@@ -460,8 +447,8 @@
                     }
                     else {
                         const firstOption = this.store.getFirstOption();
-                        const value = firstOption ? firstOption.value : '';
-                        this.callbacks.setSelected(value, false);
+                        const id = firstOption ? firstOption.id : '';
+                        this.callbacks.setSelected(id, false);
                     }
                     if (this.settings.closeOnSelect) {
                         this.callbacks.close();
@@ -661,18 +648,18 @@
                         shouldDelete = this.callbacks.beforeChange(after, before) === true;
                     }
                     if (shouldDelete) {
-                        let selectedValues = [];
+                        let selectedIds = [];
                         for (const o of after) {
                             if (o instanceof Optgroup) {
                                 for (const c of o.options) {
-                                    selectedValues.push(c.value);
+                                    selectedIds.push(c.id);
                                 }
                             }
                             if (o instanceof Option) {
-                                selectedValues.push(o.value);
+                                selectedIds.push(o.id);
                             }
                         }
-                        this.callbacks.setSelected(selectedValues, false);
+                        this.callbacks.setSelected(selectedIds, false);
                         if (this.settings.closeOnSelect) {
                             this.callbacks.close();
                         }
@@ -801,12 +788,12 @@
                         let newOption = new Option(oo);
                         this.callbacks.addOption(newOption);
                         if (this.settings.isMultiple) {
-                            let values = this.store.getSelected();
-                            values.push(newOption.value);
-                            this.callbacks.setSelected(values, true);
+                            let ids = this.store.getSelected();
+                            ids.push(newOption.id);
+                            this.callbacks.setSelected(ids, true);
                         }
                         else {
-                            this.callbacks.setSelected([newOption.value], true);
+                            this.callbacks.setSelected([newOption.id], true);
                         }
                         this.callbacks.search('');
                         if (this.settings.closeOnSelect) {
@@ -994,7 +981,7 @@
                             if (allSelected) {
                                 const newSelected = currentSelected.filter((s) => {
                                     for (const o of d.options) {
-                                        if (s === o.value) {
+                                        if (s === o.id) {
                                             return false;
                                         }
                                     }
@@ -1004,7 +991,7 @@
                                 return;
                             }
                             else {
-                                const newSelected = currentSelected.concat(d.options.map((o) => o.value));
+                                const newSelected = currentSelected.concat(d.options.map((o) => o.id));
                                 for (const o of d.options) {
                                     if (!this.store.getOptionByID(o.id)) {
                                         this.callbacks.addOption(o);
@@ -1161,7 +1148,7 @@
                     if (!this.store.getOptionByID(elementID)) {
                         this.callbacks.addOption(option);
                     }
-                    this.callbacks.setSelected(after.map((o) => o.value), false);
+                    this.callbacks.setSelected(after.map((o) => o.id), false);
                     if (this.settings.closeOnSelect) {
                         this.callbacks.close();
                     }
@@ -1307,7 +1294,7 @@
         }
         valueChange(ev) {
             if (this.listen && this.onValueChange) {
-                this.onValueChange(this.getSelectedValues());
+                this.onValueChange(this.getSelectedOptions());
             }
             return true;
         }
@@ -1391,17 +1378,17 @@
                 data: option.dataset,
             };
         }
-        getSelectedValues() {
-            let values = [];
-            const options = this.select.childNodes;
-            for (const o of options) {
+        getSelectedOptions() {
+            let options = [];
+            const opts = this.select.childNodes;
+            for (const o of opts) {
                 if (o.nodeName === 'OPTGROUP') {
                     const optgroupOptions = o.childNodes;
                     for (const oo of optgroupOptions) {
                         if (oo.nodeName === 'OPTION') {
                             const option = oo;
                             if (option.selected) {
-                                values.push(option.value);
+                                options.push(this.getDataFromOption(option));
                             }
                         }
                     }
@@ -1409,13 +1396,16 @@
                 if (o.nodeName === 'OPTION') {
                     const option = o;
                     if (option.selected) {
-                        values.push(option.value);
+                        options.push(this.getDataFromOption(option));
                     }
                 }
             }
-            return values;
+            return options;
         }
-        setSelected(value) {
+        getSelectedValues() {
+            return this.getSelectedOptions().map(option => option.value);
+        }
+        setSelected(ids) {
             this.changeListen(false);
             const options = this.select.childNodes;
             for (const o of options) {
@@ -1425,13 +1415,13 @@
                     for (const oo of optgroupOptions) {
                         if (oo.nodeName === 'OPTION') {
                             const option = oo;
-                            option.selected = value.includes(option.value);
+                            option.selected = ids.includes(option.id);
                         }
                     }
                 }
                 if (o.nodeName === 'OPTION') {
                     const option = o;
-                    option.selected = value.includes(option.value);
+                    option.selected = ids.includes(option.id);
                 }
             }
             this.changeListen(true);
@@ -1649,8 +1639,8 @@
             this.select = new Select(this.selectEl);
             this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class);
             this.select.hideUI();
-            this.select.onValueChange = (values) => {
-                this.setSelected(values);
+            this.select.onValueChange = (options) => {
+                this.setSelected(options.map(option => option.id));
             };
             this.select.onClassChange = (classes) => {
                 this.settings.class = classes;
@@ -1742,9 +1732,9 @@
         getSelected() {
             return this.store.getSelected();
         }
-        setSelected(value, runAfterChange = true) {
+        setSelected(id, runAfterChange = true) {
             const selected = this.store.getSelected();
-            this.store.setSelectedBy('value', Array.isArray(value) ? value : [value]);
+            this.store.setSelectedBy('id', Array.isArray(id) ? id : [id]);
             const data = this.store.getData();
             this.select.updateOptions(data);
             this.render.renderValues();
