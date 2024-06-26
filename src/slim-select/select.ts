@@ -224,7 +224,7 @@ export default class Select {
   }
 
   public getSelectedValues(): string[] {
-    return this.getSelectedOptions().map(option => option.value);
+    return this.getSelectedOptions().map((option) => option.value)
   }
 
   public setSelected(ids: string[]): void {

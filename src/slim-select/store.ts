@@ -236,7 +236,7 @@ export default class Store {
   }
 
   public getSelected(): string[] {
-    return this.getSelectedOptions().map(option => option.id)
+    return this.getSelectedOptions().map((option) => option.id)
   }
 
   public getSelectedOptions(): Option[] {
@@ -342,5 +342,4 @@ export default class Store {
 
     return dataSearch
   }
-
 }

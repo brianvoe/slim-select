@@ -104,7 +104,7 @@ export default class SlimSelect {
     // Add select listeners
     this.select.onValueChange = (options: Option[]) => {
       // Run set selected from the values given
-      this.setSelected(options.map(option => option.id))
+      this.setSelected(options.map((option) => option.id))
     }
     this.select.onClassChange = (classes: string[]) => {
       // Update settings with new class
