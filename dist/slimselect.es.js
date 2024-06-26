@@ -183,7 +183,7 @@ class Store {
         }
     }
     getSelected() {
-        return this.getSelectedOptions().map(option => option.id);
+        return this.getSelectedOptions().map((option) => option.id);
     }
     getSelectedOptions() {
         return this.filter((opt) => {
@@ -1397,7 +1397,7 @@ class Select {
         return options;
     }
     getSelectedValues() {
-        return this.getSelectedOptions().map(option => option.value);
+        return this.getSelectedOptions().map((option) => option.value);
     }
     setSelected(ids) {
         this.changeListen(false);
@@ -1634,7 +1634,7 @@ class SlimSelect {
         this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class);
         this.select.hideUI();
         this.select.onValueChange = (options) => {
-            this.setSelected(options.map(option => option.id));
+            this.setSelected(options.map((option) => option.id));
         };
         this.select.onClassChange = (classes) => {
             this.settings.class = classes;
@@ -1724,11 +1724,23 @@ class SlimSelect {
         }
     }
     getSelected() {
-        return this.store.getSelected();
+        return this.store.getSelectedOptions().map((option) => option.value);
     }
-    setSelected(id, runAfterChange = true) {
+    setSelected(values, runAfterChange = true) {
         const selected = this.store.getSelected();
-        this.store.setSelectedBy('id', Array.isArray(id) ? id : [id]);
+        const options = this.store.getDataOptions();
+        values = Array.isArray(values) ? values : [values];
+        const ids = [];
+        for (const value of values) {
+            if (options.find((option) => option.id == value)) {
+                ids.push(value);
+                continue;
+            }
+            for (const option of options.filter((option) => option.value == value)) {
+                ids.push(option.id);
+            }
+        }
+        this.store.setSelectedBy('id', ids);
         const data = this.store.getData();
         this.select.updateOptions(data);
         this.render.renderValues();

@@ -33,7 +33,7 @@ export default class SlimSelect {
     getData(): DataArray;
     setData(data: DataArrayPartial): void;
     getSelected(): string[];
-    setSelected(id: string | string[], runAfterChange?: boolean): void;
+    setSelected(values: string | string[], runAfterChange?: boolean): void;
     addOption(option: OptionOptional): void;
     open(): void;
     close(eventType?: string | null): void;

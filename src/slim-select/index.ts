@@ -245,15 +245,31 @@ export default class SlimSelect {
   }
 
   public getSelected(): string[] {
-    return this.store.getSelected()
+    return this.store.getSelectedOptions().map((option) => option.value)
   }
 
-  public setSelected(id: string | string[], runAfterChange = true): void {
+  public setSelected(values: string | string[], runAfterChange = true): void {
     // Get original selected values
     const selected = this.store.getSelected()
+    const options = this.store.getDataOptions()
+    values = Array.isArray(values) ? values : [values]
+    const ids = []
+
+    // for back-compatibility support both, set by id and set by value
+    for (const value of values) {
+      if (options.find((option) => option.id == value)) {
+        ids.push(value)
+        continue
+      }
+
+      // if option with given id is not found try to search by value
+      for (const option of options.filter((option) => option.value == value)) {
+        ids.push(option.id)
+      }
+    }
 
     // Update the store
-    this.store.setSelectedBy('id', Array.isArray(id) ? id : [id])
+    this.store.setSelectedBy('id', ids)
     const data = this.store.getData()
 
     // Update the select element
