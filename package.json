@@ -19,6 +19,9 @@
     ".": {
       "import": "./dist/slimselect.js",
       "require": "./dist/slimselect.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": {
       "types": "./dist/*.d.ts"
     },
     "./styles": "./dist/slimselect.css"
