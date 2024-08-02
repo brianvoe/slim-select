@@ -115,11 +115,17 @@ export default class Store {
 
         if ('options' in dataObj && dataObj.options) {
           for (let option of dataObj.options) {
-            return this.validateOption(option)
+            const validationError = this.validateOption(option)
+            if (validationError) {
+              return validationError
+            }
           }
         }
       } else if (dataObj instanceof Option || 'text' in dataObj) {
-        return this.validateOption(dataObj)
+        const validationError = this.validateOption(dataObj)
+        if (validationError) {
+          return validationError
+        }
       } else {
         return new Error('Data object must be a valid optgroup or option')
       }
