@@ -1,15 +1,15 @@
+import CssClasses from './classes'
 import { debounce, hasClassInTree, isEqual } from './helpers'
 import Render from './render'
 import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
-import CssClasses, { CssClassesPartial } from './css_classes'
 
 export interface Config {
   select: string | Element
   data?: DataArrayPartial
   settings?: SettingsPartial
-  cssClasses?: CssClassesPartial
+  cssClasses?: Partial<CssClasses>
   events?: Events
 }
 

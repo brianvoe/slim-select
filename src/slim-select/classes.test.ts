@@ -1,6 +1,6 @@
 'use strict'
 import { describe, expect, test } from '@jest/globals'
-import CssClasses from './css_classes'
+import CssClasses from './classes'
 
 const defaultClasses: { [key: string]: string } = {
   main: 'ss-main',

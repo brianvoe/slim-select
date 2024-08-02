@@ -1,5 +1,3 @@
-export type CssClassesPartial = Partial<CssClasses>
-
 export default class CssClasses {
   public main: string
   // Placeholder
@@ -61,7 +59,7 @@ export default class CssClasses {
   public disabled: string
   public hide: string
 
-  constructor(classes?: CssClassesPartial) {
+  constructor(classes?: Partial<CssClasses>) {
     if (!classes) {
       classes = {}
     }

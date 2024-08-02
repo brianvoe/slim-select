@@ -1,7 +1,7 @@
 import { debounce } from './helpers'
 import Settings from './settings'
 import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
-import CssClasses from './css_classes'
+import CssClasses from './classes'
 
 export interface Callbacks {
   open: () => void
