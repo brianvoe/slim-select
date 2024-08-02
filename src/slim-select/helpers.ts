@@ -3,7 +3,7 @@ export function generateID(): string {
   return Math.random().toString(36).substring(2, 10)
 }
 
-export function hasClassInTree(element: HTMLElement, className: string) {
+export function hasClassInTree(element: HTMLElement, className: string): HTMLElement | null {
   function hasClass(e: HTMLElement, c: string) {
     // If the element has the class return element
     if (c && e && e.classList && e.classList.contains(c)) {
@@ -51,20 +51,11 @@ export function debounce<T extends (...args: any[]) => void>(func: T, wait = 50,
   }
 }
 
-// reverseDebounce will call the function on the first call and then debounce
-function reverseDebounce<T extends (...args: any[]) => void>(func: T, timeout: number): T {
-  let timer: NodeJS.Timeout | null = null
-  return function (...args: any[]): void {
-    if (!timer) func(...args)
-    timer = setTimeout(() => (timer = null), timeout)
-  } as T
-}
-
-export function isEqual(a: any, b: any) {
+export function isEqual(a: any, b: any): boolean {
   return JSON.stringify(a) === JSON.stringify(b)
 }
 
-export function kebabCase(str: string) {
+export function kebabCase(str: string): string {
   const result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (match) => '-' + match.toLowerCase())
   return str[0] === str[0].toUpperCase() ? result.substring(1) : result
 }

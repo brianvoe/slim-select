@@ -19,6 +19,9 @@
     ".": {
       "import": "./dist/slimselect.js",
       "require": "./dist/slimselect.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": {
       "types": "./dist/*.d.ts"
     },
     "./styles": "./dist/slimselect.css"
@@ -47,7 +50,8 @@
     "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
     "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
     "build:frameworks": "npm run build --workspaces",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

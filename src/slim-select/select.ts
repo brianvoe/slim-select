@@ -85,7 +85,7 @@ export default class Select {
   }
 
   private observeCall(mutations: MutationRecord[]): void {
-    // If we are not listeing do nothing
+    // If we are not listening, do nothing.
     if (!this.listen) {
       return
     }
@@ -106,6 +106,19 @@ export default class Select {
         // Check if class has changed
         if (m.attributeName === 'class') {
           classChanged = true
+        }
+
+        if (m.type === 'childList') {
+          for (const n of m.addedNodes) {
+            if (n.nodeName === 'OPTION' && (<HTMLOptionElement>n).value === this.select.value) {
+              // we added a new option that's now the select value
+              this.select.dispatchEvent(new Event('change'))
+              break
+            }
+          }
+
+          // options changed, so we need the optionsChange event to fire
+          optgroupOptionChanged = true
         }
       }
 
@@ -184,7 +197,7 @@ export default class Select {
       text: option.text,
       html: option.dataset && option.dataset.html ? option.dataset.html : '',
       selected: option.selected,
-      display: option.style.display === 'none' ? false : true,
+      display: option.style.display !== 'none',
       disabled: option.disabled,
       mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
       placeholder: option.dataset.placeholder === 'true',
@@ -297,7 +310,7 @@ export default class Select {
     }
 
     // Trigger change event on original select
-    this.select.dispatchEvent(new Event('change'))
+    this.select.dispatchEvent(new Event('change', { bubbles: true }))
 
     // Start listening to changes
     this.changeListen(true)
@@ -335,7 +348,7 @@ export default class Select {
     if (info.disabled) {
       optionEl.disabled = true
     }
-    if (info.display === false) {
+    if (!info.display) {
       optionEl.style.display = 'none'
     }
     if (info.placeholder) {

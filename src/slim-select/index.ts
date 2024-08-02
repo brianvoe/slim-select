@@ -3,11 +3,13 @@ import Render from './render'
 import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
+import CssClasses, { CssClassesPartial } from './css_classes'
 
 export interface Config {
   select: string | Element
   data?: DataArrayPartial
   settings?: SettingsPartial
+  cssClasses?: CssClassesPartial
   events?: Events
 }
 
@@ -29,6 +31,7 @@ export default class SlimSelect {
 
   // Classes
   public settings!: Settings
+  public cssClasses!: CssClasses
   public select!: Select
   public store!: Store
   public render!: Render
@@ -73,6 +76,9 @@ export default class SlimSelect {
 
     // Set settings
     this.settings = new Settings(config.settings)
+
+    // Set CSS classes
+    this.cssClasses = new CssClasses(config.cssClasses)
 
     // Set events
     const debounceEvents = ['afterChange', 'beforeOpen', 'afterOpen', 'beforeClose', 'afterClose']
@@ -149,7 +155,7 @@ export default class SlimSelect {
     }
 
     // Setup render class
-    this.render = new Render(this.settings, this.store, renderCallbacks)
+    this.render = new Render(this.settings, this.cssClasses, this.store, renderCallbacks)
     this.render.renderValues()
     this.render.renderOptions(this.store.getData())
 
@@ -315,7 +321,7 @@ export default class SlimSelect {
     this.render.open()
 
     // Focus on input field only if search is enabled
-    if (this.settings.showSearch) {
+    if (this.settings.showSearch && this.settings.focusSearch) {
       this.render.searchFocus()
     }
 
