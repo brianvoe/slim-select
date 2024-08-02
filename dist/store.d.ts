@@ -67,7 +67,6 @@ export default class Store {
     setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]): void;
     getSelected(): string[];
     getSelectedOptions(): Option[];
-    getSelectedIDs(): string[];
     getOptgroupByID(id: string): Optgroup | null;
     getOptionByID(id: string): Option | null;
     getSelectType(): string;

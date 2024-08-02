@@ -1,7 +1,7 @@
 import { DataArray, DataArrayPartial, Optgroup, OptgroupOptional, Option } from './store';
 export default class Select {
     select: HTMLSelectElement;
-    onValueChange?: (value: string[]) => void;
+    onValueChange?: (value: Option[]) => void;
     onClassChange?: (classes: string[]) => void;
     onDisabledChange?: (disabled: boolean) => void;
     onOptionsChange?: (data: DataArrayPartial) => void;
@@ -18,8 +18,9 @@ export default class Select {
     getData(): DataArrayPartial;
     getDataFromOptgroup(optgroup: HTMLOptGroupElement): OptgroupOptional;
     getDataFromOption(option: HTMLOptionElement): Option;
+    getSelectedOptions(): Option[];
     getSelectedValues(): string[];
-    setSelected(value: string[]): void;
+    setSelected(ids: string[]): void;
     updateSelect(id?: string, style?: string, classes?: string[]): void;
     updateOptions(data: DataArray): void;
     createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;

@@ -175,7 +175,7 @@ export default class Store {
     // Run this.data through setSelected by value
     // to set the selected property and clean any wrong selected
     if (this.selectType === 'single') {
-      this.setSelectedBy('value', this.getSelected())
+      this.setSelectedBy('id', this.getSelected())
     }
   }
 
@@ -242,32 +242,13 @@ export default class Store {
   }
 
   public getSelected(): string[] {
-    let selectedOptions = this.getSelectedOptions()
-    let selectedValues: string[] = []
-
-    // Loop through each option and get the value
-    selectedOptions.forEach((option: Option) => {
-      selectedValues.push(option.value)
-    })
-
-    return selectedValues
+    return this.getSelectedOptions().map((option) => option.id)
   }
 
   public getSelectedOptions(): Option[] {
     return this.filter((opt: Option) => {
       return opt.selected
     }, false) as Option[]
-  }
-
-  public getSelectedIDs(): string[] {
-    let selectedOptions = this.getSelectedOptions()
-
-    let selectedIDs: string[] = []
-    selectedOptions.forEach((op: Option) => {
-      selectedIDs.push(op.id)
-    })
-
-    return selectedIDs
   }
 
   public getOptgroupByID(id: string): Optgroup | null {

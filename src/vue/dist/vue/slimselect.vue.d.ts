@@ -70,7 +70,7 @@ declare const _default: import("vue").DefineComponent<{
         };
         select: {
             select: HTMLSelectElement;
-            onValueChange?: ((value: string[]) => void) | undefined;
+            onValueChange?: ((value: Option[]) => void) | undefined;
             onClassChange?: ((classes: string[]) => void) | undefined;
             onDisabledChange?: ((disabled: boolean) => void) | undefined;
             onOptionsChange?: ((data: DataArrayPartial) => void) | undefined;
@@ -84,8 +84,9 @@ declare const _default: import("vue").DefineComponent<{
             getData: () => DataArrayPartial;
             getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => import("../slim-select/store").OptgroupOptional;
             getDataFromOption: (option: HTMLOptionElement) => Option;
+            getSelectedOptions: () => Option[];
             getSelectedValues: () => string[];
-            setSelected: (value: string[]) => void;
+            setSelected: (ids: string[]) => void;
             updateSelect: (id?: string | undefined, style?: string | undefined, classes?: string[] | undefined) => void;
             updateOptions: (data: import("../slim-select/store").DataArray) => void;
             createOptgroup: (optgroup: import("../slim-select/store").Optgroup) => HTMLOptGroupElement;
@@ -103,7 +104,6 @@ declare const _default: import("vue").DefineComponent<{
             setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
             getSelected: () => string[];
             getSelectedOptions: () => Option[];
-            getSelectedIDs: () => string[];
             getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
             getOptionByID: (id: string) => Option | null;
             getSelectType: () => string;
@@ -161,7 +161,6 @@ declare const _default: import("vue").DefineComponent<{
                 setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
                 getSelected: () => string[];
                 getSelectedOptions: () => Option[];
-                getSelectedIDs: () => string[];
                 getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
                 getOptionByID: (id: string) => Option | null;
                 getSelectType: () => string;
@@ -293,7 +292,7 @@ declare const _default: import("vue").DefineComponent<{
         getData: () => import("../slim-select/store").DataArray;
         setData: (data: DataArrayPartial) => void;
         getSelected: () => string[];
-        setSelected: (value: string | string[], runAfterChange?: boolean) => void;
+        setSelected: (values: string | string[], runAfterChange?: boolean) => void;
         addOption: (option: import("../slim-select/store").OptionOptional) => void;
         open: () => void;
         close: (eventType?: string | null) => void;

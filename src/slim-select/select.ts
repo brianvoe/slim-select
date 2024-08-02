@@ -5,7 +5,7 @@ export default class Select {
   public select: HTMLSelectElement
 
   // Mutation observer fields
-  public onValueChange?: (value: string[]) => void
+  public onValueChange?: (value: Option[]) => void
   public onClassChange?: (classes: string[]) => void
   public onDisabledChange?: (disabled: boolean) => void
   public onOptionsChange?: (data: DataArrayPartial) => void
@@ -77,7 +77,7 @@ export default class Select {
   // and will call the onValueChange function if it exists
   public valueChange(ev: Event): boolean {
     if (this.listen && this.onValueChange) {
-      this.onValueChange(this.getSelectedValues())
+      this.onValueChange(this.getSelectedOptions())
     }
 
     // Allow bubbling back to other change event listeners
@@ -207,19 +207,19 @@ export default class Select {
     } as Option
   }
 
-  public getSelectedValues(): string[] {
-    let values = []
+  public getSelectedOptions(): Option[] {
+    let options = []
 
     // Loop through options and set selected
-    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
-    for (const o of options) {
+    const opts = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of opts) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroupOptions = o.childNodes as any as HTMLOptionElement[]
         for (const oo of optgroupOptions) {
           if (oo.nodeName === 'OPTION') {
             const option = oo as HTMLOptionElement
             if (option.selected) {
-              values.push(option.value)
+              options.push(this.getDataFromOption(option))
             }
           }
         }
@@ -228,15 +228,19 @@ export default class Select {
       if (o.nodeName === 'OPTION') {
         const option = o as HTMLOptionElement
         if (option.selected) {
-          values.push(option.value)
+          options.push(this.getDataFromOption(option))
         }
       }
     }
 
-    return values
+    return options
   }
 
-  public setSelected(value: string[]): void {
+  public getSelectedValues(): string[] {
+    return this.getSelectedOptions().map((option) => option.value)
+  }
+
+  public setSelected(ids: string[]): void {
     // Stop listening to changes
     this.changeListen(false)
 
@@ -249,14 +253,14 @@ export default class Select {
         for (const oo of optgroupOptions) {
           if (oo.nodeName === 'OPTION') {
             const option = oo as HTMLOptionElement
-            option.selected = value.includes(option.value)
+            option.selected = ids.includes(option.id)
           }
         }
       }
 
       if (o.nodeName === 'OPTION') {
         const option = o as HTMLOptionElement
-        option.selected = value.includes(option.value)
+        option.selected = ids.includes(option.id)
       }
     }
 
