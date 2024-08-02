@@ -17,9 +17,8 @@
     "importHelpers": true,
     "lib": ["esnext", "dom"],
     "paths": {
-      "slim-select": ["src/slim-select"],
-      "@slim-select/vue": ["src/vue"]
+      "slim-select": ["src/slim-select"]
     }
   },
-  "include": ["dist/", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/react/src/index.tsx"]
+  "include": ["dist/", "src/**/*.ts", "src/**/*.d.ts"]
 }
