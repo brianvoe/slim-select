@@ -1,6 +1,4 @@
 node_modules/
-src/vue/node_modules/
-src/react/node_modules/
 .vscode/
 .github/
 

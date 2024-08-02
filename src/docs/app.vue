@@ -125,7 +125,6 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'vue', value: 'vue' },
-            { text: 'react', value: 'react' },
           ],
         },
       ] as DataArray,

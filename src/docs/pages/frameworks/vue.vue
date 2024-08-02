@@ -1,14 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-
-// We need to import from the root of the package
-// Because if we use @slim-select/vue then we loose
-// hot reloading of the file changes
-import SlimSelectJS from '../../../slim-select'
-import SlimSelect from '../../../vue/slimselect.vue'
+import { defineComponent } from 'vue'
+import SlimSelectJS, { Events } from '../../../slim-select'
 import Settings from '../../../slim-select/settings'
 import { Option, OptionOptional } from '../../../slim-select/store'
-import { Events } from '../../../slim-select'
+import SlimSelect from '../../../slim-select/vue.vue'
 
 export default defineComponent({
   name: 'Vue',
@@ -86,14 +81,11 @@ export default defineComponent({
 
     <h3>Install</h3>
     <p>
-      The vue component is in a sub package under SlimSelect. All functionality still work in the implementation. I have
-      also added a v-model bind capability to it as well.
+      Slim Select doesnt have a package to import(anymore) due to its requirements of maintianing it within the repository. 
+      But we have provided a set of code you can add to your own project to get it working.
     </p>
-    <pre>
-      <code class="language-bash">
-        npm install @slim-select/vue
-      </code>
-    </pre>
+    <a href="https://github.com/slim-select/tree/master/src/slim-select/vue.vue">Download Component Here</a>
+    <br />
     <br />
 
     <h3>Simple example</h3>
@@ -122,7 +114,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
+        import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
         export default defineComponent({
           components: {
@@ -181,7 +173,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
+        import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
         export default defineComponent({
           components: {
@@ -236,7 +228,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
+        import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
         export default defineComponent({
           components: {
@@ -291,7 +283,7 @@ export default defineComponent({
     <pre>
       <code class="language-javascript">
         import { defineComponent } from 'vue'
-        import SlimSelect from '@slim-select/vue'
+        import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
         export default defineComponent({
           components: {
