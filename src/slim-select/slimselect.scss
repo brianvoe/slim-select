@@ -469,8 +469,9 @@
     }
 
     .ss-option {
-      display: flex;
+      display: block; // Important for text with mark element highlight
       padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
+      white-space: normal;
       color: var(--ss-font-color);
       cursor: pointer;
       user-select: none;
@@ -497,6 +498,7 @@
 
       // Sub div wrapper for highlighting text
       .ss-search-highlight {
+        display: inline-block;
         background-color: var(--ss-highlight-color);
       }
     }
