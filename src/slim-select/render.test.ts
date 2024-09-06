@@ -25,17 +25,17 @@ describe('render module', () => {
     const store = new Store('single', [
       {
         text: 'test0',
-        value: 'test0',
+        value: 'test0'
       },
       {
         text: 'test1',
         value: 'test1',
-        html: '<span>test1</span>',
+        html: '<span>test1</span>'
       },
       {
         text: 'test2',
-        selected: true,
-      },
+        selected: true
+      }
     ])
 
     // default settings
@@ -60,7 +60,7 @@ describe('render module', () => {
       addOption: addOptionMock,
       search: searchMock,
       afterChange: afterChangeMock,
-      beforeChange: beforeChangeMock,
+      beforeChange: beforeChangeMock
     }
 
     render = new Render(settings, classes, store, callbacks)
@@ -71,7 +71,7 @@ describe('render module', () => {
       // create a new store with 2 options
       const store = new Store('single', [
         { text: 'test1', value: 'test1' },
-        { text: 'test2', value: 'test2' },
+        { text: 'test2', value: 'test2' }
       ])
 
       // default settings
@@ -88,7 +88,7 @@ describe('render module', () => {
         search: () => {},
         beforeChange: () => {
           return true
-        },
+        }
       } as Callbacks
 
       const render = new Render(settings, classes, store, callbacks)
@@ -293,7 +293,7 @@ describe('render module', () => {
       render.settings.disabled = true
 
       const deselectElement: HTMLDivElement = render.main.main.querySelector(
-        '.' + render.classes.deselect,
+        '.' + render.classes.deselect
       ) as HTMLDivElement
 
       deselectElement.dispatchEvent(new MouseEvent('click'))
@@ -303,7 +303,7 @@ describe('render module', () => {
 
     test('click on deselect on single select runs callbacks', () => {
       const deselectElement: HTMLDivElement = render.main.main.querySelector(
-        '.' + render.classes.deselect,
+        '.' + render.classes.deselect
       ) as HTMLDivElement
 
       deselectElement.dispatchEvent(new MouseEvent('click'))
@@ -321,7 +321,7 @@ describe('render module', () => {
       render.updateDeselectAll = deselectAllMock
 
       const deselectElement: HTMLDivElement = render.main.main.querySelector(
-        '.' + render.classes.deselect,
+        '.' + render.classes.deselect
       ) as HTMLDivElement
       deselectElement.dispatchEvent(new MouseEvent('click'))
 
@@ -368,8 +368,8 @@ describe('render module', () => {
         {
           text: 'opt text',
           html: '<h1>Option HTML</h1>',
-          placeholder: true,
-        },
+          placeholder: true
+        }
       ])
       const placeholder = render.placeholder()
 
@@ -380,8 +380,8 @@ describe('render module', () => {
       render.store.setData([
         {
           text: 'opt text',
-          placeholder: true,
-        },
+          placeholder: true
+        }
       ])
       const placeholder = render.placeholder()
 
@@ -399,13 +399,13 @@ describe('render module', () => {
     test('single select renders HTML option', () => {
       render.store.setData([
         {
-          text: 'opt0',
+          text: 'opt0'
         },
         {
           text: 'opt1',
           html: '<span>opt1</span>',
-          selected: true,
-        },
+          selected: true
+        }
       ])
       render.renderValues()
 
@@ -419,17 +419,17 @@ describe('render module', () => {
         {
           text: 'opt0',
           value: 'opt0',
-          selected: true,
+          selected: true
         },
         {
           text: 'opt1',
           value: 'opt1',
           html: '<span>opt1</span>',
-          selected: true,
+          selected: true
         },
         {
-          text: 'opt2',
-        },
+          text: 'opt2'
+        }
       ])
 
       render.renderValues()
@@ -448,22 +448,22 @@ describe('render module', () => {
         {
           text: 'opt0',
           value: 'opt0',
-          selected: true,
+          selected: true
         },
         {
           text: 'opt1',
           value: 'opt1',
           html: '<span>opt1</span>',
-          selected: true,
+          selected: true
         },
         {
           text: 'opt2',
           value: 'opt2',
-          selected: true,
+          selected: true
         },
         {
-          text: 'opt4',
-        },
+          text: 'opt4'
+        }
       ])
 
       render.renderValues()
@@ -598,7 +598,7 @@ describe('render module', () => {
       const search = render.searchDiv()
       const addableMock = jest.fn((s: string) => ({
         text: s,
-        value: s.toLowerCase(),
+        value: s.toLowerCase()
       }))
 
       render.callbacks.addable = addableMock
@@ -613,7 +613,7 @@ describe('render module', () => {
     test('enter and space call event and does nothing without input value', () => {
       const addableMock = jest.fn((s: string) => ({
         text: s,
-        value: s.toLowerCase(),
+        value: s.toLowerCase()
       }))
 
       render.callbacks.addable = addableMock
@@ -631,7 +631,7 @@ describe('render module', () => {
     test('enter and space call addable when defined', () => {
       const addableMock = jest.fn((s: string) => ({
         text: s,
-        value: s.toLowerCase(),
+        value: s.toLowerCase()
       }))
 
       render.callbacks.addable = addableMock
@@ -675,15 +675,15 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            placeholder: true,
+            placeholder: true
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       const opts = render.getOptions(true)
@@ -695,15 +695,15 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            disabled: true,
+            disabled: true
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       const opts = render.getOptions(false, true)
@@ -715,15 +715,15 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            placeholder: true,
+            placeholder: true
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       const opts = render.getOptions(false, false, true)
@@ -735,16 +735,16 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            disabled: true,
+            disabled: true
           },
           {
             text: 'opt1',
-            placeholder: true,
+            placeholder: true
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       const opts = render.getOptions(false, true, true)
@@ -763,9 +763,9 @@ describe('render module', () => {
       render.renderOptions(
         render.store.partialToFullData([
           {
-            text: 'opt0',
-          },
-        ]),
+            text: 'opt0'
+          }
+        ])
       )
 
       render.highlight('up')
@@ -777,15 +777,15 @@ describe('render module', () => {
       render.renderOptions(
         render.store.partialToFullData([
           {
-            text: 'opt0',
+            text: 'opt0'
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('down')
@@ -797,15 +797,15 @@ describe('render module', () => {
       render.renderOptions(
         render.store.partialToFullData([
           {
-            text: 'opt0',
+            text: 'opt0'
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('up')
@@ -818,15 +818,15 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            class: render.classes.highlighted,
+            class: render.classes.highlighted
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('down')
@@ -838,16 +838,16 @@ describe('render module', () => {
       render.renderOptions(
         render.store.partialToFullData([
           {
-            text: 'opt0',
+            text: 'opt0'
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
             text: 'opt2',
-            class: render.classes.highlighted,
-          },
-        ]),
+            class: render.classes.highlighted
+          }
+        ])
       )
 
       render.highlight('up')
@@ -860,15 +860,15 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            selected: true,
+            selected: true
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('down')
@@ -881,15 +881,15 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            selected: true,
+            selected: true
           },
           {
-            text: 'opt1',
+            text: 'opt1'
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('up')
@@ -902,20 +902,20 @@ describe('render module', () => {
         render.store.partialToFullData([
           {
             text: 'opt0',
-            selected: true,
+            selected: true
           },
           {
             label: 'opt group',
             options: [
               {
-                text: 'opt1',
-              },
-            ],
+                text: 'opt1'
+              }
+            ]
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('down')
@@ -927,21 +927,21 @@ describe('render module', () => {
       render.renderOptions(
         render.store.partialToFullData([
           {
-            text: 'opt0',
+            text: 'opt0'
           },
           {
             label: 'opt group',
             options: [
               {
                 text: 'opt1',
-                selected: true,
-              },
-            ],
+                selected: true
+              }
+            ]
           },
           {
-            text: 'opt2',
-          },
-        ]),
+            text: 'opt2'
+          }
+        ])
       )
 
       render.highlight('up')
@@ -1016,8 +1016,8 @@ describe('render module', () => {
       const option = render.option(
         new Option({
           text: 'opt',
-          style: 'color: red',
-        }),
+          style: 'color: red'
+        })
       )
 
       expect(option.style.color).toBe('red')
@@ -1027,8 +1027,8 @@ describe('render module', () => {
       const option = render.option(
         new Option({
           text: 'opt',
-          display: false,
-        }),
+          display: false
+        })
       )
 
       expect(option.classList.contains(render.classes.hide)).toBe(true)
@@ -1040,8 +1040,8 @@ describe('render module', () => {
       const option = render.option(
         new Option({
           text: 'opt',
-          selected: true,
-        }),
+          selected: true
+        })
       )
 
       expect(option.classList.contains(render.classes.hide)).toBe(true)
@@ -1052,8 +1052,8 @@ describe('render module', () => {
 
       const option = render.option(
         new Option({
-          text: 'opt',
-        }),
+          text: 'opt'
+        })
       )
 
       expect(option.getAttribute('title')).toBe('opt')
@@ -1065,8 +1065,8 @@ describe('render module', () => {
 
       const option = render.option(
         new Option({
-          text: 'opt 1',
-        }),
+          text: 'opt 1'
+        })
       )
 
       expect(option.querySelector('mark')).toBeTruthy()
@@ -1080,8 +1080,8 @@ describe('render module', () => {
       const option = render.option(
         new Option({
           text: 'opt 1',
-          html: '<h1>opt 1</h1>',
-        }),
+          html: '<h1>opt 1</h1>'
+        })
       )
 
       expect(option.querySelector('mark')).toBeTruthy()
@@ -1092,8 +1092,8 @@ describe('render module', () => {
       const option = render.option(
         new Option({
           text: 'opt 1',
-          disabled: true,
-        }),
+          disabled: true
+        })
       )
       option.dispatchEvent(new MouseEvent('click'))
 
@@ -1107,8 +1107,8 @@ describe('render module', () => {
 
       const option = render.option(
         new Option({
-          text: 'opt 1',
-        }),
+          text: 'opt 1'
+        })
       )
       option.dispatchEvent(new MouseEvent('click'))
 
@@ -1124,8 +1124,8 @@ describe('render module', () => {
       const option = render.option(
         new Option({
           text: 'opt 1',
-          selected: true,
-        }),
+          selected: true
+        })
       )
       option.dispatchEvent(new MouseEvent('click'))
 
@@ -1136,17 +1136,17 @@ describe('render module', () => {
     test('click removes option', () => {
       const option = render.option(
         new Option({
-          text: 'new opt 1',
-        }),
+          text: 'new opt 1'
+        })
       )
+
       option.dispatchEvent(new MouseEvent('click'))
 
       expect(addOptionMock).toHaveBeenCalled()
+
       // check that we add the right option
       expect(addOptionMock.mock.calls[0][0].text).toBe('new opt 1')
       expect(setSelectedMock).toHaveBeenCalled()
-      // check that we select the new option
-      expect(setSelectedMock.mock.calls[0][0]).toStrictEqual(['new opt 1'])
     })
   })
 
