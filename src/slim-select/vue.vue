@@ -49,7 +49,7 @@ export default defineComponent({
     }
 
     // If events are passed in, use it
-    config.events = this.events || {}
+    config.events = (this.events || {}) as Events
 
     // Wrap config.events.afterChange to run value update
     const ogAfterChange = config.events.afterChange
