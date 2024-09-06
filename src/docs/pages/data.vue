@@ -11,12 +11,12 @@ export default defineComponent({
       data: [
         {
           placeholder: true,
-          text: 'data placeholder',
+          text: 'data placeholder'
         },
         { text: 'Cat' },
         { text: 'Dog' },
-        { text: 'Bird' },
-      ],
+        { text: 'Bird' }
+      ]
     })
 
     new SlimSelect({
@@ -24,16 +24,16 @@ export default defineComponent({
       data: [
         {
           placeholder: true,
-          text: 'data placeholder',
+          text: 'data placeholder'
         },
         { text: 'Human' },
         {
           label: 'Animals',
-          options: [{ text: 'Cat' }, { text: 'Dog' }, { text: 'Bird' }],
-        },
-      ],
+          options: [{ text: 'Cat' }, { text: 'Dog' }, { text: 'Bird' }]
+        }
+      ]
     })
-  },
+  }
 })
 </script>
 

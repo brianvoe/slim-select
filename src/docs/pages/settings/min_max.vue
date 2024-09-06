@@ -12,15 +12,15 @@ export default defineComponent({
         allowDeselect: true,
         closeOnSelect: false,
         minSelected: 2,
-        maxSelected: 5,
+        maxSelected: 5
       },
       events: {
         addable: (value: string): string => {
           return value
-        },
-      },
+        }
+      }
     })
-  },
+  }
 })
 </script>
 

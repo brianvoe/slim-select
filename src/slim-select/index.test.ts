@@ -16,7 +16,7 @@ describe('SlimSelect Module', () => {
     document.body.innerHTML = '<select id="test"></select>'
 
     slim = new SlimSelect({
-      select: '#test',
+      select: '#test'
     })
   })
 
@@ -49,7 +49,7 @@ describe('SlimSelect Module', () => {
       document.body.innerHTML = '<select id="test"></select>'
 
       const slimSelect = new SlimSelect({
-        select: '#test',
+        select: '#test'
       })
 
       expect(slimSelect).toBeInstanceOf(SlimSelect)
@@ -59,7 +59,7 @@ describe('SlimSelect Module', () => {
       document.body.innerHTML = '<select id="test"></select>'
 
       const slimSelect = new SlimSelect({
-        select: document.getElementById('test') as Element,
+        select: document.getElementById('test') as Element
       })
 
       expect(slimSelect).toBeInstanceOf(SlimSelect)
@@ -71,8 +71,8 @@ describe('SlimSelect Module', () => {
       const slim = new SlimSelect({
         select: document.getElementById('test') as Element,
         settings: {
-          disabled: true,
-        },
+          disabled: true
+        }
       })
 
       expect(slim.settings.disabled).toBe(true)
@@ -123,25 +123,25 @@ describe('SlimSelect Module', () => {
       {
         id: '1',
         value: '1',
-        text: 'One',
+        text: 'One'
       },
       {
         id: '2',
         value: '2',
-        text: 'Two',
+        text: 'Two'
       },
       {
         id: '3',
         value: '3',
-        text: 'Three',
-      },
+        text: 'Three'
+      }
     ]
     const config: Config = {
       select: '#test',
       settings: {
-        allowDeselect: true,
+        allowDeselect: true
       },
-      data: options,
+      data: options
     }
 
     let slimSelect = new SlimSelect(config)
@@ -162,26 +162,26 @@ describe('SlimSelect Module', () => {
         id: '1',
         value: '1',
         text: 'One',
-        selected: true,
+        selected: true
       },
       {
         id: '2',
         value: '2',
         text: 'Two',
-        selected: true,
+        selected: true
       },
       {
         id: '3',
         value: '3',
-        text: 'Three',
-      },
+        text: 'Three'
+      }
     ]
     const config: Config = {
       select: '#test',
       settings: {
-        allowDeselect: true,
+        allowDeselect: true
       },
-      data: options,
+      data: options
     }
 
     let slimSelect = new SlimSelect(config)

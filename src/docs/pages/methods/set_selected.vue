@@ -8,15 +8,15 @@ export default defineComponent({
   data() {
     return {
       selectedSingle: null as SlimSelect | null,
-      selectedMultiple: null as SlimSelect | null,
+      selectedMultiple: null as SlimSelect | null
     }
   },
   mounted() {
     this.selectedSingle = new SlimSelect({
-      select: this.$refs.selectedSingle as HTMLSelectElement,
+      select: this.$refs.selectedSingle as HTMLSelectElement
     })
     this.selectedMultiple = new SlimSelect({
-      select: this.$refs.selectedMultiple as HTMLSelectElement,
+      select: this.$refs.selectedMultiple as HTMLSelectElement
     })
   },
   methods: {
@@ -30,8 +30,8 @@ export default defineComponent({
         this.selectedSingle!.close()
         this.selectedMultiple!.close()
       }, 1000)
-    },
-  },
+    }
+  }
 })
 </script>
 
@@ -40,7 +40,10 @@ export default defineComponent({
     <h2 class="header">setSelected</h2>
     <p>The setSelected method will set the selected value(s) of the select.</p>
     <p>setSelected will accept both string or array of strings.</p>
-    <p>setSelected also takes in a second optional boolean param in the event you dont want to trigger the afterChange callback</p>
+    <p>
+      setSelected also takes in a second optional boolean param in the event you dont want to trigger the afterChange
+      callback
+    </p>
 
     <div class="row">
       <div class="btn" @click="setSelected">Set Selected</div>

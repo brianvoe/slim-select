@@ -8,7 +8,7 @@ export default defineComponent({
   data() {
     return {
       destroySingle: null as SlimSelect | null,
-      destroyMultiple: null as SlimSelect | null,
+      destroyMultiple: null as SlimSelect | null
     }
   },
   mounted() {
@@ -17,11 +17,11 @@ export default defineComponent({
   methods: {
     create() {
       this.destroySingle = new SlimSelect({
-        select: this.$refs.destroySingle as HTMLSelectElement,
+        select: this.$refs.destroySingle as HTMLSelectElement
       })
 
       this.destroyMultiple = new SlimSelect({
-        select: this.$refs.destroyMultiple as HTMLSelectElement,
+        select: this.$refs.destroyMultiple as HTMLSelectElement
       })
     },
     destroy() {
@@ -29,8 +29,8 @@ export default defineComponent({
       this.destroySingle = null
       this.destroyMultiple!.destroy()
       this.destroyMultiple = null
-    },
-  },
+    }
+  }
 })
 </script>
 

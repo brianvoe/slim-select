@@ -8,15 +8,15 @@ export default defineComponent({
   setup() {
     return {
       searchSingle: null as SlimSelect | null,
-      searchMultiple: null as SlimSelect | null,
+      searchMultiple: null as SlimSelect | null
     }
   },
   mounted() {
     this.searchSingle = new SlimSelect({
-      select: this.$refs.searchSingle as HTMLSelectElement,
+      select: this.$refs.searchSingle as HTMLSelectElement
     })
     this.searchMultiple = new SlimSelect({
-      select: this.$refs.searchMultiple as HTMLSelectElement,
+      select: this.$refs.searchMultiple as HTMLSelectElement
     })
   },
   methods: {
@@ -26,8 +26,8 @@ export default defineComponent({
 
       this.searchMultiple!.open()
       this.searchMultiple!.search('value 2')
-    },
-  },
+    }
+  }
 })
 </script>
 

@@ -10,13 +10,13 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.disabledSingle as HTMLSelectElement,
       settings: {
-        disabled: true,
-      },
+        disabled: true
+      }
     })
 
     // Disable via disabled html attribute
     new SlimSelect({
-      select: this.$refs.disabledMultiple as HTMLSelectElement,
+      select: this.$refs.disabledMultiple as HTMLSelectElement
     })
 
     // Disable option via data
@@ -25,18 +25,18 @@ export default defineComponent({
       data: [
         { text: 'Option 1', value: 'option1' },
         { text: 'Option 2', value: 'option2', disabled: true },
-        { text: 'Option 3', value: 'option3' },
-      ],
+        { text: 'Option 3', value: 'option3' }
+      ]
     })
 
     // Disable via disabled html attribute
     new SlimSelect({
-      select: this.$refs.disabledOptionMultiple as HTMLSelectElement,
+      select: this.$refs.disabledOptionMultiple as HTMLSelectElement
     })
 
     // Disable via disabled html attribute
     const dynamic = new SlimSelect({
-      select: this.$refs.disabledDynamicSingle as HTMLSelectElement,
+      select: this.$refs.disabledDynamicSingle as HTMLSelectElement
     })
 
     // Show the original select for disabledDynamicMultiple
@@ -49,8 +49,8 @@ export default defineComponent({
       if (dis) {
         dis.disabled = !dis.disabled
       }
-    },
-  },
+    }
+  }
 })
 </script>
 

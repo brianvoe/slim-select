@@ -10,23 +10,23 @@ export default defineComponent({
       selectedSingle: null as SlimSelect | null,
       selectedSingleValue: [] as string[],
       selectedMultiple: null as SlimSelect | null,
-      selectedMultipleValue: [] as string[],
+      selectedMultipleValue: [] as string[]
     }
   },
   mounted() {
     this.selectedSingle = new SlimSelect({
-      select: this.$refs.selectedSingle as HTMLSelectElement,
+      select: this.$refs.selectedSingle as HTMLSelectElement
     })
     this.selectedMultiple = new SlimSelect({
-      select: this.$refs.selectedMultiple as HTMLSelectElement,
+      select: this.$refs.selectedMultiple as HTMLSelectElement
     })
   },
   methods: {
     getSelected() {
       this.selectedSingleValue = this.selectedSingle!.getSelected()
       this.selectedMultipleValue = this.selectedMultiple!.getSelected()
-    },
-  },
+    }
+  }
 })
 </script>
 

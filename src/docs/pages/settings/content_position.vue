@@ -10,17 +10,17 @@ export default defineComponent({
       select: this.$refs.contentPositionRelative as HTMLSelectElement,
       settings: {
         contentPosition: 'relative',
-        contentLocation: this.$refs.contentPositionRelativeContent as HTMLElement,
-      },
+        contentLocation: this.$refs.contentPositionRelativeContent as HTMLElement
+      }
     })
 
     new SlimSelect({
       select: this.$refs.contentPositionAbsolute as HTMLSelectElement,
       settings: {
-        contentPosition: 'absolute',
-      },
+        contentPosition: 'absolute'
+      }
     })
-  },
+  }
 })
 </script>
 

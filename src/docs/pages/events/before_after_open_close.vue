@@ -10,7 +10,7 @@ export default defineComponent({
       beforeAfterOpenCloseSingle: null as SlimSelect | null,
       singleState: '',
       beforeAfterOpenCloseMultiple: null as SlimSelect | null,
-      multipleState: '',
+      multipleState: ''
     }
   },
   mounted() {
@@ -32,8 +32,8 @@ export default defineComponent({
         afterClose: () => {
           console.log('after close')
           this.setState('single', 'afterClose')
-        },
-      },
+        }
+      }
     })
 
     this.beforeAfterOpenCloseMultiple = new SlimSelect({
@@ -54,8 +54,8 @@ export default defineComponent({
         afterClose: () => {
           console.log('after close')
           this.setState('multiple', 'afterClose')
-        },
-      },
+        }
+      }
     })
   },
   methods: {
@@ -74,8 +74,8 @@ export default defineComponent({
           this.multipleState = ''
         }
       }, 1000)
-    },
-  },
+    }
+  }
 })
 </script>
 

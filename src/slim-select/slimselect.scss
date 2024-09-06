@@ -247,7 +247,9 @@
   box-sizing: border-box;
   border: solid 1px var(--ss-border-color);
   background-color: var(--ss-bg-color);
-  transition: transform var(--ss-animation-timing), opacity var(--ss-animation-timing);
+  transition:
+    transform var(--ss-animation-timing),
+    opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
   transform-origin: center top;

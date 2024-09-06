@@ -1,7 +1,7 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select';
+import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'KeepOrder',
@@ -9,10 +9,10 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.keepOrder as HTMLSelectElement,
       settings: {
-        keepOrder: true,
-      },
+        keepOrder: true
+      }
     })
-  },
+  }
 })
 </script>
 
@@ -20,9 +20,9 @@ export default defineComponent({
   <div id="keepOrder" class="content">
     <h2 class="header">keepOrder</h2>
     <p>
-      keepOrder if true will maintain the order in which options are selected.
-      If true the selected options order will be in the order of the dropdown options.
-      As long as slim select isnt fully rerendered the order will be maintained.
+      keepOrder if true will maintain the order in which options are selected. If true the selected options order will
+      be in the order of the dropdown options. As long as slim select isnt fully rerendered the order will be
+      maintained.
     </p>
     <p>Values: <strong>true</strong> | <strong>false</strong></p>
     <p>Default: <strong>false</strong></p>

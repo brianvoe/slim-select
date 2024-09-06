@@ -10,13 +10,13 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.searchFilterSingle as HTMLSelectElement,
       settings: {
-        searchHighlight: true,
+        searchHighlight: true
       },
       events: {
         searchFilter: (option: Option, search: string) => {
           return option.text.toLowerCase().includes(search.toLowerCase())
-        },
-      },
+        }
+      }
     })
 
     new SlimSelect({
@@ -28,44 +28,44 @@ export default defineComponent({
           options: [
             { text: 'Apple', value: 'apple' },
             { text: 'Banana', value: 'banana' },
-            { text: 'Orange', value: 'orange' },
-          ],
+            { text: 'Orange', value: 'orange' }
+          ]
         },
         {
           label: 'Vegetables',
           options: [
             { text: 'Carrot', value: 'carrot' },
             { text: 'Potato', value: 'potato' },
-            { text: 'Tomato', value: 'tomato' },
-          ],
+            { text: 'Tomato', value: 'tomato' }
+          ]
         },
         {
           label: 'Meats',
           options: [
             { text: 'Beef', value: 'beef' },
             { text: 'Chicken', value: 'chicken' },
-            { text: 'Pork', value: 'pork' },
-          ],
+            { text: 'Pork', value: 'pork' }
+          ]
         },
         {
           label: 'Seafood',
           options: [
             { text: 'Crab', value: 'crab' },
             { text: 'Lobster', value: 'lobster' },
-            { text: 'Shrimp', value: 'shrimp' },
-          ],
-        },
+            { text: 'Shrimp', value: 'shrimp' }
+          ]
+        }
       ],
       settings: {
-        searchHighlight: true,
+        searchHighlight: true
       },
       events: {
         searchFilter: (option: Option, search: string) => {
           return option.text.toLowerCase().includes(search.toLowerCase())
-        },
-      },
+        }
+      }
     })
-  },
+  }
 })
 </script>
 

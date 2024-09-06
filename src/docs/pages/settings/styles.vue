@@ -8,7 +8,7 @@ export default defineComponent({
   mounted() {
     new SlimSelect({ select: this.$refs.selectStyle as HTMLSelectElement })
     new SlimSelect({ select: this.$refs.optionStyle as HTMLSelectElement })
-  },
+  }
 })
 </script>
 

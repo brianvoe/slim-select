@@ -8,7 +8,7 @@ import SlimSelect from '../../../slim-select/vue.vue'
 export default defineComponent({
   name: 'Vue',
   components: {
-    SlimSelect,
+    SlimSelect
   },
   data() {
     return {
@@ -18,23 +18,23 @@ export default defineComponent({
 
       // Misc
       settings: {
-        showSearch: false,
+        showSearch: false
       } as Settings,
       data: [
         { value: 'value1', text: 'Value 1' },
         { value: 'value2', text: 'Value 2' },
-        { value: 'value3', text: 'Value 3' },
+        { value: 'value3', text: 'Value 3' }
       ],
       afterChangeData: [] as OptionOptional[],
       events: {
-        afterChange: this.afterChange,
+        afterChange: this.afterChange
       } as Events,
 
       // Dealing with disabled
       isDisabled: false,
 
       // Dealing with class attribute
-      errorClass: '',
+      errorClass: ''
     }
   },
   mounted() {
@@ -64,14 +64,14 @@ export default defineComponent({
         this.data = [
           { value: 'value4', text: 'Value 4' },
           { value: 'value5', text: 'Value 5' },
-          { value: 'value6', text: 'Value 6' },
+          { value: 'value6', text: 'Value 6' }
         ]
       }, 500)
     },
     afterChange(newVal: Option[]) {
       this.afterChangeData = newVal
-    },
-  },
+    }
+  }
 })
 </script>
 
@@ -81,8 +81,8 @@ export default defineComponent({
 
     <h3>Install</h3>
     <p>
-      Slim Select doesnt have a package to import(anymore) due to its requirements of maintianing it within the repository. 
-      But we have provided a set of code you can add to your own project to get it working.
+      Slim Select doesnt have a package to import(anymore) due to its requirements of maintianing it within the
+      repository. But we have provided a set of code you can add to your own project to get it working.
     </p>
     <a href="https://github.com/slim-select/tree/master/src/slim-select/vue.vue">Download Component Here</a>
     <br />

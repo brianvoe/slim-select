@@ -11,8 +11,8 @@ export default defineComponent({
       settings: {
         alwaysOpen: true,
         contentLocation: this.$refs.alwaysOpenSingleContent as HTMLElement,
-        contentPosition: 'relative',
-      },
+        contentPosition: 'relative'
+      }
     })
 
     new SlimSelect({
@@ -20,10 +20,10 @@ export default defineComponent({
       settings: {
         alwaysOpen: true,
         contentLocation: this.$refs.alwaysOpenMultipleContent as HTMLElement,
-        contentPosition: 'relative',
-      },
+        contentPosition: 'relative'
+      }
     })
-  },
+  }
 })
 </script>
 

@@ -8,15 +8,15 @@ export default defineComponent({
   data() {
     return {
       setEnableSingle: null as SlimSelect | null,
-      setEnableMultiple: null as SlimSelect | null,
+      setEnableMultiple: null as SlimSelect | null
     }
   },
   mounted() {
     this.setEnableSingle = new SlimSelect({
-      select: this.$refs.setEnableSingle as HTMLSelectElement,
+      select: this.$refs.setEnableSingle as HTMLSelectElement
     })
     this.setEnableMultiple = new SlimSelect({
-      select: this.$refs.setEnableMultiple as HTMLSelectElement,
+      select: this.$refs.setEnableMultiple as HTMLSelectElement
     })
   },
   methods: {
@@ -27,8 +27,8 @@ export default defineComponent({
     setDisable() {
       this.setEnableSingle!.disable()
       this.setEnableMultiple!.disable()
-    },
-  },
+    }
+  }
 })
 </script>
 

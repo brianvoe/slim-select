@@ -10,8 +10,8 @@ export default defineComponent({
     },
     downloadCss() {
       download(`https://unpkg.com/slim-select@latest/dist/slimselect.css`)
-    },
-  },
+    }
+  }
 })
 </script>
 

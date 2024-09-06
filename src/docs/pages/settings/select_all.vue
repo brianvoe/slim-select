@@ -1,15 +1,15 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select';
+import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'SelectAll',
   mounted() {
     new SlimSelect({
-      select: this.$refs.selectAll as HTMLSelectElement,
+      select: this.$refs.selectAll as HTMLSelectElement
     })
-  },
+  }
 })
 </script>
 
@@ -22,7 +22,9 @@ export default defineComponent({
       not set at all, no select all action will be added to the optgroup.
     </p>
     <p>selectAllText is a setting that can be used to change the text of the select all optgroup.</p>
-    <div class="alert info">You can set selectAll/selectAllText either by data or by html dataset added to the optgroup element</div>
+    <div class="alert info">
+      You can set selectAll/selectAllText either by data or by html dataset added to the optgroup element
+    </div>
 
     <select ref="selectAll" multiple>
       <optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!">

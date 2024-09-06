@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Select',
+  name: 'Select'
 })
 </script>
 

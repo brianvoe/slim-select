@@ -46,6 +46,7 @@
     "build:library": "npm run build:library:js && npm run build:library:css",
     "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
     "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
+    "lint": "prettier --write ./src/**/*",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },

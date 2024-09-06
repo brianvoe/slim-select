@@ -9,18 +9,18 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.closeOnSelectSingle as HTMLSelectElement,
       settings: {
-        closeOnSelect: false,
-      },
+        closeOnSelect: false
+      }
     })
 
     new SlimSelect({
       select: this.$refs.closeOnSelectMultiple as HTMLSelectElement,
       settings: {
         closeOnSelect: false,
-        selectByGroup: true,
-      },
+        selectByGroup: true
+      }
     })
-  },
+  }
 })
 </script>
 

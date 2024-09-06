@@ -10,7 +10,7 @@ import CarbonAd from './components/carbonad.vue'
 export default defineComponent({
   name: 'App',
   components: {
-    CarbonAd,
+    CarbonAd
   },
   data() {
     return {
@@ -32,8 +32,8 @@ export default defineComponent({
           options: [
             { text: 'npm', value: 'install#npm' },
             { text: 'cdn', value: 'install#cdn' },
-            { text: 'download', value: 'install#download' },
-          ],
+            { text: 'download', value: 'install#download' }
+          ]
         },
 
         // Select
@@ -42,8 +42,8 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'single', value: 'selects#single' },
-            { text: 'multiple', value: 'selects#multiple' },
-          ],
+            { text: 'multiple', value: 'selects#multiple' }
+          ]
         },
 
         // Data
@@ -52,8 +52,8 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'types', value: 'data#types' },
-            { text: 'field', value: 'data#field' },
-          ],
+            { text: 'field', value: 'data#field' }
+          ]
         },
 
         // Settings
@@ -84,8 +84,8 @@ export default defineComponent({
             { text: 'showOptionTooltips', value: 'settings#showOptionTooltips' },
             { text: 'closable', value: 'settings#closable' },
             { text: 'hideSelected', value: 'settings#hideSelected' },
-            { text: 'maxValuesShown', value: 'settings#maxValuesShown' },
-          ],
+            { text: 'maxValuesShown', value: 'settings#maxValuesShown' }
+          ]
         },
 
         // Events
@@ -99,8 +99,8 @@ export default defineComponent({
             { text: 'open', value: 'events#open' },
             { text: 'search', value: 'events#search' },
             { text: 'searchFilter', value: 'events#searchFilter' },
-            { text: 'addable', value: 'events#addable' },
-          ],
+            { text: 'addable', value: 'events#addable' }
+          ]
         },
 
         // Methods
@@ -115,19 +115,17 @@ export default defineComponent({
             { text: 'enableDisable', value: 'methods#enableDisable' },
             { text: 'openClose', value: 'methods#openClose' },
             { text: 'search', value: 'methods#search' },
-            { text: 'destroy', value: 'methods#destroy' },
-          ],
+            { text: 'destroy', value: 'methods#destroy' }
+          ]
         },
 
         // Frameworks
         {
           label: 'Frameworks',
           closable: 'close',
-          options: [
-            { text: 'vue', value: 'vue' },
-          ],
-        },
-      ] as DataArray,
+          options: [{ text: 'vue', value: 'vue' }]
+        }
+      ] as DataArray
     }
   },
   mounted() {
@@ -158,7 +156,7 @@ export default defineComponent({
         if (hash === '') {
           window.scroll({
             top: 0,
-            behavior: 'smooth',
+            behavior: 'smooth'
           })
         }
 
@@ -173,7 +171,7 @@ export default defineComponent({
 
             window.scroll({
               top: el.offsetTop - headerHeight, // header height + padding
-              behavior: 'smooth',
+              behavior: 'smooth'
             })
           }
         }
@@ -193,7 +191,7 @@ export default defineComponent({
   watch: {
     width() {
       this.runNav()
-    },
+    }
   },
   methods: {
     setDemensions(): void {
@@ -208,7 +206,7 @@ export default defineComponent({
 
       let settings = {
         searchHighlight: true,
-        openContent: 'below',
+        openContent: 'below'
       } as Partial<Settings>
 
       if (this.width > 700) {
@@ -228,8 +226,8 @@ export default defineComponent({
             const val = split[0]
             const hash = split[1] ? '#' + split[1] : undefined
             this.$router.push({ path: val, hash: hash })
-          },
-        },
+          }
+        }
       })
     },
     updateNav() {
@@ -238,8 +236,8 @@ export default defineComponent({
           this.nav.setSelected(this.$router.currentRoute.value.fullPath.replace('/', ''))
         }
       }, 0)
-    },
-  },
+    }
+  }
 })
 </script>
 

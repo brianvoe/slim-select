@@ -48,7 +48,7 @@ export default class SlimSelect {
     beforeOpen: undefined,
     afterOpen: undefined,
     beforeClose: undefined,
-    afterClose: undefined,
+    afterClose: undefined
   } as Events
 
   constructor(config: Config) {
@@ -134,7 +134,7 @@ export default class SlimSelect {
     // Set store class
     this.store = new Store(
       this.settings.isMultiple ? 'multiple' : 'single',
-      config.data ? config.data : this.select.getData(),
+      config.data ? config.data : this.select.getData()
     )
 
     // If data is passed update the original select element
@@ -151,7 +151,7 @@ export default class SlimSelect {
       addOption: this.addOption.bind(this),
       search: this.search.bind(this),
       beforeChange: this.events.beforeChange,
-      afterChange: this.events.afterChange,
+      afterChange: this.events.afterChange
     }
 
     // Setup render class
@@ -254,6 +254,7 @@ export default class SlimSelect {
     return this.store.getSelectedOptions().map((option) => option.value)
   }
 
+  // Will take in a string or array of strings and set the selected by either the id or value
   public setSelected(values: string | string[], runAfterChange = true): void {
     // Get original selected values
     const selected = this.store.getSelected()
@@ -424,7 +425,7 @@ export default class SlimSelect {
     if (!this.events.search) {
       // If value is empty then render all options
       this.render.renderOptions(
-        value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!),
+        value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!)
       )
       return
     }

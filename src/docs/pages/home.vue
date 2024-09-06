@@ -8,15 +8,15 @@ export default defineComponent({
   data() {
     return {
       single: null as SlimSelect | null,
-      multiple: null as SlimSelect | null,
+      multiple: null as SlimSelect | null
     }
   },
   mounted() {
     this.single = new SlimSelect({
-      select: this.$refs.slimSingle as HTMLSelectElement,
+      select: this.$refs.slimSingle as HTMLSelectElement
     })
     this.multiple = new SlimSelect({
-      select: this.$refs.slimMulti as HTMLSelectElement,
+      select: this.$refs.slimMulti as HTMLSelectElement
     })
 
     setTimeout(() => {
@@ -80,8 +80,8 @@ export default defineComponent({
   methods: {
     handleClick() {
       window.dispatchEvent(new Event('nav-updated'))
-    },
-  },
+    }
+  }
 })
 </script>
 

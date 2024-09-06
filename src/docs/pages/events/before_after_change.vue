@@ -11,21 +11,21 @@ export default defineComponent({
       beforeChangeSingle: [] as DataArray,
       beforeChangeMultiple: [] as DataArray,
       afterChangeSingle: [] as DataArray,
-      afterChangeMultiple: [] as DataArray,
+      afterChangeMultiple: [] as DataArray
     }
   },
   mounted() {
     new SlimSelect({
       select: this.$refs.beforeChangeSingle as HTMLSelectElement,
       settings: {
-        allowDeselect: true,
+        allowDeselect: true
       },
       events: {
         beforeChange: (newValue: DataArray, oldValue: DataArray) => {
           this.beforeChangeSingle = oldValue
           return true
-        },
-      },
+        }
+      }
     })
 
     new SlimSelect({
@@ -34,20 +34,20 @@ export default defineComponent({
         beforeChange: (newValue: DataArray, oldValue: DataArray) => {
           this.beforeChangeMultiple = oldValue
           return true
-        },
-      },
+        }
+      }
     })
 
     new SlimSelect({
       select: this.$refs.afterChangeSingle as HTMLSelectElement,
       settings: {
-        allowDeselect: true,
+        allowDeselect: true
       },
       events: {
         afterChange: (value: DataArray) => {
           this.afterChangeSingle = value
-        },
-      },
+        }
+      }
     })
 
     new SlimSelect({
@@ -55,10 +55,10 @@ export default defineComponent({
       events: {
         afterChange: (value: DataArray) => {
           this.afterChangeMultiple = value
-        },
-      },
+        }
+      }
     })
-  },
+  }
 })
 </script>
 

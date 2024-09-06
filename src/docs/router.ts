@@ -7,44 +7,44 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: () => import('./pages/home.vue'),
+      component: () => import('./pages/home.vue')
     },
     {
       path: '/install',
       name: 'Install',
-      component: () => import('./pages/install.vue'),
+      component: () => import('./pages/install.vue')
     },
     {
       path: '/selects',
       name: 'Selects',
-      component: () => import('./pages/selects.vue'),
+      component: () => import('./pages/selects.vue')
     },
     {
       path: '/data',
       name: 'Data',
-      component: () => import('./pages/data.vue'),
+      component: () => import('./pages/data.vue')
     },
     {
       path: '/settings',
       name: 'Settings',
-      component: () => import('./pages/settings/index.vue'),
+      component: () => import('./pages/settings/index.vue')
     },
     {
       path: '/events',
       name: 'Events',
-      component: () => import('./pages/events/index.vue'),
+      component: () => import('./pages/events/index.vue')
     },
     {
       path: '/methods',
       name: 'Methods',
-      component: () => import('./pages/methods/index.vue'),
+      component: () => import('./pages/methods/index.vue')
     },
     {
       path: '/vue',
       name: 'Vue',
-      component: () => import('./pages/frameworks/vue.vue'),
+      component: () => import('./pages/frameworks/vue.vue')
     }
-  ],
+  ]
 })
 
 export default router

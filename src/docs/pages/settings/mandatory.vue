@@ -7,22 +7,22 @@ export default defineComponent({
   name: 'Mandatory',
   mounted() {
     const mandatorySelect = new SlimSelect({
-      select: this.$refs.selectMultiMandatory as HTMLSelectElement,
+      select: this.$refs.selectMultiMandatory as HTMLSelectElement
     })
 
     const mandatoryData = [
       { value: 'value1', text: 'Value 1', mandatory: true },
       { value: 'value2', text: 'Value 2' },
-      { value: 'value3', text: 'Value 3' },
+      { value: 'value3', text: 'Value 3' }
     ]
 
     mandatorySelect.setData(mandatoryData)
     mandatorySelect.setSelected(['value1', 'value3'])
 
     new SlimSelect({
-      select: this.$refs.selectMultiMandatory2 as HTMLSelectElement,
+      select: this.$refs.selectMultiMandatory2 as HTMLSelectElement
     })
-  },
+  }
 })
 </script>
 

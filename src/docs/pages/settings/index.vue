@@ -53,8 +53,8 @@ export default defineComponent({
     ShowTooltip,
     SelectAll,
     Closable,
-    HideSelected,
-  },
+    HideSelected
+  }
 })
 </script>
 

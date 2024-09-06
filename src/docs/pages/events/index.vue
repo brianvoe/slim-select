@@ -16,8 +16,8 @@ export default defineComponent({
     BeforeAfterOpenClose,
     Search,
     SearchFilter,
-    Addable,
-  },
+    Addable
+  }
 })
 </script>
 

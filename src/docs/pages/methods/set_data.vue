@@ -8,7 +8,7 @@ export default defineComponent({
   data() {
     return {
       setDataSingle: null as SlimSelect | null,
-      setDataMultiple: null as SlimSelect | null,
+      setDataMultiple: null as SlimSelect | null
     }
   },
   mounted() {
@@ -18,16 +18,16 @@ export default defineComponent({
       events: {
         error: (err: Error) => {
           console.error(err)
-        },
-      },
+        }
+      }
     })
     this.setDataMultiple = new SlimSelect({
       select: this.$refs.setDataMultiple as HTMLSelectElement,
       events: {
         error: (err: Error) => {
           console.error(err)
-        },
-      },
+        }
+      }
     })
   },
   methods: {
@@ -36,7 +36,7 @@ export default defineComponent({
       fetch('https://api.gofakeit.com/json', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           type: 'array',
@@ -44,9 +44,9 @@ export default defineComponent({
           indent: false,
           fields: [
             { name: 'text', function: 'generate', params: { str: '{firstname} {lastname}' } },
-            { name: 'selected', function: 'bool' },
-          ],
-        }),
+            { name: 'selected', function: 'bool' }
+          ]
+        })
       })
         .then((res) => res.json())
         .then((data) => {
@@ -54,8 +54,8 @@ export default defineComponent({
           this.setDataMultiple!.setData(data)
         })
         .catch((err) => console.error(err))
-    },
-  },
+    }
+  }
 })
 </script>
 

@@ -20,8 +20,8 @@ export default defineComponent({
     EnableDisable,
     OpenClose,
     Search,
-    Destroy,
-  },
+    Destroy
+  }
 })
 </script>
 

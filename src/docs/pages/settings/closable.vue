@@ -7,12 +7,12 @@ export default defineComponent({
   name: 'Closable',
   mounted() {
     new SlimSelect({
-      select: this.$refs.closableSingle as HTMLSelectElement,
+      select: this.$refs.closableSingle as HTMLSelectElement
     })
     new SlimSelect({
-      select: this.$refs.closableMultiple as HTMLSelectElement,
+      select: this.$refs.closableMultiple as HTMLSelectElement
     })
-  },
+  }
 })
 </script>
 

@@ -9,17 +9,17 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.openPositionUp as HTMLSelectElement,
       settings: {
-        openPosition: 'up',
-      },
+        openPosition: 'up'
+      }
     })
 
     new SlimSelect({
       select: this.$refs.openPositionDown as HTMLSelectElement,
       settings: {
-        openPosition: 'down',
-      },
+        openPosition: 'down'
+      }
     })
-  },
+  }
 })
 </script>
 

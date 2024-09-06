@@ -9,31 +9,31 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.htmlSingle as HTMLSelectElement,
       settings: {
-        searchHighlight: true,
+        searchHighlight: true
       },
       data: [
         {
           html: '<b>Bold Text</b>',
           text: 'Bold Text',
-          value: 'bold text',
+          value: 'bold text'
         },
         {
           html: '<div style="border: solid 1px #666666;">Border</div>',
           text: 'Border',
-          value: 'border',
+          value: 'border'
         },
         {
           html: '<i>Slim Select is awesome</i>',
-          text: 'Slim Select is awesome',
-        },
-      ],
+          text: 'Slim Select is awesome'
+        }
+      ]
     })
 
     new SlimSelect({
       select: this.$refs.htmlMulti as HTMLSelectElement,
       settings: {
-        searchHighlight: true,
-      },
+        searchHighlight: true
+      }
       // data: [
       //   {
       //     html: '<b>Bold Text</b>',
@@ -51,7 +51,7 @@ export default defineComponent({
       //   },
       // ],
     })
-  },
+  }
 })
 </script>
 

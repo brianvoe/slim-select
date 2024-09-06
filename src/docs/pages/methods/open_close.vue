@@ -9,15 +9,15 @@ export default defineComponent({
     return {
       // Open / Close
       openCloseSingle: null as SlimSelect | null,
-      openCloseMultiple: null as SlimSelect | null,
+      openCloseMultiple: null as SlimSelect | null
     }
   },
   mounted() {
     this.openCloseSingle = new SlimSelect({
-      select: this.$refs.openCloseSingle as HTMLSelectElement,
+      select: this.$refs.openCloseSingle as HTMLSelectElement
     })
     this.openCloseMultiple = new SlimSelect({
-      select: this.$refs.openCloseMultiple as HTMLSelectElement,
+      select: this.$refs.openCloseMultiple as HTMLSelectElement
     })
   },
   methods: {
@@ -29,8 +29,8 @@ export default defineComponent({
         this.openCloseSingle!.close()
         this.openCloseMultiple!.close()
       }
-    },
-  },
+    }
+  }
 })
 </script>
 

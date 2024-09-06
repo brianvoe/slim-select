@@ -13,8 +13,8 @@ describe('store module', () => {
     test('constructor with single option', () => {
       const store = new Store('single', [
         {
-          text: 'test',
-        },
+          text: 'test'
+        }
       ])
 
       const data = store.getData()
@@ -46,10 +46,10 @@ describe('store module', () => {
           label: 'opt group',
           options: [
             {
-              text: 'test',
-            },
-          ],
-        },
+              text: 'test'
+            }
+          ]
+        }
       ])
 
       const data = store.getData()
@@ -70,13 +70,13 @@ describe('store module', () => {
           label: 'opt group',
           options: [
             {
-              text: 'opt group option',
-            },
-          ],
+              text: 'opt group option'
+            }
+          ]
         },
         {
-          text: 'option',
-        },
+          text: 'option'
+        }
       ])
 
       const data = store.getData()
@@ -97,17 +97,17 @@ describe('store module', () => {
     test('constructor with multiple selected on single select only registers first selected', () => {
       const store = new Store('single', [
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
           value: 'test2',
-          selected: true,
+          selected: true
         },
         {
           text: 'test3',
-          selected: true,
-        },
+          selected: true
+        }
       ])
 
       // cast to an option array here, so we don't need casts in the comparisons
@@ -125,15 +125,15 @@ describe('store module', () => {
     test('constructor without a selected element on single select selects first option', () => {
       const store = new Store('single', [
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
-          value: 'test2',
+          value: 'test2'
         },
         {
-          text: 'test3',
-        },
+          text: 'test3'
+        }
       ])
 
       // cast to an option array here, so we don't need casts in the comparisons
@@ -151,17 +151,17 @@ describe('store module', () => {
     test('constructor with multiple selected on multiple select registers all selected', () => {
       const store = new Store('multiple', [
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
           value: 'test2',
-          selected: true,
+          selected: true
         },
         {
           text: 'test3',
-          selected: true,
-        },
+          selected: true
+        }
       ])
 
       // cast to an option array here, so we don't need casts in the comparisons
@@ -179,15 +179,15 @@ describe('store module', () => {
     test('constructor without a selected element on multiple select does not select anything', () => {
       const store = new Store('multiple', [
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
-          value: 'test2',
+          value: 'test2'
         },
         {
-          text: 'test3',
-        },
+          text: 'test3'
+        }
       ])
 
       // cast to an option array here, so we don't need casts in the comparisons
@@ -226,11 +226,11 @@ describe('store module', () => {
     test('invalid data and valid option returns error', () => {
       const invalidData = [
         {
-          name: 'invalid data',
+          name: 'invalid data'
         },
         {
-          text: 'valid option',
-        },
+          text: 'valid option'
+        }
       ]
 
       const res = store.validateDataArray(invalidData as unknown as DataArray)
@@ -241,11 +241,11 @@ describe('store module', () => {
     test('valid option and invalid data returns error', () => {
       const invalidData = [
         {
-          text: 'valid',
+          text: 'valid'
         },
         {
-          name: 'this is invalid',
-        },
+          name: 'this is invalid'
+        }
       ]
 
       const res = store.validateDataArray(invalidData as unknown as DataArray)
@@ -259,10 +259,10 @@ describe('store module', () => {
           label: 'valid',
           options: [
             {
-              invalid: 'asdf',
-            },
-          ],
-        },
+              invalid: 'asdf'
+            }
+          ]
+        }
       ]
 
       const res = store.validateDataArray(invalidData as unknown as DataArray)
@@ -273,8 +273,8 @@ describe('store module', () => {
     test('single valid option validates', () => {
       const validData = [
         {
-          text: 'valid option',
-        },
+          text: 'valid option'
+        }
       ]
 
       const res = store.validateDataArray(validData)
@@ -284,11 +284,11 @@ describe('store module', () => {
     test('multiple valid options validates', () => {
       const validData = [
         {
-          text: 'valid option 1',
+          text: 'valid option 1'
         },
         {
-          text: 'valid option 2',
-        },
+          text: 'valid option 2'
+        }
       ]
 
       const res = store.validateDataArray(validData)
@@ -298,8 +298,8 @@ describe('store module', () => {
     test('single valid opt group validates', () => {
       const validData = [
         {
-          label: 'valid opt group',
-        },
+          label: 'valid opt group'
+        }
       ]
 
       const res = store.validateDataArray(validData)
@@ -312,13 +312,13 @@ describe('store module', () => {
           label: 'valid opt group',
           options: [
             {
-              text: 'option 1',
+              text: 'option 1'
             },
             {
-              text: 'option 2',
-            },
-          ],
-        },
+              text: 'option 2'
+            }
+          ]
+        }
       ]
 
       const res = store.validateDataArray(validData)
@@ -330,19 +330,19 @@ describe('store module', () => {
           label: 'valid opt group',
           options: [
             {
-              text: 'option 1',
+              text: 'option 1'
             },
             {
-              text: 'option 2',
-            },
-          ],
+              text: 'option 2'
+            }
+          ]
         },
         {
-          text: 'main option 1',
+          text: 'main option 1'
         },
         {
-          text: 'main option 2',
-        },
+          text: 'main option 2'
+        }
       ]
 
       const res = store.validateDataArray(validData)
@@ -391,7 +391,7 @@ describe('store module', () => {
     test("invalid data get's ignored", () => {
       const res = store.partialToFullData([
         { error: 'this is invalid' } as unknown as DataObjectPartial,
-        { text: 'valid' },
+        { text: 'valid' }
       ])
       expect(res).toBeInstanceOf(Array)
       expect(res).toHaveLength(1)
@@ -406,11 +406,11 @@ describe('store module', () => {
       const res = store.partialToFullData([
         {
           label: 'opt group',
-          options: [{ text: 'opt 1' }, { text: 'opt 2' }],
+          options: [{ text: 'opt 1' }, { text: 'opt 2' }]
         },
         {
-          text: 'opt 3',
-        },
+          text: 'opt 3'
+        }
       ])
 
       expect(res).toHaveLength(2)
@@ -432,12 +432,12 @@ describe('store module', () => {
     beforeEach(() => {
       store = new Store('single', [
         {
-          text: 'initial option',
+          text: 'initial option'
         },
         {
           text: 'initial selected option',
-          selected: true,
-        },
+          selected: true
+        }
       ])
     })
 
@@ -451,14 +451,14 @@ describe('store module', () => {
     test('valid data overrides existing data', () => {
       store.setData([
         {
-          text: 'opt 1',
+          text: 'opt 1'
         },
         {
-          text: 'opt 2',
+          text: 'opt 2'
         },
         {
-          text: 'opt 3',
-        },
+          text: 'opt 3'
+        }
       ])
 
       const data = store.getData() as Array<Option>
@@ -471,11 +471,11 @@ describe('store module', () => {
     test('valid data on single select automatically selects first option', () => {
       store.setData([
         {
-          text: 'opt 1',
+          text: 'opt 1'
         },
         {
-          text: 'opt 2',
-        },
+          text: 'opt 2'
+        }
       ])
 
       const data = store.getData() as Array<Option>
@@ -486,12 +486,12 @@ describe('store module', () => {
     test('valid data on single select selects correct option', () => {
       store.setData([
         {
-          text: 'opt 1',
+          text: 'opt 1'
         },
         {
           text: 'opt 2',
-          selected: true,
-        },
+          selected: true
+        }
       ])
 
       const data = store.getData() as Array<Option>
@@ -508,42 +508,42 @@ describe('store module', () => {
           label: 'group test',
           options: [
             {
-              text: 'sub opt 1',
+              text: 'sub opt 1'
             },
             {
-              text: 'sub opt 2',
-            },
-          ],
+              text: 'sub opt 2'
+            }
+          ]
         },
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
-          value: 'test2',
+          value: 'test2'
         },
         {
-          text: 'test3',
-        },
+          text: 'test3'
+        }
       ]
 
       const flatData = [
         {
-          text: 'sub opt 1',
+          text: 'sub opt 1'
         },
         {
-          text: 'sub opt 2',
+          text: 'sub opt 2'
         },
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
-          value: 'test2',
+          value: 'test2'
         },
         {
-          text: 'test3',
-        },
+          text: 'test3'
+        }
       ]
 
       const store = new Store('single', data)
@@ -575,11 +575,11 @@ describe('store module', () => {
     test('options only store returns same structure', () => {
       const store = new Store('single', [
         {
-          text: 'opt 0',
+          text: 'opt 0'
         },
         {
-          text: 'opt 1',
-        },
+          text: 'opt 1'
+        }
       ])
 
       const data = store.getDataOptions()
@@ -596,19 +596,19 @@ describe('store module', () => {
           label: 'opt group',
           options: [
             {
-              text: 'opt 0',
+              text: 'opt 0'
             },
             {
-              text: 'opt 1',
-            },
-          ],
+              text: 'opt 1'
+            }
+          ]
         },
         {
-          text: 'opt 2',
+          text: 'opt 2'
         },
         {
-          text: 'opt 3',
-        },
+          text: 'opt 3'
+        }
       ])
 
       const data = store.getDataOptions()
@@ -624,8 +624,8 @@ describe('store module', () => {
     test('append option', () => {
       const store = new Store('single', [
         {
-          text: 'test1',
-        },
+          text: 'test1'
+        }
       ])
 
       store.addOption({ text: 'test2' })
@@ -643,18 +643,18 @@ describe('store module', () => {
     beforeEach(() => {
       store = new Store('single', [
         {
-          text: 'opt 1',
+          text: 'opt 1'
         },
         {
           id: '12345678',
-          text: 'id opt',
+          text: 'id opt'
         },
         {
-          text: 'opt 2',
+          text: 'opt 2'
         },
         {
-          text: 'opt 3',
-        },
+          text: 'opt 3'
+        }
       ])
     })
 
@@ -685,13 +685,13 @@ describe('store module', () => {
       const store = new Store('single', [
         {
           text: 'all',
-          value: '',
+          value: ''
         },
         {
           text: 'Value 1',
           value: '1',
-          selected: true,
-        },
+          selected: true
+        }
       ])
       store.setSelectedBy('value', [''])
 
@@ -716,11 +716,11 @@ describe('store module', () => {
     test('get correct value when one option is selected', () => {
       const store = new Store('single', [
         {
-          text: 'opt 0',
+          text: 'opt 0'
         },
         {
-          text: 'opt 1',
-        },
+          text: 'opt 1'
+        }
       ])
 
       const selected = store.getSelected()
@@ -731,16 +731,16 @@ describe('store module', () => {
     test('get correct value when two options is selected', () => {
       const store = new Store('multiple', [
         {
-          text: 'opt 0',
+          text: 'opt 0'
         },
         {
           text: 'opt 1',
-          selected: true,
+          selected: true
         },
         {
           text: 'opt 2',
-          selected: true,
-        },
+          selected: true
+        }
       ])
 
       const selected = store.getSelected()
@@ -755,11 +755,11 @@ describe('store module', () => {
     test('get correct value when one option is selected', () => {
       const store = new Store('single', [
         {
-          text: 'opt 0',
+          text: 'opt 0'
         },
         {
-          text: 'opt 1',
-        },
+          text: 'opt 1'
+        }
       ])
 
       const selected = store.getSelectedOptions()
@@ -770,16 +770,16 @@ describe('store module', () => {
     test('get correct value when two options is selected', () => {
       const store = new Store('multiple', [
         {
-          text: 'opt 0',
+          text: 'opt 0'
         },
         {
           text: 'opt 1',
-          selected: true,
+          selected: true
         },
         {
           text: 'opt 2',
-          selected: true,
-        },
+          selected: true
+        }
       ])
 
       const selected = store.getSelectedOptions()
@@ -795,18 +795,18 @@ describe('store module', () => {
     beforeAll(() => {
       store = new Store('single', [
         {
-          text: 'opt 1',
+          text: 'opt 1'
         },
         {
           id: '12345678',
-          text: 'id opt',
+          text: 'id opt'
         },
         {
-          text: 'opt 2',
+          text: 'opt 2'
         },
         {
-          text: 'opt 3',
-        },
+          text: 'opt 3'
+        }
       ])
     })
 
@@ -838,11 +838,11 @@ describe('store module', () => {
     test('getFirstOption returns first option', () => {
       const flatStore = new Store('single', [
         {
-          text: 'test0',
+          text: 'test0'
         },
         {
-          text: 'test1',
-        },
+          text: 'test1'
+        }
       ])
 
       expect(flatStore.getFirstOption()?.text).toBe('test0')
@@ -852,16 +852,16 @@ describe('store module', () => {
           label: 'group0',
           options: [
             {
-              text: 'test0',
+              text: 'test0'
             },
             {
-              text: 'test1',
-            },
-          ],
+              text: 'test1'
+            }
+          ]
         },
         {
-          text: 'test2',
-        },
+          text: 'test2'
+        }
       ])
 
       expect(store.getFirstOption()?.text).toBe('test0')
@@ -872,15 +872,15 @@ describe('store module', () => {
     test('search with term returns correct option', () => {
       const store = new Store('single', [
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
-          value: 'test2',
+          value: 'test2'
         },
         {
-          text: 'test3',
-        },
+          text: 'test3'
+        }
       ])
 
       const searchFilter = (opt: Option, search: string): boolean => {
@@ -896,15 +896,15 @@ describe('store module', () => {
     test('empty search term returns all options', () => {
       const store = new Store('single', [
         {
-          text: 'test1',
+          text: 'test1'
         },
         {
           text: 'test2',
-          value: 'test2',
+          value: 'test2'
         },
         {
-          text: 'test3',
-        },
+          text: 'test3'
+        }
       ])
 
       const searchFilter = (opt: Option, search: string): boolean => {
@@ -927,17 +927,17 @@ describe('store module', () => {
           options: [
             {
               text: 'opt 0',
-              class: 'filter-me',
+              class: 'filter-me'
             },
             {
-              text: 'opt 1',
-            },
-          ],
+              text: 'opt 1'
+            }
+          ]
         },
         {
           text: 'opt 2',
-          class: 'filter-me',
-        },
+          class: 'filter-me'
+        }
       ])
     })
 

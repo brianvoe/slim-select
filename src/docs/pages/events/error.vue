@@ -8,7 +8,7 @@ export default defineComponent({
   data() {
     return {
       errorSingle: null as SlimSelect | null,
-      errMsg: '',
+      errMsg: ''
     }
   },
   mounted() {
@@ -17,10 +17,10 @@ export default defineComponent({
       events: {
         error: (err: Error) => {
           this.errMsg = err.message
-        },
-      },
+        }
+      }
     })
-  },
+  }
 })
 </script>
 

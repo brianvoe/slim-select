@@ -9,10 +9,10 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.showOptionTooltips as HTMLSelectElement,
       settings: {
-        showOptionTooltips: true,
-      },
+        showOptionTooltips: true
+      }
     })
-  },
+  }
 })
 </script>
 

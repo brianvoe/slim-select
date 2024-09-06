@@ -305,12 +305,12 @@ export default class Render {
       deselect: {
         main: deselect,
         svg: deselectSvg,
-        path: deselectPath,
+        path: deselectPath
       },
       arrow: {
         main: arrow,
-        path: arrowPath,
-      },
+        path: arrowPath
+      }
     }
   }
 
@@ -593,7 +593,7 @@ export default class Render {
     return {
       main: main,
       search: search,
-      list: list,
+      list: list
     }
   }
 
@@ -630,7 +630,7 @@ export default class Render {
     // Setup search return object
     const searchReturn: Search = {
       main,
-      input,
+      input
     }
 
     // We still want the search to be tabable but not shown
@@ -763,7 +763,7 @@ export default class Render {
             if (typeof value === 'string') {
               runFinish({
                 text: value,
-                value: value,
+                value: value
               })
             } else {
               runFinish(value)
@@ -772,7 +772,7 @@ export default class Render {
         } else if (typeof addableValue === 'string') {
           runFinish({
             text: addableValue,
-            value: addableValue,
+            value: addableValue
           })
         } else {
           runFinish(addableValue)
@@ -786,7 +786,7 @@ export default class Render {
       searchReturn.addable = {
         main: addable,
         svg: plus,
-        path: plusPath,
+        path: plusPath
       }
     }
 
@@ -1143,7 +1143,7 @@ export default class Render {
       optionEl.innerHTML = this.highlightText(
         option.html !== '' ? option.html : option.text,
         this.content.search.input.value,
-        this.classes.searchHighlighter,
+        this.classes.searchHighlighter
       )
     } else if (option.html !== '') {
       optionEl.innerHTML = option.html
@@ -1256,7 +1256,7 @@ export default class Render {
         // Get values from after and set as selected
         this.callbacks.setSelected(
           after.map((o: Option) => o.id),
-          false,
+          false
         )
 
         // If closeOnSelect is true

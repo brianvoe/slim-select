@@ -10,66 +10,66 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.showSearchSingle as HTMLSelectElement,
       settings: {
-        showSearch: false,
-      },
+        showSearch: false
+      }
     })
     new SlimSelect({
       select: this.$refs.focusSearchSingle as HTMLSelectElement,
       settings: {
-        focusSearch: false,
-      },
+        focusSearch: false
+      }
     })
     new SlimSelect({
       select: this.$refs.searchTextSingle as HTMLSelectElement,
       settings: {
-        searchText: 'Sorry, nothing to see here',
-      },
+        searchText: 'Sorry, nothing to see here'
+      }
     })
     new SlimSelect({
       select: this.$refs.searchPlaceholderSingle as HTMLSelectElement,
       settings: {
-        searchPlaceholder: 'Search for the good stuff!',
-      },
+        searchPlaceholder: 'Search for the good stuff!'
+      }
     })
     new SlimSelect({
       select: this.$refs.searchHighlightSingle as HTMLSelectElement,
       settings: {
-        searchHighlight: true,
-      },
+        searchHighlight: true
+      }
     })
 
     // Multiple
     new SlimSelect({
       select: this.$refs.showSearchMulti as HTMLSelectElement,
       settings: {
-        showSearch: false,
-      },
+        showSearch: false
+      }
     })
     new SlimSelect({
       select: this.$refs.focusSearchMulti as HTMLSelectElement,
       settings: {
-        focusSearch: false,
-      },
+        focusSearch: false
+      }
     })
     new SlimSelect({
       select: this.$refs.searchTextMulti as HTMLSelectElement,
       settings: {
-        searchText: 'Sorry nothing to see here',
-      },
+        searchText: 'Sorry nothing to see here'
+      }
     })
     new SlimSelect({
       select: this.$refs.searchPlaceholderMulti as HTMLSelectElement,
       settings: {
-        searchPlaceholder: 'Search for the good stuff!',
-      },
+        searchPlaceholder: 'Search for the good stuff!'
+      }
     })
     new SlimSelect({
       select: this.$refs.searchHighlightMulti as HTMLSelectElement,
       settings: {
-        searchHighlight: true,
-      },
+        searchHighlight: true
+      }
     })
-  },
+  }
 })
 </script>
 

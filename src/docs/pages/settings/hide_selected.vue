@@ -9,17 +9,17 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.hideSelectedSingle as HTMLSelectElement,
       settings: {
-        hideSelected: true,
-      },
+        hideSelected: true
+      }
     })
 
     new SlimSelect({
       select: this.$refs.hideSelectedMultiple as HTMLSelectElement,
       settings: {
-        hideSelected: true,
-      },
+        hideSelected: true
+      }
     })
-  },
+  }
 })
 </script>
 

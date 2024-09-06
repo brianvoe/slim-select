@@ -21,7 +21,7 @@ export default class Select {
     // Add change event listener
     this.select.addEventListener('change', this.valueChange, {
       // allow bubbling of event
-      passive: true,
+      passive: true
     })
 
     // Initiate mutation observer
@@ -60,7 +60,7 @@ export default class Select {
         this.observer.observe(this.select, {
           subtree: true, // subtree for optgroups options
           childList: true, // children changes
-          attributes: true, // attributes changes
+          attributes: true // attributes changes
         })
       }
     }
@@ -176,7 +176,7 @@ export default class Select {
       selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
       selectAllText: optgroup.dataset ? optgroup.dataset.selectalltext : 'Select all',
       closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
-      options: [],
+      options: []
     } as OptgroupOptional
 
     const options = optgroup.childNodes as any as HTMLOptionElement[]
@@ -203,7 +203,7 @@ export default class Select {
       placeholder: option.dataset.placeholder === 'true',
       class: option.className,
       style: option.style.cssText,
-      data: option.dataset,
+      data: option.dataset
     } as Option
   }
 

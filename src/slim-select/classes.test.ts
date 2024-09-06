@@ -43,7 +43,7 @@ const defaultClasses: { [key: string]: string } = {
   selected: 'ss-selected',
   error: 'ss-error',
   disabled: 'ss-disabled',
-  hide: 'ss-hide',
+  hide: 'ss-hide'
 }
 
 describe('CssClasses module', () => {

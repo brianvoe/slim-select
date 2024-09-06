@@ -14,10 +14,10 @@ export default defineComponent({
 
           return {
             text: value,
-            value: value.toLowerCase(),
+            value: value.toLowerCase()
           }
-        },
-      },
+        }
+      }
     })
 
     new SlimSelect({
@@ -28,14 +28,14 @@ export default defineComponent({
             setTimeout(() => {
               resolve({
                 text: value,
-                value: value,
+                value: value
               })
             }, 100)
           })
-        },
-      },
+        }
+      }
     })
-  },
+  }
 })
 </script>
 

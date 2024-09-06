@@ -9,24 +9,24 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.placeholderSingle as HTMLSelectElement,
       settings: {
-        placeholderText: 'Custom Placeholder Text',
-      },
+        placeholderText: 'Custom Placeholder Text'
+      }
     })
 
     new SlimSelect({
       select: this.$refs.placeholderMultiple as HTMLSelectElement,
       settings: {
-        placeholderText: 'Make Selection',
-      },
+        placeholderText: 'Make Selection'
+      }
     })
 
     new SlimSelect({
       select: this.$refs.placeholderNone as HTMLSelectElement,
       settings: {
-        placeholderText: '',
-      },
+        placeholderText: ''
+      }
     })
-  },
+  }
 })
 </script>
 

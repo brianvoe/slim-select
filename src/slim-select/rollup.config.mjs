@@ -11,7 +11,7 @@ export default [
     output: {
       file: '../../dist/slimselect.cjs.js',
       format: 'cjs',
-      exports: 'default',
+      exports: 'default'
     },
     plugins: [
       typescript(),
@@ -27,12 +27,12 @@ export default [
             {
               modules: false,
               useBuiltIns: 'usage',
-              targets: 'maintained node versions',
-            },
-          ],
-        ],
-      }),
-    ],
+              targets: 'maintained node versions'
+            }
+          ]
+        ]
+      })
+    ]
   },
 
   // UMD build for browsers
@@ -42,13 +42,13 @@ export default [
       {
         name: 'SlimSelect',
         file: '../../dist/slimselect.js',
-        format: 'umd',
+        format: 'umd'
       },
       {
         name: 'SlimSelect',
         file: '../../dist/slimselect.umd.js',
-        format: 'umd',
-      },
+        format: 'umd'
+      }
     ],
     plugins: [
       typescript(),
@@ -56,9 +56,9 @@ export default [
       commonjs(),
       babel({
         babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-      }),
-    ],
+        exclude: 'node_modules/**'
+      })
+    ]
   },
 
   // UMD build for browsers minified with terser
@@ -68,13 +68,13 @@ export default [
       {
         name: 'SlimSelect',
         file: '../../dist/slimselect.min.js',
-        format: 'umd',
+        format: 'umd'
       },
       {
         name: 'SlimSelect',
         file: '../../dist/slimselect.umd.min.js',
-        format: 'umd',
-      },
+        format: 'umd'
+      }
     ],
     plugins: [
       typescript(),
@@ -82,10 +82,10 @@ export default [
       commonjs(),
       babel({
         babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
+        exclude: 'node_modules/**'
       }),
-      terser(),
-    ],
+      terser()
+    ]
   },
 
   // ES module build for modern browsers
@@ -93,7 +93,7 @@ export default [
     input: './index.ts',
     output: {
       file: '../../dist/slimselect.es.js',
-      format: 'es',
+      format: 'es'
     },
     plugins: [
       typescript(),
@@ -101,9 +101,9 @@ export default [
       commonjs(),
       babel({
         babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-      }),
-    ],
+        exclude: 'node_modules/**'
+      })
+    ]
   },
 
   // IIFE build for modern browsers
@@ -112,7 +112,7 @@ export default [
     output: {
       name: 'SlimSelect',
       file: '../../dist/slimselect.global.js',
-      format: 'iife',
+      format: 'iife'
     },
     plugins: [
       typescript(),
@@ -120,8 +120,8 @@ export default [
       commonjs(),
       babel({
         babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-      }),
-    ],
-  },
+        exclude: 'node_modules/**'
+      })
+    ]
+  }
 ]

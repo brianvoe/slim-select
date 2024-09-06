@@ -17,7 +17,7 @@ let searchMultiple: Ref<HTMLSelectElement | null> = ref(null)
 fetch('https://api.gofakeit.com/json', {
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     type: 'array',
@@ -25,9 +25,9 @@ fetch('https://api.gofakeit.com/json', {
     indent: false,
     fields: [
       { name: 'first_name', function: 'firstname', params: {} },
-      { name: 'last_name', function: 'lastname', params: {} },
-    ],
-  }),
+      { name: 'last_name', function: 'lastname', params: {} }
+    ]
+  })
 })
   .then((response) => response.json())
   .then((data: Person[]) => {
@@ -40,11 +40,11 @@ onMounted(() => {
     settings: {
       placeholderText: 'Search First or Last Name',
       searchingText: 'Searching Users...',
-      searchHighlight: true,
+      searchHighlight: true
     },
     events: {
-      search: searchPromise,
-    },
+      search: searchPromise
+    }
   })
 
   new SlimSelect({
@@ -53,11 +53,11 @@ onMounted(() => {
       closeOnSelect: false,
       placeholderText: 'Search First or Last Name',
       searchingText: 'Searching Users...',
-      searchHighlight: true,
+      searchHighlight: true
     },
     events: {
-      search: searchPromise,
-    },
+      search: searchPromise
+    }
   })
 })
 
@@ -89,13 +89,13 @@ function searchPromise(search: string, currentData: DataArray): Promise<DataArra
       .map((person) => {
         return {
           text: `${person.first_name} ${person.last_name}`,
-          value: `${person.first_name} ${person.last_name}`,
+          value: `${person.first_name} ${person.last_name}`
         } as Option
       })
 
     // Simulate a slow search
     setTimeout(() => {
-      resolve([{label: 'Results', selectAll: true, options: options}])
+      resolve([{ label: 'Results', selectAll: true, options: options }])
     }, 300)
   })
 }

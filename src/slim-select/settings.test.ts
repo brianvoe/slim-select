@@ -35,7 +35,7 @@ const defaultSettings: { [key: string]: any } = {
   maxSelected: 1000,
   timeoutDelay: 200,
   maxValuesShown: 20,
-  maxValuesMessage: '{number} selected',
+  maxValuesMessage: '{number} selected'
 }
 
 describe('Settings module', () => {
@@ -71,12 +71,12 @@ describe('Settings module', () => {
       placeholderText: 'new placeholder',
       hideSelected: true,
       keepOrder: true,
-      showOptionTooltips: true,
+      showOptionTooltips: true
     }
 
     const settingsWithOverride = {
       ...defaultSettings,
-      ...customSettings,
+      ...customSettings
     } as unknown as { [key: string]: any }
 
     // Convert to unknown and then to custom object to prevent TS from throwing errors
@@ -123,12 +123,12 @@ describe('Settings module', () => {
         label: 'test',
         options: [
           {
-            text: 'opt 1',
+            text: 'opt 1'
           },
           {
-            text: 'opt 2',
-          },
-        ],
+            text: 'opt 2'
+          }
+        ]
       })
 
       const optGroupElement = select.createOptgroup(optGroup)
@@ -143,12 +143,12 @@ describe('Settings module', () => {
         selectAll: true,
         options: [
           {
-            text: 'opt 1',
+            text: 'opt 1'
           },
           {
-            text: 'opt 2',
-          },
-        ],
+            text: 'opt 2'
+          }
+        ]
       })
 
       const optGroupElement = select.createOptgroup(optGroup)
@@ -163,12 +163,12 @@ describe('Settings module', () => {
         closable: 'open',
         options: [
           {
-            text: 'opt 1',
+            text: 'opt 1'
           },
           {
-            text: 'opt 2',
-          },
-        ],
+            text: 'opt 2'
+          }
+        ]
       })
 
       const optGroupElement = select.createOptgroup(optGroup)
@@ -213,7 +213,7 @@ describe('Settings module', () => {
       const option = new Option({
         text: 'opt',
         placeholder: true,
-        mandatory: true,
+        mandatory: true
       })
       const optionElement = select.createOption(option)
 
@@ -224,7 +224,7 @@ describe('Settings module', () => {
     test('class sets CSS classes correctly', () => {
       const option = new Option({
         text: 'opt',
-        class: 'class0 class1 class2',
+        class: 'class0 class1 class2'
       })
       const optionElement = select.createOption(option)
 
@@ -238,8 +238,8 @@ describe('Settings module', () => {
         text: 'opt',
         data: {
           test0: 'a',
-          test1: 'b',
-        },
+          test1: 'b'
+        }
       })
       const optionElement = select.createOption(option)
 

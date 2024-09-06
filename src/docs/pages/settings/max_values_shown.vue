@@ -11,10 +11,10 @@ export default defineComponent({
       settings: {
         maxValuesShown: 5,
         maxValuesMessage: '{number} selected',
-        allowDeselect: true,
-      },
+        allowDeselect: true
+      }
     })
-  },
+  }
 })
 </script>
 

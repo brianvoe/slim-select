@@ -9,10 +9,10 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.contentLocation as HTMLSelectElement,
       settings: {
-        contentLocation: this.$refs.local as HTMLElement,
-      },
+        contentLocation: this.$refs.local as HTMLElement
+      }
     })
-  },
+  }
 })
 </script>
 

@@ -11,23 +11,23 @@ export default defineComponent({
       getDataOptions: null as SlimSelect | null,
       getDataOptionsValue: [] as DataArray,
       getDataOptgroups: null as SlimSelect | null,
-      getDataOptgroupsValue: [] as DataArray,
+      getDataOptgroupsValue: [] as DataArray
     }
   },
   mounted() {
     this.getDataOptions = new SlimSelect({
-      select: this.$refs.getDataOptions as HTMLSelectElement,
+      select: this.$refs.getDataOptions as HTMLSelectElement
     })
     this.getDataOptgroups = new SlimSelect({
-      select: this.$refs.getDataOptgroups as HTMLSelectElement,
+      select: this.$refs.getDataOptgroups as HTMLSelectElement
     })
   },
   methods: {
     getData() {
       this.getDataOptionsValue = this.getDataOptions!.getData()
       this.getDataOptgroupsValue = this.getDataOptgroups!.getData()
-    },
-  },
+    }
+  }
 })
 </script>
 

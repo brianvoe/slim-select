@@ -7,22 +7,22 @@ export default defineComponent({
   name: 'Display',
   mounted() {
     const displaySelect = new SlimSelect({
-      select: this.$refs.selectdisplay as HTMLSelectElement,
+      select: this.$refs.selectdisplay as HTMLSelectElement
     })
 
     const displayData = [
       { value: 'value1', text: 'Value 1', display: false },
       { value: 'value2', text: 'Value 2' },
-      { value: 'value3', text: 'Value 3' },
+      { value: 'value3', text: 'Value 3' }
     ]
 
     displaySelect.setData(displayData)
     displaySelect.setSelected(['value1', 'value3'])
 
     new SlimSelect({
-      select: this.$refs.selectdisplay2 as HTMLSelectElement,
+      select: this.$refs.selectdisplay2 as HTMLSelectElement
     })
-  },
+  }
 })
 </script>
 

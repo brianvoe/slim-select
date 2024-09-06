@@ -9,17 +9,17 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.allowDeselectSingle as HTMLSelectElement,
       settings: {
-        allowDeselect: true,
-      },
+        allowDeselect: true
+      }
     })
 
     new SlimSelect({
       select: this.$refs.allowDeselectMultiple as HTMLSelectElement,
       settings: {
-        allowDeselect: true,
-      },
+        allowDeselect: true
+      }
     })
-  },
+  }
 })
 </script>
 
