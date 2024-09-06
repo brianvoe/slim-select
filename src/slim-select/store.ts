@@ -245,6 +245,10 @@ export default class Store {
     return this.getSelectedOptions().map((option) => option.id)
   }
 
+  public getSelectedValues(): string[] {
+    return this.getSelectedOptions().map((option) => option.value)
+  }
+
   public getSelectedOptions(): Option[] {
     return this.filter((opt: Option) => {
       return opt.selected

@@ -723,7 +723,7 @@ describe('store module', () => {
         }
       ])
 
-      const selected = store.getSelected()
+      const selected = store.getSelectedValues()
       expect(selected).toHaveLength(1)
       expect(selected[0]).toBe('opt 0')
     })
@@ -743,7 +743,7 @@ describe('store module', () => {
         }
       ])
 
-      const selected = store.getSelected()
+      const selected = store.getSelectedValues()
       expect(selected).toHaveLength(2)
 
       expect(selected[0]).toBe('opt 1')
