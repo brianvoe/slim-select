@@ -3,6 +3,7 @@
  */
 
 'use strict'
+
 import { describe, expect, test } from '@jest/globals'
 import SlimSelect from './'
 import { OptionOptional } from './store'

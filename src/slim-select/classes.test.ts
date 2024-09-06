@@ -1,4 +1,5 @@
 'use strict'
+
 import { describe, expect, test } from '@jest/globals'
 import CssClasses from './classes'
 

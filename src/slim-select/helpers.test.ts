@@ -3,6 +3,7 @@
  */
 
 'use strict'
+
 import { describe, expect, test } from '@jest/globals'
 import { hasClassInTree, debounce, isEqual, kebabCase } from './helpers'
 

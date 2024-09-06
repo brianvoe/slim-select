@@ -8,7 +8,7 @@ import { describe, expect, test } from '@jest/globals'
 import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { Option } from './store'
-import CssClasses from './css_classes'
+import CssClasses from './classes'
 
 describe('render module', () => {
   let render: Render

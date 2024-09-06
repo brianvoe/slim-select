@@ -1,4 +1,5 @@
 'use strict'
+
 import { describe, expect, test } from '@jest/globals'
 import Settings from './settings'
 import Select from './select'
