@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-
 import SlimSelect, { Config, Events } from '../slim-select'
 import { SettingsPartial } from '../slim-select/settings'
 import { DataArrayPartial, Option } from '../slim-select/store'
@@ -9,31 +8,34 @@ export default defineComponent({
   name: 'SlimSelect',
   props: {
     modelValue: {
-      type: [String, Array, undefined] as PropType<string | string[] | undefined>,
+      type: [String, Array, undefined] as PropType<string | string[] | undefined>
     },
     multiple: {
       type: Boolean,
-      default: false,
+      default: false
     },
     data: {
-      type: Array as PropType<DataArrayPartial>,
+      type: Array as PropType<DataArrayPartial>
     },
     settings: {
-      type: Object as PropType<SettingsPartial>,
+      type: Object as PropType<SettingsPartial>
     },
     events: {
       type: Object as PropType<Events>,
-    },
+      default: () => {
+        return {}
+      }
+    }
   },
   emits: ['update:modelValue'],
   data() {
     return {
-      slim: null as SlimSelect | null,
+      slim: null as SlimSelect | null
     }
   },
   mounted() {
     let config = {
-      select: this.$refs.slim,
+      select: this.$refs.slim
     } as Config
 
     // If data is passed in, use it
@@ -52,7 +54,7 @@ export default defineComponent({
     // Wrap config.events.afterChange to run value update
     const ogAfterChange = config.events.afterChange
     config.events.afterChange = (newVal: Option[]) => {
-      const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : '';
+      const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : ''
 
       // Check if value is different from modelValue
       if (this.value !== value) {
@@ -88,7 +90,7 @@ export default defineComponent({
         // Set the value of the select to the newVal
         this.slim?.setSelected(this.getCleanValue(newVal))
       },
-      immediate: true,
+      immediate: true
     },
     data: {
       handler: function (newData) {
@@ -96,8 +98,8 @@ export default defineComponent({
           this.slim.setData(newData)
         }
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {
     value: {
@@ -106,8 +108,8 @@ export default defineComponent({
       },
       set(value: string | string[]) {
         this.$emit('update:modelValue', value)
-      },
-    },
+      }
+    }
   },
   methods: {
     // This allows via a ref to call the SlimSelect methods
@@ -128,8 +130,8 @@ export default defineComponent({
       }
 
       return multi ? [] : ''
-    },
-  },
+    }
+  }
 })
 </script>
 
