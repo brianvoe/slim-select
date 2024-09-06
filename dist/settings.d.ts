@@ -1,4 +1,3 @@
-/// <reference types="node" />
 export type SettingsPartial = Partial<Settings>;
 export default class Settings {
     id: string;
@@ -11,6 +10,7 @@ export default class Settings {
     disabled: boolean;
     alwaysOpen: boolean;
     showSearch: boolean;
+    focusSearch: boolean;
     ariaLabel: string;
     searchPlaceholder: string;
     searchText: string;

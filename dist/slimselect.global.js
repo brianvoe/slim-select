@@ -1,6 +1,54 @@
 var SlimSelect = (function () {
     'use strict';
 
+    class CssClasses {
+        constructor(classes) {
+            if (!classes) {
+                classes = {};
+            }
+            this.main = classes.main || 'ss-main';
+            this.placeholder = classes.placeholder || 'ss-placeholder';
+            this.values = classes.values || 'ss-values';
+            this.single = classes.single || 'ss-single';
+            this.max = classes.max || 'ss-max';
+            this.value = classes.value || 'ss-value';
+            this.valueText = classes.valueText || 'ss-value-text';
+            this.valueDelete = classes.valueDelete || 'ss-value-delete';
+            this.valueOut = classes.valueOut || 'ss-value-out';
+            this.deselect = classes.deselect || 'ss-deselect';
+            this.deselectPath = classes.deselectPath || 'M10,10 L90,90 M10,90 L90,10';
+            this.arrow = classes.arrow || 'ss-arrow';
+            this.arrowClose = classes.arrowClose || 'M10,30 L50,70 L90,30';
+            this.arrowOpen = classes.arrowOpen || 'M10,70 L50,30 L90,70';
+            this.content = classes.content || 'ss-content';
+            this.openAbove = classes.openAbove || 'ss-open-above';
+            this.openBelow = classes.openBelow || 'ss-open-below';
+            this.search = classes.search || 'ss-search';
+            this.searchHighlighter = classes.searchHighlighter || 'ss-search-highlight';
+            this.searching = classes.searching || 'ss-searching';
+            this.addable = classes.addable || 'ss-addable';
+            this.addablePath = classes.addablePath || 'M50,10 L50,90 M10,50 L90,50';
+            this.list = classes.list || 'ss-list';
+            this.optgroup = classes.optgroup || 'ss-optgroup';
+            this.optgroupLabel = classes.optgroupLabel || 'ss-optgroup-label';
+            this.optgroupLabelText = classes.optgroupLabelText || 'ss-optgroup-label-text';
+            this.optgroupActions = classes.optgroupActions || 'ss-optgroup-actions';
+            this.optgroupSelectAll = classes.optgroupSelectAll || 'ss-selectall';
+            this.optgroupSelectAllBox = classes.optgroupSelectAllBox || 'M60,10 L10,10 L10,90 L90,90 L90,50';
+            this.optgroupSelectAllCheck = classes.optgroupSelectAllCheck || 'M30,45 L50,70 L90,10';
+            this.optgroupClosable = classes.optgroupClosable || 'ss-closable';
+            this.option = classes.option || 'ss-option';
+            this.optionDelete = classes.optionDelete || 'M10,10 L90,90 M10,90 L90,10';
+            this.highlighted = classes.highlighted || 'ss-highlighted';
+            this.open = classes.open || 'ss-open';
+            this.close = classes.close || 'ss-close';
+            this.selected = classes.selected || 'ss-selected';
+            this.error = classes.error || 'ss-error';
+            this.disabled = classes.disabled || 'ss-disabled';
+            this.hide = classes.hide || 'ss-hide';
+        }
+    }
+
     function generateID() {
         return Math.random().toString(36).substring(2, 10);
     }
@@ -102,12 +150,18 @@ var SlimSelect = (function () {
                     }
                     if ('options' in dataObj && dataObj.options) {
                         for (let option of dataObj.options) {
-                            return this.validateOption(option);
+                            const validationError = this.validateOption(option);
+                            if (validationError) {
+                                return validationError;
+                            }
                         }
                     }
                 }
                 else if (dataObj instanceof Option || 'text' in dataObj) {
-                    return this.validateOption(dataObj);
+                    const validationError = this.validateOption(dataObj);
+                    if (validationError) {
+                        return validationError;
+                    }
                 }
                 else {
                     return new Error('Data object must be a valid optgroup or option');
@@ -266,51 +320,10 @@ var SlimSelect = (function () {
     }
 
     class Render {
-        constructor(settings, store, callbacks) {
-            this.classes = {
-                main: 'ss-main',
-                placeholder: 'ss-placeholder',
-                values: 'ss-values',
-                single: 'ss-single',
-                max: 'ss-max',
-                value: 'ss-value',
-                valueText: 'ss-value-text',
-                valueDelete: 'ss-value-delete',
-                valueOut: 'ss-value-out',
-                deselect: 'ss-deselect',
-                deselectPath: 'M10,10 L90,90 M10,90 L90,10',
-                arrow: 'ss-arrow',
-                arrowClose: 'M10,30 L50,70 L90,30',
-                arrowOpen: 'M10,70 L50,30 L90,70',
-                content: 'ss-content',
-                openAbove: 'ss-open-above',
-                openBelow: 'ss-open-below',
-                search: 'ss-search',
-                searchHighlighter: 'ss-search-highlight',
-                searching: 'ss-searching',
-                addable: 'ss-addable',
-                addablePath: 'M50,10 L50,90 M10,50 L90,50',
-                list: 'ss-list',
-                optgroup: 'ss-optgroup',
-                optgroupLabel: 'ss-optgroup-label',
-                optgroupLabelText: 'ss-optgroup-label-text',
-                optgroupActions: 'ss-optgroup-actions',
-                optgroupSelectAll: 'ss-selectall',
-                optgroupSelectAllBox: 'M60,10 L10,10 L10,90 L90,90 L90,50',
-                optgroupSelectAllCheck: 'M30,45 L50,70 L90,10',
-                optgroupClosable: 'ss-closable',
-                option: 'ss-option',
-                optionDelete: 'M10,10 L90,90 M10,90 L90,10',
-                highlighted: 'ss-highlighted',
-                open: 'ss-open',
-                close: 'ss-close',
-                selected: 'ss-selected',
-                error: 'ss-error',
-                disabled: 'ss-disabled',
-                hide: 'ss-hide',
-            };
+        constructor(settings, classes, store, callbacks) {
             this.store = store;
             this.settings = settings;
+            this.classes = classes;
             this.callbacks = callbacks;
             this.main = this.mainDiv();
             this.content = this.contentDiv();
@@ -406,7 +419,7 @@ var SlimSelect = (function () {
                         this.callbacks.close();
                         return false;
                 }
-                return false;
+                return true;
             };
             main.onclick = (e) => {
                 if (this.settings.disabled) {
@@ -622,7 +635,7 @@ var SlimSelect = (function () {
             value.dataset.id = option.id;
             const text = document.createElement('div');
             text.classList.add(this.classes.valueText);
-            text.innerText = option.text;
+            text.textContent = option.text;
             value.appendChild(text);
             if (!option.mandatory) {
                 const deleteDiv = document.createElement('div');
@@ -1162,7 +1175,7 @@ var SlimSelect = (function () {
         }
         highlightText(str, search, className) {
             let completedString = str;
-            const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
+            const regex = new RegExp('(?![^<]*>)(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
             if (!str.match(regex)) {
                 return str;
             }
@@ -1310,6 +1323,15 @@ var SlimSelect = (function () {
                     if (m.attributeName === 'class') {
                         classChanged = true;
                     }
+                    if (m.type === 'childList') {
+                        for (const n of m.addedNodes) {
+                            if (n.nodeName === 'OPTION' && n.value === this.select.value) {
+                                this.select.dispatchEvent(new Event('change'));
+                                break;
+                            }
+                        }
+                        optgroupOptionChanged = true;
+                    }
                 }
                 if (m.target.nodeName === 'OPTGROUP' || m.target.nodeName === 'OPTION') {
                     optgroupOptionChanged = true;
@@ -1366,7 +1388,7 @@ var SlimSelect = (function () {
                 text: option.text,
                 html: option.dataset && option.dataset.html ? option.dataset.html : '',
                 selected: option.selected,
-                display: option.style.display === 'none' ? false : true,
+                display: option.style.display !== 'none',
                 disabled: option.disabled,
                 mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
                 placeholder: option.dataset.placeholder === 'true',
@@ -1423,6 +1445,27 @@ var SlimSelect = (function () {
             }
             this.changeListen(true);
         }
+        setSelectedByValue(values) {
+            this.changeListen(false);
+            const options = this.select.childNodes;
+            for (const o of options) {
+                if (o.nodeName === 'OPTGROUP') {
+                    const optgroup = o;
+                    const optgroupOptions = optgroup.childNodes;
+                    for (const oo of optgroupOptions) {
+                        if (oo.nodeName === 'OPTION') {
+                            const option = oo;
+                            option.selected = values.includes(option.value);
+                        }
+                    }
+                }
+                if (o.nodeName === 'OPTION') {
+                    const option = o;
+                    option.selected = values.includes(option.value);
+                }
+            }
+            this.changeListen(true);
+        }
         updateSelect(id, style, classes) {
             this.changeListen(false);
             if (id) {
@@ -1452,7 +1495,7 @@ var SlimSelect = (function () {
                     this.select.appendChild(this.createOption(d));
                 }
             }
-            this.select.dispatchEvent(new Event('change'));
+            this.select.dispatchEvent(new Event('change', { bubbles: true }));
             this.changeListen(true);
         }
         createOptgroup(optgroup) {
@@ -1486,7 +1529,7 @@ var SlimSelect = (function () {
             if (info.disabled) {
                 optionEl.disabled = true;
             }
-            if (info.display === false) {
+            if (!info.display) {
                 optionEl.style.display = 'none';
             }
             if (info.placeholder) {
@@ -1537,6 +1580,7 @@ var SlimSelect = (function () {
             this.disabled = settings.disabled !== undefined ? settings.disabled : false;
             this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false;
             this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true;
+            this.focusSearch = settings.focusSearch !== undefined ? settings.focusSearch : true;
             this.ariaLabel = settings.ariaLabel || 'Combobox';
             this.searchPlaceholder = settings.searchPlaceholder || 'Search';
             this.searchText = settings.searchText || 'No Results';
@@ -1617,6 +1661,7 @@ var SlimSelect = (function () {
                 this.destroy();
             }
             this.settings = new Settings(config.settings);
+            this.cssClasses = new CssClasses(config.cssClasses);
             const debounceEvents = ['afterChange', 'beforeOpen', 'afterOpen', 'beforeClose', 'afterClose'];
             for (const key in config.events) {
                 if (!config.events.hasOwnProperty(key)) {
@@ -1668,7 +1713,7 @@ var SlimSelect = (function () {
                 beforeChange: this.events.beforeChange,
                 afterChange: this.events.afterChange,
             };
-            this.render = new Render(this.settings, this.store, renderCallbacks);
+            this.render = new Render(this.settings, this.cssClasses, this.store, renderCallbacks);
             this.render.renderValues();
             this.render.renderOptions(this.store.getData());
             const selectAriaLabel = this.selectEl.getAttribute('aria-label');
@@ -1778,7 +1823,7 @@ var SlimSelect = (function () {
                 this.events.beforeOpen();
             }
             this.render.open();
-            if (this.settings.showSearch) {
+            if (this.settings.showSearch && this.settings.focusSearch) {
                 this.render.searchFocus();
             }
             this.settings.isOpen = true;

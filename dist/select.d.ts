@@ -21,6 +21,7 @@ export default class Select {
     getSelectedOptions(): Option[];
     getSelectedValues(): string[];
     setSelected(ids: string[]): void;
+    setSelectedByValue(values: string[]): void;
     updateSelect(id?: string, style?: string, classes?: string[]): void;
     updateOptions(data: DataArray): void;
     createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;

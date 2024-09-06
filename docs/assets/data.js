@@ -1,4 +1,4 @@
-import{d as n,S as a,_ as l,o,c as s,a as e,f as t}from"./index.js";const i=n({name:"Data",mounted(){new a({select:this.$refs.dataSingle,data:[{placeholder:!0,text:"data placeholder"},{text:"Cat"},{text:"Dog"},{text:"Bird"}]}),new a({select:this.$refs.dataMultiple,data:[{placeholder:!0,text:"data placeholder"},{text:"Human"},{label:"Animals",options:[{text:"Cat"},{text:"Dog"},{text:"Bird"}]}]})}}),d={id:"data",class:"contents"},p=e("div",{id:"types",class:"content"},[e("h2",{class:"header"},"Data Types"),e("p",null," There are two types of data types. The option which consists of a variation of fields to customize the option. You can also provide an optgroup which has a label and an array of options. "),e("pre",null,[t("        "),e("code",{class:"language-javascript"},`
+import{d as n,S as l,_ as o,o as s,c as i,a as e,e as a}from"./index.js";const d=n({name:"Data",mounted(){new l({select:this.$refs.dataSingle,data:[{placeholder:!0,text:"data placeholder"},{text:"Cat"},{text:"Dog"},{text:"Bird"}]}),new l({select:this.$refs.dataMultiple,data:[{placeholder:!0,text:"data placeholder"},{text:"Human"},{label:"Animals",options:[{text:"Cat"},{text:"Dog"},{text:"Bird"}]}]})}}),p={id:"data",class:"contents"},r={id:"field",class:"content"},u={class:"row"},f={ref:"dataSingle"},c={ref:"dataMultiple",multiple:""};function h(x,t,m,b,v,g){return s(),i("div",p,[t[4]||(t[4]=e("div",{id:"types",class:"content"},[e("h2",{class:"header"},"Data Types"),e("p",null," There are two types of data types. The option which consists of a variation of fields to customize the option. You can also provide an optgroup which has a label and an array of options. "),e("pre",null,[a("        "),e("code",{class:"language-javascript"},`
           var optgroup = {
             label: 'label', // Required
             selectAll: false, // Optional - default false
@@ -19,8 +19,8 @@ import{d as n,S as a,_ as l,o,c as s,a as e,f as t}from"./index.js";const i=n({n
             style: '', // Optional - default is not set
             data: {} // Optional - If you have data attributes
           }
-        `),t(`
-      `)])],-1),r={id:"field",class:"content"},c=e("h2",{class:"header"},"Data Field",-1),u=e("p",null," The data field is an array of options and optgroups. The data field can be used in place of the select element. The data field will also be used to update the options in the original select element. ",-1),f=e("p",null," The only required field is the text field. The value field will be set to the text field if not set. All other fields are optional and have default values if not set. ",-1),h={class:"row"},x={ref:"dataSingle"},_={ref:"dataMultiple",multiple:""},m=e("pre",null,[t("        "),e("code",{class:"language-javascript"},`
+        `),a(`
+      `)])],-1)),e("div",r,[t[0]||(t[0]=e("h2",{class:"header"},"Data Field",-1)),t[1]||(t[1]=e("p",null," The data field is an array of options and optgroups. The data field can be used in place of the select element. The data field will also be used to update the options in the original select element. ",-1)),t[2]||(t[2]=e("p",null," The only required field is the text field. The value field will be set to the text field if not set. All other fields are optional and have default values if not set. ",-1)),e("div",u,[e("select",f,null,512),e("select",c,null,512)]),t[3]||(t[3]=e("pre",null,[a("        "),e("code",{class:"language-javascript"},`
           new SlimSelect({
             select: '#selectElement',
             
@@ -59,5 +59,5 @@ import{d as n,S as a,_ as l,o,c as s,a as e,f as t}from"./index.js";const i=n({n
 
           // If you want to set a placeholder set the first object placeholder to true
           {'placeholder': true, 'text': 'placeholder text'}
-        `),t(`
-      `)],-1);function b(v,g,y,O,w,T){return o(),s("div",d,[p,e("div",r,[c,u,f,e("div",h,[e("select",x,null,512),e("select",_,null,512)]),m])])}const D=l(i,[["render",b]]);export{D as default};
+        `),a(`
+      `)],-1))])])}const O=o(d,[["render",h]]);export{O as default};

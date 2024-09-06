@@ -1,3 +1,4 @@
+import CssClasses from './classes';
 import Render from './render';
 import Select from './select';
 import Settings, { SettingsPartial } from './settings';
@@ -6,6 +7,7 @@ export interface Config {
     select: string | Element;
     data?: DataArrayPartial;
     settings?: SettingsPartial;
+    cssClasses?: Partial<CssClasses>;
     events?: Events;
 }
 export interface Events {
@@ -23,6 +25,7 @@ export interface Events {
 export default class SlimSelect {
     selectEl: HTMLSelectElement;
     settings: Settings;
+    cssClasses: CssClasses;
     select: Select;
     store: Store;
     render: Render;
