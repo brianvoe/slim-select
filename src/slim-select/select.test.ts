@@ -14,15 +14,15 @@ describe('select module', () => {
   beforeEach(() => {
     document.body.innerHTML = `<select id="test" multiple>
         <optgroup label="test1">
-            <option value="1">One</option>
-            <option value="2">Two</option>
+            <option id="111" value="1">One</option>
+            <option id="222" value="2">Two</option>
         </optgroup>
         <optgroup label="test2">
-            <option value="3">Three</option>
-            <option value="4">Four</option>
-            <option value="5">Five</option>
+            <option id="333" value="3">Three</option>
+            <option id="444" value="4">Four</option>
+            <option id="555" value="5">Five</option>
         </optgroup>
-        <option value="6">Six</option>
+        <option id="666" value="6">Six</option>
       </select>`
 
     const selectElement = document.getElementById('test') as HTMLSelectElement
@@ -105,13 +105,13 @@ describe('select module', () => {
     test('get data from select optgroups', () => {
       document.body.innerHTML = `<select id="test">
         <optgroup label="test1">
-            <option value="1">One</option>
-            <option value="2">Two</option>
+            <option id="111" value="1">One</option>
+            <option id="222" value="2">Two</option>
         </optgroup>
         <optgroup label="test2">
-            <option value="3">Three</option>
-            <option value="4">Four</option>
-            <option value="5">Five</option>
+            <option id="333" value="3">Three</option>
+            <option id="444" value="4">Four</option>
+            <option id="555" value="5">Five</option>
         </optgroup>
       </select>`
 
@@ -123,37 +123,61 @@ describe('select module', () => {
 
       expect(data[0].label).toBe('test1')
       expect(data[0].options).toHaveLength(2)
+      expect(data[0].options[0].id).toBe('111')
       expect(data[0].options[0].value).toBe('1')
       expect(data[0].options[0].text).toBe('One')
+      expect(data[0].options[1].id).toBe('222')
       expect(data[0].options[1].value).toBe('2')
       expect(data[0].options[1].text).toBe('Two')
 
       expect(data[1].label).toBe('test2')
       expect(data[1].options).toHaveLength(3)
+      expect(data[1].options[0].id).toBe('333')
       expect(data[1].options[0].value).toBe('3')
       expect(data[1].options[0].text).toBe('Three')
+      expect(data[1].options[1].id).toBe('444')
       expect(data[1].options[1].value).toBe('4')
       expect(data[1].options[1].text).toBe('Four')
+      expect(data[1].options[2].id).toBe('555')
       expect(data[1].options[2].value).toBe('5')
       expect(data[1].options[2].text).toBe('Five')
     })
   })
 
   describe('setSelected', () => {
+    test('single option gets selected correctly', () => {
+      // get id of the first option in the first optgroup
+      const id = select.select.querySelector<HTMLOptionElement>('optgroup option')?.id
+      expect(id).toBe('111')
+
+      select.setSelected([id as string])
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="1"]')?.selected).toBe(true)
+    })
+
+    test('mix of options get selected correctly', () => {
+      select.setSelected(['111', '222', '333'])
+
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="1"]')?.selected).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="2"]')?.selected).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="3"]')?.selected).toBe(true)
+    })
+  })
+
+  describe('setSelectedByValue', () => {
     test('single value get selected correctly', () => {
-      select.setSelected(['6'])
+      select.setSelectedByValue(['6'])
 
       expect(select.select.querySelector<HTMLOptionElement>('option[value="6"]')?.selected).toBe(true)
     })
 
     test('opt group value gets selected correctly', () => {
-      select.setSelected(['4'])
+      select.setSelectedByValue(['4'])
 
       expect(select.select.querySelector<HTMLOptionElement>('option[value="4"]')?.selected).toBe(true)
     })
 
     test('mix of options get selected correctly', () => {
-      select.setSelected(['2', '3', '6'])
+      select.setSelectedByValue(['2', '3', '6'])
 
       expect(select.select.querySelector<HTMLOptionElement>('option[value="2"]')?.selected).toBe(true)
       expect(select.select.querySelector<HTMLOptionElement>('option[value="3"]')?.selected).toBe(true)
@@ -202,20 +226,20 @@ describe('select module', () => {
         id: '1',
         value: '1',
         text: 'One',
-        selected: false,
+        selected: false
       },
       {
         id: '2',
         value: '2',
         text: 'Two',
-        selected: false,
-      },
+        selected: false
+      }
     ])
     let data = store.getData()
     select.updateOptions(data)
 
     expect(selectElement.outerHTML).toBe(
-      '<select id="test"><option id="1" value="1">One</option><option id="2" value="2">Two</option></select>',
+      '<select id="test"><option id="1" value="1">One</option><option id="2" value="2">Two</option></select>'
     )
   })
 

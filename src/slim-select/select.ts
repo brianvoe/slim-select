@@ -268,6 +268,38 @@ export default class Select {
     this.changeListen(true)
   }
 
+  // Set selected options by value instead of id
+  // This is useful when the id is not known
+  // and only the value is known
+  // but the value is not unique and can be duplicated
+  public setSelectedByValue(values: string[]): void {
+    // Stop listening to changes
+    this.changeListen(false)
+
+    // Loop through options and set selected
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    for (const o of options) {
+      if (o.nodeName === 'OPTGROUP') {
+        const optgroup = o as HTMLOptGroupElement
+        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
+        for (const oo of optgroupOptions) {
+          if (oo.nodeName === 'OPTION') {
+            const option = oo as HTMLOptionElement
+            option.selected = values.includes(option.value)
+          }
+        }
+      }
+
+      if (o.nodeName === 'OPTION') {
+        const option = o as HTMLOptionElement
+        option.selected = values.includes(option.value)
+      }
+    }
+
+    // Stop listening to changes
+    this.changeListen(true)
+  }
+
   public updateSelect(id?: string, style?: string, classes?: string[]): void {
     // Stop listening to changes
     this.changeListen(false)
