@@ -57,7 +57,7 @@ export default defineComponent({
         { abv: 'WA', state: 'Washington' },
         { abv: 'WV', state: 'West Virginia' },
         { abv: 'WI', state: 'Wisconsin' },
-        { abv: 'WY', state: 'Wyoming' },
+        { abv: 'WY', state: 'Wyoming' }
       ],
       foods: [
         { label: 'Dairy', options: ['Milk', 'Cheese', 'Butter', 'Ice Cream'] },
@@ -65,29 +65,29 @@ export default defineComponent({
         { label: 'Fruits', options: ['Apple', 'Banana', 'Grape', 'Orange', 'Strawberry', 'Blueberry', 'Raspberry'] },
         {
           label: 'Vegetables',
-          options: ['Carrot', 'Tomato', 'Broccoli', 'Celery', 'Corn', 'Pumpkin', 'Kale', 'Spinach'],
-        },
-      ],
+          options: ['Carrot', 'Tomato', 'Broccoli', 'Celery', 'Corn', 'Pumpkin', 'Kale', 'Spinach']
+        }
+      ]
     }
   },
   mounted() {
     // Single
     new SlimSelect({
-      select: this.$refs.single as HTMLSelectElement,
+      select: this.$refs.single as HTMLSelectElement
     })
     new SlimSelect({
-      select: this.$refs.singleOptgroup as HTMLSelectElement,
+      select: this.$refs.singleOptgroup as HTMLSelectElement
     })
 
     // Multiple
     new SlimSelect({
-      select: this.$refs.multiple as HTMLSelectElement,
+      select: this.$refs.multiple as HTMLSelectElement
     })
     const multiGroup = new SlimSelect({
-      select: this.$refs.multipleOptgroup as HTMLSelectElement,
+      select: this.$refs.multipleOptgroup as HTMLSelectElement
     })
     multiGroup.setSelected(['Cheese', 'Apple', 'Corn'])
-  },
+  }
 })
 </script>
 
