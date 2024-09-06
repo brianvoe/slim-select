@@ -77,7 +77,10 @@ export default defineComponent({
   <div id="search" class="content">
     <h2 class="header">showSearch / focusSearch / searchText / searchingText / searchHighlight</h2>
     <p><b>showSearch</b> - is a boolean value that will decide whether or not to show the search. Default is true.</p>
-    <p><b>focusSearch</b> - is a boolean value that will decide whether or not to focus on the search on open. Default is true.</p>
+    <p>
+      <b>focusSearch</b> - is a boolean value that will decide whether or not to focus on the search on open. Default is
+      true.
+    </p>
     <p>
       <b>searchText</b> - is a string value that will show in the event there are no results. Default is 'No Results'.
     </p>
@@ -151,10 +154,11 @@ export default defineComponent({
         let slim = new SlimSelect({
           select: '#selectElement',
           settings: {
-            showSearch: false,
-            searchText: 'Sorry nothing to see here',
-            searchPlaceholder: 'Search for the good stuff!',
-            searchHighlight: true
+            showSearch: false, // used in example
+            focusSearch: false, // used in example
+            searchText: 'Sorry nothing to see here', // used in example
+            searchPlaceholder: 'Search for the good stuff!', // used in example
+            searchHighlight: true // used in example
           }
         })
       </code>
