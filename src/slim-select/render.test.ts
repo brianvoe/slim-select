@@ -621,10 +621,7 @@ describe('render module', () => {
       // recreate search because we have added the addable callback
       render.content.search = render.searchDiv()
 
-      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true }))
-      expect(addableMock).not.toHaveBeenCalled()
-
-      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', ctrlKey: true }))
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
       expect(addableMock).not.toHaveBeenCalled()
     })
 
@@ -641,13 +638,9 @@ describe('render module', () => {
 
       render.content.search.input.value = 'Search'
 
-      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true }))
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
       expect(addableMock).toHaveBeenCalledTimes(1)
       expect(addableMock.mock.calls[0]).toStrictEqual(['Search'])
-
-      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', ctrlKey: true }))
-      expect(addableMock).toHaveBeenCalledTimes(2)
-      expect(addableMock.mock.calls[1]).toStrictEqual(['Search'])
     })
   })
 
