@@ -152,6 +152,7 @@ new SlimSelect({
     timeoutDelay: 200,
     maxValuesShown: 20,
     maxValuesMessage: '{number} selected',
+    addableText: 'Press "Enter" to add {value}',
   },
 })
 ```
@@ -167,7 +168,7 @@ new SlimSelect({
   events: {
     search: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
     searchFilter: (option: Option, search: string) => boolean
-    addable: (value: string) => Promise<OptionOptional | string> | OptionOptional | string
+    addable: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | Error
     beforeChange: (newVal: Option[], oldVal: Option[]) => boolean | void
     afterChange: (newVal: Option[]) => void
     beforeOpen: () => void
