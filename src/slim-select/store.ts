@@ -372,7 +372,7 @@ export default class Store {
   }
 
   // Take in an array of options and reoder them based upon the selected order
-  public reorderOptions(options: Option[]) {
+  public selectedOrderOptions(options: Option[]): Option[] {
     const newOrder: Option[] = []
     this.selectedOrder.forEach((id) => {
       const option = options.find((opt) => opt.id === id)

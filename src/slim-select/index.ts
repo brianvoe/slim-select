@@ -253,7 +253,7 @@ export default class SlimSelect {
   public getSelected(): string[] {
     let options = this.store.getSelectedOptions()
     if (this.settings.keepOrder) {
-      options = this.store.reorderOptions(options)
+      options = this.store.selectedOrderOptions(options)
     }
     return options.map((option) => option.value)
   }

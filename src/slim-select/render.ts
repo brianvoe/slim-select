@@ -433,7 +433,7 @@ export default class Render {
 
     // Lets check for data selected order
     if (this.settings.keepOrder) {
-      selectedOptions = this.store.reorderOptions(selectedOptions)
+      selectedOptions = this.store.selectedOrderOptions(selectedOptions)
     }
 
     // Loop through currentNodes and only include ones that are not in selectedIDs
