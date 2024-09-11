@@ -10,7 +10,9 @@ let hasInitalized = false
 // no need to account for option changes during dev, we can just
 // refresh the page
 onMounted(() => {
-  if (!hasInitalized) {
+  const isLocalhost = window.location.hostname === 'localhost'
+
+  if (!hasInitalized && !isLocalhost) {
     hasInitalized = true
 
     const s = document.createElement('script')
@@ -93,5 +95,5 @@ onMounted(() => {
 </style>
 
 <template>
-  <div class="carbon-container" ref="container" />
+  <div v-if="hasInitalized" class="carbon-container" ref="container" />
 </template>
