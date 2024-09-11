@@ -40,7 +40,8 @@ onMounted(() => {
     settings: {
       placeholderText: 'Search First or Last Name',
       searchingText: 'Searching Users...',
-      searchHighlight: true
+      searchHighlight: true,
+      allowDeselect: true
     },
     events: {
       search: searchPromise
@@ -53,7 +54,8 @@ onMounted(() => {
       closeOnSelect: false,
       placeholderText: 'Search First or Last Name',
       searchingText: 'Searching Users...',
-      searchHighlight: true
+      searchHighlight: true,
+      allowDeselect: true
     },
     events: {
       search: searchPromise

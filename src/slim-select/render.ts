@@ -958,6 +958,23 @@ export default class Render {
       return
     }
 
+    // If settings has allowDeselect and isSingle, add empty placeholder in the event they want to deselect
+    if (this.settings.allowDeselect && !this.settings.isMultiple) {
+      // Check if store options have a placeholder
+      const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+      if (!placeholderOption.length) {
+        this.store.addOption(
+          new Option({
+            text: '',
+            value: '',
+            selected: false,
+            placeholder: true
+          }),
+          true
+        )
+      }
+    }
+
     // Append individual options to div container
     for (const d of data) {
       // Create optgroup

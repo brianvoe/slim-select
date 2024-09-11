@@ -191,8 +191,13 @@ export default class Store {
     return this.filter(null, false) as Option[]
   }
 
-  public addOption(option: OptionOptional) {
-    this.setData(this.getData().concat(new Option(option)))
+  public addOption(option: OptionOptional, addToStart: boolean = false) {
+    if (addToStart) {
+      let data = [new Option(option)] as DataArray
+      this.setData(data.concat(this.getData()))
+    } else {
+      this.setData(this.getData().concat(new Option(option)))
+    }
   }
 
   // Pass in an array of id that will loop through
