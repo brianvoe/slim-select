@@ -669,8 +669,7 @@ describe('render module', () => {
       expect(opts).toHaveLength(3)
     })
 
-    test.skip('filters correctly when filtering out placeholders', () => {
-      // TODO placeholder options are created without placeholder class, which makes the getOptions fail
+    test('filters correctly when filtering out placeholders', () => {
       render.renderOptions(
         render.store.partialToFullData([
           {
@@ -686,7 +685,7 @@ describe('render module', () => {
         ])
       )
 
-      const opts = render.getOptions(true)
+      const opts = render.getOptions(true, false, true)
       expect(opts).toHaveLength(2)
     })
 
