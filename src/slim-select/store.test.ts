@@ -749,6 +749,26 @@ describe('store module', () => {
       expect(selected[0]).toBe('opt 1')
       expect(selected[1]).toBe('opt 2')
     })
+
+    test('get correct order when using reorder options', () => {
+      const store = new Store('multiple', [
+        {
+          text: 'opt 0'
+        },
+        {
+          text: 'opt 1'
+        },
+        {
+          text: 'opt 2'
+        }
+      ])
+
+      store.setSelectedBy('value', ['opt 2', 'opt 0'])
+
+      let selected = store.getSelectedOptions()
+      selected = store.selectedOrderOptions(selected)
+      expect(selected.map((opt) => opt.text)).toEqual(['opt 2', 'opt 0'])
+    })
   })
 
   describe('getSelectedOptions', () => {
