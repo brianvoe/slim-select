@@ -93,6 +93,7 @@ export default class Store {
 
   // Main data set, never null
   private data: DataArray = []
+  private selectedOrder: string[] = []
 
   constructor(type: selectType, data: DataArrayPartial) {
     this.selectType = type
@@ -200,6 +201,7 @@ export default class Store {
   public setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]) {
     let firstOption: Option | null = null
     let hasSelected = false
+    const selectedObjects: Option[] = []
 
     for (let dataObj of this.data) {
       // Optgroup
@@ -213,8 +215,12 @@ export default class Store {
 
           // If the option is selected, set hasSelected to true
           // for single based selects
-          if (option.selected && this.selectType === 'single') {
-            hasSelected = true
+          if (option.selected) {
+            selectedObjects.push(option)
+
+            if (this.selectType === 'single') {
+              hasSelected = true
+            }
           }
         }
       }
@@ -229,8 +235,12 @@ export default class Store {
 
         // If the option is selected, set hasSelected to true
         // for single based selects
-        if (dataObj.selected && this.selectType === 'single') {
-          hasSelected = true
+        if (dataObj.selected) {
+          selectedObjects.push(dataObj)
+
+          if (this.selectType === 'single') {
+            hasSelected = true
+          }
         }
       }
     }
@@ -238,7 +248,15 @@ export default class Store {
     // If no options are selected, select the first option
     if (this.selectType === 'single' && firstOption && !hasSelected) {
       firstOption.selected = true
+      selectedObjects.push(firstOption)
     }
+
+    // Put together a list of selected ids in the order of the selected values
+    const selectedIds = selectedValues.map((value) => {
+      return selectedObjects.find((option) => option[selectedType] === value)?.id || ''
+    })
+
+    this.selectedOrder = selectedIds
   }
 
   public getSelected(): string[] {
@@ -351,5 +369,34 @@ export default class Store {
     })
 
     return dataSearch
+  }
+
+  // Take in an array of options and reoder them based upon the selected order
+  public reorderOptions(options: Option[]) {
+    const newOrder: Option[] = []
+    this.selectedOrder.forEach((id) => {
+      const option = options.find((opt) => opt.id === id)
+      if (option) {
+        newOrder.push(option)
+      }
+    })
+
+    // add any remaining options that were not in the selected order
+    options.forEach((option) => {
+      let isIn = false
+      newOrder.forEach((selectedOption) => {
+        if (option.id === selectedOption.id) {
+          isIn = true
+
+          return
+        }
+      })
+
+      if (!isIn) {
+        newOrder.push(option)
+      }
+    })
+
+    return newOrder
   }
 }

@@ -431,6 +431,11 @@ export default class Render {
       }
     }
 
+    // Lets check for data selected order
+    if (this.settings.keepOrder) {
+      selectedOptions = this.store.reorderOptions(selectedOptions)
+    }
+
     // Loop through currentNodes and only include ones that are not in selectedIDs
     let removeNodes: HTMLDivElement[] = []
     for (let i = 0; i < currentNodes.length; i++) {

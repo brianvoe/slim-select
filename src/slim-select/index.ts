@@ -251,7 +251,11 @@ export default class SlimSelect {
   }
 
   public getSelected(): string[] {
-    return this.store.getSelectedOptions().map((option) => option.value)
+    let options = this.store.getSelectedOptions()
+    if (this.settings.keepOrder) {
+      options = this.store.reorderOptions(options)
+    }
+    return options.map((option) => option.value)
   }
 
   // Will take in a string or array of strings and set the selected by either the id or value
