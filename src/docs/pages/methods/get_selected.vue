@@ -10,7 +10,9 @@ export default defineComponent({
       selectedSingle: null as SlimSelect | null,
       selectedSingleValue: [] as string[],
       selectedMultiple: null as SlimSelect | null,
-      selectedMultipleValue: [] as string[]
+      selectedMultipleValue: [] as string[],
+      selectedKeepOrder: null as SlimSelect | null,
+      selectedKeepOrderValue: [] as string[]
     }
   },
   mounted() {
@@ -20,11 +22,20 @@ export default defineComponent({
     this.selectedMultiple = new SlimSelect({
       select: this.$refs.selectedMultiple as HTMLSelectElement
     })
+    this.selectedKeepOrder = new SlimSelect({
+      select: this.$refs.selectedKeepOrder as HTMLSelectElement,
+      settings: {
+        keepOrder: true
+      }
+    })
+
+    this.selectedKeepOrder!.setSelected(['value3', 'value1'])
   },
   methods: {
     getSelected() {
       this.selectedSingleValue = this.selectedSingle!.getSelected()
       this.selectedMultipleValue = this.selectedMultiple!.getSelected()
+      this.selectedKeepOrderValue = this.selectedKeepOrder!.getSelected()
     }
   }
 })
@@ -63,12 +74,26 @@ export default defineComponent({
           <b>Multi Select Value:</b> {{ selectedMultipleValue }}
         </div>
       </div>
+
+      <div>
+        <select ref="selectedKeepOrder" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+        <div class="pad-t-m pad-b-m" v-if="selectedKeepOrderValue.length">
+          <b>Keep Order Value:</b> {{ selectedKeepOrderValue }}
+        </div>
+      </div>
     </div>
 
     <pre>
       <code class="language-javascript">
         var select = new SlimSelect({
           select: '#selectElement'
+
+          // Optional - If you want to keep the order of the selected values
+          // settings: { keepOrder: true }
         })
         var values = select.getSelected() // Will return an array of strings
         console.log(values)
