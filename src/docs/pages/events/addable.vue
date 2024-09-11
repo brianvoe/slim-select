@@ -10,7 +10,9 @@ export default defineComponent({
       select: this.$refs.addableSingle as HTMLSelectElement,
       events: {
         addable: (value: string) => {
-          // return false
+          if (value.toLowerCase() === 'value') {
+            return new Error('You cant set that value')
+          }
 
           return {
             text: value,
@@ -67,9 +69,17 @@ export default defineComponent({
           select: '#selectElement',
 
           events: {
+            // Allow anything
+            addable: function (value) { return value },
+
+            // or 
+
+            // Decide what is allowed to be added
             addable: function (value) {
               // return false or null if you do not want to allow value to be submitted
-              if (value === 'bad') {return false}
+              if (value === 'bad') { return false }
+
+              // return new 
 
               // Return the value string
               return value // Optional - value alteration // ex: value.toLowerCase()

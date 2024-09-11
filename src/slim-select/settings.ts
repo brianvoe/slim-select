@@ -37,6 +37,7 @@ export default class Settings {
   public timeoutDelay: number
   public maxValuesShown: number
   public maxValuesMessage: string
+  public addableText: string
 
   constructor(settings?: SettingsPartial) {
     if (!settings) {
@@ -70,5 +71,6 @@ export default class Settings {
     this.timeoutDelay = settings.timeoutDelay || 200
     this.maxValuesShown = settings.maxValuesShown || 20
     this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
+    this.addableText = settings.addableText || 'Press "Enter" to add {value}'
   }
 }

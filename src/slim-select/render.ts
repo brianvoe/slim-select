@@ -6,7 +6,9 @@ import CssClasses from './classes'
 export interface Callbacks {
   open: () => void
   close: () => void
-  addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null
+  addable?: (
+    value: string
+  ) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null | Error
   setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
@@ -669,14 +671,19 @@ export default class Render {
           // which will also focus on main div
           // and then continuing normal tabbing
           this.callbacks.close()
-
           return true // Continue doing normal tabbing
         case 'Escape':
           this.callbacks.close()
           return false
-        case 'Enter':
         case ' ':
-          if (this.callbacks.addable && e.ctrlKey) {
+          const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          if (highlighted) {
+            highlighted.click()
+            return false
+          }
+          return true
+        case 'Enter':
+          if (this.callbacks.addable) {
             addable.click()
             return false
           } else {
@@ -770,6 +777,8 @@ export default class Render {
                 text: value,
                 value: value
               })
+            } else if (addableValue instanceof Error) {
+              this.renderError(addableValue.message)
             } else {
               runFinish(value)
             }
@@ -779,6 +788,8 @@ export default class Render {
             text: addableValue,
             value: addableValue
           })
+        } else if (addableValue instanceof Error) {
+          this.renderError(addableValue.message)
         } else {
           runFinish(addableValue)
         }
@@ -936,7 +947,13 @@ export default class Render {
     if (data.length === 0) {
       const noResults = document.createElement('div')
       noResults.classList.add(this.classes.search)
-      noResults.innerHTML = this.settings.searchText
+
+      //
+      if (this.callbacks.addable) {
+        noResults.innerHTML = this.settings.addableText.replace('{value}', this.content.search.input.value)
+      } else {
+        noResults.innerHTML = this.settings.searchText
+      }
       this.content.list.appendChild(noResults)
       return
     }
