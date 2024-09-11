@@ -30,5 +30,6 @@ export default class Settings {
     timeoutDelay: number;
     maxValuesShown: number;
     maxValuesMessage: string;
+    addableText: string;
     constructor(settings?: SettingsPartial);
 }

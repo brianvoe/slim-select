@@ -56,6 +56,7 @@ export declare class Option {
 export default class Store {
     private selectType;
     private data;
+    private selectedOrder;
     constructor(type: selectType, data: DataArrayPartial);
     validateDataArray(data: DataArray | DataArrayPartial): Error | null;
     validateOption(option: Option | OptionOptional): Error | null;
@@ -63,9 +64,10 @@ export default class Store {
     setData(data: DataArray | DataArrayPartial): void;
     getData(): DataArray;
     getDataOptions(): Option[];
-    addOption(option: OptionOptional): void;
+    addOption(option: OptionOptional, addToStart?: boolean): void;
     setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]): void;
     getSelected(): string[];
+    getSelectedValues(): string[];
     getSelectedOptions(): Option[];
     getOptgroupByID(id: string): Optgroup | null;
     getOptionByID(id: string): Option | null;
@@ -75,5 +77,6 @@ export default class Store {
     filter(filter: {
         (opt: Option): boolean;
     } | null, includeOptgroup: boolean): DataArray;
+    selectedOrderOptions(options: Option[]): Option[];
 }
 export {};

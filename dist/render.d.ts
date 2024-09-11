@@ -4,7 +4,7 @@ import CssClasses from './classes';
 export interface Callbacks {
     open: () => void;
     close: () => void;
-    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null;
+    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null | Error;
     setSelected: (value: string | string[], runAfterChange: boolean) => void;
     addOption: (option: Option) => void;
     search: (search: string) => void;

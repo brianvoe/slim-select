@@ -139,6 +139,7 @@
         constructor(type, data) {
             this.selectType = 'single';
             this.data = [];
+            this.selectedOrder = [];
             this.selectType = type;
             this.setData(data);
         }
@@ -210,12 +211,19 @@
         getDataOptions() {
             return this.filter(null, false);
         }
-        addOption(option) {
-            this.setData(this.getData().concat(new Option(option)));
+        addOption(option, addToStart = false) {
+            if (addToStart) {
+                let data = [new Option(option)];
+                this.setData(data.concat(this.getData()));
+            }
+            else {
+                this.setData(this.getData().concat(new Option(option)));
+            }
         }
         setSelectedBy(selectedType, selectedValues) {
             let firstOption = null;
             let hasSelected = false;
+            const selectedObjects = [];
             for (let dataObj of this.data) {
                 if (dataObj instanceof Optgroup) {
                     for (let option of dataObj.options) {
@@ -223,8 +231,11 @@
                             firstOption = option;
                         }
                         option.selected = hasSelected ? false : selectedValues.includes(option[selectedType]);
-                        if (option.selected && this.selectType === 'single') {
-                            hasSelected = true;
+                        if (option.selected) {
+                            selectedObjects.push(option);
+                            if (this.selectType === 'single') {
+                                hasSelected = true;
+                            }
                         }
                     }
                 }
@@ -233,17 +244,29 @@
                         firstOption = dataObj;
                     }
                     dataObj.selected = hasSelected ? false : selectedValues.includes(dataObj[selectedType]);
-                    if (dataObj.selected && this.selectType === 'single') {
-                        hasSelected = true;
+                    if (dataObj.selected) {
+                        selectedObjects.push(dataObj);
+                        if (this.selectType === 'single') {
+                            hasSelected = true;
+                        }
                     }
                 }
             }
             if (this.selectType === 'single' && firstOption && !hasSelected) {
                 firstOption.selected = true;
+                selectedObjects.push(firstOption);
             }
+            const selectedIds = selectedValues.map((value) => {
+                var _a;
+                return ((_a = selectedObjects.find((option) => option[selectedType] === value)) === null || _a === void 0 ? void 0 : _a.id) || '';
+            });
+            this.selectedOrder = selectedIds;
         }
         getSelected() {
             return this.getSelectedOptions().map((option) => option.id);
+        }
+        getSelectedValues() {
+            return this.getSelectedOptions().map((option) => option.value);
         }
         getSelectedOptions() {
             return this.filter((opt) => {
@@ -319,6 +342,28 @@
                 }
             });
             return dataSearch;
+        }
+        selectedOrderOptions(options) {
+            const newOrder = [];
+            this.selectedOrder.forEach((id) => {
+                const option = options.find((opt) => opt.id === id);
+                if (option) {
+                    newOrder.push(option);
+                }
+            });
+            options.forEach((option) => {
+                let isIn = false;
+                newOrder.forEach((selectedOption) => {
+                    if (option.id === selectedOption.id) {
+                        isIn = true;
+                        return;
+                    }
+                });
+                if (!isIn) {
+                    newOrder.push(option);
+                }
+            });
+            return newOrder;
         }
     }
 
@@ -494,12 +539,12 @@
                 deselect: {
                     main: deselect,
                     svg: deselectSvg,
-                    path: deselectPath,
+                    path: deselectPath
                 },
                 arrow: {
                     main: arrow,
-                    path: arrowPath,
-                },
+                    path: arrowPath
+                }
             };
         }
         mainFocus(eventType) {
@@ -584,6 +629,9 @@
                 if (maxValuesMessage) {
                     maxValuesMessage.remove();
                 }
+            }
+            if (this.settings.keepOrder) {
+                selectedOptions = this.store.selectedOrderOptions(selectedOptions);
             }
             let removeNodes = [];
             for (let i = 0; i < currentNodes.length; i++) {
@@ -702,7 +750,7 @@
             return {
                 main: main,
                 search: search,
-                list: list,
+                list: list
             };
         }
         moveContent() {
@@ -732,7 +780,7 @@
             main.classList.add(this.classes.search);
             const searchReturn = {
                 main,
-                input,
+                input
             };
             if (!this.settings.showSearch) {
                 main.classList.add(this.classes.hide);
@@ -760,9 +808,15 @@
                     case 'Escape':
                         this.callbacks.close();
                         return false;
-                    case 'Enter':
                     case ' ':
-                        if (this.callbacks.addable && e.ctrlKey) {
+                        const highlighted = this.content.list.querySelector('.' + this.classes.highlighted);
+                        if (highlighted) {
+                            highlighted.click();
+                            return false;
+                        }
+                        return true;
+                    case 'Enter':
+                        if (this.callbacks.addable) {
                             addable.click();
                             return false;
                         }
@@ -824,8 +878,11 @@
                             if (typeof value === 'string') {
                                 runFinish({
                                     text: value,
-                                    value: value,
+                                    value: value
                                 });
+                            }
+                            else if (addableValue instanceof Error) {
+                                this.renderError(addableValue.message);
                             }
                             else {
                                 runFinish(value);
@@ -835,8 +892,11 @@
                     else if (typeof addableValue === 'string') {
                         runFinish({
                             text: addableValue,
-                            value: addableValue,
+                            value: addableValue
                         });
+                    }
+                    else if (addableValue instanceof Error) {
+                        this.renderError(addableValue.message);
                     }
                     else {
                         runFinish(addableValue);
@@ -847,7 +907,7 @@
                 searchReturn.addable = {
                     main: addable,
                     svg: plus,
-                    path: plusPath,
+                    path: plusPath
                 };
             }
             return searchReturn;
@@ -944,9 +1004,25 @@
             if (data.length === 0) {
                 const noResults = document.createElement('div');
                 noResults.classList.add(this.classes.search);
-                noResults.innerHTML = this.settings.searchText;
+                if (this.callbacks.addable) {
+                    noResults.innerHTML = this.settings.addableText.replace('{value}', this.content.search.input.value);
+                }
+                else {
+                    noResults.innerHTML = this.settings.searchText;
+                }
                 this.content.list.appendChild(noResults);
                 return;
+            }
+            if (this.settings.allowDeselect && !this.settings.isMultiple) {
+                const placeholderOption = this.store.filter((o) => o.placeholder, false);
+                if (!placeholderOption.length) {
+                    this.store.addOption(new Option({
+                        text: '',
+                        value: '',
+                        selected: false,
+                        placeholder: true
+                    }), true);
+                }
             }
             for (const d of data) {
                 if (d instanceof Optgroup) {
@@ -1267,7 +1343,7 @@
             this.select = select;
             this.valueChange = this.valueChange.bind(this);
             this.select.addEventListener('change', this.valueChange, {
-                passive: true,
+                passive: true
             });
             this.observer = new MutationObserver(this.observeCall.bind(this));
             this.changeListen(true);
@@ -1295,7 +1371,7 @@
                     this.observer.observe(this.select, {
                         subtree: true,
                         childList: true,
-                        attributes: true,
+                        attributes: true
                     });
                 }
             }
@@ -1374,7 +1450,7 @@
                 selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
                 selectAllText: optgroup.dataset ? optgroup.dataset.selectalltext : 'Select all',
                 closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
-                options: [],
+                options: []
             };
             const options = optgroup.childNodes;
             for (const o of options) {
@@ -1397,7 +1473,7 @@
                 placeholder: option.dataset.placeholder === 'true',
                 class: option.className,
                 style: option.style.cssText,
-                data: option.dataset,
+                data: option.dataset
             };
         }
         getSelectedOptions() {
@@ -1603,6 +1679,7 @@
             this.timeoutDelay = settings.timeoutDelay || 200;
             this.maxValuesShown = settings.maxValuesShown || 20;
             this.maxValuesMessage = settings.maxValuesMessage || '{number} selected';
+            this.addableText = settings.addableText || 'Press "Enter" to add {value}';
         }
     }
 
@@ -1620,7 +1697,7 @@
                 beforeOpen: undefined,
                 afterOpen: undefined,
                 beforeClose: undefined,
-                afterClose: undefined,
+                afterClose: undefined
             };
             this.windowResize = debounce(() => {
                 if (!this.settings.isOpen && !this.settings.isFullOpen) {
@@ -1714,7 +1791,7 @@
                 addOption: this.addOption.bind(this),
                 search: this.search.bind(this),
                 beforeChange: this.events.beforeChange,
-                afterChange: this.events.afterChange,
+                afterChange: this.events.afterChange
             };
             this.render = new Render(this.settings, this.cssClasses, this.store, renderCallbacks);
             this.render.renderValues();
@@ -1775,7 +1852,11 @@
             }
         }
         getSelected() {
-            return this.store.getSelectedOptions().map((option) => option.value);
+            let options = this.store.getSelectedOptions();
+            if (this.settings.keepOrder) {
+                options = this.store.selectedOrderOptions(options);
+            }
+            return options.map((option) => option.value);
         }
         setSelected(values, runAfterChange = true) {
             const selected = this.store.getSelected();
