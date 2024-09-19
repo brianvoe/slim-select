@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 import SlimSelect from '../../../slim-select'
-import { Option } from '../../../slim-select/store'
+import { Option, Optgroup } from '../../../slim-select/store'
 
 export default defineComponent({
   name: 'SearchFilter',
@@ -13,7 +13,7 @@ export default defineComponent({
         searchHighlight: true
       },
       events: {
-        searchFilter: (option: Option, search: string) => {
+        searchFilter: (option: Option, search: string, optgroup: Optgroup | null) => {
           return option.text.toLowerCase().includes(search.toLowerCase())
         }
       }
@@ -65,6 +65,54 @@ export default defineComponent({
         }
       }
     })
+
+    new SlimSelect({
+      select: this.$refs.searchFilterMultipleIncludeOptgroup as HTMLSelectElement,
+      data: [
+        // List of foods seprated by optgroups
+        {
+          label: 'Fruits',
+          options: [
+            { text: 'Apple', value: 'apple' },
+            { text: 'Banana', value: 'banana' },
+            { text: 'Orange', value: 'orange' }
+          ]
+        },
+        {
+          label: 'Vegetables',
+          options: [
+            { text: 'Carrot', value: 'carrot' },
+            { text: 'Potato', value: 'potato' },
+            { text: 'Tomato', value: 'tomato' }
+          ]
+        },
+        {
+          label: 'Meats',
+          options: [
+            { text: 'Beef', value: 'beef' },
+            { text: 'Chicken', value: 'chicken' },
+            { text: 'Pork', value: 'pork' }
+          ]
+        },
+        {
+          label: 'Seafood',
+          options: [
+            { text: 'Crab', value: 'crab' },
+            { text: 'Lobster', value: 'lobster' },
+            { text: 'Shrimp', value: 'shrimp' }
+          ]
+        }
+      ],
+      settings: {
+        searchHighlight: true
+      },
+      events: {
+        searchFilter: (option: Option, search: string, optgroup: Optgroup) => {          
+          return option.text.toLowerCase().includes(search.toLowerCase()) ||
+            optgroup.label.toLowerCase().includes(search.toLowerCase())
+        }
+      }
+    })
   }
 })
 </script>
@@ -87,6 +135,12 @@ export default defineComponent({
         <option value="orange">Orange</option>
         <option value="pineapple">Pineapple</option>
       </select>
+
+      <select ref="searchFilterMultipleIncludeOptgroup">
+        <option value="apple">Apple</option>
+        <option value="orange">Orange</option>
+        <option value="pineapple">Pineapple</option>
+      </select>
     </div>
 
     <pre>
@@ -95,13 +149,19 @@ export default defineComponent({
           select: '#selectElement',
           events: {
             // Example: Exact case sensitive start of string match
-            searchFilter: (option, search) => {
+            searchFilter: (option, search, optgroup) => {
               return option.text.substr(0, search.length) === search
             }
 
             // Default
-            searchFilter: (option, search) => {
+            searchFilter: (option, search, optgroup) => {
               return option.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+            }
+
+            // Example: Show all options under matching option group
+            searchFilter: (option, search, optgroup) => {
+              return option.text.toLowerCase().includes(search.toLowerCase()) ||
+                optgroup.label.toLowerCase().includes(search.toLowerCase())
             }
           }
         })

@@ -273,7 +273,7 @@ export default class Store {
   }
 
   public getSelectedOptions(): Option[] {
-    return this.filter((opt: Option) => {
+    return this.filter((opt: Option, optgroup: Optgroup | null) => {
       return opt.selected
     }, false) as Option[]
   }
@@ -291,7 +291,7 @@ export default class Store {
   }
 
   public getOptionByID(id: string): Option | null {
-    let options = this.filter((opt: Option) => {
+    let options = this.filter((opt: Option, optgroup: Optgroup | null) => {
       return opt.id === id
     }, false) as Option[]
 
@@ -319,7 +319,7 @@ export default class Store {
   }
 
   // Take in search string and return filtered list of values
-  public search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray {
+  public search(search: string, searchFilter: (opt: Option, search: string, optgroup: Optgroup | null) => boolean): DataArray {
     search = search.trim()
 
     // If search is empty, return all data
@@ -328,21 +328,22 @@ export default class Store {
     }
 
     // Run filter with search function
-    return this.filter((opt: Option): boolean => {
-      return searchFilter(opt, search)
+    return this.filter((opt: Option, optgroup: Optgroup | null): boolean => {
+      return searchFilter(opt, search, optgroup)
     }, true)
   }
 
   // Filter takes in a function that will be used to filter the data
   // This will also keep optgroups of sub options meet the filter requirements
-  public filter(filter: { (opt: Option): boolean } | null, includeOptgroup: boolean): DataArray {
+  public filter(filter: { (opt: Option, optgroup: Optgroup | null): boolean } | null, includeOptgroup: boolean): DataArray {
     const dataSearch: DataArray = []
     this.data.forEach((dataObj: DataObject) => {
       // Optgroup
       if (dataObj instanceof Optgroup) {
         let optOptions: Option[] = []
         dataObj.options.forEach((option: Option) => {
-          if (!filter || filter(option)) {
+          if (!filter || filter(option, dataObj)) {
+            console.log(dataObj)
             // If you dont want to include optgroups
             // just push to the dataSearch array
             if (!includeOptgroup) {
@@ -367,7 +368,7 @@ export default class Store {
 
       // Option
       if (dataObj instanceof Option) {
-        if (!filter || filter(dataObj)) {
+        if (!filter || filter(dataObj, null)) {
           dataSearch.push(new Option(dataObj))
         }
       }
