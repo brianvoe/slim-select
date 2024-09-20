@@ -343,7 +343,6 @@ export default class Store {
         let optOptions: Option[] = []
         dataObj.options.forEach((option: Option) => {
           if (!filter || filter(option, dataObj)) {
-            console.log(dataObj)
             // If you dont want to include optgroups
             // just push to the dataSearch array
             if (!includeOptgroup) {

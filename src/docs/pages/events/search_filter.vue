@@ -104,7 +104,8 @@ export default defineComponent({
         }
       ],
       settings: {
-        searchHighlight: true
+        searchHighlight: true,
+        searchHighlightGroups: true
       },
       events: {
         searchFilter: (option: Option, search: string, optgroup: Optgroup | null) => {          
@@ -147,6 +148,10 @@ export default defineComponent({
       <code class="language-javascript">
         new SlimSelect({
           select: '#selectElement',
+          settings: {
+            // Example 3: Show all options under matching option group
+            searchHighlightGroups: true
+          },
           events: {
             // Example: Exact case sensitive start of string match
             searchFilter: (option, search, optgroup) => {
@@ -158,7 +163,7 @@ export default defineComponent({
               return option.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
             }
 
-            // Example: Show all options under matching option group
+            // Example 3: Show all options under matching option group
             searchFilter: (option, search, optgroup) => {
               return option.text.toLowerCase().includes(search.toLowerCase()) ||
                 optgroup.label.toLowerCase().includes(search.toLowerCase())

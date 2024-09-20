@@ -139,6 +139,7 @@ new SlimSelect({
     searchText: 'No Results',
     searchingText: 'Searching...',
     searchHighlight: false,
+    searchHighlightGroups: false,
     closeOnSelect: true,
     contentLocation: document.body,
     contentPosition: 'absolute',
