@@ -60,7 +60,7 @@ export default defineComponent({
         searchHighlight: true
       },
       events: {
-        searchFilter: (option: Option, search: string) => {
+        searchFilter: (option: Option, search: string, optgroup: Optgroup | null) => {
           return option.text.toLowerCase().includes(search.toLowerCase())
         }
       }
@@ -107,7 +107,7 @@ export default defineComponent({
         searchHighlight: true
       },
       events: {
-        searchFilter: (option: Option, search: string, optgroup: Optgroup) => {          
+        searchFilter: (option: Option, search: string, optgroup: Optgroup | null) => {          
           return option.text.toLowerCase().includes(search.toLowerCase()) ||
             optgroup.label.toLowerCase().includes(search.toLowerCase())
         }
