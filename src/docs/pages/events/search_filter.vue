@@ -109,8 +109,15 @@ export default defineComponent({
       },
       events: {
         searchFilter: (option: Option, search: string, optgroup: Optgroup | null) => {          
-          return option.text.toLowerCase().includes(search.toLowerCase()) ||
-            optgroup.label.toLowerCase().includes(search.toLowerCase())
+          search = search.toLowerCase()
+
+          if (option.text.toLowerCase().includes(search))
+            return true
+          
+          if (optgroup && optgroup.label.toLowerCase().includes(search))
+            return true
+
+          return false
         }
       }
     })
@@ -165,8 +172,15 @@ export default defineComponent({
 
             // Example 3: Show all options under matching option group
             searchFilter: (option, search, optgroup) => {
-              return option.text.toLowerCase().includes(search.toLowerCase()) ||
-                optgroup.label.toLowerCase().includes(search.toLowerCase())
+              search = search.toLowerCase()
+
+              if (option.text.toLowerCase().includes(search))
+                return true
+              
+              if (optgroup && optgroup.label.toLowerCase().includes(search))
+                return true
+
+              return false
             }
           }
         })
