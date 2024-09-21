@@ -991,8 +991,13 @@ export default class Render {
         // Create label text div element
         const optgroupLabelText = document.createElement('div')
         optgroupLabelText.classList.add(this.classes.optgroupLabelText)
-        optgroupLabelText.textContent = d.label
+        optgroupLabelText.innerHTML = this.highlightText(
+          d.label,
+          this.content.search.input.value,
+          this.classes.searchHighlighter
+        )
         optgroupLabel.appendChild(optgroupLabelText)
+        
 
         // Create options container
         const optgroupActions = document.createElement('div')

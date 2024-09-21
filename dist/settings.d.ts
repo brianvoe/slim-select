@@ -16,6 +16,7 @@ export default class Settings {
     searchText: string;
     searchingText: string;
     searchHighlight: boolean;
+    searchHighlightGroups: boolean;
     closeOnSelect: boolean;
     contentLocation: HTMLElement;
     contentPosition: 'relative' | 'absolute';
