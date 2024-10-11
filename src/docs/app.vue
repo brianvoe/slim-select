@@ -56,6 +56,13 @@ export default defineComponent({
           ]
         },
 
+        // Examples
+        {
+          label: 'Examples',
+          closable: 'close',
+          options: [{ text: 'countries', value: 'examples#countries' }]
+        },
+
         // Settings
         {
           label: 'Settings',
