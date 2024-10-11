@@ -113,7 +113,7 @@ export default defineComponent({
 
 <template>
   <div id="countries" class="content">
-    <h2 class="header">Countries Example</h2>
+    <h2 class="header">Countries</h2>
     <p>Showcasing the use of html elements for displaying images or other rich content</p>
 
     <br />
