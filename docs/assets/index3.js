@@ -1,155 +1,445 @@
-import{d as h,S as o,_ as m,o as r,c as i,a as e,e as l,t as d,j as b,F as y,k as O,l as V,O as x,r as g,f as v}from"./index.js";const M=h({name:"Error",data(){return{errorSingle:null,errMsg:""}},mounted(){this.errorSingle=new o({select:this.$refs.errorSingle,events:{error:n=>{this.errMsg=n.message}}})}}),A={id:"error",class:"content"},k={key:0},F={class:"row"},j={ref:"notError"};function E(n,t,p,f,c,a){return r(),i("div",A,[t[2]||(t[2]=e("h2",{class:"header"},"error",-1)),t[3]||(t[3]=e("p",null,"The error event is fired when an error occurs. The error message is passed as the first argument.",-1)),t[4]||(t[4]=e("div",{class:"alert info"}," If you are are having issues with slim select finding the select element. Try delaying new SlimSelect() call as the select dom element might not be available yet. ",-1)),n.errMsg!==""?(r(),i("div",k,[t[0]||(t[0]=e("b",null,"Error:",-1)),l(" "+d(n.errMsg),1)])):b("",!0),e("div",F,[e("select",j,t[1]||(t[1]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement',
-          events: {
-            error: function(err) {
-              console.error(err)
-            }
-          }
-        })
-      `),l(`
-    `)],-1))])}const T=m(M,[["render",E]]),L=h({name:"BeforeAfterChange",data(){return{beforeChangeSingle:[],beforeChangeMultiple:[],afterChangeSingle:[],afterChangeMultiple:[]}},mounted(){new o({select:this.$refs.beforeChangeSingle,settings:{allowDeselect:!0},events:{beforeChange:(n,t)=>(this.beforeChangeSingle=t,!0)}}),new o({select:this.$refs.beforeChangeMultiple,events:{beforeChange:(n,t)=>(this.beforeChangeMultiple=t,!0)}}),new o({select:this.$refs.afterChangeSingle,settings:{allowDeselect:!0},events:{afterChange:n=>{this.afterChangeSingle=n}}}),new o({select:this.$refs.afterChangeMultiple,events:{afterChange:n=>{this.afterChangeMultiple=n}}})}}),B={id:"beforeChange",class:"content"},D={key:0},P={ref:"beforeChangeSingle"},N={key:1},R={ref:"beforeChangeMultiple",multiple:""},H={id:"afterChange",class:"content"},I={key:0},J={ref:"afterChangeSingle"},U={key:1},z={ref:"afterChangeMultiple",multiple:""};function Y(n,t,p,f,c,a){return r(),i(y,null,[e("div",B,[t[2]||(t[2]=e("h2",{class:"header"},"beforeChange",-1)),t[3]||(t[3]=e("p",null," beforeOnChange will trigger a callback on an option click and will allow you the ability to halt if the value it produces isnt to your liking. In order to stop the change from happening just return false on the callback. Returning nothing or true will allow it to continue as normal. ",-1)),t[4]||(t[4]=e("div",{class:"alert info"}," Be sure to return true to allow for the change to happen. False or nothing to cancel change. ",-1)),n.beforeChangeSingle?(r(),i("div",D,[e("strong",null,"Before change: "+d(n.beforeChangeSingle),1)])):b("",!0),e("select",P,t[0]||(t[0]=[e("option",{"data-placeholder":"true"},"Select Option",-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[5]||(t[5]=e("br",null,null,-1)),n.beforeChangeMultiple?(r(),i("div",N,[e("strong",null,"Before change: "+d(n.beforeChangeMultiple),1)])):b("",!0),e("select",R,t[1]||(t[1]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+import{d as s,S as o,_ as a,o as i,c as u,a as e,e as l,b as g,f as v,r as m}from"./index.js";const I=s({name:"AlwaysOpen",mounted(){new o({select:this.$refs.alwaysOpenSingle,settings:{alwaysOpen:!0,contentLocation:this.$refs.alwaysOpenSingleContent,contentPosition:"relative"}}),new o({select:this.$refs.alwaysOpenMultiple,settings:{alwaysOpen:!0,contentLocation:this.$refs.alwaysOpenMultipleContent,contentPosition:"relative"}})}}),R={id:"alwaysOpen",class:"content"},N={class:"row"},G={style:{height:"auto"}},U={ref:"alwaysOpenSingle"},Y={ref:"alwaysOpenSingleContent"},K={style:{height:"auto"}},W={ref:"alwaysOpenMultiple",multiple:""},z={ref:"alwaysOpenMultipleContent"};function F(n,t,p,r,d,c){return i(),u("div",R,[t[2]||(t[2]=e("h2",{class:"header"},"alwaysOpen",-1)),t[3]||(t[3]=e("p",null," alwaysOpen option is used to keep the select open at all times. This is useful for when you want to display the options at all times. ",-1)),e("div",N,[e("div",G,[e("select",U,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("div",Y,null,512)]),e("div",K,[e("select",W,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1),e("option",{value:"value4"},"Value 4",-1)]),512),e("div",z,null,512)])]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
         new SlimSelect({
           select: '#selectElement',
-          events: {
-            beforeChange: (newVal, oldVal) => {
-              console.log(newVal)
-              return false // this will stop the change from happening
-            }
+          settings: {
+            alwaysOpen: true,
+
+            // In various situations it may be useful to set the contentLocation
+            // to an element that will display best
+            contentLocation: document.getElementById('local'), ,
+            contentPosition: 'relative',
           }
         })
       `),l(`
-    `)],-1))]),e("div",H,[t[9]||(t[9]=e("h2",{class:"header"},"afterChange",-1)),t[10]||(t[10]=e("p",null,"afterChange will trigger a callback after the value of the select dropdown has changed.",-1)),n.afterChangeSingle?(r(),i("div",I,[e("strong",null,"After change: "+d(n.afterChangeSingle),1)])):b("",!0),e("select",J,t[7]||(t[7]=[e("option",{"data-placeholder":"true"},"Select Option",-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[11]||(t[11]=e("br",null,null,-1)),n.afterChangeMultiple?(r(),i("div",U,[e("strong",null,"After change: "+d(n.afterChangeMultiple),1)])):b("",!0),e("select",z,t[8]||(t[8]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[12]||(t[12]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+    `)],-1)),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectElement">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+
+        <!-- The content will go in this div -->
+        <div id="local"></div>
+      `),l(`
+    `)],-1))])}const J=a(I,[["render",F]]),Q=s({name:"Closable",mounted(){new o({select:this.$refs.closableSingle}),new o({select:this.$refs.closableMultiple})}}),X={id:"closable",class:"content"},Z={class:"row"},ee={ref:"closableSingle"},te={ref:"closableMultiple",multiple:""};function le(n,t,p,r,d,c){return i(),u("div",X,[t[2]||(t[2]=g('<h2 class="header">closable</h2><p>closable is a optgroup settings that adds the ability to have closable optgroup options.</p><p>Values: <strong>&quot;off&quot;</strong> | <strong>&quot;open&quot;</strong> | <strong>&quot;close&quot;</strong></p><p>Default: <strong>&quot;off&quot;</strong></p><div class="alert info">You can set closable either by data or by html dataset added to the optgroup element</div>',5)),e("div",Z,[e("select",ee,t[0]||(t[0]=[g('<optgroup label="Label 1" data-closable="off"><option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option></optgroup><optgroup label="Label 2" data-closable="open"><option value="value4">Value 4</option><option value="value5">Value 5</option><option value="value6">Value 6</option></optgroup><optgroup label="Label 3" data-closable="close"><option value="value7">Value 7</option><option value="value8">Value 8</option><option value="value9">Value 9</option></optgroup>',3)]),512),e("select",te,t[1]||(t[1]=[g('<optgroup label="Label 1" data-selectall="true" data-closable="off"><option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option></optgroup><optgroup label="Label 2" data-selectall="true" data-closable="open"><option value="value4">Value 4</option><option value="value5">Value 5</option><option value="value6">Value 6</option></optgroup><optgroup label="Label 3" data-selectall="true" data-closable="close"><option value="value7">Value 7</option><option value="value8">Value 8</option><option value="value9">Value 9</option></optgroup>',3)]),512)]),t[3]||(t[3]=e("br",null,null,-1)),t[4]||(t[4]=e("h3",null,"Via data",-1)),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
         new SlimSelect({
           select: '#selectElement',
-          events: {
-            afterChange: (newVal) => {
-              console.log(newVal)
-            }
-          }
+          data: [
+            {
+              label: 'Label 1',
+              closable: 'off',
+              options: [
+                { text: 'Option 1', value: '1' },
+                { text: 'Option 2', value: '2' },
+                { text: 'Option 3', value: '3' },
+              ],
+            },
+            {
+              label: 'Label 2',
+              closable: 'open',
+              options: [
+                { text: 'Option 4', value: '4' },
+                { text: 'Option 5', value: '5' },
+                { text: 'Option 6', value: '6' },
+              ],
+            },
+            {
+              label: 'Label 3',
+              closable: 'close',
+              options: [
+                { text: 'Option 7', value: '7' },
+                { text: 'Option 8', value: '8' },
+                { text: 'Option 9', value: '9' },
+              ],
+            },
+          ],
         })
       `),l(`
-    `)],-1))])],64)}const q=m(L,[["render",Y]]),G=h({name:"BeForeAfterOpenClose",data(){return{beforeAfterOpenCloseSingle:null,singleState:"",beforeAfterOpenCloseMultiple:null,multipleState:""}},mounted(){this.beforeAfterOpenCloseSingle=new o({select:this.$refs.beforeAfterOpenCloseSingle,events:{beforeOpen:()=>{console.log("before open"),this.setState("single","beforeOpen")},afterOpen:()=>{console.log("after open"),this.setState("single","afterOpen")},beforeClose:()=>{console.log("before close"),this.setState("single","beforeClose")},afterClose:()=>{console.log("after close"),this.setState("single","afterClose")}}}),this.beforeAfterOpenCloseMultiple=new o({select:this.$refs.beforeAfterOpenCloseMultiple,events:{beforeOpen:()=>{console.log("before open"),this.setState("multiple","beforeOpen")},afterOpen:()=>{console.log("after open"),this.setState("multiple","afterOpen")},beforeClose:()=>{console.log("before close"),this.setState("multiple","beforeClose")},afterClose:()=>{console.log("after close"),this.setState("multiple","afterClose")}}})},methods:{setState(n,t){n==="single"?this.singleState=t:this.multipleState=t,setTimeout(()=>{n==="single"?this.singleState="":this.multipleState=""},1e3)}}}),K={id:"open",class:"content"},Q={class:"row"},W={ref:"beforeAfterOpenCloseSingle"},X={ref:"beforeAfterOpenCloseMultiple",multiple:""};function Z(n,t,p,f,c,a){return r(),i("div",K,[t[2]||(t[2]=e("h2",{class:"header"},"beforeOpen / afterOpen / beforeClose / afterClose",-1)),t[3]||(t[3]=e("p",null," The beforeOpen, afterOpen, beforeClose, and afterClose events will fire before and after the select is opened and closed. ",-1)),e("div",Q,[e("div",null,[e("div",null,"State: "+d(n.singleState),1),e("select",W,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),e("div",null,[e("div",null,"State: "+d(n.multipleState),1),e("select",X,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)])]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement',
-          events: {
-            beforeOpen: () => {
-              console.log('before open')
-            },
-            afterOpen: () => {
-              console.log('after open')
-            },
-            beforeClose: () => {
-              console.log('before close')
-            },
-            afterClose: () => {
-              console.log('after close')
-            },
+    `)],-1)),t[6]||(t[6]=e("br",null,null,-1)),t[7]||(t[7]=e("h3",null,"Via html",-1)),t[8]||(t[8]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select ref="closable" multiple>
+          <optgroup label="Label 1" data-closable="off">
+            <option value="value1">Value 1</option>
+            <option value="value2">Value 2</option>
+            <option value="value3">Value 3</option>
+          </optgroup>
+          <optgroup label="Label 2" data-closable="open">
+            <option value="value4">Value 4</option>
+            <option value="value5">Value 5</option>
+            <option value="value6">Value 6</option>
+          </optgroup>
+          <optgroup label="Label 3" data-closable="close">
+            <option value="value7">Value 7</option>
+            <option value="value8">Value 8</option>
+            <option value="value9">Value 9</option>
+          </optgroup>
+        </select>
+      `),l(`
+    `)],-1))])}const oe=a(Q,[["render",le]]),ne=s({name:"CloseOnSelect",mounted(){new o({select:this.$refs.closeOnSelectSingle,settings:{closeOnSelect:!1}}),new o({select:this.$refs.closeOnSelectMultiple,settings:{closeOnSelect:!1,selectByGroup:!0}})}}),se={id:"closeOnSelect",class:"content"},ae={class:"row"},ie={ref:"closeOnSelectSingle"},ue={ref:"closeOnSelectMultiple",multiple:""};function pe(n,t,p,r,d,c){return i(),u("div",se,[t[2]||(t[2]=e("h2",{class:"header"},"closeOnSelect",-1)),t[3]||(t[3]=e("p",null," closeOnSelect is a boolean value in which determines whether or not to close the content area upon selecting a value. ",-1)),e("div",ae,[e("select",ie,t[0]||(t[0]=[g('<option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option><optgroup label="Super Values"><option value="value11">Value 1</option><option value="value22">Value 2</option><option value="value33">Value 3</option></optgroup>',4)]),512),e("select",ue,t[1]||(t[1]=[g('<option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option><optgroup label="Super Values"><option value="value11">Value 1</option><option value="value22">Value 2</option><option value="value33">Value 3</option></optgroup>',4)]),512)]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#search',
+          settings: {
+            closeOnSelect: false,
           },
         })
       `),l(`
-    `)],-1))])}const ee=m(G,[["render",Z]]),te={id:"search",class:"content"},ne={class:"row"},le=h({__name:"search",setup(n){let t=[],p=O(null),f=O(null);fetch("https://api.gofakeit.com/json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"array",rowcount:1e3,indent:!1,fields:[{name:"first_name",function:"firstname",params:{}},{name:"last_name",function:"lastname",params:{}}]})}).then(a=>a.json()).then(a=>{t=a}),V(()=>{new o({select:p.value,settings:{placeholderText:"Search First or Last Name",searchingText:"Searching Users...",searchHighlight:!0,allowDeselect:!0},events:{search:c}}),new o({select:f.value,settings:{closeOnSelect:!1,placeholderText:"Search First or Last Name",searchingText:"Searching Users...",searchHighlight:!0,allowDeselect:!0},events:{search:c}})});function c(a,u){return new Promise((w,S)=>{if(a.length<2)return S("Search must be at least 2 characters");const C=t.filter(s=>s.first_name.toLowerCase().includes(a.toLowerCase())||s.last_name.toLowerCase().includes(a.toLowerCase()));if(C.length===0)return S("No results found");const $=C.filter(s=>!u.some(_=>_ instanceof x&&_.value===`${s.first_name} ${s.last_name}`)).map(s=>({text:`${s.first_name} ${s.last_name}`,value:`${s.first_name} ${s.last_name}`}));setTimeout(()=>{w([{label:"Results",selectAll:!0,options:$}])},300)})}return(a,u)=>(r(),i("div",te,[u[0]||(u[0]=e("h2",{class:"header"},"search",-1)),u[1]||(u[1]=e("p",null,[l(" Slim select allows you to syncronize result values from your promise response."),e("br"),l(" Call callback() method with slimselect data, false or string with specific string. ")],-1)),e("div",ne,[e("select",{ref_key:"searchSingle",ref:p},null,512),e("select",{ref_key:"searchMultiple",ref:f,multiple:""},null,512)]),u[2]||(u[2]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+    `)],-1))])}const re=a(ne,[["render",pe]]),de=s({name:"ContentLocation",mounted(){new o({select:this.$refs.contentLocation,settings:{contentLocation:this.$refs.local}})}}),ce={id:"contentLocation",class:"content"},ve={class:"row"},me={ref:"contentLocation",style:{width:"50%"}},ge={ref:"local"};function he(n,t,p,r,d,c){return i(),u("div",ce,[t[1]||(t[1]=e("h2",{class:"header"},"contentLocation",-1)),t[2]||(t[2]=e("p",null," contentLocation will allow you to set the location of where the content section of slim select. By default every content div is appended to the body. ",-1)),t[3]||(t[3]=e("p",null," The content container is the bottom half of slim select. This includes the search input field and available options ",-1)),e("div",ve,[e("select",me,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("div",ge,null,512)]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
         new SlimSelect({
           select: '#selectElement',
-          events: {
-            search: (search, currentData) => {
-              return new Promise((resolve, reject) => {
-                if (search.length < 2) {
-                  return reject('Search must be at least 2 characters')
-                }
-
-                // Fetch random first and last name data
-                fetch('https://api.gofakeit.com/json', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    type: 'array',
-                    rowcount: 10,
-                    indent: false,
-                    fields: [
-                      { name: 'first_name', function: 'firstname', params: {} },
-                      { name: 'last_name', function: 'lastname', params: {} },
-                    ],
-                  }),
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    // Take the data and create an array of options 
-                    // excluding any that are already selected in currentData
-                    const options = data
-                      .filter((person) => {
-                        return !currentData.some((optionData) => {
-                          return optionData.value === \`\${person.first_name} \${person.last_name}\`
-                        })
-                      })
-                      .map((person) => {
-                        return {
-                          text: \`\${person.first_name} \${person.last_name}\`,
-                          value: \`\${person.first_name} \${person.last_name}\`,
-                        }
-                      })
-
-                    resolve(options)
-                  })
-              })
-            }
+          settings: {
+            contentLocation: document.getElementById('local')
           }
         })
       `),l(`
-    `)],-1))]))}}),ae=h({name:"SearchFilter",mounted(){new o({select:this.$refs.searchFilterSingle,settings:{searchHighlight:!0},events:{searchFilter:(n,t)=>n.text.toLowerCase().includes(t.toLowerCase())}}),new o({select:this.$refs.searchFilterMultiple,data:[{label:"Fruits",options:[{text:"Apple",value:"apple"},{text:"Banana",value:"banana"},{text:"Orange",value:"orange"}]},{label:"Vegetables",options:[{text:"Carrot",value:"carrot"},{text:"Potato",value:"potato"},{text:"Tomato",value:"tomato"}]},{label:"Meats",options:[{text:"Beef",value:"beef"},{text:"Chicken",value:"chicken"},{text:"Pork",value:"pork"}]},{label:"Seafood",options:[{text:"Crab",value:"crab"},{text:"Lobster",value:"lobster"},{text:"Shrimp",value:"shrimp"}]}],settings:{searchHighlight:!0},events:{searchFilter:(n,t)=>n.text.toLowerCase().includes(t.toLowerCase())}})}}),oe={id:"searchFilter",class:"content"},se={class:"row"},re={ref:"searchFilterSingle"},ie={ref:"searchFilterMultiple"};function ue(n,t,p,f,c,a){return r(),i("div",oe,[t[2]||(t[2]=e("h2",{class:"header"},"searchFilter",-1)),t[3]||(t[3]=e("p",null,"searchFilter event is used to replace the default matching algorithm.",-1)),t[4]||(t[4]=e("p",null,[l("See Data for the proper object interface of "),e("em",null,"option"),l(".")],-1)),e("div",se,[e("select",re,t[0]||(t[0]=[e("option",{value:"apple"},"Apple",-1),e("option",{value:"orange"},"Orange",-1),e("option",{value:"pineapple"},"Pineapple",-1)]),512),e("select",ie,t[1]||(t[1]=[e("option",{value:"apple"},"Apple",-1),e("option",{value:"orange"},"Orange",-1),e("option",{value:"pineapple"},"Pineapple",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+    `)],-1)),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="contentLocation">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+
+        <!-- The content will go in this div -->
+        <div id="local"></div>
+      `),l(`
+    `)],-1))])}const fe=a(de,[["render",he]]),$e=s({name:"ContentPosition",mounted(){new o({select:this.$refs.contentPositionRelative,settings:{contentPosition:"relative",contentLocation:this.$refs.contentPositionRelativeContent}}),new o({select:this.$refs.contentPositionAbsolute,settings:{contentPosition:"absolute"}})}}),we={id:"contentPosition",class:"content"},Ve={class:"row"},be={ref:"contentPositionRelative",class:"relative"},Se={ref:"contentPositionRelativeContent"},ye={ref:"contentPositionAbsolute",class:"absolute"};function xe(n,t,p,r,d,c){return i(),u("div",we,[t[2]||(t[2]=e("h2",{class:"header"},"contentPosition",-1)),t[3]||(t[3]=e("p",null,[l("contentPosition will set the css position to either relative. Default is "),e("b",null,"'absolute'")],-1)),t[4]||(t[4]=e("div",{class:"alert info"}," If you do use relative position be sure to set the contentLocation to an element that will work best for your use case. Otherwise SlimSelect will add you content to the body of the html. See example usage below. ",-1)),e("div",Ve,[e("select",be,t[0]||(t[0]=[e("option",{"data-placeholder":"true"},"Relative",-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("div",Se,null,512),e("select",ye,t[1]||(t[1]=[e("option",{"data-placeholder":"true"},"Absolute",-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
         new SlimSelect({
           select: '#selectElement',
-          events: {
-            // Example: Exact case sensitive start of string match
-            searchFilter: (option, search) => {
-              return option.text.substr(0, search.length) === search
-            }
+          settings: {
+            contentPosition: 'relative' // 'absolute' or 'relative'
 
-            // Default
-            searchFilter: (option, search) => {
-              return option.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
-            }
+            // To help with relative positioning 
+            // you can set the contentLocation
+            contentLocation: document.getElementById('local')
           }
         })
       `),l(`
-    `)],-1))])}const pe=m(ae,[["render",ue]]),fe=h({name:"Addable",mounted(){new o({select:this.$refs.addableSingle,events:{addable:n=>n.toLowerCase()==="value"?new Error("You cant set that value"):{text:n,value:n.toLowerCase()}}}),new o({select:this.$refs.addableMultiple,events:{addable:n=>new Promise(t=>{setTimeout(()=>{t({text:n,value:n})},100)})}})}}),ce={id:"addable",class:"content"},de={class:"row"},he={ref:"addableSingle"},ge={ref:"addableMultiple",multiple:""};function ve(n,t,p,f,c,a){return r(),i("div",ce,[t[2]||(t[2]=e("h2",{class:"header"},"addable",-1)),t[3]||(t[3]=e("p",null,"Slim select has the ability to dynamically add options via the search input field",-1)),t[4]||(t[4]=e("p",null," addable is a callback which takes a function parameter. The return value can either be a string or an option object. ",-1)),e("div",de,[e("select",he,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",ge,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+    `)],-1))])}const _e=a($e,[["render",xe]]),Oe=s({name:"Css",mounted(){new o({select:this.$refs.selectClass}),new o({select:this.$refs.optionClass})}}),De={id:"cssClass",class:"content"},Me={class:"row"},Ce={ref:"selectClass",class:"select-class"},Te={ref:"optionClass",class:"option-class"};function Pe(n,t,p,r,d,c){return i(),u("div",De,[t[2]||(t[2]=e("h2",{class:"header"},"css class",-1)),t[3]||(t[3]=e("p",null," Slim select will inherit any classes that were added to the original select element. This includes options as well. ",-1)),e("div",Me,[e("select",Ce,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",Te,t[1]||(t[1]=[e("option",{class:"red",value:"value1"},"Red",-1),e("option",{class:"green",value:"value2"},"Green",-1),e("option",{class:"blue",value:"value3"},"Blue",-1)]),512)]),t[4]||(t[4]=e("pre",null,[l("        "),e("code",{class:"language-html"},`
+          <select id="select-class" class="classItems">
+            <option class="red" value="value1">Value 1</option>
+            <option class="green" value="value2">Value 2</option>
+            <option class="blue" value="value3">Value 3</option>
+          </select>
+        `),l(`
+      `)],-1))])}const Be=a(Oe,[["render",Pe]]),Le=s({name:"CustomCss",mounted(){new o({select:this.$refs.mainSelect,cssClasses:{option:"primary-option"}}),new o({select:this.$refs.secondarySelect,cssClasses:{option:"secondary-option"}})}}),Ae={id:"cssClasses",class:"content"},Ee={class:"row"},je={ref:"mainSelect"},He={ref:"secondarySelect"};function ke(n,t,p,r,d,c){return i(),u("div",Ae,[t[2]||(t[2]=e("h2",{class:"header"},"cssClasses",-1)),t[3]||(t[3]=e("p",null,"You can override the default CSS classes by setting them during initialization.",-1)),e("div",Ee,[e("select",je,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",He,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[4]||(t[4]=e("pre",null,[l("          "),e("code",{class:"language-html"},`
+          <select id="primary-select">
+            <option value="value1">Value 1</option>
+            <option value="value2">Value 2</option>
+            <option value="value3">Value 3</option>
+          </select>
+          `),l(`
+      `)],-1)),t[5]||(t[5]=e("pre",null,[l("        "),e("code",{class:"language-javascript"},`
+          new SlimSelect({
+            select: '#primary-select',
+            cssClasses: {
+              option: "primary-option" 
+          })
+        `),l(`
+      `)],-1))])}const qe=a(Le,[["render",ke]]),Ie=s({name:"DataAttributes",mounted(){new o({select:this.$refs.optionsSingle}),new o({select:this.$refs.optionsMultiple})}}),Re={id:"dataAttributes",class:"content"},Ne={class:"row"},Ge={ref:"optionsSingle"},Ue={ref:"optionsMultiple",multiple:""};function Ye(n,t,p,r,d,c){return i(),u("div",Re,[t[2]||(t[2]=e("h2",{class:"header"},"Data Attributes",-1)),t[3]||(t[3]=e("p",null," Slim select will take on attributes of the original as best as possible. Below are example usages of attributes added to the underlining select options that slim select picked up and used ",-1)),e("div",Ne,[e("select",Ge,t[0]||(t[0]=[g('<option data-placeholder="true"></option><option value="value1" data-info="Here is info">Data Attributes</option><option value="value2" disabled>Disabled Option</option><option value="value3" class="green">Class Green</option><option value="value4" style="color:purple;">Inline Style</option>',5)]),512),e("select",Ue,t[1]||(t[1]=[e("option",{value:"value1","data-info":"Here is info"},"Data Attributes",-1),e("option",{value:"value2",disabled:""},"Disabled Option",-1),e("option",{value:"value3",class:"green"},"Class Green",-1),e("option",{value:"value4",style:{color:"purple"}},"Inline Style",-1)]),512)])])}const Ke=a(Ie,[["render",Ye]]),We=s({name:"Deselect",mounted(){new o({select:this.$refs.allowDeselectSingle,settings:{allowDeselect:!0}}),new o({select:this.$refs.allowDeselectMultiple,settings:{allowDeselect:!0}})}}),ze={id:"allowDeselect",class:"content"},Fe={class:"row"},Je={ref:"allowDeselectSingle"},Qe={ref:"allowDeselectMultiple",multiple:""};function Xe(n,t,p,r,d,c){return i(),u("div",ze,[t[2]||(t[2]=e("h2",{class:"header"},"allowDeselect",-1)),t[3]||(t[3]=e("p",null,"This will allow you to deselect a value on a single/multiple select dropdown.",-1)),t[4]||(t[4]=e("p",null,"Be sure to have an empty option data placeholder so slim select has an empty string value to select.",-1)),e("div",Fe,[e("select",Je,t[0]||(t[0]=[e("option",{"data-placeholder":"true"},null,-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",Qe,t[1]||(t[1]=[e("option",{"data-placeholder":"true"},null,-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
         new SlimSelect({
           select: '#selectElement',
-
-          events: {
-            // Allow anything
-            addable: function (value) { return value },
-
-            // or 
-
-            // Decide what is allowed to be added
-            addable: function (value) {
-              // return false or null if you do not want to allow value to be submitted
-              if (value === 'bad') { return false }
-
-              // return new 
-
-              // Return the value string
-              return value // Optional - value alteration // ex: value.toLowerCase()
-
-              // Optional - Return a valid data object. 
-              // See methods/setData for list of valid options
-              return {
-                text: value,
-                value: value.toLowerCase()
-              }
-
-              // Optional - Return a promise with either a string or data object
-              return new Promise((resolve) => {
-                resolve({
-                  text: value,
-                  value: value,
-                })
-              })
-            }
+          settings: {
+            allowDeselect: true
           }
         })
       `),l(`
-    `)],-1))])}const me=m(fe,[["render",ve]]),be=h({name:"Events",components:{Error:T,BeforeAfterChange:q,BeforeAfterOpenClose:ee,Search:le,SearchFilter:pe,Addable:me}}),Se={id:"events",class:"contents"};function Ce(n,t,p,f,c,a){const u=g("Error"),w=g("BeforeAfterChange"),S=g("BeforeAfterOpenClose"),C=g("Search"),$=g("SearchFilter"),s=g("Addable");return r(),i("div",Se,[v(u),v(w),v(S),v(C),v($),v(s)])}const $e=m(be,[["render",Ce]]);export{$e as default};
+    `)],-1)),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <!-- Requires emtpy data-placeholder option -->
+        <select id="allowDeselect">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      `),l(`
+    `)],-1))])}const Ze=a(We,[["render",Xe]]),et=s({name:"Disabled",mounted(){new o({select:this.$refs.disabledSingle,settings:{disabled:!0}}),new o({select:this.$refs.disabledMultiple}),new o({select:this.$refs.disabledOptionSingle,data:[{text:"Option 1",value:"option1"},{text:"Option 2",value:"option2",disabled:!0},{text:"Option 3",value:"option3"}]}),new o({select:this.$refs.disabledOptionMultiple}),new o({select:this.$refs.disabledDynamicSingle}).select.showUI()},methods:{enableDisableDynamic(){const n=this.$refs.disabledDynamicSingle;n&&(n.disabled=!n.disabled)}}}),tt={id:"disabled",class:"content"},lt={class:"row"},ot={ref:"disabledSingle"},nt={ref:"disabledMultiple",multiple:"",disabled:""},st={class:"row"},at={ref:"disabledOptionSingle"},it={ref:"disabledOptionMultiple",multiple:""},ut={class:"row"},pt={ref:"disabledDynamicSingle"};function rt(n,t,p,r,d,c){return i(),u("div",tt,[t[6]||(t[6]=e("h2",{class:"header"},"disabled",-1)),t[7]||(t[7]=e("p",null,"Allows the ability to disable the select dropdown as well as individual options",-1)),t[8]||(t[8]=e("div",{class:"alert info"},"Methods also are provided to enable and disable SlimSelect via method call.",-1)),e("div",lt,[e("select",ot,t[1]||(t[1]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",nt,t[2]||(t[2]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[9]||(t[9]=e("br",null,null,-1)),e("div",st,[e("select",at,t[3]||(t[3]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",it,t[4]||(t[4]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2",disabled:""},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[10]||(t[10]=e("br",null,null,-1)),e("div",ut,[e("div",{class:"btn",onClick:t[0]||(t[0]=(...h)=>n.enableDisableDynamic&&n.enableDisableDynamic(...h))},"Enable/Disable Original Select"),e("select",pt,t[5]||(t[5]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[11]||(t[11]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        // Disable via settings
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            disabled: true,
+          },
+        })
+
+        // Disable via disabled html attribute
+        new SlimSelect({
+          select: '#selectElement',
+        })
+      `),l(`
+    `)],-1)),t[12]||(t[12]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectElement">
+          <option value="value1" selected>Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+
+        <select id="selectElement" multiple disabled>
+          <option value="value1" selected>Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      `),l(`
+    `)],-1))])}const dt=a(et,[["render",rt]]),ct=s({name:"Display",mounted(){const n=new o({select:this.$refs.selectdisplay}),t=[{value:"value1",text:"Value 1",display:!1},{value:"value2",text:"Value 2"},{value:"value3",text:"Value 3"}];n.setData(t),n.setSelected(["value1","value3"]),new o({select:this.$refs.selectdisplay2})}}),vt={id:"display",class:"content"},mt={class:"row"},gt={ref:"selectdisplay",multiple:""},ht={class:"row"},ft={ref:"selectdisplay2",multiple:""};function $t(n,t,p,r,d,c){return i(),u("div",vt,[t[1]||(t[1]=e("h2",{class:"header"},"display",-1)),t[2]||(t[2]=e("p",null,"Allows to hide elements of selected values.",-1)),e("div",mt,[e("select",gt,null,512)]),t[3]||(t[3]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        const displaySelect = new SlimSelect({
+          select: '#selectElement'
+        })
+
+        const displayData = [
+          { value: 'value1', text: 'Value 1', display: false },
+          { value: 'value2', text: 'Value 2' },
+          { value: 'value3', text: 'Value 3' },
+        ]
+
+        displaySelect.setData(displayData)
+        displaySelect.set(['value1', 'value3'])
+      `),l(`
+    `)],-1)),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectMultiMandatory" multiple></select>
+      `),l(`
+    `)],-1)),t[5]||(t[5]=e("p",null,"Or",-1)),e("div",ht,[e("select",ft,t[0]||(t[0]=[e("option",{value:"value1",style:{display:"none"},selected:""},"Value 1",-1),e("option",{value:"value2",selected:""},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        const slim = new SlimSelect({
+          select: '#selectElement'
+        });
+      `),l(`
+    `)],-1)),t[7]||(t[7]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectdisplay2" multiple>
+          <option value="value1" style="display: none;" selected>Value 1</option>
+          <option value="value2" selected>Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      `),l(`
+    `)],-1))])}const wt=a(ct,[["render",$t]]),Vt=s({name:"HideSelected",mounted(){new o({select:this.$refs.hideSelectedSingle,settings:{hideSelected:!0}}),new o({select:this.$refs.hideSelectedMultiple,settings:{hideSelected:!0}})}}),bt={id:"hideSelected",class:"content"},St={class:"row"},yt={ref:"hideSelectedSingle"},xt={ref:"hideSelectedMultiple",multiple:""};function _t(n,t,p,r,d,c){return i(),u("div",bt,[t[2]||(t[2]=e("h2",{class:"header"},"hideSelected",-1)),t[3]||(t[3]=e("p",null,"hideSelected setting is used to hide the current selected option in the options dropdown.",-1)),e("div",St,[e("select",yt,t[0]||(t[0]=[e("option",{"data-placeholder":"true"},null,-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",xt,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            hideSelected: true,
+          }
+        })
+      `),l(`
+    `)],-1)),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="hideSelectedSingle">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+
+        <select id="hideSelectedMultiple">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      `),l(`
+    `)],-1))])}const Ot=a(Vt,[["render",_t]]),Dt=s({name:"Html",mounted(){new o({select:this.$refs.htmlSingle,settings:{searchHighlight:!0},data:[{html:"<b>Bold Text</b>",text:"Bold Text",value:"bold text"},{html:'<div style="border: solid 1px #666666;">Border</div>',text:"Border",value:"border"},{html:"<i>Slim Select is awesome</i>",text:"Slim Select is awesome"}]}),new o({select:this.$refs.htmlMulti,settings:{searchHighlight:!0}})}}),Mt={id:"html",class:"content"},Ct={class:"row"},Tt={ref:"htmlSingle"},Pt={ref:"htmlMulti",multiple:""};function Bt(n,t,p,r,d,c){return i(),u("div",Mt,[t[1]||(t[1]=e("h2",{class:"header"},"html",-1)),t[2]||(t[2]=e("p",null," Slim select has the ability to set custom html for the selected values and options dropdown. By default if the html field is set it will use that for the selected values and the options dropdown. For a multiple select selected values it will always use the text field. ",-1)),e("div",Ct,[e("select",Tt,null,512),e("select",Pt,t[0]||(t[0]=[e("option",{value:"bold text","data-html":"<b>Bold Text</b>"},"Bold Text",-1),e("option",{value:"border","data-html":"<div style='border: solid 1px #666666;'>Border</div>"},"Border",-1),e("option",{value:"slim select","data-html":"<i>Slim Select is awesome</i>"},"Slim Select is awesome",-1)]),512)]),t[3]||(t[3]=e("h3",null,"Via data",-1)),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        var select = new SlimSelect({
+          select: '#selectElement',
+          data: [
+            {html: '<b>Bold Text</b>', text: 'Bold Text', value: 'bold text'},
+            {html: '<div style="border: solid 1px #666666;">Border</div>', text: 'Border', value: 'border'},
+            {html: '<i>Slim Select is awesome</i>', text: 'Slim Select is awesome'}
+          ]
+        })
+      `),l(`
+    `)],-1)),t[5]||(t[5]=e("h3",null,"Via data attribute",-1)),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectElement">
+          <option value="bold text" data-html="<b>Bold Text</b>">Bold Text</option>
+          <option value="border" data-html="<div style="border: solid 1px #666666;">Border</div>">Border</option>
+          <option value="slim select" data-html="<i>Slim Select is awesome</i>">Slim Select awesome</option>
+        </select>
+      `),l(`
+    `)],-1))])}const Lt=a(Dt,[["render",Bt]]),At=s({name:"KeepOrder",mounted(){new o({select:this.$refs.keepOrder,settings:{keepOrder:!0}})}}),Et={id:"keepOrder",class:"content"},jt={class:"row"},Ht={ref:"keepOrder",multiple:""};function kt(n,t,p,r,d,c){return i(),u("div",Et,[t[1]||(t[1]=e("h2",{class:"header"},"keepOrder",-1)),t[2]||(t[2]=e("p",null," keepOrder if true will maintain the order in which options are selected. If true the selected options order will be in the order of the dropdown options. As long as slim select isnt fully rerendered the order will be maintained. ",-1)),t[3]||(t[3]=e("p",null,[l("Values: "),e("strong",null,"true"),l(" | "),e("strong",null,"false")],-1)),t[4]||(t[4]=e("p",null,[l("Default: "),e("strong",null,"false")],-1)),e("div",jt,[e("select",Ht,t[0]||(t[0]=[g('<option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option><optgroup label="Label 1"><option value="value4">Value 4</option><option value="value5">Value 5</option><option value="value6">Value 6</option></optgroup><optgroup label="Label 2"><option value="value7">Value 7</option><option value="value8">Value 8</option><option value="value9">Value 9</option></optgroup>',5)]),512)]),t[5]||(t[5]=e("br",null,null,-1)),t[6]||(t[6]=e("h3",null,"Via html",-1)),t[7]||(t[7]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select ref="closable" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+          <optgroup label="Label 1">
+            <option value="value4">Value 4</option>
+            <option value="value5">Value 5</option>
+            <option value="value6">Value 6</option>
+          </optgroup>
+          <optgroup label="Label 2">
+            <option value="value7">Value 7</option>
+            <option value="value8">Value 8</option>
+            <option value="value9">Value 9</option>
+          </optgroup>
+        </select>
+      `),l(`
+    `)],-1))])}const qt=a(At,[["render",kt]]),It=s({name:"Mandatory",mounted(){const n=new o({select:this.$refs.selectMultiMandatory}),t=[{value:"value1",text:"Value 1",mandatory:!0},{value:"value2",text:"Value 2"},{value:"value3",text:"Value 3"}];n.setData(t),n.setSelected(["value1","value3"]),new o({select:this.$refs.selectMultiMandatory2})}}),Rt={id:"mandatory",class:"content"},Nt={class:"row"},Gt={ref:"selectMultiMandatory",multiple:""},Ut={class:"row"},Yt={ref:"selectMultiMandatory2",multiple:""};function Kt(n,t,p,r,d,c){return i(),u("div",Rt,[t[1]||(t[1]=e("h2",{class:"header"},"mandatory",-1)),t[2]||(t[2]=e("p",null," When using multi select you can set a mandatory on the option to prevent capability to deselect particular option. Note options with mandatory flag is not selected by default, you need select them yourselfs. ",-1)),e("div",Nt,[e("select",Gt,null,512)]),t[3]||(t[3]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        const slim = new SlimSelect({
+          select: '#selectElement'
+        });
+
+        const data = [
+          { value: 'value1', text: 'Value 1', mandatory: true },
+          { value: 'value2', text: 'Value 2' },
+          { value: 'value3', text: 'Value 3' },
+        ]
+
+        slim.setData(data)
+        slim.set(["value1", "value3"])
+      `),l(`
+    `)],-1)),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectMultiMandatory" multiple></select>
+      `),l(`
+    `)],-1)),t[5]||(t[5]=e("p",null,"Or",-1)),e("div",Ut,[e("select",Yt,t[0]||(t[0]=[e("option",{value:"value1","data-mandatory":"true",selected:""},"Value 1",-1),e("option",{value:"value2",selected:""},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        const slim = new SlimSelect({
+          select: '#selectElement'
+        });
+      `),l(`
+    `)],-1)),t[7]||(t[7]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectMultiMandatory" multiple>
+          <option value="value1" data-mandatory="true" selected>Value 1</option>
+          <option value="value2" selected>Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      `),l(`
+    `)],-1))])}const Wt=a(It,[["render",Kt]]),zt=s({name:"MaxValuesShown",mounted(){new o({select:this.$refs.maxValuesShown,settings:{maxValuesShown:5,maxValuesMessage:"{number} selected",allowDeselect:!0}})}}),Ft={id:"maxValuesShown",class:"content"},Jt={class:"row"},Qt={ref:"maxValuesShown",multiple:""};function Xt(n,t,p,r,d,c){return i(),u("div",Ft,[t[1]||(t[1]=e("h2",{class:"header"},"maxValuesShown",-1)),t[2]||(t[2]=e("p",null," When using multiselect you can set a threshold so when selecting more items than the input value, the items will not display as values, but the 'n selected' will be displayed. The text that will be displayed can be customized with the use of '{number}' in the maxValuesMessage setting. ",-1)),t[3]||(t[3]=e("p",null,[e("strong",null,"Default:"),l(" 20")],-1)),e("div",Jt,[e("select",Qt,t[0]||(t[0]=[g('<option value="value1" selected>Value 1</option><option value="value2" selected>Value 2</option><option value="value3" selected>Value 3</option><option value="value4" selected>Value 4</option><option value="value5" selected>Value 5</option><option value="value6" selected>Value 6</option><option value="value7">Value 7</option><option value="value8">Value 8</option>',8)]),512)]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            maxValuesShown: 5, // Default 20
+            maxValuesMessage: '{number} values selected', // Default '{number} selected'
+          },
+        });
+      `),l(`
+    `)],-1)),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="maxValuesShown" multiple>
+          <option value="value1" selected>Value 1</option>
+          <option value="value2" selected>Value 2</option>
+          <option value="value3" selected>Value 3</option>
+          <option value="value4" selected>Value 4</option>
+          <option value="value5" selected>Value 5</option>
+          <option value="value6">Value 6</option>
+          <option value="value7">Value 7</option>
+          <option value="value8">Value 8</option>
+        </select>
+      `),l(`
+    `)],-1))])}const Zt=a(zt,[["render",Xt]]),el=s({name:"MinMax",mounted(){new o({select:this.$refs.selectMultiMax,settings:{allowDeselect:!0,closeOnSelect:!1,minSelected:2,maxSelected:5},events:{addable:n=>n}})}}),tl={id:"minmax",class:"content"},ll={class:"row"},ol={ref:"selectMultiMax",multiple:""};function nl(n,t,p,r,d,c){return i(),u("div",tl,[t[1]||(t[1]=e("h2",{class:"header"},"Min/Max Selected",-1)),t[2]||(t[2]=e("p",null,"When using multi select you can set a min and/or max on the amount of selections you can have.",-1)),e("div",ll,[e("select",ol,t[0]||(t[0]=[g('<option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option><option value="value4">Value 4</option><option value="value5">Value 5</option><option value="value6">Value 6</option>',6)]),512)]),t[3]||(t[3]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        let slim = new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            minSelected: 2,
+            maxSelected: 5,
+          },
+        })
+      `),l(`
+    `)],-1)),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="selectMultiMax" multiple>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+          <option value="value4">Value 4</option>
+          <option value="value5">Value 5</option>
+          <option value="value6">Value 6</option>
+        </select>
+      `),l(`
+    `)],-1))])}const sl=a(el,[["render",nl]]),al=s({name:"OpenPosition",mounted(){new o({select:this.$refs.openPositionUp,settings:{openPosition:"up"}}),new o({select:this.$refs.openPositionDown,settings:{openPosition:"down"}})}}),il={id:"openPosition",class:"content"},ul={class:"row"},pl={ref:"openPositionUp"},rl={ref:"openPositionDown"};function dl(n,t,p,r,d,c){return i(),u("div",il,[t[2]||(t[2]=e("h2",{class:"header"},"openPosition",-1)),t[3]||(t[3]=e("p",null," openPosition is a string value that will decide where to show your content when it comes out. By default slim select will try to put the content where it can without going off screen. But you may want to always show it in one direction. ",-1)),t[4]||(t[4]=e("p",null,[l("Possible Options: "),e("b",null,"'auto', 'up' or 'down'"),l(". Default is "),e("b",null,"'auto'")],-1)),e("div",ul,[e("select",pl,t[0]||(t[0]=[e("option",{value:"up1"},"Up 1",-1),e("option",{value:"up2"},"Up 2",-1),e("option",{value:"up3"},"Up 3",-1)]),512),e("select",rl,t[1]||(t[1]=[e("option",{value:"down1"},"Down 1",-1),e("option",{value:"down2"},"Down 2",-1),e("option",{value:"down3"},"Down 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            openPosition: 'auto' // 'auto', 'up' or 'down'
+          }
+        })
+      `),l(`
+    `)],-1))])}const cl=a(al,[["render",dl]]),vl=s({name:"Placeholder",mounted(){new o({select:this.$refs.placeholderSingle,settings:{placeholderText:"Custom Placeholder Text"}}),new o({select:this.$refs.placeholderMultiple,settings:{placeholderText:"Make Selection"}}),new o({select:this.$refs.placeholderNone,settings:{placeholderText:""}})}}),ml={id:"placeholder",class:"content"},gl={class:"row"},hl={ref:"placeholderSingle"},fl={ref:"placeholderMultiple",multiple:""},$l={ref:"placeholderNone"};function wl(n,t,p,r,d,c){return i(),u("div",ml,[t[3]||(t[3]=e("h2",{class:"header"},"placeholderText",-1)),t[4]||(t[4]=e("p",null,' Placeholders consists of setting the placeholder option value. The only difference is single selects require an empty option with data-placeholder set to true. Default value is "Select Value". ',-1)),t[5]||(t[5]=e("div",{class:"alert info"}," Notice you can also set placeholder to empty if that is what you would like to do as well. ",-1)),e("div",gl,[e("select",hl,t[0]||(t[0]=[e("option",{"data-placeholder":"true"},null,-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",fl,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",$l,t[2]||(t[2]=[e("option",{"data-placeholder":"true"},null,-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#placeholder',
+          settings: {
+            placeholderText: 'Custom Placeholder Text',
+          }
+        })
+      `),l(`
+    `)],-1)),t[7]||(t[7]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <!-- Set empty option with data-placeholder if you to have placeholder -->
+        <!-- text for single select, otherwise first option will be selected -->
+        <select id="placeholderSingle">
+          <option data-placeholder="true"></option>
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+      `),l(`
+    `)],-1))])}const Vl=a(vl,[["render",wl]]),bl=s({name:"Search",mounted(){new o({select:this.$refs.showSearchSingle,settings:{showSearch:!1}}),new o({select:this.$refs.focusSearchSingle,settings:{focusSearch:!1}}),new o({select:this.$refs.searchTextSingle,settings:{searchText:"Sorry, nothing to see here"}}),new o({select:this.$refs.searchPlaceholderSingle,settings:{searchPlaceholder:"Search for the good stuff!"}}),new o({select:this.$refs.searchHighlightSingle,settings:{searchHighlight:!0}}),new o({select:this.$refs.showSearchMulti,settings:{showSearch:!1}}),new o({select:this.$refs.focusSearchMulti,settings:{focusSearch:!1}}),new o({select:this.$refs.searchTextMulti,settings:{searchText:"Sorry nothing to see here"}}),new o({select:this.$refs.searchPlaceholderMulti,settings:{searchPlaceholder:"Search for the good stuff!"}}),new o({select:this.$refs.searchHighlightMulti,settings:{searchHighlight:!0}})}}),Sl={id:"search",class:"content"},yl={class:"row",style:{padding:"0 0 var(--spacing-half) 0"}},xl={ref:"showSearchSingle"},_l={ref:"focusSearchSingle"},Ol={ref:"searchTextSingle"},Dl={ref:"searchPlaceholderSingle"},Ml={ref:"searchHighlightSingle"},Cl={class:"row"},Tl={ref:"showSearchMulti",multiple:""},Pl={ref:"focusSearchMulti",multiple:""},Bl={ref:"searchTextMulti",multiple:""},Ll={ref:"searchPlaceholderMulti",multiple:""},Al={ref:"searchHighlightMulti",multiple:""};function El(n,t,p,r,d,c){return i(),u("div",Sl,[t[10]||(t[10]=g('<h2 class="header">showSearch / focusSearch / searchText / searchingText / searchHighlight</h2><p><b>showSearch</b> - is a boolean value that will decide whether or not to show the search. Default is true.</p><p><b>focusSearch</b> - is a boolean value that will decide whether or not to focus on the search on open. Default is true. </p><p><b>searchText</b> - is a string value that will show in the event there are no results. Default is &#39;No Results&#39;. </p><p><b>searchingText</b> - is a string value that will show during an fetch search request. Default is &#39;Searching...&#39;. </p><p><b>searchPlaceholder</b> - is a string value that will set the value of the input search placeholder text. Default is &#39;Search&#39;. </p><p><b>searchHighlight</b> - is a boolean value that will highlight search results. Default is false.</p>',7)),e("div",yl,[e("select",xl,t[0]||(t[0]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",_l,t[1]||(t[1]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Ol,t[2]||(t[2]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Dl,t[3]||(t[3]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Ml,t[4]||(t[4]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512)]),e("div",Cl,[e("select",Tl,t[5]||(t[5]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Pl,t[6]||(t[6]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Bl,t[7]||(t[7]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Ll,t[8]||(t[8]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512),e("select",Al,t[9]||(t[9]=[e("option",{value:"dog"},"Dog",-1),e("option",{value:"cat"},"Cat",-1),e("option",{value:"bird"},"Bird",-1)]),512)]),t[11]||(t[11]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        let slim = new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            showSearch: false, // used in example
+            focusSearch: false, // used in example
+            searchText: 'Sorry nothing to see here', // used in example
+            searchPlaceholder: 'Search for the good stuff!', // used in example
+            searchHighlight: true // used in example
+          }
+        })
+      `),l(`
+    `)],-1))])}const jl=a(bl,[["render",El]]),Hl=s({name:"Select"}),kl={id:"select",class:"content"};function ql(n,t,p,r,d,c){return i(),u("div",kl,t[0]||(t[0]=[e("h2",{class:"header"},"select",-1),e("p",null," The select field is used to identify the select element that will be used to create slim select. You can use any value you normally would in a querySelector or pass the element directly. ",-1),e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          // or
+          select: document.querySelector('#selectElement')
+        })
+
+        // If you already have a currenlty running SlimSelect but lost the reference to it.
+        // You can access from the original select element.
+        let el = document.querySelector('#selectElement')
+        el.slim.open() // Or any other options/methods
+      `),l(`
+    `)],-1)]))}const Il=a(Hl,[["render",ql]]),Rl=s({name:"SelectAll",mounted(){new o({select:this.$refs.selectAll})}}),Nl={id:"selectAll",class:"content"},Gl={ref:"selectAll",multiple:""};function Ul(n,t,p,r,d,c){return i(),u("div",Nl,[t[1]||(t[1]=e("h2",{class:"header"},"selectAll",-1)),t[2]||(t[2]=e("p",null," selectAll is a setting that can be used to add a select all action to an optgroup. This setting can be set to true or false. If set to true, a select all option will be added to the top of the selected values. If set to false or not set at all, no select all action will be added to the optgroup. ",-1)),t[3]||(t[3]=e("p",null,"selectAllText is a setting that can be used to change the text of the select all optgroup.",-1)),t[4]||(t[4]=e("div",{class:"alert info"}," You can set selectAll/selectAllText either by data or by html dataset added to the optgroup element ",-1)),e("select",Gl,t[0]||(t[0]=[g('<optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!"><option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option></optgroup><optgroup label="Label 2"><option value="value4">Value 4</option><option value="value5">Value 5</option><option value="value6">Value 6</option></optgroup>',2)]),512),t[5]||(t[5]=e("br",null,null,-1)),t[6]||(t[6]=e("h3",null,"Via data",-1)),t[7]||(t[7]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          data: [
+            {
+              label: 'Label 1',
+              selectAll: true,
+              selectAllText: 'Select them all!',
+              options: [
+                { text: 'Option 1', value: '1' },
+                { text: 'Option 2', value: '2' },
+                { text: 'Option 3', value: '3' },
+              ],
+            },
+            {
+              label: 'Label 2',
+              selectAll: false,
+              options: [
+                { text: 'Option 4', value: '4' },
+                { text: 'Option 5', value: '5' },
+                { text: 'Option 6', value: '6' },
+              ],
+            },
+          ],
+        })
+      `),l(`
+    `)],-1)),t[8]||(t[8]=e("br",null,null,-1)),t[9]||(t[9]=e("h3",null,"Via html",-1)),t[10]||(t[10]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select ref="selectAll" multiple>
+          <optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!">
+            <option value="value1">Value 1</option>
+            <option value="value2">Value 2</option>
+            <option value="value3">Value 3</option>
+          </optgroup>
+          <optgroup label="Label 2">
+            <option value="value4">Value 4</option>
+            <option value="value5">Value 5</option>
+            <option value="value6">Value 6</option>
+          </optgroup>
+        </select>
+      `),l(`
+    `)],-1))])}const Yl=a(Rl,[["render",Ul]]),Kl=s({name:"ShowTooltip",mounted(){new o({select:this.$refs.showOptionTooltips,settings:{showOptionTooltips:!0}})}}),Wl={id:"showOptionTooltips",class:"content"},zl={ref:"showOptionTooltips"};function Fl(n,t,p,r,d,c){return i(),u("div",Wl,[t[1]||(t[1]=e("h2",{class:"header"},"showOptionTooltips",-1)),t[2]||(t[2]=e("p",null," showOptionTooltips option is used to active displaying the on-hover tooltips for select options. The tooltip text is equal to the option text content. ",-1)),e("select",zl,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[3]||(t[3]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            showOptionTooltips: true,
+          }
+        })
+      `),l(`
+    `)],-1))])}const Jl=a(Kl,[["render",Fl]]),Ql=s({name:"Styles",mounted(){new o({select:this.$refs.selectStyle}),new o({select:this.$refs.optionStyle})}}),Xl={id:"inlineStyles",class:"content"},Zl={class:"row"},eo={ref:"selectStyle",style:{color:"red"}},to={ref:"optionStyle"};function lo(n,t,p,r,d,c){return i(),u("div",Xl,[t[2]||(t[2]=e("h2",{class:"header"},"inline styles",-1)),t[3]||(t[3]=e("p",null," Slim select will inherit any styles that were added to the original select element. This includes options as well. ",-1)),e("div",Zl,[e("select",eo,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",to,t[1]||(t[1]=[e("option",{style:{color:"red"},value:"value1"},"Red",-1),e("option",{style:{color:"green"}},"Green",-1),e("option",{style:{color:"blue"}},"Blue",-1)]),512)]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+        <select id="select-style" style="color: red;">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </select>
+
+        <select id="option-style">
+          <option style="color: red;" value="value1">Red</option>
+          <option style="color: green;">Green</option>
+          <option style="color: blue;">Blue</option>
+        </select>
+      `),l(`
+    `)],-1))])}const oo=a(Ql,[["render",lo]]),no=s({name:"Settings",components:{Select:Il,CssClasses:qe,AlwaysOpen:J,ContentLocation:fe,ContentPosition:_e,OpenPosition:cl,Placeholder:Vl,Deselect:Ze,Display:wt,Disabled:dt,Mandatory:Wt,MinMax:sl,DataAttributes:Ke,MaxValuesShown:Zt,Css:Be,Styles:oo,Html:Lt,KeepOrder:qt,Search:jl,CloseOnSelect:re,ShowTooltip:Jl,SelectAll:Yl,Closable:oe,HideSelected:Ot}}),so={id:"settings",class:"contents"};function ao(n,t,p,r,d,c){const h=m("Select"),f=m("CssClasses"),$=m("AlwaysOpen"),w=m("ContentLocation"),V=m("ContentPosition"),b=m("OpenPosition"),S=m("Placeholder"),y=m("SelectAll"),x=m("Deselect"),_=m("Display"),O=m("Disabled"),D=m("Mandatory"),M=m("MinMax"),C=m("DataAttributes"),T=m("Css"),P=m("Styles"),B=m("Html"),L=m("KeepOrder"),A=m("Search"),E=m("CloseOnSelect"),j=m("ShowTooltip"),H=m("Closable"),k=m("HideSelected"),q=m("MaxValuesShown");return i(),u("div",so,[v(h),v(f),v($),v(w),v(V),v(b),v(S),v(y),v(x),v(_),v(O),v(D),v(M),v(C),v(T),v(P),v(B),v(L),v(A),v(E),v(j),v(H),v(k),v(q)])}const uo=a(no,[["render",ao]]);export{uo as default};

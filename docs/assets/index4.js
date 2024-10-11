@@ -1,77 +1,155 @@
-import{d,S as i,_ as p,o,c as a,a as t,e as s,t as m,j as h,b as O,r as u,f as r,w as M}from"./index.js";const C=d({name:"Destroy",data(){return{destroySingle:null,destroyMultiple:null}},mounted(){this.create()},methods:{create(){this.destroySingle=new i({select:this.$refs.destroySingle}),this.destroyMultiple=new i({select:this.$refs.destroyMultiple})},destroy(){this.destroySingle.destroy(),this.destroySingle=null,this.destroyMultiple.destroy(),this.destroyMultiple=null}}}),k={id:"destroy",class:"content"},E={class:"row"},K={ref:"destroySingle"},j={ref:"destroyMultiple",multiple:""};function T(l,e,c,v,g,S){return o(),a("div",k,[e[4]||(e[4]=t("h2",{class:"header"},"destroy",-1)),e[5]||(e[5]=t("p",null,"The destroy method will remove slim-select and display your original select.",-1)),t("div",E,[l.destroySingle?(o(),a("div",{key:1,class:"btn",onClick:e[1]||(e[1]=(...n)=>l.destroy&&l.destroy(...n))},"Destroy")):(o(),a("div",{key:0,class:"btn",onClick:e[0]||(e[0]=(...n)=>l.create&&l.create(...n))},"Create")),t("select",K,e[2]||(e[2]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),t("select",j,e[3]||(e[3]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512)]),e[6]||(e[6]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-        })
-        select.destroy()
-      `),s(`
-    `)],-1))])}const G=p(C,[["render",T]]),N=d({name:"EnableDisable",data(){return{setEnableSingle:null,setEnableMultiple:null}},mounted(){this.setEnableSingle=new i({select:this.$refs.setEnableSingle}),this.setEnableMultiple=new i({select:this.$refs.setEnableMultiple})},methods:{setEnable(){this.setEnableSingle.enable(),this.setEnableMultiple.enable()},setDisable(){this.setEnableSingle.disable(),this.setEnableMultiple.disable()}}}),I={id:"enableDisable",class:"content"},_={class:"row"},B={ref:"setEnableSingle",disabled:""},W={ref:"setEnableMultiple",multiple:"",disabled:""};function A(l,e,c,v,g,S){return o(),a("div",I,[e[4]||(e[4]=t("h2",{class:"header"},"enable / disable",-1)),e[5]||(e[5]=t("p",null,[s(" These methods will enable or disable the select dropdown. "),t("br"),s(" You may also set disabled on your original select and slim-select will pick that up. ")],-1)),t("div",_,[l.setEnableSingle&&l.setEnableSingle.settings.disabled?(o(),a("div",{key:0,class:"btn",onClick:e[0]||(e[0]=(...n)=>l.setEnable&&l.setEnable(...n))},"Enable")):(o(),a("div",{key:1,class:"btn",onClick:e[1]||(e[1]=(...n)=>l.setDisable&&l.setDisable(...n))},"Disable")),t("select",B,e[2]||(e[2]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),t("select",W,e[3]||(e[3]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512)]),e[6]||(e[6]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-        })
-        select.enable()
-        // or
-        select.disable()
-      `),s(`
-    `)],-1))])}const J=p(N,[["render",A]]),P=d({name:"GetData",data(){return{getDataOptions:null,getDataOptionsValue:[],getDataOptgroups:null,getDataOptgroupsValue:[]}},mounted(){this.getDataOptions=new i({select:this.$refs.getDataOptions}),this.getDataOptgroups=new i({select:this.$refs.getDataOptgroups})},methods:{getData(){this.getDataOptionsValue=this.getDataOptions.getData(),this.getDataOptgroupsValue=this.getDataOptgroups.getData()}}}),Y={id:"getData",class:"content"},q={class:"row"},z={ref:"getDataOptions"},F={key:0,class:"pad-t-m pad-b-m"},H={ref:"getDataOptgroups",multiple:""},L={key:0,class:"pad-t-m pad-b-m"};function Q(l,e,c,v,g,S){return o(),a("div",Y,[e[5]||(e[5]=t("h2",{class:"header"},"getData",-1)),e[6]||(e[6]=t("p",null,"The getData method will return an array of the full data set.",-1)),t("div",q,[t("div",{class:"btn",onClick:e[0]||(e[0]=(...n)=>l.getData&&l.getData(...n))},"Get Data"),t("div",null,[t("select",z,e[1]||(e[1]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),l.getDataOptionsValue.length?(o(),a("div",F,[e[2]||(e[2]=t("b",null,"Option Data:",-1)),s(" "+m(l.getDataOptionsValue),1)])):h("",!0)]),t("div",null,[t("select",H,e[3]||(e[3]=[O('<optgroup label="Group 1"><option value="value1">Value 1</option><option value="value2">Value 2</option><option value="value3">Value 3</option></optgroup><optgroup label="Group 2"><option value="value4">Value 4</option><option value="value5">Value 5</option><option value="value6">Value 6</option></optgroup>',2)]),512),l.getDataOptgroupsValue.length?(o(),a("div",L,[e[4]||(e[4]=t("b",null,"Optgroup Data:",-1)),s(" "+m(l.getDataOptgroupsValue),1)])):h("",!0)])]),e[7]||(e[7]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-        })
-        var data = select.getData() // Will return an array of options and optgroups
-        console.log(data)
-      `),s(`
-    `)],-1))])}const R=p(P,[["render",Q]]),U=d({name:"GetSelected",data(){return{selectedSingle:null,selectedSingleValue:[],selectedMultiple:null,selectedMultipleValue:[],selectedKeepOrder:null,selectedKeepOrderValue:[]}},mounted(){this.selectedSingle=new i({select:this.$refs.selectedSingle}),this.selectedMultiple=new i({select:this.$refs.selectedMultiple}),this.selectedKeepOrder=new i({select:this.$refs.selectedKeepOrder,settings:{keepOrder:!0}}),this.selectedKeepOrder.setSelected(["value3","value1"])},methods:{getSelected(){this.selectedSingleValue=this.selectedSingle.getSelected(),this.selectedMultipleValue=this.selectedMultiple.getSelected(),this.selectedKeepOrderValue=this.selectedKeepOrder.getSelected()}}}),X={id:"getSelected",class:"content"},Z={class:"row"},x={ref:"selectedSingle"},ee={key:0,class:"pad-t-m pad-b-m"},te={ref:"selectedMultiple",multiple:""},le={key:0,class:"pad-t-m pad-b-m"},se={ref:"selectedKeepOrder",multiple:""},ne={key:0,class:"pad-t-m pad-b-m"};function oe(l,e,c,v,g,S){return o(),a("div",X,[e[7]||(e[7]=t("h2",{class:"header"},"getSelected",-1)),e[8]||(e[8]=t("p",null,"The getSelected method will return an array of the currently selected value strings.",-1)),e[9]||(e[9]=t("div",{class:"alert info"}," Whether or not its a single or multiple select, getSelected will always return an array. ",-1)),t("div",Z,[t("div",{class:"btn",onClick:e[0]||(e[0]=(...n)=>l.getSelected&&l.getSelected(...n))},"Get Selected"),t("div",null,[t("select",x,e[1]||(e[1]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),l.selectedSingleValue.length?(o(),a("div",ee,[e[2]||(e[2]=t("b",null,"Single Select Value:",-1)),s(" "+m(l.selectedSingleValue),1)])):h("",!0)]),t("div",null,[t("select",te,e[3]||(e[3]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2",selected:""},"Value 2",-1),t("option",{value:"value3",selected:""},"Value 3",-1)]),512),l.selectedMultipleValue.length?(o(),a("div",le,[e[4]||(e[4]=t("b",null,"Multi Select Value:",-1)),s(" "+m(l.selectedMultipleValue),1)])):h("",!0)]),t("div",null,[t("select",se,e[5]||(e[5]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),l.selectedKeepOrderValue.length?(o(),a("div",ne,[e[6]||(e[6]=t("b",null,"Keep Order Value:",-1)),s(" "+m(l.selectedKeepOrderValue),1)])):h("",!0)])]),e[10]||(e[10]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-
-          // Optional - If you want to keep the order of the selected values
-          // settings: { keepOrder: true }
-        })
-        var values = select.getSelected() // Will return an array of strings
-        console.log(values)
-      `),s(`
-    `)],-1))])}const ae=p(U,[["render",oe]]),ie=d({name:"OpenClose",setup(){return{openCloseSingle:null,openCloseMultiple:null}},mounted(){this.openCloseSingle=new i({select:this.$refs.openCloseSingle}),this.openCloseMultiple=new i({select:this.$refs.openCloseMultiple})},methods:{toggleOpenClose(){this.openCloseSingle.settings.isOpen?(this.openCloseSingle.close(),this.openCloseMultiple.close()):(this.openCloseSingle.open(),this.openCloseMultiple.open())}}}),ue={id:"openClose",class:"content"},re={class:"row"},de={ref:"openCloseSingle"},pe={ref:"openCloseMultiple",multiple:""};function ce(l,e,c,v,g,S){return o(),a("div",ue,[e[3]||(e[3]=t("h2",{class:"header"},"open / close",-1)),e[4]||(e[4]=t("p",null,"The open and close methods will do just that.",-1)),t("div",re,[t("div",{class:"btn",onClick:e[0]||(e[0]=n=>l.toggleOpenClose())},"Open/Close"),t("select",de,e[1]||(e[1]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),t("select",pe,e[2]||(e[2]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512)]),e[5]||(e[5]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
+import{d as h,S as o,_ as m,o as r,c as i,a as e,e as l,t as d,j as b,F as y,k as O,l as V,O as x,f as g,r as v}from"./index.js";const M=h({name:"Error",data(){return{errorSingle:null,errMsg:""}},mounted(){this.errorSingle=new o({select:this.$refs.errorSingle,events:{error:n=>{this.errMsg=n.message}}})}}),A={id:"error",class:"content"},k={key:0},F={class:"row"},j={ref:"notError"};function E(n,t,p,f,c,a){return r(),i("div",A,[t[2]||(t[2]=e("h2",{class:"header"},"error",-1)),t[3]||(t[3]=e("p",null,"The error event is fired when an error occurs. The error message is passed as the first argument.",-1)),t[4]||(t[4]=e("div",{class:"alert info"}," If you are are having issues with slim select finding the select element. Try delaying new SlimSelect() call as the select dom element might not be available yet. ",-1)),n.errMsg!==""?(r(),i("div",k,[t[0]||(t[0]=e("b",null,"Error:",-1)),l(" "+d(n.errMsg),1)])):b("",!0),e("div",F,[e("select",j,t[1]||(t[1]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
         var select = new SlimSelect({
           select: '#selectElement',
-        })
-        select.open()
-        // or
-        select.close()
-      `),s(`
-    `)],-1))])}const ve=p(ie,[["render",ce]]),ge=d({name:"Search",setup(){return{searchSingle:null,searchMultiple:null}},mounted(){this.searchSingle=new i({select:this.$refs.searchSingle}),this.searchMultiple=new i({select:this.$refs.searchMultiple})},methods:{setSearch(){this.searchSingle.open(),this.searchSingle.search("value 2"),this.searchMultiple.open(),this.searchMultiple.search("value 2")}}}),Se={id:"search",class:"content"},me={class:"row"},he={ref:"searchSingle"},fe={ref:"searchMultiple",multiple:""};function $e(l,e,c,v,g,S){return o(),a("div",Se,[e[3]||(e[3]=t("h2",{class:"header"},"search",-1)),e[4]||(e[4]=t("p",null,"The search method will update the search input field and search the data against that value.",-1)),t("div",me,[t("div",{class:"btn",onClick:e[0]||(e[0]=n=>l.setSearch())},"Set Search"),t("select",he,e[1]||(e[1]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),t("select",fe,e[2]||(e[2]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512)]),e[5]||(e[5]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-        })
-        select.search('value')
-      `),s(`
-    `)],-1))])}const be=p(ge,[["render",$e]]),Ve=d({name:"SetData",data(){return{setDataSingle:null,setDataMultiple:null}},mounted(){this.setDataSingle=new i({select:this.$refs.setDataSingle,events:{error:l=>{console.error(l)}}}),this.setDataMultiple=new i({select:this.$refs.setDataMultiple,events:{error:l=>{console.error(l)}}})},methods:{setData(){fetch("https://api.gofakeit.com/json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"array",rowcount:10,indent:!1,fields:[{name:"text",function:"generate",params:{str:"{firstname} {lastname}"}},{name:"selected",function:"bool"}]})}).then(l=>l.json()).then(l=>{this.setDataSingle.setData(l),this.setDataMultiple.setData(l)}).catch(l=>console.error(l))}}}),De={id:"setData",class:"content"},ye={class:"alert info"},we={class:"row"},Oe={ref:"setDataSingle"},Me={ref:"setDataMultiple",multiple:""};function Ce(l,e,c,v,g,S){const n=u("router-link");return o(),a("div",De,[e[3]||(e[3]=t("h2",{class:"header"},"setData",-1)),e[4]||(e[4]=t("p",null," The setData method can take in an array of objects. This will set the options of the original select and rerender slim select. ",-1)),e[5]||(e[5]=t("div",{class:"alert info"}," If you use a single select but an option is not selected it will select the first option. ",-1)),e[6]||(e[6]=t("div",{class:"alert info"}," If you use a single select but pass in data with multiple selected options, the first option will be selected. ",-1)),t("div",ye,[e[2]||(e[2]=s(" To get a better break down of possible data options see ")),r(n,{to:"/data#types"},{default:M(()=>e[1]||(e[1]=[s("data")])),_:1})]),t("div",we,[t("div",{class:"btn",onClick:e[0]||(e[0]=(...f)=>l.setData&&l.setData(...f))},"Set Data"),t("select",Oe,null,512),t("select",Me,null,512)]),e[7]||(e[7]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-        })
-
-        // Array of objects
-        select.setData([
-          {text: 'Value 1', value: 'value1'},
-          {text: 'Value 2', value: 'value2'},
-          {
-            label: 'Group 1',
-            options: [
-              {text: 'Value 3', value: 'value3'},
-              {text: 'Value 4', value: 'value4'},
-            ]
+          events: {
+            error: function(err) {
+              console.error(err)
+            }
           }
-        ])
-      `),s(`
-    `)],-1))])}const ke=p(Ve,[["render",Ce]]),Ee=d({name:"SetSelected",data(){return{selectedSingle:null,selectedMultiple:null,selectedKeepOrder:null}},mounted(){this.selectedSingle=new i({select:this.$refs.selectedSingle}),this.selectedMultiple=new i({select:this.$refs.selectedMultiple}),this.selectedKeepOrder=new i({select:this.$refs.selectedKeepOrder,settings:{keepOrder:!0}})},methods:{setSelected(){this.selectedSingle.open(),this.selectedSingle.setSelected("value2"),this.selectedMultiple.open(),this.selectedMultiple.setSelected(["value1","value3"]),this.selectedKeepOrder.open(),this.selectedKeepOrder.setSelected(["value3","value1"]),setTimeout(()=>{this.selectedSingle.close(),this.selectedMultiple.close(),this.selectedKeepOrder.close()},2e3)}}}),Ke={id:"setSelected",class:"content"},je={class:"row"},Te={ref:"selectedSingle"},Ge={ref:"selectedMultiple",multiple:""},Ne={ref:"selectedKeepOrder",multiple:""};function Ie(l,e,c,v,g,S){return o(),a("div",Ke,[e[4]||(e[4]=t("h2",{class:"header"},"setSelected",-1)),e[5]||(e[5]=t("p",null,"The setSelected method will set the selected value(s) of the select.",-1)),e[6]||(e[6]=t("p",null,"setSelected will accept both string or array of strings.",-1)),e[7]||(e[7]=t("p",null," setSelected also takes in a second optional boolean param in the event you dont want to trigger the afterChange callback ",-1)),t("div",je,[t("div",{class:"btn",onClick:e[0]||(e[0]=(...n)=>l.setSelected&&l.setSelected(...n))},"Set Selected"),t("select",Te,e[1]||(e[1]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),t("select",Ge,e[2]||(e[2]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512),t("select",Ne,e[3]||(e[3]=[t("option",{value:"value1"},"Value 1",-1),t("option",{value:"value2"},"Value 2",-1),t("option",{value:"value3"},"Value 3",-1)]),512)]),e[8]||(e[8]=t("pre",null,[s("      "),t("code",{class:"language-javascript"},`
-        var select = new SlimSelect({
-          select: '#selectElement'
-
-          // Optional - If you want to keep the order of the selected values
-          // settings: { keepOrder: true }
         })
-        select.setSelected('value1' /* or */ ['value1', 'value3'])
-        console.log(select.getSelected())
+      `),l(`
+    `)],-1))])}const T=m(M,[["render",E]]),L=h({name:"BeforeAfterChange",data(){return{beforeChangeSingle:[],beforeChangeMultiple:[],afterChangeSingle:[],afterChangeMultiple:[]}},mounted(){new o({select:this.$refs.beforeChangeSingle,settings:{allowDeselect:!0},events:{beforeChange:(n,t)=>(this.beforeChangeSingle=t,!0)}}),new o({select:this.$refs.beforeChangeMultiple,events:{beforeChange:(n,t)=>(this.beforeChangeMultiple=t,!0)}}),new o({select:this.$refs.afterChangeSingle,settings:{allowDeselect:!0},events:{afterChange:n=>{this.afterChangeSingle=n}}}),new o({select:this.$refs.afterChangeMultiple,events:{afterChange:n=>{this.afterChangeMultiple=n}}})}}),B={id:"beforeChange",class:"content"},D={key:0},P={ref:"beforeChangeSingle"},N={key:1},R={ref:"beforeChangeMultiple",multiple:""},H={id:"afterChange",class:"content"},I={key:0},J={ref:"afterChangeSingle"},U={key:1},z={ref:"afterChangeMultiple",multiple:""};function Y(n,t,p,f,c,a){return r(),i(y,null,[e("div",B,[t[2]||(t[2]=e("h2",{class:"header"},"beforeChange",-1)),t[3]||(t[3]=e("p",null," beforeOnChange will trigger a callback on an option click and will allow you the ability to halt if the value it produces isnt to your liking. In order to stop the change from happening just return false on the callback. Returning nothing or true will allow it to continue as normal. ",-1)),t[4]||(t[4]=e("div",{class:"alert info"}," Be sure to return true to allow for the change to happen. False or nothing to cancel change. ",-1)),n.beforeChangeSingle?(r(),i("div",D,[e("strong",null,"Before change: "+d(n.beforeChangeSingle),1)])):b("",!0),e("select",P,t[0]||(t[0]=[e("option",{"data-placeholder":"true"},"Select Option",-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[5]||(t[5]=e("br",null,null,-1)),n.beforeChangeMultiple?(r(),i("div",N,[e("strong",null,"Before change: "+d(n.beforeChangeMultiple),1)])):b("",!0),e("select",R,t[1]||(t[1]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[6]||(t[6]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          events: {
+            beforeChange: (newVal, oldVal) => {
+              console.log(newVal)
+              return false // this will stop the change from happening
+            }
+          }
+        })
+      `),l(`
+    `)],-1))]),e("div",H,[t[9]||(t[9]=e("h2",{class:"header"},"afterChange",-1)),t[10]||(t[10]=e("p",null,"afterChange will trigger a callback after the value of the select dropdown has changed.",-1)),n.afterChangeSingle?(r(),i("div",I,[e("strong",null,"After change: "+d(n.afterChangeSingle),1)])):b("",!0),e("select",J,t[7]||(t[7]=[e("option",{"data-placeholder":"true"},"Select Option",-1),e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[11]||(t[11]=e("br",null,null,-1)),n.afterChangeMultiple?(r(),i("div",U,[e("strong",null,"After change: "+d(n.afterChangeMultiple),1)])):b("",!0),e("select",z,t[8]||(t[8]=[e("option",{value:"value1",selected:""},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),t[12]||(t[12]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          events: {
+            afterChange: (newVal) => {
+              console.log(newVal)
+            }
+          }
+        })
+      `),l(`
+    `)],-1))])],64)}const q=m(L,[["render",Y]]),G=h({name:"BeForeAfterOpenClose",data(){return{beforeAfterOpenCloseSingle:null,singleState:"",beforeAfterOpenCloseMultiple:null,multipleState:""}},mounted(){this.beforeAfterOpenCloseSingle=new o({select:this.$refs.beforeAfterOpenCloseSingle,events:{beforeOpen:()=>{console.log("before open"),this.setState("single","beforeOpen")},afterOpen:()=>{console.log("after open"),this.setState("single","afterOpen")},beforeClose:()=>{console.log("before close"),this.setState("single","beforeClose")},afterClose:()=>{console.log("after close"),this.setState("single","afterClose")}}}),this.beforeAfterOpenCloseMultiple=new o({select:this.$refs.beforeAfterOpenCloseMultiple,events:{beforeOpen:()=>{console.log("before open"),this.setState("multiple","beforeOpen")},afterOpen:()=>{console.log("after open"),this.setState("multiple","afterOpen")},beforeClose:()=>{console.log("before close"),this.setState("multiple","beforeClose")},afterClose:()=>{console.log("after close"),this.setState("multiple","afterClose")}}})},methods:{setState(n,t){n==="single"?this.singleState=t:this.multipleState=t,setTimeout(()=>{n==="single"?this.singleState="":this.multipleState=""},1e3)}}}),K={id:"open",class:"content"},Q={class:"row"},W={ref:"beforeAfterOpenCloseSingle"},X={ref:"beforeAfterOpenCloseMultiple",multiple:""};function Z(n,t,p,f,c,a){return r(),i("div",K,[t[2]||(t[2]=e("h2",{class:"header"},"beforeOpen / afterOpen / beforeClose / afterClose",-1)),t[3]||(t[3]=e("p",null," The beforeOpen, afterOpen, beforeClose, and afterClose events will fire before and after the select is opened and closed. ",-1)),e("div",Q,[e("div",null,[e("div",null,"State: "+d(n.singleState),1),e("select",W,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),e("div",null,[e("div",null,"State: "+d(n.multipleState),1),e("select",X,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)])]),t[4]||(t[4]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        var select = new SlimSelect({
+          select: '#selectElement',
+          events: {
+            beforeOpen: () => {
+              console.log('before open')
+            },
+            afterOpen: () => {
+              console.log('after open')
+            },
+            beforeClose: () => {
+              console.log('before close')
+            },
+            afterClose: () => {
+              console.log('after close')
+            },
+          },
+        })
+      `),l(`
+    `)],-1))])}const ee=m(G,[["render",Z]]),te={id:"search",class:"content"},ne={class:"row"},le=h({__name:"search",setup(n){let t=[],p=O(null),f=O(null);fetch("https://api.gofakeit.com/json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"array",rowcount:1e3,indent:!1,fields:[{name:"first_name",function:"firstname",params:{}},{name:"last_name",function:"lastname",params:{}}]})}).then(a=>a.json()).then(a=>{t=a}),V(()=>{new o({select:p.value,settings:{placeholderText:"Search First or Last Name",searchingText:"Searching Users...",searchHighlight:!0,allowDeselect:!0},events:{search:c}}),new o({select:f.value,settings:{closeOnSelect:!1,placeholderText:"Search First or Last Name",searchingText:"Searching Users...",searchHighlight:!0,allowDeselect:!0},events:{search:c}})});function c(a,u){return new Promise((w,S)=>{if(a.length<2)return S("Search must be at least 2 characters");const C=t.filter(s=>s.first_name.toLowerCase().includes(a.toLowerCase())||s.last_name.toLowerCase().includes(a.toLowerCase()));if(C.length===0)return S("No results found");const $=C.filter(s=>!u.some(_=>_ instanceof x&&_.value===`${s.first_name} ${s.last_name}`)).map(s=>({text:`${s.first_name} ${s.last_name}`,value:`${s.first_name} ${s.last_name}`}));setTimeout(()=>{w([{label:"Results",selectAll:!0,options:$}])},300)})}return(a,u)=>(r(),i("div",te,[u[0]||(u[0]=e("h2",{class:"header"},"search",-1)),u[1]||(u[1]=e("p",null,[l(" Slim select allows you to syncronize result values from your promise response."),e("br"),l(" Call callback() method with slimselect data, false or string with specific string. ")],-1)),e("div",ne,[e("select",{ref_key:"searchSingle",ref:p},null,512),e("select",{ref_key:"searchMultiple",ref:f,multiple:""},null,512)]),u[2]||(u[2]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          events: {
+            search: (search, currentData) => {
+              return new Promise((resolve, reject) => {
+                if (search.length < 2) {
+                  return reject('Search must be at least 2 characters')
+                }
 
-        // To not trigger the afterChange callback
-        select.setSelected('value1', false)
-      `),s(`
-    `)],-1))])}const _e=p(Ee,[["render",Ie]]),Be=d({name:"Methods",components:{GetSelected:ae,SetSelected:_e,GetData:R,SetData:ke,EnableDisable:J,OpenClose:ve,Search:be,Destroy:G}}),We={id:"methods",class:"contents"};function Ae(l,e,c,v,g,S){const n=u("GetSelected"),f=u("SetSelected"),$=u("GetData"),b=u("SetData"),V=u("EnableDisable"),D=u("OpenClose"),y=u("Search"),w=u("Destroy");return o(),a("div",We,[r(n),r(f),r($),r(b),r(V),r(D),r(y),r(w)])}const Pe=p(Be,[["render",Ae]]);export{Pe as default};
+                // Fetch random first and last name data
+                fetch('https://api.gofakeit.com/json', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    type: 'array',
+                    rowcount: 10,
+                    indent: false,
+                    fields: [
+                      { name: 'first_name', function: 'firstname', params: {} },
+                      { name: 'last_name', function: 'lastname', params: {} },
+                    ],
+                  }),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    // Take the data and create an array of options 
+                    // excluding any that are already selected in currentData
+                    const options = data
+                      .filter((person) => {
+                        return !currentData.some((optionData) => {
+                          return optionData.value === \`\${person.first_name} \${person.last_name}\`
+                        })
+                      })
+                      .map((person) => {
+                        return {
+                          text: \`\${person.first_name} \${person.last_name}\`,
+                          value: \`\${person.first_name} \${person.last_name}\`,
+                        }
+                      })
+
+                    resolve(options)
+                  })
+              })
+            }
+          }
+        })
+      `),l(`
+    `)],-1))]))}}),ae=h({name:"SearchFilter",mounted(){new o({select:this.$refs.searchFilterSingle,settings:{searchHighlight:!0},events:{searchFilter:(n,t)=>n.text.toLowerCase().includes(t.toLowerCase())}}),new o({select:this.$refs.searchFilterMultiple,data:[{label:"Fruits",options:[{text:"Apple",value:"apple"},{text:"Banana",value:"banana"},{text:"Orange",value:"orange"}]},{label:"Vegetables",options:[{text:"Carrot",value:"carrot"},{text:"Potato",value:"potato"},{text:"Tomato",value:"tomato"}]},{label:"Meats",options:[{text:"Beef",value:"beef"},{text:"Chicken",value:"chicken"},{text:"Pork",value:"pork"}]},{label:"Seafood",options:[{text:"Crab",value:"crab"},{text:"Lobster",value:"lobster"},{text:"Shrimp",value:"shrimp"}]}],settings:{searchHighlight:!0},events:{searchFilter:(n,t)=>n.text.toLowerCase().includes(t.toLowerCase())}})}}),oe={id:"searchFilter",class:"content"},se={class:"row"},re={ref:"searchFilterSingle"},ie={ref:"searchFilterMultiple"};function ue(n,t,p,f,c,a){return r(),i("div",oe,[t[2]||(t[2]=e("h2",{class:"header"},"searchFilter",-1)),t[3]||(t[3]=e("p",null,"searchFilter event is used to replace the default matching algorithm.",-1)),t[4]||(t[4]=e("p",null,[l("See Data for the proper object interface of "),e("em",null,"option"),l(".")],-1)),e("div",se,[e("select",re,t[0]||(t[0]=[e("option",{value:"apple"},"Apple",-1),e("option",{value:"orange"},"Orange",-1),e("option",{value:"pineapple"},"Pineapple",-1)]),512),e("select",ie,t[1]||(t[1]=[e("option",{value:"apple"},"Apple",-1),e("option",{value:"orange"},"Orange",-1),e("option",{value:"pineapple"},"Pineapple",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+          events: {
+            // Example: Exact case sensitive start of string match
+            searchFilter: (option, search) => {
+              return option.text.substr(0, search.length) === search
+            }
+
+            // Default
+            searchFilter: (option, search) => {
+              return option.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+            }
+          }
+        })
+      `),l(`
+    `)],-1))])}const pe=m(ae,[["render",ue]]),fe=h({name:"Addable",mounted(){new o({select:this.$refs.addableSingle,events:{addable:n=>n.toLowerCase()==="value"?new Error("You cant set that value"):{text:n,value:n.toLowerCase()}}}),new o({select:this.$refs.addableMultiple,events:{addable:n=>new Promise(t=>{setTimeout(()=>{t({text:n,value:n})},100)})}})}}),ce={id:"addable",class:"content"},de={class:"row"},he={ref:"addableSingle"},ge={ref:"addableMultiple",multiple:""};function ve(n,t,p,f,c,a){return r(),i("div",ce,[t[2]||(t[2]=e("h2",{class:"header"},"addable",-1)),t[3]||(t[3]=e("p",null,"Slim select has the ability to dynamically add options via the search input field",-1)),t[4]||(t[4]=e("p",null," addable is a callback which takes a function parameter. The return value can either be a string or an option object. ",-1)),e("div",de,[e("select",he,t[0]||(t[0]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512),e("select",ge,t[1]||(t[1]=[e("option",{value:"value1"},"Value 1",-1),e("option",{value:"value2"},"Value 2",-1),e("option",{value:"value3"},"Value 3",-1)]),512)]),t[5]||(t[5]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+        new SlimSelect({
+          select: '#selectElement',
+
+          events: {
+            // Allow anything
+            addable: function (value) { return value },
+
+            // or 
+
+            // Decide what is allowed to be added
+            addable: function (value) {
+              // return false or null if you do not want to allow value to be submitted
+              if (value === 'bad') { return false }
+
+              // return new 
+
+              // Return the value string
+              return value // Optional - value alteration // ex: value.toLowerCase()
+
+              // Optional - Return a valid data object. 
+              // See methods/setData for list of valid options
+              return {
+                text: value,
+                value: value.toLowerCase()
+              }
+
+              // Optional - Return a promise with either a string or data object
+              return new Promise((resolve) => {
+                resolve({
+                  text: value,
+                  value: value,
+                })
+              })
+            }
+          }
+        })
+      `),l(`
+    `)],-1))])}const me=m(fe,[["render",ve]]),be=h({name:"Events",components:{Error:T,BeforeAfterChange:q,BeforeAfterOpenClose:ee,Search:le,SearchFilter:pe,Addable:me}}),Se={id:"events",class:"contents"};function Ce(n,t,p,f,c,a){const u=v("Error"),w=v("BeforeAfterChange"),S=v("BeforeAfterOpenClose"),C=v("Search"),$=v("SearchFilter"),s=v("Addable");return r(),i("div",Se,[g(u),g(w),g(S),g(C),g($),g(s)])}const $e=m(be,[["render",Ce]]);export{$e as default};

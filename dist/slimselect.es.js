@@ -371,7 +371,9 @@ class Render {
         this.content = this.contentDiv();
         this.updateClassStyles();
         this.updateAriaAttributes();
-        this.settings.contentLocation.appendChild(this.content.main);
+        if (this.settings.contentLocation) {
+            this.settings.contentLocation.appendChild(this.content.main);
+        }
     }
     enable() {
         this.main.main.classList.remove(this.classes.disabled);
@@ -1592,7 +1594,7 @@ class Select {
         const optionEl = document.createElement('option');
         optionEl.id = info.id;
         optionEl.value = info.value;
-        optionEl.innerHTML = info.text;
+        optionEl.textContent = info.text;
         if (info.html !== '') {
             optionEl.setAttribute('data-html', info.html);
         }
