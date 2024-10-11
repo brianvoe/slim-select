@@ -195,6 +195,21 @@ describe('Settings module', () => {
       expect(optionElement.dataset.html).toBe(option.html)
     })
 
+    test('malicious text is inserted with innerText', () => {
+      // decoded text: <img src=x onerror=alert(1)></img>
+      const str = '&#x3c;&#x69;&#x6d;&#x67;&#x20;&#x73;&#x72;&#x63;&#x3d;&#x78;&#x20;&#x6f;&#x6e;&#x65;&#x72;&#x72;&#x6f;&#x72;&#x3d;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x31;&#x29;&#x3e;&#x3c;&#x2f;&#x69;&#x6d;&#x67;&#x3e;'
+      // const str = 'opt'
+      const decode = (string: string|null) => {
+        if(string === null) return ''
+        const doc = new DOMParser().parseFromString(string, "text/html")
+        return doc.documentElement.textContent;
+      }
+      const option = new Option({ text: str })
+      const optionElement = select.createOption(option)
+      // expect(decode(optionElement.textContent)).toBe('opt')
+      expect(optionElement.textContent).toBe(str)
+    })
+
     test('disabled sets disabled property correctly', () => {
       const option = new Option({ text: 'opt', disabled: true })
       const optionElement = select.createOption(option)
