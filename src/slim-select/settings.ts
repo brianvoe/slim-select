@@ -24,7 +24,7 @@ export default class Settings {
   public searchingText: string
   public searchHighlight: boolean
   public closeOnSelect: boolean
-  public contentLocation: HTMLElement
+  public contentLocation: HTMLElement | null
   public contentPosition: 'relative' | 'absolute'
   public openPosition: 'auto' | 'up' | 'down'
   public placeholderText: string

@@ -72,7 +72,9 @@ export default class Render {
     this.updateAriaAttributes()
 
     // Add content to the content location settings
-    this.settings.contentLocation.appendChild(this.content.main)
+    if (this.settings.contentLocation) {
+      this.settings.contentLocation.appendChild(this.content.main)
+    }
   }
 
   // Remove disabled classes
