@@ -5,7 +5,7 @@
 Advanced select dropdown
 
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/jest.yml?logo=jest&label=unit%20tests)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/jest.yml?logo=jest&label=unit%20tests) [![slim-select](https://snyk.io/advisor/npm-package/slim-select/badge.svg)](https://snyk.io/advisor/npm-package/slim-select)
 
 ## Support
 
