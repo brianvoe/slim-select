@@ -309,8 +309,12 @@ export default class SlimSelect {
     // Get original selected values
     const selected = this.store.getSelected()
 
-    // Add option to store if it does not already include the option
-    if (!this.store.getDataOptions().some((o) => o.value === (option.value ?? option.text))) {
+    // Delete then re-add option to the store if it already includes the option
+    const optionInStore = this.store.getDataOptions().find((o) => o.value === (option.value ?? option.text))
+    if (optionInStore) {
+      this.setData(this.store.getData().filter((o) => o.id !== optionInStore.id))
+      this.store.addOption(option)
+    } else {
       this.store.addOption(option)
     }
     const data = this.store.getData()
