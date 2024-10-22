@@ -1884,7 +1884,12 @@ class SlimSelect {
     }
     addOption(option) {
         const selected = this.store.getSelected();
-        if (!this.store.getDataOptions().some((o) => { var _a; return o.value === ((_a = option.value) !== null && _a !== void 0 ? _a : option.text); })) {
+        const optionInStore = this.store.getDataOptions().find((o) => { var _a; return o.value === ((_a = option.value) !== null && _a !== void 0 ? _a : option.text); });
+        if (optionInStore) {
+            this.setData(this.store.getData().filter((o) => o.id !== optionInStore.id));
+            this.store.addOption(option);
+        }
+        else {
             this.store.addOption(option);
         }
         const data = this.store.getData();
