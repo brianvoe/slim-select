@@ -1256,6 +1256,9 @@
         }
         highlightText(str, search, className) {
             let completedString = str;
+            // just to let you know that if the search string contains a '*', the RexExp will fail.
+            // I had the issue while managing data already contraing '*' like IP adresses with wildcards.
+            // thanks for taking a look
             const regex = new RegExp('(?![^<]*>)(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
             if (!str.match(regex)) {
                 return str;
