@@ -261,6 +261,10 @@
     height: 100%;
   }
 
+  &.ss-fixed {
+    position: fixed;
+  }
+
   &.ss-open-above {
     flex-direction: column-reverse;
     opacity: 1;
