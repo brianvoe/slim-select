@@ -20,6 +20,13 @@ export default defineComponent({
         contentPosition: 'absolute'
       }
     })
+
+    new SlimSelect({
+      select: this.$refs.contentPositionFixed as HTMLSelectElement,
+      settings: {
+        contentPosition: 'fixed'
+      }
+    })
   }
 })
 </script>
@@ -32,11 +39,15 @@ export default defineComponent({
     }
 
     .relative {
-      width: 200px;
+      max-width: 200px;
     }
 
     .absolute {
-      width: 200px;
+      max-width: 200px;
+    }
+
+    .fixed {
+      max-width: 200px;
     }
   }
 }
@@ -45,11 +56,15 @@ export default defineComponent({
 <template>
   <div id="contentPosition" class="content">
     <h2 class="header">contentPosition</h2>
-    <p>contentPosition will set the css position to either relative. Default is <b>'absolute'</b></p>
+    <p>contentPosition will set the css position to relative, absolute or fixed. Default is <b>'absolute'</b></p>
 
     <div class="alert info">
       If you do use relative position be sure to set the contentLocation to an element that will work best for your use
       case. Otherwise SlimSelect will add you content to the body of the html. See example usage below.
+    </div>
+
+    <div class="alert info">
+      Fixed was added to address issues with fixed positioning in modals and other elements that have fixed positioning.
     </div>
 
     <div class="row">
@@ -68,12 +83,21 @@ export default defineComponent({
       </select>
     </div>
 
+    <div class="row">
+      <select ref="contentPositionFixed" class="fixed">
+        <option data-placeholder="true">Fixed</option>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </div>
+
     <pre>
       <code class="language-javascript">
         new SlimSelect({
           select: '#selectElement',
           settings: {
-            contentPosition: 'relative' // 'absolute' or 'relative'
+            contentPosition: 'relative' // 'absolute', 'relative' or 'fixed'
 
             // To help with relative positioning 
             // you can set the contentLocation
