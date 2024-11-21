@@ -25,7 +25,7 @@ export default class Settings {
   public searchHighlight: boolean
   public closeOnSelect: boolean
   public contentLocation: HTMLElement | null
-  public contentPosition: 'relative' | 'absolute'
+  public contentPosition: 'relative' | 'absolute' | 'fixed'
   public openPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
