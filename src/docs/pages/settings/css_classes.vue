@@ -60,23 +60,23 @@ export default defineComponent({
     </div>
 
     <pre>
-          <code class="language-html">
-          &lt;select id="primary-select"&gt;
-            &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-            &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-            &lt;option value="value3"&gt;Value 3&lt;/option&gt;
-          &lt;/select&gt;
-          </code>
-      </pre>
+      <code class="language-html">
+        &lt;select id="primary-select"&gt;
+          &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+          &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+          &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+        &lt;/select&gt;
+      </code>
+    </pre>
 
     <pre>
-        <code class="language-javascript">
-          new SlimSelect({
-            select: '#primary-select',
-            cssClasses: {
-              option: "primary-option" 
-          })
-        </code>
-      </pre>
+      <code class="language-javascript">
+        new SlimSelect({
+          select: '#primary-select',
+          cssClasses: {
+            option: "primary-option" 
+        })
+      </code>
+    </pre>
   </div>
 </template>
