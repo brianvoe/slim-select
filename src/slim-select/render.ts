@@ -209,6 +209,11 @@ export default class Render {
           return false
       }
 
+      // Check if they type a-z, A-Z and 0-9
+      if (e.key.length === 1) {
+        this.callbacks.open()
+      }
+
       return true
     }
 

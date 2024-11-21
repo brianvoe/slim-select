@@ -403,6 +403,7 @@ export default class SlimSelect {
     // Update settings
     this.settings.isOpen = false
     this.settings.isFullOpen = false
+
     // Reset the content below
     setTimeout(() => {
       // Run afterClose callback
