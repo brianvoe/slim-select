@@ -1,13 +1,24 @@
 {
   "name": "slim-select",
   "description": "Slim advanced select dropdown",
-  "version": "2.9.2",
+  "version": "2.10.0",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brianvoe/slim-select.git"
+  },
   "bugs": {
     "url": "https://github.com/brianvoe/slim-select/issues"
   },
+  "keywords": [
+    "select",
+    "vanilla",
+    "dropdown",
+    "search",
+    "multiselect"
+  ],
   "main": "dist/slimselect.umd.js",
   "browser": "dist/slimselect.umd.js",
   "module": "dist/slimselect.es.js",
@@ -26,17 +37,6 @@
     },
     "./styles": "./dist/slimselect.css"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brianvoe/slim-select.git"
-  },
-  "keywords": [
-    "select",
-    "vanilla",
-    "dropdown",
-    "search",
-    "multiselect"
-  ],
   "scripts": {
     "dev": "vite --port=1111",
     "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
