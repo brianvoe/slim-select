@@ -174,7 +174,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    // main.id = this.settings.id+'-main' // Remove for now as it is not needed
+    // main.id = this.settings.id+'-main' // Remove for now as it is not needed and add duplicate id errors
 
     // Add label
     main.setAttribute('aria-label', this.settings.ariaLabel)
@@ -589,7 +589,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    // main.id = this.settings.id + '-content' // Remove for now as it is not needed
+    // main.id = this.settings.id + '-content' // Remove for now as it is not needed and add duplicate id errors
 
     // Add search
     const search = this.searchDiv()
@@ -1167,7 +1167,7 @@ export default class Render {
     // Create option
     const optionEl = document.createElement('div')
     optionEl.dataset.id = option.id // Dataset id for identifying an option
-    optionEl.id = option.id
+    // optionEl.id = option.id // Remove for now as it is not needed and add duplicate id errors
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
