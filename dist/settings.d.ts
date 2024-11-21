@@ -18,7 +18,7 @@ export default class Settings {
     searchHighlight: boolean;
     closeOnSelect: boolean;
     contentLocation: HTMLElement | null;
-    contentPosition: 'relative' | 'absolute';
+    contentPosition: 'relative' | 'absolute' | 'fixed';
     openPosition: 'auto' | 'up' | 'down';
     placeholderText: string;
     allowDeselect: boolean;

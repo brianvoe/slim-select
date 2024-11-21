@@ -427,7 +427,7 @@ var SlimSelect = (function () {
                     }
                 }
             }
-            if (this.settings.contentPosition === 'relative') {
+            if (this.settings.contentPosition === 'relative' || this.settings.contentPosition === 'fixed') {
                 this.content.main.classList.add('ss-' + this.settings.contentPosition);
             }
         }
@@ -465,6 +465,9 @@ var SlimSelect = (function () {
                     case 'Escape':
                         this.callbacks.close();
                         return false;
+                }
+                if (e.key.length === 1) {
+                    this.callbacks.open();
                 }
                 return true;
             };
@@ -1148,7 +1151,6 @@ var SlimSelect = (function () {
             }
             const optionEl = document.createElement('div');
             optionEl.dataset.id = option.id;
-            optionEl.id = option.id;
             optionEl.classList.add(this.classes.option);
             optionEl.setAttribute('role', 'option');
             if (option.class) {
@@ -1272,8 +1274,10 @@ var SlimSelect = (function () {
             this.content.main.classList.add(this.classes.openAbove);
             const containerRect = this.main.main.getBoundingClientRect();
             this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px';
-            this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px';
-            this.content.main.style.left = containerRect.left + window.scrollX + 'px';
+            this.content.main.style.top =
+                containerRect.top + containerRect.height + (this.settings.contentPosition === 'fixed' ? 0 : window.scrollY) + 'px';
+            this.content.main.style.left =
+                containerRect.left + (this.settings.contentPosition === 'fixed' ? 0 : window.scrollX) + 'px';
             this.content.main.style.width = containerRect.width + 'px';
         }
         moveContentBelow() {
@@ -1284,8 +1288,13 @@ var SlimSelect = (function () {
             const containerRect = this.main.main.getBoundingClientRect();
             this.content.main.style.margin = '-1px 0px 0px 0px';
             if (this.settings.contentPosition !== 'relative') {
-                this.content.main.style.top = containerRect.top + containerRect.height + window.scrollY + 'px';
-                this.content.main.style.left = containerRect.left + window.scrollX + 'px';
+                this.content.main.style.top =
+                    containerRect.top +
+                        containerRect.height +
+                        (this.settings.contentPosition === 'fixed' ? 0 : window.scrollY) +
+                        'px';
+                this.content.main.style.left =
+                    containerRect.left + (this.settings.contentPosition === 'fixed' ? 0 : window.scrollX) + 'px';
                 this.content.main.style.width = containerRect.width + 'px';
             }
         }
