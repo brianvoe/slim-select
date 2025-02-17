@@ -65,7 +65,6 @@ describe('select module', () => {
 
       expect(select.select.tabIndex).toBe(-1)
       expect(select.select.style.display).toBe('none')
-      expect(select.select.getAttribute('aria-hidden')).toBe('true')
     })
   })
 
@@ -73,13 +72,11 @@ describe('select module', () => {
     test('HTML attributes get reset', () => {
       select.select.tabIndex = -1
       select.select.style.display = 'none'
-      select.select.setAttribute('aria-hidden', 'true')
 
       select.showUI()
 
       expect(select.select.tabIndex).toBeFalsy()
       expect(select.select.style.display).toBeFalsy()
-      expect(select.select.getAttribute('aria-hidden')).toBeNull()
     })
   })
 

@@ -108,12 +108,10 @@ describe('Settings module', () => {
 
   test('showUI', () => {
     select.select.setAttribute('tabindex', '1')
-    select.select.setAttribute('aria-hidden', 'true')
     select.select.style.display = 'none'
 
     select.showUI()
     expect(select.select.getAttribute('tabindex')).toBeFalsy()
-    expect(select.select.getAttribute('aria-hidden')).toBeFalsy()
     expect(select.select.style.display).toBeFalsy()
   })
 

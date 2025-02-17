@@ -42,13 +42,11 @@ export default class Select {
   public hideUI(): void {
     this.select.tabIndex = -1
     this.select.style.display = 'none'
-    this.select.setAttribute('aria-hidden', 'true')
   }
 
   public showUI(): void {
     this.select.removeAttribute('tabindex')
     this.select.style.display = ''
-    this.select.removeAttribute('aria-hidden')
   }
 
   public changeListen(listen: boolean) {
