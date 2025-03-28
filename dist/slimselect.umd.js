@@ -1029,6 +1029,7 @@
                     }), true);
                 }
             }
+            const fragment = document.createDocumentFragment();
             for (const d of data) {
                 if (d instanceof Optgroup) {
                     const optgroupEl = document.createElement('div');
@@ -1137,13 +1138,14 @@
                     optgroupEl.appendChild(optgroupLabel);
                     for (const o of d.options) {
                         optgroupEl.appendChild(this.option(o));
+                        fragment.appendChild(optgroupEl);
                     }
-                    this.content.list.appendChild(optgroupEl);
                 }
                 if (d instanceof Option) {
-                    this.content.list.appendChild(this.option(d));
+                    fragment.appendChild(this.option(d));
                 }
             }
+            this.content.list.appendChild(fragment);
         }
         option(option) {
             if (option.placeholder) {
