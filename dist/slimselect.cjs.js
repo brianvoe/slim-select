@@ -692,6 +692,7 @@ class Render {
         if (!option.mandatory) {
             const deleteDiv = document.createElement('div');
             deleteDiv.classList.add(this.classes.valueDelete);
+            deleteDiv.setAttribute('tabindex', '0');
             deleteDiv.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -738,6 +739,11 @@ class Render {
             deleteSvg.appendChild(deletePath);
             deleteDiv.appendChild(deleteSvg);
             value.appendChild(deleteDiv);
+            deleteDiv.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    deleteDiv.click();
+                }
+            };
         }
         return value;
     }

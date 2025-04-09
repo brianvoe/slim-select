@@ -517,6 +517,7 @@ export default class Render {
       // Create delete div element
       const deleteDiv = document.createElement('div')
       deleteDiv.classList.add(this.classes.valueDelete)
+      deleteDiv.setAttribute('tabindex', '0')  // Make the div focusable for tab navigation
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
@@ -584,6 +585,13 @@ export default class Render {
       deleteDiv.appendChild(deleteSvg)
 
       value.appendChild(deleteDiv)
+
+      // Add keydown event listener for keyboard navigation (Enter key)
+      deleteDiv.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          deleteDiv.click()  // Trigger the click event when Enter is pressed
+        }
+      }
     }
 
     return value
