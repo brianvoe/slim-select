@@ -693,6 +693,7 @@ var SlimSelect = (function () {
             if (!option.mandatory) {
                 const deleteDiv = document.createElement('div');
                 deleteDiv.classList.add(this.classes.valueDelete);
+                deleteDiv.setAttribute('tabindex', '0');
                 deleteDiv.onclick = (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -739,6 +740,11 @@ var SlimSelect = (function () {
                 deleteSvg.appendChild(deletePath);
                 deleteDiv.appendChild(deleteSvg);
                 value.appendChild(deleteDiv);
+                deleteDiv.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        deleteDiv.click();
+                    }
+                };
             }
             return value;
         }
