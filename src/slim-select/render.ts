@@ -50,6 +50,8 @@ export default class Render {
   public settings: Settings
   public store: Store
   public callbacks: Callbacks
+  // Used to compute the range selection
+  private lastSelectedOption: Option | null
 
   // Elements
   public main: Main
@@ -63,6 +65,7 @@ export default class Render {
     this.settings = settings
     this.classes = classes
     this.callbacks = callbacks
+    this.lastSelectedOption = null
 
     this.main = this.mainDiv()
     this.content = this.contentDiv()
@@ -1274,6 +1277,27 @@ export default class Render {
         } else {
           // If not selected after would add
           after = before.concat(option)
+
+          // Handles range selection
+          if (!this.settings.closeOnSelect) {
+            if (e.shiftKey && this.lastSelectedOption) {
+              const options = this.store.getDataOptions()
+              let lastClickedOptionIndex = options.findIndex((o: Option) => o.id === this.lastSelectedOption!.id)
+              let currentOptionIndex = options.findIndex((o: Option) => o.id === option.id)
+              if (lastClickedOptionIndex >= 0 && currentOptionIndex >= 0) {
+                // Select the range from the last clicked option to the current one, or vice versa.
+                const startIndex = Math.min(lastClickedOptionIndex, currentOptionIndex)
+                const endIndex = Math.max(lastClickedOptionIndex, currentOptionIndex)
+                const afterRange = options.slice(startIndex, endIndex + 1)
+                if (afterRange.length > 0 && afterRange.length < this.settings.maxSelected) {
+                  // Set the union between the current range and the previously selected values, removing duplicates
+                  after = before.concat(afterRange.filter((a) => !before.find((b) => b.id === a.id)))
+                }
+              }
+            } else if (!option.selected) {
+              this.lastSelectedOption = option
+            }
+          }
         }
       }
 

@@ -1142,6 +1142,104 @@ describe('render module', () => {
     })
   })
 
+  describe('range selection', () => {
+    let render: Render
+    let afterChangeMock: jest.Mock
+
+    beforeEach(() => {
+      // create a new store with 3 options
+      const store = new Store('multiple', [
+        { text: 'test1', value: 'test1' },
+        { text: 'test2', value: 'test2' },
+        { text: 'test3', value: 'test3' }
+      ])
+
+      const settings = new Settings()
+      const classes = new CssClasses()
+
+      afterChangeMock = jest.fn(() => {})
+
+      const callbacks = {
+        open: () => {},
+        close: () => {},
+        addSelected: () => {},
+        setSelected: (value) => {
+          store.setSelectedBy('id', typeof value === 'string' ? [value] : value)
+        },
+        addOption: () => {},
+        search: () => {},
+        afterChange: afterChangeMock
+      } as Callbacks
+
+      render = new Render(settings, classes, store, callbacks)
+      render.settings.isMultiple = true
+      render.settings.closeOnSelect = false
+    })
+
+    test('click holding shift key selects range from last clicked to current', () => {
+      render.renderOptions(render.store.getDataOptions())
+
+      const opts = render.getOptions(false, false, true)
+      expect(opts).toHaveLength(3)
+
+      // click on the first option
+      opts[0].dispatchEvent(new MouseEvent('click'))
+      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+
+      // click on the last option holding the shift key
+      opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+      // check that also the middle value is selected
+      expect(afterChangeMock).toHaveBeenCalledWith([
+        expect.objectContaining({ value: 'test1' }),
+        expect.objectContaining({ value: 'test2' }),
+        expect.objectContaining({ value: 'test3' })
+      ])
+    })
+
+    test('click holding shift key selects range from current to last clicked', () => {
+      render.renderOptions(render.store.getDataOptions())
+
+      const opts = render.getOptions(false, false, true)
+      expect(opts).toHaveLength(3)
+
+      // click on the last option
+      opts[2].dispatchEvent(new MouseEvent('click'))
+      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test3' })])
+
+      // click on the first option holding the shift key
+      opts[0].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+      // check that also the middle value is selected
+      expect(afterChangeMock).toHaveBeenCalledWith([
+        expect.objectContaining({ value: 'test3' }),
+        expect.objectContaining({ value: 'test1' }),
+        expect.objectContaining({ value: 'test2' })
+      ])
+    })
+
+    test('range selection is ignored if range length is greater than maxSelected', () => {
+      render.settings.maxSelected = 2
+      render.renderOptions(render.store.getDataOptions())
+
+      const opts = render.getOptions(false, false, true)
+      expect(opts).toHaveLength(3)
+
+      // click on the first option
+      opts[0].dispatchEvent(new MouseEvent('click'))
+      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+
+      // click on the last option holding the shift key
+      opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+      // check that the middle value is NOT selected
+      expect(afterChangeMock).toHaveBeenCalledWith([
+        expect.objectContaining({ value: 'test1' }),
+        expect.objectContaining({ value: 'test3' })
+      ])
+    })
+  })
+
   describe('destroy', () => {
     test('elements get removed', () => {
       expect(render.main.main).toBeInstanceOf(HTMLDivElement)
