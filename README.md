@@ -61,6 +61,7 @@ npm install slim-select
 
 ```javascript
 import SlimSelect from 'slim-select'
+import 'slim-select/styles' // optional import method
 
 new SlimSelect({
   select: '#selectElement',
