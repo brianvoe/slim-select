@@ -37,6 +37,13 @@ export default defineComponent({
         searchHighlight: true
       }
     })
+    new SlimSelect({
+      select: this.$refs.searchHighlightGroupSingle as HTMLSelectElement,
+      settings: {
+        searchHighlight: true,
+        searchHighlightGroup: true
+      }
+    })
 
     // Multiple
     new SlimSelect({
@@ -69,13 +76,20 @@ export default defineComponent({
         searchHighlight: true
       }
     })
+    new SlimSelect({
+      select: this.$refs.searchHighlightGroupMulti as HTMLSelectElement,
+      settings: {
+        searchHighlight: true,
+        searchHighlightGroup: true
+      }
+    })
   }
 })
 </script>
 
 <template>
   <div id="search" class="content">
-    <h2 class="header">showSearch / focusSearch / searchText / searchingText / searchHighlight</h2>
+    <h2 class="header">showSearch / focusSearch / searchText / searchingText / searchHighlight / searchHighlightGroups</h2>
     <p><b>showSearch</b> - is a boolean value that will decide whether or not to show the search. Default is true.</p>
     <p>
       <b>focusSearch</b> - is a boolean value that will decide whether or not to focus on the search on open. Default is
@@ -92,6 +106,10 @@ export default defineComponent({
       is 'Search'.
     </p>
     <p><b>searchHighlight</b> - is a boolean value that will highlight search results. Default is false.</p>
+    <p>
+      <b>searchHighlightGroups</b> - is a boolean value that will highlight matching groups when searching. 
+      Use when matching option group in searchFilter. Default is false.
+    </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="showSearchSingle">
@@ -118,6 +136,18 @@ export default defineComponent({
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
         <option value="bird">Bird</option>
+      </select>
+      <select ref="searchHighlightGroupSingle">
+        <optgroup label="Animals">
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </optgroup>
+        <optgroup label="Fruits">
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="orange">Orange</option>
+        </optgroup>
       </select>
     </div>
 
@@ -146,6 +176,18 @@ export default defineComponent({
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
         <option value="bird">Bird</option>
+      </select>
+      <select ref="searchHighlightGroupMulti" multiple>
+        <optgroup label="Animals">
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="bird">Bird</option>
+        </optgroup>
+        <optgroup label="Fruits">
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="orange">Orange</option>
+        </optgroup>
       </select>
     </div>
 
