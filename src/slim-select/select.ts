@@ -196,6 +196,7 @@ export default class Select {
       value: option.value,
       text: option.text,
       html: option.dataset && option.dataset.html ? option.dataset.html : '',
+      defaultSelected: option.defaultSelected,
       selected: option.selected,
       display: option.style.display !== 'none',
       disabled: option.disabled,
@@ -378,9 +379,8 @@ export default class Select {
     if (info.html !== '') {
       optionEl.setAttribute('data-html', info.html)
     }
-    if (info.selected) {
-      optionEl.selected = info.selected
-    }
+    optionEl.defaultSelected = info.defaultSelected
+    optionEl.selected = info.selected // Explicitly set selected because defaultSelected: true sets selected to true
     if (info.disabled) {
       optionEl.disabled = true
     }

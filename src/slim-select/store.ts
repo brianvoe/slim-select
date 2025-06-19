@@ -49,6 +49,7 @@ export interface OptionOptional {
   text: string // Required
   html?: string
   selected?: boolean
+  defaultSelected?: boolean
   display?: boolean
   disabled?: boolean
   mandatory?: boolean
@@ -63,6 +64,7 @@ export class Option {
   value: string
   text: string
   html: string
+  defaultSelected: boolean
   selected: boolean
   display: boolean
   disabled: boolean
@@ -77,6 +79,7 @@ export class Option {
     this.value = option.value === undefined ? option.text : option.value
     this.text = option.text || ''
     this.html = option.html || ''
+    this.defaultSelected = option.defaultSelected !== undefined ? option.defaultSelected : false
     this.selected = option.selected !== undefined ? option.selected : false
     this.display = option.display !== undefined ? option.display : true
     this.disabled = option.disabled !== undefined ? option.disabled : false
