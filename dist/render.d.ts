@@ -42,6 +42,7 @@ export default class Render {
     settings: Settings;
     store: Store;
     callbacks: Callbacks;
+    private lastSelectedOption;
     main: Main;
     content: Content;
     classes: CssClasses;
