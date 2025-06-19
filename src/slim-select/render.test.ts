@@ -748,7 +748,7 @@ describe('render module', () => {
     test('simply do nothing without breaking when options are empty', () => {
       render.renderOptions([])
 
-      expect(() => render.highlight('up')).not.toThrowError()
+      expect(() => render.highlight('up')).not.toThrow()
     })
 
     test('highlight single option that is not already highlighted', () => {
