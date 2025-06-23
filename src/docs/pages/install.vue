@@ -30,6 +30,7 @@ export default defineComponent({
       <pre class="example-code">
         <code class="language-javascript">
           import SlimSelect from 'slim-select'
+          import 'slim-select/styles' // optional css import method
 
           new SlimSelect({
             select: '#selectElement'
