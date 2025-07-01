@@ -26,6 +26,7 @@ export interface OptionOptional {
     text: string;
     html?: string;
     selected?: boolean;
+    defaultSelected?: boolean;
     display?: boolean;
     disabled?: boolean;
     mandatory?: boolean;
@@ -41,6 +42,7 @@ export declare class Option {
     value: string;
     text: string;
     html: string;
+    defaultSelected: boolean;
     selected: boolean;
     display: boolean;
     disabled: boolean;

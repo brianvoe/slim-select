@@ -60,7 +60,10 @@ export default defineComponent({
         {
           label: 'Examples',
           closable: 'close',
-          options: [{ text: 'countries', value: 'examples#countries' }]
+          options: [
+            { text: 'countries', value: 'examples#countries' },
+            { text: 'form reset', value: 'examples#formReset' }
+          ]
         },
 
         // Settings

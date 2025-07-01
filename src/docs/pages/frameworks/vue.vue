@@ -84,7 +84,7 @@ export default defineComponent({
       Slim Select doesnt have a package to import(anymore) due to its requirements of maintianing it within the
       repository. But we have provided a set of code you can add to your own project to get it working.
     </p>
-    <a href="https://github.com/slim-select/tree/master/src/slim-select/vue.vue">Download Component Here</a>
+    <a href="https://github.com/brianvoe/slim-select/blob/master/src/slim-select/vue.vue">Download Component Here</a>
     <br />
     <br />
 

@@ -200,7 +200,7 @@ describe('render module', () => {
 
       expect(render.main.main.role).toBe('combobox')
       expect(render.main.main.getAttribute('aria-haspopup')).toBe('listbox')
-      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.main.id)
+      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.main.dataset.id ?? '')
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
       expect(render.content.main.getAttribute('role')).toBe('listbox')
     })
@@ -748,7 +748,7 @@ describe('render module', () => {
     test('simply do nothing without breaking when options are empty', () => {
       render.renderOptions([])
 
-      expect(() => render.highlight('up')).not.toThrowError()
+      expect(() => render.highlight('up')).not.toThrow()
     })
 
     test('highlight single option that is not already highlighted', () => {
@@ -1139,6 +1139,104 @@ describe('render module', () => {
       // check that we add the right option
       expect(addOptionMock.mock.calls[0][0].text).toBe('new opt 1')
       expect(setSelectedMock).toHaveBeenCalled()
+    })
+  })
+
+  describe('range selection', () => {
+    let render: Render
+    let afterChangeMock: jest.Mock
+
+    beforeEach(() => {
+      // create a new store with 3 options
+      const store = new Store('multiple', [
+        { text: 'test1', value: 'test1' },
+        { text: 'test2', value: 'test2' },
+        { text: 'test3', value: 'test3' }
+      ])
+
+      const settings = new Settings()
+      const classes = new CssClasses()
+
+      afterChangeMock = jest.fn(() => {})
+
+      const callbacks = {
+        open: () => {},
+        close: () => {},
+        addSelected: () => {},
+        setSelected: (value) => {
+          store.setSelectedBy('id', typeof value === 'string' ? [value] : value)
+        },
+        addOption: () => {},
+        search: () => {},
+        afterChange: afterChangeMock
+      } as Callbacks
+
+      render = new Render(settings, classes, store, callbacks)
+      render.settings.isMultiple = true
+      render.settings.closeOnSelect = false
+    })
+
+    test('click holding shift key selects range from last clicked to current', () => {
+      render.renderOptions(render.store.getDataOptions())
+
+      const opts = render.getOptions(false, false, true)
+      expect(opts).toHaveLength(3)
+
+      // click on the first option
+      opts[0].dispatchEvent(new MouseEvent('click'))
+      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+
+      // click on the last option holding the shift key
+      opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+      // check that also the middle value is selected
+      expect(afterChangeMock).toHaveBeenCalledWith([
+        expect.objectContaining({ value: 'test1' }),
+        expect.objectContaining({ value: 'test2' }),
+        expect.objectContaining({ value: 'test3' })
+      ])
+    })
+
+    test('click holding shift key selects range from current to last clicked', () => {
+      render.renderOptions(render.store.getDataOptions())
+
+      const opts = render.getOptions(false, false, true)
+      expect(opts).toHaveLength(3)
+
+      // click on the last option
+      opts[2].dispatchEvent(new MouseEvent('click'))
+      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test3' })])
+
+      // click on the first option holding the shift key
+      opts[0].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+      // check that also the middle value is selected
+      expect(afterChangeMock).toHaveBeenCalledWith([
+        expect.objectContaining({ value: 'test3' }),
+        expect.objectContaining({ value: 'test1' }),
+        expect.objectContaining({ value: 'test2' })
+      ])
+    })
+
+    test('range selection is ignored if range length is greater than maxSelected', () => {
+      render.settings.maxSelected = 2
+      render.renderOptions(render.store.getDataOptions())
+
+      const opts = render.getOptions(false, false, true)
+      expect(opts).toHaveLength(3)
+
+      // click on the first option
+      opts[0].dispatchEvent(new MouseEvent('click'))
+      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+
+      // click on the last option holding the shift key
+      opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+      // check that the middle value is NOT selected
+      expect(afterChangeMock).toHaveBeenCalledWith([
+        expect.objectContaining({ value: 'test1' }),
+        expect.objectContaining({ value: 'test3' })
+      ])
     })
   })
 
