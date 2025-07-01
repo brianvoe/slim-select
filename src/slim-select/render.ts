@@ -74,9 +74,15 @@ export default class Render {
     this.updateClassStyles()
     this.updateAriaAttributes()
 
-    // Add content to the content location settings
-    if (this.settings.contentLocation) {
-      this.settings.contentLocation.appendChild(this.content.main)
+    // Add content to the content location settings or offcanvas-body if it exists
+    const contentContainer = document
+      .querySelector(`[data-id="${this.settings.id}"]`)
+      ?.closest('.offcanvas-body');
+
+    if (contentContainer) {
+      contentContainer.appendChild(this.content.main);
+    } else if (this.settings.contentLocation) {
+      this.settings.contentLocation.appendChild(this.content.main);
     }
   }
 
@@ -137,7 +143,9 @@ export default class Render {
 
     // Make sure main/content has its base class
     this.main.main.classList.add(this.classes.main)
+    this.main.main.classList.add('ss-2')
     this.content.main.classList.add(this.classes.content)
+    this.content.main.classList.add('ss-content-2')
 
     // Add styles
     if (this.settings.style !== '') {
@@ -175,9 +183,7 @@ export default class Render {
     // Create main container
     const main = document.createElement('div')
 
-    // Add id to data-id
-    main.dataset.id = this.settings.id
-    // main.id = this.settings.id+'-main' // Remove for now as it is not needed and add duplicate id errors
+    main.id = this.settings.id + '-main'
 
     // Add label
     main.setAttribute('aria-label', this.settings.ariaLabel)
@@ -587,6 +593,7 @@ export default class Render {
       deleteSvg.appendChild(deletePath)
       deleteDiv.appendChild(deleteSvg)
 
+      // Add the deleteDiv to the value container
       value.appendChild(deleteDiv)
 
       // Add keydown event listener for keyboard navigation (Enter key)
@@ -603,9 +610,7 @@ export default class Render {
   public contentDiv(): Content {
     const main = document.createElement('div')
 
-    // Add id to data-id
-    main.dataset.id = this.settings.id
-    // main.id = this.settings.id + '-content' // Remove for now as it is not needed and add duplicate id errors
+    main.id = this.settings.id + '-content'
 
     // Add search
     const search = this.searchDiv()
@@ -1184,8 +1189,8 @@ export default class Render {
 
     // Create option
     const optionEl = document.createElement('div')
-    optionEl.dataset.id = option.id // Dataset id for identifying an option
-    // optionEl.id = option.id // Remove for now as it is not needed and add duplicate id errors
+    // optionEl.dataset.id = option.id // Dataset id for identifying an option
+    optionEl.id = option.id
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {

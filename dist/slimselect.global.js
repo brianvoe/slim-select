@@ -367,6 +367,7 @@ var SlimSelect = (function () {
 
     class Render {
         constructor(settings, classes, store, callbacks) {
+            var _a;
             this.store = store;
             this.settings = settings;
             this.classes = classes;
@@ -376,7 +377,12 @@ var SlimSelect = (function () {
             this.content = this.contentDiv();
             this.updateClassStyles();
             this.updateAriaAttributes();
-            if (this.settings.contentLocation) {
+            const contentContainer = (_a = document
+                .querySelector(`[data-id="${this.settings.id}"]`)) === null || _a === void 0 ? void 0 : _a.closest('.offcanvas-body');
+            if (contentContainer) {
+                contentContainer.appendChild(this.content.main);
+            }
+            else if (this.settings.contentLocation) {
                 this.settings.contentLocation.appendChild(this.content.main);
             }
         }
@@ -416,7 +422,9 @@ var SlimSelect = (function () {
             this.content.main.className = '';
             this.content.main.removeAttribute('style');
             this.main.main.classList.add(this.classes.main);
+            this.main.main.classList.add('ss-2');
             this.content.main.classList.add(this.classes.content);
+            this.content.main.classList.add('ss-content-2');
             if (this.settings.style !== '') {
                 this.main.main.style.cssText = this.settings.style;
                 this.content.main.style.cssText = this.settings.style;
@@ -444,7 +452,7 @@ var SlimSelect = (function () {
         mainDiv() {
             var _a;
             const main = document.createElement('div');
-            main.dataset.id = this.settings.id;
+            main.id = this.settings.id + '-main';
             main.setAttribute('aria-label', this.settings.ariaLabel);
             main.tabIndex = 0;
             main.onkeydown = (e) => {
@@ -753,7 +761,7 @@ var SlimSelect = (function () {
         }
         contentDiv() {
             const main = document.createElement('div');
-            main.dataset.id = this.settings.id;
+            main.id = this.settings.id + '-content';
             const search = this.searchDiv();
             main.appendChild(search.main);
             const list = this.listDiv();
@@ -1161,7 +1169,7 @@ var SlimSelect = (function () {
                 return placeholder;
             }
             const optionEl = document.createElement('div');
-            optionEl.dataset.id = option.id;
+            optionEl.id = option.id;
             optionEl.classList.add(this.classes.option);
             optionEl.setAttribute('role', 'option');
             if (option.class) {
