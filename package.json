@@ -91,5 +91,11 @@
     "vue-router": "^4.5.0",
     "vue-tsc": "^2.2.8",
     "vuex": "^4.0.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild"
+    ]
   }
 }
