@@ -210,7 +210,7 @@ describe('render module', () => {
     test('correct HTML element gets created', () => {
       const main = render.main.main
 
-      expect(main.dataset.id).toBe(render.settings.id)
+      expect(main.id).toBe(render.settings.id + '-main')
       expect(main.getAttribute('aria-label')).toBe(render.settings.ariaLabel)
       expect(main.tabIndex).toBe(0)
       expect(main.children).toHaveLength(3)
