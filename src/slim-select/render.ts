@@ -173,7 +173,7 @@ export default class Render {
   public updateAriaAttributes() {
     this.main.main.role = 'combobox'
     this.main.main.setAttribute('aria-haspopup', 'listbox')
-    this.main.main.setAttribute('aria-controls', this.content.main.dataset.id ?? '')
+    this.main.main.setAttribute('aria-controls', this.content.main.id)
     this.main.main.setAttribute('aria-expanded', 'false')
     this.content.main.setAttribute('role', 'listbox')
     // do an aria-labelledby here maybe
