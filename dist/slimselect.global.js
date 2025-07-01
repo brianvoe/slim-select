@@ -442,10 +442,9 @@ var SlimSelect = (function () {
             }
         }
         updateAriaAttributes() {
-            var _a;
             this.main.main.role = 'combobox';
             this.main.main.setAttribute('aria-haspopup', 'listbox');
-            this.main.main.setAttribute('aria-controls', (_a = this.content.main.dataset.id) !== null && _a !== void 0 ? _a : '');
+            this.main.main.setAttribute('aria-controls', this.content.main.id);
             this.main.main.setAttribute('aria-expanded', 'false');
             this.content.main.setAttribute('role', 'listbox');
         }
