@@ -35,7 +35,8 @@
     "./*": {
       "types": "./dist/*.d.ts"
     },
-    "./styles": "./dist/slimselect.css"
+    "./styles": "./dist/slimselect.css",
+    "./scss": "./src/slim-select/slimselect.scss"
   },
   "scripts": {
     "dev": "vite --port=1111",
