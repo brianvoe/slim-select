@@ -2,7 +2,7 @@ import CssClasses from './classes';
 import Render from './render';
 import Select from './select';
 import Settings, { SettingsPartial } from './settings';
-import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store';
+import Store, { DataArray, DataArrayPartial, Optgroup, Option, OptionOptional } from './store';
 export interface Config {
     select: string | Element;
     data?: DataArrayPartial;
@@ -12,7 +12,7 @@ export interface Config {
 }
 export interface Events {
     search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial;
-    searchFilter?: (option: Option, search: string) => boolean;
+    searchFilter?: (option: Option, search: string, optgroup: Optgroup | null) => boolean;
     addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | null | undefined | Error;
     beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void;
     afterChange?: (newVal: Option[]) => void;
