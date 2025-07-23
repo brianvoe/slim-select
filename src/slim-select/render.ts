@@ -57,6 +57,9 @@ export default class Render {
   public main: Main
   public content: Content
 
+  private scrollHandler: (() => void) | undefined;
+  private resizeHandler: (() => void) | undefined;
+
   // Classes
   public classes: CssClasses
 
@@ -123,6 +126,16 @@ export default class Render {
         this.ensureElementInView(this.content.list, selectedOption)
       }
     }
+    if (this.settings.contentPosition === 'fixed') {
+      this.moveContent();
+
+      // Instant (non-debounced) handlers
+      this.scrollHandler = () => this.moveContent();
+      this.resizeHandler = () => this.moveContent();
+
+      window.addEventListener('scroll', this.scrollHandler, true); // capture phase
+      window.addEventListener('resize', this.resizeHandler);
+    }
   }
 
   public close(): void {
@@ -132,6 +145,16 @@ export default class Render {
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
+
+    if (this.scrollHandler) {
+      window.removeEventListener('scroll', this.scrollHandler, true);
+      this.scrollHandler = undefined;
+    }
+
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+      this.resizeHandler = undefined;
+    }
   }
 
   public updateClassStyles(): void {
