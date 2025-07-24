@@ -45,6 +45,8 @@ export default class Render {
     private lastSelectedOption;
     main: Main;
     content: Content;
+    private scrollHandler;
+    private resizeHandler;
     classes: CssClasses;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
     enable(): void;
