@@ -410,6 +410,13 @@
                     this.ensureElementInView(this.content.list, selectedOption);
                 }
             }
+            if (this.settings.contentPosition === 'fixed') {
+                this.moveContent();
+                this.scrollHandler = () => this.moveContent();
+                this.resizeHandler = () => this.moveContent();
+                window.addEventListener('scroll', this.scrollHandler, true);
+                window.addEventListener('resize', this.resizeHandler);
+            }
         }
         close() {
             this.main.main.classList.remove(this.classes.openAbove);
@@ -418,6 +425,14 @@
             this.content.main.classList.remove(this.classes.openAbove);
             this.content.main.classList.remove(this.classes.openBelow);
             this.main.arrow.path.setAttribute('d', this.classes.arrowClose);
+            if (this.scrollHandler) {
+                window.removeEventListener('scroll', this.scrollHandler, true);
+                this.scrollHandler = undefined;
+            }
+            if (this.resizeHandler) {
+                window.removeEventListener('resize', this.resizeHandler);
+                this.resizeHandler = undefined;
+            }
         }
         updateClassStyles() {
             this.main.main.className = '';
