@@ -19,6 +19,7 @@ export default class Settings {
   public showSearch: boolean
   public focusSearch: boolean
   public ariaLabel: string
+  public contentAriaLabel: string
   public searchPlaceholder: string
   public searchText: string
   public searchingText: string
@@ -61,6 +62,7 @@ export default class Settings {
     this.contentLocation = settings.contentLocation || document.body
     this.contentPosition = settings.contentPosition || 'absolute'
     this.openPosition = settings.openPosition || 'auto' // options: auto, up, down
+    this.contentAriaLabel = settings.contentAriaLabel !== undefined ? settings.contentAriaLabel : 'Select an option'
     this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false

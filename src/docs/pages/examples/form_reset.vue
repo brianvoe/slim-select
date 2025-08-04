@@ -20,28 +20,36 @@ export default defineComponent({
     })
   },
   methods: {
-    onSubmitSingle(e) {
+    onSubmitSingle(e: Event) {
       e.preventDefault()
 
-      alert(JSON.stringify(this.single.getSelected()))
+      alert(JSON.stringify(this.single!.getSelected()))
     },
-    onSubmitMultiple(e) {
+    onSubmitMultiple(e: Event) {
       e.preventDefault()
 
-      alert(JSON.stringify(this.multiple.getSelected()))
+      alert(JSON.stringify(this.multiple!.getSelected()))
     },
-    onFormResetSingle(e) {
+    onFormResetSingle(e: Event) {
+      const selectElement = e.target as HTMLFormElement
+
       setTimeout(() => {
-        this.single.setSelected(
-          Array.from(e.target.elements.select.selectedOptions).map((option) => option.value),
+        this.single!.setSelected(
+          Array.from((selectElement.elements.namedItem('select') as HTMLSelectElement).selectedOptions).map(
+            (option) => option.value
+          ),
           false
         )
       })
     },
-    onFormResetMultiple(e) {
+    onFormResetMultiple(e: Event) {
+      const selectElement = e.target as HTMLFormElement
+
       setTimeout(() => {
-        this.multiple.setSelected(
-          Array.from(e.target.elements.select.selectedOptions).map((option) => option.value),
+        this.multiple!.setSelected(
+          Array.from((selectElement.elements.namedItem('select') as HTMLSelectElement).selectedOptions).map(
+            (option) => option.value
+          ),
           false
         )
       })

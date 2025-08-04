@@ -12,6 +12,7 @@ export default class Settings {
     showSearch: boolean;
     focusSearch: boolean;
     ariaLabel: string;
+    contentAriaLabel: string;
     searchPlaceholder: string;
     searchText: string;
     searchingText: string;

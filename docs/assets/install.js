@@ -6,6 +6,7 @@ Use Save As... to download, then click back to return to this page.`)&&(location
       </pre><pre class="example-code">        <code class="language-javascript">
           import SlimSelect from &#39;slim-select&#39;
           import &#39;slim-select/styles&#39; // optional css import method
+          import &#39;slim-select/scss&#39; // optional scss import method
 
           new SlimSelect({
             select: &#39;#selectElement&#39;
