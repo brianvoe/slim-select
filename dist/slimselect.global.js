@@ -463,7 +463,6 @@ var SlimSelect = (function () {
             this.main.main.setAttribute('aria-expanded', 'false');
             this.content.list.setAttribute('role', 'listbox');
             this.content.list.setAttribute('aria-label', this.settings.contentAriaLabel);
-            console.log(this.content.list);
         }
         mainDiv() {
             var _a;
