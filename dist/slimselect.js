@@ -464,8 +464,9 @@
             this.main.main.setAttribute('aria-haspopup', 'listbox');
             this.main.main.setAttribute('aria-controls', this.content.main.id);
             this.main.main.setAttribute('aria-expanded', 'false');
-            this.content.main.setAttribute('role', 'listbox');
-            this.content.main.setAttribute('aria-label', this.settings.contentAriaLabel);
+            this.content.list.setAttribute('role', 'listbox');
+            this.content.list.setAttribute('aria-label', this.settings.contentAriaLabel);
+            console.log(this.content.list);
         }
         mainDiv() {
             var _a;
