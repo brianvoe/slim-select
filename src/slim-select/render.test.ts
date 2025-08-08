@@ -202,7 +202,8 @@ describe('render module', () => {
       expect(render.main.main.getAttribute('aria-haspopup')).toBe('listbox')
       expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.main.id)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
-      expect(render.content.main.getAttribute('role')).toBe('listbox')
+      expect(render.content.list.getAttribute('role')).toBe('listbox')
+      expect(render.content.list.getAttribute('aria-label')).toBe(render.settings.contentAriaLabel)
     })
   })
 

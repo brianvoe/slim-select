@@ -461,7 +461,8 @@ var SlimSelect = (function () {
             this.main.main.setAttribute('aria-haspopup', 'listbox');
             this.main.main.setAttribute('aria-controls', this.content.main.id);
             this.main.main.setAttribute('aria-expanded', 'false');
-            this.content.main.setAttribute('role', 'listbox');
+            this.content.list.setAttribute('role', 'listbox');
+            this.content.list.setAttribute('aria-label', this.settings.contentAriaLabel);
         }
         mainDiv() {
             var _a;
@@ -1728,6 +1729,7 @@ var SlimSelect = (function () {
             this.contentLocation = settings.contentLocation || document.body;
             this.contentPosition = settings.contentPosition || 'absolute';
             this.openPosition = settings.openPosition || 'auto';
+            this.contentAriaLabel = settings.contentAriaLabel !== undefined ? settings.contentAriaLabel : 'Select an option';
             this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value';
             this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false;
             this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false;
