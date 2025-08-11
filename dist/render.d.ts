@@ -43,12 +43,18 @@ export default class Render {
     store: Store;
     callbacks: Callbacks;
     private lastSelectedOption;
+    private static _livePolite;
+    private static _liveAssertive;
+    private static getLiveAssertive;
+    private _announceAssertive;
     main: Main;
     content: Content;
     private scrollHandler;
     private resizeHandler;
     classes: CssClasses;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
+    private static getLivePolite;
+    private _announcePolite;
     enable(): void;
     disable(): void;
     open(): void;

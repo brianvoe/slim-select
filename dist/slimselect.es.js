@@ -363,6 +363,24 @@ class Store {
 }
 
 class Render {
+    static getLiveAssertive() {
+        let el = document.getElementById('ss-live-assertive');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'ss-live-assertive';
+            el.setAttribute('role', 'status');
+            el.setAttribute('aria-live', 'assertive');
+            el.setAttribute('aria-atomic', 'true');
+            el.className = 'sr-only';
+            document.body.appendChild(el);
+        }
+        return el;
+    }
+    _announceAssertive(msg) {
+        const el = (Render._liveAssertive || (Render._liveAssertive = Render.getLiveAssertive()));
+        el.textContent = '';
+        requestAnimationFrame(() => { el.textContent = msg; });
+    }
     constructor(settings, classes, store, callbacks) {
         var _a;
         this.store = store;
@@ -382,6 +400,24 @@ class Render {
         else if (this.settings.contentLocation) {
             this.settings.contentLocation.appendChild(this.content.main);
         }
+    }
+    static getLivePolite() {
+        let el = document.getElementById('ss-live-polite');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'ss-live-polite';
+            el.setAttribute('role', 'status');
+            el.setAttribute('aria-live', 'polite');
+            el.setAttribute('aria-atomic', 'true');
+            el.className = 'sr-only';
+            document.body.appendChild(el);
+        }
+        return el;
+    }
+    _announcePolite(msg) {
+        const el = (Render._livePolite || (Render._livePolite = Render.getLivePolite()));
+        el.textContent = '';
+        requestAnimationFrame(() => { el.textContent = msg; });
     }
     enable() {
         this.main.main.classList.remove(this.classes.disabled);
@@ -411,6 +447,7 @@ class Render {
             window.addEventListener('scroll', this.scrollHandler, true);
             window.addEventListener('resize', this.resizeHandler);
         }
+        this.searchFocus();
     }
     close() {
         this.main.main.classList.remove(this.classes.openAbove);
@@ -427,6 +464,8 @@ class Render {
             window.removeEventListener('resize', this.resizeHandler);
             this.resizeHandler = undefined;
         }
+        this.main.main.focus({ preventScroll: true });
+        this.main.main.removeAttribute('aria-activedescendant');
     }
     updateClassStyles() {
         this.main.main.className = '';
@@ -454,18 +493,35 @@ class Render {
         }
     }
     updateAriaAttributes() {
-        this.main.main.role = 'combobox';
-        this.main.main.setAttribute('aria-haspopup', 'listbox');
-        this.main.main.setAttribute('aria-controls', this.content.main.id);
-        this.main.main.setAttribute('aria-expanded', 'false');
         this.content.list.setAttribute('role', 'listbox');
+        this.content.list.setAttribute('id', this.content.main.id + '-list');
         this.content.list.setAttribute('aria-label', this.settings.contentAriaLabel);
+        if (this.settings.isMultiple) {
+            this.content.list.setAttribute('aria-multiselectable', 'true');
+        }
+        else {
+            this.content.list.removeAttribute('aria-multiselectable');
+        }
+        this.main.main.setAttribute('role', 'combobox');
+        this.main.main.setAttribute('aria-haspopup', 'listbox');
+        this.main.main.setAttribute('aria-controls', this.content.list.id);
+        this.main.main.setAttribute('aria-expanded', 'false');
+        this.main.main.setAttribute('aria-autocomplete', 'list');
+        if (this.settings.ariaLabelledBy && this.settings.ariaLabelledBy.trim()) {
+            this.main.main.setAttribute('aria-labelledby', this.settings.ariaLabelledBy);
+            this.main.main.removeAttribute('aria-label');
+        }
+        else if (this.settings.ariaLabel && this.settings.ariaLabel.trim()) {
+            this.main.main.setAttribute('aria-label', this.settings.ariaLabel);
+        }
+        this.main.main.setAttribute('aria-owns', this.content.list.id);
+        this.content.search.input.setAttribute('aria-controls', this.content.list.id);
+        this.content.search.input.setAttribute('aria-autocomplete', 'list');
     }
     mainDiv() {
         var _a;
         const main = document.createElement('div');
         main.id = this.settings.id + '-main';
-        main.setAttribute('aria-label', this.settings.ariaLabel);
         main.tabIndex = 0;
         main.onkeydown = (e) => {
             switch (e.key) {
@@ -505,6 +561,15 @@ class Render {
         main.appendChild(values);
         const deselect = document.createElement('div');
         deselect.classList.add(this.classes.deselect);
+        deselect.setAttribute('role', 'button');
+        deselect.setAttribute('tabindex', '0');
+        deselect.setAttribute('aria-label', this.settings.clearAllAriaLabel);
+        deselect.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                deselect.click();
+            }
+        });
         const selectedOptions = (_a = this.store) === null || _a === void 0 ? void 0 : _a.getSelectedOptions();
         if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
             deselect.classList.add(this.classes.hide);
@@ -543,6 +608,8 @@ class Render {
         };
         const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         deselectSvg.setAttribute('viewBox', '0 0 100 100');
+        deselectSvg.setAttribute('aria-hidden', 'true');
+        deselectSvg.setAttribute('focusable', 'false');
         const deselectPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         deselectPath.setAttribute('d', this.classes.deselectPath);
         deselectSvg.appendChild(deselectPath);
@@ -551,6 +618,8 @@ class Render {
         const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         arrow.classList.add(this.classes.arrow);
         arrow.setAttribute('viewBox', '0 0 100 100');
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.setAttribute('focusable', 'false');
         const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         arrowPath.setAttribute('d', this.classes.arrowClose);
         if (this.settings.alwaysOpen) {
@@ -716,6 +785,9 @@ class Render {
         if (!option.mandatory) {
             const deleteDiv = document.createElement('div');
             deleteDiv.classList.add(this.classes.valueDelete);
+            deleteDiv.setAttribute('role', 'button');
+            deleteDiv.setAttribute('aria-label', 'Remove selection');
+            deleteDiv.setAttribute('title', 'Remove selection');
             deleteDiv.setAttribute('tabindex', '0');
             deleteDiv.onclick = (e) => {
                 e.preventDefault();
@@ -758,13 +830,16 @@ class Render {
             };
             const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             deleteSvg.setAttribute('viewBox', '0 0 100 100');
+            deleteSvg.setAttribute('aria-hidden', 'true');
+            deleteSvg.setAttribute('focusable', 'false');
             const deletePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             deletePath.setAttribute('d', this.classes.optionDelete);
             deleteSvg.appendChild(deletePath);
             deleteDiv.appendChild(deleteSvg);
             value.appendChild(deleteDiv);
             deleteDiv.onkeydown = (e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     deleteDiv.click();
                 }
             };
@@ -820,7 +895,15 @@ class Render {
         input.type = 'search';
         input.placeholder = this.settings.searchPlaceholder;
         input.tabIndex = -1;
-        input.setAttribute('aria-label', this.settings.searchPlaceholder);
+        if (this.settings.searchLabelledBy && this.settings.searchLabelledBy.trim()) {
+            input.setAttribute('aria-labelledby', this.settings.searchLabelledBy);
+        }
+        else if (this.settings.searchAriaLabel && this.settings.searchAriaLabel.trim()) {
+            input.setAttribute('aria-label', this.settings.searchAriaLabel);
+        }
+        else {
+            input.setAttribute('aria-label', 'Search options');
+        }
         input.setAttribute('autocapitalize', 'off');
         input.setAttribute('autocomplete', 'off');
         input.setAttribute('autocorrect', 'off');
@@ -867,6 +950,8 @@ class Render {
             addable.classList.add(this.classes.addable);
             const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             plus.setAttribute('viewBox', '0 0 100 100');
+            plus.setAttribute('aria-hidden', 'true');
+            plus.setAttribute('focusable', 'false');
             const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             plusPath.setAttribute('d', this.classes.addablePath);
             plus.appendChild(plusPath);
@@ -997,6 +1082,7 @@ class Render {
                 }
                 let selectOption = options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1];
                 selectOption.classList.add(this.classes.highlighted);
+                this.main.main.setAttribute('aria-activedescendant', selectOption.id);
                 this.ensureElementInView(this.content.list, selectOption);
                 const selectParent = selectOption.parentElement;
                 if (selectParent && selectParent.classList.contains(this.classes.close)) {
@@ -1008,8 +1094,10 @@ class Render {
                 return;
             }
         }
-        options[dir === 'down' ? 0 : options.length - 1].classList.add(this.classes.highlighted);
-        this.ensureElementInView(this.content.list, options[dir === 'down' ? 0 : options.length - 1]);
+        const newly = options[dir === 'down' ? 0 : options.length - 1];
+        newly.classList.add(this.classes.highlighted);
+        this.main.main.setAttribute('aria-activedescendant', newly.id);
+        this.ensureElementInView(this.content.list, newly);
     }
     listDiv() {
         const options = document.createElement('div');
@@ -1018,30 +1106,35 @@ class Render {
     }
     renderError(error) {
         this.content.list.innerHTML = '';
+        this.content.list.removeAttribute('aria-busy');
         const errorDiv = document.createElement('div');
         errorDiv.classList.add(this.classes.error);
         errorDiv.textContent = error;
         this.content.list.appendChild(errorDiv);
+        this._announceAssertive(error);
     }
     renderSearching() {
         this.content.list.innerHTML = '';
+        this.content.list.setAttribute('aria-busy', 'true');
         const searchingDiv = document.createElement('div');
         searchingDiv.classList.add(this.classes.searching);
         searchingDiv.textContent = this.settings.searchingText;
         this.content.list.appendChild(searchingDiv);
+        this._announcePolite(this.settings.searchingText);
     }
     renderOptions(data) {
         this.content.list.innerHTML = '';
+        this.content.list.removeAttribute('aria-busy');
         if (data.length === 0) {
             const noResults = document.createElement('div');
             noResults.classList.add(this.classes.search);
-            if (this.callbacks.addable) {
-                noResults.innerHTML = this.settings.addableText.replace('{value}', this.content.search.input.value);
-            }
-            else {
-                noResults.innerHTML = this.settings.searchText;
-            }
+            const msg = this.callbacks.addable
+                ? this.settings.addableText.replace('{value}', this.content.search.input.value)
+                : this.settings.searchText;
+            this._announcePolite(msg);
+            noResults.innerHTML = msg;
             this.content.list.appendChild(noResults);
+            this.content.list.setAttribute('aria-setsize', '0');
             return;
         }
         if (this.settings.allowDeselect && !this.settings.isMultiple) {
@@ -1056,10 +1149,20 @@ class Render {
             }
         }
         const fragment = document.createDocumentFragment();
+        let count = 0;
+        const tagPos = (el) => {
+            if (!el.classList.contains(this.classes.placeholder) &&
+                !el.classList.contains(this.classes.disabled) &&
+                !el.classList.contains(this.classes.hide)) {
+                el.setAttribute('aria-posinset', String(++count));
+            }
+        };
         for (const d of data) {
             if (d instanceof Optgroup) {
                 const optgroupEl = document.createElement('div');
                 optgroupEl.classList.add(this.classes.optgroup);
+                optgroupEl.setAttribute('role', 'group');
+                optgroupEl.setAttribute('aria-label', d.label);
                 const optgroupLabel = document.createElement('div');
                 optgroupLabel.classList.add(this.classes.optgroupLabel);
                 optgroupEl.appendChild(optgroupLabel);
@@ -1088,6 +1191,8 @@ class Render {
                     selectAll.appendChild(selectAllText);
                     const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     selectAllSvg.setAttribute('viewBox', '0 0 100 100');
+                    selectAllSvg.setAttribute('aria-hidden', 'true');
+                    selectAllSvg.setAttribute('focusable', 'false');
                     selectAll.appendChild(selectAllSvg);
                     const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox);
@@ -1130,11 +1235,13 @@ class Render {
                     const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                     optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100');
                     optgroupClosableSvg.classList.add(this.classes.arrow);
+                    optgroupClosableSvg.setAttribute('aria-hidden', 'true');
+                    optgroupClosableSvg.setAttribute('focusable', 'false');
                     optgroupClosable.appendChild(optgroupClosableSvg);
                     const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     optgroupClosableSvg.appendChild(optgroupClosableArrow);
                     if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
-                        optgroupClosable.classList.add(this.classes.open);
+                        optgroupEl.classList.add(this.classes.open);
                         optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen);
                     }
                     else if (d.closable === 'open') {
@@ -1163,15 +1270,23 @@ class Render {
                 }
                 optgroupEl.appendChild(optgroupLabel);
                 for (const o of d.options) {
-                    optgroupEl.appendChild(this.option(o));
-                    fragment.appendChild(optgroupEl);
+                    const optEl = this.option(o);
+                    tagPos(optEl);
+                    optgroupEl.appendChild(optEl);
                 }
+                fragment.appendChild(optgroupEl);
             }
             if (d instanceof Option) {
-                fragment.appendChild(this.option(d));
+                const optEl = this.option(d);
+                tagPos(optEl);
+                fragment.appendChild(optEl);
             }
         }
         this.content.list.appendChild(fragment);
+        this.content.list.removeAttribute('aria-busy');
+        const visibleCount = this.getOptions(true, true, true).length;
+        this.content.list.setAttribute('aria-setsize', String(visibleCount));
+        this._announcePolite(`${visibleCount} option${visibleCount === 1 ? '' : 's'} available`);
     }
     option(option) {
         if (option.placeholder) {
@@ -1181,7 +1296,8 @@ class Render {
             return placeholder;
         }
         const optionEl = document.createElement('div');
-        optionEl.id = option.id;
+        optionEl.dataset.id = option.id;
+        optionEl.id = `${this.settings.id}__opt__${option.id}`;
         optionEl.classList.add(this.classes.option);
         optionEl.setAttribute('role', 'option');
         if (option.class) {
@@ -1209,6 +1325,7 @@ class Render {
         }
         if (option.disabled) {
             optionEl.classList.add(this.classes.disabled);
+            optionEl.setAttribute('aria-disabled', 'true');
         }
         if (option.selected && this.settings.hideSelected) {
             optionEl.classList.add(this.classes.hide);
@@ -1392,6 +1509,8 @@ class Render {
         }
     }
 }
+Render._livePolite = null;
+Render._liveAssertive = null;
 
 class Select {
     constructor(select) {
@@ -1738,6 +1857,10 @@ class Settings {
         this.maxValuesShown = settings.maxValuesShown || 20;
         this.maxValuesMessage = settings.maxValuesMessage || '{number} selected';
         this.addableText = settings.addableText || 'Press "Enter" to add {value}';
+        this.ariaLabelledBy = settings.ariaLabelledBy || '';
+        this.searchAriaLabel = settings.searchAriaLabel || 'Search options';
+        this.searchLabelledBy = settings.searchLabelledBy || '';
+        this.clearAllAriaLabel = settings.clearAllAriaLabel || 'Clear selection';
     }
 }
 

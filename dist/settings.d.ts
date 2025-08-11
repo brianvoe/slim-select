@@ -32,5 +32,9 @@ export default class Settings {
     maxValuesShown: number;
     maxValuesMessage: string;
     addableText: string;
+    ariaLabelledBy: string;
+    searchAriaLabel: string;
+    searchLabelledBy: string;
+    clearAllAriaLabel: string;
     constructor(settings?: SettingsPartial);
 }
