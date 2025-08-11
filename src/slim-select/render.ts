@@ -52,6 +52,28 @@ export default class Render {
   public callbacks: Callbacks
   // Used to compute the range selection
   private lastSelectedOption: Option | null
+  private static _livePolite: HTMLDivElement | null = null;
+  private static _liveAssertive: HTMLDivElement | null = null;
+
+  private static getLiveAssertive(): HTMLDivElement {
+    let el = document.getElementById('ss-live-assertive') as HTMLDivElement | null;
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'ss-live-assertive';
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'assertive');
+      el.setAttribute('aria-atomic', 'true');
+      el.className = 'sr-only';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  private _announceAssertive(msg: string) {
+    const el = (Render._liveAssertive ||= Render.getLiveAssertive());
+    el.textContent = '';
+    requestAnimationFrame(() => { el.textContent = msg; });
+  }
 
   // Elements
   public main: Main
@@ -87,6 +109,26 @@ export default class Render {
     } else if (this.settings.contentLocation) {
       this.settings.contentLocation.appendChild(this.content.main);
     }
+  }
+
+  private static getLivePolite(): HTMLDivElement {
+    let el = document.getElementById('ss-live-polite') as HTMLDivElement | null;
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'ss-live-polite';
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('aria-atomic', 'true');
+      el.className = 'sr-only';
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+
+  private _announcePolite(msg: string) {
+    const el = (Render._livePolite ||= Render.getLivePolite());
+    el.textContent = '';
+    requestAnimationFrame(() => { el.textContent = msg; });
   }
 
   // Remove disabled classes
@@ -136,6 +178,7 @@ export default class Render {
       window.addEventListener('scroll', this.scrollHandler, true); // capture phase
       window.addEventListener('resize', this.resizeHandler);
     }
+    this.searchFocus();
   }
 
   public close(): void {
@@ -155,6 +198,8 @@ export default class Render {
       window.removeEventListener('resize', this.resizeHandler);
       this.resizeHandler = undefined;
     }
+    this.main.main.focus({ preventScroll: true });
+    this.main.main.removeAttribute('aria-activedescendant');
   }
 
   public updateClassStyles(): void {
@@ -194,12 +239,36 @@ export default class Render {
   }
 
   public updateAriaAttributes() {
-    this.main.main.role = 'combobox'
-    this.main.main.setAttribute('aria-haspopup', 'listbox')
-    this.main.main.setAttribute('aria-controls', this.content.main.id)
-    this.main.main.setAttribute('aria-expanded', 'false')
-    this.content.list.setAttribute('role', 'listbox')
-    this.content.list.setAttribute('aria-label', this.settings.contentAriaLabel)
+    this.content.list.setAttribute('role', 'listbox');
+    this.content.list.setAttribute('id', this.content.main.id + '-list');
+    this.content.list.setAttribute('aria-label', this.settings.contentAriaLabel);
+    if (this.settings.isMultiple) {
+      this.content.list.setAttribute('aria-multiselectable', 'true');
+    } else {
+      this.content.list.removeAttribute('aria-multiselectable');
+    }
+
+    // Combobox AFTER list has an id
+    this.main.main.setAttribute('role', 'combobox')
+    this.main.main.setAttribute('aria-haspopup', 'listbox');
+    this.main.main.setAttribute('aria-controls', this.content.list.id);
+    this.main.main.setAttribute('aria-expanded', 'false');
+    this.main.main.setAttribute('aria-autocomplete', 'list');
+
+    // Label logic
+    if (this.settings.ariaLabelledBy && this.settings.ariaLabelledBy.trim()) {
+      this.main.main.setAttribute('aria-labelledby', this.settings.ariaLabelledBy);
+      this.main.main.removeAttribute('aria-label');
+    } else if (this.settings.ariaLabel && this.settings.ariaLabel.trim()) {
+      this.main.main.setAttribute('aria-label', this.settings.ariaLabel);
+    }
+
+    // Relations
+    this.main.main.setAttribute('aria-owns', this.content.list.id);
+
+    // Search input
+    this.content.search.input.setAttribute('aria-controls', this.content.list.id);
+    this.content.search.input.setAttribute('aria-autocomplete', 'list');
   }
 
   public mainDiv(): Main {
@@ -207,9 +276,6 @@ export default class Render {
     const main = document.createElement('div')
 
     main.id = this.settings.id + '-main'
-
-    // Add label
-    main.setAttribute('aria-label', this.settings.ariaLabel)
 
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
@@ -268,6 +334,16 @@ export default class Render {
     const deselect = document.createElement('div')
     deselect.classList.add(this.classes.deselect)
 
+    deselect.setAttribute('role', 'button');
+    deselect.setAttribute('tabindex', '0');
+    deselect.setAttribute('aria-label', this.settings.clearAllAriaLabel);
+    deselect.addEventListener('keydown', (e: KeyboardEvent) => { // ADD
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        deselect.click();
+      }
+    });
+
     // Check if deselect is to be shown or not
     const selectedOptions = this.store?.getSelectedOptions()
     if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
@@ -322,6 +398,8 @@ export default class Render {
     // Add deselect svg
     const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     deselectSvg.setAttribute('viewBox', '0 0 100 100')
+    deselectSvg.setAttribute('aria-hidden', 'true')
+    deselectSvg.setAttribute('focusable', 'false')
     const deselectPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     deselectPath.setAttribute('d', this.classes.deselectPath)
     deselectSvg.appendChild(deselectPath)
@@ -332,6 +410,8 @@ export default class Render {
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     arrow.classList.add(this.classes.arrow)
     arrow.setAttribute('viewBox', '0 0 100 100')
+    arrow.setAttribute('aria-hidden', 'true')
+    arrow.setAttribute('focusable', 'false')
     const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     arrowPath.setAttribute('d', this.classes.arrowClose)
     if (this.settings.alwaysOpen) {
@@ -549,7 +629,10 @@ export default class Render {
       // Create delete div element
       const deleteDiv = document.createElement('div')
       deleteDiv.classList.add(this.classes.valueDelete)
-      deleteDiv.setAttribute('tabindex', '0')  // Make the div focusable for tab navigation
+      deleteDiv.setAttribute('role', 'button');
+      deleteDiv.setAttribute('aria-label', 'Remove selection');
+      deleteDiv.setAttribute('title', 'Remove selection');
+      deleteDiv.setAttribute('tabindex', '0');
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
@@ -611,6 +694,8 @@ export default class Render {
       // Add delete svg
       const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       deleteSvg.setAttribute('viewBox', '0 0 100 100')
+      deleteSvg.setAttribute('aria-hidden', 'true')
+      deleteSvg.setAttribute('focusable', 'false')
       const deletePath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       deletePath.setAttribute('d', this.classes.optionDelete)
       deleteSvg.appendChild(deletePath)
@@ -621,7 +706,8 @@ export default class Render {
 
       // Add keydown event listener for keyboard navigation (Enter key)
       deleteDiv.onkeydown = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           deleteDiv.click()  // Trigger the click event when Enter is pressed
         }
       }
@@ -695,7 +781,13 @@ export default class Render {
     input.type = 'search'
     input.placeholder = this.settings.searchPlaceholder
     input.tabIndex = -1
-    input.setAttribute('aria-label', this.settings.searchPlaceholder)
+    if (this.settings.searchLabelledBy && this.settings.searchLabelledBy.trim()) {
+      input.setAttribute('aria-labelledby', this.settings.searchLabelledBy);
+    } else if (this.settings.searchAriaLabel && this.settings.searchAriaLabel.trim()) {
+      input.setAttribute('aria-label', this.settings.searchAriaLabel);
+    } else {
+      input.setAttribute('aria-label', 'Search options'); // sensible default
+    }
     input.setAttribute('autocapitalize', 'off')
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
@@ -755,6 +847,8 @@ export default class Render {
       // Add svg icon
       const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       plus.setAttribute('viewBox', '0 0 100 100')
+      plus.setAttribute('aria-hidden', 'true')
+      plus.setAttribute('focusable', 'false')
       const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       plusPath.setAttribute('d', this.classes.addablePath)
       plus.appendChild(plusPath)
@@ -933,6 +1027,7 @@ export default class Render {
         let selectOption =
           options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1]
         selectOption.classList.add(this.classes.highlighted)
+        this.main.main.setAttribute('aria-activedescendant', selectOption.id);
         this.ensureElementInView(this.content.list, selectOption)
 
         // If selected option has parent classes ss-optgroup with ss-close then click it
@@ -950,10 +1045,14 @@ export default class Render {
 
     // If we get here, there is no highlighted option
     // So we will highlight the first or last based upon direction
-    options[dir === 'down' ? 0 : options.length - 1].classList.add(this.classes.highlighted)
+    const newly = options[dir === 'down' ? 0 : options.length - 1];
+    newly.classList.add(this.classes.highlighted);
+
+    // ADD: set aria-activedescendant to the highlighted option's ID
+    this.main.main.setAttribute('aria-activedescendant', newly.id);
 
     // Scroll to highlighted one
-    this.ensureElementInView(this.content.list, options[dir === 'down' ? 0 : options.length - 1])
+    this.ensureElementInView(this.content.list, newly);
   }
 
   // Create main container that options will reside
@@ -967,40 +1066,47 @@ export default class Render {
   public renderError(error: string) {
     // Clear out innerHtml
     this.content.list.innerHTML = ''
+    this.content.list.removeAttribute('aria-busy')
 
     const errorDiv = document.createElement('div')
     errorDiv.classList.add(this.classes.error)
     errorDiv.textContent = error
     this.content.list.appendChild(errorDiv)
+    this._announceAssertive(error);
   }
 
   public renderSearching() {
     // Clear out innerHtml
     this.content.list.innerHTML = ''
+    this.content.list.setAttribute('aria-busy', 'true')
 
     const searchingDiv = document.createElement('div')
     searchingDiv.classList.add(this.classes.searching)
     searchingDiv.textContent = this.settings.searchingText
     this.content.list.appendChild(searchingDiv)
+    this._announcePolite(this.settings.searchingText);
   }
 
   // Take in data and add options to
   public renderOptions(data: DataArray): void {
     // Clear out innerHtml
     this.content.list.innerHTML = ''
+    this.content.list.removeAttribute('aria-busy')
 
     // If no results show no results text
     if (data.length === 0) {
       const noResults = document.createElement('div')
       noResults.classList.add(this.classes.search)
+      const msg = this.callbacks.addable
+        ? this.settings.addableText.replace('{value}', this.content.search.input.value)
+        : this.settings.searchText
 
-      //
-      if (this.callbacks.addable) {
-        noResults.innerHTML = this.settings.addableText.replace('{value}', this.content.search.input.value)
-      } else {
-        noResults.innerHTML = this.settings.searchText
-      }
+      this._announcePolite(msg)
+      noResults.innerHTML = msg
       this.content.list.appendChild(noResults)
+
+      // Keep setsize accurate on empty state
+      this.content.list.setAttribute('aria-setsize', '0')
       return
     }
 
@@ -1023,12 +1129,27 @@ export default class Render {
 
     // Append individual options to div container
     const fragment = document.createDocumentFragment()
+    let count = 0; // counts only visible, enabled, non-placeholder items
+
+    const tagPos = (el: HTMLDivElement) => {
+      // mirror the same visibility you use for aria-setsize (not placeholder, not disabled, not hidden)
+      if (
+        !el.classList.contains(this.classes.placeholder) &&
+        !el.classList.contains(this.classes.disabled) &&
+        !el.classList.contains(this.classes.hide)
+      ) {
+        el.setAttribute('aria-posinset', String(++count))
+      }
+    }
+
     for (const d of data) {
       // Create optgroup
       if (d instanceof Optgroup) {
         // Create optgroup
         const optgroupEl = document.createElement('div')
         optgroupEl.classList.add(this.classes.optgroup)
+        optgroupEl.setAttribute('role', 'group')
+        optgroupEl.setAttribute('aria-label', d.label)
 
         // Create label
         const optgroupLabel = document.createElement('div')
@@ -1074,6 +1195,8 @@ export default class Render {
           // Create new svg for checkbox
           const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           selectAllSvg.setAttribute('viewBox', '0 0 100 100')
+          selectAllSvg.setAttribute('aria-hidden', 'true')
+          selectAllSvg.setAttribute('focusable', 'false')
           selectAll.appendChild(selectAllSvg)
 
           // Create new path for box
@@ -1141,6 +1264,8 @@ export default class Render {
           const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100')
           optgroupClosableSvg.classList.add(this.classes.arrow)
+          optgroupClosableSvg.setAttribute('aria-hidden', 'true')
+          optgroupClosableSvg.setAttribute('focusable', 'false')
           optgroupClosable.appendChild(optgroupClosableSvg)
 
           // Create new path for arrow
@@ -1149,7 +1274,7 @@ export default class Render {
 
           // If any options are selected or someone is searching, set optgroup to open
           if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
-            optgroupClosable.classList.add(this.classes.open)
+            optgroupEl.classList.add(this.classes.open)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
             optgroupEl.classList.add(this.classes.open)
@@ -1185,19 +1310,32 @@ export default class Render {
 
         // Loop through options
         for (const o of d.options) {
-          optgroupEl.appendChild(this.option(o))
-          fragment.appendChild(optgroupEl)
+          const optEl = this.option(o)
+          tagPos(optEl)
+          optgroupEl.appendChild(optEl)
         }
+        fragment.appendChild(optgroupEl)
       }
 
       // Create option
       if (d instanceof Option) {
-        fragment.appendChild(this.option(d as Option))
+        const optEl = this.option(d as Option)
+        tagPos(optEl)
+        fragment.appendChild(optEl)
       }
     }
 
     // Append fragment to list
     this.content.list.appendChild(fragment)
+
+    this.content.list.removeAttribute('aria-busy')
+
+    const visibleCount = this.getOptions(true, true, true).length
+    this.content.list.setAttribute('aria-setsize', String(visibleCount))
+
+    this._announcePolite(
+      `${visibleCount} option${visibleCount === 1 ? '' : 's'} available`
+    )
   }
 
   // Create option div element
@@ -1212,8 +1350,8 @@ export default class Render {
 
     // Create option
     const optionEl = document.createElement('div')
-    // optionEl.dataset.id = option.id // Dataset id for identifying an option
-    optionEl.id = option.id
+    optionEl.dataset.id = option.id // Dataset id for identifying an option
+    optionEl.id = `${this.settings.id}__opt__${option.id}`;
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
@@ -1251,6 +1389,7 @@ export default class Render {
     // If allowed to deselect, null onclick and add disabled
     if (option.disabled) {
       optionEl.classList.add(this.classes.disabled)
+      optionEl.setAttribute('aria-disabled', 'true')
     }
 
     // If option is selected and hideSelectedOption is true, hide it

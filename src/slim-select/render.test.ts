@@ -200,7 +200,7 @@ describe('render module', () => {
 
       expect(render.main.main.role).toBe('combobox')
       expect(render.main.main.getAttribute('aria-haspopup')).toBe('listbox')
-      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.main.id)
+      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.main.id + '-list')
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
       expect(render.content.list.getAttribute('role')).toBe('listbox')
       expect(render.content.list.getAttribute('aria-label')).toBe(render.settings.contentAriaLabel)
@@ -1286,4 +1286,152 @@ describe('render module', () => {
   describe('putContent', () => {})
 
   describe('updateDeselectAll', () => {})
+
+  describe('accessibility (a11y)', () => {
+
+    test('search input gets ARIA wiring (controls + autocomplete + label fallback)', () => {
+      render.updateAriaAttributes()
+
+      expect(render.content.search.input.getAttribute('aria-controls')).toBe(render.content.list.id)
+      expect(render.content.search.input.getAttribute('aria-autocomplete')).toBe('list')
+      expect(render.content.search.input.getAttribute('aria-label')).toBe('Search options')
+    })
+
+
+
+    test('deselect control has button semantics and label', () => {
+      const deselectEl = render.main.main.querySelector('.' + render.classes.deselect) as HTMLDivElement
+
+      expect(deselectEl.getAttribute('role')).toBe('button')
+      expect(deselectEl.getAttribute('tabindex')).toBe('0')
+      expect(deselectEl.getAttribute('aria-label')).toBe(render.settings.clearAllAriaLabel)
+    })
+
+
+
+    test('token delete control (multi) has button semantics', () => {
+      const opt = new Option({ text: 'Alpha', value: 'alpha', selected: true })
+      const token = render.multipleValue(opt)
+
+      const del = token.querySelector('.' + render.classes.valueDelete) as HTMLDivElement
+
+      expect(del).toBeInstanceOf(HTMLDivElement)
+      expect(del.getAttribute('role')).toBe('button')
+      expect(del.getAttribute('tabindex')).toBe('0')
+      expect(del.getAttribute('aria-label')).toBe('Remove selection')
+      expect(del.getAttribute('title')).toBe('Remove selection')
+    })
+
+
+
+    test('renderSearching sets aria-busy and announces via polite live region', () => {
+      const rafOrig = (global as any).requestAnimationFrame
+      ;(global as any).requestAnimationFrame = (cb: Function) => cb()
+
+      render.settings.searchingText = 'Searching…'
+      render.renderSearching()
+
+      expect(render.content.list.getAttribute('aria-busy')).toBe('true')
+
+      const live = document.getElementById('ss-live-polite') as HTMLDivElement
+      expect(live).toBeTruthy()
+      expect(live.getAttribute('role')).toBe('status')
+      expect(live.getAttribute('aria-live')).toBe('polite')
+      expect(live.textContent).toBe('Searching…')
+
+      ;(global as any).requestAnimationFrame = rafOrig
+    })
+
+
+
+    test('renderError clears aria-busy and announces via assertive live region', () => {
+      const rafOrig = (global as any).requestAnimationFrame
+      ;(global as any).requestAnimationFrame = (cb: Function) => cb()
+
+      render.renderError('Something went wrong')
+
+      expect(render.content.list.hasAttribute('aria-busy')).toBe(false)
+
+      const live = document.getElementById('ss-live-assertive') as HTMLDivElement
+      expect(live).toBeTruthy()
+      expect(live.getAttribute('role')).toBe('status')
+      expect(live.getAttribute('aria-live')).toBe('assertive')
+      expect(live.textContent).toBe('Something went wrong')
+
+      ;(global as any).requestAnimationFrame = rafOrig
+    })
+
+
+
+    test('renderOptions sets aria-setsize and each option gets aria-posinset', () => {
+      render.renderOptions(
+        render.store.partialToFullData([
+          { text: 'One' },
+          { text: 'Two' },
+          { text: 'Three' }
+        ])
+      )
+
+      expect(render.content.list.getAttribute('aria-setsize')).toBe('3')
+
+      const opts = render.getOptions(true, true, true)
+      expect(opts[0].getAttribute('aria-posinset')).toBe('1')
+      expect(opts[1].getAttribute('aria-posinset')).toBe('2')
+      expect(opts[2].getAttribute('aria-posinset')).toBe('3')
+    })
+
+
+
+    test('empty results announce and keep aria-setsize = 0', () => {
+      const rafOrig = (global as any).requestAnimationFrame
+      ;(global as any).requestAnimationFrame = (cb: Function) => cb()
+
+      render.renderOptions([])
+
+      expect(render.content.list.getAttribute('aria-setsize')).toBe('0')
+
+      const polite = document.getElementById('ss-live-polite') as HTMLDivElement
+      expect(polite).toBeTruthy()
+      expect(polite.textContent && polite.textContent.length).toBeGreaterThan(0)
+
+      ;(global as any).requestAnimationFrame = rafOrig
+    })
+
+
+
+    test('highlight updates aria-activedescendant, close clears it', () => {
+      render.renderOptions(
+        render.store.partialToFullData([
+          { text: 'A' },
+          { text: 'B' },
+          { text: 'C' }
+        ])
+      )
+
+      render.highlight('down')
+
+      const firstVisible = render.getOptions(true, true, true)[0]
+      const active = render.main.main.getAttribute('aria-activedescendant')
+
+      expect(active).toBe(firstVisible.id)
+
+      render.close()
+      expect(render.main.main.hasAttribute('aria-activedescendant')).toBe(false)
+    })
+
+
+
+    test('selected option sets aria-selected and updates activedescendant immediately', () => {
+      const el = render.option(
+        new Option({
+          text: 'Picked',
+          selected: true
+        })
+      )
+
+      expect(el.getAttribute('aria-selected')).toBe('true')
+      expect(render.main.main.getAttribute('aria-activedescendant')).toBe(el.id)
+    })
+
+  })
 })
