@@ -141,6 +141,7 @@ new SlimSelect({
     searchText: 'No Results',
     searchingText: 'Searching...',
     searchHighlight: false,
+    searchHighlightGroups: false,
     closeOnSelect: true,
     contentLocation: document.body,
     contentPosition: 'absolute',
@@ -169,7 +170,7 @@ new SlimSelect({
 
   events: {
     search: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
-    searchFilter: (option: Option, search: string) => boolean
+    searchFilter: (option: Option, search: string, optgroup: Optgroup | null) => boolean
     addable: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | Error
     beforeChange: (newVal: Option[], oldVal: Option[]) => boolean | void
     afterChange: (newVal: Option[]) => void
