@@ -2,8 +2,10 @@ import CssClasses from './classes'
 import { debounce, hasClassInTree, isEqual } from './helpers'
 import Render from './render'
 import Select from './select'
-import Settings, { SettingsPartial } from './settings'
-import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
+import Settings from './settings'
+import type { SettingsPartial } from './settings'
+import Store from './store'
+import type { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
 export { DataArray, DataArrayPartial, Option, OptionOptional, SettingsPartial }
 
