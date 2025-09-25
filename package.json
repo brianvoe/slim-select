@@ -2,6 +2,7 @@
   "name": "slim-select",
   "description": "Slim advanced select dropdown",
   "version": "2.12.1",
+  "type": "module",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
   "license": "MIT",
@@ -49,7 +50,8 @@
     "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
     "lint": "prettier --write ./src/**/*",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "release": "node release.js"
   },
   "devDependencies": {
     "@jest/globals": "^30.1.2",
