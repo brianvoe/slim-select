@@ -166,23 +166,14 @@ async function main() {
 
   // Step 5: NPM login
   log('\n🔐 Step 5: NPM login...', 'yellow')
-  log('   Please ensure you are logged in to NPM with appropriate permissions.', 'cyan')
-  const loginConfirmed = await askQuestion('Are you logged in to NPM? (y/n): ')
-  if (loginConfirmed.toLowerCase() !== 'y' && loginConfirmed.toLowerCase() !== 'yes') {
-    log('❌ Please login to NPM first: npm login', 'red')
+  if (!exec('npm login')) {
+    log('❌ NPM login failed. Aborting release.', 'red')
     process.exit(1)
   }
-  log('✅ NPM login confirmed!', 'green')
+  log('✅ NPM login successful!', 'green')
 
   // Step 6: NPM publish
   log('\n📤 Step 6: Publishing to NPM...', 'yellow')
-  log('   This will publish the package to NPM. Make sure you are ready!', 'cyan')
-  const publishConfirmed = await askQuestion('Ready to publish to NPM? (y/n): ')
-  if (publishConfirmed.toLowerCase() !== 'y' && publishConfirmed.toLowerCase() !== 'yes') {
-    log('❌ Publishing cancelled by user.', 'yellow')
-    process.exit(0)
-  }
-
   if (!exec('npm publish')) {
     log('❌ NPM publish failed. Aborting release.', 'red')
     process.exit(1)
