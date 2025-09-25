@@ -5,6 +5,8 @@ import Select from './select'
 import Settings, { SettingsPartial } from './settings'
 import Store, { DataArray, DataArrayPartial, Option, OptionOptional } from './store'
 
+export { DataArray, DataArrayPartial, Option, OptionOptional, SettingsPartial }
+
 export interface Config {
   select: string | Element
   data?: DataArrayPartial
