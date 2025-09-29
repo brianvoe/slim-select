@@ -30,7 +30,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/slimselect.js",
+      "import": "./dist/slimselect.es.js",
       "require": "./dist/slimselect.umd.js"
     },
     "./*": {
