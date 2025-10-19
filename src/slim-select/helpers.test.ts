@@ -4,7 +4,7 @@
 
 'use strict'
 
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test, vi } from 'vitest'
 import { hasClassInTree, debounce, isEqual, kebabCase } from './helpers'
 
 describe('helpers module', () => {
@@ -73,7 +73,7 @@ describe('helpers module', () => {
 
   describe('debounce', () => {
     test('debounce calls function after default timeout', async () => {
-      const callback = jest.fn()
+      const callback = vi.fn()
       const debounced_function = debounce(callback)
       debounced_function()
 
@@ -84,7 +84,7 @@ describe('helpers module', () => {
     })
 
     test('debounce calls function after higher timeout', async () => {
-      const callback = jest.fn()
+      const callback = vi.fn()
       const debounced_function = debounce(callback, 100)
       debounced_function()
 
@@ -97,7 +97,7 @@ describe('helpers module', () => {
     })
 
     test('debounce calls function after lower timeout', async () => {
-      const callback = jest.fn()
+      const callback = vi.fn()
       const debounced_function = debounce(callback, 10)
       debounced_function()
 
@@ -110,7 +110,7 @@ describe('helpers module', () => {
     })
 
     test('debounce respects inmediate setting', () => {
-      const callback = jest.fn()
+      const callback = vi.fn()
       const debounced_function = debounce(callback, 1000, true)
       debounced_function()
 
@@ -119,7 +119,7 @@ describe('helpers module', () => {
     })
 
     test('debounce respects order of calls', async () => {
-      const callback = jest.fn(() => {})
+      const callback = vi.fn(() => {})
       const debounced_function: (a: number) => void = debounce(callback)
       debounced_function(0)
       debounced_function(1)

@@ -4,7 +4,7 @@
 
 'use strict'
 
-import { describe, expect, jest, test } from '@jest/globals'
+import { describe, expect, vi, test } from 'vitest'
 import Select from './select'
 import Store, { Optgroup, Option } from './store'
 
@@ -263,7 +263,7 @@ describe('select module', () => {
       let data = select.getData() as Option[]
       expect(data[0].selected).toBe(true)
 
-      const onValueMock = jest.fn()
+      const onValueMock = vi.fn()
       select.onValueChange = onValueMock
 
       // Change the value
@@ -284,7 +284,7 @@ describe('select module', () => {
     })
 
     test('listener is triggered when inner HTML is replaced with new options', async () => {
-      const onValueMock = jest.fn()
+      const onValueMock = vi.fn()
       select.onValueChange = onValueMock
 
       selectElement.innerHTML = `<option value="4">Four</option>
@@ -315,7 +315,7 @@ describe('select module', () => {
       let data = select.getData() as Option[]
       expect(data).toHaveLength(3)
 
-      const onOptionsMock = jest.fn()
+      const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
       selectElement.innerHTML = '<option value="1">One</option><option value="2">Two</option>'
@@ -346,7 +346,7 @@ describe('select module', () => {
       const optGroups = select.getData() as Optgroup[]
       expect(optGroups).toHaveLength(2)
 
-      const onOptionsMock = jest.fn()
+      const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
       const selectOptgroup = document.getElementById('test_optgroup') as HTMLOptGroupElement
@@ -376,7 +376,7 @@ describe('select module', () => {
       let data = select.getData() as Option[]
       expect(data[0].text).toBe('One')
 
-      const onOptionsMock = jest.fn()
+      const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
       let option = selectElement.options[0]
@@ -409,7 +409,7 @@ describe('select module', () => {
 
       expect(dataOptgroup[0].options[0].text).toBe('One')
 
-      const onOptionsMock = jest.fn()
+      const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
       let selectOption = document.getElementById('test_option') as HTMLOptionElement

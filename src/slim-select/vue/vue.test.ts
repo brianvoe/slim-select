@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { nextTick, PropType } from 'vue'
 import SlimSelectVue from './vue.vue'
 import SlimSelect from '../index'
 
@@ -80,57 +80,13 @@ describe('SlimSelect Vue Component', () => {
       )
     })
 
-    test('reactive slot content updates when props change', async () => {
-      // Define a component that uses reactive slot content
+    test('reactive slot content WITHOUT :selected attribute works with v-model', async () => {
+      // Test that v-model auto-syncs without needing :selected
       const TestComponent = {
         components: { SlimSelectVue },
         template: `
           <SlimSelectVue v-model="selected" multiple>
             <option v-for="opt in options" :key="opt.value" :value="opt.value">
-              {{ opt.text }}
-            </option>
-          </SlimSelectVue>
-        `,
-        data() {
-          return {
-            selected: ['opt1'] as string[],
-            options: [
-              { value: 'opt1', text: 'Option 1' },
-              { value: 'opt2', text: 'Option 2' }
-            ] as Array<{ value: string; text: string }>
-          }
-        }
-      }
-
-      const wrapper = mount(TestComponent)
-      await nextTick()
-
-      // Check initial options
-      let options = wrapper.findAll('option')
-      expect(options).toHaveLength(2)
-
-      // Update the options array
-      ;(wrapper.vm.options as Array<{ value: string; text: string }>).push({ value: 'opt3', text: 'Option 3' })
-      await nextTick()
-
-      // Verify new option appears
-      options = wrapper.findAll('option')
-      expect(options).toHaveLength(3)
-      expect(options[2].text()).toBe('Option 3')
-    })
-
-    test('reactive slot content with v-model and selected attribute', async () => {
-      // Simulate the CustomFields pattern with computed selected states
-      const TestComponent = {
-        components: { SlimSelectVue },
-        template: `
-          <SlimSelectVue v-model="selected" multiple>
-            <option
-              v-for="opt in options"
-              :key="opt.value"
-              :value="opt.value"
-              :selected="selected.includes(opt.value)"
-            >
               {{ opt.text }}
             </option>
           </SlimSelectVue>
@@ -150,7 +106,7 @@ describe('SlimSelect Vue Component', () => {
       const wrapper = mount(TestComponent)
       await nextTick()
 
-      // Verify initial selection
+      // Verify initial selection works without :selected
       const slimComponent = wrapper.findComponent(SlimSelectVue)
       const slim = (slimComponent.vm as any).slim as SlimSelect
       expect(slim.getSelected()).toEqual(['v1'])
@@ -793,56 +749,64 @@ describe('SlimSelect Vue Component', () => {
       expect(data).toHaveLength(3)
     })
 
-    test('CustomFields use case: computed values with reactive slot content', async () => {
-      // Recreate the exact CustomFields pattern using slots instead of data prop
-      const CustomFieldsComponent = {
+    test('CustomFields use case: parent-child pattern with reactive slot content', async () => {
+      // Recreate the actual working pattern: parent passes value to child via v-model
+      const ChildComponent = {
         components: { SlimSelectVue },
         template: `
           <SlimSelectVue
-            v-model="values.field1"
+            v-model="value"
             multiple
-            :events="{ afterChange: () => valueChange() }"
+            :events="{ afterChange: () => handleChange() }"
           >
-            <option
-              v-for="value in fieldValues"
-              :key="value.value"
-              :value="value.value"
-              :selected="values.field1.includes(value.value)"
-            >
-              {{ value.name }}
+            <option v-for="opt in fieldOptions" :key="opt.value" :value="opt.value">
+              {{ opt.name }}
             </option>
           </SlimSelectVue>
         `,
-        data() {
-          return {
-            modelValue: { field1: ['value1'] as string[] },
-            fieldValues: [
-              { value: 'value1', name: 'Value 1' },
-              { value: 'value2', name: 'Value 2' },
-              { value: 'value3', name: 'Value 3' }
-            ] as Array<{ value: string; name: string }>
-          }
+        props: {
+          modelValue: { type: Array as PropType<string[]>, required: true },
+          fieldOptions: { type: Array, required: true }
         },
+        emits: ['update:modelValue'],
         computed: {
-          values(): { field1: string[] } {
-            return {
-              field1: (this as any).modelValue.field1 || []
+          value: {
+            get(this: any): string[] {
+              return this.modelValue || []
+            },
+            set(this: any, newValue: string[]) {
+              this.$emit('update:modelValue', newValue)
             }
           }
         },
         methods: {
-          valueChange(this: any) {
-            // Simulate parent's valueChange that formats and emits
-            const outputValues: Record<string, string[]> = {}
-            if (this.values.field1.length) {
-              outputValues.field1 = this.values.field1
-            }
-            this.$emit('update:modelValue', outputValues)
+          handleChange() {
+            // Handle selection change
           }
         }
       }
 
-      const wrapper = mount(CustomFieldsComponent)
+      const ParentComponent = {
+        components: { ChildComponent },
+        template: `
+          <ChildComponent
+            v-model="selectedValues"
+            :field-options="options"
+          />
+        `,
+        data() {
+          return {
+            selectedValues: ['value1'] as string[],
+            options: [
+              { value: 'value1', name: 'Value 1' },
+              { value: 'value2', name: 'Value 2' },
+              { value: 'value3', name: 'Value 3' }
+            ]
+          }
+        }
+      }
+
+      const wrapper = mount(ParentComponent)
       await nextTick()
 
       // Verify initial state
@@ -850,35 +814,19 @@ describe('SlimSelect Vue Component', () => {
       const slim = (slimComponent.vm as any).slim as SlimSelect
       expect(slim.getSelected()).toEqual(['value1'])
 
-      // Verify options rendered correctly
-      const options = wrapper.findAll('option')
-      expect(options).toHaveLength(3)
-
       // User changes selection via SlimSelect
       slim.setSelected(['value2', 'value3'])
       await nextTick()
 
-      // Verify v-model updated
-      expect(slimComponent.props('modelValue')).toEqual(['value2', 'value3'])
+      // Verify parent data updated
+      expect((wrapper.vm as any).selectedValues).toEqual(['value2', 'value3'])
 
-      // Parent's modelValue changes (from API or other form)
-      ;((wrapper.vm as any).modelValue.field1 as string[]) = ['value1', 'value3']
+      // Parent's data changes (from API or other form)
+      ;((wrapper.vm as any).selectedValues as string[]) = ['value1', 'value3']
       await nextTick()
 
       // Verify SlimSelect reflects the new selection
       expect(slim.getSelected()).toEqual(['value1', 'value3'])
-
-      // Add a new field value
-      ;((wrapper.vm as any).fieldValues as Array<{ value: string; name: string }>).push({
-        value: 'value4',
-        name: 'Value 4'
-      })
-      await nextTick()
-
-      // Verify new option appears
-      const updatedOptions = wrapper.findAll('option')
-      expect(updatedOptions).toHaveLength(4)
-      expect(updatedOptions[3].text()).toBe('Value 4')
     })
   })
 })

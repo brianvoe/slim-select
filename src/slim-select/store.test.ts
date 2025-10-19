@@ -1,6 +1,6 @@
 'use strict'
 
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test } from 'vitest'
 import Store, { DataArray, DataObjectPartial, Optgroup, Option } from './store'
 
 describe('store module', () => {

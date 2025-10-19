@@ -4,7 +4,7 @@
 
 'use strict'
 
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test } from 'vitest'
 import SlimSelect from './'
 import { OptionOptional } from './store'
 import { Config } from './index'
@@ -22,7 +22,7 @@ describe('SlimSelect Module', () => {
 
   describe('constructor', () => {
     test('missing select element throws error', () => {
-      const errorMock = jest.fn()
+      const errorMock = vi.fn()
       const slim = new SlimSelect({ select: '#invalid', events: { error: errorMock } })
 
       expect(slim.select).toBeUndefined()
@@ -35,7 +35,7 @@ describe('SlimSelect Module', () => {
     test('invalid element throws error', () => {
       document.body.innerHTML = '<div id="invalid"></div>'
 
-      const errorMock = jest.fn()
+      const errorMock = vi.fn()
       const slim = new SlimSelect({ select: '#invalid', events: { error: errorMock } })
 
       expect(slim.select).toBeUndefined()
@@ -82,8 +82,8 @@ describe('SlimSelect Module', () => {
   test('enable', () => {
     slim.settings.disabled = true
 
-    const selectEnableMock = jest.fn()
-    const renderEnableMock = jest.fn()
+    const selectEnableMock = vi.fn()
+    const renderEnableMock = vi.fn()
 
     slim.select.enable = selectEnableMock
     slim.render.enable = renderEnableMock
@@ -98,8 +98,8 @@ describe('SlimSelect Module', () => {
   test('disable', () => {
     slim.settings.disabled = false
 
-    const selectDisableMock = jest.fn()
-    const renderDisableMock = jest.fn()
+    const selectDisableMock = vi.fn()
+    const renderDisableMock = vi.fn()
 
     slim.select.disable = selectDisableMock
     slim.render.disable = renderDisableMock

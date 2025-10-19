@@ -1,10 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 'use strict'
 
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test, vi, beforeEach } from 'vitest'
 import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { Option } from './store'
@@ -12,14 +8,14 @@ import CssClasses from './classes'
 
 describe('render module', () => {
   let render: Render
-  let openMock: jest.Mock
-  let closeMock: jest.Mock
-  let addSelectedMock: jest.Mock
-  let setSelectedMock: jest.Mock
-  let addOptionMock: jest.Mock
-  let searchMock: jest.Mock
-  let afterChangeMock: jest.Mock
-  let beforeChangeMock: jest.Mock
+  let openMock: ReturnType<typeof vi.fn>
+  let closeMock: ReturnType<typeof vi.fn>
+  let addSelectedMock: ReturnType<typeof vi.fn>
+  let setSelectedMock: ReturnType<typeof vi.fn>
+  let addOptionMock: ReturnType<typeof vi.fn>
+  let searchMock: ReturnType<typeof vi.fn>
+  let afterChangeMock: ReturnType<typeof vi.fn>
+  let beforeChangeMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     const store = new Store('single', [
@@ -42,14 +38,14 @@ describe('render module', () => {
     const settings = new Settings()
     const classes = new CssClasses()
 
-    openMock = jest.fn(() => {})
-    closeMock = jest.fn(() => {})
-    addSelectedMock = jest.fn(() => {})
-    setSelectedMock = jest.fn(() => {})
-    addOptionMock = jest.fn(() => {})
-    searchMock = jest.fn(() => {})
-    afterChangeMock = jest.fn(() => {})
-    beforeChangeMock = jest.fn(() => true)
+    openMock = vi.fn(() => {})
+    closeMock = vi.fn(() => {})
+    addSelectedMock = vi.fn(() => {})
+    setSelectedMock = vi.fn(() => {})
+    addOptionMock = vi.fn(() => {})
+    searchMock = vi.fn(() => {})
+    afterChangeMock = vi.fn(() => {})
+    beforeChangeMock = vi.fn(() => true)
 
     // default callbacks
     const callbacks = {
@@ -235,7 +231,7 @@ describe('render module', () => {
     })
 
     test('arrow key events on main element move highlight', () => {
-      const highlightMock = jest.fn(() => {})
+      const highlightMock = vi.fn(() => {})
 
       render.highlight = highlightMock
 
@@ -316,7 +312,7 @@ describe('render module', () => {
     test('click on deselect on multiple select runs callbacks', () => {
       render.settings.isMultiple = true
 
-      const deselectAllMock = jest.fn()
+      const deselectAllMock = vi.fn()
 
       render.updateDeselectAll = deselectAllMock
 
@@ -333,10 +329,10 @@ describe('render module', () => {
   })
 
   describe('mainFocus', () => {
-    let focusMock: jest.Mock
+    let focusMock: ReturnType<typeof vi.fn>
 
     beforeEach(() => {
-      focusMock = jest.fn(() => {})
+      focusMock = vi.fn(() => {})
       render.main.main.focus = focusMock
     })
 
@@ -485,17 +481,13 @@ describe('render module', () => {
     })
   })
 
-  describe('multipleValue', () => {})
-
-  describe('contentDiv', () => {})
-
   describe('moveContent', () => {
-    let contentAboveMock: jest.Mock
-    let contentBelowMock: jest.Mock
+    let contentAboveMock: ReturnType<typeof vi.fn>
+    let contentBelowMock: ReturnType<typeof vi.fn>
 
     beforeEach(() => {
-      contentAboveMock = jest.fn()
-      contentBelowMock = jest.fn()
+      contentAboveMock = vi.fn()
+      contentBelowMock = vi.fn()
 
       render.moveContentAbove = contentAboveMock
       render.moveContentBelow = contentBelowMock
@@ -526,7 +518,7 @@ describe('render module', () => {
     })
 
     test('content is moved above when putContent is up', () => {
-      render.putContent = jest.fn(() => 'up')
+      render.putContent = vi.fn(() => 'up') as any
 
       render.moveContent()
       expect(contentAboveMock).toHaveBeenCalled()
@@ -534,7 +526,7 @@ describe('render module', () => {
     })
 
     test('content is moved below when putContent is down', () => {
-      render.putContent = jest.fn(() => 'down')
+      render.putContent = vi.fn(() => 'down') as any
 
       render.moveContent()
       expect(contentAboveMock).not.toHaveBeenCalled()
@@ -564,7 +556,7 @@ describe('render module', () => {
 
     test('arrow keys move highlight', () => {
       const search = render.searchDiv()
-      const highlightMock = jest.fn(() => {})
+      const highlightMock = vi.fn(() => {})
 
       render.highlight = highlightMock
 
@@ -596,7 +588,7 @@ describe('render module', () => {
 
     test("enter and space don't call addable witout ctrl key", () => {
       const search = render.searchDiv()
-      const addableMock = jest.fn((s: string) => ({
+      const addableMock = vi.fn((s: string) => ({
         text: s,
         value: s.toLowerCase()
       }))
@@ -611,7 +603,7 @@ describe('render module', () => {
     })
 
     test('enter and space call event and does nothing without input value', () => {
-      const addableMock = jest.fn((s: string) => ({
+      const addableMock = vi.fn((s: string) => ({
         text: s,
         value: s.toLowerCase()
       }))
@@ -626,7 +618,7 @@ describe('render module', () => {
     })
 
     test('enter and space call addable when defined', () => {
-      const addableMock = jest.fn((s: string) => ({
+      const addableMock = vi.fn((s: string) => ({
         text: s,
         value: s.toLowerCase()
       }))
@@ -1001,8 +993,6 @@ describe('render module', () => {
     })
   })
 
-  describe('renderOptions', () => {})
-
   describe('option', () => {
     test('add inline styles correctly', () => {
       const option = render.option(
@@ -1144,7 +1134,7 @@ describe('render module', () => {
 
   describe('range selection', () => {
     let render: Render
-    let afterChangeMock: jest.Mock
+    let afterChangeMock: ReturnType<typeof vi.fn>
 
     beforeEach(() => {
       // create a new store with 3 options
@@ -1157,7 +1147,7 @@ describe('render module', () => {
       const settings = new Settings()
       const classes = new CssClasses()
 
-      afterChangeMock = jest.fn(() => {})
+      afterChangeMock = vi.fn(() => {})
 
       const callbacks = {
         open: () => {},
@@ -1279,10 +1269,4 @@ describe('render module', () => {
       expect(render.content.main.classList.contains(render.classes.openBelow)).toBe(true)
     })
   })
-
-  describe('ensureElementInView', () => {})
-
-  describe('putContent', () => {})
-
-  describe('updateDeselectAll', () => {})
 })
