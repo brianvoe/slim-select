@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import SlimSelect, { Config, Events } from '../slim-select'
-import { SettingsPartial } from '../slim-select/settings'
-import { DataArrayPartial, Option } from '../slim-select/store'
+import SlimSelect, { Config, Events } from '../index'
+import { SettingsPartial } from '../settings'
+import { DataArrayPartial, Option } from '../store'
 
 export default defineComponent({
   name: 'SlimSelect',
@@ -34,6 +34,14 @@ export default defineComponent({
     }
   },
   mounted() {
+    // Warning: If both slot and data are provided, data takes precedence
+    const hasSlotContent = this.$slots.default && this.$slots.default().length > 0
+    if (hasSlotContent && this.data) {
+      console.warn(
+        '[SlimSelect Vue] Both slot content and data prop are provided. Data prop will take precedence and slot content will be ignored.'
+      )
+    }
+
     let config = {
       select: this.$refs.slim
     } as Config
