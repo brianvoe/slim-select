@@ -84,6 +84,7 @@ export default class Render {
   public enable(): void {
     // Remove disabled class
     this.main.main.classList.remove(this.classes.disabled)
+    this.main.main.setAttribute('aria-disabled', 'false')
 
     // Set search input to "enabled"
     this.content.search.input.disabled = false
@@ -93,6 +94,7 @@ export default class Render {
   public disable(): void {
     // Add disabled class
     this.main.main.classList.add(this.classes.disabled)
+    this.main.main.setAttribute('aria-disabled', 'true')
 
     // Set search input to disabled
     this.content.search.input.disabled = true
@@ -123,6 +125,7 @@ export default class Render {
     this.main.main.classList.remove(this.classes.openAbove)
     this.main.main.classList.remove(this.classes.openBelow)
     this.main.main.setAttribute('aria-expanded', 'false')
+
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
@@ -163,12 +166,26 @@ export default class Render {
   }
 
   public updateAriaAttributes() {
+    const listboxId = this.content.list.id
+
+    // Main combobox
     this.main.main.role = 'combobox'
     this.main.main.setAttribute('aria-haspopup', 'listbox')
-    this.main.main.setAttribute('aria-controls', this.content.main.dataset.id ?? '')
+    this.main.main.setAttribute('aria-controls', listboxId)
     this.main.main.setAttribute('aria-expanded', 'false')
-    this.content.main.setAttribute('role', 'listbox')
-    // do an aria-labelledby here maybe
+
+    // Move role="listbox" to the list element, not the content container
+    // This fixes Issue #639 - listbox should only contain options, not input elements
+    this.content.list.setAttribute('role', 'listbox')
+    this.content.list.setAttribute('aria-label', this.settings.ariaLabel + ' listbox')
+
+    // Add aria-multiselectable for multiple selects
+    if (this.settings.isMultiple) {
+      this.content.list.setAttribute('aria-multiselectable', 'true')
+    }
+
+    // Search input should also control the listbox
+    this.content.search.input.setAttribute('aria-controls', listboxId)
   }
 
   public mainDiv(): Main {
@@ -520,7 +537,7 @@ export default class Render {
       // Create delete div element
       const deleteDiv = document.createElement('div')
       deleteDiv.classList.add(this.classes.valueDelete)
-      deleteDiv.setAttribute('tabindex', '0')  // Make the div focusable for tab navigation
+      deleteDiv.setAttribute('tabindex', '0') // Make the div focusable for tab navigation
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
@@ -592,7 +609,7 @@ export default class Render {
       // Add keydown event listener for keyboard navigation (Enter key)
       deleteDiv.onkeydown = (e) => {
         if (e.key === 'Enter') {
-          deleteDiv.click()  // Trigger the click event when Enter is pressed
+          deleteDiv.click() // Trigger the click event when Enter is pressed
         }
       }
     }
@@ -668,6 +685,7 @@ export default class Render {
     input.placeholder = this.settings.searchPlaceholder
     input.tabIndex = -1
     input.setAttribute('aria-label', this.settings.searchPlaceholder)
+    input.setAttribute('aria-autocomplete', 'list')
     input.setAttribute('autocapitalize', 'off')
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
@@ -932,6 +950,11 @@ export default class Render {
   public listDiv(): HTMLDivElement {
     const options = document.createElement('div')
     options.classList.add(this.classes.list)
+
+    // Add id for ARIA controls reference
+    const listId = this.settings.id + '-list'
+    options.id = listId
+    options.dataset.id = listId
 
     return options
   }

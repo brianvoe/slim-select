@@ -196,9 +196,10 @@ describe('render module', () => {
 
       expect(render.main.main.role).toBe('combobox')
       expect(render.main.main.getAttribute('aria-haspopup')).toBe('listbox')
-      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.main.dataset.id ?? '')
+      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.list.id)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
-      expect(render.content.main.getAttribute('role')).toBe('listbox')
+      expect(render.content.list.getAttribute('role')).toBe('listbox')
+      expect(render.content.list.getAttribute('aria-label')).toContain('listbox')
     })
   })
 
