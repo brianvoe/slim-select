@@ -5,7 +5,7 @@ import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'Search',
-  setup() {
+  data() {
     return {
       searchSingle: null as SlimSelect | null,
       searchMultiple: null as SlimSelect | null

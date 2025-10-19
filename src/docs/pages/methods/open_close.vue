@@ -5,7 +5,7 @@ import SlimSelect from '../../../slim-select'
 
 export default defineComponent({
   name: 'OpenClose',
-  setup() {
+  data() {
     return {
       // Open / Close
       openCloseSingle: null as SlimSelect | null,
