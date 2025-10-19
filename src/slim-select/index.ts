@@ -106,7 +106,7 @@ export default class SlimSelect {
     this.cssClasses = new CssClasses(config.cssClasses)
 
     // Set events
-    const debounceEvents = ['afterChange', 'beforeOpen', 'afterOpen', 'beforeClose', 'afterClose']
+    const debounceEvents = ['beforeOpen', 'afterOpen', 'beforeClose', 'afterClose']
     for (const key in config.events) {
       // Check if key exists in events
       if (!config.events.hasOwnProperty(key)) {
