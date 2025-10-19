@@ -917,7 +917,7 @@ class P {
       return;
     }
     this.selectEl.dataset.ssid && this.destroy(), this.settings = new k(e.settings), this.cssClasses = new x(e.cssClasses);
-    const t = ["afterChange", "beforeOpen", "afterOpen", "beforeClose", "afterClose"];
+    const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
     for (const n in e.events)
       e.events.hasOwnProperty(n) && (t.indexOf(n) !== -1 ? this.events[n] = O(e.events[n], 100) : this.events[n] = e.events[n]);
     this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new D(this.selectEl), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {

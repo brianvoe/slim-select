@@ -1,6 +1,4 @@
-import { default as SlimSelectVue } from '../vue.vue';
-export { SlimSelectVue };
-export default SlimSelectVue;
-export type { Config, Events } from '../index';
-export type { SettingsPartial } from '../settings';
-export type { DataArray, DataArrayPartial, Option, OptionOptional } from '../store';
+import { default as SlimSelect } from './vue.vue';
+export default SlimSelect;
+export { Option, Optgroup } from '../index';
+export type { SettingsPartial, DataArray, DataArrayPartial, DataObject, DataObjectPartial, OptionOptional, OptgroupOptional, Events } from '../index';

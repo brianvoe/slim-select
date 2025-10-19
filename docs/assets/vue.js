@@ -1,4 +1,13 @@
-import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e as l,t as m,w as s,r as w,n as V}from"./index.js";const h=S({name:"SlimSelect",props:{modelValue:{type:[String,Array,void 0]},multiple:{type:Boolean,default:!1},data:{type:Array},settings:{type:Object},events:{type:Object,default:()=>({})}},emits:["update:modelValue"],data(){return{slim:null}},mounted(){let n={select:this.$refs.slim};this.data&&(n.data=this.data),this.settings&&(n.settings=this.settings),n.events=this.events||{};const t=n.events.afterChange;n.events.afterChange=a=>{const r=this.multiple?a.map(d=>d.value):a.length>0?a[0].value:"";this.value!==r&&(this.value=r),n.events&&t&&t(a)},this.slim=new b(n);let p=this.$props.multiple?this.slim.getSelected():this.slim.getSelected()[0];this.value!==p&&this.slim.setSelected(this.value)},beforeUnmount(){this.slim&&this.slim.destroy()},watch:{modelValue:{handler:function(n){this.slim?.setSelected(this.getCleanValue(n))},immediate:!0},data:{handler:function(n){this.slim&&this.slim.setData(n)},deep:!0}},computed:{value:{get(){return this.getCleanValue(this.$props.modelValue)},set(n){this.$emit("update:modelValue",n)}}},methods:{getSlimSelect(){return this.slim},getCleanValue(n){const t=this.$props.multiple;return typeof n=="string"?t?[n]:n:Array.isArray(n)?t?n:n[0]:t?[]:""}}}),$=["multiple"];function D(n,t,p,a,r,d){return g(),v("select",{multiple:n.multiple,ref:"slim"},[O(n.$slots,"default")],8,$)}const q=f(h,[["render",D]]),k=S({name:"Vue",components:{SlimSelect:q},data(){return{simpleSingle:"2",simpleMultiple:["2","3"],settings:{showSearch:!1},data:[{value:"value1",text:"Value 1"},{value:"value2",text:"Value 2"},{value:"value3",text:"Value 3"}],afterChangeData:[],events:{afterChange:this.afterChange},isDisabled:!1,errorClass:""}},mounted(){},methods:{changeData(){this.$refs.dataSingle.getSlimSelect().open(),this.$refs.dataMultiple.getSlimSelect().open(),setTimeout(()=>{this.data=[{value:"value4",text:"Value 4"},{value:"value5",text:"Value 5"},{value:"value6",text:"Value 6"}]},500)},afterChange(n){this.afterChangeData=n}}}),j={id:"vue",class:"content"},M={class:"row"},A={class:"row"},T={class:"row"},B={key:0},N={class:"row"},E={class:"row"},I={class:"row"};function U(n,t,p,a,r,d){const o=w("SlimSelect");return g(),v("div",j,[t[16]||(t[16]=e("h2",{class:"header"},"Vue",-1)),t[17]||(t[17]=e("h3",null,"Install",-1)),t[18]||(t[18]=e("p",null," Slim Select doesnt have a package to import(anymore) due to its requirements of maintianing it within the repository. But we have provided a set of code you can add to your own project to get it working. ",-1)),t[19]||(t[19]=e("a",{href:"https://github.com/brianvoe/slim-select/blob/master/src/slim-select/vue.vue"},"Download Component Here",-1)),t[20]||(t[20]=e("br",null,null,-1)),t[21]||(t[21]=e("br",null,null,-1)),t[22]||(t[22]=e("h3",null,"Simple example",-1)),e("div",M,[e("div",null,[e("div",null,[t[5]||(t[5]=e("strong",null,"Value",-1)),l(" "+m(n.simpleSingle),1)]),i(o,{modelValue:n.simpleSingle,"onUpdate:modelValue":t[0]||(t[0]=u=>n.simpleSingle=u),ref:"simpleSingle"},{default:s(()=>[...t[6]||(t[6]=[e("option",{value:"all"},"All",-1),e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["modelValue"])]),e("div",null,[e("div",null,[t[7]||(t[7]=e("strong",null,"Value",-1)),l(" "+m(n.simpleMultiple),1)]),i(o,{modelValue:n.simpleMultiple,"onUpdate:modelValue":t[1]||(t[1]=u=>n.simpleMultiple=u),ref:"simpleMultiple",multiple:""},{default:s(()=>[...t[8]||(t[8]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["modelValue"])])]),t[23]||(t[23]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+import{d as C,S as y,_ as V,c as m,j as h,o as v,a as t,f as i,t as d,w as a,r as S,e as n,F as w,h as $,b as O,i as c,n as k}from"./index.js";const q=C({name:"SlimSelect",props:{modelValue:{type:[String,Array,void 0]},multiple:{type:Boolean,default:!1},data:{type:Array},settings:{type:Object},events:{type:Object,default:()=>({})}},emits:["update:modelValue"],data(){return{slim:null}},mounted(){this.$slots.default&&this.$slots.default().length>0&&this.data&&console.warn("[SlimSelect Vue] Both slot content and data prop are provided. Data prop will take precedence and slot content will be ignored.");let e={select:this.$refs.slim};this.data&&(e.data=this.data),this.settings&&(e.settings=this.settings);const p=this.events?.afterChange;e.events={...this.events,afterChange:r=>{const f=this.multiple?r.map(o=>o.value):r.length>0?r[0].value:"";this.value!==f&&(this.value=f),p&&p(r)}},this.slim=new y(e);let g=this.$props.multiple?this.slim.getSelected():this.slim.getSelected()[0];this.value!==g&&this.slim.setSelected(this.value,!1)},updated(){if(this.slim&&!this.data){const l=this.slim.getSelected(),e=Array.isArray(this.value)?this.value:[this.value];JSON.stringify(l.sort())!==JSON.stringify(e.sort())&&this.slim.setSelected(this.value,!1)}},beforeUnmount(){this.slim&&this.slim.destroy()},watch:{modelValue:{handler:function(l){this.slim&&this.slim.setSelected(this.getCleanValue(l),!1)}},data:{handler:function(l){this.slim&&this.slim.setData(l)},deep:!0}},computed:{value:{get(){return this.getCleanValue(this.$props.modelValue)},set(l){this.$emit("update:modelValue",l)}}},methods:{getSlimSelect(){return this.slim},getCleanValue(l){const e=this.$props.multiple;return typeof l=="string"?e?[l]:l:Array.isArray(l)?e?l:l[0]:e?[]:""}}}),F=["multiple"];function j(l,e,p,g,r,f){return v(),m("select",{multiple:l.multiple,ref:"slim"},[h(l.$slots,"default")],8,F)}const b=V(q,[["render",j]]),D=C({name:"ComplexFieldExample",components:{SlimSelect:b},props:{modelValue:{type:Array,required:!0},fieldOptions:{type:Array,required:!0},label:{type:String,required:!0}},emits:["update:modelValue"],computed:{value:{get(){return this.modelValue||[]},set(l){this.$emit("update:modelValue",l)}}},methods:{handleChange(){}}}),A={class:"complex-field"},E=["value"],x={style:{"margin-top":"8px"}};function M(l,e,p,g,r,f){const o=S("SlimSelect");return v(),m("div",A,[t("h4",null,d(l.label),1),i(o,{modelValue:l.value,"onUpdate:modelValue":e[0]||(e[0]=u=>l.value=u),multiple:"",events:{afterChange:()=>l.handleChange()}},{default:a(()=>[(v(!0),m(w,null,$(l.fieldOptions,u=>(v(),m("option",{key:u.value,value:u.value},d(u.name),9,E))),128))]),_:1},8,["modelValue","events"]),t("div",x,[e[1]||(e[1]=t("strong",null,"Selected:",-1)),n(" "+d(l.value.join(", ")||"None"),1)])])}const P=V(D,[["render",M]]),N=C({name:"Vue",components:{SlimSelect:b,ComplexFieldExample:P},data(){return{simpleSingle:"2",simpleMultiple:["2","3"],settings:{showSearch:!1},data:[{value:"value1",text:"Value 1"},{value:"value2",text:"Value 2"},{value:"value3",text:"Value 3"}],afterChangeData:[],events:{afterChange:this.afterChange},isDisabled:!1,errorClass:"",customFieldsValues:{favoriteColors:["blue"],skills:["javascript","typescript"]},fieldOptions:{favoriteColors:[{value:"red",name:"Red"},{value:"blue",name:"Blue"},{value:"green",name:"Green"},{value:"yellow",name:"Yellow"}],skills:[{value:"javascript",name:"JavaScript"},{value:"typescript",name:"TypeScript"},{value:"vue",name:"Vue.js"},{value:"react",name:"React"},{value:"angular",name:"Angular"}]}}},mounted(){},methods:{changeData(){this.$refs.dataSingle.getSlimSelect().open(),this.$refs.dataMultiple.getSlimSelect().open(),setTimeout(()=>{this.data=[{value:"value4",text:"Value 4"},{value:"value5",text:"Value 5"},{value:"value6",text:"Value 6"}]},500)},afterChange(l){this.afterChangeData=l}}}),T={id:"vue",class:"content"},B={class:"row"},U={class:"row"},R={class:"row"},J={key:0},I={class:"row"},G={class:"row"},Y={class:"row"},z={class:"row"},K={class:"alert info",style:{"margin-top":"16px"}},L={style:{margin:"8px 0 0 0",background:"rgba(0, 0, 0, 0.1)",padding:"8px","border-radius":"4px"}};function H(l,e,p,g,r,f){const o=S("SlimSelect"),u=S("ComplexFieldExample");return v(),m("div",T,[e[19]||(e[19]=O(`<h2 class="header">Vue</h2><h3>Install</h3><p>Install the slim-select package:</p><pre>      <code class="language-bash">
+        npm install slim-select
+      </code>
+    </pre><p>Import the Vue component and styles:</p><pre>      <code class="language-javascript">
+        import SlimSelect from &#39;slim-select/vue&#39;
+        import &#39;slim-select/styles&#39; // CSS
+        // or
+        import &#39;slim-select/scss&#39; // SCSS
+      </code>
+    </pre><br><h3>Simple example</h3>`,8)),t("div",B,[t("div",null,[t("div",null,[e[7]||(e[7]=t("strong",null,"Value",-1)),n(" "+d(l.simpleSingle),1)]),i(o,{modelValue:l.simpleSingle,"onUpdate:modelValue":e[0]||(e[0]=s=>l.simpleSingle=s),ref:"simpleSingle"},{default:a(()=>[...e[8]||(e[8]=[t("option",{value:"all"},"All",-1),t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["modelValue"])]),t("div",null,[t("div",null,[e[9]||(e[9]=t("strong",null,"Value",-1)),n(" "+d(l.simpleMultiple),1)]),i(o,{modelValue:l.simpleMultiple,"onUpdate:modelValue":e[1]||(e[1]=s=>l.simpleMultiple=s),ref:"simpleMultiple",multiple:""},{default:a(()=>[...e[10]||(e[10]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["modelValue"])])]),e[20]||(e[20]=t("pre",null,[n("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
@@ -13,8 +22,8 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
             }
           }
         })
-      `),l(`
-    `)],-1)),t[24]||(t[24]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),n(`
+    `)],-1)),e[21]||(e[21]=t("pre",null,[n("      "),t("code",{class:"language-html"},`
         <SlimSelect v-model="single">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -26,8 +35,8 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </SlimSelect>
-      `),l(`
-    `)],-1)),t[25]||(t[25]=e("br",null,null,-1)),t[26]||(t[26]=e("div",{class:"separator"},null,-1)),t[27]||(t[27]=e("br",null,null,-1)),t[28]||(t[28]=e("h3",null,"Settings",-1)),t[29]||(t[29]=e("p",null," Settings just like its passed as an object in normal SlimSelect will also be passed as an object to the component prop ",-1)),e("div",A,[i(o,{settings:n.settings},{default:s(()=>[...t[9]||(t[9]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["settings"]),i(o,{settings:n.settings,multiple:""},{default:s(()=>[...t[10]||(t[10]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["settings"])]),t[30]||(t[30]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+      `),n(`
+    `)],-1)),e[22]||(e[22]=t("br",null,null,-1)),e[23]||(e[23]=t("div",{class:"separator"},null,-1)),e[24]||(e[24]=t("br",null,null,-1)),e[25]||(e[25]=t("h3",null,"Settings",-1)),e[26]||(e[26]=t("p",null," Settings just like its passed as an object in normal SlimSelect will also be passed as an object to the component prop ",-1)),t("div",U,[i(o,{settings:l.settings},{default:a(()=>[...e[11]||(e[11]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["settings"]),i(o,{settings:l.settings,multiple:""},{default:a(()=>[...e[12]||(e[12]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["settings"])]),e[27]||(e[27]=t("pre",null,[n("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
@@ -43,8 +52,8 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
             }
           },
         })
-      `),l(`
-    `)],-1)),t[31]||(t[31]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),n(`
+    `)],-1)),e[28]||(e[28]=t("pre",null,[n("      "),t("code",{class:"language-html"},`
         <SlimSelect :settings="settings">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -56,8 +65,8 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </SlimSelect>
-      `),l(`
-    `)],-1)),t[32]||(t[32]=e("br",null,null,-1)),t[33]||(t[33]=e("div",{class:"separator"},null,-1)),t[34]||(t[34]=e("br",null,null,-1)),t[35]||(t[35]=e("h3",null,"Data",-1)),t[36]||(t[36]=e("p",null," Data just like its passed as an array in normal SlimSelct will also be passed as an array to the component prop. ",-1)),t[37]||(t[37]=e("div",{class:"alert info"}," You may pass data as a prop if you would like. But you can also have reactive options that when options change the select will update as well. See Reactivity below for more info. ",-1)),e("div",T,[e("div",{class:"btn info",onClick:t[2]||(t[2]=(...u)=>n.changeData&&n.changeData(...u))},"Change data"),i(o,{ref:"dataSingle",data:n.data},null,8,["data"]),i(o,{ref:"dataMultiple",data:n.data,multiple:""},null,8,["data"])]),t[38]||(t[38]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+      `),n(`
+    `)],-1)),e[29]||(e[29]=t("br",null,null,-1)),e[30]||(e[30]=t("div",{class:"separator"},null,-1)),e[31]||(e[31]=t("br",null,null,-1)),e[32]||(e[32]=t("h3",null,"Data",-1)),e[33]||(e[33]=t("p",null," Data just like its passed as an array in normal SlimSelct will also be passed as an array to the component prop. ",-1)),e[34]||(e[34]=t("div",{class:"alert info"}," You may pass data as a prop if you would like. But you can also have reactive options that when options change the select will update as well. See Reactivity below for more info. ",-1)),t("div",R,[t("div",{class:"btn info",onClick:e[2]||(e[2]=(...s)=>l.changeData&&l.changeData(...s))},"Change data"),i(o,{ref:"dataSingle",data:l.data},null,8,["data"]),i(o,{ref:"dataMultiple",data:l.data,multiple:""},null,8,["data"])]),e[35]||(e[35]=t("pre",null,[n("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
@@ -75,13 +84,13 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
             }
           },
         })
-      `),l(`
-    `)],-1)),t[39]||(t[39]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),n(`
+    `)],-1)),e[36]||(e[36]=t("pre",null,[n("      "),t("code",{class:"language-html"},`
         <SlimSelect :data="data" />
 
         <SlimSelect :data="data" multiple />
-      `),l(`
-    `)],-1)),t[40]||(t[40]=e("br",null,null,-1)),t[41]||(t[41]=e("div",{class:"separator"},null,-1)),t[42]||(t[42]=e("br",null,null,-1)),t[43]||(t[43]=e("h3",null,"Events",-1)),t[44]||(t[44]=e("p",null," Events just like its passed as an object in normal SlimSelct will also be passed as an object to the component prop. ",-1)),n.afterChangeData.length?(g(),v("div",B,[t[11]||(t[11]=e("strong",null,"afterChange:",-1)),l(" "+m(n.afterChangeData),1)])):y("",!0),e("div",N,[i(o,{events:n.events},{default:s(()=>[...t[12]||(t[12]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["events"]),i(o,{events:n.events,multiple:""},{default:s(()=>[...t[13]||(t[13]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["events"])]),t[45]||(t[45]=e("pre",null,[l("      "),e("code",{class:"language-javascript"},`
+      `),n(`
+    `)],-1)),e[37]||(e[37]=t("br",null,null,-1)),e[38]||(e[38]=t("div",{class:"separator"},null,-1)),e[39]||(e[39]=t("br",null,null,-1)),e[40]||(e[40]=t("h3",null,"Events",-1)),e[41]||(e[41]=t("p",null," Events just like its passed as an object in normal SlimSelct will also be passed as an object to the component prop. ",-1)),l.afterChangeData.length?(v(),m("div",J,[e[13]||(e[13]=t("strong",null,"afterChange:",-1)),n(" "+d(l.afterChangeData),1)])):c("",!0),t("div",I,[i(o,{events:l.events},{default:a(()=>[...e[14]||(e[14]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["events"]),i(o,{events:l.events,multiple:""},{default:a(()=>[...e[15]||(e[15]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["events"])]),e[42]||(e[42]=t("pre",null,[n("      "),t("code",{class:"language-javascript"},`
         import { defineComponent } from 'vue'
         import SlimSelect from '../your/path/to/slim-select/vue.vue'
 
@@ -102,8 +111,8 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
             },
           },
         })
-      `),l(`
-    `)],-1)),t[46]||(t[46]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),n(`
+    `)],-1)),e[43]||(e[43]=t("pre",null,[n("      "),t("code",{class:"language-html"},`
         <SlimSelect :events="events">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -115,28 +124,100 @@ import{d as S,S as b,_ as f,c as v,l as O,o as g,a as e,i as y,b as C,f as i,e a
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </SlimSelect>
-      `),l(`
-    `)],-1)),t[47]||(t[47]=e("br",null,null,-1)),t[48]||(t[48]=e("div",{class:"separator"},null,-1)),t[49]||(t[49]=e("br",null,null,-1)),t[50]||(t[50]=e("h3",null,"Attributes",-1)),t[51]||(t[51]=e("p",null,"There are certain attributes that are reactive to changes",-1)),t[52]||(t[52]=e("h4",null,"disabled",-1)),e("div",E,[e("div",{class:"btn",onClick:t[3]||(t[3]=u=>n.isDisabled=!n.isDisabled)},"Toggle Disabled"),i(o,{disabled:n.isDisabled},{default:s(()=>[...t[14]||(t[14]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["disabled"])]),t[53]||(t[53]=e("pre",null,[l("      "),e("code",{class:"language-html"},`
+      `),n(`
+    `)],-1)),e[44]||(e[44]=t("br",null,null,-1)),e[45]||(e[45]=t("div",{class:"separator"},null,-1)),e[46]||(e[46]=t("br",null,null,-1)),e[47]||(e[47]=t("h3",null,"Attributes",-1)),e[48]||(e[48]=t("p",null,"There are certain attributes that are reactive to changes",-1)),e[49]||(e[49]=t("h4",null,"disabled",-1)),t("div",G,[t("div",{class:"btn",onClick:e[3]||(e[3]=s=>l.isDisabled=!l.isDisabled)},"Toggle Disabled"),i(o,{disabled:l.isDisabled},{default:a(()=>[...e[16]||(e[16]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["disabled"])]),e[50]||(e[50]=t("pre",null,[n("      "),t("code",{class:"language-html"},`
         <SlimSelect :disabled="isDisabled">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </SlimSelect>
-      `),l(`
-    `)],-1)),t[54]||(t[54]=e("h4",null,"class",-1)),e("div",I,[e("div",{class:"btn",onClick:t[4]||(t[4]=u=>n.errorClass=n.errorClass===""?"error":"")},"Toggle Error"),i(o,{class:V(["dynamicClass",n.errorClass])},{default:s(()=>[...t[15]||(t[15]=[e("option",{value:"1"},"Option 1",-1),e("option",{value:"2"},"Option 2",-1),e("option",{value:"3"},"Option 3",-1)])]),_:1},8,["class"])]),t[55]||(t[55]=C(`<pre>      <code class="language-html">
-        &lt;SlimSelect :class=&quot;myClass&quot;&gt;
-          &lt;option value=&quot;1&quot;&gt;Option 1&lt;/option&gt;
-          &lt;option value=&quot;2&quot;&gt;Option 2&lt;/option&gt;
-          &lt;option value=&quot;3&quot;&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
-      </code>
-    </pre><br><div class="separator"></div><br><h3>Reactivity</h3><p> Slim select handles the underlying select option alterations for you. But the issue is that if you allow Vue to also handle the select option alterations then you will have two things trying to alter the select options and that will cause Vue to error out. So for now you can add static options to the SlimSelect component but then no more altering after that. Any dynamic data should be passed into the data prop. </p><div class="alert info">That being said props added to the main SlimSelect component can be dynamic.</div><p> If anyone knows how to deal with this in a reasonable way please go the <a target="_blank" href="https://github.com/brianvoe/slim-select/issues/386">github repo</a> and submit a pr. </p><pre>      <code class="language-html">
-        &lt;SlimSelect v-model=&quot;value&quot;&gt;
+      `),n(`
+    `)],-1)),e[51]||(e[51]=t("h4",null,"class",-1)),t("div",Y,[t("div",{class:"btn",onClick:e[4]||(e[4]=s=>l.errorClass=l.errorClass===""?"error":"")},"Toggle Error"),i(o,{class:k(["dynamicClass",l.errorClass])},{default:a(()=>[...e[17]||(e[17]=[t("option",{value:"1"},"Option 1",-1),t("option",{value:"2"},"Option 2",-1),t("option",{value:"3"},"Option 3",-1)])]),_:1},8,["class"])]),e[52]||(e[52]=t("pre",null,[n("      "),t("code",{class:"language-html"},`
+        <SlimSelect :class="myClass">
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+        </SlimSelect>
+      `),n(`
+    `)],-1)),e[53]||(e[53]=t("br",null,null,-1)),e[54]||(e[54]=t("div",{class:"separator"},null,-1)),e[55]||(e[55]=t("br",null,null,-1)),e[56]||(e[56]=t("h3",null,"Complex Example: Custom Fields Pattern",-1)),e[57]||(e[57]=t("p",null," This example demonstrates a real-world use case similar to a CustomFields component that manages multiple dynamic form fields with computed values, reactive slot content, and bidirectional data flow. ",-1)),e[58]||(e[58]=t("div",{class:"alert info"},[t("strong",null,"Pattern:"),n(" Computed values → Reactive slots → v-model → afterChange callback → Update parent data ")],-1)),t("div",z,[i(u,{modelValue:l.customFieldsValues.favoriteColors,"onUpdate:modelValue":e[5]||(e[5]=s=>l.customFieldsValues.favoriteColors=s),"field-options":l.fieldOptions.favoriteColors,label:"Favorite Colors"},null,8,["modelValue","field-options"]),i(u,{modelValue:l.customFieldsValues.skills,"onUpdate:modelValue":e[6]||(e[6]=s=>l.customFieldsValues.skills=s),"field-options":l.fieldOptions.skills,label:"Skills"},null,8,["modelValue","field-options"])]),t("div",K,[e[18]||(e[18]=t("strong",null,"Parent Data:",-1)),t("pre",L,d(JSON.stringify(l.customFieldsValues,null,2)),1)]),e[59]||(e[59]=O(`<p><strong>Parent Component (vue.vue):</strong></p><pre>      <code class="language-javascript">
+        import ComplexFieldExample from &#39;./complex.vue&#39;
 
-          //////////////////////
-          // DON&#39;T DO THIS!!! //
-          //////////////////////
-          &lt;option v-for=&quot;d in data&quot; :key=&quot;d.id&quot; :value=&quot;d.value&quot; :selected=&quot;d.selected&quot;&gt;{{ d.text }}&lt;/option&gt;
+        export default {
+          components: { ComplexFieldExample },
+          data() {
+            return {
+              // Parent stores the values
+              customFieldsValues: {
+                favoriteColors: [&#39;blue&#39;],
+                skills: [&#39;javascript&#39;, &#39;typescript&#39;]
+              },
+              // Parent stores the options
+              fieldOptions: {
+                favoriteColors: [
+                  { value: &#39;red&#39;, name: &#39;Red&#39; },
+                  { value: &#39;blue&#39;, name: &#39;Blue&#39; },
+                  { value: &#39;green&#39;, name: &#39;Green&#39; }
+                ],
+                skills: [
+                  { value: &#39;javascript&#39;, name: &#39;JavaScript&#39; },
+                  { value: &#39;typescript&#39;, name: &#39;TypeScript&#39; },
+                  { value: &#39;vue&#39;, name: &#39;Vue.js&#39; }
+                ]
+              }
+            }
+          }
+        }
+      </code>
+    </pre><pre>      <code class="language-html">
+        &lt;!-- Parent template --&gt;
+        &lt;ComplexFieldExample
+          label=&quot;Favorite Colors&quot;
+          v-model=&quot;customFieldsValues.favoriteColors&quot;
+          :field-options=&quot;fieldOptions.favoriteColors&quot;
+        /&gt;
+
+        &lt;ComplexFieldExample
+          label=&quot;Skills&quot;
+          v-model=&quot;customFieldsValues.skills&quot;
+          :field-options=&quot;fieldOptions.skills&quot;
+        /&gt;
+      </code>
+    </pre><p><strong>Child Component (complex.vue):</strong></p><pre>      <code class="language-javascript">
+        import SlimSelect from &#39;slim-select/vue&#39;
+
+        export default {
+          components: { SlimSelect },
+          props: {
+            modelValue: { type: Array, required: true },
+            fieldOptions: { type: Array, required: true },
+            label: { type: String, required: true }
+          },
+          emits: [&#39;update:modelValue&#39;],
+          computed: {
+            value: {
+              get() { return this.modelValue || [] },
+              set(newValue) { this.$emit(&#39;update:modelValue&#39;, newValue) }
+            }
+          },
+          methods: {
+            handleChange() {
+              console.log(\`\${this.label} changed:\`, this.value)
+            }
+          }
+        }
+      </code>
+    </pre><pre>      <code class="language-html">
+        &lt;!-- Child template with reactive slot content --&gt;
+        &lt;SlimSelect
+          v-model=&quot;value&quot;
+          multiple
+          :events=&quot;{ afterChange: () =&gt; handleChange() }&quot;&gt;
+          &lt;option
+            v-for=&quot;option in fieldOptions&quot;
+            :key=&quot;option.value&quot;
+            :value=&quot;option.value&quot;&gt;
+            {{ option.name }}
+          &lt;/option&gt;
         &lt;/SlimSelect&gt;
       </code>
-    </pre>`,9))])}const R=f(k,[["render",U]]);export{R as default};
+    </pre><div class="alert info"><strong>Key Features:</strong><ul><li>✅ <strong>Parent-child pattern</strong> - Parent stores data, child renders SlimSelect</li><li>✅ <strong>v-model on child</strong> - Two-way binding between parent and child</li><li>✅ <strong>Props down</strong> - fieldOptions and label passed to child</li><li>✅ <strong>Events up</strong> - Child emits update:modelValue to parent</li><li>✅ <strong>Reactive slots</strong> - Child uses v-for with SlimSelect slot options</li><li>✅ <strong>Computed value</strong> - Child computes value getter/setter for v-model</li><li>✅ <strong>afterChange callback</strong> - Custom logic in child component</li><li>✅ <strong>Fully reactive</strong> - Parent data changes flow to child automatically</li></ul></div>`,7))])}const W=V(N,[["render",H]]);export{W as default};
