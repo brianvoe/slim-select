@@ -1,7 +1,7 @@
 {
   "name": "slim-select",
   "description": "Slim advanced select dropdown",
-  "version": "2.13.0",
+  "version": "2.13.1",
   "type": "module",
   "author": "Brian Voelker <brian@webiswhatido.com> (http://webiswhatido.com)",
   "homepage": "https://slimselectjs.com",
@@ -33,21 +33,24 @@
       "import": "./dist/slimselect.es.js",
       "require": "./dist/slimselect.umd.js"
     },
-    "./*": {
-      "types": "./dist/*.d.ts"
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "import": "./dist/vue/index.js",
+      "require": "./dist/vue/index.umd.js"
     },
     "./styles": "./dist/slimselect.css",
     "./scss": "./src/slim-select/slimselect.scss"
   },
   "scripts": {
-    "dev": "vite --port=1111",
+    "dev": "vite --config vite.config.docs.mts",
     "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
     "build": "npm run build:clean && npm run build:docs && npm run build:library",
     "build:clean": "rimraf ./dist/*",
-    "build:docs": "vite build",
-    "build:library": "npm run build:library:js && npm run build:library:css",
-    "build:library:js": "cd src/slim-select && rollup --config ./rollup.config.mjs && cd ../../",
-    "build:library:css": "cd src/slim-select && sass ./slimselect.scss ../../dist/slimselect.css --style=compressed && cd ../../",
+    "build:docs": "vite build --config vite.config.docs.mts",
+    "build:library": "npm run build:library:js && npm run build:library:vue && npm run build:library:css",
+    "build:library:js": "vite build --config vite.config.lib.mts",
+    "build:library:vue": "vite build --config vite.config.vue.mts",
+    "build:library:css": "sass src/slim-select/slimselect.scss dist/slimselect.css --style=compressed",
     "lint": "prettier --write ./src/**/*",
     "test": "jest",
     "test:coverage": "jest --coverage",
