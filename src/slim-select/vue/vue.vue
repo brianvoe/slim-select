@@ -56,22 +56,22 @@ export default defineComponent({
       config.settings = this.settings
     }
 
-    // If events are passed in, use it
-    config.events = (this.events || {}) as Events
+    // Create a copy of events to avoid mutating the prop
+    const ogAfterChange = this.events?.afterChange
+    config.events = {
+      ...this.events,
+      afterChange: (newVal: Option[]) => {
+        const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : ''
 
-    // Wrap config.events.afterChange to run value update
-    const ogAfterChange = config.events.afterChange
-    config.events.afterChange = (newVal: Option[]) => {
-      const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : ''
+        // Update v-model if value changed
+        if (this.value !== value) {
+          this.value = value
+        }
 
-      // Check if value is different from modelValue
-      if (this.value !== value) {
-        this.value = value
-      }
-
-      // If they had an original afterChange, run it
-      if (config.events && ogAfterChange) {
-        ogAfterChange(newVal)
+        // Call the original afterChange callback if it exists
+        if (ogAfterChange) {
+          ogAfterChange(newVal)
+        }
       }
     }
 
@@ -84,7 +84,21 @@ export default defineComponent({
     // Check if modelValue is the same as the value of the select
     if (this.value !== selected) {
       // If not, set the value of the select to the modelValue
-      this.slim.setSelected(this.value)
+      // Don't trigger afterChange on initial sync
+      this.slim.setSelected(this.value, false)
+    }
+  },
+  updated() {
+    // After DOM updates (like slot content changes), sync selection from modelValue
+    // This ensures :selected attribute isn't needed on slot options
+    if (this.slim && !this.data) {
+      const currentSelected = this.slim.getSelected()
+      const modelValues = Array.isArray(this.value) ? this.value : [this.value]
+      const needsSync = JSON.stringify(currentSelected.sort()) !== JSON.stringify(modelValues.sort())
+
+      if (needsSync) {
+        this.slim.setSelected(this.value, false)
+      }
     }
   },
   beforeUnmount() {
@@ -95,10 +109,12 @@ export default defineComponent({
   watch: {
     modelValue: {
       handler: function (newVal: string | string[] | undefined) {
+        if (!this.slim) return
+
         // Set the value of the select to the newVal
-        this.slim?.setSelected(this.getCleanValue(newVal))
-      },
-      immediate: true
+        // Don't trigger afterChange when programmatically updating from parent
+        this.slim.setSelected(this.getCleanValue(newVal), false)
+      }
     },
     data: {
       handler: function (newData) {
