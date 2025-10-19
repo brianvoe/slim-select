@@ -10,38 +10,11 @@ interface Person {
 
 export default defineComponent({
   name: 'SearchEvent',
-  data() {
-    return {
-      searchData: [] as Person[]
-    }
-  },
-  created() {
-    // Go fetch some gofakeit data via post to json
-    fetch('https://api.gofakeit.com/func/multi', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        type: 'array',
-        rowcount: 1000,
-        indent: false,
-        fields: [
-          { name: 'first_name', function: 'firstname', params: {} },
-          { name: 'last_name', function: 'lastname', params: {} }
-        ]
-      })
-    })
-      .then((response) => response.json())
-      .then((data: Person[]) => {
-        this.searchData = data
-      })
-  },
   mounted() {
     new SlimSelect({
       select: this.$refs.searchSingle as HTMLSelectElement,
       settings: {
-        placeholderText: 'Search First or Last Name',
+        placeholderText: 'Search First',
         searchingText: 'Searching Users...',
         searchHighlight: true,
         allowDeselect: true
@@ -55,7 +28,7 @@ export default defineComponent({
       select: this.$refs.searchMultiple as HTMLSelectElement,
       settings: {
         closeOnSelect: false,
-        placeholderText: 'Search First or Last Name',
+        placeholderText: 'Search First',
         searchingText: 'Searching Users...',
         searchHighlight: true,
         allowDeselect: true
@@ -72,36 +45,41 @@ export default defineComponent({
           return reject('Search must be at least 2 characters')
         }
 
-        const results = this.searchData.filter((person) => {
-          return (
-            person.first_name.toLowerCase().includes(search.toLowerCase()) ||
-            person.last_name.toLowerCase().includes(search.toLowerCase())
-          )
+        fetch('https://api.gofakeit.com/statics/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            first_name: search
+          })
         })
+          .then((response) => response.json())
+          .then((data: Person[]) => {
+            if (!data || data.length === 0) {
+              return reject('No results found')
+            }
 
-        if (results.length === 0) {
-          return reject('No results found')
-        }
+            // Take the results and create an array of options excluding any that are already selected in currentData
+            const options = data
+              .filter((person) => {
+                return !currentData.some((dataItem) => {
+                  // check if option has a value property
+                  return dataItem instanceof Option && dataItem.value === `${person.first_name} ${person.last_name}`
+                })
+              })
+              .map((person) => {
+                return {
+                  text: `${person.first_name} ${person.last_name}`,
+                  value: `${person.first_name} ${person.last_name}`
+                } as Option
+              })
 
-        // Take the results and create an array of options excluding any that are already selected in currentData
-        const options = results
-          .filter((person) => {
-            return !currentData.some((data) => {
-              // check if option has a value property
-              return data instanceof Option && data.value === `${person.first_name} ${person.last_name}`
-            })
+            resolve([{ label: 'Results', selectAll: true, options: options }])
           })
-          .map((person) => {
-            return {
-              text: `${person.first_name} ${person.last_name}`,
-              value: `${person.first_name} ${person.last_name}`
-            } as Option
+          .catch((error) => {
+            reject('Error fetching results')
           })
-
-        // Simulate a slow search
-        setTimeout(() => {
-          resolve([{ label: 'Results', selectAll: true, options: options }])
-        }, 300)
       })
     }
   }
@@ -125,6 +103,12 @@ export default defineComponent({
       <code class="language-javascript">
         new SlimSelect({
           select: '#selectElement',
+          settings: {
+            placeholderText: 'Search First',
+            searchingText: 'Searching Users...',
+            searchHighlight: true,
+            allowDeselect: true
+          },
           events: {
             search: (search, currentData) => {
               return new Promise((resolve, reject) => {
@@ -132,40 +116,43 @@ export default defineComponent({
                   return reject('Search must be at least 2 characters')
                 }
 
-                // Fetch random first and last name data
-                fetch('https://api.gofakeit.com/json', {
+                // Fetch users from gofakeit API based on search term
+                fetch('https://api.gofakeit.com/statics/users', {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    type: 'array',
-                    rowcount: 10,
-                    indent: false,
-                    fields: [
-                      { name: 'first_name', function: 'firstname', params: {} },
-                      { name: 'last_name', function: 'lastname', params: {} },
-                    ],
-                  }),
+                    first_name: search
+                  })
                 })
                   .then((response) => response.json())
                   .then((data) => {
-                    // Take the data and create an array of options 
+                    if (!data || data.length === 0) {
+                      return reject('No results found')
+                    }
+
+                    // Take the results and create an array of options 
                     // excluding any that are already selected in currentData
                     const options = data
                       .filter((person) => {
-                        return !currentData.some((optionData) => {
-                          return optionData.value === `${person.first_name} ${person.last_name}`
+                        return !currentData.some((dataItem) => {
+                          // check if option has a value property
+                          return dataItem instanceof Option &amp;&amp; 
+                                 dataItem.value === `${person.first_name} ${person.last_name}`
                         })
                       })
                       .map((person) => {
                         return {
                           text: `${person.first_name} ${person.last_name}`,
-                          value: `${person.first_name} ${person.last_name}`,
+                          value: `${person.first_name} ${person.last_name}`
                         }
                       })
 
-                    resolve(options)
+                    resolve([{ label: 'Results', selectAll: true, options: options }])
+                  })
+                  .catch((error) => {
+                    reject('Error fetching results')
                   })
               })
             }
