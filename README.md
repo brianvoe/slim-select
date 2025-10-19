@@ -39,6 +39,7 @@ See [website](https://slimselectjs.com) for the full list of [settings](https://
 - Clean Animations
 - Performant
 - Typescript
+- ARIA Accessibility (WCAG 2.1 Level AA compliant)
 
 ## Frameworks
 
@@ -65,7 +66,7 @@ import 'slim-select/styles' // optional css import method
 import 'slim-select/scss' // optional scss import method
 
 new SlimSelect({
-  select: '#selectElement',
+  select: '#selectElement'
 })
 ```
 
@@ -91,7 +92,7 @@ new SlimSelect({
   // or
 
   // Array of Optgroups and/or Options
-  data: [{ label: 'Optgroup Label', options: { text: 'Value 1', value: 'value1' } }],
+  data: [{ label: 'Optgroup Label', options: { text: 'Value 1', value: 'value1' } }]
 })
 ```
 
@@ -103,7 +104,7 @@ var optgroup = {
   label: 'label', // Required
   selectAll: false, // Optional - default false
   closable: 'off', // Optional - default 'off' - 'off', 'open', 'close'
-  options: [], // Required - value is an array of options
+  options: [] // Required - value is an array of options
 }
 
 // <option>
@@ -118,44 +119,46 @@ var option = {
   placeholder: false, // Optional - default is false
   class: '', // Optional - default is not set
   style: '', // Optional - default is not set
-  data: {}, // Optional - If you have data attributes
+  data: {} // Optional - If you have data attributes
 }
 ```
 
 ## Settings
 
-Settings are a list of fields that help customize how SlimSelect operates
+Settings are optional fields that customize how SlimSelect operates. All values shown are defaults.
+
+[Full Settings Documentation](https://slimselectjs.com/settings)
 
 ```javascript
 new SlimSelect({
   select: '#selectElement',
 
   settings: {
-    // Below are a list of optional fields
-    // their values are the defaults
-    disabled: false,
-    alwaysOpen: false,
-    showSearch: true,
-    focusSearch: true,
-    searchPlaceholder: 'Search',
-    searchText: 'No Results',
-    searchingText: 'Searching...',
-    searchHighlight: false,
-    closeOnSelect: true,
-    contentLocation: document.body,
-    contentPosition: 'absolute',
-    openPosition: 'auto', // options: auto, up, down
-    placeholderText: 'Select Value',
-    allowDeselect: false,
-    hideSelected: false,
-    showOptionTooltips: false,
-    minSelected: 0,
-    maxSelected: 1000,
-    timeoutDelay: 200,
-    maxValuesShown: 20,
-    maxValuesMessage: '{number} selected',
-    addableText: 'Press "Enter" to add {value}',
-  },
+    disabled: false, // Disable the select
+    alwaysOpen: false, // Keep dropdown always open
+    showSearch: true, // Show search input
+    focusSearch: true, // Auto focus search on open
+    ariaLabel: 'Combobox', // ARIA label for accessibility
+    searchPlaceholder: 'Search', // Search input placeholder
+    searchText: 'No Results', // Text when no results found
+    searchingText: 'Searching...', // Text while searching
+    searchHighlight: false, // Highlight search terms
+    closeOnSelect: true, // Close dropdown after selection
+    contentLocation: document.body, // Where to append dropdown
+    contentPosition: 'absolute', // CSS position: absolute, relative, fixed
+    openPosition: 'auto', // Open direction: auto, up, down
+    placeholderText: 'Select Value', // Placeholder text
+    allowDeselect: false, // Allow deselecting in single select
+    hideSelected: false, // Hide selected options in dropdown
+    keepOrder: false, // Keep selection order for getSelected
+    showOptionTooltips: false, // Show tooltips on options
+    minSelected: 0, // Minimum selections (multi-select)
+    maxSelected: 1000, // Maximum selections (multi-select)
+    timeoutDelay: 200, // Delay for callbacks (ms)
+    maxValuesShown: 20, // Max values shown before message
+    maxValuesMessage: '{number} selected', // Message when max values exceeded
+    addableText: 'Press "Enter" to add {value}' // Text for addable option
+  }
 })
 ```
 
@@ -163,21 +166,64 @@ new SlimSelect({
 
 Events are function callbacks for when certain actions happen
 
+[Full Events Documentation](https://slimselectjs.com/events)
+
 ```javascript
 new SlimSelect({
   select: '#selectElement',
 
   events: {
-    search: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
-    searchFilter: (option: Option, search: string) => boolean
-    addable: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | Error
-    beforeChange: (newVal: Option[], oldVal: Option[]) => boolean | void
-    afterChange: (newVal: Option[]) => void
-    beforeOpen: () => void
-    afterOpen: () => void
-    beforeClose: () => void
-    afterClose: () => void
+    // Custom search function - return Promise or data array
+    search: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial,
+
+    // Filter function for search - return true to show option
+    searchFilter: (option: Option, search: string) => boolean,
+
+    // Allow user to add options - return new option or error
+    addable: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | Error,
+
+    // Before selection changes - return false to prevent change
+    beforeChange: (newVal: Option[], oldVal: Option[]) => boolean | void,
+
+    // After selection changes
+    afterChange: (newVal: Option[]) => void,
+
+    // Before dropdown opens
+    beforeOpen: () => void,
+
+    // After dropdown opens
+    afterOpen: () => void,
+
+    // Before dropdown closes
+    beforeClose: () => void,
+
+    // After dropdown closes
+    afterClose: () => void,
+
+    // Error handler
     error: (err: Error) => void
-  },
+  }
 })
+```
+
+## Methods
+
+SlimSelect provides methods to programmatically control the select
+
+[Full Methods Documentation](https://slimselectjs.com/methods)
+
+```javascript
+const slim = new SlimSelect({ select: '#selectElement' })
+
+slim.enable() // Enable the select
+slim.disable() // Disable the select
+slim.getData() // Get current data array
+slim.setData(data) // Set new data array
+slim.getSelected() // Get selected values as string[]
+slim.setSelected(['value1', 'value2']) // Set selected by values
+slim.addOption(option) // Add a single option
+slim.open() // Open the dropdown
+slim.close() // Close the dropdown
+slim.search('searchValue') // Programmatically search
+slim.destroy() // Destroy the instance
 ```
