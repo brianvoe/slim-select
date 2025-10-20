@@ -323,4 +323,85 @@ describe('SlimSelect Module', () => {
       expect(slim.getSelected()).toEqual(['5', '2', '4', '1'])
     })
   })
+
+  describe('maxValuesShown with deselection', () => {
+    test('can still deselect options via dropdown when maxValuesShown is exceeded', () => {
+      document.body.innerHTML = `
+        <select id="test" multiple>
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+          <option value="4">Option 4</option>
+          <option value="5">Option 5</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#test',
+        settings: {
+          maxValuesShown: 2 // Show "X selected" when more than 2
+        }
+      })
+
+      // Select 3 options (exceeds maxValuesShown)
+      slim.setSelected(['1', '2', '3'])
+      expect(slim.getSelected()).toEqual(['1', '2', '3'])
+
+      // Verify counter is shown (not individual values)
+      const counter = document.querySelector('.ss-max')
+      expect(counter?.textContent).toBe('3 selected')
+
+      // Open dropdown
+      slim.open()
+
+      // Find and click on a selected option to deselect it
+      const options = document.querySelectorAll('[role="option"]')
+      const selectedOption = Array.from(options).find(
+        (opt) => opt.getAttribute('aria-selected') === 'true' && opt.textContent?.includes('Option 1')
+      ) as HTMLElement
+
+      expect(selectedOption).toBeTruthy()
+
+      // Click the selected option - should deselect it
+      selectedOption.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      // Should now only have 2 selected
+      expect(slim.getSelected()).toEqual(['2', '3'])
+    })
+
+    test('deselecting via dropdown updates maxValuesShown display', () => {
+      document.body.innerHTML = `
+        <select id="test" multiple>
+          <option value="1">Value 1</option>
+          <option value="2">Value 2</option>
+          <option value="3">Value 3</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#test',
+        settings: {
+          maxValuesShown: 2
+        }
+      })
+
+      // Select 3 options (shows "3 selected")
+      slim.setSelected(['1', '2', '3'])
+
+      // Open and deselect one
+      slim.open()
+      const options = document.querySelectorAll('[role="option"]')
+      const firstSelected = Array.from(options).find(
+        (opt) => opt.getAttribute('aria-selected') === 'true'
+      ) as HTMLElement
+      firstSelected.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      // Now only 2 selected - should show individual values again (not counter)
+      const individualValues = document.querySelectorAll('.ss-value')
+      expect(individualValues.length).toBeGreaterThan(0)
+
+      const counter = document.querySelector('.ss-max')
+      expect(counter).toBeNull()
+    })
+  })
 })
