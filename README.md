@@ -43,7 +43,7 @@ See [website](https://slimselectjs.com) for the full list of [settings](https://
 
 ## Frameworks
 
-- Vue
+- [Vue](#vue)
 
 ## Installation
 
@@ -226,4 +226,43 @@ slim.open() // Open the dropdown
 slim.close() // Close the dropdown
 slim.search('searchValue') // Programmatically search
 slim.destroy() // Destroy the instance
+```
+
+## Vue
+
+SlimSelect has official Vue 3 component support with full reactivity.
+
+For more Vue examples and advanced usage, see the [Vue documentation](https://slimselectjs.com/vue).
+
+### Installation
+
+```bash
+npm install slim-select
+```
+
+### Usage
+
+```vue
+<script lang="ts">
+import SlimSelect from 'slim-select/vue'
+import 'slim-select/styles'
+
+export default {
+  components: { SlimSelect },
+  data() {
+    return {
+      selected: 'value2',
+      options: [
+        { text: 'Value 1', value: 'value1' },
+        { text: 'Value 2', value: 'value2' },
+        { text: 'Value 3', value: 'value3' }
+      ]
+    }
+  }
+}
+</script>
+
+<template>
+  <SlimSelect v-model="selected" :data="options" />
+</template>
 ```
