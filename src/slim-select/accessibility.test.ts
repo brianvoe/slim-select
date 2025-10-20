@@ -27,9 +27,11 @@ describe('SlimSelect Accessibility', () => {
     // The container will have both the hidden select and the SlimSelect UI
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     if (slim) {
       slim.destroy()
+      // Wait for any pending timeouts to complete
+      await new Promise((resolve) => setTimeout(resolve, 250))
     }
     document.body.removeChild(container)
   })
@@ -481,9 +483,11 @@ describe('SlimSelect ARIA Issue #639 - Listbox Children', () => {
     container.appendChild(select)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     if (slim) {
       slim.destroy()
+      // Wait for any pending timeouts to complete
+      await new Promise((resolve) => setTimeout(resolve, 250))
     }
     document.body.removeChild(container)
   })
@@ -577,9 +581,11 @@ describe('SlimSelect WCAG Compliance', () => {
     container.appendChild(select)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     if (slim) {
       slim.destroy()
+      // Wait for any pending timeouts to complete
+      await new Promise((resolve) => setTimeout(resolve, 250))
     }
     document.body.removeChild(container)
   })

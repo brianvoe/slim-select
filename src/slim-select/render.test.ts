@@ -1133,26 +1133,30 @@ describe('render module', () => {
     })
   })
 
-  describe('range selection', () => {
+  describe('native multi-select behavior', () => {
     let render: Render
     let afterChangeMock: ReturnType<typeof vi.fn>
+    let closeMock: ReturnType<typeof vi.fn>
 
     beforeEach(() => {
-      // create a new store with 3 options
+      // create a new store with 5 options for comprehensive testing
       const store = new Store('multiple', [
         { text: 'test1', value: 'test1' },
         { text: 'test2', value: 'test2' },
-        { text: 'test3', value: 'test3' }
+        { text: 'test3', value: 'test3' },
+        { text: 'test4', value: 'test4' },
+        { text: 'test5', value: 'test5' }
       ])
 
       const settings = new Settings()
       const classes = new CssClasses()
 
       afterChangeMock = vi.fn(() => {})
+      closeMock = vi.fn(() => {})
 
       const callbacks = {
         open: () => {},
-        close: () => {},
+        close: closeMock,
         addSelected: () => {},
         setSelected: (value) => {
           store.setSelectedBy('id', typeof value === 'string' ? [value] : value)
@@ -1164,70 +1168,320 @@ describe('render module', () => {
 
       render = new Render(settings, classes, store, callbacks)
       render.settings.isMultiple = true
-      render.settings.closeOnSelect = false
+      render.settings.closeOnSelect = true
     })
 
-    test('click holding shift key selects range from last clicked to current', () => {
-      render.renderOptions(render.store.getDataOptions())
+    describe('Regular Click (no modifiers)', () => {
+      test('toggles option (add/remove) without affecting others', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
 
-      const opts = render.getOptions(false, false, true)
-      expect(opts).toHaveLength(3)
+        // Click first option - adds it
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
-      // click on the first option
-      opts[0].dispatchEvent(new MouseEvent('click'))
-      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+        // Click third option - adds it (first option still selected)
+        opts[2].dispatchEvent(new MouseEvent('click'))
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
 
-      // click on the last option holding the shift key
-      opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+        // Click first option again - removes it
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test3' })])
+      })
 
-      // check that also the middle value is selected
-      expect(afterChangeMock).toHaveBeenCalledWith([
-        expect.objectContaining({ value: 'test1' }),
-        expect.objectContaining({ value: 'test2' }),
-        expect.objectContaining({ value: 'test3' })
-      ])
+      test('closes dropdown on regular click when closeOnSelect is true', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        expect(closeMock).toHaveBeenCalled()
+      })
+
+      test('regular click on selected option deselects it and closes dropdown', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Select two options
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        opts[1].dispatchEvent(new MouseEvent('click'))
+
+        expect(afterChangeMock).toHaveBeenLastCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test2' })
+        ])
+        closeMock.mockClear()
+
+        // Click on already selected option - should deselect it and close
+        opts[0].dispatchEvent(new MouseEvent('click'))
+
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test2' })])
+        expect(closeMock).toHaveBeenCalledTimes(1)
+      })
+
+      test('regression: regular click adds/removes and closes, Cmd/Ctrl keeps open', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Regular click - should close
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        expect(closeMock).toHaveBeenCalledTimes(1)
+        closeMock.mockClear()
+
+        // Cmd+Click - should NOT close
+        opts[1].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(closeMock).not.toHaveBeenCalled()
+
+        // Ctrl+Click - should NOT close
+        opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        expect(closeMock).not.toHaveBeenCalled()
+
+        // Regular click again - should close
+        opts[3].dispatchEvent(new MouseEvent('click'))
+        expect(closeMock).toHaveBeenCalledTimes(1)
+      })
     })
 
-    test('click holding shift key selects range from current to last clicked', () => {
-      render.renderOptions(render.store.getDataOptions())
+    describe('Cmd/Ctrl+Click (toggle selection)', () => {
+      test('Cmd+Click adds option without deselecting others (Mac)', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
 
-      const opts = render.getOptions(false, false, true)
-      expect(opts).toHaveLength(3)
+        // Cmd+Click first option
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
-      // click on the last option
-      opts[2].dispatchEvent(new MouseEvent('click'))
-      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test3' })])
+        // Cmd+Click third option - both should be selected
+        opts[2].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
+      })
 
-      // click on the first option holding the shift key
-      opts[0].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+      test('Ctrl+Click adds option without deselecting others (Windows/Linux)', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
 
-      // check that also the middle value is selected
-      expect(afterChangeMock).toHaveBeenCalledWith([
-        expect.objectContaining({ value: 'test3' }),
-        expect.objectContaining({ value: 'test1' }),
-        expect.objectContaining({ value: 'test2' })
-      ])
+        // Ctrl+Click first option
+        opts[0].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+
+        // Ctrl+Click third option - both should be selected
+        opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
+      })
+
+      test('Cmd+Click on selected option deselects it (Mac)', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Select multiple options with Cmd
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        opts[1].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        opts[2].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+
+        // Cmd+Click on middle option to deselect it
+        opts[1].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
+      })
+
+      test('Ctrl+Click on selected option deselects it (Windows/Linux)', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Select multiple options with Ctrl
+        opts[0].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        opts[1].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+
+        // Ctrl+Click on middle option to deselect it
+        opts[1].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
+      })
+
+      test('Cmd+Click toggles selection on and off', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Click to select
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test1' })])
+
+        // Click again to deselect
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(afterChangeMock).toHaveBeenLastCalledWith([])
+
+        // Click once more to select again
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test1' })])
+      })
+
+      test('Cmd/Ctrl+Click works even when allowDeselect is false', () => {
+        render.settings.allowDeselect = false
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Select with Cmd/Ctrl
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        opts[1].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+
+        // Should be able to deselect with Cmd/Ctrl even though allowDeselect is false
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test2' })])
+      })
+
+      test('does NOT close dropdown on Cmd+Click', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        expect(closeMock).not.toHaveBeenCalled()
+      })
+
+      test('does NOT close dropdown on Ctrl+Click', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        opts[0].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        expect(closeMock).not.toHaveBeenCalled()
+      })
     })
 
-    test('range selection is ignored if range length is greater than maxSelected', () => {
-      render.settings.maxSelected = 2
-      render.renderOptions(render.store.getDataOptions())
+    describe('Shift+Click (range selection)', () => {
+      test('selects range from last clicked to current', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
 
-      const opts = render.getOptions(false, false, true)
-      expect(opts).toHaveLength(3)
+        // Click first option
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
-      // click on the first option
-      opts[0].dispatchEvent(new MouseEvent('click'))
-      expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
+        // Shift+Click third option - should select test1, test2, test3
+        opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test2' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
+      })
 
-      // click on the last option holding the shift key
-      opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+      test('selects range in reverse direction', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
 
-      // check that the middle value is NOT selected
-      expect(afterChangeMock).toHaveBeenCalledWith([
-        expect.objectContaining({ value: 'test1' }),
-        expect.objectContaining({ value: 'test3' })
-      ])
+        // Click fourth option
+        opts[3].dispatchEvent(new MouseEvent('click'))
+
+        // Shift+Click second option - should select test2, test3, test4
+        opts[1].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'test4' }),
+          expect.objectContaining({ value: 'test2' }),
+          expect.objectContaining({ value: 'test3' })
+        ])
+      })
+
+      test('respects maxSelected limit', () => {
+        render.settings.maxSelected = 2
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Click first option
+        opts[0].dispatchEvent(new MouseEvent('click'))
+
+        // Shift+Click fourth option - would select 4 items, exceeds limit
+        opts[3].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+        // Should keep only the original selection
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test1' })])
+      })
+
+      test('does NOT close dropdown on Shift+Click', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        closeMock.mockClear()
+
+        opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+        expect(closeMock).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('Combined modifier keys', () => {
+      test('Cmd/Ctrl+Click then Shift+Click selects range from last click', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Cmd+Click first and Ctrl+Click third options (testing both)
+        opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+
+        // Shift+Click fifth option - should add test3, test4, test5 to selection
+        opts[4].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+
+        expect(afterChangeMock).toHaveBeenLastCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test3' }),
+          expect.objectContaining({ value: 'test4' }),
+          expect.objectContaining({ value: 'test5' })
+        ])
+      })
+
+      test('can build complex selections like native multi-select (Mac)', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Select test1
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        // Cmd+Add test3
+        opts[2].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        // Cmd+Add test5
+        opts[4].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+        // Cmd+Remove test3
+        opts[2].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+
+        // Final selection should be test1 and test5
+        expect(afterChangeMock).toHaveBeenLastCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test5' })
+        ])
+      })
+
+      test('can build complex selections like native multi-select (Windows/Linux)', () => {
+        render.renderOptions(render.store.getDataOptions())
+        const opts = render.getOptions(false, false, true)
+
+        // Select test1
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        // Ctrl+Add test3
+        opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        // Ctrl+Add test5
+        opts[4].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+        // Ctrl+Remove test3
+        opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
+
+        // Final selection should be test1 and test5
+        expect(afterChangeMock).toHaveBeenLastCalledWith([
+          expect.objectContaining({ value: 'test1' }),
+          expect.objectContaining({ value: 'test5' })
+        ])
+      })
     })
   })
 

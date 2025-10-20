@@ -1272,17 +1272,24 @@ export default class Render {
       const selectedOptions = this.store.getSelected()
       const element = e.currentTarget as HTMLDivElement
       const elementID = String(element.dataset.id)
+      const isCmd = e.ctrlKey || e.metaKey // Cmd (Mac) or Ctrl (Windows/Linux)
 
-      // If the option is disabled or selected and the user isnt allowed to deselect
-      if (option.disabled || (option.selected && !this.settings.allowDeselect)) {
+      // If the option is disabled, do nothing
+      if (option.disabled) {
+        return
+      }
+
+      // allowDeselect only applies to single-select mode
+      // In multi-select, you can always toggle options on/off
+      if (!this.settings.isMultiple && option.selected && !this.settings.allowDeselect) {
         return
       }
 
       // Check limit and do nothing if limit is reached and the option is not selected
-      // Also check reverse for min limit and is selected
+      // Also check reverse for min limit and is selected (allow Cmd to bypass minSelected)
       if (
         (this.settings.isMultiple && this.settings.maxSelected <= selectedOptions.length && !option.selected) ||
-        (this.settings.isMultiple && this.settings.minSelected >= selectedOptions.length && option.selected)
+        (this.settings.isMultiple && this.settings.minSelected >= selectedOptions.length && option.selected && !isCmd)
       ) {
         return
       }
@@ -1292,35 +1299,56 @@ export default class Render {
       const before = this.store.getSelectedOptions()
       let after = [] as Option[]
 
-      // If multiple
+      // If multiple - mimic native browser multi-select behavior
       if (this.settings.isMultiple) {
-        if (option.selected) {
-          // If selected after would remove
-          after = before.filter((o: Option) => o.id !== elementID)
-        } else {
-          // If not selected after would add
-          after = before.concat(option)
+        const isCurrentlySelected = before.some((o: Option) => o.id === elementID)
+        const isShift = e.shiftKey
 
-          // Handles range selection
-          if (!this.settings.closeOnSelect) {
-            if (e.shiftKey && this.lastSelectedOption) {
-              const options = this.store.getDataOptions()
-              let lastClickedOptionIndex = options.findIndex((o: Option) => o.id === this.lastSelectedOption!.id)
-              let currentOptionIndex = options.findIndex((o: Option) => o.id === option.id)
-              if (lastClickedOptionIndex >= 0 && currentOptionIndex >= 0) {
-                // Select the range from the last clicked option to the current one, or vice versa.
-                const startIndex = Math.min(lastClickedOptionIndex, currentOptionIndex)
-                const endIndex = Math.max(lastClickedOptionIndex, currentOptionIndex)
-                const afterRange = options.slice(startIndex, endIndex + 1)
-                if (afterRange.length > 0 && afterRange.length < this.settings.maxSelected) {
-                  // Set the union between the current range and the previously selected values, removing duplicates
-                  after = before.concat(afterRange.filter((a) => !before.find((b) => b.id === a.id)))
-                }
-              }
-            } else if (!option.selected) {
-              this.lastSelectedOption = option
+        // Shift+Click: Select range from last clicked to current
+        if (isShift && this.lastSelectedOption) {
+          const options = this.store.getDataOptions()
+          const lastIndex = options.findIndex((o: Option) => o.id === this.lastSelectedOption!.id)
+          const currentIndex = options.findIndex((o: Option) => o.id === option.id)
+
+          if (lastIndex >= 0 && currentIndex >= 0) {
+            const startIndex = Math.min(lastIndex, currentIndex)
+            const endIndex = Math.max(lastIndex, currentIndex)
+            const rangeOptions = options.slice(startIndex, endIndex + 1)
+
+            // Check if range would exceed maxSelected
+            const newSelections = rangeOptions.filter((opt) => !before.find((b) => b.id === opt.id))
+            if (before.length + newSelections.length <= this.settings.maxSelected) {
+              // Add range to existing selections
+              after = before.concat(newSelections)
+            } else {
+              // Range too large, keep existing selections
+              after = before
             }
+          } else {
+            after = before
           }
+        }
+        // Cmd/Ctrl+Click: Toggle selection without affecting others (keeps dropdown open)
+        else if (isCmd) {
+          if (isCurrentlySelected) {
+            // Deselect this option
+            after = before.filter((o: Option) => o.id !== elementID)
+          } else {
+            // Add this option to selection
+            after = before.concat(option)
+          }
+          this.lastSelectedOption = option
+        }
+        // Regular Click: Toggle this option (add/remove), will close dropdown
+        else {
+          if (isCurrentlySelected) {
+            // Deselect this option
+            after = before.filter((o: Option) => o.id !== elementID)
+          } else {
+            // Add this option to selection
+            after = before.concat(option)
+          }
+          this.lastSelectedOption = option
         }
       }
 
@@ -1362,8 +1390,12 @@ export default class Render {
           false
         )
 
-        // If closeOnSelect is true
-        if (this.settings.closeOnSelect) {
+        // Close dropdown unless using modifier keys in multi-select
+        // (mimics native multi-select behavior where you can keep selecting)
+        const isModifierKey = e.ctrlKey || e.metaKey || e.shiftKey // Cmd/Ctrl or Shift
+        const shouldClose = this.settings.closeOnSelect && !(this.settings.isMultiple && isModifierKey)
+
+        if (shouldClose) {
           this.callbacks.close()
         }
 
