@@ -200,11 +200,14 @@ describe('SlimSelect Module', () => {
 
       const selectEl = document.getElementById('test') as HTMLSelectElement
 
-      // Select should be hidden but still focusable
+      // Select should be hidden but still focusable (1px for validation popup)
       expect(selectEl.style.position).toBe('absolute')
-      expect(selectEl.style.width).toBe('0px')
-      expect(selectEl.style.height).toBe('0px')
+      expect(selectEl.style.width).toBe('1px')
+      expect(selectEl.style.height).toBe('1px')
       expect(selectEl.style.opacity).toBe('0')
+      expect(selectEl.style.margin).toBe('0px')
+      expect(selectEl.style.padding).toBe('0px')
+      expect(selectEl.style.clip).toContain('rect')
 
       // Required attribute should still be present
       expect(selectEl.hasAttribute('required')).toBe(true)

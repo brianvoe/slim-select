@@ -42,12 +42,19 @@ export default class Select {
   public hideUI(): void {
     this.select.tabIndex = -1
     // Visually hide but keep focusable for form validation
+    // Use 1px dimensions so browser validation popup can display
     this.select.style.position = 'absolute'
-    this.select.style.width = '0'
-    this.select.style.height = '0'
+    this.select.style.width = '1px'
+    this.select.style.height = '1px'
     this.select.style.opacity = '0'
     this.select.style.overflow = 'hidden'
     this.select.style.pointerEvents = 'none'
+    // Remove any spacing or borders that could affect layout
+    this.select.style.margin = '0'
+    this.select.style.padding = '0'
+    this.select.style.borderWidth = '0'
+    // Clip to completely hide the 1px
+    this.select.style.clip = 'rect(0 0 0 0)'
     this.select.setAttribute('aria-hidden', 'true')
   }
 
@@ -60,6 +67,10 @@ export default class Select {
     this.select.style.opacity = ''
     this.select.style.overflow = ''
     this.select.style.pointerEvents = ''
+    this.select.style.margin = ''
+    this.select.style.padding = ''
+    this.select.style.borderWidth = ''
+    this.select.style.clip = ''
     this.select.removeAttribute('aria-hidden')
   }
 

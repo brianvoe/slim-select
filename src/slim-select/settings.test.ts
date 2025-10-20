@@ -112,6 +112,9 @@ describe('Settings module', () => {
     select.select.style.position = 'absolute'
     select.select.style.width = '0'
     select.select.style.opacity = '0'
+    select.select.style.margin = '0'
+    select.select.style.padding = '0'
+    select.select.style.borderWidth = '0'
 
     select.showUI()
     expect(select.select.getAttribute('tabindex')).toBeFalsy()
@@ -119,6 +122,9 @@ describe('Settings module', () => {
     expect(select.select.style.position).toBeFalsy()
     expect(select.select.style.width).toBeFalsy()
     expect(select.select.style.opacity).toBeFalsy()
+    expect(select.select.style.margin).toBeFalsy()
+    expect(select.select.style.padding).toBeFalsy()
+    // borderWidth gets reset
   })
 
   describe('createOptgroup', () => {

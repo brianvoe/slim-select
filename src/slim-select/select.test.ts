@@ -66,10 +66,13 @@ describe('select module', () => {
       expect(select.select.tabIndex).toBe(-1)
       // Visually hidden but still focusable for form validation
       expect(select.select.style.position).toBe('absolute')
-      expect(select.select.style.width).toBe('0px')
-      expect(select.select.style.height).toBe('0px')
+      expect(select.select.style.width).toBe('1px')
+      expect(select.select.style.height).toBe('1px')
       expect(select.select.style.opacity).toBe('0')
       expect(select.select.style.pointerEvents).toBe('none')
+      expect(select.select.style.margin).toBe('0px')
+      expect(select.select.style.padding).toBe('0px')
+      expect(select.select.style.clip).toContain('rect')
       expect(select.select.getAttribute('aria-hidden')).toBe('true')
     })
   })
@@ -80,6 +83,9 @@ describe('select module', () => {
       select.select.style.position = 'absolute'
       select.select.style.width = '0'
       select.select.style.opacity = '0'
+      select.select.style.margin = '0'
+      select.select.style.padding = '0'
+      select.select.style.borderWidth = '0'
       select.select.setAttribute('aria-hidden', 'true')
 
       select.showUI()
@@ -88,6 +94,9 @@ describe('select module', () => {
       expect(select.select.style.position).toBeFalsy()
       expect(select.select.style.width).toBeFalsy()
       expect(select.select.style.opacity).toBeFalsy()
+      expect(select.select.style.margin).toBeFalsy()
+      expect(select.select.style.padding).toBeFalsy()
+      // borderWidth gets reset
       expect(select.select.getAttribute('aria-hidden')).toBeNull()
     })
   })

@@ -2,12 +2,14 @@
 import { defineComponent } from 'vue'
 import Countries from './countries.vue'
 import FormReset from './form_reset.vue'
+import Required from './required.vue'
 
 export default defineComponent({
   name: 'Examples',
   components: {
     Countries,
-    FormReset
+    FormReset,
+    Required
   }
 })
 </script>
@@ -16,5 +18,6 @@ export default defineComponent({
   <div id="examples" class="contents">
     <Countries />
     <FormReset />
+    <Required />
   </div>
 </template>

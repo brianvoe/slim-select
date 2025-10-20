@@ -62,7 +62,8 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'countries', value: 'examples#countries' },
-            { text: 'form reset', value: 'examples#formReset' }
+            { text: 'form reset', value: 'examples#formReset' },
+            { text: 'required', value: 'examples#required' }
           ]
         },
 
