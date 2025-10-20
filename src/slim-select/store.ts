@@ -173,8 +173,45 @@ export default class Store {
     return dataFinal
   }
 
-  public setData(data: DataArray | DataArrayPartial) {
-    this.data = this.partialToFullData(data)
+  public setData(data: DataArray | DataArrayPartial, preserveSelected: boolean = false) {
+    // Convert new data to full data array
+    const newData = this.partialToFullData(data)
+
+    if (preserveSelected) {
+      // Get currently selected options before updating data
+      const selectedOptions = this.getSelectedOptions()
+
+      // Check which selected options are missing from new data
+      const missingSelected: DataArray = []
+      selectedOptions.forEach((selectedOption) => {
+        let found = false
+
+        // Check if this selected option exists in new data
+        for (const newItem of newData) {
+          if (newItem instanceof Option && newItem.id === selectedOption.id) {
+            found = true
+            break
+          }
+          if (newItem instanceof Optgroup) {
+            for (const opt of newItem.options) {
+              if (opt.id === selectedOption.id) {
+                found = true
+                break
+              }
+            }
+          }
+        }
+
+        if (!found) {
+          missingSelected.push(selectedOption)
+        }
+      })
+
+      // Add missing selected options to the beginning of the data
+      this.data = [...missingSelected, ...newData]
+    } else {
+      this.data = newData
+    }
 
     // Run this.data through setSelected by value
     // to set the selected property and clean any wrong selected

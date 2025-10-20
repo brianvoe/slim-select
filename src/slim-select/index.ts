@@ -415,10 +415,8 @@ export default class SlimSelect {
     // Tell render to close
     this.render.close()
 
-    // Clear search only if not empty
-    if (this.render.content.search.input.value !== '') {
-      this.search('') // Clear search
-    }
+    // Clear search input visually (but don't trigger search event)
+    this.render.clearSearch()
 
     // If we arent tabbing focus back on the main element
     this.render.mainFocus(eventType)
@@ -454,9 +452,8 @@ export default class SlimSelect {
     // If no search event run regular search
     if (!this.events.search) {
       // If value is empty then render all options
-      this.render.renderOptions(
-        value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!)
-      )
+      const searchResults = value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!)
+      this.render.renderOptions(searchResults)
       return
     }
 
@@ -470,8 +467,14 @@ export default class SlimSelect {
     if (searchResp instanceof Promise) {
       searchResp
         .then((data: DataArrayPartial) => {
-          // Update the render with the new data
-          this.render.renderOptions(this.store.partialToFullData(data))
+          // Update store data with search results, preserving selected options
+          this.store.setData(data, true)
+
+          // Update original select element
+          this.select.updateOptions(this.store.getData())
+
+          // Render the updated data
+          this.render.renderOptions(this.store.getData())
         })
         .catch((err: Error | string) => {
           // Update the render with error
@@ -480,8 +483,14 @@ export default class SlimSelect {
 
       return
     } else if (Array.isArray(searchResp)) {
-      // Update the render options
-      this.render.renderOptions(this.store.partialToFullData(searchResp))
+      // Update store data with search results, preserving selected options
+      this.store.setData(searchResp, true)
+
+      // Update original select element
+      this.select.updateOptions(this.store.getData())
+
+      // Render the updated data
+      this.render.renderOptions(this.store.getData())
     } else {
       // Update the render with error
       this.render.renderError('Search event must return a promise or an array of data')

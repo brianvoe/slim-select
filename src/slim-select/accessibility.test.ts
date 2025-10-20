@@ -113,7 +113,7 @@ describe('SlimSelect Accessibility', () => {
   })
 
   describe('Specific ARIA Requirements', () => {
-    test('listbox does not contain input elements (Issue #639)', () => {
+    test('listbox does not contain input elements', () => {
       select.innerHTML = `
         <option value="1">Option 1</option>
         <option value="2">Option 2</option>
@@ -487,7 +487,7 @@ describe('SlimSelect Accessibility', () => {
       expect(main.getAttribute('aria-activedescendant')).toBeNull()
     })
 
-    test('search input is hidden from screen readers when closed (Issue #623)', () => {
+    test('search input is hidden from screen readers when closed', () => {
       select.innerHTML = `
         <option value="1">Option 1</option>
       `
@@ -585,7 +585,7 @@ describe('SlimSelect Accessibility', () => {
   })
 })
 
-describe('SlimSelect ARIA Issue #639 - Listbox Children', () => {
+describe('SlimSelect ARIA - Listbox Children', () => {
   let container: HTMLDivElement
   let select: HTMLSelectElement
   let slim: SlimSelect

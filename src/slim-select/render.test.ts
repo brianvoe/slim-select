@@ -635,6 +635,64 @@ describe('render module', () => {
       expect(addableMock).toHaveBeenCalledTimes(1)
       expect(addableMock.mock.calls[0]).toStrictEqual(['Search'])
     })
+
+    test('enter selects highlighted option before calling addable', () => {
+      const addableMock = vi.fn((s: string) => ({
+        text: s,
+        value: s.toLowerCase()
+      }))
+
+      render.callbacks.addable = addableMock
+
+      // recreate search because we have added the addable callback
+      render.content.search = render.searchDiv()
+
+      // Render options
+      render.renderOptions(render.store.getDataOptions())
+
+      // Set search value
+      render.content.search.input.value = '1'
+
+      // Highlight first option (simulating arrow down)
+      render.highlight('down')
+
+      // Verify an option is highlighted
+      const highlighted = render.content.list.querySelector('.' + render.classes.highlighted)
+      expect(highlighted).toBeTruthy()
+
+      // Press Enter - should select highlighted option, NOT call addable
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
+
+      // Addable should NOT have been called because an option was highlighted
+      expect(addableMock).not.toHaveBeenCalled()
+    })
+
+    test('enter calls addable when no option is highlighted', () => {
+      const addableMock = vi.fn((s: string) => ({
+        text: s,
+        value: s.toLowerCase()
+      }))
+
+      render.callbacks.addable = addableMock
+
+      // recreate search because we have added the addable callback
+      render.content.search = render.searchDiv()
+
+      // Render options
+      render.renderOptions(render.store.getDataOptions())
+
+      // Set search value
+      render.content.search.input.value = 'NewItem'
+
+      // Do NOT highlight any option (user just types and presses Enter)
+
+      // Press Enter - should call addable since no option is highlighted
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
+
+      // Addable SHOULD have been called
+      expect(addableMock).toHaveBeenCalledTimes(1)
+      expect(addableMock.mock.calls[0]).toStrictEqual(['NewItem'])
+    })
   })
 
   describe('searchFocus', () => {

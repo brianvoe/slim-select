@@ -183,8 +183,6 @@ export default class Render {
     this.main.main.setAttribute('aria-controls', listboxId)
     this.main.main.setAttribute('aria-expanded', 'false')
 
-    // Move role="listbox" to the list element, not the content container
-    // This fixes Issue #639 - listbox should only contain options, not input elements
     this.content.list.setAttribute('role', 'listbox')
     this.content.list.setAttribute('aria-label', this.settings.ariaLabel + ' listbox')
 
@@ -730,15 +728,16 @@ export default class Render {
           }
           return true
         case 'Enter':
-          if (this.callbacks.addable) {
+          // Check if there's a highlighted option first
+          const highlightedEnter = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          if (highlightedEnter) {
+            // If an option is highlighted, select it (even if addable is enabled)
+            highlightedEnter.click()
+            return false
+          } else if (this.callbacks.addable) {
+            // If no option is highlighted and addable is enabled, add new item
             addable.click()
             return false
-          } else {
-            const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
-            if (highlighted) {
-              highlighted.click()
-              return false
-            }
           }
           return true
       }
@@ -858,6 +857,10 @@ export default class Render {
 
   public searchFocus(): void {
     this.content.search.input.focus()
+  }
+
+  public clearSearch(): void {
+    this.content.search.input.value = ''
   }
 
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {

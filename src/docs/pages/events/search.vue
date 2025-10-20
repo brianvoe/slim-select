@@ -14,7 +14,7 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.searchSingle as HTMLSelectElement,
       settings: {
-        placeholderText: 'Search First',
+        placeholderText: 'Search First Name',
         searchingText: 'Searching Users...',
         searchHighlight: true,
         allowDeselect: true
@@ -28,7 +28,7 @@ export default defineComponent({
       select: this.$refs.searchMultiple as HTMLSelectElement,
       settings: {
         closeOnSelect: false,
-        placeholderText: 'Search First',
+        placeholderText: 'Search First Name',
         searchingText: 'Searching Users...',
         searchHighlight: true,
         allowDeselect: true
