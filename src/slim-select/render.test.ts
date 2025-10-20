@@ -119,24 +119,33 @@ describe('render module', () => {
       render.open()
 
       expect(render.main.arrow.path.getAttribute('d')).toBe(render.classes.arrowOpen)
-      expect(render.main.main.classList.contains(render.classes.openBelow)).toBe(true)
-      expect(render.main.main.classList.contains(render.classes.openAbove)).toBe(false)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('true')
-      expect(render.content.main.classList.contains(render.classes.openBelow)).toBe(true)
-      expect(render.content.main.classList.contains(render.classes.openAbove)).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.contentOpen)).toBe(true)
+      // Direction class should be set on both main and content (dirAbove or dirBelow)
+      const mainHasDirection =
+        render.main.main.classList.contains(render.classes.dirAbove) ||
+        render.main.main.classList.contains(render.classes.dirBelow)
+      const contentHasDirection =
+        render.content.main.classList.contains(render.classes.dirAbove) ||
+        render.content.main.classList.contains(render.classes.dirBelow)
+      expect(mainHasDirection).toBe(true)
+      expect(contentHasDirection).toBe(true)
     })
   })
 
   describe('close', () => {
     test('close sets the correct attributes and CSS classes', () => {
+      render.open()
       render.close()
 
       expect(render.main.arrow.path.getAttribute('d')).toBe(render.classes.arrowClose)
-      expect(render.main.main.classList.contains(render.classes.openBelow)).toBe(false)
-      expect(render.main.main.classList.contains(render.classes.openAbove)).toBe(false)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
-      expect(render.content.main.classList.contains(render.classes.openBelow)).toBe(false)
-      expect(render.content.main.classList.contains(render.classes.openAbove)).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.contentOpen)).toBe(false)
+      // Direction class should persist after close
+      const hasDirection =
+        render.content.main.classList.contains(render.classes.dirAbove) ||
+        render.content.main.classList.contains(render.classes.dirBelow)
+      expect(hasDirection).toBe(true)
     })
   })
 
@@ -1129,6 +1138,62 @@ describe('render module', () => {
       expect(option.querySelector('mark')?.textContent).toBe('opt')
     })
 
+    test('text highlighting with special regex characters does not break HTML', () => {
+      render.settings.searchHighlight = true
+      render.content.search.input.value = '<'
+
+      const option = render.option(
+        new Option({
+          text: 'option <test>'
+        })
+      )
+
+      // Should not break the HTML structure
+      expect(option.querySelector('.ss-option')).toBeFalsy() // No nested ss-option divs
+
+      // The < character should be highlighted if found in text
+      const mark = option.querySelector('mark')
+      if (mark) {
+        expect(mark.textContent).toBe('<')
+      }
+    })
+
+    test('text highlighting escapes special regex characters', () => {
+      render.settings.searchHighlight = true
+
+      // Test various special regex characters
+      const specialChars = ['<', '>', '.', '*', '+', '?', '^', '$', '{', '}', '(', ')', '|', '[', ']', '\\']
+
+      specialChars.forEach((char) => {
+        render.content.search.input.value = char
+        const option = render.option(
+          new Option({
+            text: `option ${char} test`
+          })
+        )
+
+        // Should not throw an error and should contain the character
+        expect(option.textContent).toContain(char)
+      })
+    })
+
+    test('text highlighting with HTML content highlights only text nodes', () => {
+      render.settings.searchHighlight = true
+      render.content.search.input.value = 'test'
+
+      const option = render.option(
+        new Option({
+          text: 'test option',
+          html: '<div class="wrapper">test option</div>'
+        })
+      )
+
+      // Should not break HTML structure - the key fix for issue #570
+      expect(option.querySelector('.wrapper')).toBeTruthy() // HTML structure preserved
+      expect(option.querySelector('mark')).toBeTruthy() // Text is highlighted
+      expect(option.querySelector('mark')?.textContent).toBe('test')
+    })
+
     test('click does nothing when option is disabled', () => {
       const option = render.option(
         new Option({
@@ -1563,11 +1628,10 @@ describe('render module', () => {
     test('correct classes are set', () => {
       render.moveContentAbove()
 
-      expect(render.main.main.classList.contains(render.classes.openAbove)).toBe(true)
-      expect(render.main.main.classList.contains(render.classes.openBelow)).toBe(false)
-
-      expect(render.content.main.classList.contains(render.classes.openAbove)).toBe(true)
-      expect(render.content.main.classList.contains(render.classes.openBelow)).toBe(false)
+      expect(render.main.main.classList.contains(render.classes.dirAbove)).toBe(true)
+      expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.dirAbove)).toBe(true)
+      expect(render.content.main.classList.contains(render.classes.dirBelow)).toBe(false)
     })
   })
 
@@ -1575,11 +1639,10 @@ describe('render module', () => {
     test('correct classes are set', () => {
       render.moveContentBelow()
 
-      expect(render.main.main.classList.contains(render.classes.openAbove)).toBe(false)
-      expect(render.main.main.classList.contains(render.classes.openBelow)).toBe(true)
-
-      expect(render.content.main.classList.contains(render.classes.openAbove)).toBe(false)
-      expect(render.content.main.classList.contains(render.classes.openBelow)).toBe(true)
+      expect(render.main.main.classList.contains(render.classes.dirAbove)).toBe(false)
+      expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(true)
+      expect(render.content.main.classList.contains(render.classes.dirAbove)).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.dirBelow)).toBe(true)
     })
   })
 })

@@ -19,8 +19,9 @@ const defaultClasses: { [key: string]: string } = {
   arrowClose: 'M10,30 L50,70 L90,30',
   arrowOpen: 'M10,70 L50,30 L90,70',
   content: 'ss-content',
-  openAbove: 'ss-open-above',
-  openBelow: 'ss-open-below',
+  contentOpen: 'ss-open',
+  dirAbove: 'ss-dir-above',
+  dirBelow: 'ss-dir-below',
   search: 'ss-search',
   searchHighlighter: 'ss-search-highlight',
   searching: 'ss-searching',
@@ -38,7 +39,7 @@ const defaultClasses: { [key: string]: string } = {
   option: 'ss-option',
   optionDelete: 'M10,10 L90,90 M10,90 L90,10',
   highlighted: 'ss-highlighted',
-  open: 'ss-open',
+  mainOpen: 'ss-open',
   close: 'ss-close',
   selected: 'ss-selected',
   error: 'ss-error',
@@ -61,10 +62,10 @@ describe('CssClasses module', () => {
   test('classes can be overwritten via the constructor', () => {
     const classesWithOverride = JSON.parse(JSON.stringify(defaultClasses))
     classesWithOverride['main'] = 'new-main'
-    classesWithOverride['open'] = 'new-open'
+    classesWithOverride['mainOpen'] = 'new-open'
 
     // Convert to unknown and then to custom object to prevent TS from throwing errors
-    const classes = new CssClasses({ main: 'new-main', open: 'new-open' }) as unknown as { [key: string]: string }
+    const classes = new CssClasses({ main: 'new-main', mainOpen: 'new-open' }) as unknown as { [key: string]: string }
     Object.keys(classesWithOverride).forEach((key) => {
       expect(classes[key]).toBe(classesWithOverride[key])
     })

@@ -102,10 +102,16 @@ export default class Render {
 
   public open(): void {
     this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
-
-    // Add class to main container
-    this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow)
     this.main.main.setAttribute('aria-expanded', 'true')
+
+    // Set direction class on both main and content (persists, never removed)
+    const isAbove = this.settings.openPosition === 'up'
+    const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
+    this.main.main.classList.add(dirClass)
+    this.content.main.classList.add(dirClass)
+
+    // Add open class to content to trigger open animation
+    this.content.main.classList.add(this.classes.contentOpen)
 
     // Make search visible to screen readers when opened
     this.content.search.input.removeAttribute('aria-hidden')
@@ -125,13 +131,12 @@ export default class Render {
   }
 
   public close(): void {
-    this.main.main.classList.remove(this.classes.openAbove)
-    this.main.main.classList.remove(this.classes.openBelow)
     this.main.main.setAttribute('aria-expanded', 'false')
-
-    this.content.main.classList.remove(this.classes.openAbove)
-    this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
+
+    // Remove open class from content to trigger close animation
+    // Direction class (dirAbove/dirBelow) persists to maintain correct transform-origin
+    this.content.main.classList.remove(this.classes.contentOpen)
 
     // Hide search from screen readers when closed
     this.content.search.input.setAttribute('aria-hidden', 'true')
@@ -926,7 +931,7 @@ export default class Render {
 
         // If previous option has parent classes ss-optgroup with ss-open then click it
         const prevParent = prevOption.parentElement
-        if (prevParent && prevParent.classList.contains(this.classes.open)) {
+        if (prevParent && prevParent.classList.contains(this.classes.mainOpen)) {
           const optgroupLabel = prevParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
@@ -1169,10 +1174,10 @@ export default class Render {
 
           // If any options are selected or someone is searching, set optgroup to open
           if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
-            optgroupClosable.classList.add(this.classes.open)
+            optgroupClosable.classList.add(this.classes.mainOpen)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
-            optgroupEl.classList.add(this.classes.open)
+            optgroupEl.classList.add(this.classes.mainOpen)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'close') {
             optgroupEl.classList.add(this.classes.close)
@@ -1187,10 +1192,10 @@ export default class Render {
             // If optgroup is closed, open it
             if (optgroupEl.classList.contains(this.classes.close)) {
               optgroupEl.classList.remove(this.classes.close)
-              optgroupEl.classList.add(this.classes.open)
+              optgroupEl.classList.add(this.classes.mainOpen)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
             } else {
-              optgroupEl.classList.remove(this.classes.open)
+              optgroupEl.classList.remove(this.classes.mainOpen)
               optgroupEl.classList.add(this.classes.close)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
             }
@@ -1443,21 +1448,55 @@ export default class Render {
   }
 
   private highlightText(str: string, search: any, className: string) {
-    // the completed string will be itself if already set, otherwise, the string that was passed in
-    let completedString: any = str
-    const regex = new RegExp('(?![^<]*>)(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i')
-
-    // If the regex doesn't match the string just exit
-    if (!str.match(regex)) {
+    const searchTerm = search.trim()
+    if (searchTerm === '') {
       return str
     }
 
-    // Otherwise, get to highlighting
-    const matchStartPosition = (str.match(regex) as any).index
-    const matchEndPosition = matchStartPosition + (str.match(regex) as any)[0].toString().length
-    const originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition)
-    completedString = completedString.replace(regex, `<mark class="${className}">${originalTextFoundByRegex}</mark>`)
-    return completedString
+    // Escape special regex characters in the search term to prevent regex injection
+    const escapedSearch = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+    // Create a temporary div to parse HTML and work with text nodes only
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = str
+
+    // Function to recursively process text nodes
+    const highlightTextNodes = (node: Node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent || ''
+        const regex = new RegExp('(' + escapedSearch + ')', 'i')
+
+        if (regex.test(text)) {
+          // Create a temporary container for the highlighted content
+          const wrapper = document.createElement('span')
+          const parts = text.split(regex)
+
+          parts.forEach((part, index) => {
+            if (part && regex.test(part)) {
+              // This is the matched part - wrap it in mark
+              const mark = document.createElement('mark')
+              mark.className = className
+              mark.textContent = part
+              wrapper.appendChild(mark)
+            } else if (part) {
+              // This is not the matched part - keep as text
+              wrapper.appendChild(document.createTextNode(part))
+            }
+          })
+
+          // Replace the text node with the wrapper
+          node.parentNode?.replaceChild(wrapper, node)
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // Recursively process child nodes
+        Array.from(node.childNodes).forEach((child) => highlightTextNodes(child))
+      }
+    }
+
+    // Process all text nodes in the temporary div
+    Array.from(tempDiv.childNodes).forEach((node) => highlightTextNodes(node))
+
+    return tempDiv.innerHTML
   }
 
   public moveContentAbove(): void {
@@ -1465,11 +1504,11 @@ export default class Render {
     const mainHeight = this.main.main.offsetHeight
     const contentHeight = this.content.main.offsetHeight
 
-    // Set classes
-    this.main.main.classList.remove(this.classes.openBelow)
-    this.main.main.classList.add(this.classes.openAbove)
-    this.content.main.classList.remove(this.classes.openBelow)
-    this.content.main.classList.add(this.classes.openAbove)
+    // Set direction classes on both main and content
+    this.main.main.classList.remove(this.classes.dirBelow)
+    this.main.main.classList.add(this.classes.dirAbove)
+    this.content.main.classList.remove(this.classes.dirBelow)
+    this.content.main.classList.add(this.classes.dirAbove)
 
     // Set the content position
     const containerRect = this.main.main.getBoundingClientRect()
@@ -1482,11 +1521,11 @@ export default class Render {
   }
 
   public moveContentBelow(): void {
-    // Set classes
-    this.main.main.classList.remove(this.classes.openAbove)
-    this.main.main.classList.add(this.classes.openBelow)
-    this.content.main.classList.remove(this.classes.openAbove)
-    this.content.main.classList.add(this.classes.openBelow)
+    // Set direction classes on both main and content
+    this.main.main.classList.remove(this.classes.dirAbove)
+    this.main.main.classList.add(this.classes.dirBelow)
+    this.content.main.classList.remove(this.classes.dirAbove)
+    this.content.main.classList.add(this.classes.dirBelow)
 
     // Set the content position
     const containerRect = this.main.main.getBoundingClientRect()

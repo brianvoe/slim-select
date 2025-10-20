@@ -23,8 +23,9 @@ export default class CssClasses {
 
   // Content
   public content: string
-  public openAbove: string
-  public openBelow: string
+  public contentOpen: string
+  public dirAbove: string
+  public dirBelow: string
 
   // Search
   public search: string
@@ -52,7 +53,7 @@ export default class CssClasses {
   public highlighted: string
 
   // Misc
-  public open: string
+  public mainOpen: string
   public close: string
   public selected: string
   public error: string
@@ -80,8 +81,9 @@ export default class CssClasses {
     this.arrowClose = classes.arrowClose || 'M10,30 L50,70 L90,30'
     this.arrowOpen = classes.arrowOpen || 'M10,70 L50,30 L90,70'
     this.content = classes.content || 'ss-content'
-    this.openAbove = classes.openAbove || 'ss-open-above'
-    this.openBelow = classes.openBelow || 'ss-open-below'
+    this.contentOpen = classes.contentOpen || 'ss-open'
+    this.dirAbove = classes.dirAbove || 'ss-dir-above'
+    this.dirBelow = classes.dirBelow || 'ss-dir-below'
     this.search = classes.search || 'ss-search'
     this.searchHighlighter = classes.searchHighlighter || 'ss-search-highlight'
     this.searching = classes.searching || 'ss-searching'
@@ -99,7 +101,7 @@ export default class CssClasses {
     this.option = classes.option || 'ss-option'
     this.optionDelete = classes.optionDelete || 'M10,10 L90,90 M10,90 L90,10'
     this.highlighted = classes.highlighted || 'ss-highlighted'
-    this.open = classes.open || 'ss-open'
+    this.mainOpen = classes.mainOpen || 'ss-open'
     this.close = classes.close || 'ss-close'
     this.selected = classes.selected || 'ss-selected'
     this.error = classes.error || 'ss-error'

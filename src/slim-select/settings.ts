@@ -11,7 +11,7 @@ export default class Settings {
   public isMultiple: boolean = false
   public isOpen: boolean = false
   public isFullOpen: boolean = false
-  public intervalMove: NodeJS.Timeout | null = null
+  public intervalMove: ReturnType<typeof setInterval> | null = null
 
   // Fields set from constructor
   public disabled: boolean

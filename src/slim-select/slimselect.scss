@@ -92,11 +92,11 @@
     }
   }
 
-  &.ss-open-above {
+  &.ss-dir-above {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
   }
-  &.ss-open-below {
+  &.ss-dir-below {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
   }
@@ -147,15 +147,6 @@
       white-space: nowrap; // Prevent text wrapping
       flex: 1 1 auto; // Allow it to grow but also shrink
       max-width: calc(100% - 20px); // Leave space for arrow and padding
-
-      // Apply ellipsis to any child elements as well
-      > * {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        min-width: 0; // Allow child to shrink
-        display: block; // Ensure child is block for ellipsis
-      }
     }
 
     // Used for the selected values
@@ -276,7 +267,6 @@
     opacity var(--ss-animation-timing);
   opacity: 0;
   transform: scaleY(0);
-  transform-origin: center top;
   overflow: hidden;
   z-index: 10000;
 
@@ -289,21 +279,22 @@
     position: fixed;
   }
 
-  &.ss-open-above {
-    flex-direction: column-reverse;
-    opacity: 1;
-    transform: scaleY(1);
+  &.ss-dir-above {
     transform-origin: center bottom;
+    flex-direction: column-reverse;
     border-top-left-radius: var(--ss-border-radius);
     border-top-right-radius: var(--ss-border-radius);
   }
 
-  &.ss-open-below {
-    opacity: 1;
-    transform: scaleY(1);
+  &.ss-dir-below {
     transform-origin: center top;
     border-bottom-left-radius: var(--ss-border-radius);
     border-bottom-right-radius: var(--ss-border-radius);
+  }
+
+  &.ss-open {
+    opacity: 1;
+    transform: scaleY(1);
   }
 
   .ss-search {
