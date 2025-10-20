@@ -1,0 +1,38 @@
+.message {
+  margin-top: var(--spacing);
+  padding: var(--spacing);
+  border-radius: var(--border-radius);
+  border-width: 1px;
+  border-style: solid;
+
+  pre {
+    margin: 0;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  &.success {
+    background: var(--color-success-bg);
+    border-color: var(--color-success);
+    color: var(--color-success-text);
+  }
+
+  &.error {
+    background: var(--color-error-bg);
+    border-color: var(--color-error);
+    color: var(--color-error-text);
+  }
+
+  &.warning {
+    background: var(--color-warning-bg);
+    border-color: var(--color-warning);
+    color: var(--color-warning-text);
+  }
+
+  &.info {
+    background: var(--color-info-bg);
+    border-color: var(--color-info);
+    color: var(--color-info-text);
+  }
+}
