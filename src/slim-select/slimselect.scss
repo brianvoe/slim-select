@@ -111,12 +111,12 @@
     overflow: hidden; // Prevent overflow
 
     .ss-placeholder {
-      display: flex;
+      display: block; // Use block for proper ellipsis
+      width: 100%;
+      min-width: 0; // Allow placeholder to shrink
       padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s) var(--ss-spacing-m);
       margin: auto 0px auto 0px;
       line-height: 1em;
-      align-items: center;
-      width: 100%;
       color: var(--ss-font-placeholder-color);
       overflow: hidden;
       text-overflow: ellipsis;

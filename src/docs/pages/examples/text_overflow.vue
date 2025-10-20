@@ -8,10 +8,14 @@ export default defineComponent({
   data() {
     return {
       singleConstrained: null as SlimSelect | null,
+      placeholderConstrained: null as SlimSelect | null,
       multipleConstrained: null as SlimSelect | null
     }
   },
   mounted() {
+    this.placeholderConstrained = new SlimSelect({
+      select: this.$refs.placeholderConstrained as HTMLSelectElement
+    })
     this.singleConstrained = new SlimSelect({
       select: this.$refs.singleConstrained as HTMLSelectElement
     })
@@ -59,6 +63,21 @@ export default defineComponent({
       </p>
     </div>
 
+    <h3>Placeholder Text - Constrained Width</h3>
+    <div class="constrained-container">
+      <div class="form-group">
+        <label>Select a very long placeholder option (250px max width)</label>
+        <select ref="placeholderConstrained">
+          <option value="" data-placeholder="true">
+            Please choose from a very long list of available options that might exceed the container width
+          </option>
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+          <option value="option3">Option 3</option>
+        </select>
+      </div>
+    </div>
+
     <h3>Single Select - Constrained Width</h3>
     <div class="constrained-container">
       <div class="form-group">
@@ -71,7 +90,6 @@ export default defineComponent({
         </select>
       </div>
     </div>
-
     <h3>Multiple Select - Constrained Width</h3>
     <div class="constrained-container">
       <div class="form-group">
@@ -90,11 +108,20 @@ export default defineComponent({
     <pre>
       <code class="language-html">
         &lt;div style="max-width: 250px;"&gt;
+          &lt;!-- Selected value with long text --&gt;
           &lt;select id="selectElement"&gt;
             &lt;option value="short"&gt;USA&lt;/option&gt;
-            &lt;option value="long"&gt;
+            &lt;option value="long" selected&gt;
               Democratic People's Republic of Korea (North Korea)
             &lt;/option&gt;
+          &lt;/select&gt;
+          
+          &lt;!-- Placeholder with long text --&gt;
+          &lt;select id="placeholderElement"&gt;
+            &lt;option value="" selected disabled&gt;
+              Please choose from a very long list of available options
+            &lt;/option&gt;
+            &lt;option value="option1"&gt;Option 1&lt;/option&gt;
           &lt;/select&gt;
         &lt;/div&gt;
       </code>
@@ -103,12 +130,19 @@ export default defineComponent({
     <h3>Javascript</h3>
     <pre>
       <code class="language-javascript">
+        // Selected value with long text
         new SlimSelect({
           select: '#selectElement'
+        })
+        
+        // Placeholder with long text
+        new SlimSelect({
+          select: '#placeholderElement'
         })
 
         // Text automatically truncates with ellipsis (...)
         // Arrow and deselect buttons remain visible
+        // Works for both selected values and placeholders
       </code>
     </pre>
 
@@ -119,6 +153,7 @@ export default defineComponent({
         <li>✅ Arrow and clear buttons stay visible</li>
         <li>✅ No text wrapping or layout breaking</li>
         <li>✅ Works in both single and multi-select modes</li>
+        <li>✅ Works for selected values and placeholder text</li>
         <li>✅ Dropdown shows full text when opened</li>
       </ul>
     </div>
