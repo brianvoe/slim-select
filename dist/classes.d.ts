@@ -14,8 +14,9 @@ export default class CssClasses {
     arrowClose: string;
     arrowOpen: string;
     content: string;
-    openAbove: string;
-    openBelow: string;
+    contentOpen: string;
+    dirAbove: string;
+    dirBelow: string;
     search: string;
     searchHighlighter: string;
     searching: string;
@@ -33,7 +34,7 @@ export default class CssClasses {
     option: string;
     optionDelete: string;
     highlighted: string;
-    open: string;
+    mainOpen: string;
     close: string;
     selected: string;
     error: string;

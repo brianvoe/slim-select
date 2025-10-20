@@ -63,7 +63,7 @@ export default class Store {
     validateDataArray(data: DataArray | DataArrayPartial): Error | null;
     validateOption(option: Option | OptionOptional): Error | null;
     partialToFullData(data: DataArrayPartial): DataArray;
-    setData(data: DataArray | DataArrayPartial): void;
+    setData(data: DataArray | DataArrayPartial, preserveSelected?: boolean): void;
     getData(): DataArray;
     getDataOptions(): Option[];
     addOption(option: OptionOptional, addToStart?: boolean): void;

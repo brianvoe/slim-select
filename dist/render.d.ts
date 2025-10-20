@@ -64,6 +64,7 @@ export default class Render {
     moveContent(): void;
     searchDiv(): Search;
     searchFocus(): void;
+    clearSearch(): void;
     getOptions(notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean): HTMLDivElement[];
     highlight(dir: 'up' | 'down'): void;
     listDiv(): HTMLDivElement;

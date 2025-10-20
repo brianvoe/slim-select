@@ -1,12 +1,12 @@
-class E {
+class A {
   constructor(e) {
-    e || (e = {}), this.main = e.main || "ss-main", this.placeholder = e.placeholder || "ss-placeholder", this.values = e.values || "ss-values", this.single = e.single || "ss-single", this.max = e.max || "ss-max", this.value = e.value || "ss-value", this.valueText = e.valueText || "ss-value-text", this.valueDelete = e.valueDelete || "ss-value-delete", this.valueOut = e.valueOut || "ss-value-out", this.deselect = e.deselect || "ss-deselect", this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = e.arrow || "ss-arrow", this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = e.content || "ss-content", this.openAbove = e.openAbove || "ss-open-above", this.openBelow = e.openBelow || "ss-open-below", this.search = e.search || "ss-search", this.searchHighlighter = e.searchHighlighter || "ss-search-highlight", this.searching = e.searching || "ss-searching", this.addable = e.addable || "ss-addable", this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = e.list || "ss-list", this.optgroup = e.optgroup || "ss-optgroup", this.optgroupLabel = e.optgroupLabel || "ss-optgroup-label", this.optgroupLabelText = e.optgroupLabelText || "ss-optgroup-label-text", this.optgroupActions = e.optgroupActions || "ss-optgroup-actions", this.optgroupSelectAll = e.optgroupSelectAll || "ss-selectall", this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = e.optgroupClosable || "ss-closable", this.option = e.option || "ss-option", this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = e.highlighted || "ss-highlighted", this.open = e.open || "ss-open", this.close = e.close || "ss-close", this.selected = e.selected || "ss-selected", this.error = e.error || "ss-error", this.disabled = e.disabled || "ss-disabled", this.hide = e.hide || "ss-hide";
+    e || (e = {}), this.main = e.main || "ss-main", this.placeholder = e.placeholder || "ss-placeholder", this.values = e.values || "ss-values", this.single = e.single || "ss-single", this.max = e.max || "ss-max", this.value = e.value || "ss-value", this.valueText = e.valueText || "ss-value-text", this.valueDelete = e.valueDelete || "ss-value-delete", this.valueOut = e.valueOut || "ss-value-out", this.deselect = e.deselect || "ss-deselect", this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = e.arrow || "ss-arrow", this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = e.content || "ss-content", this.contentOpen = e.contentOpen || "ss-open", this.dirAbove = e.dirAbove || "ss-dir-above", this.dirBelow = e.dirBelow || "ss-dir-below", this.search = e.search || "ss-search", this.searchHighlighter = e.searchHighlighter || "ss-search-highlight", this.searching = e.searching || "ss-searching", this.addable = e.addable || "ss-addable", this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = e.list || "ss-list", this.optgroup = e.optgroup || "ss-optgroup", this.optgroupLabel = e.optgroupLabel || "ss-optgroup-label", this.optgroupLabelText = e.optgroupLabelText || "ss-optgroup-label-text", this.optgroupActions = e.optgroupActions || "ss-optgroup-actions", this.optgroupSelectAll = e.optgroupSelectAll || "ss-selectall", this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = e.optgroupClosable || "ss-closable", this.option = e.option || "ss-option", this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = e.highlighted || "ss-highlighted", this.mainOpen = e.mainOpen || "ss-open", this.close = e.close || "ss-close", this.selected = e.selected || "ss-selected", this.error = e.error || "ss-error", this.disabled = e.disabled || "ss-disabled", this.hide = e.hide || "ss-hide";
   }
 }
 function S() {
   return Math.random().toString(36).substring(2, 10);
 }
-function T(u, e) {
+function D(u, e) {
   function t(i, l) {
     return l && i && i.classList && i.classList.contains(l) || l && i && i.dataset && i.dataset.id && i.dataset.id === e ? i : null;
   }
@@ -27,7 +27,7 @@ function O(u, e = 50, t = !1) {
 function C(u, e) {
   return JSON.stringify(u) === JSON.stringify(e);
 }
-function D(u) {
+function T(u) {
   const e = u.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (t) => "-" + t.toLowerCase());
   return u[0] === u[0].toUpperCase() ? e.substring(1) : e;
 }
@@ -85,8 +85,30 @@ class k {
       (s instanceof p || "text" in s) && t.push(new p(s));
     }), t;
   }
-  setData(e) {
-    this.data = this.partialToFullData(e), this.selectType === "single" && this.setSelectedBy("id", this.getSelected());
+  setData(e, t = !1) {
+    const s = this.partialToFullData(e);
+    if (t) {
+      const i = this.getSelectedOptions(), l = [];
+      i.forEach((n) => {
+        let a = !1;
+        for (const r of s) {
+          if (r instanceof p && r.id === n.id) {
+            a = !0;
+            break;
+          }
+          if (r instanceof g) {
+            for (const c of r.options)
+              if (c.id === n.id) {
+                a = !0;
+                break;
+              }
+          }
+        }
+        a || l.push(n);
+      }), this.data = [...l, ...s];
+    } else
+      this.data = s;
+    this.selectType === "single" && this.setSelectedBy("id", this.getSelected());
   }
   // Get data will return all the data
   getData() {
@@ -187,7 +209,7 @@ class k {
     }), t;
   }
 }
-class P {
+class N {
   constructor(e, t, s, i) {
     this.store = s, this.settings = e, this.classes = t, this.callbacks = i, this.lastSelectedOption = null, this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
   }
@@ -200,15 +222,17 @@ class P {
     this.main.main.classList.add(this.classes.disabled), this.main.main.setAttribute("aria-disabled", "true"), this.content.search.input.disabled = !0;
   }
   open() {
-    this.main.arrow.path.setAttribute("d", this.classes.arrowOpen), this.main.main.classList.add(this.settings.openPosition === "up" ? this.classes.openAbove : this.classes.openBelow), this.main.main.setAttribute("aria-expanded", "true"), this.content.search.input.removeAttribute("aria-hidden"), this.moveContent();
-    const e = this.store.getSelectedOptions();
-    if (e.length) {
-      const t = e[e.length - 1].id, s = this.content.list.querySelector('[data-id="' + t + '"]');
-      s && this.ensureElementInView(this.content.list, s);
+    this.main.arrow.path.setAttribute("d", this.classes.arrowOpen), this.main.main.setAttribute("aria-expanded", "true");
+    const t = this.settings.openPosition === "up" ? this.classes.dirAbove : this.classes.dirBelow;
+    this.main.main.classList.add(t), this.content.main.classList.add(t), this.content.main.classList.add(this.classes.contentOpen), this.content.search.input.removeAttribute("aria-hidden"), this.moveContent();
+    const s = this.store.getSelectedOptions();
+    if (s.length) {
+      const i = s[s.length - 1].id, l = this.content.list.querySelector('[data-id="' + i + '"]');
+      l && this.ensureElementInView(this.content.list, l);
     }
   }
   close() {
-    this.main.main.classList.remove(this.classes.openAbove), this.main.main.classList.remove(this.classes.openBelow), this.main.main.setAttribute("aria-expanded", "false"), this.content.main.classList.remove(this.classes.openAbove), this.content.main.classList.remove(this.classes.openBelow), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
+    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.main.classList.remove(this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
   }
   updateClassStyles() {
     if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.main.main.classList.add(this.classes.main), this.content.main.classList.add(this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length)
@@ -222,11 +246,11 @@ class P {
   }
   mainDiv() {
     const e = document.createElement("div");
-    e.dataset.id = this.settings.id, e.setAttribute("aria-label", this.settings.ariaLabel), e.tabIndex = 0, e.onkeydown = (h) => {
-      switch (h.key) {
+    e.dataset.id = this.settings.id, e.setAttribute("aria-label", this.settings.ariaLabel), e.tabIndex = 0, e.onkeydown = (c) => {
+      switch (c.key) {
         case "ArrowUp":
         case "ArrowDown":
-          return this.callbacks.open(), h.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
+          return this.callbacks.open(), c.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
         case "Tab":
           return this.callbacks.close(), !0;
         // Continue doing normal tabbing
@@ -238,8 +262,8 @@ class P {
         case "Escape":
           return this.callbacks.close(), !1;
       }
-      return h.key.length === 1 && this.callbacks.open(), !0;
-    }, e.onclick = (h) => {
+      return c.key.length === 1 && this.callbacks.open(), !0;
+    }, e.onclick = (c) => {
       this.settings.disabled || (this.settings.isOpen ? this.callbacks.close() : this.callbacks.open());
     };
     const t = document.createElement("div");
@@ -247,12 +271,12 @@ class P {
     const s = document.createElement("div");
     s.classList.add(this.classes.deselect);
     const i = this.store?.getSelectedOptions();
-    !this.settings.allowDeselect || this.settings.isMultiple && i && i.length <= 0 ? s.classList.add(this.classes.hide) : s.classList.remove(this.classes.hide), s.onclick = (h) => {
-      if (h.stopPropagation(), this.settings.disabled)
+    !this.settings.allowDeselect || this.settings.isMultiple && i && i.length <= 0 ? s.classList.add(this.classes.hide) : s.classList.remove(this.classes.hide), s.onclick = (c) => {
+      if (c.stopPropagation(), this.settings.disabled)
         return;
       let o = !0;
-      const c = this.store.getSelectedOptions(), f = [];
-      if (this.callbacks.beforeChange && (o = this.callbacks.beforeChange(f, c) === !0), o) {
+      const h = this.store.getSelectedOptions(), f = [];
+      if (this.callbacks.beforeChange && (o = this.callbacks.beforeChange(f, h) === !0), o) {
         if (this.settings.isMultiple)
           this.callbacks.setSelected([], !1), this.updateDeselectAll();
         else {
@@ -357,16 +381,16 @@ class P {
         if (a.preventDefault(), a.stopPropagation(), this.settings.disabled)
           return;
         let r = !0;
-        const h = this.store.getSelectedOptions(), o = h.filter((c) => c.selected && c.id !== e.id, !0);
-        if (!(this.settings.minSelected && o.length < this.settings.minSelected) && (this.callbacks.beforeChange && (r = this.callbacks.beforeChange(o, h) === !0), r)) {
-          let c = [];
+        const c = this.store.getSelectedOptions(), o = c.filter((h) => h.selected && h.id !== e.id, !0);
+        if (!(this.settings.minSelected && o.length < this.settings.minSelected) && (this.callbacks.beforeChange && (r = this.callbacks.beforeChange(o, c) === !0), r)) {
+          let h = [];
           for (const f of o) {
             if (f instanceof g)
               for (const d of f.options)
-                c.push(d.id);
-            f instanceof p && c.push(f.id);
+                h.push(d.id);
+            f instanceof p && h.push(f.id);
           }
-          this.callbacks.setSelected(c, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o), this.updateDeselectAll();
+          this.callbacks.setSelected(h, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o), this.updateDeselectAll();
         }
       };
       const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -427,14 +451,8 @@ class P {
           const n = this.content.list.querySelector("." + this.classes.highlighted);
           return n ? (n.click(), !1) : !0;
         case "Enter":
-          if (this.callbacks.addable)
-            return s.click(), !1;
-          {
-            const a = this.content.list.querySelector("." + this.classes.highlighted);
-            if (a)
-              return a.click(), !1;
-          }
-          return !0;
+          const a = this.content.list.querySelector("." + this.classes.highlighted);
+          return a ? (a.click(), !1) : this.callbacks.addable ? (s.click(), !1) : !0;
       }
       return !0;
     }, e.appendChild(t), this.callbacks.addable) {
@@ -450,8 +468,8 @@ class P {
           this.content.search.input.focus();
           return;
         }
-        const h = (c) => {
-          let f = new p(c);
+        const c = (h) => {
+          let f = new p(h);
           if (this.callbacks.addOption(f), this.settings.isMultiple) {
             let d = this.store.getSelected();
             d.push(f.id), this.callbacks.setSelected(d, !0);
@@ -461,15 +479,15 @@ class P {
             this.callbacks.close();
           }, 100);
         }, o = this.callbacks.addable(r);
-        o === !1 || o === void 0 || o === null || (o instanceof Promise ? o.then((c) => {
-          typeof c == "string" ? h({
-            text: c,
-            value: c
-          }) : o instanceof Error ? this.renderError(o.message) : h(c);
-        }) : typeof o == "string" ? h({
+        o === !1 || o === void 0 || o === null || (o instanceof Promise ? o.then((h) => {
+          typeof h == "string" ? c({
+            text: h,
+            value: h
+          }) : o instanceof Error ? this.renderError(o.message) : c(h);
+        }) : typeof o == "string" ? c({
           text: o,
           value: o
-        }) : o instanceof Error ? this.renderError(o.message) : h(o));
+        }) : o instanceof Error ? this.renderError(o.message) : c(o));
       }, e.appendChild(s), i.addable = {
         main: s,
         svg: l,
@@ -480,6 +498,9 @@ class P {
   }
   searchFocus() {
     this.content.search.input.focus();
+  }
+  clearSearch() {
+    this.content.search.input.value = "";
   }
   getOptions(e = !1, t = !1, s = !1) {
     let i = "." + this.classes.option;
@@ -509,15 +530,15 @@ class P {
         const n = t[l];
         n.classList.remove(this.classes.highlighted);
         const a = n.parentElement;
-        if (a && a.classList.contains(this.classes.open)) {
+        if (a && a.classList.contains(this.classes.mainOpen)) {
           const o = a.querySelector("." + this.classes.optgroupLabel);
           o && o.click();
         }
         let r = t[e === "down" ? l + 1 < t.length ? l + 1 : 0 : l - 1 >= 0 ? l - 1 : t.length - 1];
         r.classList.add(this.classes.highlighted), this.ensureElementInView(this.content.list, r), r.id && this.main.main.setAttribute("aria-activedescendant", r.id);
-        const h = r.parentElement;
-        if (h && h.classList.contains(this.classes.close)) {
-          const o = h.querySelector("." + this.classes.optgroupLabel);
+        const c = r.parentElement;
+        if (c && c.classList.contains(this.classes.close)) {
+          const o = c.querySelector("." + this.classes.optgroupLabel);
           o && o.click();
         }
         return;
@@ -571,37 +592,37 @@ class P {
         if (a.classList.add(this.classes.optgroupActions), l.appendChild(a), this.settings.isMultiple && s.selectAll) {
           const r = document.createElement("div");
           r.classList.add(this.classes.optgroupSelectAll);
-          let h = !0;
+          let c = !0;
           for (const m of s.options)
             if (!m.selected) {
-              h = !1;
+              c = !1;
               break;
             }
-          h && r.classList.add(this.classes.selected);
+          c && r.classList.add(this.classes.selected);
           const o = document.createElement("span");
           o.textContent = s.selectAllText, r.appendChild(o);
-          const c = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          c.setAttribute("viewBox", "0 0 100 100"), r.appendChild(c);
+          const h = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          h.setAttribute("viewBox", "0 0 100 100"), r.appendChild(h);
           const f = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          f.setAttribute("d", this.classes.optgroupSelectAllBox), c.appendChild(f);
+          f.setAttribute("d", this.classes.optgroupSelectAllBox), h.appendChild(f);
           const d = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          d.setAttribute("d", this.classes.optgroupSelectAllCheck), c.appendChild(d), r.addEventListener("click", (m) => {
+          d.setAttribute("d", this.classes.optgroupSelectAllCheck), h.appendChild(d), r.addEventListener("click", (m) => {
             m.preventDefault(), m.stopPropagation();
-            const w = this.store.getSelected();
-            if (h) {
-              const b = w.filter((v) => {
+            const b = this.store.getSelected();
+            if (c) {
+              const v = b.filter((w) => {
                 for (const L of s.options)
-                  if (v === L.id)
+                  if (w === L.id)
                     return !1;
                 return !0;
               });
-              this.callbacks.setSelected(b, !0);
+              this.callbacks.setSelected(v, !0);
               return;
             } else {
-              const b = w.concat(s.options.map((v) => v.id));
-              for (const v of s.options)
-                this.store.getOptionByID(v.id) || this.callbacks.addOption(v);
-              this.callbacks.setSelected(b, !0);
+              const v = b.concat(s.options.map((w) => w.id));
+              for (const w of s.options)
+                this.store.getOptionByID(w.id) || this.callbacks.addOption(w);
+              this.callbacks.setSelected(v, !0);
               return;
             }
           }), a.appendChild(r);
@@ -609,11 +630,11 @@ class P {
         if (s.closable !== "off") {
           const r = document.createElement("div");
           r.classList.add(this.classes.optgroupClosable);
-          const h = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          h.setAttribute("viewBox", "0 0 100 100"), h.classList.add(this.classes.arrow), r.appendChild(h);
+          const c = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          c.setAttribute("viewBox", "0 0 100 100"), c.classList.add(this.classes.arrow), r.appendChild(c);
           const o = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          h.appendChild(o), s.options.some((c) => c.selected) || this.content.search.input.value.trim() !== "" ? (r.classList.add(this.classes.open), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "open" ? (i.classList.add(this.classes.open), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "close" && (i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose)), l.addEventListener("click", (c) => {
-            c.preventDefault(), c.stopPropagation(), i.classList.contains(this.classes.close) ? (i.classList.remove(this.classes.close), i.classList.add(this.classes.open), o.setAttribute("d", this.classes.arrowOpen)) : (i.classList.remove(this.classes.open), i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose));
+          c.appendChild(o), s.options.some((h) => h.selected) || this.content.search.input.value.trim() !== "" ? (r.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "open" ? (i.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "close" && (i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose)), l.addEventListener("click", (h) => {
+            h.preventDefault(), h.stopPropagation(), i.classList.contains(this.classes.close) ? (i.classList.remove(this.classes.close), i.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : (i.classList.remove(this.classes.mainOpen), i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose));
           }), a.appendChild(r);
         }
         i.appendChild(l);
@@ -643,26 +664,26 @@ class P {
       if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || this.settings.isMultiple && this.settings.maxSelected <= i.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= i.length && e.selected && !a)
         return;
       let r = !1;
-      const h = this.store.getSelectedOptions();
+      const c = this.store.getSelectedOptions();
       let o = [];
       if (this.settings.isMultiple) {
-        const c = h.some((d) => d.id === n);
+        const h = c.some((d) => d.id === n);
         if (s.shiftKey && this.lastSelectedOption) {
-          const d = this.store.getDataOptions(), m = d.findIndex((b) => b.id === this.lastSelectedOption.id), w = d.findIndex((b) => b.id === e.id);
-          if (m >= 0 && w >= 0) {
-            const b = Math.min(m, w), v = Math.max(m, w), y = d.slice(b, v + 1).filter((x) => !h.find((A) => A.id === x.id));
-            h.length + y.length <= this.settings.maxSelected ? o = h.concat(y) : o = h;
+          const d = this.store.getDataOptions(), m = d.findIndex((v) => v.id === this.lastSelectedOption.id), b = d.findIndex((v) => v.id === e.id);
+          if (m >= 0 && b >= 0) {
+            const v = Math.min(m, b), w = Math.max(m, b), y = d.slice(v, w + 1).filter((x) => !c.find((E) => E.id === x.id));
+            c.length + y.length <= this.settings.maxSelected ? o = c.concat(y) : o = c;
           } else
-            o = h;
-        } else a ? (c ? o = h.filter((d) => d.id !== n) : o = h.concat(e), this.lastSelectedOption = e) : (c ? o = h.filter((d) => d.id !== n) : o = h.concat(e), this.lastSelectedOption = e);
+            o = c;
+        } else a ? (h ? o = c.filter((d) => d.id !== n) : o = c.concat(e), this.lastSelectedOption = e) : (h ? o = c.filter((d) => d.id !== n) : o = c.concat(e), this.lastSelectedOption = e);
       }
-      if (this.settings.isMultiple || (e.selected ? o = [] : o = [e]), this.callbacks.beforeChange || (r = !0), this.callbacks.beforeChange && (this.callbacks.beforeChange(o, h) === !1 ? r = !1 : r = !0), r) {
+      if (this.settings.isMultiple || (e.selected ? o = [] : o = [e]), this.callbacks.beforeChange || (r = !0), this.callbacks.beforeChange && (this.callbacks.beforeChange(o, c) === !1 ? r = !1 : r = !0), r) {
         this.store.getOptionByID(n) || this.callbacks.addOption(e), this.callbacks.setSelected(
           o.map((d) => d.id),
           !1
         );
-        const c = s.ctrlKey || s.metaKey || s.shiftKey;
-        this.settings.closeOnSelect && !(this.settings.isMultiple && c) && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o);
+        const h = s.ctrlKey || s.metaKey || s.shiftKey;
+        this.settings.closeOnSelect && !(this.settings.isMultiple && h) && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o);
       }
     }), t;
   }
@@ -670,21 +691,35 @@ class P {
     this.main.main.remove(), this.content.main.remove();
   }
   highlightText(e, t, s) {
-    let i = e;
-    const l = new RegExp("(?![^<]*>)(" + t.trim() + ")(?![^<]*>[^<>]*</)", "i");
-    if (!e.match(l))
+    const i = t.trim();
+    if (i === "")
       return e;
-    const n = e.match(l).index, a = n + e.match(l)[0].toString().length, r = e.substring(n, a);
-    return i = i.replace(l, `<mark class="${s}">${r}</mark>`), i;
+    const l = i.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), n = document.createElement("div");
+    n.innerHTML = e;
+    const a = (r) => {
+      if (r.nodeType === Node.TEXT_NODE) {
+        const c = r.textContent || "", o = new RegExp("(" + l + ")", "i");
+        if (o.test(c)) {
+          const h = document.createElement("span");
+          c.split(o).forEach((d, m) => {
+            if (d && o.test(d)) {
+              const b = document.createElement("mark");
+              b.className = s, b.textContent = d, h.appendChild(b);
+            } else d && h.appendChild(document.createTextNode(d));
+          }), r.parentNode?.replaceChild(h, r);
+        }
+      } else r.nodeType === Node.ELEMENT_NODE && Array.from(r.childNodes).forEach((c) => a(c));
+    };
+    return Array.from(n.childNodes).forEach((r) => a(r)), n.innerHTML;
   }
   moveContentAbove() {
     const e = this.main.main.offsetHeight, t = this.content.main.offsetHeight;
-    this.main.main.classList.remove(this.classes.openBelow), this.main.main.classList.add(this.classes.openAbove), this.content.main.classList.remove(this.classes.openBelow), this.content.main.classList.add(this.classes.openAbove);
+    this.main.main.classList.remove(this.classes.dirBelow), this.main.main.classList.add(this.classes.dirAbove), this.content.main.classList.remove(this.classes.dirBelow), this.content.main.classList.add(this.classes.dirAbove);
     const s = this.main.main.getBoundingClientRect();
     this.content.main.style.margin = "-" + (e + t - 1) + "px 0px 0px 0px", this.content.main.style.top = s.top + s.height + (this.settings.contentPosition === "fixed" ? 0 : window.scrollY) + "px", this.content.main.style.left = s.left + (this.settings.contentPosition === "fixed" ? 0 : window.scrollX) + "px", this.content.main.style.width = s.width + "px";
   }
   moveContentBelow() {
-    this.main.main.classList.remove(this.classes.openAbove), this.main.main.classList.add(this.classes.openBelow), this.content.main.classList.remove(this.classes.openAbove), this.content.main.classList.add(this.classes.openBelow);
+    this.main.main.classList.remove(this.classes.dirAbove), this.main.main.classList.add(this.classes.dirBelow), this.content.main.classList.remove(this.classes.dirAbove), this.content.main.classList.add(this.classes.dirBelow);
     const e = this.main.main.getBoundingClientRect();
     this.content.main.style.margin = "-1px 0px 0px 0px", this.settings.contentPosition !== "relative" && (this.content.main.style.top = e.top + e.height + (this.settings.contentPosition === "fixed" ? 0 : window.scrollY) + "px", this.content.main.style.left = e.left + (this.settings.contentPosition === "fixed" ? 0 : window.scrollX) + "px", this.content.main.style.width = e.width + "px");
   }
@@ -704,7 +739,7 @@ class P {
     i && !(s && !t) ? l.classList.remove(n) : l.classList.add(n);
   }
 }
-class N {
+class M {
   constructor(e) {
     this.listen = !1, this.observer = null, this.select = e, this.valueChange = this.valueChange.bind(this), this.select.addEventListener("change", this.valueChange, {
       // allow bubbling of event
@@ -882,19 +917,19 @@ class N {
     return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), e.display || (t.style.display = "none"), e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((s) => {
       t.classList.add(s);
     }), e.data && typeof e.data == "object" && Object.keys(e.data).forEach((s) => {
-      t.setAttribute("data-" + D(s), e.data[s]);
+      t.setAttribute("data-" + T(s), e.data[s]);
     }), t;
   }
   destroy() {
     this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.observer && (this.observer.disconnect(), this.observer = null), delete this.select.dataset.id, this.showUI();
   }
 }
-class M {
+class P {
   constructor(e) {
     this.id = "", this.style = "", this.class = [], this.isMultiple = !1, this.isOpen = !1, this.isFullOpen = !1, this.intervalMove = null, e || (e = {}), this.id = "ss-" + S(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
   }
 }
-class B {
+class I {
   constructor(e) {
     if (this.events = {
       search: void 0,
@@ -911,7 +946,7 @@ class B {
     }), this.windowScroll = O(() => {
       !this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
     }), this.documentClick = (n) => {
-      this.settings.isOpen && n.target && !T(n.target, this.settings.id) && this.close(n.type);
+      this.settings.isOpen && n.target && !D(n.target, this.settings.id) && this.close(n.type);
     }, this.windowVisibilityChange = () => {
       document.hidden && this.close();
     }, this.selectEl = typeof e.select == "string" ? document.querySelector(e.select) : e.select, !this.selectEl) {
@@ -922,11 +957,11 @@ class B {
       e.events && e.events.error && e.events.error(new Error("Element isnt of type select"));
       return;
     }
-    this.selectEl.dataset.ssid && this.destroy(), this.settings = new M(e.settings), this.cssClasses = new E(e.cssClasses);
+    this.selectEl.dataset.ssid && this.destroy(), this.settings = new P(e.settings), this.cssClasses = new A(e.cssClasses);
     const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
     for (const n in e.events)
       e.events.hasOwnProperty(n) && (t.indexOf(n) !== -1 ? this.events[n] = O(e.events[n], 100) : this.events[n] = e.events[n]);
-    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new N(this.selectEl), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
+    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new M(this.selectEl), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
       this.setSelected(n.map((a) => a.id));
     }, this.select.onClassChange = (n) => {
       this.settings.class = n, this.render.updateClassStyles();
@@ -948,7 +983,7 @@ class B {
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange
     };
-    this.render = new P(this.settings, this.cssClasses, this.store, s), this.render.renderValues(), this.render.renderOptions(this.store.getData());
+    this.render = new N(this.settings, this.cssClasses, this.store, s), this.render.renderValues(), this.render.renderOptions(this.store.getData());
     const i = this.selectEl.getAttribute("aria-label"), l = this.selectEl.getAttribute("aria-labelledby");
     i ? this.render.main.main.setAttribute("aria-label", i) : l && this.render.main.main.setAttribute("aria-labelledby", l), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.selectEl.slim = this;
   }
@@ -987,7 +1022,7 @@ class B {
         l.push(a);
         continue;
       }
-      for (const r of i.filter((h) => h.value == a))
+      for (const r of i.filter((c) => c.value == a))
         l.push(r.id);
     }
     this.store.setSelectedBy("id", l);
@@ -1006,28 +1041,27 @@ class B {
     }, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
   }
   close(e = null) {
-    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.content.search.input.value !== "" && this.search(""), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, setTimeout(() => {
+    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, setTimeout(() => {
       this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
   }
   // Take in string value and search current options
   search(e) {
     if (this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), !this.events.search) {
-      this.render.renderOptions(
-        e === "" ? this.store.getData() : this.store.search(e, this.events.searchFilter)
-      );
+      const s = e === "" ? this.store.getData() : this.store.search(e, this.events.searchFilter);
+      this.render.renderOptions(s);
       return;
     }
     this.render.renderSearching();
     const t = this.events.search(e, this.store.getSelectedOptions());
     if (t instanceof Promise) {
       t.then((s) => {
-        this.render.renderOptions(this.store.partialToFullData(s));
+        this.store.setData(s, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData());
       }).catch((s) => {
         this.render.renderError(typeof s == "string" ? s : s.message);
       });
       return;
-    } else Array.isArray(t) ? this.render.renderOptions(this.store.partialToFullData(t)) : this.render.renderError("Search event must return a promise or an array of data");
+    } else Array.isArray(t) ? (this.store.setData(t, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData())) : this.render.renderError("Search event must return a promise or an array of data");
   }
   destroy() {
     document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
@@ -1036,5 +1070,5 @@ class B {
 export {
   g as Optgroup,
   p as Option,
-  B as default
+  I as default
 };

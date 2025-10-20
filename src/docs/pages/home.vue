@@ -230,6 +230,7 @@ export default defineComponent({
           <li><img src="../assets/images/check-mark.svg" /> Settable Data</li>
           <li><img src="../assets/images/check-mark.svg" /> Callback Events</li>
           <li><img src="../assets/images/check-mark.svg" /> Placeholders</li>
+          <li><img src="../assets/images/check-mark.svg" /> Aria Support</li>
         </ul>
         <ul class="list">
           <li><img src="../assets/images/check-mark.svg" /> Advanced Search</li>
@@ -241,6 +242,7 @@ export default defineComponent({
           <li><img src="../assets/images/check-mark.svg" /> Clean Animations</li>
           <li><img src="../assets/images/check-mark.svg" /> Performant</li>
           <li><img src="../assets/images/check-mark.svg" /> Typescript</li>
+          <li><img src="../assets/images/check-mark.svg" /> Form Requireds</li>
         </ul>
       </div>
     </div>

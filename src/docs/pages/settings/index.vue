@@ -21,7 +21,11 @@ import MaxValuesShown from './max_values_shown.vue'
 import MinMax from './min_max.vue'
 import OpenPosition from './open_position.vue'
 import Placeholder from './placeholder.vue'
-import Search from './search.vue'
+import ShowSearch from './show_search.vue'
+import FocusSearch from './focus_search.vue'
+import SearchText from './search_text.vue'
+import SearchPlaceholder from './search_placeholder.vue'
+import SearchHighlight from './search_highlight.vue'
 import Select from './select.vue'
 import SelectAll from './select_all.vue'
 import ShowTooltip from './show_tooltip.vue'
@@ -48,7 +52,11 @@ export default defineComponent({
     Styles,
     Html,
     KeepOrder,
-    Search,
+    ShowSearch,
+    FocusSearch,
+    SearchText,
+    SearchPlaceholder,
+    SearchHighlight,
     CloseOnSelect,
     ShowTooltip,
     SelectAll,
@@ -78,7 +86,11 @@ export default defineComponent({
     <Styles />
     <Html />
     <KeepOrder />
-    <Search />
+    <ShowSearch />
+    <FocusSearch />
+    <SearchText />
+    <SearchPlaceholder />
+    <SearchHighlight />
     <CloseOnSelect />
     <ShowTooltip />
     <Closable />
