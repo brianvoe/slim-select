@@ -4,7 +4,7 @@
 
 'use strict'
 
-import { describe, expect, vi, test } from 'vitest'
+import { describe, expect, vi, test, beforeEach } from 'vitest'
 import Select from './select'
 import Store, { Optgroup, Option } from './store'
 
@@ -64,7 +64,12 @@ describe('select module', () => {
       select.hideUI()
 
       expect(select.select.tabIndex).toBe(-1)
-      expect(select.select.style.display).toBe('none')
+      // Visually hidden but still focusable for form validation
+      expect(select.select.style.position).toBe('absolute')
+      expect(select.select.style.width).toBe('0px')
+      expect(select.select.style.height).toBe('0px')
+      expect(select.select.style.opacity).toBe('0')
+      expect(select.select.style.pointerEvents).toBe('none')
       expect(select.select.getAttribute('aria-hidden')).toBe('true')
     })
   })
@@ -72,13 +77,17 @@ describe('select module', () => {
   describe('showUI', () => {
     test('HTML attributes get reset', () => {
       select.select.tabIndex = -1
-      select.select.style.display = 'none'
+      select.select.style.position = 'absolute'
+      select.select.style.width = '0'
+      select.select.style.opacity = '0'
       select.select.setAttribute('aria-hidden', 'true')
 
       select.showUI()
 
       expect(select.select.tabIndex).toBeFalsy()
-      expect(select.select.style.display).toBeFalsy()
+      expect(select.select.style.position).toBeFalsy()
+      expect(select.select.style.width).toBeFalsy()
+      expect(select.select.style.opacity).toBeFalsy()
       expect(select.select.getAttribute('aria-hidden')).toBeNull()
     })
   })

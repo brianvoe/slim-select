@@ -4,7 +4,7 @@
 
 'use strict'
 
-import { describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import SlimSelect from './'
 import { OptionOptional } from './store'
 import { Config } from './index'
@@ -188,5 +188,63 @@ describe('SlimSelect Module', () => {
     expect(slimSelect.store.getSelectType()).toEqual('multiple')
     expect(slimSelect.getSelected()).toHaveLength(2)
     expect(slimSelect.render.main.deselect.main.classList).not.toContain(slimSelect.render.classes.hide)
+  })
+
+  describe('required attribute support', () => {
+    test('select with required attribute remains focusable for validation', () => {
+      document.body.innerHTML = '<select id="test" required></select>'
+
+      const slim = new SlimSelect({
+        select: '#test'
+      })
+
+      const selectEl = document.getElementById('test') as HTMLSelectElement
+
+      // Select should be hidden but still focusable
+      expect(selectEl.style.position).toBe('absolute')
+      expect(selectEl.style.width).toBe('0px')
+      expect(selectEl.style.height).toBe('0px')
+      expect(selectEl.style.opacity).toBe('0')
+
+      // Required attribute should still be present
+      expect(selectEl.hasAttribute('required')).toBe(true)
+
+      // Select should be able to receive focus programmatically
+      selectEl.focus()
+      expect(document.activeElement).toBe(selectEl)
+    })
+
+    test('form validation works with required select', () => {
+      // Create a form with required select
+      document.body.innerHTML = `
+        <form id="test-form">
+          <select id="test" name="test-select" required>
+            <option value="">Select an option</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+          </select>
+          <button type="submit">Submit</button>
+        </form>
+      `
+
+      const slim = new SlimSelect({
+        select: '#test'
+      })
+
+      const form = document.getElementById('test-form') as HTMLFormElement
+      const selectEl = document.getElementById('test') as HTMLSelectElement
+
+      // Form should be invalid when nothing is selected
+      expect(selectEl.required).toBe(true)
+      expect(selectEl.value).toBe('')
+      expect(form.checkValidity()).toBe(false)
+
+      // Select an option
+      slim.setSelected(['1'])
+
+      // Form should now be valid
+      expect(selectEl.value).toBe('1')
+      expect(form.checkValidity()).toBe(true)
+    })
   })
 })

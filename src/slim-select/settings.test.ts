@@ -109,12 +109,16 @@ describe('Settings module', () => {
   test('showUI', () => {
     select.select.setAttribute('tabindex', '1')
     select.select.setAttribute('aria-hidden', 'true')
-    select.select.style.display = 'none'
+    select.select.style.position = 'absolute'
+    select.select.style.width = '0'
+    select.select.style.opacity = '0'
 
     select.showUI()
     expect(select.select.getAttribute('tabindex')).toBeFalsy()
     expect(select.select.getAttribute('aria-hidden')).toBeFalsy()
-    expect(select.select.style.display).toBeFalsy()
+    expect(select.select.style.position).toBeFalsy()
+    expect(select.select.style.width).toBeFalsy()
+    expect(select.select.style.opacity).toBeFalsy()
   })
 
   describe('createOptgroup', () => {
@@ -197,12 +201,13 @@ describe('Settings module', () => {
 
     test('malicious text is inserted with innerText', () => {
       // decoded text: <img src=x onerror=alert(1)></img>
-      const str = '&#x3c;&#x69;&#x6d;&#x67;&#x20;&#x73;&#x72;&#x63;&#x3d;&#x78;&#x20;&#x6f;&#x6e;&#x65;&#x72;&#x72;&#x6f;&#x72;&#x3d;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x31;&#x29;&#x3e;&#x3c;&#x2f;&#x69;&#x6d;&#x67;&#x3e;'
+      const str =
+        '&#x3c;&#x69;&#x6d;&#x67;&#x20;&#x73;&#x72;&#x63;&#x3d;&#x78;&#x20;&#x6f;&#x6e;&#x65;&#x72;&#x72;&#x6f;&#x72;&#x3d;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x31;&#x29;&#x3e;&#x3c;&#x2f;&#x69;&#x6d;&#x67;&#x3e;'
       // const str = 'opt'
-      const decode = (string: string|null) => {
-        if(string === null) return ''
-        const doc = new DOMParser().parseFromString(string, "text/html")
-        return doc.documentElement.textContent;
+      const decode = (string: string | null) => {
+        if (string === null) return ''
+        const doc = new DOMParser().parseFromString(string, 'text/html')
+        return doc.documentElement.textContent
       }
       const option = new Option({ text: str })
       const optionElement = select.createOption(option)

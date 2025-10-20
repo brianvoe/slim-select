@@ -41,13 +41,25 @@ export default class Select {
 
   public hideUI(): void {
     this.select.tabIndex = -1
-    this.select.style.display = 'none'
+    // Visually hide but keep focusable for form validation
+    this.select.style.position = 'absolute'
+    this.select.style.width = '0'
+    this.select.style.height = '0'
+    this.select.style.opacity = '0'
+    this.select.style.overflow = 'hidden'
+    this.select.style.pointerEvents = 'none'
     this.select.setAttribute('aria-hidden', 'true')
   }
 
   public showUI(): void {
     this.select.removeAttribute('tabindex')
-    this.select.style.display = ''
+    // Reset visual hiding styles
+    this.select.style.position = ''
+    this.select.style.width = ''
+    this.select.style.height = ''
+    this.select.style.opacity = ''
+    this.select.style.overflow = ''
+    this.select.style.pointerEvents = ''
     this.select.removeAttribute('aria-hidden')
   }
 
