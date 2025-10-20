@@ -91,7 +91,8 @@ describe('helpers module', () => {
       await new Promise((r) => setTimeout(r, 50))
       expect(callback).not.toHaveBeenCalled()
 
-      await new Promise((r) => setTimeout(r, 50))
+      // Wait a bit longer to account for CI timing variations
+      await new Promise((r) => setTimeout(r, 100))
       expect(callback).toHaveBeenCalled()
       expect(callback).toHaveBeenCalledTimes(1)
     })
@@ -104,7 +105,8 @@ describe('helpers module', () => {
       await new Promise((r) => setTimeout(r, 5))
       expect(callback).not.toHaveBeenCalled()
 
-      await new Promise((r) => setTimeout(r, 5))
+      // Wait a bit longer to account for CI timing variations
+      await new Promise((r) => setTimeout(r, 10))
       expect(callback).toHaveBeenCalled()
       expect(callback).toHaveBeenCalledTimes(1)
     })

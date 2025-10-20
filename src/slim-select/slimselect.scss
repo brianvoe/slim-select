@@ -106,6 +106,9 @@
     flex-wrap: wrap;
     gap: var(--ss-spacing-m);
     flex: 1 1 100%;
+    min-width: 0; // Allow container to shrink
+    max-width: 100%; // Ensure container doesn't exceed parent
+    overflow: hidden; // Prevent overflow
 
     .ss-placeholder {
       display: flex;
@@ -136,8 +139,23 @@
 
     // Used for single select selected value
     .ss-single {
-      display: flex;
+      display: block; // Use block for proper ellipsis
       margin: auto 0px auto var(--ss-spacing-s);
+      min-width: 0; // Allow flex item to shrink below content size
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; // Prevent text wrapping
+      flex: 1 1 auto; // Allow it to grow but also shrink
+      max-width: calc(100% - 20px); // Leave space for arrow and padding
+
+      // Apply ellipsis to any child elements as well
+      > * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0; // Allow child to shrink
+        display: block; // Ensure child is block for ellipsis
+      }
     }
 
     // Used for the selected values
@@ -146,6 +164,7 @@
       user-select: none;
       align-items: center;
       width: fit-content;
+      max-width: 100%; // Ensure value doesn't exceed container width
       background-color: var(--ss-primary-color);
       border-radius: var(--ss-border-radius);
       animation-name: ss-valueIn;
@@ -160,10 +179,15 @@
       }
 
       .ss-value-text {
+        flex: 1; // Take up available space in flex container
+        min-width: 0; // Allow text to shrink
         font-size: 12px;
-        color: var(--ss-bg-color);
         line-height: 1;
+        color: var(--ss-bg-color);
         padding: var(--ss-spacing-s) var(--ss-spacing-m);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .ss-value-delete {
