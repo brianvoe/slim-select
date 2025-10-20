@@ -1,30 +1,288 @@
-import { default as CssClasses } from './classes';
-import { default as Render } from './render';
-import { default as Select } from './select';
-import { default as Settings, SettingsPartial } from './settings';
-import { default as Store, DataArray, DataArrayPartial, DataObject, DataObjectPartial, Option, OptionOptional, Optgroup, OptgroupOptional } from './store';
-export { Option, Optgroup };
-export type { SettingsPartial, DataArray, DataArrayPartial, DataObject, DataObjectPartial, OptionOptional, OptgroupOptional };
-export interface Config {
+declare interface Callbacks {
+    open: () => void;
+    close: () => void;
+    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null | Error;
+    setSelected: (value: string | string[], runAfterChange: boolean) => void;
+    addOption: (option: Option_2) => void;
+    search: (search: string) => void;
+    beforeChange?: (newVal: Option_2[], oldVal: Option_2[]) => boolean | void;
+    afterChange?: (newVal: Option_2[]) => void;
+}
+
+export declare interface Config {
     select: string | Element;
     data?: DataArrayPartial;
     settings?: SettingsPartial;
     cssClasses?: Partial<CssClasses>;
     events?: Events;
 }
-export interface Events {
+
+declare interface Content {
+    main: HTMLDivElement;
+    search: Search;
+    list: HTMLDivElement;
+}
+
+declare class CssClasses {
+    main: string;
+    placeholder: string;
+    values: string;
+    single: string;
+    max: string;
+    value: string;
+    valueText: string;
+    valueDelete: string;
+    valueOut: string;
+    deselect: string;
+    deselectPath: string;
+    arrow: string;
+    arrowClose: string;
+    arrowOpen: string;
+    content: string;
+    contentOpen: string;
+    dirAbove: string;
+    dirBelow: string;
+    search: string;
+    searchHighlighter: string;
+    searching: string;
+    addable: string;
+    addablePath: string;
+    list: string;
+    optgroup: string;
+    optgroupLabel: string;
+    optgroupLabelText: string;
+    optgroupActions: string;
+    optgroupSelectAll: string;
+    optgroupSelectAllBox: string;
+    optgroupSelectAllCheck: string;
+    optgroupClosable: string;
+    option: string;
+    optionDelete: string;
+    highlighted: string;
+    mainOpen: string;
+    close: string;
+    selected: string;
+    error: string;
+    disabled: string;
+    hide: string;
+    constructor(classes?: Partial<CssClasses>);
+}
+
+export declare type DataArray = DataObject[];
+
+export declare type DataArrayPartial = DataObjectPartial[];
+
+export declare type DataObject = Optgroup | Option_2;
+
+export declare type DataObjectPartial = OptgroupOptional | OptionOptional;
+
+export declare interface Events {
     search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial;
-    searchFilter?: (option: Option, search: string) => boolean;
+    searchFilter?: (option: Option_2, search: string) => boolean;
     addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | null | undefined | Error;
-    beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void;
-    afterChange?: (newVal: Option[]) => void;
+    beforeChange?: (newVal: Option_2[], oldVal: Option_2[]) => boolean | void;
+    afterChange?: (newVal: Option_2[]) => void;
     beforeOpen?: () => void;
     afterOpen?: () => void;
     beforeClose?: () => void;
     afterClose?: () => void;
     error?: (err: Error) => void;
 }
-export default class SlimSelect {
+
+declare interface Main {
+    main: HTMLDivElement;
+    values: HTMLDivElement;
+    deselect: {
+        main: HTMLDivElement;
+        svg: SVGSVGElement;
+        path: SVGPathElement;
+    };
+    arrow: {
+        main: SVGSVGElement;
+        path: SVGPathElement;
+    };
+}
+
+export declare class Optgroup {
+    id: string;
+    label: string;
+    selectAll: boolean;
+    selectAllText: string;
+    closable: 'off' | 'open' | 'close';
+    options: Option_2[];
+    constructor(optgroup: OptgroupOptional);
+}
+
+export declare interface OptgroupOptional {
+    id?: string;
+    label: string;
+    selectAll?: boolean;
+    selectAllText?: string;
+    closable?: 'off' | 'open' | 'close';
+    options?: OptionOptional[];
+}
+
+declare class Option_2 {
+    id: string;
+    value: string;
+    text: string;
+    html: string;
+    defaultSelected: boolean;
+    selected: boolean;
+    display: boolean;
+    disabled: boolean;
+    placeholder: boolean;
+    class: string;
+    style: string;
+    data: {
+        [key: string]: string;
+    };
+    mandatory: boolean;
+    constructor(option: OptionOptional);
+}
+export { Option_2 as Option }
+
+export declare interface OptionOptional {
+    id?: string;
+    value?: string;
+    text: string;
+    html?: string;
+    selected?: boolean;
+    defaultSelected?: boolean;
+    display?: boolean;
+    disabled?: boolean;
+    mandatory?: boolean;
+    placeholder?: boolean;
+    class?: string;
+    style?: string;
+    data?: {
+        [key: string]: string;
+    };
+}
+
+declare class Render {
+    settings: Settings;
+    store: Store;
+    callbacks: Callbacks;
+    private lastSelectedOption;
+    main: Main;
+    content: Content;
+    classes: CssClasses;
+    constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
+    enable(): void;
+    disable(): void;
+    open(): void;
+    close(): void;
+    updateClassStyles(): void;
+    updateAriaAttributes(): void;
+    mainDiv(): Main;
+    mainFocus(eventType: string | null): void;
+    placeholder(): HTMLDivElement;
+    renderValues(): void;
+    private renderSingleValue;
+    private renderMultipleValues;
+    multipleValue(option: Option_2): HTMLDivElement;
+    contentDiv(): Content;
+    moveContent(): void;
+    searchDiv(): Search;
+    searchFocus(): void;
+    clearSearch(): void;
+    getOptions(notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean): HTMLDivElement[];
+    highlight(dir: 'up' | 'down'): void;
+    listDiv(): HTMLDivElement;
+    renderError(error: string): void;
+    renderSearching(): void;
+    renderOptions(data: DataArray): void;
+    option(option: Option_2): HTMLDivElement;
+    destroy(): void;
+    private highlightText;
+    moveContentAbove(): void;
+    moveContentBelow(): void;
+    ensureElementInView(container: HTMLElement, element: HTMLElement): void;
+    putContent(): 'up' | 'down';
+    updateDeselectAll(): void;
+}
+
+declare interface Search {
+    main: HTMLDivElement;
+    input: HTMLInputElement;
+    addable?: {
+        main: HTMLDivElement;
+        svg: SVGSVGElement;
+        path: SVGPathElement;
+    };
+}
+
+declare class Select {
+    select: HTMLSelectElement;
+    onValueChange?: (value: Option_2[]) => void;
+    onClassChange?: (classes: string[]) => void;
+    onDisabledChange?: (disabled: boolean) => void;
+    onOptionsChange?: (data: DataArrayPartial) => void;
+    listen: boolean;
+    private observer;
+    constructor(select: HTMLSelectElement);
+    enable(): void;
+    disable(): void;
+    hideUI(): void;
+    showUI(): void;
+    changeListen(listen: boolean): void;
+    valueChange(ev: Event): boolean;
+    private observeCall;
+    getData(): DataArrayPartial;
+    getDataFromOptgroup(optgroup: HTMLOptGroupElement): OptgroupOptional;
+    getDataFromOption(option: HTMLOptionElement): Option_2;
+    getSelectedOptions(): Option_2[];
+    getSelectedValues(): string[];
+    setSelected(ids: string[]): void;
+    setSelectedByValue(values: string[]): void;
+    updateSelect(id?: string, style?: string, classes?: string[]): void;
+    updateOptions(data: DataArray): void;
+    createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;
+    createOption(info: Option_2): HTMLOptionElement;
+    destroy(): void;
+}
+
+declare type selectType = 'single' | 'multiple';
+
+declare class Settings {
+    id: string;
+    style: string;
+    class: string[];
+    isMultiple: boolean;
+    isOpen: boolean;
+    isFullOpen: boolean;
+    intervalMove: ReturnType<typeof setInterval> | null;
+    disabled: boolean;
+    alwaysOpen: boolean;
+    showSearch: boolean;
+    focusSearch: boolean;
+    ariaLabel: string;
+    searchPlaceholder: string;
+    searchText: string;
+    searchingText: string;
+    searchHighlight: boolean;
+    closeOnSelect: boolean;
+    contentLocation: HTMLElement | null;
+    contentPosition: 'relative' | 'absolute' | 'fixed';
+    openPosition: 'auto' | 'up' | 'down';
+    placeholderText: string;
+    allowDeselect: boolean;
+    hideSelected: boolean;
+    keepOrder: boolean;
+    showOptionTooltips: boolean;
+    minSelected: number;
+    maxSelected: number;
+    timeoutDelay: number;
+    maxValuesShown: number;
+    maxValuesMessage: string;
+    addableText: string;
+    constructor(settings?: SettingsPartial);
+}
+
+export declare type SettingsPartial = Partial<Settings>;
+
+declare class SlimSelect {
     selectEl: HTMLSelectElement;
     settings: Settings;
     cssClasses: CssClasses;
@@ -49,3 +307,33 @@ export default class SlimSelect {
     private documentClick;
     private windowVisibilityChange;
 }
+export default SlimSelect;
+
+declare class Store {
+    private selectType;
+    private data;
+    private selectedOrder;
+    constructor(type: selectType, data: DataArrayPartial);
+    validateDataArray(data: DataArray | DataArrayPartial): Error | null;
+    validateOption(option: Option_2 | OptionOptional): Error | null;
+    partialToFullData(data: DataArrayPartial): DataArray;
+    setData(data: DataArray | DataArrayPartial, preserveSelected?: boolean): void;
+    getData(): DataArray;
+    getDataOptions(): Option_2[];
+    addOption(option: OptionOptional, addToStart?: boolean): void;
+    setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]): void;
+    getSelected(): string[];
+    getSelectedValues(): string[];
+    getSelectedOptions(): Option_2[];
+    getOptgroupByID(id: string): Optgroup | null;
+    getOptionByID(id: string): Option_2 | null;
+    getSelectType(): string;
+    getFirstOption(): Option_2 | null;
+    search(search: string, searchFilter: (opt: Option_2, search: string) => boolean): DataArray;
+    filter(filter: {
+        (opt: Option_2): boolean;
+    } | null, includeOptgroup: boolean): DataArray;
+    selectedOrderOptions(options: Option_2[]): Option_2[];
+}
+
+export { }
