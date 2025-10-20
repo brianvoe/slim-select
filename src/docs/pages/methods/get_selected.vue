@@ -50,6 +50,16 @@ export default defineComponent({
       Whether or not its a single or multiple select, getSelected will always return an array.
     </div>
 
+    <div class="alert">
+      <p><strong>Multi-Select Order:</strong></p>
+      <ul>
+        <li>
+          <code>keepOrder: false</code> (default) → Returns in <strong>DOM order</strong> (how options appear in HTML)
+        </li>
+        <li><code>keepOrder: true</code> → Returns in <strong>selection order</strong> (order you clicked them)</li>
+      </ul>
+    </div>
+
     <div class="row">
       <div class="btn" @click="getSelected">Get Selected</div>
 

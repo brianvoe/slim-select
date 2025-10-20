@@ -150,7 +150,7 @@ new SlimSelect({
     placeholderText: 'Select Value', // Placeholder text
     allowDeselect: false, // Allow deselecting in single select
     hideSelected: false, // Hide selected options in dropdown
-    keepOrder: false, // Keep selection order for getSelected
+    keepOrder: false, // Keep user click order (not DOM order) for getSelected
     showOptionTooltips: false, // Show tooltips on options
     minSelected: 0, // Minimum selections (multi-select)
     maxSelected: 1000, // Maximum selections (multi-select)

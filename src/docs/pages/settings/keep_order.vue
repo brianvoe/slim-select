@@ -19,11 +19,26 @@ export default defineComponent({
 <template>
   <div id="keepOrder" class="content">
     <h2 class="header">keepOrder</h2>
-    <p>
-      keepOrder if true will maintain the order in which options are selected. If true the selected options order will
-      be in the order of the dropdown options. As long as slim select isnt fully rerendered the order will be
-      maintained.
-    </p>
+    <p><code>keepOrder</code> controls the order returned by <code>getSelected()</code> in multi-select mode.</p>
+
+    <div class="alert">
+      <p>
+        <strong>Important:</strong> This maintains <strong>selection order</strong> (the order you clicked), NOT DOM
+        order!
+      </p>
+    </div>
+
+    <p><strong>When false (default):</strong> Returns options in DOM order (how they appear in the HTML)</p>
+    <p><strong>When true:</strong> Returns options in the order they were clicked/selected by the user</p>
+
+    <h3>Example:</h3>
+    <p>If you have options: Apple, Banana, Cherry</p>
+    <ul>
+      <li>You click: Cherry → Apple → Banana</li>
+      <li><code>keepOrder: false</code> → returns <code>['Apple', 'Banana', 'Cherry']</code> (DOM order)</li>
+      <li><code>keepOrder: true</code> → returns <code>['Cherry', 'Apple', 'Banana']</code> (click order)</li>
+    </ul>
+
     <p>Values: <strong>true</strong> | <strong>false</strong></p>
     <p>Default: <strong>false</strong></p>
 

@@ -250,4 +250,77 @@ describe('SlimSelect Module', () => {
       expect(form.checkValidity()).toBe(true)
     })
   })
+
+  describe('keepOrder setting', () => {
+    test('keepOrder: false returns values in DOM order (default)', () => {
+      document.body.innerHTML = `
+        <select id="test" multiple>
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="cherry">Cherry</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#test',
+        settings: {
+          keepOrder: false // DOM order (default)
+        }
+      })
+
+      // Select in reverse order: Cherry -> Apple -> Banana
+      slim.setSelected(['cherry', 'apple', 'banana'])
+
+      // Should return in DOM order (how they appear in HTML)
+      expect(slim.getSelected()).toEqual(['apple', 'banana', 'cherry'])
+    })
+
+    test('keepOrder: true returns values in selection order', () => {
+      document.body.innerHTML = `
+        <select id="test" multiple>
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="cherry">Cherry</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#test',
+        settings: {
+          keepOrder: true // Selection order
+        }
+      })
+
+      // Select in specific order: Cherry -> Apple -> Banana
+      slim.setSelected(['cherry', 'apple', 'banana'])
+
+      // Should return in the order they were selected (click order)
+      expect(slim.getSelected()).toEqual(['cherry', 'apple', 'banana'])
+    })
+
+    test('keepOrder: true preserves click order in getSelected', () => {
+      document.body.innerHTML = `
+        <select id="test" multiple>
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+          <option value="4">Option 4</option>
+          <option value="5">Option 5</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#test',
+        settings: {
+          keepOrder: true
+        }
+      })
+
+      // Simulate user clicking options in random order
+      slim.setSelected(['5', '2', '4', '1'])
+
+      // Should maintain that exact order
+      expect(slim.getSelected()).toEqual(['5', '2', '4', '1'])
+    })
+  })
 })
