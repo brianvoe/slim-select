@@ -397,6 +397,122 @@ describe('SlimSelect Accessibility', () => {
       expect(selectedOption?.textContent).toContain('Option 2')
     })
 
+    test('highlighted option is announced via aria-activedescendant', () => {
+      select.innerHTML = `
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+      `
+
+      slim = new SlimSelect({
+        select: select
+      })
+
+      slim.open()
+
+      const main = document.querySelector('.ss-main') as HTMLElement
+
+      // Simulate arrow down key
+      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+
+      // Check that aria-activedescendant is set to highlighted option
+      const activedescendant = main.getAttribute('aria-activedescendant')
+      expect(activedescendant).toBeTruthy()
+
+      // Verify the ID points to an actual option
+      const highlightedOption = document.getElementById(activedescendant!)
+      expect(highlightedOption).toBeTruthy()
+      expect(highlightedOption?.getAttribute('role')).toBe('option')
+      expect(highlightedOption?.textContent).toBeTruthy()
+    })
+
+    test('aria-activedescendant updates when navigating with arrow keys', () => {
+      select.innerHTML = `
+        <option value="1">Apple</option>
+        <option value="2">Banana</option>
+        <option value="3">Cherry</option>
+      `
+
+      slim = new SlimSelect({
+        select: select
+      })
+
+      slim.open()
+
+      const main = document.querySelector('.ss-main') as HTMLElement
+
+      // First arrow down - starts from selected (Apple by default)
+      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      let activedescendant = main.getAttribute('aria-activedescendant')
+      let highlightedOption = document.getElementById(activedescendant!)
+      const firstText = highlightedOption?.textContent
+
+      // Second arrow down - should move to next option
+      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      activedescendant = main.getAttribute('aria-activedescendant')
+      highlightedOption = document.getElementById(activedescendant!)
+      const secondText = highlightedOption?.textContent
+
+      // Verify we're navigating through different options
+      expect(firstText).toBeTruthy()
+      expect(secondText).toBeTruthy()
+      expect(secondText).not.toBe(firstText)
+
+      // Verify options have actual text content (not "Blank")
+      expect(['Apple', 'Banana', 'Cherry']).toContain(secondText)
+    })
+
+    test('aria-activedescendant is cleared when dropdown closes', () => {
+      select.innerHTML = `
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+      `
+
+      slim = new SlimSelect({
+        select: select
+      })
+
+      slim.open()
+
+      const main = document.querySelector('.ss-main') as HTMLElement
+
+      // Highlight an option
+      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      expect(main.getAttribute('aria-activedescendant')).toBeTruthy()
+
+      // Close dropdown
+      slim.close()
+
+      // aria-activedescendant should be cleared
+      expect(main.getAttribute('aria-activedescendant')).toBeNull()
+    })
+
+    test('search input is hidden from screen readers when closed (Issue #623)', () => {
+      select.innerHTML = `
+        <option value="1">Option 1</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true
+        }
+      })
+
+      const searchInput = document.querySelector('input[type="search"]')
+
+      // Should be hidden when closed
+      expect(searchInput?.getAttribute('aria-hidden')).toBe('true')
+
+      // Should be visible when opened
+      slim.open()
+      expect(searchInput?.getAttribute('aria-hidden')).toBeNull()
+
+      // Should be hidden again when closed
+      slim.close()
+      expect(searchInput?.getAttribute('aria-hidden')).toBe('true')
+    })
+
     test('aria-label or aria-labelledby is present for accessibility', () => {
       select.innerHTML = `
         <option value="1">Option 1</option>

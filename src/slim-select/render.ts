@@ -107,6 +107,9 @@ export default class Render {
     this.main.main.classList.add(this.settings.openPosition === 'up' ? this.classes.openAbove : this.classes.openBelow)
     this.main.main.setAttribute('aria-expanded', 'true')
 
+    // Make search visible to screen readers when opened
+    this.content.search.input.removeAttribute('aria-hidden')
+
     // move the content in to the right location
     this.moveContent()
 
@@ -129,6 +132,12 @@ export default class Render {
     this.content.main.classList.remove(this.classes.openAbove)
     this.content.main.classList.remove(this.classes.openBelow)
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
+
+    // Hide search from screen readers when closed
+    this.content.search.input.setAttribute('aria-hidden', 'true')
+
+    // Clear active descendant when closed
+    this.main.main.removeAttribute('aria-activedescendant')
   }
 
   public updateClassStyles(): void {
@@ -689,6 +698,8 @@ export default class Render {
     input.setAttribute('autocapitalize', 'off')
     input.setAttribute('autocomplete', 'off')
     input.setAttribute('autocorrect', 'off')
+    // Hide from screen readers by default (shown when opened)
+    input.setAttribute('aria-hidden', 'true')
 
     input.oninput = debounce((e: Event) => {
       this.callbacks.search((e.target as HTMLInputElement).value)
@@ -925,6 +936,11 @@ export default class Render {
         selectOption.classList.add(this.classes.highlighted)
         this.ensureElementInView(this.content.list, selectOption)
 
+        // Update aria-activedescendant for screen readers
+        if (selectOption.id) {
+          this.main.main.setAttribute('aria-activedescendant', selectOption.id)
+        }
+
         // If selected option has parent classes ss-optgroup with ss-close then click it
         const selectParent = selectOption.parentElement
         if (selectParent && selectParent.classList.contains(this.classes.close)) {
@@ -940,10 +956,16 @@ export default class Render {
 
     // If we get here, there is no highlighted option
     // So we will highlight the first or last based upon direction
-    options[dir === 'down' ? 0 : options.length - 1].classList.add(this.classes.highlighted)
+    const firstHighlight = options[dir === 'down' ? 0 : options.length - 1]
+    firstHighlight.classList.add(this.classes.highlighted)
+
+    // Update aria-activedescendant for screen readers
+    if (firstHighlight.id) {
+      this.main.main.setAttribute('aria-activedescendant', firstHighlight.id)
+    }
 
     // Scroll to highlighted one
-    this.ensureElementInView(this.content.list, options[dir === 'down' ? 0 : options.length - 1])
+    this.ensureElementInView(this.content.list, firstHighlight)
   }
 
   // Create main container that options will reside
@@ -1208,7 +1230,7 @@ export default class Render {
     // Create option
     const optionEl = document.createElement('div')
     optionEl.dataset.id = option.id // Dataset id for identifying an option
-    // optionEl.id = option.id // Remove for now as it is not needed and add duplicate id errors
+    optionEl.id = this.settings.id + '-' + option.id // Unique ID for ARIA references
     optionEl.classList.add(this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
