@@ -132,7 +132,7 @@ export default class Select {
         }
 
         if (m.type === 'childList') {
-          for (const n of m.addedNodes) {
+          for (const n of Array.from(m.addedNodes)) {
             if (n.nodeName === 'OPTION' && (<HTMLOptionElement>n).value === this.select.value) {
               // we added a new option that's now the select value
               this.select.dispatchEvent(new Event('change'))
