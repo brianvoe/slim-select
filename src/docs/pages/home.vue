@@ -138,6 +138,7 @@ export default defineComponent({
     }
 
     .row {
+      display: flex;
       justify-content: space-around;
 
       .list {
@@ -145,7 +146,6 @@ export default defineComponent({
         flex-direction: column;
         list-style: none;
         padding: 0px;
-        width: 200px;
         margin: 0 auto;
 
         li {

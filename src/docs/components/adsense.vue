@@ -1,66 +1,65 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useAppStore } from '@/docs/store'
+import { defineComponent, nextTick } from 'vue'
 
-let adScriptLoaded = false
+let adsScriptAppended = false
 
 export default defineComponent({
   name: 'AdSense',
   props: {
-    adClient: {
-      type: String,
-      default: 'ca-pub-4428453911800052'
-    },
-    adSlot: {
-      type: String,
-      default: 'XXXXXXXXXX' // Replace with your ad unit ID once created
-    },
-    adFormat: {
-      type: String,
-      default: 'auto'
-    },
-    fullWidthResponsive: {
-      type: Boolean,
-      default: true
+    adClient: { type: String, default: 'ca-pub-4428453911800052' },
+    // your ad unit id (required) default content ad unit id
+    adSlot: { type: String, default: '1270131515', required: true },
+    adFormat: { type: String, default: 'auto' },
+    fullWidthResponsive: { type: [Boolean, String], default: true }
+  },
+  computed: {
+    show(): boolean {
+      // don’t show on localhost and require a slot
+      return location.hostname !== 'localhost' && this.adSlot !== ''
     }
   },
-  data() {
-    const appStore = useAppStore()
-    
-    return { appStore }
-  },
-  mounted() {
-    // Don't load ads on localhost
-    if (this.appStore.isLocalhost) {
-      return
-    }
+  async mounted() {
+    if (!this.show) return
+    await this.ensureScript()
+    await nextTick()
+    this.pushAd()
 
-    // Load AdSense script if not already loaded
-    if (!adScriptLoaded) {
-      const script = document.createElement('script')
-      script.async = true
-      script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-      script.setAttribute('data-ad-client', this.adClient)
-      script.crossOrigin = 'anonymous'
-      document.head.appendChild(script)
-      adScriptLoaded = true
-
-      script.onload = () => {
-        // Push ad after script loads
-        try {
-          ;(window as any).adsbygoogle = (window as any).adsbygoogle || []
-          ;(window as any).adsbygoogle.push({})
-        } catch (e) {
-          console.error('AdSense error:', e)
-        }
+    // Re-push on SPA route changes (if you use vue-router)
+    // Remove if not applicable.
+    // @ts-ignore
+    this.$watch(
+      () => this.$route?.fullPath,
+      async () => {
+        await nextTick()
+        this.pushAd()
       }
-    } else {
-      // Script already loaded, just push the ad
+    )
+  },
+  methods: {
+    ensureScript(): Promise<void> {
+      if (adsScriptAppended) return Promise.resolve()
+
+      return new Promise((resolve) => {
+        const s = document.createElement('script')
+        s.async = true
+        s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${this.adClient}`
+        s.crossOrigin = 'anonymous'
+        s.onload = () => resolve()
+        document.head.appendChild(s)
+        adsScriptAppended = true
+      })
+    },
+    pushAd() {
       try {
-        ;(window as any).adsbygoogle = (window as any).adsbygoogle || []
-        ;(window as any).adsbygoogle.push({})
+        // Only push if this <ins> hasn't been initialized
+        const ins = this.$el.querySelector('ins.adsbygoogle') as HTMLElement | null
+        if (!ins) return
+
+        // If Google added a data-adsbygoogle-status attr, it's already initialized – skip
+        if (ins.getAttribute('data-adsbygoogle-status')) return // @ts-ignore
+        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
       } catch (e) {
-        console.error('AdSense error:', e)
+        console.error('AdSense push error', e)
       }
     }
   }
@@ -69,64 +68,35 @@ export default defineComponent({
 
 <style lang="scss">
 .adsense-container {
-  display: block;
-  margin: var(--spacing-half) 0;
+  margin: var(--spacing-half, 8px) 0;
   text-align: center;
 
-  ins {
-    display: block;
-    text-decoration: none;
-  }
-
   .ad-placeholder {
-    display: block;
-    padding: var(--spacing);
-    background:
-      linear-gradient(135deg, #f5f5f5 25%, transparent 25%), linear-gradient(225deg, #f5f5f5 25%, transparent 25%),
-      linear-gradient(45deg, #f5f5f5 25%, transparent 25%), linear-gradient(315deg, #f5f5f5 25%, #e0e0e0 25%);
-    background-position:
-      10px 0,
-      10px 0,
-      0 0,
-      0 0;
-    background-size: 20px 20px;
-    background-repeat: repeat;
+    padding: var(--spacing, 12px);
     border: 2px dashed #ccc;
-    border-radius: var(--border-radius);
-    color: #999;
+    border-radius: 8px;
+    color: #777;
     font-size: 14px;
-    text-align: center;
-
-    strong {
-      display: block;
-      margin-bottom: var(--spacing-quarter);
-      color: #666;
-    }
-
-    small {
-      display: block;
-      font-size: 12px;
-      margin-top: var(--spacing-quarter);
-      color: #aaa;
-    }
   }
 }
 </style>
 
 <template>
   <div class="adsense-container">
-    <div v-if="appStore.isLocalhost" class="ad-placeholder">
+    <div v-if="!show" class="ad-placeholder">
       <strong>📢 Ad Placement</strong>
-      <div>Google AdSense ad will display here</div>
-      <small>Ad format: {{ adFormat }} | Responsive: {{ fullWidthResponsive }}</small>
+      <div>AdSense ad will display here</div>
+      <small>Ad format: {{ adFormat }} | Responsive: {{ String(fullWidthResponsive) }}</small>
     </div>
+
     <ins
       v-else
       class="adsbygoogle"
+      style="display: block"
       :data-ad-client="adClient"
       :data-ad-slot="adSlot"
       :data-ad-format="adFormat"
-      :data-full-width-responsive="fullWidthResponsive"
-    ></ins>
+      :data-full-width-responsive="String(fullWidthResponsive)"
+    />
   </div>
 </template>

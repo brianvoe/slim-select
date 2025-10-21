@@ -296,7 +296,7 @@ export default defineComponent({
   <nav>
     <select ref="nav"></select>
     <div class="nav-content" ref="navContent"></div>
-    <AdSense v-if="!appStore.isMobile" />
+    <AdSense v-if="!appStore.isMobile" ad-slot="9560132183" />
   </nav>
   <main>
     <router-view />
