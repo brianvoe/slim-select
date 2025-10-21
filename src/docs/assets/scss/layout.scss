@@ -25,7 +25,7 @@ body {
     width: 100%;
     max-width: var(--width-max);
     height: 100%;
-    padding: 0;
+    padding: 0 var(--spacing-half);
     margin: 0 auto;
     overflow-x: hidden;
     box-sizing: border-box;
@@ -46,18 +46,22 @@ body {
     header {
       position: fixed;
       top: 0;
+      left: 50%;
+      transform: translateX(-50%);
       grid-area: header;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       color: var(--color-white);
       height: var(--height-header);
+      min-width: 0;
       width: 100%;
       max-width: var(--width-max);
       margin: 0;
-      padding: var(--spacing-half) 0 0 0;
+      padding: var(--spacing-half) var(--spacing-half) 0 var(--spacing-half);
       z-index: 100000;
       background-color: var(--color-primary);
+      box-sizing: border-box;
 
       @media (max-width: 700px) {
         height: calc(var(--height-header) - var(--height-nav));
@@ -155,15 +159,21 @@ body {
       flex-direction: column;
       top: calc(var(--height-header) + var(--spacing-half));
       width: var(--width-nav);
+      min-width: 0;
       max-width: var(--width-max);
       max-height: calc(100vh - var(--height-header) - var(--spacing));
       overflow: hidden;
       z-index: 100000;
+      box-sizing: border-box;
 
       @media (max-width: 700px) {
+        left: 50%;
+        transform: translateX(-50%);
         top: calc(var(--height-header) - var(--height-nav));
         height: auto;
         width: 100%;
+        max-width: var(--width-max);
+        padding: 0 var(--spacing-half);
       }
 
       .ss-main {
@@ -255,13 +265,6 @@ body {
 
           @media screen and (max-width: 700px) {
             flex-direction: column;
-          }
-
-          > * {
-            flex: 1 1 0;
-            min-width: 0;
-            max-width: 100%;
-            overflow: hidden;
           }
 
           .btn {
