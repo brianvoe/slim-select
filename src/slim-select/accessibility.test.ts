@@ -6,7 +6,7 @@
 
 import { describe, expect, test, beforeEach, afterEach } from 'vitest'
 import { run as axe, type AxeResults } from 'axe-core'
-import SlimSelect from './index'
+import SlimSelect from '@/slim-select'
 
 describe('SlimSelect Accessibility', () => {
   let container: HTMLDivElement

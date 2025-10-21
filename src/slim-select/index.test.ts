@@ -5,7 +5,7 @@
 'use strict'
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import SlimSelect from './index'
+import SlimSelect from '@/slim-select'
 
 describe('SlimSelect Module', () => {
   let slim: SlimSelect
@@ -16,6 +16,12 @@ describe('SlimSelect Module', () => {
     slim = new SlimSelect({
       select: '#test'
     })
+  })
+
+  afterEach(() => {
+    if (slim) {
+      slim.destroy()
+    }
   })
 
   describe('constructor', () => {
