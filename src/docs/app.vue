@@ -3,7 +3,8 @@ import { defineComponent } from 'vue'
 
 import SlimSelect, { type Settings } from '@/slim-select'
 import { debounce } from '@/slim-select/helpers'
-import AdSense from './components/adsense.vue'
+import AdSense from '@/docs/components/adsense.vue'
+import { useAppStore } from '@/docs/store'
 
 export default defineComponent({
   name: 'App',
@@ -13,9 +14,7 @@ export default defineComponent({
   data() {
     return {
       nav: null as SlimSelect | null,
-      navDebounce: debounce(() => {
-        this.setDemensions()
-      }, 100),
+      navDebounce: null as (() => void) | null,
       year: new Date().getFullYear(),
       width: 0,
       height: 0,
@@ -142,10 +141,18 @@ export default defineComponent({
             { text: 'react', value: 'react' }
           ]
         }
-      ]
+      ],
+
+      // Store
+      appStore: useAppStore()
     }
   },
   mounted() {
+    this.navDebounce = debounce(() => {
+      this.appStore.setWidth(window.innerWidth)
+      this.setDemensions()
+    }, 100)
+
     this.runNav()
 
     this.$router.isReady().then(() => {
@@ -196,11 +203,15 @@ export default defineComponent({
     })
 
     this.setDemensions()
-    window.addEventListener('resize', this.navDebounce)
+    if (this.navDebounce) {
+      window.addEventListener('resize', this.navDebounce)
+    }
     window.addEventListener('nav-updated', this.updateNav)
   },
   unmounted() {
-    window.removeEventListener('resize', this.navDebounce)
+    if (this.navDebounce) {
+      window.removeEventListener('resize', this.navDebounce)
+    }
     window.removeEventListener('nav-updated', this.updateNav)
 
     this.nav?.destroy()
@@ -285,7 +296,7 @@ export default defineComponent({
   <nav>
     <select ref="nav"></select>
     <div class="nav-content" ref="navContent"></div>
-    <AdSense />
+    <AdSense v-if="!appStore.isMobile" />
   </nav>
   <main>
     <router-view />
