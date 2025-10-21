@@ -838,7 +838,7 @@ class N {
     i && !(s && !t) ? l.classList.remove(a) : l.classList.add(a);
   }
 }
-class P {
+class M {
   select;
   // Mutation observer fields
   onValueChange;
@@ -1032,7 +1032,7 @@ class P {
     this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.observer && (this.observer.disconnect(), this.observer = null), delete this.select.dataset.id, this.showUI();
   }
 }
-class M {
+class P {
   id = "";
   // Primary ID for the select
   style = "";
@@ -1081,6 +1081,9 @@ class I {
   select;
   store;
   render;
+  // Timeout tracking for cleanup
+  openTimeout = null;
+  closeTimeout = null;
   // Events
   events = {
     search: void 0,
@@ -1102,11 +1105,11 @@ class I {
       e.events && e.events.error && e.events.error(new Error("Element isnt of type select"));
       return;
     }
-    this.selectEl.dataset.ssid && this.destroy(), this.settings = new M(e.settings), this.cssClasses = new E(e.cssClasses);
+    this.selectEl.dataset.ssid && this.destroy(), this.settings = new P(e.settings), this.cssClasses = new E(e.cssClasses);
     const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
     for (const n in e.events)
       e.events.hasOwnProperty(n) && (t.indexOf(n) !== -1 ? this.events[n] = C(e.events[n], 100) : this.events[n] = e.events[n]);
-    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new P(this.selectEl), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
+    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new M(this.selectEl), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
       this.setSelected(n.map((o) => o.id));
     }, this.select.onClassChange = (n) => {
       this.settings.class = n, this.render.updateClassStyles();
@@ -1180,12 +1183,12 @@ class I {
     this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !S(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   open() {
-    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, setTimeout(() => {
+    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
       this.events.afterOpen && this.events.afterOpen(), this.settings.isOpen && (this.settings.isFullOpen = !0), document.addEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
   }
   close(e = null) {
-    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, setTimeout(() => {
+    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
       this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
   }
@@ -1208,7 +1211,7 @@ class I {
     } else Array.isArray(t) ? (this.store.setData(t, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData())) : this.render.renderError("Search event must return a promise or an array of data");
   }
   destroy() {
-    document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
+    this.openTimeout && (clearTimeout(this.openTimeout), this.openTimeout = null), this.closeTimeout && (clearTimeout(this.closeTimeout), this.closeTimeout = null), this.settings.intervalMove && (clearInterval(this.settings.intervalMove), this.settings.intervalMove = null), document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
   }
   windowResize = C(() => {
     !this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
@@ -1230,8 +1233,8 @@ export {
   g as Optgroup,
   u as Option,
   N as Render,
-  P as Select,
-  M as Settings,
+  M as Select,
+  P as Settings,
   k as Store,
   I as default
 };

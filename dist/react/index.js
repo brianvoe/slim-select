@@ -1,5 +1,5 @@
 import ae, { forwardRef as re, useRef as F, useImperativeHandle as oe, useEffect as j } from "react";
-var P = { exports: {} }, A = {};
+var P = { exports: {} }, T = {};
 /**
  * @license React
  * react-jsx-runtime.production.js
@@ -11,7 +11,7 @@ var P = { exports: {} }, A = {};
  */
 var X;
 function ce() {
-  if (X) return A;
+  if (X) return T;
   X = 1;
   var p = Symbol.for("react.transitional.element"), e = Symbol.for("react.fragment");
   function t(s, i, l) {
@@ -29,9 +29,9 @@ function ce() {
       props: l
     };
   }
-  return A.Fragment = e, A.jsx = t, A.jsxs = t, A;
+  return T.Fragment = e, T.jsx = t, T.jsxs = t, T;
 }
-var T = {};
+var A = {};
 /**
  * @license React
  * react-jsx-runtime.development.js
@@ -249,7 +249,7 @@ React keys must be passed directly to JSX without using spread:
       f,
       l
     )(), G = V(s(l)), J = {};
-    T.Fragment = S, T.jsx = function(n, u, g) {
+    A.Fragment = S, A.jsx = function(n, u, g) {
       var v = 1e4 > I.recentlyCreatedOwnerStacks++;
       return o(
         n,
@@ -259,7 +259,7 @@ React keys must be passed directly to JSX without using spread:
         v ? Error("react-stack-top-frame") : W,
         v ? V(s(n)) : G
       );
-    }, T.jsxs = function(n, u, g) {
+    }, A.jsxs = function(n, u, g) {
       var v = 1e4 > I.recentlyCreatedOwnerStacks++;
       return o(
         n,
@@ -270,7 +270,7 @@ React keys must be passed directly to JSX without using spread:
         v ? V(s(n)) : G
       );
     };
-  }()), T;
+  }()), A;
 }
 var Z;
 function de() {
@@ -1360,6 +1360,9 @@ let Oe = class {
   select;
   store;
   render;
+  // Timeout tracking for cleanup
+  openTimeout = null;
+  closeTimeout = null;
   // Events
   events = {
     search: void 0,
@@ -1459,12 +1462,12 @@ let Oe = class {
     this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !U(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   open() {
-    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, setTimeout(() => {
+    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
       this.events.afterOpen && this.events.afterOpen(), this.settings.isOpen && (this.settings.isFullOpen = !0), document.addEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
   }
   close(e = null) {
-    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, setTimeout(() => {
+    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
       this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
   }
@@ -1487,7 +1490,7 @@ let Oe = class {
     } else Array.isArray(t) ? (this.store.setData(t, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData())) : this.render.renderError("Search event must return a promise or an array of data");
   }
   destroy() {
-    document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
+    this.openTimeout && (clearTimeout(this.openTimeout), this.openTimeout = null), this.closeTimeout && (clearTimeout(this.closeTimeout), this.closeTimeout = null), this.settings.intervalMove && (clearInterval(this.settings.intervalMove), this.settings.intervalMove = null), document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
   }
   windowResize = N(() => {
     !this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();

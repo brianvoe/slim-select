@@ -66,7 +66,7 @@ class N {
 function y() {
   return Math.random().toString(36).substring(2, 10);
 }
-function P(h, e) {
+function M(h, e) {
   function t(i, l) {
     return l && i && i.classList && i.classList.contains(l) || l && i && i.dataset && i.dataset.id && i.dataset.id === e ? i : null;
   }
@@ -87,7 +87,7 @@ function S(h, e = 50, t = !1) {
 function C(h, e) {
   return JSON.stringify(h) === JSON.stringify(e);
 }
-function M(h) {
+function P(h) {
   const e = h.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (t) => "-" + t.toLowerCase());
   return h[0] === h[0].toUpperCase() ? e.substring(1) : e;
 }
@@ -1026,7 +1026,7 @@ class I {
     return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), e.display || (t.style.display = "none"), e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((s) => {
       t.classList.add(s);
     }), e.data && typeof e.data == "object" && Object.keys(e.data).forEach((s) => {
-      t.setAttribute("data-" + M(s), e.data[s]);
+      t.setAttribute("data-" + P(s), e.data[s]);
     }), t;
   }
   destroy() {
@@ -1082,6 +1082,9 @@ let F = class {
   select;
   store;
   render;
+  // Timeout tracking for cleanup
+  openTimeout = null;
+  closeTimeout = null;
   // Events
   events = {
     search: void 0,
@@ -1181,12 +1184,12 @@ let F = class {
     this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !C(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   open() {
-    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, setTimeout(() => {
+    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
       this.events.afterOpen && this.events.afterOpen(), this.settings.isOpen && (this.settings.isFullOpen = !0), document.addEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
   }
   close(e = null) {
-    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, setTimeout(() => {
+    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.clearSearch(), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
       this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
   }
@@ -1209,7 +1212,7 @@ let F = class {
     } else Array.isArray(t) ? (this.store.setData(t, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData())) : this.render.renderError("Search event must return a promise or an array of data");
   }
   destroy() {
-    document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
+    this.openTimeout && (clearTimeout(this.openTimeout), this.openTimeout = null), this.closeTimeout && (clearTimeout(this.closeTimeout), this.closeTimeout = null), this.settings.intervalMove && (clearInterval(this.settings.intervalMove), this.settings.intervalMove = null), document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
   }
   windowResize = S(() => {
     !this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
@@ -1220,7 +1223,7 @@ let F = class {
   });
   // Event listener for document click
   documentClick = (e) => {
-    this.settings.isOpen && e.target && !P(e.target, this.settings.id) && this.close(e.type);
+    this.settings.isOpen && e.target && !M(e.target, this.settings.id) && this.close(e.type);
   };
   // Event Listener for window visibility change
   windowVisibilityChange = () => {

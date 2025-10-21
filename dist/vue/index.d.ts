@@ -252,6 +252,8 @@ declare class SlimSelect {
     select: Select;
     store: Store;
     render: Render;
+    private openTimeout;
+    private closeTimeout;
     events: Events;
     constructor(config: Config);
     enable(): void;
