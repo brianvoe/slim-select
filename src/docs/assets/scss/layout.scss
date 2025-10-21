@@ -238,10 +238,6 @@ body {
           box-shadow: none;
         }
 
-        * {
-          box-sizing: border-box;
-        }
-
         pre {
           overflow-x: auto;
           max-width: 100%;
@@ -265,6 +261,12 @@ body {
 
           @media screen and (max-width: 700px) {
             flex-direction: column;
+          }
+
+          > * {
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 100%;
           }
 
           .btn {
