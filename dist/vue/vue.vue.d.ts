@@ -37,7 +37,16 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             isMultiple: boolean;
             isOpen: boolean;
             isFullOpen: boolean;
-            intervalMove: ReturnType<typeof setInterval> | null;
+            intervalMove: {
+                close: () => NodeJS.Timeout;
+                hasRef: () => boolean;
+                ref: () => NodeJS.Timeout;
+                refresh: () => NodeJS.Timeout;
+                unref: () => NodeJS.Timeout;
+                _onTimeout: (...args: any[]) => void;
+                [Symbol.toPrimitive]: () => number;
+                [Symbol.dispose]: () => void;
+            } | null;
             disabled: boolean;
             alwaysOpen: boolean;
             showSearch: boolean;
@@ -162,7 +171,16 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
                 isMultiple: boolean;
                 isOpen: boolean;
                 isFullOpen: boolean;
-                intervalMove: ReturnType<typeof setInterval> | null;
+                intervalMove: {
+                    close: () => NodeJS.Timeout;
+                    hasRef: () => boolean;
+                    ref: () => NodeJS.Timeout;
+                    refresh: () => NodeJS.Timeout;
+                    unref: () => NodeJS.Timeout;
+                    _onTimeout: (...args: any[]) => void;
+                    [Symbol.toPrimitive]: () => number;
+                    [Symbol.dispose]: () => void;
+                } | null;
                 disabled: boolean;
                 alwaysOpen: boolean;
                 showSearch: boolean;
