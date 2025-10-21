@@ -32,11 +32,9 @@ export default defineConfig({
   plugins: [
     react(),
     dts({
-      entryRoot: 'src/slim-select/react',
-      outDir: 'dist/react',
       rollupTypes: true,
-      include: ['src/slim-select/react/index.tsx'],
-      exclude: ['src/slim-select/**/*.test.ts']
+      include: ['src/slim-select/react/**/*'],
+      exclude: ['src/slim-select/**/*.test.ts', 'src/docs/**/*']
     })
   ]
 })

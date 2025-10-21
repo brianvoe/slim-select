@@ -31,11 +31,9 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      entryRoot: 'src/slim-select/vue',
-      outDir: 'dist/vue',
       rollupTypes: true,
-      include: ['src/slim-select/vue/index.ts'],
-      exclude: ['src/slim-select/**/*.test.ts']
+      include: ['src/slim-select/vue/**/*'],
+      exclude: ['src/slim-select/**/*.test.ts', 'src/docs/**/*']
     })
   ]
 })
