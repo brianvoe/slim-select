@@ -103,13 +103,6 @@ async function main() {
   // Step 2: Build the project
   log('\n🔨 Step 2: Building project...', 'yellow')
 
-  // First run type check to catch TypeScript errors
-  log('Running type check...', 'cyan')
-  if (!exec('npx tsc --noEmit')) {
-    log('❌ Type check failed. Aborting release.', 'red')
-    process.exit(1)
-  }
-
   // Then build
   if (!exec('npm run build')) {
     log('❌ Build failed. Aborting release.', 'red')

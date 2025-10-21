@@ -49,7 +49,7 @@
   "scripts": {
     "dev": "vite --config vite.config.docs.mts",
     "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
-    "build": "npm run build:clean && npm run build:library && npm run build:docs",
+    "build": "npm run typecheck && npm run build:clean && npm run build:library && npm run build:docs",
     "build:clean": "rimraf ./dist/* && rimraf ./docs/*",
     "build:docs": "vite build --config vite.config.docs.mts",
     "build:library": "npm run build:library:js && npm run build:library:vue && npm run build:library:react && npm run build:library:css",
@@ -58,6 +58,7 @@
     "build:library:react": "vite build --config vite.config.react.mts",
     "build:library:css": "sass src/slim-select/slimselect.scss dist/slimselect.css --style=compressed",
     "lint": "prettier --write ./src/**/*",
+    "typecheck": "npx tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
