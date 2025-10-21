@@ -6,4 +6,4 @@ export default SlimSelect
 export { Settings, Option, Optgroup } from '../index'
 
 // Re-export types
-export type { DataArray, DataObject, Events } from '../index'
+export type { Config, Events } from '../index'

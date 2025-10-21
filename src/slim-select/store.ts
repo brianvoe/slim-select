@@ -1,31 +1,47 @@
 import { generateID } from './helpers'
 
-export type DataArray = DataObject[]
-export type DataObject = Optgroup | Option
-
-export type DataArrayPartial = DataObjectPartial[]
-export type DataObjectPartial = OptgroupOptional | OptionOptional
-
 type selectType = 'single' | 'multiple'
 
-export interface OptgroupOptional {
-  id?: string
-  label: string // Required
-  selectAll?: boolean
-  selectAllText?: string
-  closable?: 'off' | 'open' | 'close'
-  options?: OptionOptional[]
-}
+export class Option {
+  id: string
+  value: string
+  text: string
+  html: string
+  defaultSelected: boolean
+  selected: boolean
+  display: boolean
+  disabled: boolean
+  placeholder: boolean
+  class: string
+  style: string
+  data: { [key: string]: string }
+  mandatory: boolean
 
+  constructor(option: Partial<Option>) {
+    this.id = !option.id || option.id === '' ? generateID() : option.id
+    this.value = option.value === undefined ? option.text || '' : option.value || ''
+    this.text = option.text || ''
+    this.html = option.html || ''
+    this.defaultSelected = option.defaultSelected !== undefined ? option.defaultSelected : false
+    this.selected = option.selected !== undefined ? option.selected : false
+    this.display = option.display !== undefined ? option.display : true
+    this.disabled = option.disabled !== undefined ? option.disabled : false
+    this.mandatory = option.mandatory !== undefined ? option.mandatory : false
+    this.placeholder = option.placeholder !== undefined ? option.placeholder : false
+    this.class = option.class || ''
+    this.style = option.style || ''
+    this.data = option.data || {}
+  }
+}
 export class Optgroup {
   public id: string
   public label: string
   public selectAll: boolean
   public selectAllText: string
   public closable: 'off' | 'open' | 'close'
-  public options: Option[]
+  public options: Partial<Option>[]
 
-  constructor(optgroup: OptgroupOptional) {
+  constructor(optgroup: Partial<Optgroup>) {
     this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id
     this.label = optgroup.label || ''
     this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll
@@ -43,74 +59,28 @@ export class Optgroup {
   }
 }
 
-export interface OptionOptional {
-  id?: string
-  value?: string
-  text: string // Required
-  html?: string
-  selected?: boolean
-  defaultSelected?: boolean
-  display?: boolean
-  disabled?: boolean
-  mandatory?: boolean
-  placeholder?: boolean
-  class?: string
-  style?: string
-  data?: { [key: string]: string }
-}
-
-export class Option {
-  id: string
-  value: string
-  text: string
-  html: string
-  defaultSelected: boolean
-  selected: boolean
-  display: boolean
-  disabled: boolean
-  placeholder: boolean
-  class: string
-  style: string
-  data: { [key: string]: string }
-  mandatory: boolean
-
-  constructor(option: OptionOptional) {
-    this.id = !option.id || option.id === '' ? generateID() : option.id
-    this.value = option.value === undefined ? option.text : option.value
-    this.text = option.text || ''
-    this.html = option.html || ''
-    this.defaultSelected = option.defaultSelected !== undefined ? option.defaultSelected : false
-    this.selected = option.selected !== undefined ? option.selected : false
-    this.display = option.display !== undefined ? option.display : true
-    this.disabled = option.disabled !== undefined ? option.disabled : false
-    this.mandatory = option.mandatory !== undefined ? option.mandatory : false
-    this.placeholder = option.placeholder !== undefined ? option.placeholder : false
-    this.class = option.class || ''
-    this.style = option.style || ''
-    this.data = option.data || {}
-  }
-}
-
 export default class Store {
   private selectType: selectType = 'single'
 
   // Main data set, never null
-  private data: DataArray = []
+  private data: (Option | Optgroup)[] = []
   private selectedOrder: string[] = []
 
-  constructor(type: selectType, data: DataArrayPartial) {
+  constructor(type: selectType, data: (Partial<Option> | Partial<Optgroup>)[]) {
     this.selectType = type
     this.setData(data)
   }
 
   // Validate DataArrayPartial
-  public validateDataArray(data: DataArray | DataArrayPartial): Error | null {
+  public validateDataArray(data: (Partial<Option> | Partial<Optgroup>)[]): Error | null {
     if (!Array.isArray(data)) {
       return new Error('Data must be an array')
     }
 
     // Loop through each data object
     for (let dataObj of data) {
+      if (!dataObj) continue
+
       // Optgroup
       if (dataObj instanceof Optgroup || 'label' in dataObj) {
         if (!('label' in dataObj)) {
@@ -139,7 +109,7 @@ export default class Store {
   }
 
   // Validate Option
-  public validateOption(option: Option | OptionOptional): Error | null {
+  public validateOption(option: Partial<Option>): Error | null {
     if (!('text' in option)) {
       return new Error('Option must have a text')
     }
@@ -147,33 +117,35 @@ export default class Store {
     return null
   }
 
-  public partialToFullData(data: DataArrayPartial): DataArray {
-    let dataFinal: DataArray = []
-    data.forEach((dataObj: DataObject | DataObjectPartial) => {
+  public partialToFullData(data: (Partial<Option> | Partial<Optgroup>)[]): (Option | Optgroup)[] {
+    let dataFinal: (Option | Optgroup)[] = []
+    data.forEach((dataObj) => {
+      if (!dataObj) return
+
       // Optgroup
       if (dataObj instanceof Optgroup || 'label' in dataObj) {
         let optOptions: Option[] = []
         if ('options' in dataObj && dataObj.options) {
-          dataObj.options.forEach((option: Option | OptionOptional) => {
+          dataObj.options.forEach((option: Partial<Option>) => {
             optOptions.push(new Option(option))
           })
         }
 
         if (optOptions.length > 0) {
-          dataFinal.push(new Optgroup(dataObj))
+          dataFinal.push(new Optgroup(dataObj as Partial<Optgroup>))
         }
       }
 
       // Option
       if (dataObj instanceof Option || 'text' in dataObj) {
-        dataFinal.push(new Option(dataObj))
+        dataFinal.push(new Option(dataObj as Partial<Option>))
       }
     })
 
     return dataFinal
   }
 
-  public setData(data: DataArray | DataArrayPartial, preserveSelected: boolean = false) {
+  public setData(data: (Partial<Option> | Partial<Optgroup>)[], preserveSelected: boolean = false) {
     // Convert new data to full data array
     const newData = this.partialToFullData(data)
 
@@ -182,7 +154,7 @@ export default class Store {
       const selectedOptions = this.getSelectedOptions()
 
       // Check which selected options are missing from new data
-      const missingSelected: DataArray = []
+      const missingSelected: (Option | Optgroup)[] = []
       selectedOptions.forEach((selectedOption) => {
         let found = false
 
@@ -221,8 +193,8 @@ export default class Store {
   }
 
   // Get data will return all the data
-  public getData(): DataArray {
-    return this.filter(null, true)
+  public getData(): Option[] | Optgroup[] {
+    return this.filter(null, true) as Option[] | Optgroup[]
   }
 
   // Get data options will return the data as a
@@ -231,9 +203,9 @@ export default class Store {
     return this.filter(null, false) as Option[]
   }
 
-  public addOption(option: OptionOptional, addToStart: boolean = false) {
+  public addOption(option: Partial<Option>, addToStart: boolean = false) {
     if (addToStart) {
-      let data = [new Option(option)] as DataArray
+      let data = [new Option(option)] as (Option | Optgroup)[]
       this.setData(data.concat(this.getData()))
     } else {
       this.setData(this.getData().concat(new Option(option)))
@@ -244,19 +216,20 @@ export default class Store {
   // each option and set the selected property to true
   // but also clean selected by determining selectType
   public setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]) {
-    let firstOption: Option | null = null
+    let firstOption: Partial<Option> | null = null
     let hasSelected = false
-    const selectedObjects: Option[] = []
+    const selectedObjects: Partial<Option>[] = []
 
     for (let dataObj of this.data) {
       // Optgroup
       if (dataObj instanceof Optgroup) {
-        for (let option of dataObj.options) {
+        for (let option of dataObj.options as Partial<Option>[]) {
           if (!firstOption) {
             firstOption = option
           }
 
-          option.selected = hasSelected ? false : selectedValues.includes(option[selectedType])
+          let optionValue = option[selectedType] || ''
+          option.selected = hasSelected ? false : selectedValues.includes(optionValue)
 
           // If the option is selected, set hasSelected to true
           // for single based selects
@@ -346,7 +319,7 @@ export default class Store {
     let option: Option | null = null
     for (let dataObj of this.data) {
       if (dataObj instanceof Optgroup) {
-        option = dataObj.options[0]
+        option = dataObj.options[0] as Option
       } else if (dataObj instanceof Option) {
         option = dataObj
       }
@@ -359,7 +332,7 @@ export default class Store {
   }
 
   // Take in search string and return filtered list of values
-  public search(search: string, searchFilter: (opt: Option, search: string) => boolean): DataArray {
+  public search(search: string, searchFilter: (opt: Option, search: string) => boolean): (Option | Optgroup)[] {
     search = search.trim()
 
     // If search is empty, return all data
@@ -375,14 +348,15 @@ export default class Store {
 
   // Filter takes in a function that will be used to filter the data
   // This will also keep optgroups of sub options meet the filter requirements
-  public filter(filter: { (opt: Option): boolean } | null, includeOptgroup: boolean): DataArray {
-    const dataSearch: DataArray = []
-    this.data.forEach((dataObj: DataObject) => {
+  public filter(filter: { (opt: Option): boolean } | null, includeOptgroup: boolean): (Option | Optgroup)[] {
+    const dataSearch: (Option | Optgroup)[] = []
+    this.data.forEach((dataObj: Option | Optgroup) => {
       // Optgroup
       if (dataObj instanceof Optgroup) {
         let optOptions: Option[] = []
-        dataObj.options.forEach((option: Option) => {
-          if (!filter || filter(option)) {
+        let options = dataObj.options as Option[]
+        options.forEach((option: Option) => {
+          if (!filter || filter(option as Option)) {
             // If you dont want to include optgroups
             // just push to the dataSearch array
             if (!includeOptgroup) {

@@ -5,9 +5,7 @@
 'use strict'
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import SlimSelect from './'
-import { OptionOptional } from './store'
-import { Config } from './index'
+import SlimSelect from './index'
 
 describe('SlimSelect Module', () => {
   let slim: SlimSelect
@@ -119,7 +117,7 @@ describe('SlimSelect Module', () => {
         <option id="3" value="3">Two</option>
     </select>`
 
-    const options: OptionOptional[] = [
+    const options = [
       {
         id: '1',
         value: '1',
@@ -136,7 +134,7 @@ describe('SlimSelect Module', () => {
         text: 'Three'
       }
     ]
-    const config: Config = {
+    const config = {
       select: '#test',
       settings: {
         allowDeselect: true
@@ -157,7 +155,7 @@ describe('SlimSelect Module', () => {
         <option id="3" value="3">Two</option>
     </select>`
 
-    const options: OptionOptional[] = [
+    const options = [
       {
         id: '1',
         value: '1',
@@ -176,7 +174,7 @@ describe('SlimSelect Module', () => {
         text: 'Three'
       }
     ]
-    const config: Config = {
+    const config = {
       select: '#test',
       settings: {
         allowDeselect: true

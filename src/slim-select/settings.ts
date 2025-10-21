@@ -1,7 +1,5 @@
 import { generateID } from './helpers'
 
-export type SettingsPartial = Partial<Settings>
-
 export default class Settings {
   public id: string = '' // Primary ID for the select
   public style: string = '' // Style attribute from the select element
@@ -39,7 +37,7 @@ export default class Settings {
   public maxValuesMessage: string
   public addableText: string
 
-  constructor(settings?: SettingsPartial) {
+  constructor(settings?: Partial<Settings>) {
     if (!settings) {
       settings = {}
     }

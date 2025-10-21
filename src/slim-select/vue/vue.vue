@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import SlimSelect, { Config, Events } from '../index'
-import { SettingsPartial } from '../settings'
-import { DataArrayPartial, Option } from '../store'
+import SlimSelect, { Config, Events, Option, Optgroup, Settings } from '../index'
 
 export default defineComponent({
   name: 'SlimSelect',
@@ -15,10 +13,10 @@ export default defineComponent({
       default: false
     },
     data: {
-      type: Array as PropType<DataArrayPartial>
+      type: Array as PropType<(Partial<Option> | Partial<Optgroup>)[]>
     },
     settings: {
-      type: Object as PropType<SettingsPartial>
+      type: Object as PropType<Partial<Settings>>
     },
     events: {
       type: Object as PropType<Events>,

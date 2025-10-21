@@ -2,46 +2,29 @@ import CssClasses from './classes'
 import { debounce, hasClassInTree, isEqual } from './helpers'
 import Render from './render'
 import Select from './select'
-import Settings, { type SettingsPartial } from './settings'
-import Store, {
-  type DataArray,
-  type DataArrayPartial,
-  type DataObject,
-  type DataObjectPartial,
-  Option,
-  type OptionOptional,
-  Optgroup,
-  type OptgroupOptional
-} from './store'
+import Settings from './settings'
+import Store, { Option, Optgroup } from './store'
 
 // Export classes
-export { Option, Optgroup }
-
-// Export types
-export type {
-  SettingsPartial,
-  DataArray,
-  DataArrayPartial,
-  DataObject,
-  DataObjectPartial,
-  OptionOptional,
-  OptgroupOptional
-}
+export { Select, Settings, Render, Store, Option, Optgroup }
 
 export interface Config {
   select: string | Element
-  data?: DataArrayPartial
-  settings?: SettingsPartial
+  data?: (Partial<Option> | Partial<Optgroup>)[]
+  settings?: Partial<Settings>
   cssClasses?: Partial<CssClasses>
   events?: Events
 }
 
 export interface Events {
-  search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial
+  search?: (
+    searchValue: string,
+    currentData: (Option | Optgroup)[]
+  ) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[]
   searchFilter?: (option: Option, search: string) => boolean
   addable?: (
     value: string
-  ) => Promise<OptionOptional | string> | OptionOptional | string | false | null | undefined | Error
+  ) => Promise<Partial<Option> | string> | Partial<Option> | string | false | null | undefined | Error
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
   afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void
@@ -151,16 +134,14 @@ export default class SlimSelect {
         this.enable()
       }
     }
-    this.select.onOptionsChange = (data: DataArrayPartial) => {
+    this.select.onOptionsChange = (data: (Option | Optgroup)[]) => {
       // Run set data from the values given
       this.setData(data)
     }
 
     // Set store class
-    this.store = new Store(
-      this.settings.isMultiple ? 'multiple' : 'single',
-      config.data ? config.data : this.select.getData()
-    )
+    const data = config.data ? config.data : this.select.getData()
+    this.store = new Store(this.settings.isMultiple ? 'multiple' : 'single', data)
 
     // If data is passed update the original select element
     if (config.data) {
@@ -241,11 +222,11 @@ export default class SlimSelect {
     this.render.disable()
   }
 
-  public getData(): DataArray {
+  public getData(): Option[] | Optgroup[] {
     return this.store.getData()
   }
 
-  public setData(data: DataArrayPartial): void {
+  public setData(data: (Partial<Option> | Partial<Optgroup>)[]): void {
     // Get original selected values
     const selected = this.store.getSelected()
 
@@ -328,7 +309,7 @@ export default class SlimSelect {
     }
   }
 
-  public addOption(option: OptionOptional): void {
+  public addOption(option: Partial<Option>): void {
     // Get original selected values
     const selected = this.store.getSelected()
 
@@ -466,7 +447,7 @@ export default class SlimSelect {
     // If the search event returns a promise
     if (searchResp instanceof Promise) {
       searchResp
-        .then((data: DataArrayPartial) => {
+        .then((data: (Partial<Option> | Partial<Optgroup>)[]) => {
           // Update store data with search results, preserving selected options
           this.store.setData(data, true)
 

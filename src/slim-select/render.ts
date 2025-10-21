@@ -1,6 +1,6 @@
 import { debounce } from './helpers'
 import Settings from './settings'
-import Store, { DataArray, Optgroup, Option, OptionOptional } from './store'
+import Store, { Optgroup, Option } from './store'
 import CssClasses from './classes'
 
 export interface Callbacks {
@@ -8,7 +8,7 @@ export interface Callbacks {
   close: () => void
   addable?: (
     value: string
-  ) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null | Error
+  ) => Promise<Partial<Option> | string> | Partial<Option> | string | false | undefined | null | Error
   setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
@@ -584,7 +584,9 @@ export default class Render {
           for (const o of after) {
             if (o instanceof Optgroup) {
               for (const c of o.options) {
-                selectedIds.push(c.id)
+                if (c.id) {
+                  selectedIds.push(c.id)
+                }
               }
             }
 
@@ -785,7 +787,7 @@ export default class Render {
         // Run finish will be ran at the end of the addable function.
         // Reason its in a function is so we can run it after the
         // addable function is done for promise based addables
-        const runFinish = (oo: OptionOptional) => {
+        const runFinish = (oo: Partial<Option>) => {
           let newOption = new Option(oo)
 
           // Call addOption to add the new option
@@ -1010,7 +1012,7 @@ export default class Render {
   }
 
   // Take in data and add options to
-  public renderOptions(data: DataArray): void {
+  public renderOptions(data: (Option | Optgroup)[]): void {
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
@@ -1137,13 +1139,14 @@ export default class Render {
               return
             } else {
               // Put together new list with all options in this optgroup
-              const newSelected = currentSelected.concat(d.options.map((o) => o.id))
+              let optionIds = d.options.map((o) => o.id).filter((id) => id !== undefined)
+              const newSelected = currentSelected.concat(optionIds)
 
               // Loop through options and if they don't exist in the store
               // run addOption callback
               for (const o of d.options) {
-                if (!this.store.getOptionByID(o.id)) {
-                  this.callbacks.addOption(o)
+                if (o.id && !this.store.getOptionByID(o.id)) {
+                  this.callbacks.addOption(new Option(o))
                 }
               }
 
@@ -1209,8 +1212,8 @@ export default class Render {
         optgroupEl.appendChild(optgroupLabel)
 
         // Loop through options
-        for (const o of d.options) {
-          optgroupEl.appendChild(this.option(o))
+        for (const option of d.options) {
+          optgroupEl.appendChild(this.option(new Option(option)))
           fragment.appendChild(optgroupEl)
         }
       }

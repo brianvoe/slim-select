@@ -1,7 +1,7 @@
 'use strict'
 
-import { describe, expect, test } from 'vitest'
-import Store, { DataArray, DataObjectPartial, Optgroup, Option } from './store'
+import { describe, expect, test, beforeAll, beforeEach } from 'vitest'
+import Store, { Optgroup, Option } from './store'
 
 describe('store module', () => {
   describe('constructor', () => {
@@ -208,17 +208,17 @@ describe('store module', () => {
     })
 
     test('invalid data returns error', () => {
-      const invalidData = { test: true }
+      const invalidData = { test: true } as any
 
-      const res = store.validateDataArray(invalidData as unknown as DataArray)
+      const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
       expect(res?.message).toBe('Data must be an array')
     })
 
     test('single invalid data entry returns error', () => {
-      const invalidData = [{ name: 'this is invalid' }]
+      const invalidData = [{ name: 'this is invalid' }] as any
 
-      const res = store.validateDataArray(invalidData as unknown as DataArray)
+      const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
       expect(res?.message).toBe('Data object must be a valid optgroup or option')
     })
@@ -231,9 +231,9 @@ describe('store module', () => {
         {
           text: 'valid option'
         }
-      ]
+      ] as any
 
-      const res = store.validateDataArray(invalidData as unknown as DataArray)
+      const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
       expect(res?.message).toBe('Data object must be a valid optgroup or option')
     })
@@ -246,9 +246,9 @@ describe('store module', () => {
         {
           name: 'this is invalid'
         }
-      ]
+      ] as any
 
-      const res = store.validateDataArray(invalidData as unknown as DataArray)
+      const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
       expect(res?.message).toBe('Data object must be a valid optgroup or option')
     })
@@ -263,9 +263,9 @@ describe('store module', () => {
             }
           ]
         }
-      ]
+      ] as any
 
-      const res = store.validateDataArray(invalidData as unknown as DataArray)
+      const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
       expect(res?.message).toBe('Option must have a text')
     })
@@ -389,10 +389,7 @@ describe('store module', () => {
     })
 
     test("invalid data get's ignored", () => {
-      const res = store.partialToFullData([
-        { error: 'this is invalid' } as unknown as DataObjectPartial,
-        { text: 'valid' }
-      ])
+      const res = store.partialToFullData([{ error: 'this is invalid' } as any, { text: 'valid' }])
       expect(res).toBeInstanceOf(Array)
       expect(res).toHaveLength(1)
 
