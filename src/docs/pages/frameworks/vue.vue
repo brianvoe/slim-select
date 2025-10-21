@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SlimSelect, { Option, type SettingsPartial, type OptionOptional, type Events } from '../../../slim-select/vue'
+import SlimSelect, { Settings, Option, type Events } from '@/slim-select/vue'
 import ComplexFieldExample, { type FieldOption } from './complex.vue'
 
 export default defineComponent({
@@ -18,13 +18,13 @@ export default defineComponent({
       // Misc
       settings: {
         showSearch: false
-      } as SettingsPartial,
+      },
       data: [
         { value: 'value1', text: 'Value 1' },
         { value: 'value2', text: 'Value 2' },
         { value: 'value3', text: 'Value 3' }
       ],
-      afterChangeData: [] as OptionOptional[],
+      afterChangeData: [] as Option[],
       events: {
         afterChange: this.afterChange
       } as Events,

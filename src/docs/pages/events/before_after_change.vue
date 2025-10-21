@@ -1,17 +1,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select'
-import { DataArray } from '../../../slim-select/store'
+import SlimSelect, { Option } from '@/slim-select'
 
 export default defineComponent({
   name: 'BeforeAfterChange',
   data() {
     return {
-      beforeChangeSingle: [] as DataArray,
-      beforeChangeMultiple: [] as DataArray,
-      afterChangeSingle: [] as DataArray,
-      afterChangeMultiple: [] as DataArray
+      beforeChangeSingle: [] as Option[],
+      beforeChangeMultiple: [] as Option[],
+      afterChangeSingle: [] as Option[],
+      afterChangeMultiple: [] as Option[]
     }
   },
   mounted() {
@@ -21,7 +20,7 @@ export default defineComponent({
         allowDeselect: true
       },
       events: {
-        beforeChange: (newValue: DataArray, oldValue: DataArray) => {
+        beforeChange: (newValue: Option[], oldValue: Option[]) => {
           this.beforeChangeSingle = oldValue
           return true
         }
@@ -31,7 +30,7 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.beforeChangeMultiple as HTMLSelectElement,
       events: {
-        beforeChange: (newValue: DataArray, oldValue: DataArray) => {
+        beforeChange: (newValue: Option[], oldValue: Option[]) => {
           this.beforeChangeMultiple = oldValue
           return true
         }
@@ -44,7 +43,7 @@ export default defineComponent({
         allowDeselect: true
       },
       events: {
-        afterChange: (value: DataArray) => {
+        afterChange: (value: Option[]) => {
           this.afterChangeSingle = value
         }
       }
@@ -53,7 +52,7 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.afterChangeMultiple as HTMLSelectElement,
       events: {
-        afterChange: (value: DataArray) => {
+        afterChange: (value: Option[]) => {
           this.afterChangeMultiple = value
         }
       }

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select'
+import SlimSelect from '@/slim-select'
 
 const countries = [
   { text: 'United States', value: 'US', html: '<img src="https://flagcdn.com/us.svg" class="country"/> United States' },

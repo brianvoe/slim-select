@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select'
+import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'CloseOnSelect',
@@ -16,8 +16,7 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.closeOnSelectMultiple as HTMLSelectElement,
       settings: {
-        closeOnSelect: false,
-        selectByGroup: true
+        closeOnSelect: false
       }
     })
   }

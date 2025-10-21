@@ -1,10 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '../slim-select'
-import { debounce } from '../slim-select/helpers'
-import Settings from '../slim-select/settings'
-import { DataArray } from '../slim-select/store'
+import SlimSelect, { type Settings } from '@/slim-select'
+import { debounce } from '@/slim-select/helpers'
 import CarbonAd from './components/carbonad.vue'
 
 export default defineComponent({
@@ -144,7 +142,7 @@ export default defineComponent({
             { text: 'react', value: 'react' }
           ]
         }
-      ] as DataArray
+      ]
     }
   },
   mounted() {

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import SlimSelect from '../../../slim-select/vue'
+import SlimSelect from '@/slim-select/vue'
 
 export interface FieldOption {
   value: string

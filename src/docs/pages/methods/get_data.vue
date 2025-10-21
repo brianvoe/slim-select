@@ -1,17 +1,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import SlimSelect from '../../../slim-select'
-import { DataArray } from '../../../slim-select/store'
+import SlimSelect, { Option, Optgroup } from '@/slim-select'
 
 export default defineComponent({
   name: 'GetData',
   data() {
     return {
       getDataOptions: null as SlimSelect | null,
-      getDataOptionsValue: [] as DataArray,
+      getDataOptionsValue: [] as (Option | Optgroup)[],
       getDataOptgroups: null as SlimSelect | null,
-      getDataOptgroupsValue: [] as DataArray
+      getDataOptgroupsValue: [] as (Option | Optgroup)[]
     }
   },
   mounted() {

@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SlimSelect from '../../../slim-select'
-import { DataArray, DataArrayPartial, Option } from '../../../slim-select/store'
+import SlimSelect, { Option, Optgroup } from '@/slim-select'
 
 interface Person {
   first_name: string
@@ -39,7 +38,10 @@ export default defineComponent({
     })
   },
   methods: {
-    searchPromise(search: string, currentData: DataArray): Promise<DataArrayPartial> {
+    searchPromise(
+      search: string,
+      currentData: (Option | Optgroup)[]
+    ): Promise<(Partial<Option> | Partial<Optgroup>)[]> {
       return new Promise((resolve, reject) => {
         if (search.length < 2) {
           return reject('Search must be at least 2 characters')
