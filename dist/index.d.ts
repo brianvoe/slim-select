@@ -11,7 +11,7 @@ declare interface Callbacks {
 
 export declare interface Config {
     select: string | Element;
-    data?: Partial<Option_2>[] | Partial<Optgroup>[];
+    data?: (Partial<Option_2> | Partial<Optgroup>)[];
     settings?: Partial<Settings>;
     cssClasses?: Partial<CssClasses>;
     events?: Events;
