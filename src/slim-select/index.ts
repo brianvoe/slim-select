@@ -44,6 +44,10 @@ export default class SlimSelect {
   public store!: Store
   public render!: Render
 
+  // Timeout tracking for cleanup
+  private openTimeout: ReturnType<typeof setTimeout> | null = null
+  private closeTimeout: ReturnType<typeof setTimeout> | null = null
+
   // Events
   public events = {
     search: undefined,
@@ -354,7 +358,7 @@ export default class SlimSelect {
 
     this.settings.isOpen = true
     // setTimeout is for animation completion
-    setTimeout(() => {
+    this.openTimeout = setTimeout(() => {
       // Run afterOpen callback
       if (this.events.afterOpen) {
         this.events.afterOpen()
@@ -407,7 +411,7 @@ export default class SlimSelect {
     this.settings.isFullOpen = false
 
     // Reset the content below
-    setTimeout(() => {
+    this.closeTimeout = setTimeout(() => {
       // Run afterClose callback
       if (this.events.afterClose) {
         this.events.afterClose()
@@ -479,6 +483,20 @@ export default class SlimSelect {
   }
 
   public destroy(): void {
+    // Clear any pending timeouts
+    if (this.openTimeout) {
+      clearTimeout(this.openTimeout)
+      this.openTimeout = null
+    }
+    if (this.closeTimeout) {
+      clearTimeout(this.closeTimeout)
+      this.closeTimeout = null
+    }
+    if (this.settings.intervalMove) {
+      clearInterval(this.settings.intervalMove)
+      this.settings.intervalMove = null
+    }
+
     // Remove all event listeners
     document.removeEventListener('click', this.documentClick)
     window.removeEventListener('resize', this.windowResize, false)

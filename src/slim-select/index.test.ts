@@ -489,8 +489,8 @@ describe('SlimSelect Module', () => {
       // Close dropdown - this clears the search input
       slim.close()
 
-      // Wait for close to complete
-      await new Promise((resolve) => setTimeout(resolve, 10))
+      // Wait for close to complete (timeoutDelay is 200ms by default)
+      await new Promise((resolve) => setTimeout(resolve, 300))
 
       // Search input should be cleared
       expect(slim.render.content.search.input.value).toBe('')
