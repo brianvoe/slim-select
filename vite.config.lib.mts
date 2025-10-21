@@ -5,7 +5,6 @@ import dts from 'vite-plugin-dts'
 export default defineConfig({
   publicDir: false,
   build: {
-    target: 'es2020',
     lib: {
       entry: path.resolve(__dirname, 'src/slim-select/index.ts'),
       name: 'SlimSelect',
@@ -32,7 +31,6 @@ export default defineConfig({
       rollupTypes: true,
       outDir: path.resolve(__dirname, 'dist'),
       entryRoot: path.resolve(__dirname, 'src/slim-select'),
-      tsconfigPath: path.resolve(__dirname, 'src/slim-select/tsconfig.json'),
       exclude: [path.resolve(__dirname, 'src/slim-select/**/*.test.ts')]
     })
   ]
