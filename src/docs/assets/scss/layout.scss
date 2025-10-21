@@ -198,7 +198,10 @@ body {
       flex-direction: column;
       gap: var(--spacing-half);
       padding: 0 0 0 var(--spacing);
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
+      box-sizing: border-box;
+      max-width: 100%;
 
       @media (max-width: 700px) {
         padding: 0;
@@ -212,25 +215,64 @@ body {
 
       .content {
         flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
         padding: var(--spacing);
         background-color: var(--color-white);
         border-radius: var(--border-radius);
+        overflow-x: hidden;
+        box-sizing: border-box;
 
         @media screen and (max-width: 700px) {
           box-shadow: none;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        pre {
+          overflow-x: auto;
+          max-width: 100%;
+          word-wrap: break-word;
+          white-space: pre-wrap;
+        }
+
+        code {
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .row {
           display: flex;
           flex-direction: row;
           gap: var(--spacing-half);
+          flex-wrap: wrap;
+          width: 100%;
+          max-width: 100%;
+          overflow: hidden;
+
+          @media screen and (max-width: 700px) {
+            flex-direction: column;
+          }
 
           > * {
-            flex: 1 1 auto;
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: 100%;
+            overflow: hidden;
           }
 
           .btn {
             flex: 0 1 auto;
+            max-width: none;
+            overflow: visible;
+          }
+
+          .ss-main {
+            max-width: 100%;
+            min-width: 0;
           }
         }
       }

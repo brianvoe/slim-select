@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, ref } from 'vue'
+import { defineComponent } from 'vue'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -7,88 +7,56 @@ const h = React.createElement
 
 export default defineComponent({
   name: 'React',
-  setup() {
-    const simpleHost = ref<HTMLElement | null>(null)
-    const propsHost = ref<HTMLElement | null>(null)
-    const dataHost = ref<HTMLElement | null>(null)
-    const eventsHost = ref<HTMLElement | null>(null)
+  data() {
+    return {
+      simpleRoot: null as ReactDOM.Root | null,
+      propsRoot: null as ReactDOM.Root | null,
+      dataRoot: null as ReactDOM.Root | null,
+      eventsRoot: null as ReactDOM.Root | null,
+      afterChangeSingle: [] as any[],
+      afterChangeMultiple: [] as any[]
+    }
+  },
+  async mounted() {
+    // Dynamically import the React component from dist
+    const { default: SlimSelectReact } = await import('../../../../dist/react/index.js' as any)
+    const { useState } = React
 
-    let simpleRoot: ReactDOM.Root | null = null
-    let propsRoot: ReactDOM.Root | null = null
-    let dataRoot: ReactDOM.Root | null = null
-    let eventsRoot: ReactDOM.Root | null = null
+    // Simple Example
+    const simpleHost = this.$refs.simpleHost as HTMLElement
+    if (simpleHost) {
+      this.simpleRoot = ReactDOM.createRoot(simpleHost)
+      const SimpleExample = () => {
+        const [singleValue, setSingleValue] = useState('2')
+        const [multipleValue, setMultipleValue] = useState(['2', '3'])
 
-    onMounted(async () => {
-      // Dynamically import the React component from dist
-      const { default: SlimSelectReact } = await import('../../../../dist/react/index.js' as any)
-      const { useState } = React
-
-      // Simple Example
-      if (simpleHost.value) {
-        simpleRoot = ReactDOM.createRoot(simpleHost.value)
-        const SimpleExample = () => {
-          const [singleValue, setSingleValue] = useState('2')
-          const [multipleValue, setMultipleValue] = useState(['2', '3'])
-
-          return h(
+        return h(
+          'div',
+          { className: 'row' },
+          h(
             'div',
-            { className: 'row' },
-            h(
-              'div',
-              null,
-              h('div', null, h('strong', null, 'Value: '), singleValue),
-              h(
-                SlimSelectReact,
-                {
-                  value: singleValue,
-                  onChange: (val: any) => setSingleValue(val as string)
-                },
-                h('option', { value: '1' }, 'Option 1'),
-                h('option', { value: '2' }, 'Option 2'),
-                h('option', { value: '3' }, 'Option 3')
-              )
-            ),
-            h(
-              'div',
-              null,
-              h('div', null, h('strong', null, 'Value: '), JSON.stringify(multipleValue)),
-              h(
-                SlimSelectReact,
-                {
-                  value: multipleValue,
-                  onChange: (val: any) => setMultipleValue(val as string[]),
-                  multiple: true
-                },
-                h('option', { value: '1' }, 'Option 1'),
-                h('option', { value: '2' }, 'Option 2'),
-                h('option', { value: '3' }, 'Option 3')
-              )
-            )
-          )
-        }
-        simpleRoot.render(h(SimpleExample))
-      }
-
-      // Settings Example
-      if (propsHost.value) {
-        propsRoot = ReactDOM.createRoot(propsHost.value)
-        const PropsExample = () => {
-          return h(
-            'div',
-            { className: 'row' },
+            null,
+            h('div', null, h('strong', null, 'Value: '), singleValue),
             h(
               SlimSelectReact,
               {
-                settings: { showSearch: false }
+                value: singleValue,
+                onChange: (val: any) => setSingleValue(val as string)
               },
               h('option', { value: '1' }, 'Option 1'),
               h('option', { value: '2' }, 'Option 2'),
               h('option', { value: '3' }, 'Option 3')
-            ),
+            )
+          ),
+          h(
+            'div',
+            null,
+            h('div', null, h('strong', null, 'Value: '), JSON.stringify(multipleValue)),
             h(
               SlimSelectReact,
               {
-                settings: { showSearch: false },
+                value: multipleValue,
+                onChange: (val: any) => setMultipleValue(val as string[]),
                 multiple: true
               },
               h('option', { value: '1' }, 'Option 1'),
@@ -96,100 +64,123 @@ export default defineComponent({
               h('option', { value: '3' }, 'Option 3')
             )
           )
-        }
-        propsRoot.render(h(PropsExample))
+        )
       }
-
-      // Data Example
-      if (dataHost.value) {
-        dataRoot = ReactDOM.createRoot(dataHost.value)
-        const DataExample = () => {
-          const [data, setData] = useState([
-            { value: 'value1', text: 'Value 1' },
-            { value: 'value2', text: 'Value 2' },
-            { value: 'value3', text: 'Value 3' }
-          ])
-
-          const changeData = () => {
-            setData([
-              { value: 'value4', text: 'Value 4' },
-              { value: 'value5', text: 'Value 5' },
-              { value: 'value6', text: 'Value 6' }
-            ])
-          }
-
-          return h(
-            'div',
-            null,
-            h(
-              'div',
-              { className: 'row' },
-              h('div', { className: 'btn info', onClick: changeData }, 'Change data'),
-              h(SlimSelectReact, { data }),
-              h(SlimSelectReact, { data, multiple: true })
-            )
-          )
-        }
-        dataRoot.render(h(DataExample))
-      }
-
-      // Events Example
-      if (eventsHost.value) {
-        eventsRoot = ReactDOM.createRoot(eventsHost.value)
-        const EventsExample = () => {
-          const [afterChangeData, setAfterChangeData] = useState<any[]>([])
-
-          const handleAfterChange = (newVal: any[]) => {
-            setAfterChangeData(newVal)
-          }
-
-          return h(
-            'div',
-            null,
-            afterChangeData.length > 0 &&
-              h('div', null, h('strong', null, 'afterChange: '), JSON.stringify(afterChangeData)),
-            h(
-              'div',
-              { className: 'row' },
-              h(
-                SlimSelectReact,
-                {
-                  events: { afterChange: handleAfterChange }
-                },
-                h('option', { value: '1' }, 'Option 1'),
-                h('option', { value: '2' }, 'Option 2'),
-                h('option', { value: '3' }, 'Option 3')
-              ),
-              h(
-                SlimSelectReact,
-                {
-                  events: { afterChange: handleAfterChange },
-                  multiple: true
-                },
-                h('option', { value: '1' }, 'Option 1'),
-                h('option', { value: '2' }, 'Option 2'),
-                h('option', { value: '3' }, 'Option 3')
-              )
-            )
-          )
-        }
-        eventsRoot.render(h(EventsExample))
-      }
-    })
-
-    onBeforeUnmount(() => {
-      simpleRoot?.unmount()
-      propsRoot?.unmount()
-      dataRoot?.unmount()
-      eventsRoot?.unmount()
-    })
-
-    return {
-      simpleHost,
-      propsHost,
-      dataHost,
-      eventsHost
+      this.simpleRoot.render(h(SimpleExample))
     }
+
+    // Settings Example
+    const propsHost = this.$refs.propsHost as HTMLElement
+    if (propsHost) {
+      this.propsRoot = ReactDOM.createRoot(propsHost)
+      const PropsExample = () => {
+        return h(
+          'div',
+          { className: 'row' },
+          h(
+            SlimSelectReact,
+            {
+              settings: { showSearch: false }
+            },
+            h('option', { value: '1' }, 'Option 1'),
+            h('option', { value: '2' }, 'Option 2'),
+            h('option', { value: '3' }, 'Option 3')
+          ),
+          h(
+            SlimSelectReact,
+            {
+              settings: { showSearch: false },
+              multiple: true
+            },
+            h('option', { value: '1' }, 'Option 1'),
+            h('option', { value: '2' }, 'Option 2'),
+            h('option', { value: '3' }, 'Option 3')
+          )
+        )
+      }
+      this.propsRoot.render(h(PropsExample))
+    }
+
+    // Data Example
+    const dataHost = this.$refs.dataHost as HTMLElement
+    if (dataHost) {
+      this.dataRoot = ReactDOM.createRoot(dataHost)
+      const DataExample = () => {
+        const [data, setData] = useState([
+          { value: 'value1', text: 'Value 1' },
+          { value: 'value2', text: 'Value 2' },
+          { value: 'value3', text: 'Value 3' }
+        ])
+
+        const changeData = () => {
+          setData([
+            { value: 'value4', text: 'Value 4' },
+            { value: 'value5', text: 'Value 5' },
+            { value: 'value6', text: 'Value 6' }
+          ])
+        }
+
+        return h(
+          'div',
+          null,
+          h(
+            'div',
+            { className: 'row' },
+            h('div', { className: 'btn info', onClick: changeData }, 'Change data'),
+            h(SlimSelectReact, { data }),
+            h(SlimSelectReact, { data, multiple: true })
+          )
+        )
+      }
+      this.dataRoot.render(h(DataExample))
+    }
+
+    // Events Example
+    const eventsHost = this.$refs.eventsHost as HTMLElement
+    if (eventsHost) {
+      this.eventsRoot = ReactDOM.createRoot(eventsHost)
+
+      const handleAfterChangeSingle = (newVal: any[]) => {
+        this.afterChangeSingle = newVal
+      }
+
+      const handleAfterChangeMultiple = (newVal: any[]) => {
+        this.afterChangeMultiple = newVal
+      }
+
+      const EventsExample = () => {
+        return h(
+          'div',
+          { className: 'row' },
+          h(
+            SlimSelectReact,
+            {
+              events: { afterChange: handleAfterChangeSingle }
+            },
+            h('option', { value: '1' }, 'Option 1'),
+            h('option', { value: '2' }, 'Option 2'),
+            h('option', { value: '3' }, 'Option 3')
+          ),
+          h(
+            SlimSelectReact,
+            {
+              events: { afterChange: handleAfterChangeMultiple },
+              multiple: true
+            },
+            h('option', { value: '1' }, 'Option 1'),
+            h('option', { value: '2' }, 'Option 2'),
+            h('option', { value: '3' }, 'Option 3')
+          )
+        )
+      }
+      this.eventsRoot.render(h(EventsExample))
+    }
+  },
+  beforeUnmount() {
+    this.simpleRoot?.unmount()
+    this.propsRoot?.unmount()
+    this.dataRoot?.unmount()
+    this.eventsRoot?.unmount()
   }
 })
 </script>
@@ -233,8 +224,8 @@ export default defineComponent({
           return (
             &lt;div&gt;
               &lt;div&gt;
-                &lt;div&gt;Value: {'{'}singleValue{'}'}&lt;/div&gt;
-                &lt;SlimSelect value={'{'}singleValue{'}'} onChange={'{'}setSingleValue{'}'}&gt;
+                &lt;div&gt;Value: &#123;singleValue&#125;&lt;/div&gt;
+                &lt;SlimSelect value=&#123;singleValue&#125; onChange=&#123;setSingleValue&#125;&gt;
                   &lt;option value="1"&gt;Option 1&lt;/option&gt;
                   &lt;option value="2"&gt;Option 2&lt;/option&gt;
                   &lt;option value="3"&gt;Option 3&lt;/option&gt;
@@ -242,10 +233,10 @@ export default defineComponent({
               &lt;/div&gt;
 
               &lt;div&gt;
-                &lt;div&gt;Value: {'{'}JSON.stringify(multipleValue){'}'}&lt;/div&gt;
+                &lt;div&gt;Value: &#123;JSON.stringify(multipleValue)&#125;&lt;/div&gt;
                 &lt;SlimSelect 
-                  value={'{'}multipleValue{'}'} 
-                  onChange={'{'}setMultipleValue{'}'}
+                  value=&#123;multipleValue&#125; 
+                  onChange=&#123;setMultipleValue&#125;
                   multiple&gt;
                   &lt;option value="1"&gt;Option 1&lt;/option&gt;
                   &lt;option value="2"&gt;Option 2&lt;/option&gt;
@@ -274,13 +265,13 @@ export default defineComponent({
         function App() {
           return (
             &lt;div&gt;
-              &lt;SlimSelect settings={'{'}{ showSearch: false }{'}'}&gt;
+              &lt;SlimSelect settings=&#123;&#123; showSearch: false &#125;&#125;&gt;
                 &lt;option value="1"&gt;Option 1&lt;/option&gt;
                 &lt;option value="2"&gt;Option 2&lt;/option&gt;
                 &lt;option value="3"&gt;Option 3&lt;/option&gt;
               &lt;/SlimSelect&gt;
 
-              &lt;SlimSelect settings={'{'}{ showSearch: false }{'}'} multiple&gt;
+              &lt;SlimSelect settings=&#123;&#123; showSearch: false &#125;&#125; multiple&gt;
                 &lt;option value="1"&gt;Option 1&lt;/option&gt;
                 &lt;option value="2"&gt;Option 2&lt;/option&gt;
                 &lt;option value="3"&gt;Option 3&lt;/option&gt;
@@ -325,9 +316,9 @@ export default defineComponent({
 
           return (
             &lt;div&gt;
-              &lt;button onClick={'{'}changeData{'}'}&gt;Change data&lt;/button&gt;
-              &lt;SlimSelect data={'{'}data{'}'} /&gt;
-              &lt;SlimSelect data={'{'}data{'}'} multiple /&gt;
+              &lt;button onClick=&#123;changeData&#125;&gt;Change data&lt;/button&gt;
+              &lt;SlimSelect data=&#123;data&#125; /&gt;
+              &lt;SlimSelect data=&#123;data&#125; multiple /&gt;
             &lt;/div&gt;
           )
         }
@@ -340,6 +331,9 @@ export default defineComponent({
 
     <h3>Events</h3>
     <p>Events are passed as an object through the <code>events</code> prop.</p>
+
+    <div v-if="afterChangeSingle.length > 0"><strong>Single afterChange:</strong> {{ afterChangeSingle }}</div>
+    <div v-if="afterChangeMultiple.length > 0"><strong>Multiple afterChange:</strong> {{ afterChangeMultiple }}</div>
 
     <div ref="eventsHost"></div>
 
@@ -358,19 +352,19 @@ export default defineComponent({
 
           return (
             &lt;div&gt;
-              {'{'}afterChangeData.length > 0 &amp;&amp; (
-                &lt;div&gt;afterChange: {'{'}JSON.stringify(afterChangeData){'}'}&lt;/div&gt;
-              ){'}'}
+              &#123;afterChangeData.length > 0 &amp;&amp; (
+                &lt;div&gt;afterChange: &#123;JSON.stringify(afterChangeData)&#125;&lt;/div&gt;
+              )&#125;
               
-              &lt;SlimSelect events={'{'}{ afterChange: handleAfterChange }{'}'}{'>'}
+              &lt;SlimSelect events=&#123;&#123; afterChange: handleAfterChange &#125;&#125;&gt;
                 &lt;option value="1"&gt;Option 1&lt;/option&gt;
                 &lt;option value="2"&gt;Option 2&lt;/option&gt;
                 &lt;option value="3"&gt;Option 3&lt;/option&gt;
               &lt;/SlimSelect&gt;
 
               &lt;SlimSelect 
-                events={'{'}{ afterChange: handleAfterChange }{'}'}
-                multiple{'>'}
+                events=&#123;&#123; afterChange: handleAfterChange &#125;&#125;
+                multiple&gt;
                 &lt;option value="1"&gt;Option 1&lt;/option&gt;
                 &lt;option value="2"&gt;Option 2&lt;/option&gt;
                 &lt;option value="3"&gt;Option 3&lt;/option&gt;
