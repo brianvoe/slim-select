@@ -48,6 +48,11 @@ const router = createRouter({
       path: '/vue',
       name: 'Vue',
       component: () => import('./pages/frameworks/vue.vue')
+    },
+    {
+      path: '/react',
+      name: 'React',
+      component: () => import('./pages/frameworks/react.vue')
     }
   ]
 })

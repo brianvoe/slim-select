@@ -139,7 +139,10 @@ export default defineComponent({
         {
           label: 'Frameworks',
           closable: 'close',
-          options: [{ text: 'vue', value: 'vue' }]
+          options: [
+            { text: 'vue', value: 'vue' },
+            { text: 'react', value: 'react' }
+          ]
         }
       ] as DataArray
     }

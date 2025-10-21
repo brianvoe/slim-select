@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import SlimSelectCore from '../index'
-import type { Config } from '../index'
-import type { DataArrayPartial } from '../store'
+import type { Config, DataArray } from '../index'
 
 export interface SlimSelectProps {
-  data?: DataArrayPartial
+  data?: Partial<DataArray>
   settings?: Config['settings']
   events?: Config['events']
   cssClasses?: Config['cssClasses']
