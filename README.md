@@ -175,13 +175,13 @@ new SlimSelect({
 
   events: {
     // Custom search function - return Promise or data array
-    search: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial,
+    search: (searchValue: string, currentData: (Option | Optgroup)[]) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[],
 
     // Filter function for search - return true to show option
     searchFilter: (option: Option, search: string) => boolean,
 
     // Allow user to add options - return new option or error
-    addable: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | Error,
+    addable: (value: string) => Promise<Partial<Option> | string> | Partial<Option> | string | Error,
 
     // Before selection changes - return false to prevent change
     beforeChange: (newVal: Option[], oldVal: Option[]) => boolean | void,
