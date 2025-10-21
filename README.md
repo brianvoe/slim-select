@@ -44,6 +44,7 @@ See [website](https://slimselectjs.com) for the full list of [settings](https://
 ## Frameworks
 
 - [Vue](#vue)
+- [React](#react)
 
 ## Installation
 
@@ -265,4 +266,59 @@ export default {
 <template>
   <SlimSelect v-model="selected" :data="options" />
 </template>
+```
+
+## React
+
+SlimSelect has official React component support with hooks.
+
+For more React examples and advanced usage, see the [documentation](https://slimselectjs.com).
+
+### Installation
+
+```bash
+npm install slim-select
+```
+
+### Usage
+
+```tsx
+import { useState } from 'react'
+import SlimSelect from 'slim-select/react'
+import 'slim-select/styles'
+
+function MyComponent() {
+  const [selected, setSelected] = useState('value2')
+  const options = [
+    { text: 'Value 1', value: 'value1' },
+    { text: 'Value 2', value: 'value2' },
+    { text: 'Value 3', value: 'value3' }
+  ]
+
+  return <SlimSelect data={options} value={selected} onChange={setSelected} />
+}
+```
+
+### Advanced Usage with Ref
+
+```tsx
+import { useRef } from 'react'
+import SlimSelect, { SlimSelectRef } from 'slim-select/react'
+import 'slim-select/styles'
+
+function MyComponent() {
+  const slimRef = useRef<SlimSelectRef>(null)
+
+  const handleClick = () => {
+    // Access SlimSelect methods via ref
+    slimRef.current?.slimSelect?.open()
+  }
+
+  return (
+    <>
+      <SlimSelect ref={slimRef} data={options} />
+      <button onClick={handleClick}>Open Dropdown</button>
+    </>
+  )
+}
 ```

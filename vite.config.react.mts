@@ -1,35 +1,36 @@
-import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
-import path from 'path'
 
 export default defineConfig({
   publicDir: false,
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/slim-select/vue/index.ts'),
-      name: 'SlimSelectVue',
+      entry: resolve(__dirname, 'src/slim-select/react/index.ts'),
+      name: 'SlimSelectReact',
       formats: ['es', 'umd'],
       fileName: (format) => `index.${format === 'es' ? 'js' : 'umd.js'}`
     },
-    outDir: path.resolve(__dirname, 'dist/vue'),
+    outDir: 'dist/react',
     rollupOptions: {
-      external: ['vue'],
+      external: ['react', 'react-dom'],
       output: {
         exports: 'named',
         globals: {
-          vue: 'Vue'
+          react: 'React',
+          'react-dom': 'ReactDOM'
         }
       }
     }
   },
   plugins: [
-    vue(),
+    react(),
     dts({
-      entryRoot: 'src/slim-select/vue',
-      outDir: 'dist/vue',
+      entryRoot: 'src/slim-select/react',
+      outDir: 'dist/react',
       insertTypesEntry: true,
-      include: ['src/slim-select/vue/**/*.ts', 'src/slim-select/**/*.vue'],
+      include: ['src/slim-select/react/**/*.tsx', 'src/slim-select/react/**/*.ts'],
       exclude: ['src/slim-select/**/*.test.ts']
     })
   ]
