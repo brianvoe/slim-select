@@ -34,8 +34,8 @@ export default defineConfig({
     dts({
       entryRoot: 'src/slim-select/react',
       outDir: 'dist/react',
-      insertTypesEntry: true,
-      include: ['src/slim-select/react/**/*.tsx', 'src/slim-select/react/**/*.ts'],
+      rollupTypes: true,
+      include: ['src/slim-select/react/index.tsx'],
       exclude: ['src/slim-select/**/*.test.ts']
     })
   ]

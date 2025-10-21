@@ -33,8 +33,8 @@ export default defineConfig({
     dts({
       entryRoot: 'src/slim-select/vue',
       outDir: 'dist/vue',
-      insertTypesEntry: true,
-      include: ['src/slim-select/vue/**/*.ts', 'src/slim-select/**/*.vue'],
+      rollupTypes: true,
+      include: ['src/slim-select/vue/index.ts'],
       exclude: ['src/slim-select/**/*.test.ts']
     })
   ]
