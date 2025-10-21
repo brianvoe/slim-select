@@ -269,22 +269,6 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
-.adsense-nav {
-  max-height: 300px !important;
-  overflow: hidden;
-
-  .adsense-container {
-    max-height: 300px !important;
-  }
-
-  ins.adsbygoogle {
-    max-height: 300px !important;
-    height: auto !important;
-  }
-}
-</style>
-
 <template>
   <header>
     <div class="top">
