@@ -1,7 +1,7 @@
 import { default as React } from 'react';
-import { default as SlimSelectCore, Config, DataArray } from '../index';
+import { default as SlimSelectCore, Config, Option, Optgroup } from '../index';
 export interface SlimSelectProps {
-    data?: Partial<DataArray>;
+    data?: (Partial<Option> | Partial<Optgroup>)[];
     settings?: Config['settings'];
     events?: Config['events'];
     cssClasses?: Config['cssClasses'];

@@ -1,5 +1,5 @@
 import ae, { forwardRef as re, useRef as F, useImperativeHandle as oe, useEffect as j } from "react";
-var P = { exports: {} }, L = {};
+var P = { exports: {} }, A = {};
 /**
  * @license React
  * react-jsx-runtime.production.js
@@ -11,27 +11,27 @@ var P = { exports: {} }, L = {};
  */
 var X;
 function ce() {
-  if (X) return L;
+  if (X) return A;
   X = 1;
   var p = Symbol.for("react.transitional.element"), e = Symbol.for("react.fragment");
   function t(s, i, l) {
-    var a = null;
-    if (l !== void 0 && (a = "" + l), i.key !== void 0 && (a = "" + i.key), "key" in i) {
+    var r = null;
+    if (l !== void 0 && (r = "" + l), i.key !== void 0 && (r = "" + i.key), "key" in i) {
       l = {};
-      for (var r in i)
-        r !== "key" && (l[r] = i[r]);
+      for (var a in i)
+        a !== "key" && (l[a] = i[a]);
     } else l = i;
     return i = l.ref, {
       $$typeof: p,
       type: s,
-      key: a,
+      key: r,
       ref: i !== void 0 ? i : null,
       props: l
     };
   }
-  return L.Fragment = e, L.jsx = t, L.jsxs = t, L;
+  return A.Fragment = e, A.jsx = t, A.jsxs = t, A;
 }
-var A = {};
+var T = {};
 /**
  * @license React
  * react-jsx-runtime.development.js
@@ -52,9 +52,9 @@ function he() {
       switch (n) {
         case S:
           return "Fragment";
-        case T:
+        case E:
           return "Profiler";
-        case y:
+        case x:
           return "StrictMode";
         case Q:
           return "Suspense";
@@ -99,11 +99,11 @@ function he() {
       }
       if (u) {
         u = console;
-        var g = u.error, b = typeof Symbol == "function" && Symbol.toStringTag && n[Symbol.toStringTag] || n.constructor.name || "Object";
+        var g = u.error, v = typeof Symbol == "function" && Symbol.toStringTag && n[Symbol.toStringTag] || n.constructor.name || "Object";
         return g.call(
           u,
           "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
-          b
+          v
         ), e(n);
       }
     }
@@ -125,14 +125,14 @@ function he() {
     function l() {
       return Error("react-stack-top-frame");
     }
-    function a(n) {
+    function r(n) {
       if (q.call(n, "key")) {
         var u = Object.getOwnPropertyDescriptor(n, "key").get;
         if (u && u.isReactWarning) return !1;
       }
       return n.key !== void 0;
     }
-    function r(n, u) {
+    function a(n, u) {
       function g() {
         $ || ($ = !0, console.error(
           "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
@@ -150,15 +150,15 @@ function he() {
         "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
       )), n = this.props.ref, n !== void 0 ? n : null;
     }
-    function h(n, u, g, b, D, B) {
-      var v = g.ref;
+    function h(n, u, g, v, D, B) {
+      var w = g.ref;
       return n = {
         $$typeof: O,
         type: n,
         key: u,
         props: g,
-        _owner: b
-      }, (v !== void 0 ? v : null) !== null ? Object.defineProperty(n, "ref", {
+        _owner: v
+      }, (w !== void 0 ? w : null) !== null ? Object.defineProperty(n, "ref", {
         enumerable: !1,
         get: c
       }) : Object.defineProperty(n, "ref", { enumerable: !1, value: null }), n._store = {}, Object.defineProperty(n._store, "validated", {
@@ -183,48 +183,48 @@ function he() {
         value: B
       }), Object.freeze && (Object.freeze(n.props), Object.freeze(n)), n;
     }
-    function o(n, u, g, b, D, B) {
-      var v = u.children;
-      if (v !== void 0)
-        if (b)
-          if (le(v)) {
-            for (b = 0; b < v.length; b++)
-              d(v[b]);
-            Object.freeze && Object.freeze(v);
+    function o(n, u, g, v, D, B) {
+      var w = u.children;
+      if (w !== void 0)
+        if (v)
+          if (le(w)) {
+            for (v = 0; v < w.length; v++)
+              d(w[v]);
+            Object.freeze && Object.freeze(w);
           } else
             console.error(
               "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
             );
-        else d(v);
+        else d(w);
       if (q.call(u, "key")) {
-        v = p(n);
-        var x = Object.keys(u).filter(function(ne) {
+        w = p(n);
+        var L = Object.keys(u).filter(function(ne) {
           return ne !== "key";
         });
-        b = 0 < x.length ? "{key: someKey, " + x.join(": ..., ") + ": ...}" : "{key: someKey}", J[v + b] || (x = 0 < x.length ? "{" + x.join(": ..., ") + ": ...}" : "{}", console.error(
+        v = 0 < L.length ? "{key: someKey, " + L.join(": ..., ") + ": ...}" : "{key: someKey}", J[w + v] || (L = 0 < L.length ? "{" + L.join(": ..., ") + ": ...}" : "{}", console.error(
           `A props object containing a "key" prop is being spread into JSX:
   let props = %s;
   <%s {...props} />
 React keys must be passed directly to JSX without using spread:
   let props = %s;
   <%s key={someKey} {...props} />`,
-          b,
           v,
-          x,
-          v
-        ), J[v + b] = !0);
+          w,
+          L,
+          w
+        ), J[w + v] = !0);
       }
-      if (v = null, g !== void 0 && (t(g), v = "" + g), a(u) && (t(u.key), v = "" + u.key), "key" in u) {
+      if (w = null, g !== void 0 && (t(g), w = "" + g), r(u) && (t(u.key), w = "" + u.key), "key" in u) {
         g = {};
         for (var H in u)
           H !== "key" && (g[H] = u[H]);
       } else g = u;
-      return v && r(
+      return w && a(
         g,
         typeof n == "function" ? n.displayName || n.name || "Unknown" : n
       ), h(
         n,
-        v,
+        w,
         g,
         i(),
         D,
@@ -237,7 +237,7 @@ React keys must be passed directly to JSX without using spread:
     function m(n) {
       return typeof n == "object" && n !== null && n.$$typeof === O;
     }
-    var f = ae, O = Symbol.for("react.transitional.element"), C = Symbol.for("react.portal"), S = Symbol.for("react.fragment"), y = Symbol.for("react.strict_mode"), T = Symbol.for("react.profiler"), k = Symbol.for("react.consumer"), R = Symbol.for("react.context"), M = Symbol.for("react.forward_ref"), Q = Symbol.for("react.suspense"), ee = Symbol.for("react.suspense_list"), te = Symbol.for("react.memo"), _ = Symbol.for("react.lazy"), se = Symbol.for("react.activity"), ie = Symbol.for("react.client.reference"), I = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, q = Object.prototype.hasOwnProperty, le = Array.isArray, V = console.createTask ? console.createTask : function() {
+    var f = ae, O = Symbol.for("react.transitional.element"), C = Symbol.for("react.portal"), S = Symbol.for("react.fragment"), x = Symbol.for("react.strict_mode"), E = Symbol.for("react.profiler"), k = Symbol.for("react.consumer"), R = Symbol.for("react.context"), M = Symbol.for("react.forward_ref"), Q = Symbol.for("react.suspense"), ee = Symbol.for("react.suspense_list"), te = Symbol.for("react.memo"), _ = Symbol.for("react.lazy"), se = Symbol.for("react.activity"), ie = Symbol.for("react.client.reference"), I = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, q = Object.prototype.hasOwnProperty, le = Array.isArray, V = console.createTask ? console.createTask : function() {
       return null;
     };
     f = {
@@ -249,28 +249,28 @@ React keys must be passed directly to JSX without using spread:
       f,
       l
     )(), G = V(s(l)), J = {};
-    A.Fragment = S, A.jsx = function(n, u, g) {
-      var b = 1e4 > I.recentlyCreatedOwnerStacks++;
+    T.Fragment = S, T.jsx = function(n, u, g) {
+      var v = 1e4 > I.recentlyCreatedOwnerStacks++;
       return o(
         n,
         u,
         g,
         !1,
-        b ? Error("react-stack-top-frame") : W,
-        b ? V(s(n)) : G
+        v ? Error("react-stack-top-frame") : W,
+        v ? V(s(n)) : G
       );
-    }, A.jsxs = function(n, u, g) {
-      var b = 1e4 > I.recentlyCreatedOwnerStacks++;
+    }, T.jsxs = function(n, u, g) {
+      var v = 1e4 > I.recentlyCreatedOwnerStacks++;
       return o(
         n,
         u,
         g,
         !0,
-        b ? Error("react-stack-top-frame") : W,
-        b ? V(s(n)) : G
+        v ? Error("react-stack-top-frame") : W,
+        v ? V(s(n)) : G
       );
     };
-  }()), A;
+  }()), T;
 }
 var Z;
 function de() {
@@ -356,10 +356,10 @@ function pe(p, e) {
 function N(p, e = 50, t = !1) {
   let s;
   return function(...i) {
-    const l = self, a = () => {
+    const l = self, r = () => {
       s = null, t || p.apply(l, i);
-    }, r = t && !s;
-    clearTimeout(s), s = setTimeout(a, e), r && p.apply(l, i);
+    }, a = t && !s;
+    clearTimeout(s), s = setTimeout(r, e), a && p.apply(l, i);
   };
 }
 function U(p, e) {
@@ -369,20 +369,7 @@ function me(p) {
   const e = p.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (t) => "-" + t.toLowerCase());
   return p[0] === p[0].toUpperCase() ? e.substring(1) : e;
 }
-class E {
-  id;
-  label;
-  selectAll;
-  selectAllText;
-  closable;
-  options;
-  constructor(e) {
-    if (this.id = !e.id || e.id === "" ? Y() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.closable = e.closable || "off", this.options = [], e.options)
-      for (const t of e.options)
-        this.options.push(new w(t));
-  }
-}
-class w {
+class b {
   id;
   value;
   text;
@@ -400,6 +387,19 @@ class w {
     this.id = !e.id || e.id === "" ? Y() : e.id, this.value = e.value === void 0 ? e.text || "" : e.value || "", this.text = e.text || "", this.html = e.html || "", this.defaultSelected = e.defaultSelected !== void 0 ? e.defaultSelected : !1, this.selected = e.selected !== void 0 ? e.selected : !1, this.display = e.display !== void 0 ? e.display : !0, this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.mandatory = e.mandatory !== void 0 ? e.mandatory : !1, this.placeholder = e.placeholder !== void 0 ? e.placeholder : !1, this.class = e.class || "", this.style = e.style || "", this.data = e.data || {};
   }
 }
+class y {
+  id;
+  label;
+  selectAll;
+  selectAllText;
+  closable;
+  options;
+  constructor(e) {
+    if (this.id = !e.id || e.id === "" ? Y() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.closable = e.closable || "off", this.options = [], e.options)
+      for (const t of e.options)
+        this.options.push(new b(t));
+  }
+}
 class ge {
   selectType = "single";
   // Main data set, never null
@@ -414,7 +414,7 @@ class ge {
       return new Error("Data must be an array");
     for (let t of e)
       if (t)
-        if (t instanceof E || "label" in t) {
+        if (t instanceof y || "label" in t) {
           if (!("label" in t))
             return new Error("Optgroup must have a label");
           if ("options" in t && t.options)
@@ -423,7 +423,7 @@ class ge {
               if (i)
                 return i;
             }
-        } else if (t instanceof w || "text" in t) {
+        } else if (t instanceof b || "text" in t) {
           const s = this.validateOption(t);
           if (s)
             return s;
@@ -439,13 +439,13 @@ class ge {
     let t = [];
     return e.forEach((s) => {
       if (s) {
-        if (s instanceof E || "label" in s) {
+        if (s instanceof y || "label" in s) {
           let i = [];
           "options" in s && s.options && s.options.forEach((l) => {
-            i.push(new w(l));
-          }), i.length > 0 && t.push(new E(s));
+            i.push(new b(l));
+          }), i.length > 0 && t.push(new y(s));
         }
-        (s instanceof w || "text" in s) && t.push(new w(s));
+        (s instanceof b || "text" in s) && t.push(new b(s));
       }
     }), t;
   }
@@ -453,22 +453,22 @@ class ge {
     const s = this.partialToFullData(e);
     if (t) {
       const i = this.getSelectedOptions(), l = [];
-      i.forEach((a) => {
-        let r = !1;
+      i.forEach((r) => {
+        let a = !1;
         for (const c of s) {
-          if (c instanceof w && c.id === a.id) {
-            r = !0;
+          if (c instanceof b && c.id === r.id) {
+            a = !0;
             break;
           }
-          if (c instanceof E) {
+          if (c instanceof y) {
             for (const h of c.options)
-              if (h.id === a.id) {
-                r = !0;
+              if (h.id === r.id) {
+                a = !0;
                 break;
               }
           }
         }
-        r || l.push(a);
+        a || l.push(r);
       }), this.data = [...l, ...s];
     } else
       this.data = s;
@@ -485,10 +485,10 @@ class ge {
   }
   addOption(e, t = !1) {
     if (t) {
-      let s = [new w(e)];
+      let s = [new b(e)];
       this.setData(s.concat(this.getData()));
     } else
-      this.setData(this.getData().concat(new w(e)));
+      this.setData(this.getData().concat(new b(e)));
   }
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
@@ -496,15 +496,18 @@ class ge {
   setSelectedBy(e, t) {
     let s = null, i = !1;
     const l = [];
-    for (let r of this.data) {
-      if (r instanceof E)
-        for (let c of r.options)
-          s || (s = c), c.selected = i ? !1 : t.includes(c[e]), c.selected && (l.push(c), this.selectType === "single" && (i = !0));
-      r instanceof w && (s || (s = r), r.selected = i ? !1 : t.includes(r[e]), r.selected && (l.push(r), this.selectType === "single" && (i = !0)));
+    for (let a of this.data) {
+      if (a instanceof y)
+        for (let c of a.options) {
+          s || (s = c);
+          let h = c[e] || "";
+          c.selected = i ? !1 : t.includes(h), c.selected && (l.push(c), this.selectType === "single" && (i = !0));
+        }
+      a instanceof b && (s || (s = a), a.selected = i ? !1 : t.includes(a[e]), a.selected && (l.push(a), this.selectType === "single" && (i = !0)));
     }
     this.selectType === "single" && s && !i && (s.selected = !0, l.push(s));
-    const a = t.map((r) => l.find((c) => c[e] === r)?.id || "");
-    this.selectedOrder = a;
+    const r = t.map((a) => l.find((c) => c[e] === a)?.id || "");
+    this.selectedOrder = r;
   }
   getSelected() {
     return this.getSelectedOptions().map((e) => e.id);
@@ -517,7 +520,7 @@ class ge {
   }
   getOptgroupByID(e) {
     for (let t of this.data)
-      if (t instanceof E && t.id === e)
+      if (t instanceof y && t.id === e)
         return t;
     return null;
   }
@@ -531,7 +534,7 @@ class ge {
   getFirstOption() {
     let e = null;
     for (let t of this.data)
-      if (t instanceof E ? e = t.options[0] : t instanceof w && (e = t), e)
+      if (t instanceof y ? e = t.options[0] : t instanceof b && (e = t), e)
         break;
     return e;
   }
@@ -544,16 +547,16 @@ class ge {
   filter(e, t) {
     const s = [];
     return this.data.forEach((i) => {
-      if (i instanceof E) {
+      if (i instanceof y) {
         let l = [];
         if (i.options.forEach((a) => {
-          (!e || e(a)) && (t ? l.push(new w(a)) : s.push(new w(a)));
+          (!e || e(a)) && (t ? l.push(new b(a)) : s.push(new b(a)));
         }), l.length > 0) {
-          let a = new E(i);
+          let a = new y(i);
           a.options = l, s.push(a);
         }
       }
-      i instanceof w && (!e || e(i)) && s.push(new w(i));
+      i instanceof b && (!e || e(i)) && s.push(new b(i));
     }), s;
   }
   // Take in an array of options and reoder them based upon the selected order
@@ -662,21 +665,21 @@ class be {
     };
     const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     l.setAttribute("viewBox", "0 0 100 100");
-    const a = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    a.setAttribute("d", this.classes.deselectPath), l.appendChild(a), s.appendChild(l), e.appendChild(s);
-    const r = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    r.classList.add(this.classes.arrow), r.setAttribute("viewBox", "0 0 100 100");
+    const r = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    r.setAttribute("d", this.classes.deselectPath), l.appendChild(r), s.appendChild(l), e.appendChild(s);
+    const a = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    a.classList.add(this.classes.arrow), a.setAttribute("viewBox", "0 0 100 100");
     const c = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    return c.setAttribute("d", this.classes.arrowClose), this.settings.alwaysOpen && r.classList.add(this.classes.hide), r.appendChild(c), e.appendChild(r), {
+    return c.setAttribute("d", this.classes.arrowClose), this.settings.alwaysOpen && a.classList.add(this.classes.hide), a.appendChild(c), e.appendChild(a), {
       main: e,
       values: t,
       deselect: {
         main: s,
         svg: l,
-        path: a
+        path: r
       },
       arrow: {
-        main: r,
+        main: a,
         path: c
       }
     };
@@ -730,8 +733,8 @@ class be {
     this.settings.keepOrder && (t = this.store.selectedOrderOptions(t));
     let s = [];
     for (let i = 0; i < e.length; i++) {
-      const l = e[i], a = l.getAttribute("data-id");
-      a && (t.filter((c) => c.id === a, !1).length || s.push(l));
+      const l = e[i], r = l.getAttribute("data-id");
+      r && (t.filter((c) => c.id === r, !1).length || s.push(l));
     }
     for (const i of s)
       i.classList.add(this.classes.valueOut), setTimeout(() => {
@@ -740,8 +743,8 @@ class be {
     e = this.main.values.childNodes;
     for (let i = 0; i < t.length; i++) {
       let l = !0;
-      for (let a = 0; a < e.length; a++)
-        t[i].id === String(e[a].dataset.id) && (l = !1);
+      for (let r = 0; r < e.length; r++)
+        t[i].id === String(e[r].dataset.id) && (l = !1);
       l && (this.settings.keepOrder ? this.main.values.appendChild(this.multipleValue(t[i])) : e.length === 0 ? this.main.values.appendChild(this.multipleValue(t[i])) : i === 0 ? this.main.values.insertBefore(this.multipleValue(t[i]), e[i]) : e[i - 1].insertAdjacentElement("afterend", this.multipleValue(t[i])));
     }
   }
@@ -751,27 +754,27 @@ class be {
     const s = document.createElement("div");
     if (s.classList.add(this.classes.valueText), s.textContent = e.text, t.appendChild(s), !e.mandatory) {
       const i = document.createElement("div");
-      i.classList.add(this.classes.valueDelete), i.setAttribute("tabindex", "0"), i.onclick = (r) => {
-        if (r.preventDefault(), r.stopPropagation(), this.settings.disabled)
+      i.classList.add(this.classes.valueDelete), i.setAttribute("tabindex", "0"), i.onclick = (a) => {
+        if (a.preventDefault(), a.stopPropagation(), this.settings.disabled)
           return;
         let c = !0;
         const h = this.store.getSelectedOptions(), o = h.filter((d) => d.selected && d.id !== e.id, !0);
         if (!(this.settings.minSelected && o.length < this.settings.minSelected) && (this.callbacks.beforeChange && (c = this.callbacks.beforeChange(o, h) === !0), c)) {
           let d = [];
           for (const m of o) {
-            if (m instanceof E)
+            if (m instanceof y)
               for (const f of m.options)
-                d.push(f.id);
-            m instanceof w && d.push(m.id);
+                f.id && d.push(f.id);
+            m instanceof b && d.push(m.id);
           }
           this.callbacks.setSelected(d, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o), this.updateDeselectAll();
         }
       };
       const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       l.setAttribute("viewBox", "0 0 100 100");
-      const a = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      a.setAttribute("d", this.classes.optionDelete), l.appendChild(a), i.appendChild(l), t.appendChild(i), i.onkeydown = (r) => {
-        r.key === "Enter" && i.click();
+      const r = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      r.setAttribute("d", this.classes.optionDelete), l.appendChild(r), i.appendChild(l), t.appendChild(i), i.onkeydown = (a) => {
+        a.key === "Enter" && i.click();
       };
     }
     return t;
@@ -822,20 +825,20 @@ class be {
         case "Escape":
           return this.callbacks.close(), !1;
         case " ":
-          const a = this.content.list.querySelector("." + this.classes.highlighted);
-          return a ? (a.click(), !1) : !0;
-        case "Enter":
           const r = this.content.list.querySelector("." + this.classes.highlighted);
-          return r ? (r.click(), !1) : this.callbacks.addable ? (s.click(), !1) : !0;
+          return r ? (r.click(), !1) : !0;
+        case "Enter":
+          const a = this.content.list.querySelector("." + this.classes.highlighted);
+          return a ? (a.click(), !1) : this.callbacks.addable ? (s.click(), !1) : !0;
       }
       return !0;
     }, e.appendChild(t), this.callbacks.addable) {
       s.classList.add(this.classes.addable);
       const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       l.setAttribute("viewBox", "0 0 100 100");
-      const a = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      a.setAttribute("d", this.classes.addablePath), l.appendChild(a), s.appendChild(l), s.onclick = (r) => {
-        if (r.preventDefault(), r.stopPropagation(), !this.callbacks.addable)
+      const r = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      r.setAttribute("d", this.classes.addablePath), l.appendChild(r), s.appendChild(l), s.onclick = (a) => {
+        if (a.preventDefault(), a.stopPropagation(), !this.callbacks.addable)
           return;
         const c = this.content.search.input.value.trim();
         if (c === "") {
@@ -843,7 +846,7 @@ class be {
           return;
         }
         const h = (d) => {
-          let m = new w(d);
+          let m = new b(d);
           if (this.callbacks.addOption(m), this.settings.isMultiple) {
             let f = this.store.getSelected();
             f.push(m.id), this.callbacks.setSelected(f, !0);
@@ -865,7 +868,7 @@ class be {
       }, e.appendChild(s), i.addable = {
         main: s,
         svg: l,
-        path: a
+        path: r
       };
     }
     return i;
@@ -901,11 +904,11 @@ class be {
     }
     for (let l = 0; l < t.length; l++)
       if (t[l].classList.contains(this.classes.highlighted)) {
-        const a = t[l];
-        a.classList.remove(this.classes.highlighted);
-        const r = a.parentElement;
-        if (r && r.classList.contains(this.classes.mainOpen)) {
-          const o = r.querySelector("." + this.classes.optgroupLabel);
+        const r = t[l];
+        r.classList.remove(this.classes.highlighted);
+        const a = r.parentElement;
+        if (a && a.classList.contains(this.classes.mainOpen)) {
+          const o = a.querySelector("." + this.classes.optgroupLabel);
           o && o.click();
         }
         let c = t[e === "down" ? l + 1 < t.length ? l + 1 : 0 : l - 1 >= 0 ? l - 1 : t.length - 1];
@@ -945,7 +948,7 @@ class be {
       return;
     }
     this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((i) => i.placeholder, !1).length || this.store.addOption(
-      new w({
+      new b({
         text: "",
         value: "",
         selected: !1,
@@ -955,15 +958,15 @@ class be {
     ));
     const t = document.createDocumentFragment();
     for (const s of e) {
-      if (s instanceof E) {
+      if (s instanceof y) {
         const i = document.createElement("div");
         i.classList.add(this.classes.optgroup);
         const l = document.createElement("div");
         l.classList.add(this.classes.optgroupLabel), i.appendChild(l);
-        const a = document.createElement("div");
-        a.classList.add(this.classes.optgroupLabelText), a.textContent = s.label, l.appendChild(a);
         const r = document.createElement("div");
-        if (r.classList.add(this.classes.optgroupActions), l.appendChild(r), this.settings.isMultiple && s.selectAll) {
+        r.classList.add(this.classes.optgroupLabelText), r.textContent = s.label, l.appendChild(r);
+        const a = document.createElement("div");
+        if (a.classList.add(this.classes.optgroupActions), l.appendChild(a), this.settings.isMultiple && s.selectAll) {
           const c = document.createElement("div");
           c.classList.add(this.classes.optgroupSelectAll);
           let h = !0;
@@ -984,22 +987,23 @@ class be {
             O.preventDefault(), O.stopPropagation();
             const C = this.store.getSelected();
             if (h) {
-              const S = C.filter((y) => {
-                for (const T of s.options)
-                  if (y === T.id)
+              const S = C.filter((x) => {
+                for (const E of s.options)
+                  if (x === E.id)
                     return !1;
                 return !0;
               });
               this.callbacks.setSelected(S, !0);
               return;
             } else {
-              const S = C.concat(s.options.map((y) => y.id));
-              for (const y of s.options)
-                this.store.getOptionByID(y.id) || this.callbacks.addOption(y);
-              this.callbacks.setSelected(S, !0);
+              let S = s.options.map((E) => E.id).filter((E) => E !== void 0);
+              const x = C.concat(S);
+              for (const E of s.options)
+                E.id && !this.store.getOptionByID(E.id) && this.callbacks.addOption(new b(E));
+              this.callbacks.setSelected(x, !0);
               return;
             }
-          }), r.appendChild(c);
+          }), a.appendChild(c);
         }
         if (s.closable !== "off") {
           const c = document.createElement("div");
@@ -1009,13 +1013,13 @@ class be {
           const o = document.createElementNS("http://www.w3.org/2000/svg", "path");
           h.appendChild(o), s.options.some((d) => d.selected) || this.content.search.input.value.trim() !== "" ? (c.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "open" ? (i.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "close" && (i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose)), l.addEventListener("click", (d) => {
             d.preventDefault(), d.stopPropagation(), i.classList.contains(this.classes.close) ? (i.classList.remove(this.classes.close), i.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : (i.classList.remove(this.classes.mainOpen), i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose));
-          }), r.appendChild(c);
+          }), a.appendChild(c);
         }
         i.appendChild(l);
         for (const c of s.options)
-          i.appendChild(this.option(c)), t.appendChild(i);
+          i.appendChild(this.option(new b(c))), t.appendChild(i);
       }
-      s instanceof w && t.appendChild(this.option(s));
+      s instanceof b && t.appendChild(this.option(s));
     }
     this.content.list.appendChild(t);
   }
@@ -1034,25 +1038,25 @@ class be {
       this.classes.searchHighlighter
     ) : e.html !== "" ? t.innerHTML = e.html : t.textContent = e.text, this.settings.showOptionTooltips && t.textContent && t.setAttribute("title", t.textContent), e.display || t.classList.add(this.classes.hide), e.disabled && t.classList.add(this.classes.disabled), e.selected && this.settings.hideSelected && t.classList.add(this.classes.hide), e.selected ? (t.classList.add(this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (t.classList.remove(this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (s) => {
       s.preventDefault(), s.stopPropagation();
-      const i = this.store.getSelected(), l = s.currentTarget, a = String(l.dataset.id), r = s.ctrlKey || s.metaKey;
-      if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || this.settings.isMultiple && this.settings.maxSelected <= i.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= i.length && e.selected && !r)
+      const i = this.store.getSelected(), l = s.currentTarget, r = String(l.dataset.id), a = s.ctrlKey || s.metaKey;
+      if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || this.settings.isMultiple && this.settings.maxSelected <= i.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= i.length && e.selected && !a)
         return;
       let c = !1;
       const h = this.store.getSelectedOptions();
       let o = [];
       if (this.settings.isMultiple) {
-        const d = h.some((f) => f.id === a);
+        const d = h.some((f) => f.id === r);
         if (s.shiftKey && this.lastSelectedOption) {
           const f = this.store.getDataOptions(), O = f.findIndex((S) => S.id === this.lastSelectedOption.id), C = f.findIndex((S) => S.id === e.id);
           if (O >= 0 && C >= 0) {
-            const S = Math.min(O, C), y = Math.max(O, C), k = f.slice(S, y + 1).filter((R) => !h.find((M) => M.id === R.id));
+            const S = Math.min(O, C), x = Math.max(O, C), k = f.slice(S, x + 1).filter((R) => !h.find((M) => M.id === R.id));
             h.length + k.length <= this.settings.maxSelected ? o = h.concat(k) : o = h;
           } else
             o = h;
-        } else r ? (d ? o = h.filter((f) => f.id !== a) : o = h.concat(e), this.lastSelectedOption = e) : (d ? o = h.filter((f) => f.id !== a) : o = h.concat(e), this.lastSelectedOption = e);
+        } else a ? (d ? o = h.filter((f) => f.id !== r) : o = h.concat(e), this.lastSelectedOption = e) : (d ? o = h.filter((f) => f.id !== r) : o = h.concat(e), this.lastSelectedOption = e);
       }
       if (this.settings.isMultiple || (e.selected ? o = [] : o = [e]), this.callbacks.beforeChange || (c = !0), this.callbacks.beforeChange && (this.callbacks.beforeChange(o, h) === !1 ? c = !1 : c = !0), c) {
-        this.store.getOptionByID(a) || this.callbacks.addOption(e), this.callbacks.setSelected(
+        this.store.getOptionByID(r) || this.callbacks.addOption(e), this.callbacks.setSelected(
           o.map((f) => f.id),
           !1
         );
@@ -1068,9 +1072,9 @@ class be {
     const i = t.trim();
     if (i === "")
       return e;
-    const l = i.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), a = document.createElement("div");
-    a.innerHTML = e;
-    const r = (c) => {
+    const l = i.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), r = document.createElement("div");
+    r.innerHTML = e;
+    const a = (c) => {
       if (c.nodeType === Node.TEXT_NODE) {
         const h = c.textContent || "", o = new RegExp("(" + l + ")", "i");
         if (o.test(h)) {
@@ -1082,9 +1086,9 @@ class be {
             } else f && d.appendChild(document.createTextNode(f));
           }), c.parentNode?.replaceChild(d, c);
         }
-      } else c.nodeType === Node.ELEMENT_NODE && Array.from(c.childNodes).forEach((h) => r(h));
+      } else c.nodeType === Node.ELEMENT_NODE && Array.from(c.childNodes).forEach((h) => a(h));
     };
-    return Array.from(a.childNodes).forEach((c) => r(c)), a.innerHTML;
+    return Array.from(r.childNodes).forEach((c) => a(c)), r.innerHTML;
   }
   moveContentAbove() {
     const e = this.main.main.offsetHeight, t = this.content.main.offsetHeight;
@@ -1098,8 +1102,8 @@ class be {
     this.content.main.style.margin = "-1px 0px 0px 0px", this.settings.contentPosition !== "relative" && (this.content.main.style.top = e.top + e.height + (this.settings.contentPosition === "fixed" ? 0 : window.scrollY) + "px", this.content.main.style.left = e.left + (this.settings.contentPosition === "fixed" ? 0 : window.scrollX) + "px", this.content.main.style.width = e.width + "px");
   }
   ensureElementInView(e, t) {
-    const s = e.scrollTop + e.offsetTop, i = s + e.clientHeight, l = t.offsetTop, a = l + t.clientHeight;
-    l < s ? e.scrollTop -= s - l : a > i && (e.scrollTop += a - i);
+    const s = e.scrollTop + e.offsetTop, i = s + e.clientHeight, l = t.offsetTop, r = l + t.clientHeight;
+    l < s ? e.scrollTop -= s - l : r > i && (e.scrollTop += r - i);
   }
   putContent() {
     const e = this.main.main.offsetHeight, t = this.main.main.getBoundingClientRect(), s = this.content.main.offsetHeight;
@@ -1109,8 +1113,8 @@ class be {
   updateDeselectAll() {
     if (!this.store || !this.settings)
       return;
-    const e = this.store.getSelectedOptions(), t = e && e.length > 0, s = this.settings.isMultiple, i = this.settings.allowDeselect, l = this.main.deselect.main, a = this.classes.hide;
-    i && !(s && !t) ? l.classList.remove(a) : l.classList.add(a);
+    const e = this.store.getSelectedOptions(), t = e && e.length > 0, s = this.settings.isMultiple, i = this.settings.allowDeselect, l = this.main.deselect.main, r = this.classes.hide;
+    i && !(s && !t) ? l.classList.remove(r) : l.classList.add(r);
   }
 }
 class ve {
@@ -1162,8 +1166,8 @@ class ve {
     let t = !1, s = !1, i = !1;
     for (const l of e) {
       if (l.target === this.select && (l.attributeName === "disabled" && (s = !0), l.attributeName === "class" && (t = !0), l.type === "childList")) {
-        for (const a of Array.from(l.addedNodes))
-          if (a.nodeName === "OPTION" && a.value === this.select.value) {
+        for (const r of Array.from(l.addedNodes))
+          if (r.nodeName === "OPTION" && r.value === this.select.value) {
             this.select.dispatchEvent(new Event("change"));
             break;
           }
@@ -1221,8 +1225,8 @@ class ve {
         const i = s.childNodes;
         for (const l of i)
           if (l.nodeName === "OPTION") {
-            const a = l;
-            a.selected && e.push(this.getDataFromOption(a));
+            const r = l;
+            r.selected && e.push(this.getDataFromOption(r));
           }
       }
       if (s.nodeName === "OPTION") {
@@ -1241,10 +1245,10 @@ class ve {
     for (const s of t) {
       if (s.nodeName === "OPTGROUP") {
         const l = s.childNodes;
-        for (const a of l)
-          if (a.nodeName === "OPTION") {
-            const r = a;
-            r.selected = e.includes(r.id);
+        for (const r of l)
+          if (r.nodeName === "OPTION") {
+            const a = r;
+            a.selected = e.includes(a.id);
           }
       }
       if (s.nodeName === "OPTION") {
@@ -1264,10 +1268,10 @@ class ve {
     for (const s of t) {
       if (s.nodeName === "OPTGROUP") {
         const l = s.childNodes;
-        for (const a of l)
-          if (a.nodeName === "OPTION") {
-            const r = a;
-            r.selected = e.includes(r.value);
+        for (const r of l)
+          if (r.nodeName === "OPTION") {
+            const a = r;
+            a.selected = e.includes(a.value);
           }
       }
       if (s.nodeName === "OPTION") {
@@ -1285,7 +1289,7 @@ class ve {
   updateOptions(e) {
     this.changeListen(!1), this.select.innerHTML = "";
     for (const t of e)
-      t instanceof E && this.select.appendChild(this.createOptgroup(t)), t instanceof w && this.select.appendChild(this.createOption(t));
+      t instanceof y && this.select.appendChild(this.createOptgroup(t)), t instanceof b && this.select.appendChild(this.createOption(t));
     this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0);
   }
   createOptgroup(e) {
@@ -1382,18 +1386,17 @@ let Oe = class {
     for (const a in e.events)
       e.events.hasOwnProperty(a) && (t.indexOf(a) !== -1 ? this.events[a] = N(e.events[a], 100) : this.events[a] = e.events[a]);
     this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new ve(this.selectEl), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (a) => {
-      this.setSelected(a.map((r) => r.id));
+      this.setSelected(a.map((c) => c.id));
     }, this.select.onClassChange = (a) => {
       this.settings.class = a, this.render.updateClassStyles();
     }, this.select.onDisabledChange = (a) => {
       a ? this.disable() : this.enable();
     }, this.select.onOptionsChange = (a) => {
       this.setData(a);
-    }, this.store = new ge(
-      this.settings.isMultiple ? "multiple" : "single",
-      e.data ? e.data : this.select.getData()
-    ), e.data && this.select.updateOptions(this.store.getData());
-    const s = {
+    };
+    const s = e.data ? e.data : this.select.getData();
+    this.store = new ge(this.settings.isMultiple ? "multiple" : "single", s), e.data && this.select.updateOptions(this.store.getData());
+    const i = {
       open: this.open.bind(this),
       close: this.close.bind(this),
       addable: this.events.addable ? this.events.addable : void 0,
@@ -1403,9 +1406,9 @@ let Oe = class {
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange
     };
-    this.render = new be(this.settings, this.cssClasses, this.store, s), this.render.renderValues(), this.render.renderOptions(this.store.getData());
-    const i = this.selectEl.getAttribute("aria-label"), l = this.selectEl.getAttribute("aria-labelledby");
-    i ? this.render.main.main.setAttribute("aria-label", i) : l && this.render.main.main.setAttribute("aria-labelledby", l), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.selectEl.slim = this;
+    this.render = new be(this.settings, this.cssClasses, this.store, i), this.render.renderValues(), this.render.renderOptions(this.store.getData());
+    const l = this.selectEl.getAttribute("aria-label"), r = this.selectEl.getAttribute("aria-labelledby");
+    l ? this.render.main.main.setAttribute("aria-label", l) : r && this.render.main.main.setAttribute("aria-labelledby", r), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.selectEl.slim = this;
   }
   // Set to enabled and remove disabled classes
   enable() {
@@ -1437,17 +1440,17 @@ let Oe = class {
     const s = this.store.getSelected(), i = this.store.getDataOptions();
     e = Array.isArray(e) ? e : [e];
     const l = [];
-    for (const r of e) {
-      if (i.find((c) => c.id == r)) {
-        l.push(r);
+    for (const a of e) {
+      if (i.find((c) => c.id == a)) {
+        l.push(a);
         continue;
       }
-      for (const c of i.filter((h) => h.value == r))
+      for (const c of i.filter((h) => h.value == a))
         l.push(c.id);
     }
     this.store.setSelectedBy("id", l);
-    const a = this.store.getData();
-    this.select.updateOptions(a), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(a), t && this.events.afterChange && !U(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    const r = this.store.getData();
+    this.select.updateOptions(r), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(r), t && this.events.afterChange && !U(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   addOption(e) {
     const t = this.store.getSelected();
@@ -1503,7 +1506,7 @@ let Oe = class {
   };
 };
 const Se = re(
-  ({ data: p, settings: e, events: t, cssClasses: s, value: i, onChange: l, children: a, multiple: r }, c) => {
+  ({ data: p, settings: e, events: t, cssClasses: s, value: i, onChange: l, children: r, multiple: a }, c) => {
     const h = F(null), o = F(null), d = F(!0);
     return oe(c, () => ({
       slimSelect: o.current
@@ -1517,7 +1520,7 @@ const Se = re(
       return m.events = {
         ...t,
         afterChange: (O) => {
-          const C = r ? O.map((S) => S.value) : O[0]?.value ?? "";
+          const C = a ? O.map((S) => S.value) : O[0]?.value ?? "";
           l && l(C), f && f(O);
         }
       }, o.current = new Oe(m), i !== void 0 && o.current.setSelected(i, !1), () => {
@@ -1531,13 +1534,13 @@ const Se = re(
       o.current && i !== void 0 && o.current.setSelected(i, !1);
     }, [i]), j(() => {
       o.current && p && !d.current && o.current.setData(p);
-    }, [p]), /* @__PURE__ */ ue.jsx("select", { ref: h, multiple: r, children: a });
+    }, [p]), /* @__PURE__ */ ue.jsx("select", { ref: h, multiple: a, children: r });
   }
 );
 Se.displayName = "SlimSelect";
 export {
-  E as Optgroup,
-  w as Option,
+  y as Optgroup,
+  b as Option,
   we as Settings,
   Se as default
 };

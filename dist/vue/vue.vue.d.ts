@@ -1,5 +1,5 @@
 import { PropType } from 'vue';
-import { default as SlimSelect, Settings, Events, Option, DataArray } from '../index';
+import { default as SlimSelect, Events, Option, Optgroup, Settings } from '../index';
 declare const _default: import('vue').DefineComponent<import('vue').ExtractPropTypes<{
     modelValue: {
         type: PropType<string | string[] | undefined>;
@@ -9,7 +9,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
         default: boolean;
     };
     data: {
-        type: PropType<Partial<DataArray>>;
+        type: PropType<(Partial<Option> | Partial<Optgroup>)[]>;
     };
     settings: {
         type: PropType<Partial<Settings>>;
@@ -118,7 +118,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             onValueChange?: ((value: Option[]) => void) | undefined;
             onClassChange?: ((classes: string[]) => void) | undefined;
             onDisabledChange?: ((disabled: boolean) => void) | undefined;
-            onOptionsChange?: ((data: Partial<DataArray>) => void) | undefined;
+            onOptionsChange?: ((data: (Option | Optgroup)[]) => void) | undefined;
             listen: boolean;
             enable: () => void;
             disable: () => void;
@@ -126,39 +126,39 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             showUI: () => void;
             changeListen: (listen: boolean) => void;
             valueChange: (ev: Event) => boolean;
-            getData: () => Partial<DataArray>;
-            getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => Partial<import('../store').Optgroup>;
+            getData: () => (Option | Optgroup)[];
+            getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => Optgroup;
             getDataFromOption: (option: HTMLOptionElement) => Option;
             getSelectedOptions: () => Option[];
             getSelectedValues: () => string[];
             setSelected: (ids: string[]) => void;
             setSelectedByValue: (values: string[]) => void;
             updateSelect: (id?: string, style?: string, classes?: string[]) => void;
-            updateOptions: (data: DataArray) => void;
-            createOptgroup: (optgroup: import('../store').Optgroup) => HTMLOptGroupElement;
+            updateOptions: (data: (Option | Optgroup)[]) => void;
+            createOptgroup: (optgroup: Optgroup) => HTMLOptGroupElement;
             createOption: (info: Option) => HTMLOptionElement;
             destroy: () => void;
         };
         store: {
-            validateDataArray: (data: DataArray | Partial<DataArray>) => Error | null;
-            validateOption: (option: Option | Partial<Option>) => Error | null;
-            partialToFullData: (data: DataArray | Partial<DataArray>) => DataArray;
-            setData: (data: DataArray | Partial<DataArray>, preserveSelected?: boolean) => void;
-            getData: () => DataArray;
+            validateDataArray: (data: (Partial<Option> | Partial<Optgroup>)[]) => Error | null;
+            validateOption: (option: Partial<Option>) => Error | null;
+            partialToFullData: (data: (Partial<Option> | Partial<Optgroup>)[]) => (Option | Optgroup)[];
+            setData: (data: (Partial<Option> | Partial<Optgroup>)[], preserveSelected?: boolean) => void;
+            getData: () => Option[] | Optgroup[];
             getDataOptions: () => Option[];
             addOption: (option: Partial<Option>, addToStart?: boolean) => void;
             setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
             getSelected: () => string[];
             getSelectedValues: () => string[];
             getSelectedOptions: () => Option[];
-            getOptgroupByID: (id: string) => import('../store').Optgroup | null;
+            getOptgroupByID: (id: string) => Optgroup | null;
             getOptionByID: (id: string) => Option | null;
             getSelectType: () => string;
             getFirstOption: () => Option | null;
-            search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => DataArray;
+            search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => (Option | Optgroup)[];
             filter: (filter: {
                 (opt: Option): boolean;
-            } | null, includeOptgroup: boolean) => DataArray;
+            } | null, includeOptgroup: boolean) => (Option | Optgroup)[];
             selectedOrderOptions: (options: Option[]) => Option[];
         };
         render: {
@@ -205,25 +205,25 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
                 addableText: string;
             };
             store: {
-                validateDataArray: (data: DataArray | Partial<DataArray>) => Error | null;
-                validateOption: (option: Option | Partial<Option>) => Error | null;
-                partialToFullData: (data: DataArray | Partial<DataArray>) => DataArray;
-                setData: (data: DataArray | Partial<DataArray>, preserveSelected?: boolean) => void;
-                getData: () => DataArray;
+                validateDataArray: (data: (Partial<Option> | Partial<Optgroup>)[]) => Error | null;
+                validateOption: (option: Partial<Option>) => Error | null;
+                partialToFullData: (data: (Partial<Option> | Partial<Optgroup>)[]) => (Option | Optgroup)[];
+                setData: (data: (Partial<Option> | Partial<Optgroup>)[], preserveSelected?: boolean) => void;
+                getData: () => Option[] | Optgroup[];
                 getDataOptions: () => Option[];
                 addOption: (option: Partial<Option>, addToStart?: boolean) => void;
                 setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
                 getSelected: () => string[];
                 getSelectedValues: () => string[];
                 getSelectedOptions: () => Option[];
-                getOptgroupByID: (id: string) => import('../store').Optgroup | null;
+                getOptgroupByID: (id: string) => Optgroup | null;
                 getOptionByID: (id: string) => Option | null;
                 getSelectType: () => string;
                 getFirstOption: () => Option | null;
-                search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => DataArray;
+                search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => (Option | Optgroup)[];
                 filter: (filter: {
                     (opt: Option): boolean;
-                } | null, includeOptgroup: boolean) => DataArray;
+                } | null, includeOptgroup: boolean) => (Option | Optgroup)[];
                 selectedOrderOptions: (options: Option[]) => Option[];
             };
             callbacks: {
@@ -326,7 +326,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             listDiv: () => HTMLDivElement;
             renderError: (error: string) => void;
             renderSearching: () => void;
-            renderOptions: (data: DataArray) => void;
+            renderOptions: (data: (Option | Optgroup)[]) => void;
             option: (option: Option) => HTMLDivElement;
             destroy: () => void;
             moveContentAbove: () => void;
@@ -338,8 +338,8 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
         events: Events;
         enable: () => void;
         disable: () => void;
-        getData: () => DataArray;
-        setData: (data: Partial<DataArray>) => void;
+        getData: () => Option[] | Optgroup[];
+        setData: (data: (Partial<Option> | Partial<Optgroup>)[]) => void;
         getSelected: () => string[];
         setSelected: (values: string | string[], runAfterChange?: boolean) => void;
         addOption: (option: Partial<Option>) => void;
@@ -358,7 +358,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
         default: boolean;
     };
     data: {
-        type: PropType<Partial<DataArray>>;
+        type: PropType<(Partial<Option> | Partial<Optgroup>)[]>;
     };
     settings: {
         type: PropType<Partial<Settings>>;

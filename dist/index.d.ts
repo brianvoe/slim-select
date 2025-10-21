@@ -11,7 +11,7 @@ declare interface Callbacks {
 
 export declare interface Config {
     select: string | Element;
-    data?: Partial<DataArray>;
+    data?: Partial<Option_2>[] | Partial<Optgroup>[];
     settings?: Partial<Settings>;
     cssClasses?: Partial<CssClasses>;
     events?: Events;
@@ -68,12 +68,8 @@ declare class CssClasses {
     constructor(classes?: Partial<CssClasses>);
 }
 
-export declare type DataArray = DataObject[];
-
-export declare type DataObject = Optgroup | Option_2;
-
 export declare interface Events {
-    search?: (searchValue: string, currentData: DataArray) => Promise<Partial<DataArray>> | Partial<DataArray>;
+    search?: (searchValue: string, currentData: (Option_2 | Optgroup)[]) => Promise<(Partial<Option_2> | Partial<Optgroup>)[]> | (Partial<Option_2> | Partial<Optgroup>)[];
     searchFilter?: (option: Option_2, search: string) => boolean;
     addable?: (value: string) => Promise<Partial<Option_2> | string> | Partial<Option_2> | string | false | null | undefined | Error;
     beforeChange?: (newVal: Option_2[], oldVal: Option_2[]) => boolean | void;
@@ -105,7 +101,7 @@ export declare class Optgroup {
     selectAll: boolean;
     selectAllText: string;
     closable: 'off' | 'open' | 'close';
-    options: Option_2[];
+    options: Partial<Option_2>[];
     constructor(optgroup: Partial<Optgroup>);
 }
 
@@ -161,7 +157,7 @@ export declare class Render {
     listDiv(): HTMLDivElement;
     renderError(error: string): void;
     renderSearching(): void;
-    renderOptions(data: DataArray): void;
+    renderOptions(data: (Option_2 | Optgroup)[]): void;
     option(option: Option_2): HTMLDivElement;
     destroy(): void;
     private highlightText;
@@ -187,7 +183,7 @@ export declare class Select {
     onValueChange?: (value: Option_2[]) => void;
     onClassChange?: (classes: string[]) => void;
     onDisabledChange?: (disabled: boolean) => void;
-    onOptionsChange?: (data: Partial<DataArray>) => void;
+    onOptionsChange?: (data: (Option_2 | Optgroup)[]) => void;
     listen: boolean;
     private observer;
     constructor(select: HTMLSelectElement);
@@ -198,15 +194,15 @@ export declare class Select {
     changeListen(listen: boolean): void;
     valueChange(ev: Event): boolean;
     private observeCall;
-    getData(): Partial<DataArray>;
-    getDataFromOptgroup(optgroup: HTMLOptGroupElement): Partial<Optgroup>;
+    getData(): (Option_2 | Optgroup)[];
+    getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup;
     getDataFromOption(option: HTMLOptionElement): Option_2;
     getSelectedOptions(): Option_2[];
     getSelectedValues(): string[];
     setSelected(ids: string[]): void;
     setSelectedByValue(values: string[]): void;
     updateSelect(id?: string, style?: string, classes?: string[]): void;
-    updateOptions(data: DataArray): void;
+    updateOptions(data: (Option_2 | Optgroup)[]): void;
     createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;
     createOption(info: Option_2): HTMLOptionElement;
     destroy(): void;
@@ -260,8 +256,8 @@ declare class SlimSelect {
     constructor(config: Config);
     enable(): void;
     disable(): void;
-    getData(): DataArray;
-    setData(data: Partial<DataArray>): void;
+    getData(): Option_2[] | Optgroup[];
+    setData(data: (Partial<Option_2> | Partial<Optgroup>)[]): void;
     getSelected(): string[];
     setSelected(values: string | string[], runAfterChange?: boolean): void;
     addOption(option: Partial<Option_2>): void;
@@ -280,12 +276,12 @@ export declare class Store {
     private selectType;
     private data;
     private selectedOrder;
-    constructor(type: selectType, data: DataArray);
-    validateDataArray(data: DataArray | Partial<DataArray>): Error | null;
-    validateOption(option: Option_2 | Partial<Option_2>): Error | null;
-    partialToFullData(data: DataArray | Partial<DataArray>): DataArray;
-    setData(data: DataArray | Partial<DataArray>, preserveSelected?: boolean): void;
-    getData(): DataArray;
+    constructor(type: selectType, data: (Partial<Option_2> | Partial<Optgroup>)[]);
+    validateDataArray(data: (Partial<Option_2> | Partial<Optgroup>)[]): Error | null;
+    validateOption(option: Partial<Option_2>): Error | null;
+    partialToFullData(data: (Partial<Option_2> | Partial<Optgroup>)[]): (Option_2 | Optgroup)[];
+    setData(data: (Partial<Option_2> | Partial<Optgroup>)[], preserveSelected?: boolean): void;
+    getData(): Option_2[] | Optgroup[];
     getDataOptions(): Option_2[];
     addOption(option: Partial<Option_2>, addToStart?: boolean): void;
     setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]): void;
@@ -296,10 +292,10 @@ export declare class Store {
     getOptionByID(id: string): Option_2 | null;
     getSelectType(): string;
     getFirstOption(): Option_2 | null;
-    search(search: string, searchFilter: (opt: Option_2, search: string) => boolean): DataArray;
+    search(search: string, searchFilter: (opt: Option_2, search: string) => boolean): (Option_2 | Optgroup)[];
     filter(filter: {
         (opt: Option_2): boolean;
-    } | null, includeOptgroup: boolean): DataArray;
+    } | null, includeOptgroup: boolean): (Option_2 | Optgroup)[];
     selectedOrderOptions(options: Option_2[]): Option_2[];
 }
 
