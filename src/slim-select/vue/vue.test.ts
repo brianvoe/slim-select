@@ -1,8 +1,8 @@
 import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
 import { nextTick, PropType } from 'vue'
+import SlimSelect, { Option, Events } from '@/slim-select'
 import SlimSelectVue from './vue.vue'
-import SlimSelect from '../index'
 
 describe('SlimSelect Vue Component', () => {
   let wrapper: VueWrapper<any>
@@ -637,13 +637,13 @@ describe('SlimSelect Vue Component', () => {
             { value: 'value3', text: 'Value 3' }
           ],
           events: {
-            afterChange: (newVal) => {
+            afterChange: (newVal: Option[]) => {
               // Update parent's local values
-              parentValues.customField1 = newVal.map((o) => o.value)
+              parentValues.customField1 = newVal.map((o: Option) => o.value)
               // Call parent's valueChange method
               valueChangeCallback()
             }
-          }
+          } as Events
         }
       })
 

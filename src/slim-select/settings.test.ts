@@ -1,6 +1,6 @@
 'use strict'
 
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, beforeEach } from 'vitest'
 import Settings from './settings'
 import Select from './select'
 import { Option, Optgroup } from './store'
