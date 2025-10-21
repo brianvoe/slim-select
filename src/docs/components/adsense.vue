@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useAppStore } from '@/docs/store'
 
 let adScriptLoaded = false
 
@@ -23,11 +24,14 @@ export default defineComponent({
       default: true
     }
   },
+  data() {
+    const appStore = useAppStore()
+    
+    return { appStore }
+  },
   mounted() {
-    const isLocalhost = window.location.hostname === 'localhost'
-
     // Don't load ads on localhost
-    if (isLocalhost) {
+    if (this.appStore.isLocalhost) {
       return
     }
 
@@ -73,12 +77,51 @@ export default defineComponent({
     display: block;
     text-decoration: none;
   }
+
+  .ad-placeholder {
+    display: block;
+    padding: var(--spacing);
+    background:
+      linear-gradient(135deg, #f5f5f5 25%, transparent 25%), linear-gradient(225deg, #f5f5f5 25%, transparent 25%),
+      linear-gradient(45deg, #f5f5f5 25%, transparent 25%), linear-gradient(315deg, #f5f5f5 25%, #e0e0e0 25%);
+    background-position:
+      10px 0,
+      10px 0,
+      0 0,
+      0 0;
+    background-size: 20px 20px;
+    background-repeat: repeat;
+    border: 2px dashed #ccc;
+    border-radius: var(--border-radius);
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+
+    strong {
+      display: block;
+      margin-bottom: var(--spacing-quarter);
+      color: #666;
+    }
+
+    small {
+      display: block;
+      font-size: 12px;
+      margin-top: var(--spacing-quarter);
+      color: #aaa;
+    }
+  }
 }
 </style>
 
 <template>
   <div class="adsense-container">
+    <div v-if="appStore.isLocalhost" class="ad-placeholder">
+      <strong>📢 Ad Placement</strong>
+      <div>Google AdSense ad will display here</div>
+      <small>Ad format: {{ adFormat }} | Responsive: {{ fullWidthResponsive }}</small>
+    </div>
     <ins
+      v-else
       class="adsbygoogle"
       :data-ad-client="adClient"
       :data-ad-slot="adSlot"
