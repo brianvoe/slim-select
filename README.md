@@ -1,4 +1,4 @@
-# Slim Select 2
+# Slim Select
 
 ## [slimselectjs.com](https://slimselectjs.com)
 
