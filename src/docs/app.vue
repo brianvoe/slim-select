@@ -3,12 +3,12 @@ import { defineComponent } from 'vue'
 
 import SlimSelect, { type Settings } from '@/slim-select'
 import { debounce } from '@/slim-select/helpers'
-import CarbonAd from './components/carbonad.vue'
+import AdSense from './components/adsense.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
-    CarbonAd
+    AdSense
   },
   data() {
     return {
@@ -285,7 +285,7 @@ export default defineComponent({
   <nav>
     <select ref="nav"></select>
     <div class="nav-content" ref="navContent"></div>
-    <CarbonAd />
+    <AdSense />
   </nav>
   <main>
     <router-view />
