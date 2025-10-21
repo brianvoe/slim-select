@@ -5,6 +5,11 @@ import path from 'path'
 
 export default defineConfig({
   publicDir: false,
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/slim-select/vue/index.ts'),

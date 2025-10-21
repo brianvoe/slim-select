@@ -1,13 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import path from 'path'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   publicDir: false,
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/slim-select/react/index.tsx'),
+      entry: path.resolve(__dirname, 'src/slim-select/react/index.tsx'),
       name: 'SlimSelectReact',
       formats: ['es', 'umd'],
       fileName: (format) => `index.${format === 'es' ? 'js' : 'umd.js'}`

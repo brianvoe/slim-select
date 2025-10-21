@@ -22,7 +22,7 @@
     "importHelpers": true,
     "lib": ["esnext", "dom"],
     "paths": {
-      "slim-select": ["src/slim-select"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],

@@ -4,6 +4,11 @@ import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   publicDir: false,
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/slim-select/index.ts'),
