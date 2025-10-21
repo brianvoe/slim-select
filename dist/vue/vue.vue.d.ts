@@ -1,7 +1,5 @@
 import { PropType } from 'vue';
-import { default as SlimSelect, Events } from '../index';
-import { SettingsPartial } from '../settings';
-import { DataArrayPartial, Option } from '../store';
+import { default as SlimSelect, Settings, Events, Option, DataArray } from '../index';
 declare const _default: import('vue').DefineComponent<import('vue').ExtractPropTypes<{
     modelValue: {
         type: PropType<string | string[] | undefined>;
@@ -11,10 +9,10 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
         default: boolean;
     };
     data: {
-        type: PropType<DataArrayPartial>;
+        type: PropType<Partial<DataArray>>;
     };
     settings: {
-        type: PropType<SettingsPartial>;
+        type: PropType<Partial<Settings>>;
     };
     events: {
         type: PropType<Events>;
@@ -120,7 +118,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             onValueChange?: ((value: Option[]) => void) | undefined;
             onClassChange?: ((classes: string[]) => void) | undefined;
             onDisabledChange?: ((disabled: boolean) => void) | undefined;
-            onOptionsChange?: ((data: DataArrayPartial) => void) | undefined;
+            onOptionsChange?: ((data: Partial<DataArray>) => void) | undefined;
             listen: boolean;
             enable: () => void;
             disable: () => void;
@@ -128,27 +126,27 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             showUI: () => void;
             changeListen: (listen: boolean) => void;
             valueChange: (ev: Event) => boolean;
-            getData: () => DataArrayPartial;
-            getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => import('../store').OptgroupOptional;
+            getData: () => Partial<DataArray>;
+            getDataFromOptgroup: (optgroup: HTMLOptGroupElement) => Partial<import('../store').Optgroup>;
             getDataFromOption: (option: HTMLOptionElement) => Option;
             getSelectedOptions: () => Option[];
             getSelectedValues: () => string[];
             setSelected: (ids: string[]) => void;
             setSelectedByValue: (values: string[]) => void;
             updateSelect: (id?: string, style?: string, classes?: string[]) => void;
-            updateOptions: (data: import('../store').DataArray) => void;
+            updateOptions: (data: DataArray) => void;
             createOptgroup: (optgroup: import('../store').Optgroup) => HTMLOptGroupElement;
             createOption: (info: Option) => HTMLOptionElement;
             destroy: () => void;
         };
         store: {
-            validateDataArray: (data: import('../store').DataArray | DataArrayPartial) => Error | null;
-            validateOption: (option: Option | import('../store').OptionOptional) => Error | null;
-            partialToFullData: (data: DataArrayPartial) => import('../store').DataArray;
-            setData: (data: import('../store').DataArray | DataArrayPartial, preserveSelected?: boolean) => void;
-            getData: () => import('../store').DataArray;
+            validateDataArray: (data: DataArray | Partial<DataArray>) => Error | null;
+            validateOption: (option: Option | Partial<Option>) => Error | null;
+            partialToFullData: (data: DataArray | Partial<DataArray>) => DataArray;
+            setData: (data: DataArray | Partial<DataArray>, preserveSelected?: boolean) => void;
+            getData: () => DataArray;
             getDataOptions: () => Option[];
-            addOption: (option: import('../store').OptionOptional, addToStart?: boolean) => void;
+            addOption: (option: Partial<Option>, addToStart?: boolean) => void;
             setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
             getSelected: () => string[];
             getSelectedValues: () => string[];
@@ -157,10 +155,10 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             getOptionByID: (id: string) => Option | null;
             getSelectType: () => string;
             getFirstOption: () => Option | null;
-            search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import('../store').DataArray;
+            search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => DataArray;
             filter: (filter: {
                 (opt: Option): boolean;
-            } | null, includeOptgroup: boolean) => import('../store').DataArray;
+            } | null, includeOptgroup: boolean) => DataArray;
             selectedOrderOptions: (options: Option[]) => Option[];
         };
         render: {
@@ -207,13 +205,13 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
                 addableText: string;
             };
             store: {
-                validateDataArray: (data: import('../store').DataArray | DataArrayPartial) => Error | null;
-                validateOption: (option: Option | import('../store').OptionOptional) => Error | null;
-                partialToFullData: (data: DataArrayPartial) => import('../store').DataArray;
-                setData: (data: import('../store').DataArray | DataArrayPartial, preserveSelected?: boolean) => void;
-                getData: () => import('../store').DataArray;
+                validateDataArray: (data: DataArray | Partial<DataArray>) => Error | null;
+                validateOption: (option: Option | Partial<Option>) => Error | null;
+                partialToFullData: (data: DataArray | Partial<DataArray>) => DataArray;
+                setData: (data: DataArray | Partial<DataArray>, preserveSelected?: boolean) => void;
+                getData: () => DataArray;
                 getDataOptions: () => Option[];
-                addOption: (option: import('../store').OptionOptional, addToStart?: boolean) => void;
+                addOption: (option: Partial<Option>, addToStart?: boolean) => void;
                 setSelectedBy: (selectedType: "id" | "value", selectedValues: string[]) => void;
                 getSelected: () => string[];
                 getSelectedValues: () => string[];
@@ -222,16 +220,16 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
                 getOptionByID: (id: string) => Option | null;
                 getSelectType: () => string;
                 getFirstOption: () => Option | null;
-                search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import('../store').DataArray;
+                search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => DataArray;
                 filter: (filter: {
                     (opt: Option): boolean;
-                } | null, includeOptgroup: boolean) => import('../store').DataArray;
+                } | null, includeOptgroup: boolean) => DataArray;
                 selectedOrderOptions: (options: Option[]) => Option[];
             };
             callbacks: {
                 open: () => void;
                 close: () => void;
-                addable?: ((value: string) => Promise<import('../store').OptionOptional | string> | import('../store').OptionOptional | string | false | undefined | null | Error) | undefined;
+                addable?: ((value: string) => Promise<Partial<Option> | string> | Partial<Option> | string | false | undefined | null | Error) | undefined;
                 setSelected: (value: string | string[], runAfterChange: boolean) => void;
                 addOption: (option: Option) => void;
                 search: (search: string) => void;
@@ -328,7 +326,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
             listDiv: () => HTMLDivElement;
             renderError: (error: string) => void;
             renderSearching: () => void;
-            renderOptions: (data: import('../store').DataArray) => void;
+            renderOptions: (data: DataArray) => void;
             option: (option: Option) => HTMLDivElement;
             destroy: () => void;
             moveContentAbove: () => void;
@@ -340,11 +338,11 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
         events: Events;
         enable: () => void;
         disable: () => void;
-        getData: () => import('../store').DataArray;
-        setData: (data: DataArrayPartial) => void;
+        getData: () => DataArray;
+        setData: (data: Partial<DataArray>) => void;
         getSelected: () => string[];
         setSelected: (values: string | string[], runAfterChange?: boolean) => void;
-        addOption: (option: import('../store').OptionOptional) => void;
+        addOption: (option: Partial<Option>) => void;
         open: () => void;
         close: (eventType?: string | null) => void;
         search: (value: string) => void;
@@ -360,10 +358,10 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
         default: boolean;
     };
     data: {
-        type: PropType<DataArrayPartial>;
+        type: PropType<Partial<DataArray>>;
     };
     settings: {
-        type: PropType<SettingsPartial>;
+        type: PropType<Partial<Settings>>;
     };
     events: {
         type: PropType<Events>;

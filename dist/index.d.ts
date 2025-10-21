@@ -1,7 +1,7 @@
 declare interface Callbacks {
     open: () => void;
     close: () => void;
-    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null | Error;
+    addable?: (value: string) => Promise<Partial<Option_2> | string> | Partial<Option_2> | string | false | undefined | null | Error;
     setSelected: (value: string | string[], runAfterChange: boolean) => void;
     addOption: (option: Option_2) => void;
     search: (search: string) => void;
@@ -11,8 +11,8 @@ declare interface Callbacks {
 
 export declare interface Config {
     select: string | Element;
-    data?: DataArrayPartial;
-    settings?: SettingsPartial;
+    data?: Partial<DataArray>;
+    settings?: Partial<Settings>;
     cssClasses?: Partial<CssClasses>;
     events?: Events;
 }
@@ -70,16 +70,12 @@ declare class CssClasses {
 
 export declare type DataArray = DataObject[];
 
-export declare type DataArrayPartial = DataObjectPartial[];
-
 export declare type DataObject = Optgroup | Option_2;
 
-export declare type DataObjectPartial = OptgroupOptional | OptionOptional;
-
 export declare interface Events {
-    search?: (searchValue: string, currentData: DataArray) => Promise<DataArrayPartial> | DataArrayPartial;
+    search?: (searchValue: string, currentData: DataArray) => Promise<Partial<DataArray>> | Partial<DataArray>;
     searchFilter?: (option: Option_2, search: string) => boolean;
-    addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | null | undefined | Error;
+    addable?: (value: string) => Promise<Partial<Option_2> | string> | Partial<Option_2> | string | false | null | undefined | Error;
     beforeChange?: (newVal: Option_2[], oldVal: Option_2[]) => boolean | void;
     afterChange?: (newVal: Option_2[]) => void;
     beforeOpen?: () => void;
@@ -110,16 +106,7 @@ export declare class Optgroup {
     selectAllText: string;
     closable: 'off' | 'open' | 'close';
     options: Option_2[];
-    constructor(optgroup: OptgroupOptional);
-}
-
-export declare interface OptgroupOptional {
-    id?: string;
-    label: string;
-    selectAll?: boolean;
-    selectAllText?: string;
-    closable?: 'off' | 'open' | 'close';
-    options?: OptionOptional[];
+    constructor(optgroup: Partial<Optgroup>);
 }
 
 declare class Option_2 {
@@ -138,29 +125,11 @@ declare class Option_2 {
         [key: string]: string;
     };
     mandatory: boolean;
-    constructor(option: OptionOptional);
+    constructor(option: Partial<Option_2>);
 }
 export { Option_2 as Option }
 
-export declare interface OptionOptional {
-    id?: string;
-    value?: string;
-    text: string;
-    html?: string;
-    selected?: boolean;
-    defaultSelected?: boolean;
-    display?: boolean;
-    disabled?: boolean;
-    mandatory?: boolean;
-    placeholder?: boolean;
-    class?: string;
-    style?: string;
-    data?: {
-        [key: string]: string;
-    };
-}
-
-declare class Render {
+export declare class Render {
     settings: Settings;
     store: Store;
     callbacks: Callbacks;
@@ -213,12 +182,12 @@ declare interface Search {
     };
 }
 
-declare class Select {
+export declare class Select {
     select: HTMLSelectElement;
     onValueChange?: (value: Option_2[]) => void;
     onClassChange?: (classes: string[]) => void;
     onDisabledChange?: (disabled: boolean) => void;
-    onOptionsChange?: (data: DataArrayPartial) => void;
+    onOptionsChange?: (data: Partial<DataArray>) => void;
     listen: boolean;
     private observer;
     constructor(select: HTMLSelectElement);
@@ -229,8 +198,8 @@ declare class Select {
     changeListen(listen: boolean): void;
     valueChange(ev: Event): boolean;
     private observeCall;
-    getData(): DataArrayPartial;
-    getDataFromOptgroup(optgroup: HTMLOptGroupElement): OptgroupOptional;
+    getData(): Partial<DataArray>;
+    getDataFromOptgroup(optgroup: HTMLOptGroupElement): Partial<Optgroup>;
     getDataFromOption(option: HTMLOptionElement): Option_2;
     getSelectedOptions(): Option_2[];
     getSelectedValues(): string[];
@@ -245,7 +214,7 @@ declare class Select {
 
 declare type selectType = 'single' | 'multiple';
 
-declare class Settings {
+export declare class Settings {
     id: string;
     style: string;
     class: string[];
@@ -277,10 +246,8 @@ declare class Settings {
     maxValuesShown: number;
     maxValuesMessage: string;
     addableText: string;
-    constructor(settings?: SettingsPartial);
+    constructor(settings?: Partial<Settings>);
 }
-
-export declare type SettingsPartial = Partial<Settings>;
 
 declare class SlimSelect {
     selectEl: HTMLSelectElement;
@@ -294,10 +261,10 @@ declare class SlimSelect {
     enable(): void;
     disable(): void;
     getData(): DataArray;
-    setData(data: DataArrayPartial): void;
+    setData(data: Partial<DataArray>): void;
     getSelected(): string[];
     setSelected(values: string | string[], runAfterChange?: boolean): void;
-    addOption(option: OptionOptional): void;
+    addOption(option: Partial<Option_2>): void;
     open(): void;
     close(eventType?: string | null): void;
     search(value: string): void;
@@ -309,18 +276,18 @@ declare class SlimSelect {
 }
 export default SlimSelect;
 
-declare class Store {
+export declare class Store {
     private selectType;
     private data;
     private selectedOrder;
-    constructor(type: selectType, data: DataArrayPartial);
-    validateDataArray(data: DataArray | DataArrayPartial): Error | null;
-    validateOption(option: Option_2 | OptionOptional): Error | null;
-    partialToFullData(data: DataArrayPartial): DataArray;
-    setData(data: DataArray | DataArrayPartial, preserveSelected?: boolean): void;
+    constructor(type: selectType, data: DataArray);
+    validateDataArray(data: DataArray | Partial<DataArray>): Error | null;
+    validateOption(option: Option_2 | Partial<Option_2>): Error | null;
+    partialToFullData(data: DataArray | Partial<DataArray>): DataArray;
+    setData(data: DataArray | Partial<DataArray>, preserveSelected?: boolean): void;
     getData(): DataArray;
     getDataOptions(): Option_2[];
-    addOption(option: OptionOptional, addToStart?: boolean): void;
+    addOption(option: Partial<Option_2>, addToStart?: boolean): void;
     setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]): void;
     getSelected(): string[];
     getSelectedValues(): string[];

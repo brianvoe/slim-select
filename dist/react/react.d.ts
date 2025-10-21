@@ -1,8 +1,7 @@
 import { default as React } from 'react';
-import { default as SlimSelectCore, Config } from '../index';
-import { DataArrayPartial } from '../store';
+import { default as SlimSelectCore, Config, DataArray } from '../index';
 export interface SlimSelectProps {
-    data?: DataArrayPartial;
+    data?: Partial<DataArray>;
     settings?: Config['settings'];
     events?: Config['events'];
     cssClasses?: Config['cssClasses'];
