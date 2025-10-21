@@ -84,6 +84,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "identity-obj-proxy": "^3.0.0",
     "jsdom": "^27.0.1",
+    "pinia": "^3.0.3",
     "prettier": "^3.6.2",
     "prismjs": "^1.30.0",
     "react": "^19.2.0",
