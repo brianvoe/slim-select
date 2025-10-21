@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-// Components
+import AdSense from '../../components/adsense.vue'
+
+// Sections
 import AlwaysOpen from './always_open.vue'
 import Closable from './closable.vue'
 import CloseOnSelect from './close_on_select.vue'
@@ -34,6 +36,7 @@ import Styles from './styles.vue'
 export default defineComponent({
   name: 'Settings',
   components: {
+    AdSense,
     Select,
     CssClasses,
     AlwaysOpen,
@@ -70,30 +73,56 @@ export default defineComponent({
   <div id="settings" class="contents">
     <Select />
     <CssClasses />
+    <AdSense />
+
     <AlwaysOpen />
     <ContentLocation />
+    <AdSense />
+
     <ContentPosition />
     <OpenPosition />
+    <AdSense />
+
     <Placeholder />
     <SelectAll />
+    <AdSense />
+
     <Deselect />
     <Display />
+    <AdSense />
+
     <Disabled />
     <Mandatory />
+    <AdSense />
+
     <MinMax />
     <DataAttributes />
+    <AdSense />
+
     <Css />
     <Styles />
+    <AdSense />
+
     <Html />
     <KeepOrder />
+    <AdSense />
+
     <ShowSearch />
     <FocusSearch />
+    <AdSense />
+
     <SearchText />
     <SearchPlaceholder />
+    <AdSense />
+
     <SearchHighlight />
     <CloseOnSelect />
+    <AdSense />
+
     <ShowTooltip />
     <Closable />
+    <AdSense />
+
     <HideSelected />
     <MaxValuesShown />
   </div>

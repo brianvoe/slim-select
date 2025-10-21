@@ -289,6 +289,7 @@ export default defineComponent({
   </nav>
   <main>
     <router-view />
+    <AdSense />
     <footer>
       © {{ year }} <a href="http://webiswhatido.com" style="color: #ffffff" target="_blank">Brian Voelker</a>.
       <br />
