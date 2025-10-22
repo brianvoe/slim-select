@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SlimSelect Example</title>
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.js"></script>
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>SlimSelect Test</h1>
+
+    <select id="selectElement">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </select>
+
+    <script>
+      new SlimSelect({
+        select: '#selectElement'
+      })
+    </script>
+  </body>
+</html>
