@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://slimselectjs.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Allow important paths
+Allow: /
+Allow: /install
+Allow: /selects
+Allow: /data
+Allow: /settings
+Allow: /events
+Allow: /methods
