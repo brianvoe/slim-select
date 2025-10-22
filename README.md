@@ -55,7 +55,7 @@ npm install slim-select
 ### or
 
 ```html
-<script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+<script src="https://unpkg.com/slim-select@latest/dist/slimselect.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/slim-select@latest/dist/slimselect.css" />
 ```
 
