@@ -17,7 +17,7 @@ Advanced select dropdown
 
 See [website](https://slimselectjs.com) for the full list of [settings](https://slimselectjs.com/settings), [methods](https://slimselectjs.com/methods) and [event callbacks](https://slimselectjs.com/events)
 
-![](https://raw.githubusercontent.com/brianvoe/slim-select/master/slimselect.gif)
+![](https://raw.githubusercontent.com/brianvoe/slim-select/master/docs/slimselect.gif)
 
 ## Features
 
