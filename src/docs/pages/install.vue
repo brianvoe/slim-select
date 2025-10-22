@@ -6,7 +6,7 @@ export default defineComponent({
   name: 'Install',
   methods: {
     downloadJs() {
-      download(`https://unpkg.com/slim-select@latest/dist/slimselect.min.js`)
+      download(`https://unpkg.com/slim-select@latest/dist/slimselect.js`)
     },
     downloadCss() {
       download(`https://unpkg.com/slim-select@latest/dist/slimselect.css`)
@@ -57,12 +57,11 @@ export default defineComponent({
         >
       </p>
       <ul>
-        <li>slimselct.js - UMD unminified</li>
-        <li>slimselct.min.js - UMD minified</li>
-        <li>slimselect.cjs.js - CommonJS (for Node) and ES module (for bundlers) build</li>
-        <li>slimselect.umd.js - UMD build for browsers</li>
+        <li>slimselect.js - UMD minified (default)</li>
         <li>slimselect.es.js - ES module build for modern browsers</li>
-        <li>slimselect.global.js - IIFE build for modern browsers</li>
+        <li>slimselect.cjs.js - CommonJS build for Node.js</li>
+        <li>slimselect.iife.js - IIFE build for direct browser usage</li>
+        <li>*.js.map - Source maps for debugging (included automatically)</li>
       </ul>
       <div class="alert info">New releases may be delayed until the next time its indexed</div>
 
@@ -70,7 +69,7 @@ export default defineComponent({
         <code class="language-html">
           &lt;html&gt;
             &lt;head&gt;
-              &lt;script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"&gt;&lt;/script&gt;
+              &lt;script src="https://unpkg.com/slim-select@latest/dist/slimselect.js"&gt;&lt;/script&gt;
               &lt;link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
             &lt;/head&gt;
             &lt;body&gt;
