@@ -12,16 +12,11 @@ export default defineConfig({
   build: {
     minify: true,
     sourcemap: true,
+    emptyOutDir: false, // package.json rimraf ./dist/*
     lib: {
       entry: path.resolve(__dirname, 'src/slim-select/index.ts'),
-      name: 'SlimSelect',
-      formats: ['es', 'cjs', 'umd', 'iife'],
-      fileName: (format) => {
-        if (format === 'es') return 'slimselect.es.js'
-        if (format === 'cjs') return 'slimselect.cjs.js'
-        if (format === 'iife') return 'slimselect.iife.js'
-        return 'slimselect.js' // UMD minified (default)
-      }
+      formats: ['es', 'cjs'],
+      fileName: (format) => (format === 'es' ? 'slimselect.es.js' : 'slimselect.cjs.js')
     },
     outDir: path.resolve(__dirname, 'dist'),
     rollupOptions: {
@@ -30,10 +25,7 @@ export default defineConfig({
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css') return 'slimselect.css'
           return assetInfo.name || 'asset'
-        },
-        // Prevent Rollup from automatically splitting the library into multiple chunks
-        // This ensures we get single files per format (UMD, ES, CJS, IIFE)
-        manualChunks: undefined
+        }
       }
     }
   },
