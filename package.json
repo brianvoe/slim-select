@@ -20,10 +20,10 @@
     "search",
     "multiselect"
   ],
-  "main": "dist/slimselect.umd.js",
-  "browser": "dist/slimselect.umd.js",
+  "main": "dist/slimselect.js",
+  "browser": "dist/slimselect.js",
   "module": "dist/slimselect.es.js",
-  "unpkg": "dist/slimselect.umd.min.js",
+  "unpkg": "dist/slimselect.js",
   "types": "dist/index.d.ts",
   "style": "dist/slimselect.css",
   "sass": "src/slim-select/slimselect.scss",
@@ -31,7 +31,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/slimselect.es.js",
-      "require": "./dist/slimselect.umd.js"
+      "require": "./dist/slimselect.js"
     },
     "./vue": {
       "types": "./dist/vue/index.d.ts",
@@ -91,6 +91,7 @@
     "react-dom": "^19.2.0",
     "rimraf": "^6.0.1",
     "sass": "^1.93.2",
+    "terser": "^5.44.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "vite": "^7.1.11",
