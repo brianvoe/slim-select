@@ -1238,3 +1238,4 @@ export {
   k as Store,
   I as default
 };
+//# sourceMappingURL=slimselect.es.js.map
