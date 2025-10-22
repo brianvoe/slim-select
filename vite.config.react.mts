@@ -11,6 +11,7 @@ export default defineConfig({
     }
   },
   build: {
+    emptyOutDir: false, // package.json rimraf ./dist/*
     lib: {
       entry: path.resolve(__dirname, 'src/slim-select/react/index.tsx'),
       name: 'SlimSelectReact',
