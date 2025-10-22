@@ -143,6 +143,12 @@ export default class Render {
 
     // Clear active descendant when closed
     this.main.main.removeAttribute('aria-activedescendant')
+
+    // Remove direction class from main and content after animation is complete
+    setTimeout(() => {
+      this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
+      this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
+    }, 100)
   }
 
   public updateClassStyles(): void {
