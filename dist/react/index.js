@@ -1,5 +1,5 @@
 import ae, { forwardRef as re, useRef as F, useImperativeHandle as oe, useEffect as j } from "react";
-var P = { exports: {} }, T = {};
+var P = { exports: {} }, A = {};
 /**
  * @license React
  * react-jsx-runtime.production.js
@@ -11,7 +11,7 @@ var P = { exports: {} }, T = {};
  */
 var X;
 function ce() {
-  if (X) return T;
+  if (X) return A;
   X = 1;
   var p = Symbol.for("react.transitional.element"), e = Symbol.for("react.fragment");
   function t(s, i, l) {
@@ -29,9 +29,9 @@ function ce() {
       props: l
     };
   }
-  return T.Fragment = e, T.jsx = t, T.jsxs = t, T;
+  return A.Fragment = e, A.jsx = t, A.jsxs = t, A;
 }
-var A = {};
+var T = {};
 /**
  * @license React
  * react-jsx-runtime.development.js
@@ -249,7 +249,7 @@ React keys must be passed directly to JSX without using spread:
       f,
       l
     )(), G = V(s(l)), J = {};
-    A.Fragment = S, A.jsx = function(n, u, g) {
+    T.Fragment = S, T.jsx = function(n, u, g) {
       var v = 1e4 > I.recentlyCreatedOwnerStacks++;
       return o(
         n,
@@ -259,7 +259,7 @@ React keys must be passed directly to JSX without using spread:
         v ? Error("react-stack-top-frame") : W,
         v ? V(s(n)) : G
       );
-    }, A.jsxs = function(n, u, g) {
+    }, T.jsxs = function(n, u, g) {
       var v = 1e4 > I.recentlyCreatedOwnerStacks++;
       return o(
         n,
@@ -270,7 +270,7 @@ React keys must be passed directly to JSX without using spread:
         v ? V(s(n)) : G
       );
     };
-  }()), A;
+  }()), T;
 }
 var Z;
 function de() {
@@ -609,7 +609,9 @@ class be {
     }
   }
   close() {
-    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.main.classList.remove(this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
+    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.main.classList.remove(this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant"), setTimeout(() => {
+      this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow), this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow);
+    }, 100);
   }
   updateClassStyles() {
     if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.main.main.classList.add(this.classes.main), this.content.main.classList.add(this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length)
