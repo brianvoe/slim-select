@@ -51,7 +51,7 @@
     "format": "prettier --write --cache --parser typescript \"src/**/*.ts\"",
     "build": "npm run typecheck && npm run build:clean && npm run build:library && npm run build:docs",
     "build:clean": "rimraf ./dist/* && rimraf ./docs/*",
-    "build:docs": "vite build --config vite.config.docs.mts",
+    "build:docs": "npm run generate:sitemap && vite build --config vite.config.docs.mts",
     "build:library": "npm run build:library:js && npm run build:library:vue && npm run build:library:react && npm run build:library:css",
     "build:library:js": "npm run build:es-cjs && npm run build:umd-iife",
     "build:es-cjs": "vite build --config vite.config.lib.es-cjs.ts",
@@ -64,6 +64,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "generate:sitemap": "node sitemap.js",
     "release": "node release.js"
   },
   "devDependencies": {
