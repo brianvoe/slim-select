@@ -89,6 +89,7 @@ export default defineComponent({
 #home {
   .samples {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     gap: var(--spacing);
 
@@ -97,6 +98,78 @@ export default defineComponent({
     }
     .multi {
       flex: 1 1 50%;
+    }
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: var(--spacing);
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: var(--spacing);
+      color: var(--color-primary);
+    }
+
+    .hero-description {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: var(--spacing);
+      color: var(--color-secondary);
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto var(--spacing) auto;
+      color: var(--color-font);
+    }
+  }
+
+  .benefits {
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing);
+      margin-top: var(--spacing);
+
+      .benefit-item {
+        padding: var(--spacing);
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-white);
+
+        h3 {
+          color: var(--color-primary);
+          margin-bottom: var(--spacing-half);
+        }
+
+        p {
+          margin-bottom: 0;
+          color: var(--color-font);
+        }
+      }
+    }
+  }
+
+  .use-cases {
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: var(--spacing-half) 0;
+        border-bottom: 1px solid var(--color-border);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        strong {
+          color: var(--color-primary);
+        }
+      }
     }
   }
 
@@ -190,40 +263,39 @@ export default defineComponent({
 
 <template>
   <div id="home" class="content">
-    <div class="samples row">
-      <div class="single">
-        <h2 id="sample-select-header">Single Select</h2>
-        <select ref="slimSingle" aria-labelledby="sample-select-header">
-          <option data-placeholder="true"></option>
-          <option value="best">Best</option>
-          <option value="select">Select</option>
-          <option value="ever">Ever</option>
-        </select>
-      </div>
-      <div class="multi">
-        <h2>Multi Select</h2>
-        <select ref="slimMulti" multiple>
-          <option value="best">Best</option>
-          <option value="select">Select</option>
-          <option value="ever">Ever</option>
-        </select>
-      </div>
+    <div class="hero">
+      <h1>Welcome to SlimSelect</h1>
+      <p class="hero-description">
+        SlimSelect is an advanced, lightweight, and feature-rich select dropdown library for modern web applications.
+        Built with vanilla JavaScript and zero dependencies, it provides an exceptional user experience with powerful
+        customization options, accessibility support, and seamless integration with Vue and React frameworks.
+      </p>
+      <p>
+        Whether you're building a simple contact form or a complex enterprise application, SlimSelect delivers the
+        performance, flexibility, and user experience your project demands.
+      </p>
     </div>
 
-    <br />
-
-    <div class="support">
-      <h2 class="header">Support</h2>
-      <p>Help support creators that make development easier!</p>
-      <div class="links">
-        <iframe
-          class="github-sponsor"
-          src="https://github.com/sponsors/brianvoe/button"
-          title="Sponsor brianvoe"
-        ></iframe>
-        <a class="buycoffee" href="https://www.buymeacoffee.com/brianvoe" target="_blank">
-          <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" />
-        </a>
+    <div class="samples">
+      <h2>Simple Demo</h2>
+      <div class="row">
+        <div class="single">
+          <h3>Single Select</h3>
+          <select ref="slimSingle" aria-labelledby="sample-select-header">
+            <option data-placeholder="true"></option>
+            <option value="best">Best</option>
+            <option value="select">Select</option>
+            <option value="ever">Ever</option>
+          </select>
+        </div>
+        <div class="multi">
+          <h3>Multiple Select</h3>
+          <select ref="slimMulti" multiple>
+            <option value="best">Best</option>
+            <option value="select">Select</option>
+            <option value="ever">Ever</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -232,7 +304,10 @@ export default defineComponent({
     <br />
 
     <div class="features">
-      <h2 class="header">Features</h2>
+      <h2 class="header">Why Choose SlimSelect?</h2>
+      <p>
+        SlimSelect stands out with its comprehensive feature set, exceptional performance, and developer-friendly API.
+      </p>
 
       <div class="row">
         <ul class="list">
@@ -265,11 +340,82 @@ export default defineComponent({
     <div class="separator" />
     <br />
 
-    <div class="frameworks">
-      <h2 class="header">Frameworks</h2>
+    <div class="benefits">
+      <h2 class="header">Key Benefits</h2>
       <p>
-        SlimSelect is in the process of adding a few framework integrations.<br />
-        If you are an expert in any specific framework and would like to help out, please reach out!
+        SlimSelect is designed with modern web development in mind, offering significant advantages over traditional
+        select elements and other dropdown libraries.
+      </p>
+
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <h3>Lightweight & Fast</h3>
+          <p>
+            At just a few kilobytes, SlimSelect delivers exceptional performance without compromising on features. Built
+            with vanilla JavaScript and zero dependencies.
+          </p>
+        </div>
+
+        <div class="benefit-item">
+          <h3>Accessibility First</h3>
+          <p>
+            Full ARIA support, keyboard navigation, and screen reader compatibility ensure your dropdowns are accessible
+            to all users. Meets WCAG guidelines.
+          </p>
+        </div>
+
+        <div class="benefit-item">
+          <h3>Highly Customizable</h3>
+          <p>
+            Customize every aspect of your dropdowns with CSS, SCSS variables, and JavaScript configuration. Adapts to
+            your design system and requirements.
+          </p>
+        </div>
+
+        <div class="benefit-item">
+          <h3>Developer Friendly</h3>
+          <p>
+            Comprehensive documentation, TypeScript support, and a clean API make SlimSelect easy to integrate and
+            maintain.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <div class="separator" />
+    <br />
+
+    <div class="use-cases">
+      <h2 class="header">Perfect For Every Use Case</h2>
+      <p>
+        SlimSelect is versatile enough to handle any dropdown requirement, from simple contact forms to complex
+        enterprise applications.
+      </p>
+
+      <ul>
+        <li><strong>Contact Forms & Surveys:</strong> Clean, professional dropdowns that enhance user experience</li>
+        <li><strong>E-commerce Platforms:</strong> Product filters, category selection, and checkout forms</li>
+        <li><strong>Admin Dashboards:</strong> Data filtering, user management, and configuration panels</li>
+        <li><strong>Content Management:</strong> Category selection, tag management, and content organization</li>
+        <li><strong>Search & Discovery:</strong> Location pickers, service selection, and advanced filtering</li>
+        <li><strong>Mobile Applications:</strong> Touch-friendly interfaces optimized for mobile devices</li>
+      </ul>
+    </div>
+
+    <br />
+    <div class="separator" />
+    <br />
+
+    <div class="frameworks">
+      <h2 class="header">Framework Integration</h2>
+      <p>
+        SlimSelect seamlessly integrates with Vue and React frameworks. We provide dedicated components and integration
+        guides to get you up and running quickly with your preferred framework.
+      </p>
+      <p>
+        Our framework integrations maintain the same powerful features and customization options while following
+        framework-specific best practices and conventions for optimal performance.
       </p>
       <div class="framework-items">
         <router-link class="framework-item" to="/vue" @click="handleClick">
@@ -288,6 +434,25 @@ export default defineComponent({
             </g>
           </svg>
         </router-link>
+      </div>
+    </div>
+
+    <br />
+    <div class="separator" />
+    <br />
+
+    <div class="support">
+      <h2 class="header">Support</h2>
+      <p>Help support creators that make development easier!</p>
+      <div class="links">
+        <iframe
+          class="github-sponsor"
+          src="https://github.com/sponsors/brianvoe/button"
+          title="Sponsor brianvoe"
+        ></iframe>
+        <a class="buycoffee" href="https://www.buymeacoffee.com/brianvoe" target="_blank">
+          <img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" />
+        </a>
       </div>
     </div>
   </div>
