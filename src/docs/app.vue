@@ -3,13 +3,13 @@ import { defineComponent } from 'vue'
 
 import SlimSelect, { type Settings } from '@/slim-select'
 import { debounce } from '@/slim-select/helpers'
-import AdSense from '@/docs/components/adsense.vue'
+import AdSlot from '@/docs/components/adslot.vue'
 import { useAppStore } from '@/docs/store'
 
 export default defineComponent({
   name: 'App',
   components: {
-    AdSense
+    AdSlot
   },
   data() {
     return {
@@ -296,15 +296,17 @@ export default defineComponent({
   <nav>
     <select ref="nav"></select>
     <div class="nav-content" ref="navContent"></div>
-    <AdSense class="adsense-nav" v-if="!appStore.isMobile" ad-slot="9560132183" />
+    <AdSlot class="adsense-nav" v-if="!appStore.isMobile" ad-slot="9560132183" />
   </nav>
   <main>
     <router-view />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
     <footer>
       © {{ year }} <a href="http://webiswhatido.com" style="color: #ffffff" target="_blank">Brian Voelker</a>.
       <br />
       Slim Select is under the MIT license.
+      <br />
+      <a href="/privacy" style="color: #ffffff; text-decoration: underline">Privacy Policy</a>
     </footer>
   </main>
 </template>
