@@ -16,7 +16,14 @@ export default defineComponent({
   <div id="inlineStyles" class="content">
     <h2 class="header">inline styles</h2>
     <p>
-      Slim select will inherit any styles that were added to the original select element. This includes options as well.
+      SlimSelect automatically inherits any inline styles that were applied to the original select element and its
+      options. This ensures that your existing styling, whether applied through inline styles or CSS classes, is
+      seamlessly preserved when SlimSelect transforms the element.
+    </p>
+    <p>
+      This feature allows you to apply custom styling directly to your HTML elements and have those styles automatically
+      carried over to the enhanced SlimSelect interface, maintaining visual consistency and reducing the need for
+      additional CSS modifications.
     </p>
 
     <div class="row">

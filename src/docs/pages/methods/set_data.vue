@@ -63,8 +63,10 @@ export default defineComponent({
   <div id="setData" class="content">
     <h2 class="header">setData</h2>
     <p>
-      The setData method can take in an array of objects. This will set the options of the original select and rerender
-      slim select.
+      The setData method allows you to dynamically update the options available in a SlimSelect instance by providing a new array of data objects. This is essential for creating responsive interfaces where the available options change based on user interactions, API responses, or other dynamic conditions.
+    </p>
+    <p>
+      When called, this method completely replaces the existing options and re-renders the SlimSelect interface, making it perfect for scenarios like dependent dropdowns, filtered lists, or any situation where the available choices need to be updated dynamically without recreating the entire component.
     </p>
     <div class="alert info">
       If you use a single select but an option is not selected it will select the first option.

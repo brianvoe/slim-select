@@ -27,9 +27,14 @@ export default defineComponent({
   <div id="openPosition" class="content">
     <h2 class="header">openPosition</h2>
     <p>
-      openPosition is a string value that will decide where to show your content when it comes out. By default slim
-      select will try to put the content where it can without going off screen. But you may want to always show it in
-      one direction.
+      The openPosition setting controls the direction in which the dropdown content opens. By default, SlimSelect
+      automatically determines the best direction based on available screen space, but you can force it to always open
+      in a specific direction.
+    </p>
+    <p>
+      This setting is particularly useful for maintaining consistent user interface behavior, ensuring the dropdown
+      always appears in a predictable location, or when you have specific design requirements that need the dropdown to
+      open in a particular direction regardless of screen position.
     </p>
     <p>Possible Options: <b>'auto', 'up' or 'down'</b>. Default is <b>'auto'</b></p>
 

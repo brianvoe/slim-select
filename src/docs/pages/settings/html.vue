@@ -59,9 +59,14 @@ export default defineComponent({
   <div id="html" class="content">
     <h2 class="header">html</h2>
     <p>
-      Slim select has the ability to set custom html for the selected values and options dropdown. By default if the
-      html field is set it will use that for the selected values and the options dropdown. For a multiple select
-      selected values it will always use the text field.
+      SlimSelect supports custom HTML content for both the dropdown options and selected values, allowing you to create
+      rich, visually appealing interfaces with icons, formatting, colors, and other HTML elements. This feature enables
+      you to go beyond plain text and create sophisticated user interfaces.
+    </p>
+    <p>
+      When the HTML field is provided, SlimSelect uses it for display purposes while maintaining the text field for
+      functionality. For multi-select dropdowns, selected values always use the text field to ensure clean tag display,
+      while the dropdown options can use the full HTML content for rich presentation.
     </p>
 
     <div class="row">

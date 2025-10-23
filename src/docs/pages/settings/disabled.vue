@@ -57,7 +57,16 @@ export default defineComponent({
 <template>
   <div id="disabled" class="content">
     <h2 class="header">disabled</h2>
-    <p>Allows the ability to disable the select dropdown as well as individual options</p>
+    <p>
+      The disabled functionality allows you to disable the entire select dropdown or individual options, providing
+      fine-grained control over user interactions. This is essential for creating dynamic interfaces where certain
+      selections should be temporarily unavailable based on business logic or user permissions.
+    </p>
+    <p>
+      You can disable the entire dropdown through settings or HTML attributes, or disable specific options to prevent
+      users from selecting them while keeping other options available. SlimSelect also provides methods to dynamically
+      enable and disable elements programmatically.
+    </p>
     <div class="alert info">Methods also are provided to enable and disable SlimSelect via method call.</div>
 
     <div class="row">

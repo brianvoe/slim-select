@@ -114,7 +114,11 @@ export default defineComponent({
 <template>
   <div id="countries" class="content">
     <h2 class="header">Countries</h2>
-    <p>Showcasing the use of html elements for displaying images or other rich content</p>
+    <p>
+      This example demonstrates how to use HTML elements within SlimSelect options to display rich content like images,
+      icons, or custom formatting. Perfect for country selectors, product catalogs, or any scenario where visual
+      elements enhance user experience.
+    </p>
 
     <br />
     <div class="row">

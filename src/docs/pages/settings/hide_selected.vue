@@ -26,7 +26,16 @@ export default defineComponent({
 <template>
   <div id="hideSelected" class="content">
     <h2 class="header">hideSelected</h2>
-    <p>hideSelected setting is used to hide the current selected option in the options dropdown.</p>
+    <p>
+      The hideSelected setting prevents already selected options from appearing in the dropdown list. This creates a
+      cleaner interface by removing options that have already been chosen, making it easier for users to see what
+      options are still available.
+    </p>
+    <p>
+      This feature is particularly useful for multi-select dropdowns where showing selected options in the list might be
+      redundant or confusing. It helps users focus on the remaining choices and provides a more streamlined selection
+      experience.
+    </p>
 
     <div class="row">
       <select ref="hideSelectedSingle">

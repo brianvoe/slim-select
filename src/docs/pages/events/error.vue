@@ -27,7 +27,16 @@ export default defineComponent({
 <template>
   <div id="error" class="content">
     <h2 class="header">error</h2>
-    <p>The error event is fired when an error occurs. The error message is passed as the first argument.</p>
+    <p>
+      The error event provides a centralized way to handle any errors that occur within SlimSelect. This includes
+      initialization errors, API call failures, validation errors, or any other unexpected issues that might arise
+      during the component's lifecycle.
+    </p>
+    <p>
+      By implementing an error handler, you can provide better user feedback, log errors for debugging, or implement
+      fallback behavior when something goes wrong. The error object contains detailed information about what went wrong
+      and where it occurred.
+    </p>
     <div class="alert info">
       If you are are having issues with slim select finding the select element. Try delaying new SlimSelect() call as
       the select dom element might not be available yet.

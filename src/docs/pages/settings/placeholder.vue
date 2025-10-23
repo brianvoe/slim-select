@@ -34,8 +34,13 @@ export default defineComponent({
   <div id="placeholder" class="content">
     <h2 class="header">placeholderText</h2>
     <p>
-      Placeholders consists of setting the placeholder option value. The only difference is single selects require an
-      empty option with data-placeholder set to true. Default value is "Select Value".
+      The placeholderText setting allows you to customize the text that appears when no option is selected. This
+      provides helpful guidance to users about what they should select and creates a more intuitive user experience.
+    </p>
+    <p>
+      For single selects, you need an empty option with data-placeholder="true" in your HTML. For multiple selects, the
+      placeholder appears automatically. The default value is "Select Value", but you can customize it to match your
+      application's tone and requirements.
     </p>
     <div class="alert info">
       Notice you can also set placeholder to empty if that is what you would like to do as well.

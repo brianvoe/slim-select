@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import AdSense from '../../components/adsense.vue'
+import AdSlot from '../../components/adslot.vue'
 
 // Sections
 import AlwaysOpen from './always_open.vue'
@@ -36,7 +36,7 @@ import Styles from './styles.vue'
 export default defineComponent({
   name: 'Settings',
   components: {
-    AdSense,
+    AdSlot,
     Select,
     CssClasses,
     AlwaysOpen,
@@ -73,55 +73,55 @@ export default defineComponent({
   <div id="settings" class="contents">
     <Select />
     <CssClasses />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <AlwaysOpen />
     <ContentLocation />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <ContentPosition />
     <OpenPosition />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Placeholder />
     <SelectAll />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Deselect />
     <Display />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Disabled />
     <Mandatory />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <MinMax />
     <DataAttributes />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Css />
     <Styles />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Html />
     <KeepOrder />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <ShowSearch />
     <FocusSearch />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <SearchText />
     <SearchPlaceholder />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <SearchHighlight />
     <CloseOnSelect />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <ShowTooltip />
     <Closable />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <HideSelected />
     <MaxValuesShown />

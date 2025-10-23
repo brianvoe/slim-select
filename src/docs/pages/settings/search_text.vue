@@ -28,7 +28,15 @@ export default defineComponent({
 <template>
   <div id="searchText" class="content">
     <h2 class="header">searchText</h2>
-    <p>String value that will show in the event there are no search results. Default is 'No Results'.</p>
+    <p>
+      The searchText setting allows you to customize the message that appears when a search query returns no matching
+      results. This provides clear feedback to users when their search doesn't find any options, improving the overall
+      user experience.
+    </p>
+    <p>
+      You can use this setting to provide helpful guidance, such as "No matches found", "Try a different search term",
+      or any other message that helps users understand why they're not seeing results and what they can do next.
+    </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="searchTextSingle">

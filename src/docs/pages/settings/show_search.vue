@@ -29,7 +29,13 @@ export default defineComponent({
   <div id="showSearch" class="content">
     <h2 class="header">showSearch</h2>
     <p>
-      <b>showSearch</b> - is a boolean value that will decide whether or not to show the search input. Default is true.
+      The showSearch setting controls whether the search input field is displayed in the dropdown. When enabled, users
+      can type to filter through options, making it easier to find specific values in long lists.
+    </p>
+    <p>
+      This feature is particularly useful for dropdowns with many options, as it significantly improves usability by
+      allowing users to quickly locate and select the desired option without scrolling through the entire list. The
+      default value is true, but you can disable it for simple dropdowns with few options.
     </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">

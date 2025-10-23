@@ -92,8 +92,14 @@ export default defineComponent({
   <div id="search" class="content">
     <h2 class="header">search</h2>
     <p>
-      Slim select allows you to syncronize result values from your promise response.<br />
-      Call callback() method with slimselect data, false or string with specific string.
+      The search event enables dynamic data loading from external APIs or data sources. This powerful feature allows you
+      to fetch results asynchronously based on user input, making it perfect for autocomplete functionality, user
+      search, or any scenario where you need to load data on demand.
+    </p>
+    <p>
+      When a user types in the search field, your callback function receives the search term and current data. You can
+      return a Promise that resolves with new options, reject with an error message, or return false to prevent the
+      search.
     </p>
 
     <div class="row">

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import AdSense from '../../components/adsense.vue'
+import AdSlot from '../../components/adslot.vue'
 
 // Sections
 import Error from './error.vue'
@@ -14,7 +14,7 @@ import Addable from './addable.vue'
 export default defineComponent({
   name: 'Events',
   components: {
-    AdSense,
+    AdSlot,
     Error,
     BeforeAfterChange,
     BeforeAfterOpenClose,
@@ -29,11 +29,11 @@ export default defineComponent({
   <div id="events" class="contents">
     <Error />
     <BeforeAfterChange />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <BeforeAfterOpenClose />
     <Search />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <SearchFilter />
     <Addable />

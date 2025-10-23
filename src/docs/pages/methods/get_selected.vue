@@ -44,7 +44,12 @@ export default defineComponent({
 <template>
   <div id="getSelected" class="content">
     <h2 class="header">getSelected</h2>
-    <p>The getSelected method will return an array of the currently selected value strings.</p>
+    <p>
+      The getSelected method retrieves the currently selected values from the SlimSelect instance, returning them as an array of strings. This is essential for form processing, data validation, and any scenario where you need to access the user's current selections programmatically.
+    </p>
+    <p>
+      Whether you're working with single-select or multi-select dropdowns, this method provides a consistent interface for accessing selected values, making it easy to integrate SlimSelect with form handling, API calls, or other application logic that depends on user selections.
+    </p>
 
     <div class="alert info">
       Whether or not its a single or multiple select, getSelected will always return an array.

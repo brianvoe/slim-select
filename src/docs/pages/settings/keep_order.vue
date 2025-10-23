@@ -19,7 +19,16 @@ export default defineComponent({
 <template>
   <div id="keepOrder" class="content">
     <h2 class="header">keepOrder</h2>
-    <p><code>keepOrder</code> controls the order returned by <code>getSelected()</code> in multi-select mode.</p>
+    <p>
+      The keepOrder setting controls how SlimSelect returns selected values in multi-select mode, allowing you to choose
+      between DOM order (how options appear in the HTML) or selection order (the order in which users clicked/selected
+      the options).
+    </p>
+    <p>
+      This setting is particularly useful when the order of selections matters for your application logic, such as when
+      building ordered lists, prioritizing selections, or maintaining user interaction patterns. It gives you control
+      over whether to preserve the original HTML structure or respect the user's selection sequence.
+    </p>
 
     <div class="alert">
       <p>

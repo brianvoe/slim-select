@@ -60,8 +60,12 @@ export default defineComponent({
 
 <template>
   <div id="formReset" class="content">
-    <h2 class="header">Form reset</h2>
-    <p>Reset select to defaultSelected value on form reset</p>
+    <h2 class="header">Form Reset</h2>
+    <p>
+      This example shows how to properly handle form reset functionality with SlimSelect. When a user clicks the reset
+      button, SlimSelect will automatically restore the select to its original selected values, maintaining consistency
+      with the native form behavior.
+    </p>
 
     <div class="row">
       <form class="row" @submit="onSubmitSingle" @reset="onFormResetSingle">

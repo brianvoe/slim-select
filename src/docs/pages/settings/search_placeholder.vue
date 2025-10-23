@@ -28,7 +28,15 @@ export default defineComponent({
 <template>
   <div id="searchPlaceholder" class="content">
     <h2 class="header">searchPlaceholder</h2>
-    <p>String value that will set the placeholder text of the search input. Default is 'Search'.</p>
+    <p>
+      The searchPlaceholder setting allows you to customize the placeholder text that appears in the search input field.
+      This provides helpful guidance to users about what they can search for and creates a more intuitive search
+      experience.
+    </p>
+    <p>
+      You can use this setting to provide context-specific instructions, such as "Search for countries", "Find users",
+      or any other descriptive text that helps users understand how to use the search functionality effectively.
+    </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="searchPlaceholderSingle">

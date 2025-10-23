@@ -83,8 +83,14 @@ export default defineComponent({
   <div id="open" class="content">
     <h2 class="header">beforeOpen / afterOpen / beforeClose / afterClose</h2>
     <p>
-      The beforeOpen, afterOpen, beforeClose, and afterClose events will fire before and after the select is opened and
+      These events provide fine-grained control over the dropdown's open and close lifecycle. The beforeOpen and
+      afterOpen events fire when the dropdown is being opened, while beforeClose and afterClose fire when it's being
       closed.
+    </p>
+    <p>
+      These events are perfect for implementing custom animations, loading states, analytics tracking, or any UI
+      behavior that needs to respond to the dropdown's visibility changes. You can use them to show/hide other elements,
+      trigger animations, or perform cleanup operations.
     </p>
 
     <div class="row">

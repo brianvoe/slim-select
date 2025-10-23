@@ -44,10 +44,14 @@ export default defineComponent({
 <template>
   <div id="addable" class="content">
     <h2 class="header">addable</h2>
-    <p>Slim select has the ability to dynamically add options via the search input field</p>
     <p>
-      addable is a callback which takes a function parameter. The return value can either be a string or an option
-      object.
+      The addable event enables users to create new options on-the-fly by typing in the search field. This powerful
+      feature transforms SlimSelect into a dynamic, user-driven component that can grow and adapt based on user input.
+    </p>
+    <p>
+      Perfect for scenarios like tag creation, user-defined categories, or any situation where you want to allow users
+      to add new options that don't already exist. You can implement validation, formatting, or even async operations to
+      create the new option.
     </p>
 
     <div class="row">

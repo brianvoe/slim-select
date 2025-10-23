@@ -17,11 +17,15 @@ export default defineComponent({
   <div id="selectAll" class="content">
     <h2 class="header">selectAll</h2>
     <p>
-      selectAll is a setting that can be used to add a select all action to an optgroup. This setting can be set to true
-      or false. If set to true, a select all option will be added to the top of the selected values. If set to false or
-      not set at all, no select all action will be added to the optgroup.
+      The selectAll setting adds a convenient "select all" option to optgroups, allowing users to quickly select all
+      options within a specific group with a single click. This is particularly useful for multi-select dropdowns with
+      categorized options.
     </p>
-    <p>selectAllText is a setting that can be used to change the text of the select all optgroup.</p>
+    <p>
+      When enabled, a select all option appears at the top of the optgroup, making it easy for users to select multiple
+      related options without having to click each one individually. The selectAllText setting allows you to customize
+      the text that appears for this option.
+    </p>
     <div class="alert info">
       You can set selectAll/selectAllText either by data or by html dataset added to the optgroup element
     </div>

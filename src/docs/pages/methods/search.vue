@@ -34,7 +34,16 @@ export default defineComponent({
 <template>
   <div id="search" class="content">
     <h2 class="header">search</h2>
-    <p>The search method will update the search input field and search the data against that value.</p>
+    <p>
+      The search method allows you to programmatically set the search input value and filter the dropdown options
+      accordingly. This is particularly useful for implementing custom search functionality, pre-filtering options based
+      on external conditions, or creating advanced search interfaces that go beyond the default search behavior.
+    </p>
+    <p>
+      When called, this method updates the search input field and immediately applies the search filter to the available
+      options, showing only those that match the search criteria. This is essential for creating responsive search
+      experiences where the search term can be set programmatically based on user interactions or external data.
+    </p>
 
     <div class="row">
       <div class="btn" @click="setSearch()">Set Search</div>

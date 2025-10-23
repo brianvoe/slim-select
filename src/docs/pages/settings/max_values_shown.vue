@@ -22,9 +22,14 @@ export default defineComponent({
   <div id="maxValuesShown" class="content">
     <h2 class="header">maxValuesShown</h2>
     <p>
-      When using multiselect you can set a threshold so when selecting more items than the input value, the items will
-      not display as values, but the 'n selected' will be displayed. The text that will be displayed can be customized
-      with the use of '{number}' in the maxValuesMessage setting.
+      The maxValuesShown setting controls how many selected values are displayed individually before switching to a
+      summary format. When the number of selected items exceeds this threshold, SlimSelect displays a count message
+      instead of showing all individual values.
+    </p>
+    <p>
+      This feature prevents the dropdown from becoming cluttered with too many selected value tags, maintaining a clean
+      and readable interface. The summary message can be customized using the maxValuesMessage setting, which supports
+      the '{number}' placeholder for dynamic count display.
     </p>
     <p><strong>Default:</strong> 20</p>
 

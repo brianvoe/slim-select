@@ -36,9 +36,10 @@ export default defineComponent({
   <div id="enableDisable" class="content">
     <h2 class="header">enable / disable</h2>
     <p>
-      These methods will enable or disable the select dropdown.
-      <br />
-      You may also set disabled on your original select and slim-select will pick that up.
+      The enable and disable methods provide programmatic control over the SlimSelect instance's interactive state. These methods are essential for creating dynamic interfaces where dropdowns need to be temporarily unavailable based on user permissions, form validation, or other business logic conditions.
+    </p>
+    <p>
+      When disabled, the dropdown becomes non-interactive and visually indicates its disabled state. You can also set the disabled state directly on the original HTML select element, and SlimSelect will automatically detect and respect this state, ensuring consistency between the native element and the enhanced interface.
     </p>
 
     <div class="row">

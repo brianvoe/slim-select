@@ -27,8 +27,14 @@ export default defineComponent({
   <div id="closeOnSelect" class="content">
     <h2 class="header">closeOnSelect</h2>
     <p>
-      closeOnSelect is a boolean value in which determines whether or not to close the content area upon selecting a
-      value.
+      The closeOnSelect setting controls whether the dropdown closes automatically after a user makes a selection. This
+      behavior is particularly important for multi-select dropdowns where you might want to keep the dropdown open so
+      users can make multiple selections without having to reopen it each time.
+    </p>
+    <p>
+      When set to false, the dropdown remains open after each selection, making it easier for users to select multiple
+      options in succession. This is especially useful for multi-select scenarios where users need to choose several
+      items from a list.
     </p>
 
     <div class="row">

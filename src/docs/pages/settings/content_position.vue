@@ -56,7 +56,16 @@ export default defineComponent({
 <template>
   <div id="contentPosition" class="content">
     <h2 class="header">contentPosition</h2>
-    <p>contentPosition will set the css position to relative, absolute or fixed. Default is <b>'absolute'</b></p>
+    <p>
+      The contentPosition setting controls the CSS positioning of the dropdown content. You can choose between
+      'relative', 'absolute', or 'fixed' positioning to achieve the desired layout behavior and ensure proper display in
+      different contexts.
+    </p>
+    <p>
+      This setting is crucial for handling complex layouts, modal dialogs, or responsive designs where the default
+      absolute positioning might not work correctly. The default is 'absolute', but 'relative' is useful for inline
+      layouts, and 'fixed' helps with modal and overlay scenarios.
+    </p>
 
     <div class="alert info">
       If you do use relative position be sure to set the contentLocation to an element that will work best for your use

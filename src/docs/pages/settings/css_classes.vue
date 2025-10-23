@@ -44,7 +44,16 @@ export default defineComponent({
 <template>
   <div id="cssClasses" class="content">
     <h2 class="header">cssClasses</h2>
-    <p>You can override the default CSS classes by setting them during initialization.</p>
+    <p>
+      The cssClasses setting allows you to override SlimSelect's default CSS classes with your own custom classes. This
+      gives you complete control over the styling of different parts of the dropdown, enabling you to match your
+      application's design system perfectly.
+    </p>
+    <p>
+      You can customize classes for various elements like options, the main container, search input, and more. This is
+      particularly useful when you need to apply specific styling that integrates seamlessly with your existing CSS
+      framework or design requirements.
+    </p>
 
     <div class="row">
       <select ref="mainSelect">

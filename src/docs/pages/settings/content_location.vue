@@ -20,12 +20,14 @@ export default defineComponent({
   <div id="contentLocation" class="content">
     <h2 class="header">contentLocation</h2>
     <p>
-      contentLocation will allow you to set the location of where the content section of slim select. By default every
-      content div is appended to the body.
+      The contentLocation setting allows you to specify where the dropdown content (search input and options) should be
+      rendered in the DOM. By default, SlimSelect appends the content to the document body, but you can redirect it to
+      any container element.
     </p>
     <p>
-      The content container is the bottom half of slim select. This includes the search input field and available
-      options
+      This is particularly useful for maintaining proper z-index layering, avoiding overflow issues, or ensuring the
+      dropdown appears within a specific container. The content container includes the search input field and all
+      available options, giving you control over where this interactive area appears.
     </p>
 
     <div class="row">

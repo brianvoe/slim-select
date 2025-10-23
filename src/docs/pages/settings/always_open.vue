@@ -31,8 +31,14 @@ export default defineComponent({
   <div id="alwaysOpen" class="content">
     <h2 class="header">alwaysOpen</h2>
     <p>
-      alwaysOpen option is used to keep the select open at all times. This is useful for when you want to display the
-      options at all times.
+      The alwaysOpen setting keeps the dropdown options visible at all times, transforming SlimSelect into a persistent
+      list that users can interact with without needing to click to open it. This is particularly useful for creating
+      custom interfaces that look more like lists or checkboxes.
+    </p>
+    <p>
+      This setting is commonly used when you want to display options permanently, such as in sidebar filters,
+      configuration panels, or any interface where the dropdown should behave more like a persistent selection list
+      rather than a traditional dropdown.
     </p>
 
     <div class="row">

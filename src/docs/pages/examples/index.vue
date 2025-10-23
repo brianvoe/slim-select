@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import AdSense from '../../components/adsense.vue'
+import AdSlot from '../../components/adslot.vue'
 
 // Sections
 import Countries from './countries.vue'
@@ -12,7 +12,7 @@ import TextOverflow from './text_overflow.vue'
 export default defineComponent({
   name: 'Examples',
   components: {
-    AdSense,
+    AdSlot,
     Countries,
     FormReset,
     Required,
@@ -25,7 +25,7 @@ export default defineComponent({
   <div id="examples" class="contents">
     <Countries />
     <FormReset />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Required />
     <TextOverflow />

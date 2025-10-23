@@ -71,8 +71,15 @@ export default defineComponent({
 <template>
   <div id="searchFilter" class="content">
     <h2 class="header">searchFilter</h2>
-    <p>searchFilter event is used to replace the default matching algorithm.</p>
-    <p>See Data for the proper object interface of <em>option</em>.</p>
+    <p>
+      The searchFilter event allows you to customize how SlimSelect filters through existing options when users search.
+      By default, SlimSelect uses a case-insensitive substring match, but you can override this behavior to implement
+      custom filtering logic.
+    </p>
+    <p>
+      This is perfect for implementing advanced search features like fuzzy matching, exact phrase matching, or custom
+      business logic for filtering options based on your specific requirements.
+    </p>
 
     <div class="row">
       <select ref="searchFilterSingle">

@@ -29,7 +29,16 @@ export default defineComponent({
 <template>
   <div id="display" class="content">
     <h2 class="header">display</h2>
-    <p>Allows to hide elements of selected values.</p>
+    <p>
+      The display setting allows you to control the visibility of selected values in multi-select dropdowns. This is
+      particularly useful when you want to hide certain selected values from the user interface while still maintaining
+      them in the underlying data.
+    </p>
+    <p>
+      This feature is commonly used for managing hidden or system values, implementing complex selection logic, or
+      creating user interfaces where some selections should remain invisible to users while still being part of the form
+      data.
+    </p>
 
     <div class="row">
       <select ref="selectdisplay" multiple></select>

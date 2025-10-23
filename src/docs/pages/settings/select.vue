@@ -10,8 +10,14 @@ export default defineComponent({
   <div id="select" class="content">
     <h2 class="header">select</h2>
     <p>
-      The select field is used to identify the select element that will be used to create slim select. You can use any
-      value you normally would in a querySelector or pass the element directly.
+      The select field is the core configuration that identifies which HTML select element SlimSelect should transform.
+      This is the most fundamental setting and must be provided for SlimSelect to work. You can use any valid CSS
+      selector string or pass the DOM element directly.
+    </p>
+    <p>
+      This setting determines the target element that SlimSelect will replace with its enhanced dropdown interface,
+      maintaining all the original functionality while adding advanced features like search, customization, and better
+      user experience.
     </p>
 
     <pre>

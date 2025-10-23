@@ -26,8 +26,16 @@ export default defineComponent({
 <template>
   <div id="allowDeselect" class="content">
     <h2 class="header">allowDeselect</h2>
-    <p>This will allow you to deselect a value on a single/multiple select dropdown.</p>
-    <p>Be sure to have an empty option data placeholder so slim select has an empty string value to select.</p>
+    <p>
+      The allowDeselect setting enables users to clear their selection and return to an empty state. This is
+      particularly useful when you want to give users the ability to "unselect" a value, which is especially important
+      for optional form fields.
+    </p>
+    <p>
+      When enabled, users can click on the selected value to deselect it, returning the dropdown to its placeholder
+      state. For this to work properly, you need an empty option with data-placeholder="true" in your HTML so SlimSelect
+      has an empty value to select.
+    </p>
 
     <div class="row">
       <select ref="allowDeselectSingle">

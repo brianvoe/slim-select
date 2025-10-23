@@ -52,8 +52,9 @@ export default defineComponent({
   <div id="textOverflow" class="content">
     <h2 class="header">Text Overflow Handling</h2>
     <p>
-      SlimSelect properly handles long text with ellipsis (...) to prevent layout issues when constrained by container
-      width.
+      This example showcases SlimSelect's intelligent text overflow handling. When text is too long for the available
+      space, SlimSelect automatically truncates it with ellipsis (...) while keeping essential UI elements like arrows
+      and clear buttons visible. This prevents layout breaking and maintains a clean, professional appearance.
     </p>
 
     <div class="alert info">

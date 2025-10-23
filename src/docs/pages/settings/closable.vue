@@ -19,7 +19,15 @@ export default defineComponent({
 <template>
   <div id="closable" class="content">
     <h2 class="header">closable</h2>
-    <p>closable is a optgroup settings that adds the ability to have closable optgroup options.</p>
+    <p>
+      The closable setting allows optgroups to be collapsible, giving users the ability to expand or collapse groups of
+      options. This is particularly useful for organizing large lists of options into manageable, collapsible sections.
+    </p>
+    <p>
+      This feature helps improve the user experience by reducing visual clutter and allowing users to focus on specific
+      categories of options. Users can expand or collapse optgroups as needed, making navigation through large option
+      lists much more efficient.
+    </p>
     <p>Values: <strong>"off"</strong> | <strong>"open"</strong> | <strong>"close"</strong></p>
     <p>Default: <strong>"off"</strong></p>
 

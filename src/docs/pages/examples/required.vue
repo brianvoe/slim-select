@@ -66,7 +66,11 @@ export default defineComponent({
 <template>
   <div id="required" class="content">
     <h2 class="header">Required Attribute</h2>
-    <p>Use the <code>required</code> attribute for HTML5 form validation with SlimSelect</p>
+    <p>
+      This example demonstrates HTML5 form validation with SlimSelect using the <code>required</code> attribute. The
+      form will prevent submission if required fields are empty, and SlimSelect seamlessly integrates with native
+      browser validation to provide a consistent user experience.
+    </p>
 
     <form class="required-form" @submit="onSubmit">
       <div class="form-group">

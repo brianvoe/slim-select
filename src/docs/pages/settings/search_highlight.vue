@@ -84,8 +84,14 @@ export default defineComponent({
   <div id="searchHighlight" class="content">
     <h2 class="header">searchHighlight</h2>
     <p>
-      Boolean value that will highlight matching text in search results. Default is false. When enabled, matching text
-      will be highlighted with a <code>&lt;mark&gt;</code> element.
+      The searchHighlight setting enables visual highlighting of matching text in search results, making it easier for
+      users to see exactly what part of each option matches their search query. When enabled, matching text is wrapped
+      in a <code>&lt;mark&gt;</code> element for clear visual distinction.
+    </p>
+    <p>
+      This feature significantly improves the search experience by providing immediate visual feedback about search
+      matches. It works with both plain text and HTML content, intelligently highlighting only the text portions while
+      preserving all HTML structure, styles, and elements.
     </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">

@@ -30,8 +30,14 @@ export default defineComponent({
   <div id="mandatory" class="content">
     <h2 class="header">mandatory</h2>
     <p>
-      When using multi select you can set a mandatory on the option to prevent capability to deselect particular option.
-      Note options with mandatory flag is not selected by default, you need select them yourselfs.
+      The mandatory setting allows you to mark certain options as required in multi-select dropdowns, preventing users
+      from deselecting them once they've been chosen. This is particularly useful for options that represent essential
+      or system-required selections that must always remain active.
+    </p>
+    <p>
+      When an option is marked as mandatory, users can select it normally, but once selected, they cannot deselect it,
+      ensuring that critical options remain part of the selection. Note that mandatory options are not selected by
+      default - users must actively choose them, but once selected, they become permanently locked in the selection.
     </p>
 
     <div class="row">

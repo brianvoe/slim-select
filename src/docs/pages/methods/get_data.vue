@@ -33,7 +33,12 @@ export default defineComponent({
 <template>
   <div id="getData" class="content">
     <h2 class="header">getData</h2>
-    <p>The getData method will return an array of the full data set.</p>
+    <p>
+      The getData method retrieves the complete data structure currently loaded in the SlimSelect instance, including all options and optgroups. This is useful for debugging, data analysis, or when you need to access the full dataset for processing or manipulation.
+    </p>
+    <p>
+      This method returns the raw data objects with all their properties, allowing you to access not just the display values but also any additional data attached to each option, such as custom attributes, metadata, or configuration options that were set when the data was loaded.
+    </p>
 
     <div class="row">
       <div class="btn" @click="getData">Get Data</div>

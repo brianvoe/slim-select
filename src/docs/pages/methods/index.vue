@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import AdSense from '../../components/adsense.vue'
+import AdSlot from '../../components/adslot.vue'
 
 // Sections
 import Destroy from './destroy.vue'
@@ -16,7 +16,7 @@ import SetSelected from './set_selected.vue'
 export default defineComponent({
   name: 'Methods',
   components: {
-    AdSense,
+    AdSlot,
     GetSelected,
     SetSelected,
     GetData,
@@ -33,15 +33,15 @@ export default defineComponent({
   <div id="methods" class="contents">
     <GetSelected />
     <SetSelected />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <GetData />
     <SetData />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <EnableDisable />
     <OpenClose />
-    <AdSense />
+    <AdSlot ad-slot="1270131515" />
 
     <Search />
     <Destroy />

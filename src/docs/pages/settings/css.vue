@@ -43,8 +43,10 @@ export default defineComponent({
   <div id="cssClass" class="content">
     <h2 class="header">css class</h2>
     <p>
-      Slim select will inherit any classes that were added to the original select element. This includes options as
-      well.
+      SlimSelect automatically inherits any CSS classes that were applied to the original select element and its options. This seamless inheritance allows you to maintain your existing styling while gaining all the enhanced functionality of SlimSelect.
+    </p>
+    <p>
+      This feature ensures that your custom CSS classes, whether applied to the main select element or individual options, are preserved and applied to the corresponding SlimSelect elements, making the transition from native selects to SlimSelect completely transparent from a styling perspective.
     </p>
 
     <div class="row">

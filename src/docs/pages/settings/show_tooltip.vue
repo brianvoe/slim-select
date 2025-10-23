@@ -20,8 +20,14 @@ export default defineComponent({
   <div id="showOptionTooltips" class="content">
     <h2 class="header">showOptionTooltips</h2>
     <p>
-      showOptionTooltips option is used to active displaying the on-hover tooltips for select options. The tooltip text
-      is equal to the option text content.
+      The showOptionTooltips setting enables hover tooltips for select options, providing additional context and
+      information to users when they hover over options. This is particularly useful for options with long text that
+      might be truncated or when you want to provide additional details about each option.
+    </p>
+    <p>
+      When enabled, tooltips automatically display the full text content of each option when users hover over them,
+      ensuring that users can always see the complete information even when space is limited or text is truncated in the
+      dropdown interface.
     </p>
 
     <select ref="showOptionTooltips">

@@ -48,11 +48,11 @@ export default defineComponent({
 <template>
   <div id="setSelected" class="content">
     <h2 class="header">setSelected</h2>
-    <p>The setSelected method will set the selected value(s) of the select.</p>
-    <p>setSelected will accept both string or array of strings.</p>
     <p>
-      setSelected also takes in a second optional boolean param in the event you dont want to trigger the afterChange
-      callback
+      The setSelected method allows you to programmatically set the selected values in a SlimSelect instance. This is particularly useful for initializing selections, responding to external events, or implementing complex selection logic based on other application state.
+    </p>
+    <p>
+      The method accepts either a single string value or an array of strings, making it flexible for both single-select and multi-select scenarios. Additionally, you can control whether the afterChange event is triggered by providing a second boolean parameter, giving you fine-grained control over when selection events fire.
     </p>
 
     <div class="row">

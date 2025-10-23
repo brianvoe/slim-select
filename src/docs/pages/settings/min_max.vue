@@ -27,7 +27,16 @@ export default defineComponent({
 <template>
   <div id="minmax" class="content">
     <h2 class="header">Min/Max Selected</h2>
-    <p>When using multi select you can set a min and/or max on the amount of selections you can have.</p>
+    <p>
+      The min/max selected settings allow you to enforce selection limits in multi-select dropdowns, ensuring users
+      select the appropriate number of options for your application's requirements. This is essential for forms that
+      need specific selection counts or business logic that depends on selection constraints.
+    </p>
+    <p>
+      You can set both minimum and maximum selection limits independently. The minimum setting ensures users select at
+      least a certain number of options, while the maximum setting prevents them from selecting too many. This provides
+      fine-grained control over user selections and helps maintain data integrity.
+    </p>
 
     <div class="row">
       <select ref="selectMultiMax" multiple>
