@@ -29,15 +29,33 @@ h5 {
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--color-primary);
+  text-decoration: none;
 
   &:hover {
     color: var(--color-secondary);
+    text-decoration: underline;
   }
 }
 
 p {
   margin: 0 0 var(--spacing-half) 0;
+}
+
+ul {
+  margin: 0 0 var(--spacing-half) 0;
+  padding-left: var(--spacing);
+
+  li {
+    margin-bottom: var(--spacing-quarter);
+    color: var(--color-font);
+  }
+}
+
+em {
+  color: var(--color-secondary);
+  font-size: var(--font-size);
+  font-style: italic;
 }
 
 .separator {
