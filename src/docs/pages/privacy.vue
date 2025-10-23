@@ -1,0 +1,180 @@
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Privacy',
+  data() {
+    return {
+      lastUpdated: '2025-01-01'
+    }
+  }
+})
+</script>
+
+<style lang="scss">
+.privacy {
+  max-width: var(--width-max);
+  margin: 0 auto;
+  padding: var(--spacing);
+
+  .content {
+    line-height: 1.6;
+
+    ul {
+      margin-bottom: var(--spacing);
+      padding-left: var(--spacing);
+
+      li {
+        margin-bottom: var(--spacing-quarter);
+        color: var(--color-font);
+      }
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    em {
+      color: var(--color-secondary);
+      font-size: var(--font-size);
+    }
+  }
+}
+</style>
+
+<template>
+  <div class="privary contents">
+    <div class="content">
+      <h1>Privacy Policy</h1>
+      <p>
+        <em>Last updated: {{ lastUpdated }}</em>
+      </p>
+
+      <h2>Introduction</h2>
+      <p>
+        This Privacy Policy describes how SlimSelect ("we", "our", or "us") collects, uses, and protects your
+        information when you visit our website at
+        <a href="https://slimselectjs.com">slimselectjs.com</a>.
+      </p>
+
+      <h2>Information We Collect</h2>
+      <h3>Personal Information</h3>
+      <p>
+        We do not collect personal information such as names, email addresses, or phone numbers unless you voluntarily
+        provide such information through contact forms or other means.
+      </p>
+
+      <h3>Automatically Collected Information</h3>
+      <p>When you visit our website, we may automatically collect certain information, including:</p>
+      <ul>
+        <li>Your IP address</li>
+        <li>Browser type and version</li>
+        <li>Operating system</li>
+        <li>Pages visited and time spent on our site</li>
+        <li>Referring website</li>
+        <li>Date and time of your visit</li>
+      </ul>
+
+      <h2>How We Use Your Information</h2>
+      <p>We use the information we collect to:</p>
+      <ul>
+        <li>Improve our website and user experience</li>
+        <li>Analyze website traffic and usage patterns</li>
+        <li>Respond to your inquiries and provide customer support</li>
+        <li>Comply with legal obligations</li>
+      </ul>
+
+      <h2>Cookies and Tracking Technologies</h2>
+      <h3>Google AdSense</h3>
+      <p>
+        Our website uses Google AdSense to display advertisements. Google AdSense uses cookies and similar technologies
+        to serve ads based on your visits to this site and other sites on the Internet. You may opt out of personalized
+        advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank">Google Ad Settings</a>.
+      </p>
+
+      <h3>Analytics</h3>
+      <p>
+        We use Google Analytics to analyze website traffic and user behavior. Google Analytics uses cookies to collect
+        information about your use of our website. You can learn more about Google's privacy practices at
+        <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a>.
+      </p>
+
+      <h3>Cookie Management</h3>
+      <p>
+        You can control cookies through your browser settings. Most browsers allow you to refuse cookies or delete them.
+        However, disabling cookies may affect the functionality of our website.
+      </p>
+
+      <h2>Third-Party Services</h2>
+      <p>
+        Our website may contain links to third-party websites or services. We are not responsible for the privacy
+        practices or content of these third-party sites. We encourage you to review the privacy policies of any
+        third-party sites you visit.
+      </p>
+
+      <h2>Data Security</h2>
+      <p>
+        We implement appropriate security measures to protect your information against unauthorized access, alteration,
+        disclosure, or destruction. However, no method of transmission over the Internet or electronic storage is 100%
+        secure.
+      </p>
+
+      <h2>Data Retention</h2>
+      <p>
+        We retain your information only as long as necessary to fulfill the purposes outlined in this Privacy Policy,
+        unless a longer retention period is required by law.
+      </p>
+
+      <h2>Your Rights</h2>
+      <p>Depending on your location, you may have certain rights regarding your personal information:</p>
+      <ul>
+        <li>Right to access your personal information</li>
+        <li>Right to correct inaccurate information</li>
+        <li>Right to delete your personal information</li>
+        <li>Right to restrict processing of your information</li>
+        <li>Right to data portability</li>
+        <li>Right to object to processing</li>
+      </ul>
+
+      <h2>Children's Privacy</h2>
+      <p>
+        Our website is not intended for children under 13 years of age. We do not knowingly collect personal information
+        from children under 13. If you are a parent or guardian and believe your child has provided us with personal
+        information, please contact us.
+      </p>
+
+      <h2>Changes to This Privacy Policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new
+        Privacy Policy on this page and updating the "Last updated" date. You are advised to review this Privacy Policy
+        periodically for any changes.
+      </p>
+
+      <h2>Contact Us</h2>
+      <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+      <ul>
+        <li>Email: <a href="mailto:brian@webiswhatido.com">brian@webiswhatido.com</a></li>
+        <li>Website: <a href="https://webiswhatido.com">https://webiswhatido.com</a></li>
+      </ul>
+
+      <h2>GDPR Compliance</h2>
+      <p>
+        If you are a resident of the European Union, you have additional rights under the General Data Protection
+        Regulation (GDPR). For more information about your rights under GDPR, please visit the
+        <a href="https://gdpr.eu/" target="_blank">GDPR website</a>.
+      </p>
+
+      <h2>CCPA Compliance</h2>
+      <p>
+        If you are a California resident, you have additional rights under the California Consumer Privacy Act (CCPA).
+        For more information about your rights under CCPA, please visit the
+        <a href="https://oag.ca.gov/privacy/ccpa" target="_blank">California Attorney General's website</a>.
+      </p>
+    </div>
+  </div>
+</template>
