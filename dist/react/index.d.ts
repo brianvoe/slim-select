@@ -125,7 +125,7 @@ declare class Option_2 {
 }
 export { Option_2 as Option }
 
-export declare class Render {
+declare class Render {
     settings: Settings;
     store: Store;
     callbacks: Callbacks;
@@ -178,13 +178,13 @@ declare interface Search {
     };
 }
 
-export declare class Select {
+declare class Select {
     select: HTMLSelectElement;
     onValueChange?: (value: Option_2[]) => void;
     onClassChange?: (classes: string[]) => void;
     onDisabledChange?: (disabled: boolean) => void;
     onOptionsChange?: (data: (Option_2 | Optgroup)[]) => void;
-    listen: boolean;
+    private listen;
     private observer;
     constructor(select: HTMLSelectElement);
     enable(): void;
@@ -207,8 +207,6 @@ export declare class Select {
     createOption(info: Option_2): HTMLOptionElement;
     destroy(): void;
 }
-
-declare type selectType = 'single' | 'multiple';
 
 export declare class Settings {
     id: string;
@@ -274,11 +272,11 @@ declare class SlimSelect {
 }
 export default SlimSelect;
 
-export declare class Store {
+declare class Store {
     private selectType;
     private data;
     private selectedOrder;
-    constructor(type: selectType, data: (Partial<Option_2> | Partial<Optgroup>)[]);
+    constructor(type: 'single' | 'multiple', data: (Partial<Option_2> | Partial<Optgroup>)[]);
     validateDataArray(data: (Partial<Option_2> | Partial<Optgroup>)[]): Error | null;
     validateOption(option: Partial<Option_2>): Error | null;
     partialToFullData(data: (Partial<Option_2> | Partial<Optgroup>)[]): (Option_2 | Optgroup)[];

@@ -1234,10 +1234,7 @@ class I {
 export {
   g as Optgroup,
   u as Option,
-  N as Render,
-  M as Select,
   P as Settings,
-  k as Store,
   I as default
 };
 //# sourceMappingURL=slimselect.es.js.map
