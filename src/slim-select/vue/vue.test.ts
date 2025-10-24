@@ -6,8 +6,8 @@ import SlimSelectVue from './vue.vue'
 
 describe('SlimSelect Vue Component', () => {
   let wrapper: VueWrapper<any>
-  let consoleInfoSpy: ReturnType<typeof vi.spyOn>
-  let consoleWarnSpy: ReturnType<typeof vi.spyOn>
+  let consoleInfoSpy: any
+  let consoleWarnSpy: any
 
   beforeEach(() => {
     // Mock console methods
