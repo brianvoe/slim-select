@@ -18,7 +18,7 @@ export default defineComponent({
 <template>
   <div id="install" class="contents">
     <div id="npm" class="content">
-      <h2>Npm</h2>
+      <h2 class="header">Npm</h2>
       <p>Most common usage is npm</p>
 
       <pre class="install-code">
@@ -41,7 +41,7 @@ export default defineComponent({
     </div>
 
     <div id="cdn" class="content">
-      <h2>Cdn</h2>
+      <h2 class="header">Cdn</h2>
       <p>
         Cdn has a url link you can grab. Cdn exists on both
         <a target="_blank" href="https://cdnjs.com">cdnjs.com</a> and
@@ -90,7 +90,7 @@ export default defineComponent({
     </div>
 
     <div id="download" class="content">
-      <h2>Download</h2>
+      <h2 class="header">Download</h2>
       <p>Download the latest minified umd version of slim select</p>
       <p>
         See full list of available downloadable options.
