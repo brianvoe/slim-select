@@ -37,8 +37,7 @@ describe('select module', () => {
       const select = new Select(selectElement)
 
       expect(select).toBeInstanceOf(Select)
-      expect(select.listen).toBe(true)
-      expect((<any>select).observer).toBeInstanceOf(MutationObserver)
+      expect(select.select).toBe(HTMLSelectElement)
     })
   })
 

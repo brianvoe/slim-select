@@ -6,7 +6,7 @@ import Settings from './settings'
 import Store, { Option, Optgroup } from './store'
 
 // Export classes
-export { Select, Settings, Render, Store, Option, Optgroup }
+export { Settings, Option, Optgroup }
 
 export interface Config {
   select: string | Element

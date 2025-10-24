@@ -1,7 +1,5 @@
 import { generateID } from './helpers'
 
-type selectType = 'single' | 'multiple'
-
 export class Option {
   id: string
   value: string
@@ -60,13 +58,13 @@ export class Optgroup {
 }
 
 export default class Store {
-  private selectType: selectType = 'single'
+  private selectType: 'single' | 'multiple' = 'single'
 
   // Main data set, never null
   private data: (Option | Optgroup)[] = []
   private selectedOrder: string[] = []
 
-  constructor(type: selectType, data: (Partial<Option> | Partial<Optgroup>)[]) {
+  constructor(type: 'single' | 'multiple', data: (Partial<Option> | Partial<Optgroup>)[]) {
     this.selectType = type
     this.setData(data)
   }

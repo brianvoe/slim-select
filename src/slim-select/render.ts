@@ -50,6 +50,7 @@ export default class Render {
   public settings: Settings
   public store: Store
   public callbacks: Callbacks
+
   // Used to compute the range selection
   private lastSelectedOption: Option | null
 

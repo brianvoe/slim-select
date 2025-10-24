@@ -11,7 +11,7 @@ export default class Select {
   public onOptionsChange?: (data: (Option | Optgroup)[]) => void
 
   // Change observers
-  public listen: boolean = false
+  private listen: boolean = false
   private observer: MutationObserver | null = null
 
   constructor(select: HTMLSelectElement) {
