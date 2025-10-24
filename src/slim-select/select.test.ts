@@ -37,7 +37,7 @@ describe('select module', () => {
       const select = new Select(selectElement)
 
       expect(select).toBeInstanceOf(Select)
-      expect(select.select).toBe(HTMLSelectElement)
+      expect(select.select).toBeInstanceOf(HTMLSelectElement)
     })
   })
 
