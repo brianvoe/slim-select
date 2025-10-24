@@ -33,7 +33,7 @@ export default defineConfig({
     vue(),
     dts({
       rollupTypes: true,
-      include: ['src/slim-select/vue/**/*'],
+      include: ['src/slim-select/vue/index.ts'],
       exclude: ['src/slim-select/**/*.test.ts', 'src/docs/**/*']
     })
   ]

@@ -34,7 +34,7 @@ export default defineConfig({
     react(),
     dts({
       rollupTypes: true,
-      include: ['src/slim-select/react/**/*'],
+      include: ['src/slim-select/react/index.tsx'],
       exclude: ['src/slim-select/**/*.test.ts', 'src/docs/**/*']
     })
   ]
