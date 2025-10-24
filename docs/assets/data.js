@@ -1,27 +1,24 @@
-import{d as n,S as l,_ as o,c as s,a as e,f as a,o as i}from"./index.js";const d=n({name:"Data",mounted(){new l({select:this.$refs.dataSingle,data:[{placeholder:!0,text:"data placeholder"},{text:"Cat"},{text:"Dog"},{text:"Bird"}]}),new l({select:this.$refs.dataMultiple,data:[{placeholder:!0,text:"data placeholder"},{text:"Human"},{label:"Animals",options:[{text:"Cat"},{text:"Dog"},{text:"Bird"}]}]})}}),p={id:"data",class:"contents"},r={id:"field",class:"content"},u={class:"row"},f={ref:"dataSingle"},c={ref:"dataMultiple",multiple:""};function h(x,t,m,b,v,g){return i(),s("div",p,[t[4]||(t[4]=e("div",{id:"types",class:"content"},[e("h2",{class:"header"},"Data Types"),e("p",null," There are two types of data types. The option which consists of a variation of fields to customize the option. You can also provide an optgroup which has a label and an array of options. "),e("pre",null,[a("        "),e("code",{class:"language-javascript"},`
-          var optgroup = {
-            label: 'label', // Required
+import{d as s,f as i,S as l,_ as d,c as p,a as t,e as n,w as o,r,o as u}from"./index.js";const f=s({name:"Data",components:{ShikiStyle:i},mounted(){new l({select:this.$refs.dataSingle,data:[{placeholder:!0,text:"data placeholder"},{text:"Cat"},{text:"Dog"},{text:"Bird"}]}),new l({select:this.$refs.dataMultiple,data:[{placeholder:!0,text:"data placeholder"},{text:"Human"},{label:"Animals",options:[{text:"Cat"},{text:"Dog"},{text:"Bird"}]}]})}}),c={id:"data",class:"contents"},h={id:"types",class:"content"},x={id:"field",class:"content"},m={class:"row"},v={ref:"dataSingle"},b={ref:"dataMultiple",multiple:""};function y(g,e,w,O,S,_){const a=r("ShikiStyle");return u(),p("div",c,[t("div",h,[e[1]||(e[1]=t("h2",{class:"header"},"Data Types",-1)),e[2]||(e[2]=t("p",null," There are two types of data types. The option which consists of a variation of fields to customize the option. You can also provide an optgroup which has a label and an array of options. ",-1)),n(a,{language:"javascript"},{default:o(()=>[...e[0]||(e[0]=[t("pre",null,`          var optgroup = {
+            label: 'label',   // Required
             selectAll: false, // Optional - default false
-            closable: 'off', // Optional - default 'off' - 'off', 'open', 'close'
-            options: [] // Required - value is an array of options
+            closable: 'off',  // Optional - default 'off' - 'off', 'open', 'close'
+            options: []       // Required - value is an array of options
           }
 
           var option = {
-            text: 'text', // Required
-            value: 'value', // Optional - value will be set by text if not set
+            text: 'text',        // Required
+            value: 'value',      // Optional - value will be set by text if not set
             html: '<b>Html</b>', // Optional - will be used for display purposes if set
-            selected: false, // Optional - default is false
-            display: true, // Optional - default is true
-            disabled: false, // Optional - default is false
-            mandatory: false, // Optional - default is false
-            placeholder: false, // Optional - default is false
-            class: '', // Optional - default is not set
-            style: '', // Optional - default is not set
-            data: {} // Optional - If you have data attributes
+            selected: false,     // Optional - default is false
+            display: true,       // Optional - default is true
+            disabled: false,     // Optional - default is false
+            mandatory: false,    // Optional - default is false
+            placeholder: false,  // Optional - default is false
+            class: '',           // Optional - default is not set
+            style: '',           // Optional - default is not set
+            data: {}             // Optional - If you have data attributes
           }
-        `),a(`
-      `)])],-1)),e("div",r,[t[0]||(t[0]=e("h2",{class:"header"},"Data Field",-1)),t[1]||(t[1]=e("p",null," The data field is an array of options and optgroups. The data field can be used in place of the select element. The data field will also be used to update the options in the original select element. ",-1)),t[2]||(t[2]=e("p",null," The only required field is the text field. The value field will be set to the text field if not set. All other fields are optional and have default values if not set. ",-1)),e("div",u,[e("select",f,null,512),e("select",c,null,512)]),t[3]||(t[3]=e("pre",null,[a("        "),e("code",{class:"language-javascript"},`
-          new SlimSelect({
+        `,-1)])]),_:1})]),t("div",x,[e[4]||(e[4]=t("h2",{class:"header"},"Data Field",-1)),e[5]||(e[5]=t("p",null," The data field is an array of options and optgroups. The data field can be used in place of the select element. The data field will also be used to update the options in the original select element. ",-1)),e[6]||(e[6]=t("p",null," The only required field is the text field. The value field will be set to the text field if not set. All other fields are optional and have default values if not set. ",-1)),t("div",m,[t("select",v,null,512),t("select",b,null,512)]),n(a,{language:"javascript"},{default:o(()=>[...e[3]||(e[3]=[t("pre",null,`          new SlimSelect({
             select: '#selectElement',
             
             // Options
@@ -58,6 +55,8 @@ import{d as n,S as l,_ as o,c as s,a as e,f as a,o as i}from"./index.js";const d
           })
 
           // If you want to set a placeholder set the first object placeholder to true
-          {'placeholder': true, 'text': 'placeholder text'}
-        `),a(`
-      `)],-1))])])}const O=o(d,[["render",h]]);export{O as default};
+          {
+            placeholder: true,
+            text: 'placeholder text'
+          }
+        `,-1)])]),_:1})])])}const B=d(f,[["render",y]]);export{B as default};
