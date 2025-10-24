@@ -1,7 +1,8 @@
 button,
 .btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   color: var(--color-white);
   height: 30px;
   width: auto;

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import AdSlot from '../../components/adslot.vue'
 
@@ -36,6 +37,7 @@ import Styles from './styles.vue'
 export default defineComponent({
   name: 'Settings',
   components: {
+    ShikiStyle,
     AdSlot,
     Select,
     CssClasses,

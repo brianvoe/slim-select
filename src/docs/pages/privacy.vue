@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../components/shiki_style.vue'
 
 export default defineComponent({
   name: 'Privacy',
@@ -7,45 +8,12 @@ export default defineComponent({
     return {
       lastUpdated: '2025-01-01'
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
-
-<style lang="scss">
-.privacy {
-  max-width: var(--width-max);
-  margin: 0 auto;
-  padding: var(--spacing);
-
-  .content {
-    line-height: 1.6;
-
-    ul {
-      margin-bottom: var(--spacing);
-      padding-left: var(--spacing);
-
-      li {
-        margin-bottom: var(--spacing-quarter);
-        color: var(--color-font);
-      }
-    }
-
-    a {
-      color: var(--color-primary);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    em {
-      color: var(--color-secondary);
-      font-size: var(--font-size);
-    }
-  }
-}
-</style>
 
 <template>
   <div class="privary contents">

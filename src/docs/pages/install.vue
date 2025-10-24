@@ -1,9 +1,13 @@
 <script lang="ts">
 import download from 'downloadjs'
 import { defineComponent } from 'vue'
+import ShikiStyle from '../components/shiki_style.vue'
 
 export default defineComponent({
   name: 'Install',
+  components: {
+    ShikiStyle
+  },
   methods: {
     downloadJs() {
       download(`https://unpkg.com/slim-select@latest/dist/slimselect.js`)
@@ -15,20 +19,34 @@ export default defineComponent({
 })
 </script>
 
+<style lang="scss">
+#install {
+  .download-btns {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-half);
+
+    .btn {
+      flex: 1 1 auto;
+    }
+  }
+}
+</style>
+
 <template>
   <div id="install" class="contents">
     <div id="npm" class="content">
       <h2 class="header">Npm</h2>
       <p>Most common usage is npm</p>
 
-      <pre class="install-code">
-        <code class="language-bash">
+      <ShikiStyle language="bash">
+        <pre>
           npm install slim-select
-        </code>
-      </pre>
+        </pre>
+      </ShikiStyle>
 
-      <pre class="example-code">
-        <code class="language-javascript">
+      <ShikiStyle language="javascript">
+        <pre>
           import SlimSelect from 'slim-select'
           import 'slim-select/styles' // optional css import method
           import 'slim-select/scss' // optional scss import method
@@ -36,8 +54,8 @@ export default defineComponent({
           new SlimSelect({
             select: '#selectElement'
           })
-        </code>
-      </pre>
+        </pre>
+      </ShikiStyle>
     </div>
 
     <div id="cdn" class="content">
@@ -65,8 +83,8 @@ export default defineComponent({
       </ul>
       <div class="alert info">New releases may be delayed until the next time its indexed</div>
 
-      <pre class="install-code">
-        <code class="language-html">
+      <ShikiStyle language="html">
+        <pre>
           &lt;html&gt;
             &lt;head&gt;
               &lt;script src="https://unpkg.com/slim-select@latest/dist/slimselect.js"&gt;&lt;/script&gt;
@@ -85,8 +103,8 @@ export default defineComponent({
               &lt;/script&gt;
             &lt;/body&gt;
           &lt;/html&gt;
-        </code>
-      </pre>
+        </pre>
+      </ShikiStyle>
     </div>
 
     <div id="download" class="content">
@@ -96,8 +114,10 @@ export default defineComponent({
         See full list of available downloadable options.
         <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a>
       </p>
-      <div class="btn" @click="downloadJs()">Download js</div>
-      <div class="btn" @click="downloadCss()">Download css</div>
+      <div class="rows download-btns">
+        <div class="btn" @click="downloadJs()">Download js</div>
+        <div class="btn" @click="downloadCss()">Download css</div>
+      </div>
     </div>
   </div>
 </template>

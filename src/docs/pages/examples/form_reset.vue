@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -54,6 +55,9 @@ export default defineComponent({
         )
       })
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -89,8 +93,8 @@ export default defineComponent({
       </form>
     </div>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;form id="form"&gt;
           &lt;select id="selectElement" name="select"&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
@@ -99,11 +103,11 @@ export default defineComponent({
           &lt;/select&gt;
           &lt;button type="reset"&gt;Reset form&lt;/button&gt;
         &lt;/form&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement'
         })
@@ -115,7 +119,7 @@ export default defineComponent({
             false
           )
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

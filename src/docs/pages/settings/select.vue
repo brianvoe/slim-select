@@ -1,8 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 export default defineComponent({
-  name: 'Select'
+  name: 'Select',
+  components: {
+    ShikiStyle
+  }
 })
 </script>
 
@@ -20,8 +24,8 @@ export default defineComponent({
       user experience.
     </p>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         new SlimSelect({
           select: '#selectElement',
           // or
@@ -32,7 +36,7 @@ export default defineComponent({
         // You can access from the original select element.
         let el = document.querySelector('#selectElement')
         el.slim.open() // Or any other options/methods
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

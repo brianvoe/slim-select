@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -8,6 +9,9 @@ export default defineComponent({
   mounted() {
     new SlimSelect({ select: this.$refs.selectStyle as HTMLSelectElement })
     new SlimSelect({ select: this.$refs.optionStyle as HTMLSelectElement })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -39,8 +43,8 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;select id="select-style" style="color: red;"&gt;
           &lt;option value="value1"&gt;Value 1&lt;/option&gt;
           &lt;option value="value2"&gt;Value 2&lt;/option&gt;
@@ -52,7 +56,7 @@ export default defineComponent({
           &lt;option style="color: green;"&gt;Green&lt;/option&gt;
           &lt;option style="color: blue;"&gt;Blue&lt;/option&gt;
         &lt;/select&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

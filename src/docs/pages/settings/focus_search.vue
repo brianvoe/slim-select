@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -21,6 +22,9 @@ export default defineComponent({
         focusSearch: false
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -55,15 +59,15 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         new SlimSelect({
           select: '#selectElement',
           settings: {
             focusSearch: false
           }
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

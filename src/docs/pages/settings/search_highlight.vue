@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -76,6 +77,9 @@ export default defineComponent({
       },
       data: this.htmlData
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -148,8 +152,8 @@ export default defineComponent({
       example above. Notice how the emoji flags and colors remain intact while only the matching text is highlighted.
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         // Basic usage
         new SlimSelect({
           select: '#selectElement',
@@ -177,7 +181,7 @@ export default defineComponent({
             }
           ]
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

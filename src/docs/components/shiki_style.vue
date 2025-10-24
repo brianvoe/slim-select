@@ -1,9 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { createHighlighterCore } from 'shiki/core'
-import { createOnigurumaEngine } from 'shiki/engine/oniguruma'
-import shikiWasm from 'shiki/wasm'
-import ShikiStyle from 'shiki_style.vue'
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 
 // Themes
 import githubDark from 'shiki/themes/github-dark.mjs'
@@ -38,11 +36,9 @@ export default defineComponent({
       langAlias: {
         ts: 'typescript',
         node: 'javascript',
-        nodejs: 'javascript',
-        shell: 'bash',
-        shellscript: 'bash'
+        nodejs: 'javascript'
       },
-      engine: createOnigurumaEngine(shikiWasm)
+      engine: createJavaScriptRegexEngine()
     })
 
     this.highlighter = highlighter
@@ -91,9 +87,6 @@ export default defineComponent({
       const minIndent = Math.min(...lines.filter((line) => line.trim()).map((line) => line.match(/^ */)![0].length))
       return lines.map((line) => line.slice(minIndent)).join('\n')
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>

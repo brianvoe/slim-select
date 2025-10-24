@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect, { Option, Optgroup } from '@/slim-select'
 
@@ -26,6 +27,9 @@ export default defineComponent({
       this.getDataOptionsValue = this.getDataOptions!.getData()
       this.getDataOptgroupsValue = this.getDataOptgroups!.getData()
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -34,10 +38,14 @@ export default defineComponent({
   <div id="getData" class="content">
     <h2 class="header">getData</h2>
     <p>
-      The getData method retrieves the complete data structure currently loaded in the SlimSelect instance, including all options and optgroups. This is useful for debugging, data analysis, or when you need to access the full dataset for processing or manipulation.
+      The getData method retrieves the complete data structure currently loaded in the SlimSelect instance, including
+      all options and optgroups. This is useful for debugging, data analysis, or when you need to access the full
+      dataset for processing or manipulation.
     </p>
     <p>
-      This method returns the raw data objects with all their properties, allowing you to access not just the display values but also any additional data attached to each option, such as custom attributes, metadata, or configuration options that were set when the data was loaded.
+      This method returns the raw data objects with all their properties, allowing you to access not just the display
+      values but also any additional data attached to each option, such as custom attributes, metadata, or configuration
+      options that were set when the data was loaded.
     </p>
 
     <div class="row">
@@ -73,14 +81,14 @@ export default defineComponent({
       </div>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement'
         })
         var data = select.getData() // Will return an array of options and optgroups
         console.log(data)
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

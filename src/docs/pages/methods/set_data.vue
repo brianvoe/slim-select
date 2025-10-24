@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -55,6 +56,9 @@ export default defineComponent({
         })
         .catch((err) => console.error(err))
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -63,10 +67,14 @@ export default defineComponent({
   <div id="setData" class="content">
     <h2 class="header">setData</h2>
     <p>
-      The setData method allows you to dynamically update the options available in a SlimSelect instance by providing a new array of data objects. This is essential for creating responsive interfaces where the available options change based on user interactions, API responses, or other dynamic conditions.
+      The setData method allows you to dynamically update the options available in a SlimSelect instance by providing a
+      new array of data objects. This is essential for creating responsive interfaces where the available options change
+      based on user interactions, API responses, or other dynamic conditions.
     </p>
     <p>
-      When called, this method completely replaces the existing options and re-renders the SlimSelect interface, making it perfect for scenarios like dependent dropdowns, filtered lists, or any situation where the available choices need to be updated dynamically without recreating the entire component.
+      When called, this method completely replaces the existing options and re-renders the SlimSelect interface, making
+      it perfect for scenarios like dependent dropdowns, filtered lists, or any situation where the available choices
+      need to be updated dynamically without recreating the entire component.
     </p>
     <div class="alert info">
       If you use a single select but an option is not selected it will select the first option.
@@ -84,8 +92,8 @@ export default defineComponent({
       <select ref="setDataMultiple" multiple></select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement'
         })
@@ -102,7 +110,7 @@ export default defineComponent({
             ]
           }
         ])
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

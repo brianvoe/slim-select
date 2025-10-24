@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -19,6 +20,9 @@ export default defineComponent({
         allowDeselect: true
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -52,18 +56,18 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         new SlimSelect({
           select: '#selectElement',
           settings: {
             allowDeselect: true
           }
         })
-      </code>
-    </pre>
-    <pre>
-      <code class="language-html">
+      </pre>
+    </ShikiStyle>
+    <ShikiStyle language="html">
+      <pre>
         &lt;!-- Requires emtpy data-placeholder option --&gt;
         &lt;select id="allowDeselect"&gt;
           &lt;option data-placeholder="true"&gt;&lt;/option&gt;
@@ -71,7 +75,7 @@ export default defineComponent({
           &lt;option value="value2"&gt;Value 2&lt;/option&gt;
           &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

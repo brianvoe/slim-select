@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -37,6 +38,9 @@ export default defineComponent({
       this.selectedMultipleValue = this.selectedMultiple!.getSelected()
       this.selectedKeepOrderValue = this.selectedKeepOrder!.getSelected()
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -45,10 +49,14 @@ export default defineComponent({
   <div id="getSelected" class="content">
     <h2 class="header">getSelected</h2>
     <p>
-      The getSelected method retrieves the currently selected values from the SlimSelect instance, returning them as an array of strings. This is essential for form processing, data validation, and any scenario where you need to access the user's current selections programmatically.
+      The getSelected method retrieves the currently selected values from the SlimSelect instance, returning them as an
+      array of strings. This is essential for form processing, data validation, and any scenario where you need to
+      access the user's current selections programmatically.
     </p>
     <p>
-      Whether you're working with single-select or multi-select dropdowns, this method provides a consistent interface for accessing selected values, making it easy to integrate SlimSelect with form handling, API calls, or other application logic that depends on user selections.
+      Whether you're working with single-select or multi-select dropdowns, this method provides a consistent interface
+      for accessing selected values, making it easy to integrate SlimSelect with form handling, API calls, or other
+      application logic that depends on user selections.
     </p>
 
     <div class="alert info">
@@ -102,8 +110,8 @@ export default defineComponent({
       </div>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement'
 
@@ -112,7 +120,7 @@ export default defineComponent({
         })
         var values = select.getSelected() // Will return an array of strings
         console.log(values)
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

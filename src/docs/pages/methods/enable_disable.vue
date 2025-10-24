@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -28,6 +29,9 @@ export default defineComponent({
       this.setEnableSingle!.disable()
       this.setEnableMultiple!.disable()
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -36,10 +40,14 @@ export default defineComponent({
   <div id="enableDisable" class="content">
     <h2 class="header">enable / disable</h2>
     <p>
-      The enable and disable methods provide programmatic control over the SlimSelect instance's interactive state. These methods are essential for creating dynamic interfaces where dropdowns need to be temporarily unavailable based on user permissions, form validation, or other business logic conditions.
+      The enable and disable methods provide programmatic control over the SlimSelect instance's interactive state.
+      These methods are essential for creating dynamic interfaces where dropdowns need to be temporarily unavailable
+      based on user permissions, form validation, or other business logic conditions.
     </p>
     <p>
-      When disabled, the dropdown becomes non-interactive and visually indicates its disabled state. You can also set the disabled state directly on the original HTML select element, and SlimSelect will automatically detect and respect this state, ensuring consistency between the native element and the enhanced interface.
+      When disabled, the dropdown becomes non-interactive and visually indicates its disabled state. You can also set
+      the disabled state directly on the original HTML select element, and SlimSelect will automatically detect and
+      respect this state, ensuring consistency between the native element and the enhanced interface.
     </p>
 
     <div class="row">
@@ -57,15 +65,15 @@ export default defineComponent({
         <option value="value3">Value 3</option>
       </select>
     </div>
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement'
         })
         select.enable()
         // or
         select.disable()
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

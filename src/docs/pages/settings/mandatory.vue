@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -22,6 +23,9 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.selectMultiMandatory2 as HTMLSelectElement
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -44,8 +48,8 @@ export default defineComponent({
       <select ref="selectMultiMandatory" multiple></select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         const slim = new SlimSelect({
           select: '#selectElement'
         });
@@ -58,14 +62,14 @@ export default defineComponent({
 
         slim.setData(data)
         slim.set(["value1", "value3"])
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;select id="selectMultiMandatory" multiple&gt;&lt;/select&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
     <p>Or</p>
     <div class="row">
@@ -76,22 +80,22 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         const slim = new SlimSelect({
           select: '#selectElement'
         });
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;select id="selectMultiMandatory" multiple&gt;
           &lt;option value="value1" data-mandatory="true" selected&gt;Value 1&lt;/option&gt;
           &lt;option value="value2" selected&gt;Value 2&lt;/option&gt;
           &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

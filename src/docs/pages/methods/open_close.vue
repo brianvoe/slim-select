@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -30,6 +31,9 @@ export default defineComponent({
         this.openCloseMultiple!.close()
       }
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -61,15 +65,15 @@ export default defineComponent({
         <option value="value3">Value 3</option>
       </select>
     </div>
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement',
         })
         select.open()
         // or
         select.close()
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

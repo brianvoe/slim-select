@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -74,6 +75,9 @@ export default defineComponent({
         contentLocation: document.getElementById('localCountry')
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -120,36 +124,34 @@ export default defineComponent({
       elements enhance user experience.
     </p>
 
-    <br />
     <div class="row">
       <select ref="countrySelect" class="countries"></select>
       <div id="localCountry"></div>
     </div>
-    <br />
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;select id="selectElement" class="countries"&gt;&lt;/select&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-css">
-        // Main content enlargements
+    <ShikiStyle language="css">
+      <pre>
+        /* Main content enlargements */
         .countries.ss-main {
           height: 50px;
           font-size: 18px;
           font-weight: bold;
         }
 
-        // Target the class on the img
+        /* Target the class on the img */
         .countries.ss-main .ss-single .country {
           width: 30px;
           padding: 0 8px 0 8px;
         }
 
-        // Target the options
-        // Update sizing and alignment
+        /* Target the options */
+        /* Update sizing and alignment */
         .countries.ss-content .ss-option {
           display: flex;
           align-items: center;
@@ -158,32 +160,32 @@ export default defineComponent({
           font-weight: bold;
         }
 
-        // Target the class on the img
+        /* Target the class on the img */
         .countries.ss-content .ss-option .country {
           width: 30px;
           padding: 0 8px 0 8px;
         }
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         // Data
         const countries = [
           { 
             text: 'United States', 
             value: 'US', 
-            html: '<img src="https://flagcdn.com/us.svg" class="country"/> United States' 
+            html: '&lt;img src="https://flagcdn.com/us.svg" class="country"/&gt; United States' 
           },
           { 
             text: 'Canada', 
             value: 'CA', 
-            html: '<img src="https://flagcdn.com/ca.svg" class="country"/> Canada' 
+            html: '&lt;img src="https://flagcdn.com/ca.svg" class="country"/&gt; Canada' 
           },
           {
             text: 'United Kingdom',
             value: 'UK',
-            html: '<img src="https://flagcdn.com/gb.svg" class="country"/> United Kingdom'
+            html: '&lt;img src="https://flagcdn.com/gb.svg" class="country"/&gt; United Kingdom'
           },
           // etc...  
         ]
@@ -192,7 +194,8 @@ export default defineComponent({
           select: '#selectElement',
           data: countries
         })
-      </code>
-    </pre>
+        </pre
+      >
+    </ShikiStyle>
   </div>
 </template>

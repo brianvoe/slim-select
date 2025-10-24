@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SlimSelect, { Option, Optgroup } from '@/slim-select'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 interface Person {
   first_name: string
@@ -84,6 +85,9 @@ export default defineComponent({
           })
       })
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -107,8 +111,8 @@ export default defineComponent({
       <select ref="searchMultiple" multiple></select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         new SlimSelect({
           select: '#selectElement',
           settings: {
@@ -166,7 +170,7 @@ export default defineComponent({
             }
           }
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

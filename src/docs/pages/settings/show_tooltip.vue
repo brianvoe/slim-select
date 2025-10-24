@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -12,6 +13,9 @@ export default defineComponent({
         showOptionTooltips: true
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -36,15 +40,15 @@ export default defineComponent({
       <option value="value3">Value 3</option>
     </select>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         new SlimSelect({
           select: '#selectElement',
           settings: {
             showOptionTooltips: true,
           }
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -23,6 +24,9 @@ export default defineComponent({
         contentPosition: 'relative'
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -62,8 +66,8 @@ export default defineComponent({
       </div>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         new SlimSelect({
           select: '#selectElement',
           settings: {
@@ -71,15 +75,15 @@ export default defineComponent({
 
             // In various situations it may be useful to set the contentLocation
             // to an element that will display best
-            contentLocation: document.getElementById('local'), ,
+            contentLocation: document.getElementById('local'),
             contentPosition: 'relative',
           }
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;select id="selectElement"&gt;
           &lt;option value="value1"&gt;Value 1&lt;/option&gt;
           &lt;option value="value2"&gt;Value 2&lt;/option&gt;
@@ -88,7 +92,7 @@ export default defineComponent({
 
         &lt;!-- The content will go in this div --&gt;
         &lt;div id="local"&gt;&lt;/div&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

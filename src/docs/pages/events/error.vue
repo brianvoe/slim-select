@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -20,6 +21,9 @@ export default defineComponent({
         }
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -42,7 +46,9 @@ export default defineComponent({
       the select dom element might not be available yet.
     </div>
 
-    <div v-if="errMsg !== ''"><b>Error:</b> {{ errMsg }}</div>
+    <div v-if="errMsg !== ''">
+      <b>Error:</b> <span style="color: red">{{ errMsg }}</span>
+    </div>
 
     <div class="row">
       <select ref="notError">
@@ -52,8 +58,8 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement',
           events: {
@@ -62,7 +68,7 @@ export default defineComponent({
             }
           }
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

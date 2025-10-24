@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -41,6 +42,9 @@ export default defineComponent({
         this.selectedKeepOrder!.close()
       }, 2000)
     }
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -49,10 +53,14 @@ export default defineComponent({
   <div id="setSelected" class="content">
     <h2 class="header">setSelected</h2>
     <p>
-      The setSelected method allows you to programmatically set the selected values in a SlimSelect instance. This is particularly useful for initializing selections, responding to external events, or implementing complex selection logic based on other application state.
+      The setSelected method allows you to programmatically set the selected values in a SlimSelect instance. This is
+      particularly useful for initializing selections, responding to external events, or implementing complex selection
+      logic based on other application state.
     </p>
     <p>
-      The method accepts either a single string value or an array of strings, making it flexible for both single-select and multi-select scenarios. Additionally, you can control whether the afterChange event is triggered by providing a second boolean parameter, giving you fine-grained control over when selection events fire.
+      The method accepts either a single string value or an array of strings, making it flexible for both single-select
+      and multi-select scenarios. Additionally, you can control whether the afterChange event is triggered by providing
+      a second boolean parameter, giving you fine-grained control over when selection events fire.
     </p>
 
     <div class="row">
@@ -77,8 +85,8 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         var select = new SlimSelect({
           select: '#selectElement'
 
@@ -90,7 +98,7 @@ export default defineComponent({
 
         // To not trigger the afterChange callback
         select.setSelected('value1', false)
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>

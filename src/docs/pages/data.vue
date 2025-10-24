@@ -1,10 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../components/shiki_style.vue'
 
 import SlimSelect, { Optgroup } from '@/slim-select'
 
 export default defineComponent({
   name: 'Data',
+  components: {
+    ShikiStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.dataSingle as HTMLSelectElement,
@@ -45,30 +49,30 @@ export default defineComponent({
         There are two types of data types. The option which consists of a variation of fields to customize the option.
         You can also provide an optgroup which has a label and an array of options.
       </p>
-      <pre>
-        <code class="language-javascript">
+      <ShikiStyle language="javascript">
+        <pre>
           var optgroup = {
-            label: 'label', // Required
+            label: 'label',   // Required
             selectAll: false, // Optional - default false
-            closable: 'off', // Optional - default 'off' - 'off', 'open', 'close'
-            options: [] // Required - value is an array of options
+            closable: 'off',  // Optional - default 'off' - 'off', 'open', 'close'
+            options: []       // Required - value is an array of options
           }
 
           var option = {
-            text: 'text', // Required
-            value: 'value', // Optional - value will be set by text if not set
+            text: 'text',        // Required
+            value: 'value',      // Optional - value will be set by text if not set
             html: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
-            selected: false, // Optional - default is false
-            display: true, // Optional - default is true
-            disabled: false, // Optional - default is false
-            mandatory: false, // Optional - default is false
-            placeholder: false, // Optional - default is false
-            class: '', // Optional - default is not set
-            style: '', // Optional - default is not set
-            data: {} // Optional - If you have data attributes
+            selected: false,     // Optional - default is false
+            display: true,       // Optional - default is true
+            disabled: false,     // Optional - default is false
+            mandatory: false,    // Optional - default is false
+            placeholder: false,  // Optional - default is false
+            class: '',           // Optional - default is not set
+            style: '',           // Optional - default is not set
+            data: {}             // Optional - If you have data attributes
           }
-        </code>
-      </pre>
+        </pre>
+      </ShikiStyle>
     </div>
 
     <div id="field" class="content">
@@ -87,8 +91,8 @@ export default defineComponent({
         <select ref="dataMultiple" multiple></select>
       </div>
 
-      <pre>
-        <code class="language-javascript">
+      <ShikiStyle language="javascript">
+        <pre>
           new SlimSelect({
             select: '#selectElement',
             
@@ -126,9 +130,12 @@ export default defineComponent({
           })
 
           // If you want to set a placeholder set the first object placeholder to true
-          {'placeholder': true, 'text': 'placeholder text'}
-        </code>
-      </pre>
+          {
+            placeholder: true,
+            text: 'placeholder text'
+          }
+        </pre>
+      </ShikiStyle>
     </div>
   </div>
 </template>

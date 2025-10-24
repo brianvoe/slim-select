@@ -2,10 +2,12 @@
 import { defineComponent } from 'vue'
 import SlimSelect, { Settings, Option, type Events } from '@/slim-select/vue'
 import ComplexFieldExample, { type FieldOption } from './complex.vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 export default defineComponent({
   name: 'Vue',
   components: {
+    ShikiStyle,
     SlimSelect,
     ComplexFieldExample
   },
@@ -101,22 +103,21 @@ export default defineComponent({
 
     <h3>Install</h3>
     <p>Install the slim-select package:</p>
-    <pre>
-      <code class="language-bash">
+    <ShikiStyle language="bash">
+      <pre>
         npm install slim-select
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
     <p>Import the Vue component and styles:</p>
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         import SlimSelect from 'slim-select/vue'
         import 'slim-select/styles' // CSS
         // or
         import 'slim-select/scss' // SCSS
-      </code>
-    </pre>
-    <br />
+      </pre>
+    </ShikiStyle>
 
     <h3>Simple example</h3>
     <div class="row">
@@ -141,10 +142,10 @@ export default defineComponent({
       </div>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         import { defineComponent } from 'vue'
-        import SlimSelect from '../your/path/to/slim-select/vue.vue'
+        import SlimSelect from 'slim-select/vue'
 
         export default defineComponent({
           components: {
@@ -157,11 +158,11 @@ export default defineComponent({
             }
           }
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;SlimSelect v-model="single"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
@@ -173,12 +174,10 @@ export default defineComponent({
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
         &lt;/SlimSelect&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <br />
     <div class="separator"></div>
-    <br />
 
     <h3>Settings</h3>
     <p>
@@ -200,10 +199,10 @@ export default defineComponent({
       </SlimSelect>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         import { defineComponent } from 'vue'
-        import SlimSelect from '../your/path/to/slim-select/vue.vue'
+        import SlimSelect from 'slim-select/vue'
 
         export default defineComponent({
           components: {
@@ -217,11 +216,12 @@ export default defineComponent({
             }
           },
         })
-      </code>
-    </pre>
+        </pre
+      >
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;SlimSelect :settings="settings"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
@@ -233,12 +233,10 @@ export default defineComponent({
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
         &lt;/SlimSelect&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <br />
     <div class="separator"></div>
-    <br />
 
     <h3>Data</h3>
     <p>
@@ -255,10 +253,10 @@ export default defineComponent({
       <SlimSelect ref="dataMultiple" :data="data" multiple />
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         import { defineComponent } from 'vue'
-        import SlimSelect from '../your/path/to/slim-select/vue.vue'
+        import SlimSelect from 'slim-select/vue'
 
         export default defineComponent({
           components: {
@@ -274,20 +272,18 @@ export default defineComponent({
             }
           },
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;SlimSelect :data="data" /&gt;
 
         &lt;SlimSelect :data="data" multiple /&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <br />
     <div class="separator"></div>
-    <br />
 
     <h3>Events</h3>
     <p>
@@ -310,10 +306,10 @@ export default defineComponent({
       </SlimSelect>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         import { defineComponent } from 'vue'
-        import SlimSelect from '../your/path/to/slim-select/vue.vue'
+        import SlimSelect from 'slim-select/vue'
 
         export default defineComponent({
           components: {
@@ -332,11 +328,11 @@ export default defineComponent({
             },
           },
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;SlimSelect :events="events"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
@@ -348,12 +344,10 @@ export default defineComponent({
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
         &lt;/SlimSelect&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <br />
     <div class="separator"></div>
-    <br />
 
     <h3>Attributes</h3>
     <p>There are certain attributes that are reactive to changes</p>
@@ -368,15 +362,15 @@ export default defineComponent({
       </SlimSelect>
     </div>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;SlimSelect :disabled="isDisabled"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
         &lt;/SlimSelect&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
     <h4>class</h4>
     <div class="row">
@@ -388,19 +382,17 @@ export default defineComponent({
       </SlimSelect>
     </div>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;SlimSelect :class="myClass"&gt;
           &lt;option value="1"&gt;Option 1&lt;/option&gt;
           &lt;option value="2"&gt;Option 2&lt;/option&gt;
           &lt;option value="3"&gt;Option 3&lt;/option&gt;
         &lt;/SlimSelect&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <br />
     <div class="separator"></div>
-    <br />
 
     <h3>Complex Example: Custom Fields Pattern</h3>
     <p>
@@ -430,9 +422,9 @@ export default defineComponent({
     </div>
 
     <p><strong>Parent Component (vue.vue):</strong></p>
-    <pre>
-      <code class="language-javascript">
-        import ComplexFieldExample from './complex.vue'
+    <ShikiStyle language="javascript">
+      <pre>
+        import ComplexFieldExample from 'slim-select/vue'
 
         export default {
           components: { ComplexFieldExample },
@@ -459,11 +451,11 @@ export default defineComponent({
             }
           }
         }
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;!-- Parent template --&gt;
         &lt;ComplexFieldExample
           label="Favorite Colors"
@@ -476,12 +468,12 @@ export default defineComponent({
           v-model="customFieldsValues.skills"
           :field-options="fieldOptions.skills"
         /&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
     <p><strong>Child Component (complex.vue):</strong></p>
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         import SlimSelect from 'slim-select/vue'
 
         export default {
@@ -504,11 +496,11 @@ export default defineComponent({
             }
           }
         }
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;!-- Child template with reactive slot content --&gt;
         &lt;SlimSelect
           v-model="value"
@@ -521,8 +513,8 @@ export default defineComponent({
             &lcub;&lcub; option.name &rcub;&rcub;
           &lt;/option&gt;
         &lt;/SlimSelect&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
     <div class="alert info">
       <strong>Key Features:</strong>

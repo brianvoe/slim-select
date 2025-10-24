@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -8,6 +9,9 @@ export default defineComponent({
   mounted() {
     new SlimSelect({ select: this.$refs.optionsSingle as HTMLSelectElement })
     new SlimSelect({ select: this.$refs.optionsMultiple as HTMLSelectElement })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>

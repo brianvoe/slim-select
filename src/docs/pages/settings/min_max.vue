@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ShikiStyle from '../../components/shiki_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -20,6 +21,9 @@ export default defineComponent({
         }
       }
     })
+  },
+  components: {
+    ShikiStyle
   }
 })
 </script>
@@ -49,8 +53,8 @@ export default defineComponent({
       </select>
     </div>
 
-    <pre>
-      <code class="language-javascript">
+    <ShikiStyle language="javascript">
+      <pre>
         let slim = new SlimSelect({
           select: '#selectElement',
           settings: {
@@ -58,11 +62,11 @@ export default defineComponent({
             maxSelected: 5,
           },
         })
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
 
-    <pre>
-      <code class="language-html">
+    <ShikiStyle language="html">
+      <pre>
         &lt;select id="selectMultiMax" multiple&gt;
           &lt;option value="value1"&gt;Value 1&lt;/option&gt;
           &lt;option value="value2"&gt;Value 2&lt;/option&gt;
@@ -71,7 +75,7 @@ export default defineComponent({
           &lt;option value="value5"&gt;Value 5&lt;/option&gt;
           &lt;option value="value6"&gt;Value 6&lt;/option&gt;
         &lt;/select&gt;
-      </code>
-    </pre>
+      </pre>
+    </ShikiStyle>
   </div>
 </template>
