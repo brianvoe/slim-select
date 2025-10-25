@@ -5,13 +5,17 @@ import AdSlot from '@/docs/components/adslot.vue'
 
 // Sections
 import Variables from './style/variables.vue'
+import Classes from './style/classes.vue'
+import Styles from './style/styles.vue'
 
 export default defineComponent({
   name: 'Style',
   components: {
     ShikiStyle,
     AdSlot,
-    Variables
+    Variables,
+    Classes,
+    Styles
   }
 })
 </script>
@@ -19,5 +23,7 @@ export default defineComponent({
 <template>
   <div id="style" class="contents">
     <Variables />
+    <Classes />
+    <Styles />
   </div>
 </template>

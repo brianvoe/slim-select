@@ -10,8 +10,7 @@ import Closable from './closable.vue'
 import CloseOnSelect from './close_on_select.vue'
 import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
-import Css from './css.vue'
-import CssClasses from './css_classes.vue'
+import Classes from './classes.vue'
 import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
 import Disabled from './disabled.vue'
@@ -32,7 +31,6 @@ import SearchHighlight from './search_highlight.vue'
 import Select from './select.vue'
 import SelectAll from './select_all.vue'
 import ShowTooltip from './show_tooltip.vue'
-import Styles from './styles.vue'
 
 export default defineComponent({
   name: 'Settings',
@@ -40,7 +38,7 @@ export default defineComponent({
     ShikiStyle,
     AdSlot,
     Select,
-    CssClasses,
+    Classes,
     AlwaysOpen,
     ContentLocation,
     ContentPosition,
@@ -53,8 +51,6 @@ export default defineComponent({
     MinMax,
     DataAttributes,
     MaxValuesShown,
-    Css,
-    Styles,
     Html,
     KeepOrder,
     ShowSearch,
@@ -74,7 +70,7 @@ export default defineComponent({
 <template>
   <div id="settings" class="contents">
     <Select />
-    <CssClasses />
+    <Classes />
     <AdSlot ad-slot="1270131515" />
 
     <AlwaysOpen />
@@ -101,31 +97,30 @@ export default defineComponent({
     <DataAttributes />
     <AdSlot ad-slot="1270131515" />
 
-    <Css />
     <Styles />
-    <AdSlot ad-slot="1270131515" />
-
     <Html />
+    <AdSlot ad-slot="1270131515" />
+
     <KeepOrder />
-    <AdSlot ad-slot="1270131515" />
-
     <ShowSearch />
+    <AdSlot ad-slot="1270131515" />
+
     <FocusSearch />
-    <AdSlot ad-slot="1270131515" />
-
     <SearchText />
+    <AdSlot ad-slot="1270131515" />
+
     <SearchPlaceholder />
-    <AdSlot ad-slot="1270131515" />
-
     <SearchHighlight />
+    <AdSlot ad-slot="1270131515" />
+
     <CloseOnSelect />
-    <AdSlot ad-slot="1270131515" />
-
     <ShowTooltip />
-    <Closable />
     <AdSlot ad-slot="1270131515" />
 
+    <Closable />
     <HideSelected />
+    <AdSlot ad-slot="1270131515" />
+
     <MaxValuesShown />
   </div>
 </template>

@@ -5,7 +5,7 @@ import ShikiStyle from '../../components/shiki_style.vue'
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
-  name: 'CustomCss',
+  name: 'Classes',
   mounted() {
     new SlimSelect({ select: this.$refs.mainSelect as HTMLSelectElement, cssClasses: { option: 'primary-option' } })
     new SlimSelect({

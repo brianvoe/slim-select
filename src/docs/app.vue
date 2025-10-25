@@ -59,7 +59,11 @@ export default defineComponent({
         {
           label: 'Style',
           closable: 'close',
-          options: [{ text: 'variables', value: 'style#variables' }]
+          options: [
+            { text: 'variables', value: 'style#variables' },
+            { text: 'classes', value: 'style#classes' },
+            { text: 'styles', value: 'style#styles' }
+          ]
         },
 
         // Examples
@@ -80,7 +84,7 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'select', value: 'settings#select' },
-            { text: 'cssClasses', value: 'settings#cssClasses' },
+            { text: 'classes', value: 'settings#classes' },
             { text: 'alwaysOpen', value: 'settings#alwaysOpen' },
             { text: 'contentLocation', value: 'settings#contentLocation' },
             { text: 'contentPosition', value: 'settings#contentPosition' },
@@ -93,8 +97,6 @@ export default defineComponent({
             { text: 'mandatory', value: 'settings#mandatory' },
             { text: 'minmax', value: 'settings#minmax' },
             { text: 'dataAttributes', value: 'settings#dataAttributes' },
-            { text: 'cssClass', value: 'settings#cssClass' },
-            { text: 'inlineStyles', value: 'settings#inlineStyles' },
             { text: 'html', value: 'settings#html' },
             { text: 'keepOrder', value: 'settings#keepOrder' },
             { text: 'showSearch', value: 'settings#showSearch' },
