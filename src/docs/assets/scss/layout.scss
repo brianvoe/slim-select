@@ -110,6 +110,7 @@ body {
         justify-content: space-between;
         height: var(--height-nav);
         border: solid 1.5px var(--color-white);
+        box-shadow: var(--box-shadow);
 
         @media (max-width: 700px) {
           display: none;
