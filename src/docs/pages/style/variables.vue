@@ -123,11 +123,6 @@ export default defineComponent({
     box-shadow: var(--box-shadow);
     margin-bottom: var(--spacing);
 
-    h3 {
-      margin: 0 0 var(--spacing) 0;
-      color: var(--color-primary);
-    }
-
     .row {
       display: flex;
       gap: var(--spacing);
@@ -155,7 +150,6 @@ export default defineComponent({
 
     h3 {
       color: var(--color-primary);
-      margin-bottom: var(--spacing-half);
     }
 
     .control-group-section {
@@ -260,6 +254,10 @@ export default defineComponent({
     <!-- Variable Controls -->
     <div class="controls-section">
       <h3>Variable Controls</h3>
+      <p>
+        Make changes to the variables below to see the changes applied to the examples. You can also copy the generated
+        CSS below to your own CSS file.
+      </p>
 
       <!-- Colors Group -->
       <div class="control-group-section">
