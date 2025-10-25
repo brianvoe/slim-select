@@ -525,7 +525,7 @@
       cursor: pointer;
       user-select: none;
 
-      &:hover {
+      &:hover:not(.ss-disabled) {
         color: var(--ss-bg-color);
         background-color: var(--ss-primary-color);
         border-left: 5px solid var(--ss-primary-color);
