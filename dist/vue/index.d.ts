@@ -17,7 +17,7 @@ export declare interface Config {
     events?: Events;
 }
 
-declare interface Content {
+export declare interface Content {
     main: HTMLDivElement;
     search: Search;
     list: HTMLDivElement;
@@ -81,7 +81,7 @@ export declare interface Events {
     error?: (err: Error) => void;
 }
 
-declare interface Main {
+export declare interface Main {
     main: HTMLDivElement;
     values: HTMLDivElement;
     deselect: {
@@ -168,7 +168,7 @@ declare class Render {
     updateDeselectAll(): void;
 }
 
-declare interface Search {
+export declare interface Search {
     main: HTMLDivElement;
     input: HTMLInputElement;
     addable?: {
