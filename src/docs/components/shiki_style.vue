@@ -15,6 +15,59 @@ import javascript from 'shiki/langs/javascript.mjs'
 import typescript from 'shiki/langs/typescript.mjs'
 import vue from 'shiki/langs/vue.mjs'
 
+type Highlighter = Awaited<ReturnType<typeof createHighlighterCore>>
+
+// Shiki singleton service
+class ShikiService {
+  private static instance: ShikiService
+  private highlighter: Highlighter | null = null
+  private initPromise: Promise<Highlighter> | null = null
+
+  private constructor() {}
+
+  public static getInstance(): ShikiService {
+    if (!ShikiService.instance) {
+      ShikiService.instance = new ShikiService()
+    }
+    return ShikiService.instance
+  }
+
+  public async getHighlighter(): Promise<Highlighter> {
+    if (this.highlighter) {
+      return this.highlighter
+    }
+
+    if (this.initPromise) {
+      return this.initPromise
+    }
+
+    this.initPromise = this.initializeHighlighter()
+    this.highlighter = await this.initPromise
+    return this.highlighter
+  }
+
+  private async initializeHighlighter(): Promise<Highlighter> {
+    return await createHighlighterCore({
+      themes: [githubDark, githubLight],
+      langs: [bash, css, html, javascript, typescript, vue],
+      langAlias: {
+        ts: 'typescript',
+        node: 'javascript',
+        nodejs: 'javascript'
+      },
+      engine: createJavaScriptRegexEngine()
+    })
+  }
+
+  public dispose(): void {
+    if (this.highlighter) {
+      this.highlighter.dispose()
+      this.highlighter = null
+    }
+    this.initPromise = null
+  }
+}
+
 export default defineComponent({
   name: 'ShikiStyle',
   props: {
@@ -25,23 +78,13 @@ export default defineComponent({
   },
   data() {
     return {
-      highlighter: null as Awaited<ReturnType<typeof createHighlighterCore>> | null,
+      highlighter: null as Highlighter | null,
       highlightedCode: ''
     }
   },
   async created() {
-    const highlighter = await createHighlighterCore({
-      themes: [githubDark, githubLight],
-      langs: [bash, css, html, javascript, typescript, vue],
-      langAlias: {
-        ts: 'typescript',
-        node: 'javascript',
-        nodejs: 'javascript'
-      },
-      engine: createJavaScriptRegexEngine()
-    })
-
-    this.highlighter = highlighter
+    const shikiService = ShikiService.getInstance()
+    this.highlighter = await shikiService.getHighlighter()
     this.highlightCode()
 
     this.$watch(
@@ -52,11 +95,6 @@ export default defineComponent({
         }
       }
     )
-  },
-  unmounted() {
-    if (this.highlighter) {
-      this.highlighter.dispose()
-    }
   },
   watch: {
     language() {
