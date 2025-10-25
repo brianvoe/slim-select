@@ -62,6 +62,39 @@ export default defineComponent({
 })
 </script>
 
+<style lang="scss">
+#formReset {
+  .form-example {
+    flex: 1;
+    min-width: 300px;
+    padding: var(--spacing);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: #f8f9fa;
+
+    h3 {
+      color: var(--color-primary);
+      margin: 0 0 var(--spacing-quarter) 0;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-half);
+
+      select {
+        width: 100%;
+      }
+
+      .form-buttons {
+        display: flex;
+        gap: var(--spacing-half);
+      }
+    }
+  }
+}
+</style>
+
 <template>
   <div id="formReset" class="content">
     <h2 class="header">Form Reset</h2>
@@ -72,25 +105,35 @@ export default defineComponent({
     </p>
 
     <div class="row">
-      <form class="row" @submit="onSubmitSingle" @reset="onFormResetSingle">
-        <select ref="single" name="select">
-          <option value="value1">Value 1</option>
-          <option value="value2" selected>Value 2</option>
-          <option value="value3">Value 3</option>
-        </select>
-        <button type="submit">Submit</button>
-        <button type="reset">Reset form</button>
-      </form>
+      <div class="form-example">
+        <h3>Single Select</h3>
+        <form @submit="onSubmitSingle" @reset="onFormResetSingle">
+          <select ref="single" name="select">
+            <option value="value1">Value 1</option>
+            <option value="value2" selected>Value 2</option>
+            <option value="value3">Value 3</option>
+          </select>
+          <div class="form-buttons">
+            <button type="submit">Submit</button>
+            <button type="reset">Reset form</button>
+          </div>
+        </form>
+      </div>
 
-      <form class="row" @submit="onSubmitMultiple" @reset="onFormResetMultiple">
-        <select ref="multiple" name="select" multiple>
-          <option value="value1">Value 1</option>
-          <option value="value2" selected>Value 2</option>
-          <option value="value3" selected>Value 3</option>
-        </select>
-        <button type="submit">Submit</button>
-        <button type="reset">Reset form</button>
-      </form>
+      <div class="form-example">
+        <h3>Multiple Select</h3>
+        <form @submit="onSubmitMultiple" @reset="onFormResetMultiple">
+          <select ref="multiple" name="select" multiple>
+            <option value="value1">Value 1</option>
+            <option value="value2" selected>Value 2</option>
+            <option value="value3" selected>Value 3</option>
+          </select>
+          <div class="form-buttons">
+            <button type="submit">Submit</button>
+            <button type="reset">Reset form</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <ShikiStyle language="html">

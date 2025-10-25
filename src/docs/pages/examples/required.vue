@@ -51,17 +51,16 @@ export default defineComponent({
 <style lang="scss">
 #required {
   .required-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-half);
     max-width: 500px;
-    margin-bottom: var(--spacing);
-  }
 
-  .form-group {
-    margin-bottom: var(--spacing);
-
-    label {
-      display: block;
-      margin-bottom: var(--spacing-half);
-      font-weight: 600;
+    .form-group {
+      label {
+        display: block;
+        font-weight: 600;
+      }
     }
   }
 }

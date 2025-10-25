@@ -84,31 +84,31 @@ export default defineComponent({
 
 <style lang="scss">
 #countries {
-  // Main content enlargements
-  .countries.ss-main {
-    height: 50px;
+  .countries {
+    /* Use CSS variables for consistent styling */
+    --ss-main-height: 50px;
+    --ss-option-height: 40px;
+    --ss-spacing-l: 12px;
+    --ss-spacing-m: 8px;
+    --ss-spacing-s: 4px;
+    --ss-border-radius: 8px;
+  }
+
+  /* Enhanced styling for the main element */
+  .countries.ss-main .ss-single {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     font-size: 18px;
     font-weight: bold;
   }
 
-  // Target the class on the img
-  .countries.ss-main .ss-single .country {
-    width: 30px;
-    padding: 0 8px 0 8px;
-  }
-
-  // Target the options
-  // Update sizing and alignment
-  .countries.ss-content .ss-option {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  // Target the class on the img
+  /* Target the class on the img */
+  .countries.ss-main .ss-single .country,
   .countries.ss-content .ss-option .country {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     width: 30px;
     padding: 0 8px 0 8px;
   }
@@ -126,7 +126,7 @@ export default defineComponent({
 
     <div class="row">
       <select ref="countrySelect" class="countries"></select>
-      <div id="localCountry"></div>
+      <div id="localCountry" style="width: 100%"></div>
     </div>
 
     <ShikiStyle language="html">
@@ -137,31 +137,31 @@ export default defineComponent({
 
     <ShikiStyle language="css">
       <pre>
-        /* Main content enlargements */
-        .countries.ss-main {
-          height: 50px;
+        .countries {
+          /* Use CSS variables for consistent styling */
+          --ss-main-height: 50px;
+          --ss-option-height: 40px;
+          --ss-spacing-l: 12px;
+          --ss-spacing-m: 8px;
+          --ss-spacing-s: 4px;
+          --ss-border-radius: 8px;
+        }
+
+        /* Enhanced styling for the main element */
+        .countries.ss-main .ss-single {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
           font-size: 18px;
           font-weight: bold;
         }
 
         /* Target the class on the img */
-        .countries.ss-main .ss-single .country {
-          width: 30px;
-          padding: 0 8px 0 8px;
-        }
-
-        /* Target the options */
-        /* Update sizing and alignment */
-        .countries.ss-content .ss-option {
-          display: flex;
-          align-items: center;
-          height: 40px;
-          font-size: 14px;
-          font-weight: bold;
-        }
-
-        /* Target the class on the img */
+        .countries.ss-main .ss-single .country,
         .countries.ss-content .ss-option .country {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
           width: 30px;
           padding: 0 8px 0 8px;
         }

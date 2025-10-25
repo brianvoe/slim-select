@@ -41,8 +41,6 @@ export default defineComponent({
   }
 
   .form-group {
-    margin-bottom: var(--spacing);
-
     label {
       display: block;
       margin-bottom: var(--spacing-half);
