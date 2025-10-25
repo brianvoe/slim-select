@@ -553,5 +553,12 @@
         background-color: var(--ss-highlight-color);
       }
     }
+
+    .ss-search {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
+    }
   }
 }
