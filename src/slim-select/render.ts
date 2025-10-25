@@ -1325,6 +1325,11 @@ export default class Render {
         return
       }
 
+      // Prevent deselection of mandatory options
+      if (option.selected && option.mandatory) {
+        return
+      }
+
       // Check limit and do nothing if limit is reached and the option is not selected
       // Also check reverse for min limit and is selected (allow Cmd to bypass minSelected)
       if (
