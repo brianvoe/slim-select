@@ -14,7 +14,8 @@ export default defineComponent({
       settings: {
         alwaysOpen: true,
         contentPosition: 'relative',
-        contentLocation: this.$refs.selectClassContent as HTMLElement
+        contentLocation: this.$refs.selectClassContent as HTMLElement,
+        showSearch: false
       }
     })
     new SlimSelect({
@@ -22,7 +23,8 @@ export default defineComponent({
       settings: {
         alwaysOpen: true,
         contentPosition: 'relative',
-        contentLocation: this.$refs.optionClassContent as HTMLElement
+        contentLocation: this.$refs.optionClassContent as HTMLElement,
+        showSearch: false
       }
     })
   }
@@ -44,56 +46,59 @@ export default defineComponent({
     }
   }
 
-  // Main element class overrides
-  .select-class.ss-main {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  // Forest Theme - Main element
+  .forest-main.ss-main {
+    background: linear-gradient(135deg, #2d5016, #4a7c59);
     color: white;
     border: none;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 15px rgba(45, 80, 22, 0.4);
+    border-left: 4px solid #1a3d0a;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      box-shadow: 0 6px 20px rgba(45, 80, 22, 0.6);
     }
   }
 
-  // Option class overrides
-  .ss-option {
-    &.red {
-      color: white;
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-      font-weight: 600;
-      border-left: 4px solid #c23616;
+  // Forest Theme - Options
+  .ss-option.forest-option {
+    color: white;
+    background: linear-gradient(135deg, #4a7c59, #6b8e6b);
+    font-weight: 600;
+    border-left: 4px solid #2d5016;
 
-      &:hover {
-        background: linear-gradient(135deg, #ff5252, #d63031);
-        transform: translateX(5px);
-      }
+    &:hover {
+      background: linear-gradient(135deg, #5a8c69, #7b9e7b);
+      transform: translateX(5px);
     }
+  }
 
-    &.green {
-      color: white;
-      background: linear-gradient(135deg, #00b894, #00a085);
-      font-weight: 600;
-      border-left: 4px solid #00a085;
+  // Fire Theme - Main element
+  .fire-main.ss-main {
+    background: linear-gradient(135deg, #d63031, #e17055);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(214, 48, 49, 0.4);
+    border-left: 4px solid #a71e1e;
 
-      &:hover {
-        background: linear-gradient(135deg, #00a085, #00b894);
-        transform: translateX(5px);
-      }
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(214, 48, 49, 0.6);
     }
+  }
 
-    &.blue {
-      color: white;
-      background: linear-gradient(135deg, #74b9ff, #0984e3);
-      font-weight: 600;
-      border-left: 4px solid #0984e3;
+  // Fire Theme - Options
+  .ss-option.fire-option {
+    color: white;
+    background: linear-gradient(135deg, #e17055, #fdcb6e);
+    font-weight: 600;
+    border-left: 4px solid #d63031;
 
-      &:hover {
-        background: linear-gradient(135deg, #0984e3, #74b9ff);
-        transform: translateX(5px);
-      }
+    &:hover {
+      background: linear-gradient(135deg, #f1a65a, #fdcb6e);
+      transform: translateX(5px);
     }
   }
 }
@@ -115,20 +120,20 @@ export default defineComponent({
 
     <div class="row">
       <div class="select-example">
-        <h3>Main Classes</h3>
-        <select ref="selectClass" class="select-class">
-          <option value="value1">Value 1</option>
-          <option value="value2">Value 2</option>
-          <option value="value3">Value 3</option>
+        <h3>Forest Theme</h3>
+        <select ref="selectClass" class="forest-main">
+          <option class="forest-option" value="value1">Pine Green</option>
+          <option class="forest-option" value="value2">Moss Green</option>
+          <option class="forest-option" value="value3">Sage Green</option>
         </select>
         <div ref="selectClassContent" class="dropdown-content-container"></div>
       </div>
       <div class="select-example">
-        <h3>Option Classes</h3>
-        <select ref="optionClass" class="option-class">
-          <option class="red" value="value1">Red Option</option>
-          <option class="green" value="value2">Green Option</option>
-          <option class="blue" value="value3">Blue Option</option>
+        <h3>Fire Theme</h3>
+        <select ref="optionClass" class="fire-main">
+          <option class="fire-option" value="value1">Flame Red</option>
+          <option class="fire-option" value="value2">Ember Orange</option>
+          <option class="fire-option" value="value3">Coal Black</option>
         </select>
         <div ref="optionClassContent" class="dropdown-content-container"></div>
       </div>
@@ -136,19 +141,79 @@ export default defineComponent({
 
     <ShikiStyle language="html">
       <pre>
-        &lt;!-- Main element with custom class --&gt;
-        &lt;select class="select-class"&gt;
-          &lt;option value="value1"&gt;Value 1&lt;/option&gt;
-          &lt;option value="value2"&gt;Value 2&lt;/option&gt;
-          &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+        &lt;!-- Forest Theme: Complete styling for select and options --&gt;
+        &lt;select class="forest-main"&gt;
+          &lt;option class="forest-option" value="value1"&gt;Pine Green&lt;/option&gt;
+          &lt;option class="forest-option" value="value2"&gt;Moss Green&lt;/option&gt;
+          &lt;option class="forest-option" value="value3"&gt;Sage Green&lt;/option&gt;
         &lt;/select&gt;
 
-        &lt;!-- Options with individual classes --&gt;
-        &lt;select class="option-class"&gt;
-          &lt;option class="red" value="value1"&gt;Red Option&lt;/option&gt;
-          &lt;option class="green" value="value2"&gt;Green Option&lt;/option&gt;
-          &lt;option class="blue" value="value3"&gt;Blue Option&lt;/option&gt;
+        &lt;!-- Fire Theme: Complete styling for select and options --&gt;
+        &lt;select class="fire-main"&gt;
+          &lt;option class="fire-option" value="value1"&gt;Flame Red&lt;/option&gt;
+          &lt;option class="fire-option" value="value2"&gt;Ember Orange&lt;/option&gt;
+          &lt;option class="fire-option" value="value3"&gt;Coal Black&lt;/option&gt;
         &lt;/select&gt;
+      </pre>
+    </ShikiStyle>
+
+    <ShikiStyle language="css">
+      <pre>
+        /* Forest Theme - Main element */
+        .forest-main.ss-main {
+          background: linear-gradient(135deg, #2d5016, #4a7c59);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          box-shadow: 0 4px 15px rgba(45, 80, 22, 0.4);
+          border-left: 4px solid #1a3d0a;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 80, 22, 0.6);
+          }
+        }
+
+        /* Forest Theme - Options */
+        .ss-option.forest-option {
+          color: white;
+          background: linear-gradient(135deg, #4a7c59, #6b8e6b);
+          font-weight: 600;
+          border-left: 4px solid #2d5016;
+
+          &:hover {
+            background: linear-gradient(135deg, #5a8c69, #7b9e7b);
+            transform: translateX(5px);
+          }
+        }
+
+        /* Fire Theme - Main element */
+        .fire-main.ss-main {
+          background: linear-gradient(135deg, #d63031, #e17055);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          box-shadow: 0 6px 20px rgba(214, 48, 49, 0.4);
+          border-left: 4px solid #a71e1e;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(214, 48, 49, 0.6);
+          }
+        }
+
+        /* Fire Theme - Options */
+        .ss-option.fire-option {
+          color: white;
+          background: linear-gradient(135deg, #e17055, #fdcb6e);
+          font-weight: 600;
+          border-left: 4px solid #d63031;
+
+          &:hover {
+            background: linear-gradient(135deg, #f1a65a, #fdcb6e);
+            transform: translateX(5px);
+          }
+        }
       </pre>
     </ShikiStyle>
   </div>

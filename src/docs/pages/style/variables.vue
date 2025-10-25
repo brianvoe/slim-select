@@ -90,22 +90,79 @@ export default defineComponent({
       if (!style) return
 
       style.textContent = `
-        .variable-showcase {
-          --ss-primary-color: ${this.variables.primaryColor};
-          --ss-bg-color: ${this.variables.bgColor};
-          --ss-font-color: ${this.variables.fontColor};
-          --ss-border-color: ${this.variables.borderColor};
-          --ss-border-radius: ${this.variables.borderRadius};
-          --ss-main-height: ${this.variables.mainHeight};
-          --ss-search-height: ${this.variables.searchHeight};
-          --ss-option-height: ${this.variables.optionHeight};
-          --ss-content-height: ${this.variables.contentHeight};
-          --ss-spacing-l: ${this.variables.spacingL};
-          --ss-spacing-m: ${this.variables.spacingM};
-          --ss-spacing-s: ${this.variables.spacingS};
-          --ss-animation-timing: ${this.variables.animationTiming};
-        }
-      `
+            .variable-showcase {
+              --ss-primary-color: ${this.variables.primaryColor};
+              --ss-bg-color: ${this.variables.bgColor};
+              --ss-font-color: ${this.variables.fontColor};
+              --ss-border-color: ${this.variables.borderColor};
+              --ss-border-radius: ${this.variables.borderRadius};
+              --ss-main-height: ${this.variables.mainHeight};
+              --ss-search-height: ${this.variables.searchHeight};
+              --ss-option-height: ${this.variables.optionHeight};
+              --ss-content-height: ${this.variables.contentHeight};
+              --ss-spacing-l: ${this.variables.spacingL};
+              --ss-spacing-m: ${this.variables.spacingM};
+              --ss-spacing-s: ${this.variables.spacingS};
+              --ss-animation-timing: ${this.variables.animationTiming};
+            }
+          `
+    },
+    randomizeVariables() {
+      // Color randomizer
+      const colors = [
+        '#667eea',
+        '#764ba2',
+        '#f093fb',
+        '#f5576c',
+        '#4facfe',
+        '#00f2fe',
+        '#43e97b',
+        '#38f9d7',
+        '#ff6b6b',
+        '#4ecdc4',
+        '#45b7d1',
+        '#96ceb4',
+        '#feca57',
+        '#ff9ff3',
+        '#54a0ff',
+        '#5f27cd',
+        '#00d2d3',
+        '#ff9f43'
+      ]
+
+      // Height randomizer (reasonable ranges)
+      const heights = ['25px', '30px', '35px', '40px', '45px', '50px', '55px', '60px']
+      const contentHeights = ['200px', '250px', '300px', '350px', '400px', '450px', '500px']
+
+      // Spacing randomizer
+      const spacingValues = ['3px', '4px', '5px', '6px', '7px', '8px', '9px', '10px', '12px', '15px']
+
+      // Border radius randomizer
+      const borderRadii = ['2px', '4px', '6px', '8px', '10px', '12px', '15px', '20px']
+
+      // Animation timing randomizer
+      const timings = ['0.1s', '0.15s', '0.2s', '0.25s', '0.3s', '0.4s', '0.5s', '0.6s']
+
+      // Random selection function
+      const randomFrom = (array: string[]) => array[Math.floor(Math.random() * array.length)]
+
+      // Update all variables with random values
+      this.variables.primaryColor = randomFrom(colors)
+      // this.variables.bgColor = '#ffffff'
+      // this.variables.fontColor = randomFrom(['#ffffff', '#000000'])
+      this.variables.borderColor = randomFrom(colors)
+      this.variables.borderRadius = randomFrom(borderRadii)
+      this.variables.mainHeight = randomFrom(heights)
+      this.variables.contentHeight = randomFrom(contentHeights)
+      this.variables.searchHeight = randomFrom(heights)
+      this.variables.optionHeight = randomFrom(['auto', '25px', '30px', '35px', '40px'])
+      this.variables.spacingL = randomFrom(spacingValues)
+      this.variables.spacingM = randomFrom(spacingValues)
+      this.variables.spacingS = randomFrom(spacingValues)
+      this.variables.animationTiming = randomFrom(timings)
+
+      // Update the CSS
+      this.updateVariables()
     }
   }
 })
@@ -148,15 +205,33 @@ export default defineComponent({
     flex-direction: column;
     gap: var(--spacing-half);
 
-    h3 {
-      color: var(--color-primary);
+    .controls-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-half);
+
+      h3 {
+        color: var(--color-primary);
+      }
+
+      .randomize-btn {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+      }
     }
 
     .control-group-section {
       h4 {
         color: var(--color-primary);
-        font-size: 14px;
-        font-weight: 600;
+
         margin-bottom: var(--spacing-half);
       }
 
@@ -253,7 +328,10 @@ export default defineComponent({
 
     <!-- Variable Controls -->
     <div class="controls-section">
-      <h3>Variable Controls</h3>
+      <div class="controls-header">
+        <h3>Variable Controls</h3>
+        <button @click="randomizeVariables" class="randomize-btn">🎲 Randomize</button>
+      </div>
       <p>
         Make changes to the variables below to see the changes applied to the examples. You can also copy the generated
         CSS below to your own CSS file.
