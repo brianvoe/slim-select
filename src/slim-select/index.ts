@@ -8,6 +8,9 @@ import Store, { Option, Optgroup } from './store'
 // Export classes
 export { Settings, Option, Optgroup }
 
+// Export interfaces from render
+export type { Main, Content, Search } from './render'
+
 export interface Config {
   select: string | Element
   data?: (Partial<Option> | Partial<Optgroup>)[]
