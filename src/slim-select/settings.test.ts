@@ -18,7 +18,7 @@ const defaultSettings: { [key: string]: any } = {
   showSearch: true,
   focusSearch: true,
   ariaLabel: 'Combobox',
-  searchPlaceholder: 'Search',
+  searchPlaceholder: 'Search...',
   searchText: 'No Results',
   searchingText: 'Searching...',
   searchHighlight: false,
