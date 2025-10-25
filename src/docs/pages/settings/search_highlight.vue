@@ -98,7 +98,7 @@ export default defineComponent({
       preserving all HTML structure, styles, and elements.
     </p>
 
-    <div class="row" style="padding: 0 0 var(--spacing-half) 0">
+    <div class="row">
       <select ref="searchHighlightSingle">
         <option value="javascript">JavaScript</option>
         <option value="typescript">TypeScript</option>
@@ -113,9 +113,7 @@ export default defineComponent({
         <option value="go">Go</option>
         <option value="rust">Rust</option>
       </select>
-    </div>
 
-    <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="searchHighlightMulti" multiple>
         <option value="javascript">JavaScript</option>
         <option value="typescript">TypeScript</option>
@@ -143,7 +141,7 @@ export default defineComponent({
       all HTML structure, styles, and elements.
     </p>
 
-    <div class="row" style="padding: 0 0 var(--spacing-half) 0">
+    <div class="row">
       <select ref="searchHighlightHtml"></select>
     </div>
 
