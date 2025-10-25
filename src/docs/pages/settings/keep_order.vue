@@ -34,7 +34,7 @@ export default defineComponent({
       over whether to preserve the original HTML structure or respect the user's selection sequence.
     </p>
 
-    <div class="alert">
+    <div class="alert info">
       <p>
         <strong>Important:</strong> This maintains <strong>selection order</strong> (the order you clicked), NOT DOM
         order!

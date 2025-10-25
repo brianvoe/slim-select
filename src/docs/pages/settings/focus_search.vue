@@ -49,9 +49,7 @@ export default defineComponent({
         <option value="cat">Cat</option>
         <option value="bird">Bird</option>
       </select>
-    </div>
 
-    <div class="row">
       <select ref="focusSearchMulti" multiple>
         <option value="dog">Dog</option>
         <option value="cat">Cat</option>
