@@ -14,6 +14,7 @@ body {
   width: 100%;
   padding: 0;
   margin: 0;
+  overflow-x: visible;
 
   #app {
     display: grid;
@@ -25,9 +26,9 @@ body {
     width: 100%;
     max-width: var(--width-max);
     height: 100%;
-    padding: 0 var(--spacing-half);
+    padding: 0;
     margin: 0 auto;
-    overflow-x: hidden;
+    overflow-x: visible;
     box-sizing: border-box;
 
     @media (max-width: 700px) {
@@ -58,7 +59,7 @@ body {
       width: 100%;
       max-width: var(--width-max);
       margin: 0;
-      padding: var(--spacing-half) var(--spacing-half) 0 var(--spacing-half);
+      padding: 0 var(--spacing-half);
       z-index: 100000;
       background-color: var(--color-primary);
       box-sizing: border-box;
@@ -71,7 +72,8 @@ body {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        padding: 0 0 var(--spacing-half) 0;
+        align-items: center;
+        padding: var(--spacing-quarter) 0 0 0;
 
         .text {
           flex: 1 1 auto;
@@ -93,7 +95,7 @@ body {
           gap: var(--spacing-half);
           color: var(--color-font);
           margin: 0 auto;
-          padding: var(--spacing-half) 0 0 0;
+          padding: 0 0 var(--spacing-quarter) 0;
 
           a,
           img {
@@ -162,6 +164,7 @@ body {
       min-width: 0;
       max-width: var(--width-max);
       max-height: calc(100vh - var(--height-header) - var(--spacing));
+      padding: 0 0 0 var(--spacing-half);
       overflow: hidden;
       z-index: 100000;
       box-sizing: border-box;
@@ -176,25 +179,30 @@ body {
         padding: 0 var(--spacing-half);
       }
 
-      .ss-main {
-        flex: 0 1 auto;
-        height: var(--height-nav);
-        font-weight: bold;
-      }
+      .ss-dropdown {
+        height: auto;
+        min-height: 0;
+        box-shadow: var(--box-shadow);
+        border-radius: var(--border-radius);
 
-      .nav-content {
-        flex: 1 1 auto;
-        min-height: 500px;
-        padding: 0 0 var(--spacing-half) 0;
-        overflow: hidden;
-
-        @media (max-width: 700px) {
-          display: none;
+        .ss-main {
+          flex: 0 1 auto;
+          height: var(--height-nav);
+          font-weight: bold;
         }
 
-        .ss-content {
-          height: 100% !important;
-          max-height: calc(100vh - var(--height-header) - var(--height-nav) - 100px) !important;
+        .nav-content {
+          flex: 1 1 auto;
+          overflow: hidden;
+
+          @media (max-width: 700px) {
+            display: none;
+          }
+
+          .ss-content {
+            height: 100% !important;
+            max-height: calc(100vh - var(--height-header) - var(--height-nav) - 100px) !important;
+          }
         }
       }
     }
@@ -204,14 +212,14 @@ body {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-half);
-      padding: 0 0 0 var(--spacing);
-      overflow-x: hidden;
+      padding: 0 var(--spacing-half) 0 var(--spacing);
+      overflow-x: visible;
       overflow-y: auto;
       box-sizing: border-box;
       max-width: 100%;
 
       @media (max-width: 700px) {
-        padding: 0;
+        padding: 0 var(--spacing-half);
       }
 
       .contents {
@@ -231,7 +239,8 @@ body {
         padding: var(--spacing);
         background-color: var(--color-white);
         border-radius: var(--border-radius);
-        overflow-x: hidden;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+        overflow-x: visible;
         box-sizing: border-box;
 
         @media screen and (max-width: 700px) {
@@ -239,7 +248,7 @@ body {
         }
 
         > .header {
-          padding: 0 0 var(--spacing-half) 0;
+          padding: 0 0 var(--spacing-quarter) 0;
           border-bottom: solid 2px var(--color-primary);
         }
 
@@ -247,10 +256,9 @@ body {
           display: flex;
           flex-direction: row;
           gap: var(--spacing-half);
-          flex-wrap: wrap;
           width: 100%;
           max-width: 100%;
-          overflow: hidden;
+          overflow: visible;
 
           @media screen and (max-width: 700px) {
             flex-direction: column;

@@ -87,42 +87,70 @@ export default defineComponent({
 
 <style lang="scss">
 #home {
-  .samples {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--spacing);
+  .title-header {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    padding: 0 0 var(--spacing) 0;
+    color: var(--color-primary);
+  }
 
-    .single {
-      flex: 1 1 50%;
+  .samples {
+    position: relative;
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-half);
+    overflow: hidden;
+
+    .try-it-out {
+      text-align: center;
+      color: var(--color-primary);
+      font-size: 28px;
+      font-weight: 600;
+      padding: 0 0 var(--spacing-half) 0;
     }
-    .multi {
-      flex: 1 1 50%;
+
+    .demos {
+      .single,
+      .multi {
+        flex: 1 1 50%;
+        background: white;
+        padding: var(--spacing-half);
+
+        h3 {
+          color: var(--color-primary);
+          font-size: 18px;
+          font-weight: 600;
+          text-align: center;
+          padding: 0 0 var(--spacing-quarter) 0;
+        }
+      }
     }
   }
 
-  .hero {
+  .description {
+    display: flex;
     text-align: center;
-    margin-bottom: var(--spacing);
+    flex-direction: column;
+    gap: var(--spacing);
 
-    h1 {
-      font-size: 48px;
-      margin-bottom: var(--spacing);
-      color: var(--color-primary);
-    }
-
-    .hero-description {
+    .primary {
       font-size: 18px;
       line-height: 1.6;
-      margin-bottom: var(--spacing);
       color: var(--color-secondary);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    p {
+    .secondary {
       font-size: 16px;
       line-height: 1.6;
       max-width: 800px;
-      margin: 0 auto var(--spacing) auto;
+      margin: 0 auto;
       color: var(--color-font);
     }
   }
@@ -139,6 +167,14 @@ export default defineComponent({
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
         background: var(--color-white);
+        transition:
+          box-shadow 0.3s ease,
+          transform 0.3s ease;
+
+        &:hover {
+          box-shadow: var(--box-shadow);
+          transform: translateY(-5px);
+        }
 
         h3 {
           color: var(--color-primary);
@@ -262,49 +298,48 @@ export default defineComponent({
 </style>
 
 <template>
-  <div id="home" class="content">
-    <div class="hero">
-      <h1>Welcome to SlimSelect</h1>
-      <p class="hero-description">
-        SlimSelect is an advanced, lightweight, and feature-rich select dropdown library for modern web applications.
-        Built with vanilla JavaScript and zero dependencies, it provides an exceptional user experience with powerful
-        customization options, accessibility support, and seamless integration with Vue and React frameworks.
-      </p>
-      <p>
-        Whether you're building a simple contact form or a complex enterprise application, SlimSelect delivers the
-        performance, flexibility, and user experience your project demands.
-      </p>
-    </div>
+  <div id="home" class="contents">
+    <div class="content">
+      <h1 class="title-header">Advanced Select Dropdown</h1>
 
-    <div class="samples">
-      <h2>Simple Demo</h2>
-      <div class="row">
-        <div class="single">
-          <h3>Single Select</h3>
-          <select ref="slimSingle" aria-labelledby="sample-select-header">
-            <option data-placeholder="true"></option>
-            <option value="best">Best</option>
-            <option value="select">Select</option>
-            <option value="ever">Ever</option>
-          </select>
+      <div class="samples">
+        <h2 class="try-it-out">Try It Out</h2>
+        <div class="demos row">
+          <div class="single">
+            <h3>Single Select</h3>
+            <select ref="slimSingle" aria-labelledby="sample-select-header">
+              <option data-placeholder="true"></option>
+              <option value="best">Best</option>
+              <option value="select">Select</option>
+              <option value="ever">Ever</option>
+            </select>
+          </div>
+          <div class="multi">
+            <h3>Multiple Select</h3>
+            <select ref="slimMulti" multiple>
+              <option value="best">Best</option>
+              <option value="select">Select</option>
+              <option value="ever">Ever</option>
+            </select>
+          </div>
         </div>
-        <div class="multi">
-          <h3>Multiple Select</h3>
-          <select ref="slimMulti" multiple>
-            <option value="best">Best</option>
-            <option value="select">Select</option>
-            <option value="ever">Ever</option>
-          </select>
-        </div>
+      </div>
+
+      <div class="description">
+        <p class="primary">
+          SlimSelect is an advanced, lightweight, and feature-rich select dropdown library for modern web applications.
+          Built with vanilla JavaScript and zero dependencies, it provides an exceptional user experience with powerful
+          customization options, accessibility support, and seamless integration with Vue and React frameworks.
+        </p>
+        <p class="secondary">
+          Whether you're building a simple contact form or a complex enterprise application, SlimSelect delivers the
+          performance, flexibility, and user experience your project demands.
+        </p>
       </div>
     </div>
 
-    <br />
-    <div class="separator" />
-    <br />
-
-    <div class="features">
-      <h2 class="header">Why Choose SlimSelect?</h2>
+    <div class="features content">
+      <h2 class="header">Features</h2>
       <p>
         SlimSelect stands out with its comprehensive feature set, exceptional performance, and developer-friendly API.
       </p>
@@ -336,11 +371,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <br />
-    <div class="separator" />
-    <br />
-
-    <div class="benefits">
+    <div class="benefits content">
       <h2 class="header">Key Benefits</h2>
       <p>
         SlimSelect is designed with modern web development in mind, offering significant advantages over traditional
@@ -382,11 +413,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <br />
-    <div class="separator" />
-    <br />
-
-    <div class="use-cases">
+    <div class="use-cases content">
       <h2 class="header">Perfect For Every Use Case</h2>
       <p>
         SlimSelect is versatile enough to handle any dropdown requirement, from simple contact forms to complex
@@ -403,11 +430,7 @@ export default defineComponent({
       </ul>
     </div>
 
-    <br />
-    <div class="separator" />
-    <br />
-
-    <div class="frameworks">
+    <div class="frameworks content">
       <h2 class="header">Framework Integration</h2>
       <p>
         SlimSelect seamlessly integrates with Vue and React frameworks. We provide dedicated components and integration
@@ -437,11 +460,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <br />
-    <div class="separator" />
-    <br />
-
-    <div class="support">
+    <div class="support content">
       <h2 class="header">Support</h2>
       <p>Help support creators that make development easier!</p>
       <div class="links">
