@@ -403,8 +403,10 @@ export default class SlimSelect {
     // Tell render to close
     this.render.close()
 
-    // Clear search input visually (but don't trigger search event)
-    this.render.clearSearch()
+    // Clear search only if not empty
+    if (this.render.content.search.input.value !== '') {
+      this.search('') // Clear search
+    }
 
     // If we arent tabbing focus back on the main element
     this.render.mainFocus(eventType)

@@ -873,10 +873,6 @@ export default class Render {
     this.content.search.input.focus()
   }
 
-  public clearSearch(): void {
-    this.content.search.input.value = ''
-  }
-
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
     // Put together query string
     let query = '.' + this.classes.option
