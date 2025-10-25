@@ -55,6 +55,13 @@ export default defineComponent({
           ]
         },
 
+        // Style
+        {
+          label: 'Style',
+          closable: 'close',
+          options: [{ text: 'variables', value: 'style#variables' }]
+        },
+
         // Examples
         {
           label: 'Examples',
@@ -296,8 +303,10 @@ export default defineComponent({
     </div>
   </header>
   <nav>
-    <select ref="nav"></select>
-    <div class="nav-content" ref="navContent"></div>
+    <div class="ss-dropdown">
+      <select ref="nav"></select>
+      <div class="nav-content" ref="navContent"></div>
+    </div>
     <AdSlot class="adsense-nav" v-if="!appStore.isMobile" ad-slot="9560132183" />
   </nav>
   <main>

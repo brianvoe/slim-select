@@ -40,6 +40,11 @@ const router = createRouter({
       component: () => import('./pages/settings/index.vue')
     },
     {
+      path: '/style',
+      name: 'Style',
+      component: () => import('./pages/style.vue')
+    },
+    {
       path: '/events',
       name: 'Events',
       component: () => import('./pages/events/index.vue')
