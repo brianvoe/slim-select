@@ -676,12 +676,12 @@ describe('SlimSelect Module', () => {
       const storeData = slim.getData()
       expect(storeData.length).toBeGreaterThanOrEqual(11)
 
-      // Clear search - this returns empty array from mock
+      // Clear search - this now returns all current data in store
       slim.search('')
       options = document.querySelectorAll('.ss-option')
 
-      // Empty search clears results
-      expect(options.length).toBeLessThanOrEqual(2)
+      // Empty search now shows all current data in store (search results)
+      expect(options.length).toBeGreaterThanOrEqual(11)
     })
   })
 })

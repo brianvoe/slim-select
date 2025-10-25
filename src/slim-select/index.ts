@@ -439,6 +439,12 @@ export default class SlimSelect {
       this.render.content.search.input.value = value
     }
 
+    // If value is empty then render all options
+    if (value === '') {
+      this.render.renderOptions(this.store.getData())
+      return
+    }
+
     // If no search event run regular search
     if (!this.events.search) {
       // If value is empty then render all options
