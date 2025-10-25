@@ -1239,6 +1239,20 @@ describe('render module', () => {
       expect(setSelectedMock).not.toHaveBeenCalled()
     })
 
+    test('click does nothing when trying to deselect a mandatory option', () => {
+      const option = render.option(
+        new Option({
+          text: 'mandatory option',
+          selected: true,
+          mandatory: true
+        })
+      )
+      option.dispatchEvent(new MouseEvent('click'))
+
+      expect(addOptionMock).not.toHaveBeenCalled()
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
     test('click removes option', () => {
       const option = render.option(
         new Option({
