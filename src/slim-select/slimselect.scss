@@ -379,10 +379,34 @@
     }
 
     .ss-optgroup {
+      .ss-option {
+        transition:
+          max-height var(--ss-animation-timing) ease,
+          opacity var(--ss-animation-timing) ease,
+          padding-top var(--ss-animation-timing) ease,
+          padding-bottom var(--ss-animation-timing) ease,
+          margin-top var(--ss-animation-timing) ease,
+          margin-bottom var(--ss-animation-timing) ease;
+      }
+
+      &.ss-open {
+        .ss-option {
+          max-height: 100px;
+          opacity: 1;
+          overflow: visible;
+        }
+      }
+
       // If optgroup has close, hide all options
       &.ss-close {
         .ss-option {
-          display: none !important;
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+          margin-top: 0 !important;
+          margin-bottom: 0 !important;
+          max-height: 0;
+          opacity: 0;
+          overflow: hidden;
         }
       }
 
