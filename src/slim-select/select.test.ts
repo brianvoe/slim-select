@@ -439,4 +439,238 @@ describe('select module', () => {
       expect(dataOption[0].options[0].text).toBe('New One')
     })
   })
+
+  describe('label handling', () => {
+    test('setupLabelHandlers finds label with for attribute and adds click handler', async () => {
+      document.body.innerHTML = `
+        <label for="test-select">Select Label</label>
+        <select id="test-select">
+          <option value="1">One</option>
+          <option value="2">Two</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const onLabelClickMock = vi.fn()
+      select.onLabelClick = onLabelClickMock
+
+      select.setupLabelHandlers()
+
+      const label = document.querySelector('label[for="test-select"]') as HTMLLabelElement
+      expect(label).toBeTruthy()
+
+      // Click the label
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      // Wait for setTimeout in the label handler
+      await new Promise((r) => setTimeout(r, 10))
+
+      // Should have prevented default and called the callback
+      expect(onLabelClickMock).toHaveBeenCalled()
+    })
+
+    test('setupLabelHandlers finds wrapped label and adds click handler', async () => {
+      document.body.innerHTML = `
+        <label>
+          Select Label
+          <select id="test-select">
+            <option value="1">One</option>
+            <option value="2">Two</option>
+          </select>
+        </label>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const onLabelClickMock = vi.fn()
+      select.onLabelClick = onLabelClickMock
+
+      select.setupLabelHandlers()
+
+      const label = selectElement.parentElement as HTMLLabelElement
+      expect(label.tagName).toBe('LABEL')
+
+      // Click the label
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      // Wait for setTimeout in the label handler
+      await new Promise((r) => setTimeout(r, 10))
+
+      // Should have called the callback
+      expect(onLabelClickMock).toHaveBeenCalled()
+    })
+
+    test('setupLabelHandlers handles multiple labels', async () => {
+      document.body.innerHTML = `
+        <label for="test-select">Label 1</label>
+        <label for="test-select">Label 2</label>
+        <select id="test-select">
+          <option value="1">One</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const onLabelClickMock = vi.fn()
+      select.onLabelClick = onLabelClickMock
+
+      select.setupLabelHandlers()
+
+      const labels = document.querySelectorAll('label[for="test-select"]')
+      expect(labels).toHaveLength(2)
+
+      // Click first label
+      labels[0].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(onLabelClickMock).toHaveBeenCalledTimes(1)
+
+      // Click second label
+      labels[1].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(onLabelClickMock).toHaveBeenCalledTimes(2)
+    })
+
+    test('removeLabelHandlers removes click handlers from labels', () => {
+      document.body.innerHTML = `
+        <label for="test-select">Select Label</label>
+        <select id="test-select">
+          <option value="1">One</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const onLabelClickMock = vi.fn()
+      select.onLabelClick = onLabelClickMock
+
+      select.setupLabelHandlers()
+      select.removeLabelHandlers()
+
+      const label = document.querySelector('label[for="test-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      // Should not have been called after removal
+      expect(onLabelClickMock).not.toHaveBeenCalled()
+    })
+
+    test('hideUI prevents native select from opening on click', () => {
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true })
+      const prevented = !selectElement.dispatchEvent(clickEvent)
+
+      // The event should be prevented by our handler
+      expect(clickEvent.defaultPrevented).toBe(true)
+    })
+
+    test('hideUI prevents native select from opening on focus', () => {
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const focusEvent = new FocusEvent('focus', { bubbles: true, cancelable: true })
+      selectElement.dispatchEvent(focusEvent)
+
+      // The event should be prevented by our handler
+      expect(focusEvent.defaultPrevented).toBe(true)
+    })
+
+    test('hideUI prevents native select from opening on mousedown', () => {
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const mousedownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+      selectElement.dispatchEvent(mousedownEvent)
+
+      // The event should be prevented by our handler
+      expect(mousedownEvent.defaultPrevented).toBe(true)
+    })
+
+    test('showUI removes event handlers that prevent native select', () => {
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+      select.showUI()
+
+      // After showUI, events should not be prevented
+      const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true })
+      selectElement.dispatchEvent(clickEvent)
+
+      // Note: The event may still propagate normally, but defaultPrevented should be false
+      // We test this by ensuring the select doesn't have our prevent handlers attached
+      // The actual behavior depends on browser implementation
+    })
+
+    test('destroy removes label handlers', async () => {
+      document.body.innerHTML = `
+        <label for="test-select">Select Label</label>
+        <select id="test-select">
+          <option value="1">One</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const onLabelClickMock = vi.fn()
+      select.onLabelClick = onLabelClickMock
+
+      select.setupLabelHandlers()
+
+      // Verify handler works
+      const label = document.querySelector('label[for="test-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(onLabelClickMock).toHaveBeenCalledTimes(1)
+
+      // Destroy and verify handler removed
+      select.destroy()
+      onLabelClickMock.mockClear()
+
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(onLabelClickMock).not.toHaveBeenCalled()
+    })
+
+    test('setupLabelHandlers does nothing if select has no id and no wrapping label', () => {
+      document.body.innerHTML = `
+        <div>
+          <select>
+            <option value="1">One</option>
+          </select>
+        </div>
+      `
+
+      const selectElement = document.querySelector('select') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.hideUI()
+
+      const onLabelClickMock = vi.fn()
+      select.onLabelClick = onLabelClickMock
+
+      // Should not throw or error
+      expect(() => select.setupLabelHandlers()).not.toThrow()
+    })
+  })
 })

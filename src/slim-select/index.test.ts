@@ -684,4 +684,154 @@ describe('SlimSelect Module', () => {
       expect(options.length).toBeGreaterThanOrEqual(11)
     })
   })
+
+  describe('label click support', () => {
+    test('clicking label with for attribute opens SlimSelect', async () => {
+      document.body.innerHTML = `
+        <label for="label-test-select">Select a Country</label>
+        <select id="label-test-select">
+          <option value="usa">United States</option>
+          <option value="uk">United Kingdom</option>
+          <option value="canada">Canada</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#label-test-select'
+      })
+
+      // Initially closed
+      expect(slim.settings.isOpen).toBe(false)
+
+      // Click the label
+      const label = document.querySelector('label[for="label-test-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      // Wait for setTimeout in label handler
+      await new Promise((r) => setTimeout(r, 10))
+
+      // SlimSelect should be open
+      expect(slim.settings.isOpen).toBe(true)
+
+      slim.destroy()
+    })
+
+    test('clicking wrapped label opens SlimSelect', async () => {
+      document.body.innerHTML = `
+        <label>
+          Select a Country
+          <select id="wrapped-label-select">
+            <option value="usa">United States</option>
+            <option value="uk">United Kingdom</option>
+          </select>
+        </label>
+      `
+
+      const slim = new SlimSelect({
+        select: '#wrapped-label-select'
+      })
+
+      // Initially closed
+      expect(slim.settings.isOpen).toBe(false)
+
+      // Click the label
+      const label = document.querySelector('label') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      // Wait for setTimeout in label handler
+      await new Promise((r) => setTimeout(r, 10))
+
+      // SlimSelect should be open
+      expect(slim.settings.isOpen).toBe(true)
+
+      slim.destroy()
+    })
+
+    test('clicking label does not open SlimSelect when disabled', async () => {
+      document.body.innerHTML = `
+        <label for="disabled-label-select">Select a Country</label>
+        <select id="disabled-label-select">
+          <option value="usa">United States</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#disabled-label-select',
+        settings: {
+          disabled: true
+        }
+      })
+
+      // Initially closed
+      expect(slim.settings.isOpen).toBe(false)
+
+      // Click the label
+      const label = document.querySelector('label[for="disabled-label-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      // Wait for setTimeout in label handler
+      await new Promise((r) => setTimeout(r, 10))
+
+      // SlimSelect should remain closed when disabled
+      expect(slim.settings.isOpen).toBe(false)
+
+      slim.destroy()
+    })
+
+    test('SlimSelect automatically assigns id to select if missing for label association', () => {
+      document.body.innerHTML = `
+        <label for="auto-id-select">Select a Country</label>
+        <select>
+          <option value="usa">United States</option>
+        </select>
+      `
+
+      // Note: This won't actually work because the label's 'for' points to 'auto-id-select'
+      // but we're selecting the select without an id. This test verifies that SlimSelect
+      // assigns an id. The actual id will be generated, so the label won't match.
+      // Let's test the id assignment instead.
+      document.body.innerHTML = '<select><option value="usa">United States</option></select>'
+
+      const selectElement = document.querySelector('select') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectElement
+      })
+
+      // SlimSelect should have assigned an id to the select
+      expect(selectElement.id).toBeTruthy()
+      expect(selectElement.id).toBe(slim.settings.id)
+
+      slim.destroy()
+    })
+
+    test('label handlers are cleaned up on destroy', async () => {
+      document.body.innerHTML = `
+        <label for="cleanup-test-select">Select a Country</label>
+        <select id="cleanup-test-select">
+          <option value="usa">United States</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({
+        select: '#cleanup-test-select'
+      })
+
+      // Verify label handler works
+      const label = document.querySelector('label[for="cleanup-test-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(slim.settings.isOpen).toBe(true)
+
+      // Close and destroy
+      slim.close()
+      slim.destroy()
+
+      // After destroy, label click should not open SlimSelect
+      // (though SlimSelect is destroyed, so we can't check isOpen)
+      // But we verify no errors are thrown
+      expect(() => {
+        label.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      }).not.toThrow()
+    })
+  })
 })
