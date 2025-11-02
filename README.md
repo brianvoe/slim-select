@@ -5,7 +5,7 @@
 Advanced select dropdown
 
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/vitest.yml?logo=vitest&label=unit%20tests) [![slim-select](https://snyk.io/advisor/npm-package/slim-select/badge.svg)](https://snyk.io/advisor/npm-package/slim-select)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/vitest.yml?logo=vitest&label=unit%20tests) ![Tests](https://img.shields.io/badge/tests-314%20passing-brightgreen) [![slim-select](https://snyk.io/advisor/npm-package/slim-select/badge.svg)](https://snyk.io/advisor/npm-package/slim-select)
 
 ## Support
 
@@ -22,14 +22,15 @@ See [website](https://slimselectjs.com) for the full list of [settings](https://
 ## Features
 
 - No Dependencies
-- JS: 29kb - 5kb gzip
-- CSS: 7kb - 1kb gzip
+- JS: 48kb - 10kb gzip
+- CSS: 11kb - 2kb gzip
 - Single Select
 - Multi Select
 - User Addable Options
 - Html Options
 - Settable Data
 - Callback Events
+- Label Support
 - Placeholders
 - Search
 - Disable Options
