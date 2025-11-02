@@ -183,8 +183,12 @@ declare class Select {
     onClassChange?: (classes: string[]) => void;
     onDisabledChange?: (disabled: boolean) => void;
     onOptionsChange?: (data: (Option_2 | Optgroup)[]) => void;
+    onLabelClick?: () => void;
     private listen;
     private observer;
+    private preventNativeSelect;
+    private preventNativeSelectMousedown;
+    private preventNativeSelectFocus;
     constructor(select: HTMLSelectElement);
     enable(): void;
     disable(): void;
@@ -204,6 +208,8 @@ declare class Select {
     updateOptions(data: (Option_2 | Optgroup)[]): void;
     createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;
     createOption(info: Option_2): HTMLOptionElement;
+    setupLabelHandlers(): void;
+    removeLabelHandlers(): void;
     destroy(): void;
 }
 
