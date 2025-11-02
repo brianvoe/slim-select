@@ -9,6 +9,7 @@ import Countries from './countries.vue'
 import FormReset from './form_reset.vue'
 import Required from './required.vue'
 import TextOverflow from './text_overflow.vue'
+import Label from './label.vue'
 
 export default defineComponent({
   name: 'Examples',
@@ -18,7 +19,8 @@ export default defineComponent({
     Countries,
     FormReset,
     Required,
-    TextOverflow
+    TextOverflow,
+    Label
   }
 })
 </script>
@@ -26,10 +28,13 @@ export default defineComponent({
 <template>
   <div id="examples" class="contents">
     <Countries />
-    <FormReset />
+    <Label />
     <AdSlot ad-slot="1270131515" />
 
+    <FormReset />
     <Required />
+    <AdSlot ad-slot="1270131515" />
+
     <TextOverflow />
   </div>
 </template>

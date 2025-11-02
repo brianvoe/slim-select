@@ -9,10 +9,16 @@ export default class Select {
   public onClassChange?: (classes: string[]) => void
   public onDisabledChange?: (disabled: boolean) => void
   public onOptionsChange?: (data: (Option | Optgroup)[]) => void
+  public onLabelClick?: () => void
 
   // Change observers
   private listen: boolean = false
   private observer: MutationObserver | null = null
+
+  // Event handlers for preventing native select behavior (especially on iOS Safari)
+  private preventNativeSelect: ((e: Event) => void) | null = null
+  private preventNativeSelectMousedown: ((e: Event) => void) | null = null
+  private preventNativeSelectFocus: ((e: Event) => void) | null = null
 
   constructor(select: HTMLSelectElement) {
     this.select = select
@@ -56,6 +62,35 @@ export default class Select {
     // Clip to completely hide the 1px
     this.select.style.clip = 'rect(0 0 0 0)'
     this.select.setAttribute('aria-hidden', 'true')
+
+    // Prevent native select from opening when label is clicked (especially on iOS Safari)
+    // iOS Safari programmatically focuses/clicks the select when label is clicked,
+    // bypassing pointer-events: none, so we need to prevent these events
+    // Only add listeners if they haven't been added yet
+    if (!this.preventNativeSelect) {
+      this.preventNativeSelect = (e: Event) => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+      }
+
+      this.preventNativeSelectMousedown = (e: Event) => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+      }
+
+      this.preventNativeSelectFocus = (e: Event) => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+      }
+
+      // Add event listeners with capture phase to catch events before they reach the select
+      this.select.addEventListener('click', this.preventNativeSelect, { capture: true, passive: false })
+      this.select.addEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true, passive: false })
+      this.select.addEventListener('focus', this.preventNativeSelectFocus, { capture: true, passive: false })
+    }
   }
 
   public showUI(): void {
@@ -72,6 +107,20 @@ export default class Select {
     this.select.style.borderWidth = ''
     this.select.style.clip = ''
     this.select.removeAttribute('aria-hidden')
+
+    // Remove event listeners that prevent native select behavior
+    if (this.preventNativeSelect) {
+      this.select.removeEventListener('click', this.preventNativeSelect, { capture: true })
+      this.preventNativeSelect = null
+    }
+    if (this.preventNativeSelectMousedown) {
+      this.select.removeEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true })
+      this.preventNativeSelectMousedown = null
+    }
+    if (this.preventNativeSelectFocus) {
+      this.select.removeEventListener('focus', this.preventNativeSelectFocus, { capture: true })
+      this.preventNativeSelectFocus = null
+    }
   }
 
   public changeListen(listen: boolean) {
@@ -430,17 +479,119 @@ export default class Select {
     return optionEl
   }
 
+  // Find and handle labels associated with this select
+  public setupLabelHandlers(): void {
+    const labels: HTMLLabelElement[] = []
+
+    // Find labels that point to this select via 'for' attribute
+    const selectId = this.select.id
+    if (selectId) {
+      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(`label[for="${selectId}"]`)
+      labelsByFor.forEach((label) => labels.push(label))
+    }
+
+    // Find labels that wrap this select (label contains select)
+    let parent = this.select.parentElement
+    while (parent && parent !== document.body) {
+      if (parent.tagName === 'LABEL') {
+        labels.push(parent as HTMLLabelElement)
+        break
+      }
+      parent = parent.parentElement
+    }
+
+    // Remove duplicates
+    const uniqueLabels = Array.from(new Set(labels))
+
+    uniqueLabels.forEach((label) => {
+      // Skip if already handled
+      if ((label as any).__slimSelectLabelHandler) {
+        return
+      }
+
+      // Add click handler to label
+      const labelClickHandler = (e: MouseEvent) => {
+        // Prevent default label behavior (focusing the select)
+        e.preventDefault()
+        e.stopPropagation()
+
+        // Trigger the callback to open SlimSelect
+        if (this.onLabelClick) {
+          // Use setTimeout to ensure this happens after any browser-initiated events
+          // are prevented by our prevent handlers
+          setTimeout(() => {
+            this.onLabelClick!()
+          }, 0)
+        }
+      }
+
+      // Store the handler on the label for cleanup later
+      ;(label as any).__slimSelectLabelHandler = labelClickHandler
+      label.addEventListener('click', labelClickHandler, { capture: true, passive: false })
+    })
+  }
+
+  // Remove label handlers
+  public removeLabelHandlers(): void {
+    const labels: HTMLLabelElement[] = []
+
+    // Find labels that point to this select via 'for' attribute
+    const selectId = this.select.id
+    if (selectId) {
+      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(`label[for="${selectId}"]`)
+      labelsByFor.forEach((label) => labels.push(label))
+    }
+
+    // Find labels that wrap this select
+    let parent = this.select.parentElement
+    while (parent && parent !== document.body) {
+      if (parent.tagName === 'LABEL') {
+        labels.push(parent as HTMLLabelElement)
+        break
+      }
+      parent = parent.parentElement
+    }
+
+    // Remove duplicates
+    const uniqueLabels = Array.from(new Set(labels))
+
+    uniqueLabels.forEach((label) => {
+      const handler = (label as any).__slimSelectLabelHandler
+      if (handler) {
+        label.removeEventListener('click', handler, { capture: true })
+        delete (label as any).__slimSelectLabelHandler
+      }
+    })
+  }
+
   public destroy() {
     this.changeListen(false)
 
     // Remove event change listener
     this.select.removeEventListener('change', this.valueChange)
 
+    // Remove event listeners that prevent native select behavior
+    if (this.preventNativeSelect) {
+      this.select.removeEventListener('click', this.preventNativeSelect, { capture: true })
+      this.preventNativeSelect = null
+    }
+    if (this.preventNativeSelectMousedown) {
+      this.select.removeEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true })
+      this.preventNativeSelectMousedown = null
+    }
+    if (this.preventNativeSelectFocus) {
+      this.select.removeEventListener('focus', this.preventNativeSelectFocus, { capture: true })
+      this.preventNativeSelectFocus = null
+    }
+
     // Disconnect observer and null
     if (this.observer) {
       this.observer.disconnect()
       this.observer = null
     }
+
+    // Remove label handlers
+    this.removeLabelHandlers()
 
     // Remove dataset id from original select
     delete this.select.dataset.id

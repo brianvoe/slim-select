@@ -119,6 +119,10 @@ export default class SlimSelect {
 
     // Set select class
     this.select = new Select(this.selectEl)
+    // Ensure the select has an id for label associations
+    if (!this.selectEl.id) {
+      this.selectEl.id = this.settings.id
+    }
     this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class)
     this.select.hideUI() // Hide the original select element
 
@@ -144,6 +148,12 @@ export default class SlimSelect {
     this.select.onOptionsChange = (data: (Option | Optgroup)[]) => {
       // Run set data from the values given
       this.setData(data)
+    }
+    // Set up label click handler to open SlimSelect
+    this.select.onLabelClick = () => {
+      if (!this.settings.disabled) {
+        this.open()
+      }
     }
 
     // Set store class
@@ -208,6 +218,9 @@ export default class SlimSelect {
     if (this.settings.alwaysOpen) {
       this.open()
     }
+
+    // Set up label handlers to open SlimSelect when label is clicked
+    this.select.setupLabelHandlers()
 
     // Add SlimSelect to select element
     ;(this.selectEl as any).slim = this
