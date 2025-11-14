@@ -146,8 +146,10 @@ export default class SlimSelect {
       }
     }
     this.select.onOptionsChange = (data: (Option | Optgroup)[]) => {
-      // Run set data from the values given
-      this.setData(data)
+      // Process the data (including empty data for clearing all options)
+      // Empty data is safe to process here because if we were updating, the change would be queued
+      // and onOptionsChange wouldn't be called directly
+      this.setData(data || [])
     }
     // Set up label click handler to open SlimSelect
     this.select.onLabelClick = () => {

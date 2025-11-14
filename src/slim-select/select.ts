@@ -14,6 +14,8 @@ export default class Select {
   // Change observers
   private listen: boolean = false
   private observer: MutationObserver | null = null
+  private isUpdating: boolean = false
+  private pendingOptionsChange: (Option | Optgroup)[] | null = null
 
   // Event handlers for preventing native select behavior (especially on iOS Safari)
   private preventNativeSelect: ((e: Event) => void) | null = null
@@ -214,6 +216,20 @@ export default class Select {
 
     // If optgroup or option has changed then call the select change function
     if (optgroupOptionChanged && this.onOptionsChange) {
+      // If we're currently updating, queue this change to process after update completes
+      if (this.isUpdating) {
+        // Only queue if the select element actually has options (not empty from updateOptions clearing)
+        // Check the select element directly, not getData() which might return stale data
+        if (this.select.options.length > 0) {
+          const currentData = this.getData()
+          // Only queue if we have actual data
+          if (currentData.length > 0) {
+            this.pendingOptionsChange = currentData
+          }
+        }
+        return
+      }
+
       this.changeListen(false)
       this.onOptionsChange(this.getData())
       this.changeListen(true)
@@ -402,6 +418,16 @@ export default class Select {
   }
 
   public updateOptions(data: (Option | Optgroup)[]): void {
+    // Don't update if data is empty (prevents clearing select when no data)
+    if (!data || data.length === 0) {
+      return
+    }
+
+    // Set updating flag FIRST to prevent mutation observer from processing during update
+    // This must be set before stopping listening so any queued mutations see the flag
+    this.isUpdating = true
+    this.pendingOptionsChange = null
+
     // Stop listening to changes
     this.changeListen(false)
 
@@ -423,6 +449,25 @@ export default class Select {
 
     // Start listening to changes
     this.changeListen(true)
+
+    // Clear updating flag
+    this.isUpdating = false
+
+    // Process any pending options change that was queued during the update
+    // Only process if it has data (don't process empty data from innerHTML clearing)
+    if (this.pendingOptionsChange !== null) {
+      const pending: (Option | Optgroup)[] = this.pendingOptionsChange
+      if (pending.length > 0 && this.onOptionsChange) {
+        this.pendingOptionsChange = null
+        // Process the queued change
+        this.changeListen(false)
+        this.onOptionsChange(pending)
+        this.changeListen(true)
+      } else {
+        // Clear pending if it was empty
+        this.pendingOptionsChange = null
+      }
+    }
   }
 
   public createOptgroup(optgroup: Optgroup): HTMLOptGroupElement {

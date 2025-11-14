@@ -834,4 +834,210 @@ describe('SlimSelect Module', () => {
       }).not.toThrow()
     })
   })
+
+  describe('option changes race condition scenarios', () => {
+    test('options should persist when added to select and value is set immediately', async () => {
+      // Reproduce the issue: empty select, init SlimSelect, add options, set value
+      document.body.innerHTML = '<select id="test-select"></select>'
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectElement
+      })
+
+      // Add option directly to the select element (not through SlimSelect API)
+      const newOption = document.createElement('option')
+      newOption.value = '1'
+      newOption.textContent = 'one'
+      selectElement.appendChild(newOption)
+
+      // Set the value immediately
+      selectElement.value = '1'
+
+      // Wait for mutation observer and any async operations
+      await new Promise((r) => setTimeout(r, 100))
+
+      // Verify the option still exists
+      expect(selectElement.options.length).toBe(1)
+      expect(selectElement.value).toBe('1')
+      expect(selectElement.options[0].value).toBe('1')
+      expect(selectElement.options[0].textContent).toBe('one')
+
+      // Verify SlimSelect also has the option
+      const data = slim.getData()
+      expect(data.length).toBe(1)
+      expect((data[0] as any).value).toBe('1')
+      expect((data[0] as any).text).toBe('one')
+
+      slim.destroy()
+    })
+
+    test('rapid option and value changes should preserve final state', async () => {
+      // Test multiple rapid mutations to ensure queue mechanism works correctly
+      document.body.innerHTML = '<select id="test-select"></select>'
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectElement
+      })
+
+      // Add first option
+      const option1 = document.createElement('option')
+      option1.value = '1'
+      option1.textContent = 'one'
+      selectElement.appendChild(option1)
+      selectElement.value = '1'
+
+      // Immediately add second option
+      const option2 = document.createElement('option')
+      option2.value = '2'
+      option2.textContent = 'two'
+      selectElement.appendChild(option2)
+      selectElement.value = '2'
+
+      // Immediately add third option
+      const option3 = document.createElement('option')
+      option3.value = '3'
+      option3.textContent = 'three'
+      selectElement.appendChild(option3)
+      selectElement.value = '3'
+
+      // Wait for all mutations to process
+      await new Promise((r) => setTimeout(r, 150))
+
+      // Verify all options exist and final value is correct
+      expect(selectElement.options.length).toBe(3)
+      expect(selectElement.value).toBe('3')
+      expect(selectElement.options[0].value).toBe('1')
+      expect(selectElement.options[0].textContent).toBe('one')
+      expect(selectElement.options[1].value).toBe('2')
+      expect(selectElement.options[1].textContent).toBe('two')
+      expect(selectElement.options[2].value).toBe('3')
+      expect(selectElement.options[2].textContent).toBe('three')
+
+      // Verify SlimSelect also has all options
+      const data = slim.getData()
+      expect(data.length).toBe(3)
+      expect((data[0] as any).value).toBe('1')
+      expect((data[0] as any).text).toBe('one')
+      expect((data[1] as any).value).toBe('2')
+      expect((data[1] as any).text).toBe('two')
+      expect((data[2] as any).value).toBe('3')
+      expect((data[2] as any).text).toBe('three')
+
+      // Verify selected value
+      const selected = slim.getSelected()
+      expect(selected).toEqual(['3'])
+
+      slim.destroy()
+    })
+
+    test('should handle removing all options and adding new ones', async () => {
+      // Test scenario: start with options, remove all, then add new ones
+      // This tests that the queue mechanism handles the removal and addition correctly
+      document.body.innerHTML = `
+        <select id="test-select">
+          <option value="old1">Old One</option>
+          <option value="old2">Old Two</option>
+          <option value="old3">Old Three</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectElement
+      })
+
+      // Verify initial state
+      expect(selectElement.options.length).toBe(3)
+      expect(slim.getData().length).toBe(3)
+
+      // Remove all options (this will trigger mutation observer with empty data, which we skip)
+      selectElement.innerHTML = ''
+
+      // Wait for mutation observer to process the removal
+      await new Promise((r) => setTimeout(r, 100))
+
+      // Verify options are removed from DOM
+      expect(selectElement.options.length).toBe(0)
+
+      // Add completely new set of options one by one
+      const newOption1 = document.createElement('option')
+      newOption1.value = 'new1'
+      newOption1.textContent = 'New One'
+      selectElement.appendChild(newOption1)
+
+      const newOption2 = document.createElement('option')
+      newOption2.value = 'new2'
+      newOption2.textContent = 'New Two'
+      selectElement.appendChild(newOption2)
+
+      const newOption3 = document.createElement('option')
+      newOption3.value = 'new3'
+      newOption3.textContent = 'New Three'
+      selectElement.appendChild(newOption3)
+
+      // Wait for all mutations to process
+      await new Promise((r) => setTimeout(r, 200))
+
+      // The key test: verify new options persist in DOM (not deleted by race condition)
+      expect(selectElement.options.length).toBe(3)
+      expect(selectElement.options[0].value).toBe('new1')
+      expect(selectElement.options[0].textContent).toBe('New One')
+      expect(selectElement.options[1].value).toBe('new2')
+      expect(selectElement.options[1].textContent).toBe('New Two')
+      expect(selectElement.options[2].value).toBe('new3')
+      expect(selectElement.options[2].textContent).toBe('New Three')
+
+      slim.destroy()
+    })
+
+    test('should handle rapidly removing all options', async () => {
+      // Test scenario: start with options, rapidly remove them all
+      document.body.innerHTML = `
+        <select id="test-select">
+          <option value="opt1">Option 1</option>
+          <option value="opt2">Option 2</option>
+          <option value="opt3">Option 3</option>
+          <option value="opt4">Option 4</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectElement
+      })
+
+      // Set an initial value
+      selectElement.value = 'opt2'
+
+      // Verify initial state
+      expect(selectElement.options.length).toBe(4)
+      expect(selectElement.value).toBe('opt2')
+      expect(slim.getData().length).toBe(4)
+
+      // Rapidly remove all options
+      selectElement.removeChild(selectElement.options[0])
+      selectElement.removeChild(selectElement.options[0])
+      selectElement.removeChild(selectElement.options[0])
+      selectElement.removeChild(selectElement.options[0])
+
+      // Wait for all mutations to process
+      await new Promise((r) => setTimeout(r, 200))
+
+      // Verify all options are removed
+      expect(selectElement.options.length).toBe(0)
+      expect(selectElement.value).toBe('')
+
+      // Verify SlimSelect also has no options
+      const data = slim.getData()
+      expect(data.length).toBe(0)
+
+      // Verify selected value is empty
+      const selected = slim.getSelected()
+      expect(selected).toEqual([])
+
+      slim.destroy()
+    })
+  })
 })
