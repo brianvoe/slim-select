@@ -1,14 +1,5 @@
 import ae, { forwardRef as re, useRef as V, useImperativeHandle as oe, useEffect as $ } from "react";
 var B = { exports: {} }, R = {};
-/**
- * @license React
- * react-jsx-runtime.production.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 var ee;
 function ce() {
   if (ee) return R;
@@ -32,15 +23,6 @@ function ce() {
   return R.Fragment = e, R.jsx = t, R.jsxs = t, R;
 }
 var _ = {};
-/**
- * @license React
- * react-jsx-runtime.development.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 var te;
 function he() {
   return te || (te = 1, process.env.NODE_ENV !== "production" && function() {
