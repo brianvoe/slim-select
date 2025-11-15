@@ -60,7 +60,8 @@ export default defineComponent({
 
       // Empty v-model example
       ogSelected: '' as string,
-      emptySelected: '' as string
+      emptySelected: '' as string,
+      emptyArraySelected: [] as string[]
     }
   },
   mounted() {
@@ -578,6 +579,10 @@ export default defineComponent({
 
     <div class="column empty-selected">
       <h4>Empty Selected</h4>
+      <p>
+        SlimSelect will operate the same as a normal select element when the v-model is empty or a value that does not
+        exist in the options.
+      </p>
       <div class="column example">
         <div><strong>Value</strong> {{ emptySelected || "'' (empty string)" }}</div>
         <SlimSelect v-model="emptySelected">
@@ -586,58 +591,19 @@ export default defineComponent({
           <option value="opt3">Option 3</option>
         </SlimSelect>
       </div>
+      <div class="column example">
+        <div><strong>Value</strong> {{ emptyArraySelected }}</div>
+        <SlimSelect v-model="emptyArraySelected" multiple>
+          <option value="opt1">Option 1</option>
+          <option value="opt2">Option 2</option>
+          <option value="opt3">Option 3</option>
+        </SlimSelect>
+      </div>
 
       <div class="row">
-        <div class="btn" @click="emptySelected = 'banana'">Banana</div>
-        <div class="btn" @click="emptySelected = ''">Clear Selection</div>
+        <div class="btn" @click="emptyArraySelected = ['banana']">Banana</div>
+        <div class="btn" @click="emptyArraySelected = ['']">Clear Selection</div>
       </div>
-    </div>
-
-    <ShikiStyle language="javascript">
-      <pre>
-        import { defineComponent } from 'vue'
-        import SlimSelect from 'slim-select/vue'
-
-        export default defineComponent({
-          components: {
-            SlimSelect
-          },
-          data() {
-            return {
-              selected: '' // Start with empty string
-            }
-          }
-        })
-      </pre>
-    </ShikiStyle>
-
-    <ShikiStyle language="html">
-      <pre>
-        &lt;SlimSelect v-model="selected"&gt;
-          &lt;option value="opt1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="opt2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="opt3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
-
-        &lt;!-- Display current value --&gt;
-        &lt;div&gt;Selected: &lcub;&lcub; selected || 'No selection' &rcub;&rcub;&lt;/div&gt;
-
-        &lt;!-- Programmatically update v-model --&gt;
-        &lt;button @click="selected = 'opt1'"&gt;Select Option 1&lt;/button&gt;
-        &lt;button @click="selected = ''"&gt;Clear Selection&lt;/button&gt;
-      </pre>
-    </ShikiStyle>
-
-    <div class="alert info">
-      <strong>📝 Key Points:</strong>
-      <ul>
-        <li>Initialize v-model as an empty string (<code>''</code>) for no initial selection</li>
-        <li>Options are provided via slot content (standard HTML <code>&lt;option&gt;</code> elements)</li>
-        <li>v-model automatically updates when user selects an option</li>
-        <li>You can programmatically update v-model from the parent component</li>
-        <li>SlimSelect syncs to v-model changes via the watch handler</li>
-        <li>Works exactly like a normal select element with v-model binding</li>
-      </ul>
     </div>
   </div>
 </template>
