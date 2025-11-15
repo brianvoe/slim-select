@@ -1052,5 +1052,40 @@ describe('SlimSelect Vue Component', () => {
       const hasValidOptionSelected = selectedValues.some((val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val))
       expect(hasValidOptionSelected).toBe(false)
     })
+
+    test('should update v-model for multiple select when invalid values are provided', async () => {
+      // Test scenario: Multiple select with v-model containing invalid values
+      const TestComponent = {
+        components: { SlimSelectVue },
+        template: `
+          <SlimSelectVue v-model="selected" multiple>
+            <option value="opt1">Option 1</option>
+            <option value="opt2">Option 2</option>
+            <option value="opt3">Option 3</option>
+          </SlimSelectVue>
+        `,
+        data() {
+          return {
+            selected: ['banana', 'apple'] as string[] // Values that don't exist in options
+          }
+        }
+      }
+
+      wrapper = mount(TestComponent)
+      await nextTick()
+
+      const slimComponent = wrapper.findComponent(SlimSelectVue)
+      const slim = (slimComponent.vm as any).slim as SlimSelect
+
+      // Verify SlimSelect has the invalid values selected (should work even if invalid)
+      const selectedValues = slim.getSelected()
+
+      // When user manually selects a valid option, v-model should update
+      slim.setSelected(['opt1', 'opt2'])
+      await nextTick()
+
+      // Verify v-model has been updated to the valid values
+      expect((wrapper.vm as any).selected).toEqual(['opt1', 'opt2'])
+    })
   })
 })

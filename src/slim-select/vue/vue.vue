@@ -59,33 +59,7 @@ export default defineComponent({
     config.events = {
       ...this.events,
       afterChange: (newVal: Option[]) => {
-        if (!this.slim) return
-
-        const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : ''
-
-        // Check if the current v-model value exists in options
-        // If it doesn't exist, don't update v-model (preserve invalid value like regular HTML select)
-        const currentValue = this.getCleanValue(this.$props.modelValue)
-        const options = this.slim.store.getDataOptions()
-        const currentValueExists = Array.isArray(currentValue)
-          ? currentValue.length > 0 && currentValue.every((val) => options.some((opt) => opt.value === val))
-          : currentValue !== '' && options.some((opt) => opt.value === currentValue)
-
-        // Only update v-model if:
-        // 1. The value actually changed, AND
-        // 2. Either the current v-model value exists in options, OR we're setting to a valid non-empty value
-        // This prevents clearing invalid v-model values when we show placeholder
-        if (
-          this.value !== value &&
-          (currentValueExists || (value !== '' && options.some((opt) => opt.value === value)))
-        ) {
-          this.value = value
-        }
-
-        // Call the original afterChange callback if it exists
-        if (ogAfterChange) {
-          ogAfterChange(newVal)
-        }
+        this.handleAfterChange(newVal, ogAfterChange)
       }
     }
 
@@ -146,6 +120,43 @@ export default defineComponent({
     getSlimSelect() {
       return this.slim
     },
+    handleAfterChange(newVal: Option[], ogAfterChange?: (newVal: Option[]) => void): void {
+      if (!this.slim) return
+
+      const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : ''
+
+      // Check if the current v-model value exists in options
+      // If it doesn't exist, don't update v-model (preserve invalid value like regular HTML select)
+      const currentValue = this.getCleanValue(this.$props.modelValue)
+      const options = this.slim.store.getDataOptions()
+      const currentValueExists = Array.isArray(currentValue)
+        ? currentValue.length > 0 && currentValue.every((val) => options.some((opt) => opt.value === val))
+        : currentValue !== '' && options.some((opt) => opt.value === currentValue)
+
+      // Check if the new value is valid (exists in options)
+      const newValueIsValid = Array.isArray(value)
+        ? value.length > 0 && value.every((val) => options.some((opt) => opt.value === val))
+        : value !== '' && options.some((opt) => opt.value === value)
+
+      // Check if value actually changed (properly compare arrays)
+      const valueChanged =
+        Array.isArray(value) && Array.isArray(this.value)
+          ? JSON.stringify(value.sort()) !== JSON.stringify(this.value.sort())
+          : this.value !== value
+
+      // Only update v-model if:
+      // 1. The value actually changed, AND
+      // 2. Either the current v-model value exists in options, OR we're setting to a valid non-empty value
+      // This prevents clearing invalid v-model values when we show placeholder
+      if (valueChanged && (currentValueExists || newValueIsValid)) {
+        this.value = value
+      }
+
+      // Call the original afterChange callback if it exists
+      if (ogAfterChange) {
+        ogAfterChange(newVal)
+      }
+    },
     getCleanValue(val: string | string[] | undefined): string | string[] {
       const multi = this.$props.multiple
 
@@ -164,48 +175,43 @@ export default defineComponent({
     syncModelValueToSlimSelect(runAfterChange: boolean = false): void {
       if (!this.slim) return
 
+      // Only sync if modelValue is explicitly set (not undefined)
+      // This prevents adding placeholders when modelValue is not provided
+      if (this.$props.modelValue === undefined) {
+        return
+      }
+
       const cleanValue = this.getCleanValue(this.$props.modelValue)
-      const modelValueIsExplicitlyEmpty =
-        this.$props.modelValue === '' || (Array.isArray(this.$props.modelValue) && this.$props.modelValue.length === 0)
+      const data = this.slim.getData()
+      // Extract options from data (flatten optgroups if any)
+      const options = data.flatMap((item: Option | Optgroup) => ('label' in item ? item.options : [item])) as Option[]
 
-      // Check if the value exists in the options
-      // If it doesn't exist, clear selection to show placeholder (like regular HTML select)
-      const options = this.slim.store.getDataOptions()
-
-      // For empty string, check if there's a placeholder option - if not, we need to add one
-      // For non-empty values, check if they exist in options
+      // Check if the value exists in options
       const valueExists = Array.isArray(cleanValue)
         ? cleanValue.length > 0 && cleanValue.every((val) => options.some((opt) => opt.value === val))
         : cleanValue !== '' && options.some((opt) => opt.value === cleanValue)
 
-      if (valueExists) {
-        // Value exists in options, set it normally
-        this.slim.setSelected(cleanValue, runAfterChange)
-      } else {
-        // Value doesn't exist in options, clear selection to show placeholder
-        // This matches the behavior of a regular HTML select where invalid values don't select anything
-        // Only add placeholder if modelValue is explicitly set to empty/invalid (not undefined)
-        const hasPlaceholder = options.some((opt) => opt.placeholder)
-
-        if (!hasPlaceholder && !this.multiple && (modelValueIsExplicitlyEmpty || (cleanValue !== '' && !valueExists))) {
-          // Add a placeholder option so placeholder text shows when nothing is selected
-          // Get current data and prepend placeholder option
-          const currentData = this.slim.getData()
-          const placeholderOption = {
-            text: '',
-            value: '',
-            placeholder: true
+      // If value doesn't exist in options and it's not empty, add a placeholder option
+      if (!valueExists) {
+        // If its not multiple, add a placeholder option
+        if (!Array.isArray(cleanValue)) {
+          // For single select, check if placeholder already exists
+          const hasPlaceholder = options.some((opt) => opt.placeholder)
+          if (!hasPlaceholder) {
+            // Get current data and prepend placeholder option
+            const currentData = this.slim.getData()
+            const placeholderOption: Partial<Option> = {
+              value: '',
+              text: '',
+              placeholder: true
+            }
+            this.slim.setData([placeholderOption].concat(currentData))
           }
-
-          // Use setData to update everything (store, select, render)
-          this.slim.setData([placeholderOption, ...currentData])
         }
-
-        // Clear selection by setting to empty
-        // Note: The store will auto-select the first option, but if it's a placeholder,
-        // the render will show placeholder text instead of the option text
-        this.slim.setSelected(this.multiple ? [] : '', runAfterChange)
       }
+
+      // Set the selected value (will select placeholder if it was just added)
+      this.slim.setSelected(cleanValue, runAfterChange)
     }
   }
 })
