@@ -48,15 +48,14 @@ describe('render module', () => {
     beforeChangeMock = vi.fn(() => true)
 
     // default callbacks
-    const callbacks = {
-      open: openMock,
-      close: closeMock,
-      addSelected: addSelectedMock,
-      setSelected: setSelectedMock,
-      addOption: addOptionMock,
-      search: searchMock,
-      afterChange: afterChangeMock,
-      beforeChange: beforeChangeMock
+    const callbacks: Callbacks = {
+      open: openMock as () => void,
+      close: closeMock as () => void,
+      setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+      addOption: addOptionMock as (option: Option) => void,
+      search: searchMock as (search: string) => void,
+      afterChange: afterChangeMock as (newVal: Option[]) => void,
+      beforeChange: beforeChangeMock as (newVal: Option[], oldVal: Option[]) => boolean | void
     }
 
     render = new Render(settings, classes, store, callbacks)
@@ -339,10 +338,10 @@ describe('render module', () => {
   })
 
   describe('mainFocus', () => {
-    let focusMock: ReturnType<typeof vi.fn>
+    let focusMock: (options?: FocusOptions | undefined) => void
 
     beforeEach(() => {
-      focusMock = vi.fn(() => {})
+      focusMock = vi.fn(() => {}) as (options?: FocusOptions | undefined) => void
       render.main.main.focus = focusMock
     })
 
@@ -492,12 +491,12 @@ describe('render module', () => {
   })
 
   describe('moveContent', () => {
-    let contentAboveMock: ReturnType<typeof vi.fn>
-    let contentBelowMock: ReturnType<typeof vi.fn>
+    let contentAboveMock: () => void
+    let contentBelowMock: () => void
 
     beforeEach(() => {
-      contentAboveMock = vi.fn()
-      contentBelowMock = vi.fn()
+      contentAboveMock = vi.fn() as () => void
+      contentBelowMock = vi.fn() as () => void
 
       render.moveContentAbove = contentAboveMock
       render.moveContentBelow = contentBelowMock
