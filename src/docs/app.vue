@@ -73,6 +73,7 @@ export default defineComponent({
           options: [
             { text: 'countries', value: 'examples#countries' },
             { text: 'label', value: 'examples#label' },
+            { text: 'invalid value', value: 'examples#invalidValue' },
             { text: 'form reset', value: 'examples#formReset' },
             { text: 'required', value: 'examples#required' },
             { text: 'text overflow', value: 'examples#textOverflow' }
