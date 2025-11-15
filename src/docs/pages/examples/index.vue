@@ -6,7 +6,6 @@ import AdSlot from '../../components/adslot.vue'
 
 // Sections
 import Countries from './countries.vue'
-import InvalidValue from './invalid_value.vue'
 import FormReset from './form_reset.vue'
 import Required from './required.vue'
 import TextOverflow from './text_overflow.vue'
@@ -18,7 +17,6 @@ export default defineComponent({
     ShikiStyle,
     AdSlot,
     Countries,
-    InvalidValue,
     FormReset,
     Required,
     TextOverflow,
@@ -32,8 +30,6 @@ export default defineComponent({
     <Countries />
     <AdSlot ad-slot="1270131515" />
     <Label />
-    <AdSlot ad-slot="1270131515" />
-    <InvalidValue />
     <AdSlot ad-slot="1270131515" />
     <FormReset />
     <AdSlot ad-slot="1270131515" />
