@@ -253,6 +253,14 @@ body {
           border-bottom: solid 2px var(--color-primary);
         }
 
+        .column {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          max-width: 100%;
+          overflow: visible;
+        }
+
         .row {
           display: flex;
           flex-direction: row;
