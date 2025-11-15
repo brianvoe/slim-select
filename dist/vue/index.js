@@ -1,4 +1,4 @@
-import { defineComponent as A, createElementBlock as T, openBlock as D, renderSlot as k } from "vue";
+import { defineComponent as E, createElementBlock as T, openBlock as D, renderSlot as k } from "vue";
 class N {
   main;
   // Placeholder
@@ -84,7 +84,7 @@ function O(h, e = 50, t = !1) {
     clearTimeout(s), s = setTimeout(a, e), n && h.apply(l, i);
   };
 }
-function L(h, e) {
+function y(h, e) {
   return JSON.stringify(h) === JSON.stringify(e);
 }
 function P(h) {
@@ -122,7 +122,7 @@ class m {
         this.options.push(new p(t));
   }
 }
-class B {
+class V {
   selectType = "single";
   // Main data set, never null
   data = [];
@@ -298,7 +298,7 @@ class B {
     }), t;
   }
 }
-class I {
+class B {
   settings;
   store;
   callbacks;
@@ -770,8 +770,8 @@ class I {
         if (s.shiftKey && this.lastSelectedOption) {
           const u = this.store.getDataOptions(), g = u.findIndex((w) => w.id === this.lastSelectedOption.id), v = u.findIndex((w) => w.id === e.id);
           if (g >= 0 && v >= 0) {
-            const w = Math.min(g, v), S = Math.max(g, v), y = u.slice(w, S + 1).filter((E) => !c.find((x) => x.id === E.id));
-            c.length + y.length <= this.settings.maxSelected ? r = c.concat(y) : r = c;
+            const w = Math.min(g, v), S = Math.max(g, v), L = u.slice(w, S + 1).filter((A) => !c.find((x) => x.id === A.id));
+            c.length + L.length <= this.settings.maxSelected ? r = c.concat(L) : r = c;
           } else
             r = c;
         } else n ? (d ? r = c.filter((u) => u.id !== a) : r = c.concat(e), this.lastSelectedOption = e) : (d ? r = c.filter((u) => u.id !== a) : r = c.concat(e), this.lastSelectedOption = e);
@@ -838,7 +838,7 @@ class I {
     i && !(s && !t) ? l.classList.remove(a) : l.classList.add(a);
   }
 }
-class H {
+class I {
   select;
   // Mutation observer fields
   onValueChange;
@@ -849,6 +849,8 @@ class H {
   // Change observers
   listen = !1;
   observer = null;
+  isUpdating = !1;
+  pendingOptionsChange = null;
   // Event handlers for preventing native select behavior (especially on iOS Safari)
   preventNativeSelect = null;
   preventNativeSelectMousedown = null;
@@ -907,7 +909,16 @@ class H {
       }
       (l.target.nodeName === "OPTGROUP" || l.target.nodeName === "OPTION") && (i = !0);
     }
-    t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), s && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), i && this.onOptionsChange && (this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0));
+    if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), s && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), i && this.onOptionsChange) {
+      if (this.isUpdating) {
+        if (this.select.options.length > 0) {
+          const l = this.getData();
+          l.length > 0 && (this.pendingOptionsChange = l);
+        }
+        return;
+      }
+      this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0);
+    }
   }
   // From the select element pull optgroup and options into data
   getData() {
@@ -1019,10 +1030,15 @@ class H {
     })), this.changeListen(!0);
   }
   updateOptions(e) {
-    this.changeListen(!1), this.select.innerHTML = "";
-    for (const t of e)
-      t instanceof m && this.select.appendChild(this.createOptgroup(t)), t instanceof p && this.select.appendChild(this.createOption(t));
-    this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0);
+    if (!(!e || e.length === 0)) {
+      this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1), this.select.innerHTML = "";
+      for (const t of e)
+        t instanceof m && this.select.appendChild(this.createOptgroup(t)), t instanceof p && this.select.appendChild(this.createOption(t));
+      if (this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
+        const t = this.pendingOptionsChange;
+        t.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(t), this.changeListen(!0)) : this.pendingOptionsChange = null;
+      }
+    }
   }
   createOptgroup(e) {
     const t = document.createElement("optgroup");
@@ -1083,7 +1099,7 @@ class H {
     this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect && (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), this.preventNativeSelect = null), this.preventNativeSelectMousedown && (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), this.preventNativeSelectMousedown = null), this.preventNativeSelectFocus && (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), this.preventNativeSelectFocus = null), this.observer && (this.observer.disconnect(), this.observer = null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
   }
 }
-class V {
+class H {
   id = "";
   // Primary ID for the select
   style = "";
@@ -1156,23 +1172,23 @@ let F = class {
       e.events && e.events.error && e.events.error(new Error("Element isnt of type select"));
       return;
     }
-    this.selectEl.dataset.ssid && this.destroy(), this.settings = new V(e.settings), this.cssClasses = new N(e.cssClasses);
+    this.selectEl.dataset.ssid && this.destroy(), this.settings = new H(e.settings), this.cssClasses = new N(e.cssClasses);
     const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
     for (const n in e.events)
       e.events.hasOwnProperty(n) && (t.indexOf(n) !== -1 ? this.events[n] = O(e.events[n], 100) : this.events[n] = e.events[n]);
-    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new H(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
+    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new I(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
       this.setSelected(n.map((o) => o.id));
     }, this.select.onClassChange = (n) => {
       this.settings.class = n, this.render.updateClassStyles();
     }, this.select.onDisabledChange = (n) => {
       n ? this.disable() : this.enable();
     }, this.select.onOptionsChange = (n) => {
-      this.setData(n);
+      this.setData(n || []);
     }, this.select.onLabelClick = () => {
       this.settings.disabled || this.open();
     };
     const s = e.data ? e.data : this.select.getData();
-    this.store = new B(this.settings.isMultiple ? "multiple" : "single", s), e.data && this.select.updateOptions(this.store.getData());
+    this.store = new V(this.settings.isMultiple ? "multiple" : "single", s), e.data && this.select.updateOptions(this.store.getData());
     const i = {
       open: this.open.bind(this),
       close: this.close.bind(this),
@@ -1183,7 +1199,7 @@ let F = class {
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange
     };
-    this.render = new I(this.settings, this.cssClasses, this.store, i), this.render.renderValues(), this.render.renderOptions(this.store.getData());
+    this.render = new B(this.settings, this.cssClasses, this.store, i), this.render.renderValues(), this.render.renderOptions(this.store.getData());
     const l = this.selectEl.getAttribute("aria-label"), a = this.selectEl.getAttribute("aria-labelledby");
     l ? this.render.main.main.setAttribute("aria-label", l) : a && this.render.main.main.setAttribute("aria-labelledby", a), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
   }
@@ -1206,7 +1222,7 @@ let F = class {
     }
     this.store.setData(e);
     const i = this.store.getData();
-    this.select.updateOptions(i), this.render.renderValues(), this.render.renderOptions(i), this.events.afterChange && !L(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    this.select.updateOptions(i), this.render.renderValues(), this.render.renderOptions(i), this.events.afterChange && !y(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   getSelected() {
     let e = this.store.getSelectedOptions();
@@ -1227,13 +1243,13 @@ let F = class {
     }
     this.store.setSelectedBy("id", l);
     const a = this.store.getData();
-    this.select.updateOptions(a), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(a), t && this.events.afterChange && !L(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    this.select.updateOptions(a), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(a), t && this.events.afterChange && !y(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   addOption(e) {
     const t = this.store.getSelected();
     this.store.getDataOptions().some((i) => i.value === (e.value ?? e.text)) || this.store.addOption(e);
     const s = this.store.getData();
-    this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !L(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !y(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   open() {
     this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
@@ -1286,7 +1302,7 @@ let F = class {
     document.hidden && this.close();
   };
 };
-const R = A({
+const R = E({
   name: "SlimSelect",
   props: {
     modelValue: {
@@ -1324,18 +1340,15 @@ const R = A({
     const t = this.events?.afterChange;
     e.events = {
       ...this.events,
-      afterChange: (i) => {
-        const l = this.multiple ? i.map((a) => a.value) : i.length > 0 ? i[0].value : "";
-        this.value !== l && (this.value = l), t && t(i);
+      afterChange: (s) => {
+        this.handleAfterChange(s, t);
       }
-    }, this.slim = new F(e);
-    let s = this.$props.multiple ? this.slim.getSelected() : this.slim.getSelected()[0];
-    this.value !== s && this.slim.setSelected(this.value, !1);
+    }, this.slim = new F(e), this.syncModelValueToSlimSelect(!1);
   },
   updated() {
     if (this.slim && !this.data) {
       const h = this.slim.getSelected(), e = Array.isArray(this.value) ? this.value : [this.value];
-      JSON.stringify(h.sort()) !== JSON.stringify(e.sort()) && this.slim.setSelected(this.value, !1);
+      JSON.stringify(h.sort()) !== JSON.stringify(e.sort()) && this.syncModelValueToSlimSelect(!1);
     }
   },
   beforeUnmount() {
@@ -1344,7 +1357,7 @@ const R = A({
   watch: {
     modelValue: {
       handler: function(h) {
-        this.slim && this.slim.setSelected(this.getCleanValue(h), !1);
+        this.slim && this.syncModelValueToSlimSelect(!1);
       }
     },
     data: {
@@ -1369,9 +1382,28 @@ const R = A({
     getSlimSelect() {
       return this.slim;
     },
+    handleAfterChange(h, e) {
+      if (!this.slim) return;
+      const t = this.multiple ? h.map((o) => o.value) : h.length > 0 ? h[0].value : "", s = this.getCleanValue(this.$props.modelValue), i = this.slim.store.getDataOptions(), l = Array.isArray(s) ? s.length > 0 && s.every((o) => i.some((c) => c.value === o)) : s !== "" && i.some((o) => o.value === s), a = Array.isArray(t) ? t.length > 0 && t.every((o) => i.some((c) => c.value === o)) : t !== "" && i.some((o) => o.value === t);
+      (Array.isArray(t) && Array.isArray(this.value) ? JSON.stringify(t.sort()) !== JSON.stringify(this.value.sort()) : this.value !== t) && (l || a) && (this.value = t), e && e(h);
+    },
     getCleanValue(h) {
       const e = this.$props.multiple;
       return typeof h == "string" ? e ? [h] : h : Array.isArray(h) ? e ? h : h[0] : e ? [] : "";
+    },
+    syncModelValueToSlimSelect(h = !1) {
+      if (!this.slim || this.$props.modelValue === void 0)
+        return;
+      const e = this.getCleanValue(this.$props.modelValue), s = this.slim.getData().flatMap((l) => "label" in l ? l.options : [l]);
+      if (!(Array.isArray(e) ? e.length > 0 && e.every((l) => s.some((a) => a.value === l)) : e !== "" && s.some((l) => l.value === e)) && !Array.isArray(e) && !s.some((a) => a.placeholder)) {
+        const a = this.slim.getData(), n = {
+          value: "",
+          text: "",
+          placeholder: !0
+        };
+        this.slim.setData([n].concat(a));
+      }
+      this.slim.setSelected(e, h);
     }
   }
 }), _ = (h, e) => {
@@ -1379,19 +1411,19 @@ const R = A({
   for (const [s, i] of e)
     t[s] = i;
   return t;
-}, q = ["multiple"];
-function $(h, e, t, s, i, l) {
+}, $ = ["multiple"];
+function q(h, e, t, s, i, l) {
   return D(), T("select", {
     multiple: h.multiple,
     ref: "slim"
   }, [
     k(h.$slots, "default")
-  ], 8, q);
+  ], 8, $);
 }
-const z = /* @__PURE__ */ _(R, [["render", $]]);
+const z = /* @__PURE__ */ _(R, [["render", q]]);
 export {
   m as Optgroup,
   p as Option,
-  V as Settings,
+  H as Settings,
   z as default
 };

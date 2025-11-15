@@ -186,6 +186,8 @@ declare class Select {
     onLabelClick?: () => void;
     private listen;
     private observer;
+    private isUpdating;
+    private pendingOptionsChange;
     private preventNativeSelect;
     private preventNativeSelectMousedown;
     private preventNativeSelectFocus;
