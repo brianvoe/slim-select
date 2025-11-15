@@ -56,7 +56,11 @@ export default defineComponent({
           { value: 'react', name: 'React' },
           { value: 'angular', name: 'Angular' }
         ]
-      }
+      },
+
+      // Empty v-model example
+      ogSelected: '' as string,
+      emptySelected: '' as string
     }
   },
   mounted() {
@@ -96,6 +100,22 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+#vue {
+  .empty-selected {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-half);
+
+    .example {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-quarter);
+    }
+  }
+}
+</style>
 
 <template>
   <div id="vue" class="content">
@@ -527,6 +547,96 @@ export default defineComponent({
         <li>✅ <strong>Computed value</strong> - Child computes value getter/setter for v-model</li>
         <li>✅ <strong>afterChange callback</strong> - Custom logic in child component</li>
         <li>✅ <strong>Fully reactive</strong> - Parent data changes flow to child automatically</li>
+      </ul>
+    </div>
+
+    <div class="separator"></div>
+
+    <h3>Empty v-model Example</h3>
+    <p></p>
+
+    <div class="column empty-selected">
+      <h4>Original Selected</h4>
+      <p>
+        The normal select element within vue will not select an option if the value is not in the options list. but the
+        value can still be set to any value you desire.
+      </p>
+      <div class="column example">
+        <div><strong>Value</strong> {{ ogSelected || "'' (empty string)" }}</div>
+        <select v-model="ogSelected">
+          <option value="opt1">Option 1</option>
+          <option value="opt2">Option 2</option>
+          <option value="opt3">Option 3</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="btn" @click="ogSelected = 'banana'">Banana</div>
+        <div class="btn" @click="ogSelected = ''">Clear Selection</div>
+      </div>
+    </div>
+
+    <div class="column empty-selected">
+      <h4>Empty Selected</h4>
+      <div class="column example">
+        <div><strong>Value</strong> {{ emptySelected || "'' (empty string)" }}</div>
+        <SlimSelect v-model="emptySelected">
+          <option value="opt1">Option 1</option>
+          <option value="opt2">Option 2</option>
+          <option value="opt3">Option 3</option>
+        </SlimSelect>
+      </div>
+
+      <div class="row">
+        <div class="btn" @click="emptySelected = 'banana'">Banana</div>
+        <div class="btn" @click="emptySelected = ''">Clear Selection</div>
+      </div>
+    </div>
+
+    <ShikiStyle language="javascript">
+      <pre>
+        import { defineComponent } from 'vue'
+        import SlimSelect from 'slim-select/vue'
+
+        export default defineComponent({
+          components: {
+            SlimSelect
+          },
+          data() {
+            return {
+              selected: '' // Start with empty string
+            }
+          }
+        })
+      </pre>
+    </ShikiStyle>
+
+    <ShikiStyle language="html">
+      <pre>
+        &lt;SlimSelect v-model="selected"&gt;
+          &lt;option value="opt1"&gt;Option 1&lt;/option&gt;
+          &lt;option value="opt2"&gt;Option 2&lt;/option&gt;
+          &lt;option value="opt3"&gt;Option 3&lt;/option&gt;
+        &lt;/SlimSelect&gt;
+
+        &lt;!-- Display current value --&gt;
+        &lt;div&gt;Selected: &lcub;&lcub; selected || 'No selection' &rcub;&rcub;&lt;/div&gt;
+
+        &lt;!-- Programmatically update v-model --&gt;
+        &lt;button @click="selected = 'opt1'"&gt;Select Option 1&lt;/button&gt;
+        &lt;button @click="selected = ''"&gt;Clear Selection&lt;/button&gt;
+      </pre>
+    </ShikiStyle>
+
+    <div class="alert info">
+      <strong>📝 Key Points:</strong>
+      <ul>
+        <li>Initialize v-model as an empty string (<code>''</code>) for no initial selection</li>
+        <li>Options are provided via slot content (standard HTML <code>&lt;option&gt;</code> elements)</li>
+        <li>v-model automatically updates when user selects an option</li>
+        <li>You can programmatically update v-model from the parent component</li>
+        <li>SlimSelect syncs to v-model changes via the watch handler</li>
+        <li>Works exactly like a normal select element with v-model binding</li>
       </ul>
     </div>
   </div>
