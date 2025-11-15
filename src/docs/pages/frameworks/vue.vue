@@ -553,7 +553,7 @@ export default defineComponent({
 
     <div class="separator"></div>
 
-    <h3>Empty v-model Example</h3>
+    <h3>Setting v-model to an invalid value Example</h3>
     <p></p>
 
     <div class="column empty-selected">

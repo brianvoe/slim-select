@@ -17,6 +17,7 @@ export default defineComponent({
       propsRoot: null as ReactDOM.Root | null,
       dataRoot: null as ReactDOM.Root | null,
       eventsRoot: null as ReactDOM.Root | null,
+      emptyRoot: null as ReactDOM.Root | null,
       afterChangeSingle: [] as any[],
       afterChangeMultiple: [] as any[]
     }
@@ -179,15 +180,97 @@ export default defineComponent({
       }
       this.eventsRoot.render(h(EventsExample))
     }
+
+    // Empty Selected Example
+    const emptyHost = this.$refs.emptyHost as HTMLElement
+    if (emptyHost) {
+      this.emptyRoot = ReactDOM.createRoot(emptyHost)
+      const EmptyExample = () => {
+        const [emptySelected, setEmptySelected] = useState('')
+        const [emptyArraySelected, setEmptyArraySelected] = useState([] as string[])
+
+        return h(
+          'div',
+          { className: 'column empty-selected' },
+          h('h4', null, 'Empty Selected'),
+          h(
+            'p',
+            null,
+            'SlimSelect will operate the same as a normal select element when the value is empty or a value that does not exist in the options.'
+          ),
+          h(
+            'div',
+            { className: 'column example' },
+            h('div', null, h('strong', null, 'Value: '), emptySelected || "'' (empty string)"),
+            h(
+              SlimSelectReact,
+              {
+                value: emptySelected,
+                onChange: (val: any) => setEmptySelected(val as string)
+              },
+              h('option', { value: 'opt1' }, 'Option 1'),
+              h('option', { value: 'opt2' }, 'Option 2'),
+              h('option', { value: 'opt3' }, 'Option 3')
+            )
+          ),
+          h(
+            'div',
+            { className: 'row' },
+            h('div', { className: 'btn', onClick: () => setEmptySelected('banana') }, 'Banana'),
+            h('div', { className: 'btn', onClick: () => setEmptySelected('') }, 'Clear Selection')
+          ),
+          h(
+            'div',
+            { className: 'column example' },
+            h('div', null, h('strong', null, 'Value: '), JSON.stringify(emptyArraySelected)),
+            h(
+              SlimSelectReact,
+              {
+                value: emptyArraySelected,
+                onChange: (val: any) => setEmptyArraySelected(val as string[]),
+                multiple: true
+              },
+              h('option', { value: 'opt1' }, 'Option 1'),
+              h('option', { value: 'opt2' }, 'Option 2'),
+              h('option', { value: 'opt3' }, 'Option 3')
+            )
+          ),
+          h(
+            'div',
+            { className: 'row' },
+            h('div', { className: 'btn', onClick: () => setEmptyArraySelected(['banana']) }, 'Banana'),
+            h('div', { className: 'btn', onClick: () => setEmptyArraySelected(['']) }, 'Clear Selection')
+          )
+        )
+      }
+      this.emptyRoot.render(h(EmptyExample))
+    }
   },
   beforeUnmount() {
     this.simpleRoot?.unmount()
     this.propsRoot?.unmount()
     this.dataRoot?.unmount()
     this.eventsRoot?.unmount()
+    this.emptyRoot?.unmount()
   }
 })
 </script>
+
+<style lang="scss">
+#react {
+  .empty-selected {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-half);
+
+    .example {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-quarter);
+    }
+  }
+}
+</style>
 
 <template>
   <div id="react" class="content">
@@ -400,5 +483,17 @@ export default defineComponent({
       <strong>Note:</strong> The React component automatically handles cleanup when unmounted, so you don't need to
       manually destroy the SlimSelect instance.
     </div>
+
+    <br />
+    <div class="separator"></div>
+    <br />
+
+    <h3>Setting v-model to an invalid value Example</h3>
+    <p>
+      SlimSelect will operate the same as a normal select element when the value is empty or a value that does not exist
+      in the options.
+    </p>
+
+    <div ref="emptyHost"></div>
   </div>
 </template>

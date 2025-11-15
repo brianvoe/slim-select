@@ -68,6 +68,7 @@
     "release": "node release.js"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/downloadjs": "^1.4.6",
     "@types/node": "^24.9.1",
