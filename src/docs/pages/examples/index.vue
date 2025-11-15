@@ -28,13 +28,13 @@ export default defineComponent({
 <template>
   <div id="examples" class="contents">
     <Countries />
+    <AdSlot ad-slot="1270131515" />
     <Label />
     <AdSlot ad-slot="1270131515" />
-
     <FormReset />
+    <AdSlot ad-slot="1270131515" />
     <Required />
     <AdSlot ad-slot="1270131515" />
-
     <TextOverflow />
   </div>
 </template>
