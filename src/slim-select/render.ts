@@ -75,6 +75,17 @@ export default class Render {
     this.updateClassStyles()
     this.updateAriaAttributes()
 
+    // Position content off-screen initially to prevent scrollbars
+    // This must be after updateClassStyles() since it removes all style attributes
+    // The main element isn't in the DOM yet, so getBoundingClientRect() would return zeros
+    // Once opened, moveContent() will position it correctly
+    if (this.settings.contentPosition !== 'relative') {
+      this.content.main.style.top = '-9999px'
+      this.content.main.style.left = '-9999px'
+      this.content.main.style.margin = '0'
+      this.content.main.style.width = 'auto'
+    }
+
     // Add content to the content location settings
     if (this.settings.contentLocation) {
       this.settings.contentLocation.appendChild(this.content.main)
