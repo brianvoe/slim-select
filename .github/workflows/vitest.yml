@@ -7,8 +7,6 @@ on:
       - '.github/**'
       - '.vscode/**'
   pull_request:
-    branches:
-      - develop
     paths-ignore:
       - '**/dist/**'
       - '**/*.md'
