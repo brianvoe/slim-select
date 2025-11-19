@@ -10,6 +10,7 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.contentLocation as HTMLSelectElement,
       settings: {
+        contentPosition: 'relative',
         contentLocation: this.$refs.local as HTMLElement
       }
     })
@@ -19,6 +20,17 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+#contentLocation {
+  .content-location-select.ss-main {
+    height: 40px;
+  }
+  .content-location-content {
+    height: 150px;
+  }
+}
+</style>
 
 <template>
   <div id="contentLocation" class="content">
@@ -35,12 +47,12 @@ export default defineComponent({
     </p>
 
     <div class="row">
-      <select ref="contentLocation" style="width: 50%">
+      <select class="content-location-select" ref="contentLocation" style="width: 50%">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
       </select>
-      <div ref="local"></div>
+      <div class="content-location-content" ref="local"></div>
     </div>
 
     <ShikiStyle language="javascript">
@@ -48,6 +60,9 @@ export default defineComponent({
         new SlimSelect({
           select: '#selectElement',
           settings: {
+            // If you would like to set the location 
+            // of the content not under the main bar
+            contentPosition: 'relative', 
             contentLocation: document.getElementById('local')
           }
         })
