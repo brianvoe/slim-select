@@ -151,10 +151,11 @@ export default class SlimSelect {
       // and onOptionsChange wouldn't be called directly
       this.setData(data || [])
     }
-    // Set up label click handler to open SlimSelect
+    // Set up label click handler to toggle SlimSelect
+    // This allows clicking the label to open/close, matching the main div behavior
     this.select.onLabelClick = () => {
       if (!this.settings.disabled) {
-        this.open()
+        this.settings.isOpen ? this.close() : this.open()
       }
     }
 
