@@ -19,7 +19,10 @@ export default defineComponent({
       select: this.$refs.countryFor as HTMLSelectElement
     })
     this.countryWrap = new SlimSelect({
-      select: this.$refs.countryWrap as HTMLSelectElement
+      select: this.$refs.countryWrap as HTMLSelectElement,
+      settings: {
+        allowDeselect: true
+      }
     })
     this.countryMultiple = new SlimSelect({
       select: this.$refs.countryMultiple as HTMLSelectElement
@@ -46,10 +49,10 @@ export default defineComponent({
       .form-group {
         margin-bottom: var(--spacing-half);
 
-        label {
+        > label {
           display: block;
-          font-weight: 600;
           margin-bottom: var(--spacing-quarter);
+          font-weight: bold;
           cursor: pointer;
 
           &:hover {
