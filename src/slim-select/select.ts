@@ -556,17 +556,22 @@ export default class Select {
 
       // Add click handler to label
       const labelClickHandler = (e: MouseEvent) => {
-        // Prevent default label behavior (focusing the select)
-        e.preventDefault()
-        e.stopPropagation()
+        const target = e.target as HTMLElement
 
-        // Trigger the callback to open SlimSelect
+        // Only continue if the target is the label
+        if (target !== label) {
+          return
+        }
+
+        // At this point, we know the click is directly on the label element
+        // Prevent default label behavior (focusing the select)
+        // Don't stop propagation to allow other handlers (like closing other SlimSelect instances)
+        e.preventDefault()
+        // e.stopPropagation() // dont stop propagation
+
+        // Trigger the callback to toggle SlimSelect
         if (this.onLabelClick) {
-          // Use setTimeout to ensure this happens after any browser-initiated events
-          // are prevented by our prevent handlers
-          setTimeout(() => {
-            this.onLabelClick!()
-          }, 0)
+          this.onLabelClick!()
         }
       }
 
