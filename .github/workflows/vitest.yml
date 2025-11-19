@@ -22,6 +22,7 @@ jobs:
           node-version: '24.2.0'
           cache: 'npm'
       - run: npm ci
+      - run: npm run typecheck
       - run: npm run test
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
