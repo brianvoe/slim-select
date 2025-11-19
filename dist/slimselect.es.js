@@ -1070,9 +1070,7 @@ class M {
       if (l.__slimSelectLabelHandler)
         return;
       const a = (n) => {
-        n.preventDefault(), n.stopPropagation(), this.onLabelClick && setTimeout(() => {
-          this.onLabelClick();
-        }, 0);
+        n.target === l && (n.preventDefault(), this.onLabelClick && this.onLabelClick());
       };
       l.__slimSelectLabelHandler = a, l.addEventListener("click", a, { capture: !0, passive: !1 });
     });
@@ -1184,7 +1182,7 @@ class I {
     }, this.select.onOptionsChange = (n) => {
       this.setData(n || []);
     }, this.select.onLabelClick = () => {
-      this.settings.disabled || this.open();
+      this.settings.disabled || (this.settings.isOpen ? this.close() : this.open());
     };
     const s = e.data ? e.data : this.select.getData();
     this.store = new k(this.settings.isMultiple ? "multiple" : "single", s), e.data && this.select.updateOptions(this.store.getData());
