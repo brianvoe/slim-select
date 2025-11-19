@@ -1213,5 +1213,56 @@ describe('SlimSelect Module', () => {
 
       slim.destroy()
     })
+
+    test('should handle option change after first render', async () => {
+      // Test scenario: start with 2 options
+      document.body.innerHTML = `
+        <select id="test-select">
+          <option value="opt1">Option 1</option>
+          <option value="opt2">Option 2</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectElement
+      })
+
+      // Set an initial value
+      selectElement.value = 'opt2'
+
+      // Verify initial state
+      expect(selectElement.options.length).toBe(2)
+      expect(selectElement.value).toBe('opt2')
+      expect(slim.getData().length).toBe(2)
+
+      // Wait for all mutations to process
+      await new Promise((r) => setTimeout(r, 200))
+
+      // Rebuild options
+      document.getElementById('test-select')!.innerHTML = `
+        <option value="opt1">Option 1 updated</option>
+        <option value="opt2" selected>Option 2 updated</option>
+      `;
+
+      // Wait for all mutations to process
+      await new Promise((r) => setTimeout(r, 200))
+
+      // Verify options are still there
+      expect(selectElement.options.length).toBe(2)
+      expect(selectElement.options[0].textContent).toBe("Option 1 updated")
+      expect(selectElement.options[1].textContent).toBe("Option 2 updated")
+      expect(selectElement.value).toBe('opt2')
+
+      // Verify SlimSelect also has the options
+      const data = slim.getData()
+      expect(data.length).toBe(2)
+
+      // Verify selected value is empty
+      const selected = slim.getSelected()
+      expect(selected).toEqual(["opt2"])
+
+      slim.destroy()
+    })
   })
 })
