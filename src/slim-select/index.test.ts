@@ -840,6 +840,173 @@ describe('SlimSelect Module', () => {
         label.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       }).not.toThrow()
     })
+
+    test('clicking main div closes SlimSelect when wrapped in label', async () => {
+      document.body.innerHTML = `
+        <label>
+          Select a Country
+          <select id="wrapped-label-close-test">
+            <option value="usa">United States</option>
+            <option value="uk">United Kingdom</option>
+          </select>
+        </label>
+      `
+
+      const slim = new SlimSelect({
+        select: '#wrapped-label-close-test',
+        settings: {
+          allowDeselect: true
+        }
+      })
+
+      // Initially closed
+      expect(slim.settings.isOpen).toBe(false)
+
+      // Click the label to open
+      const label = document.querySelector('label') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 300)) // after animation
+      expect(slim.settings.isOpen).toBe(true)
+
+      // Now click the main div to close
+      const mainDiv = document.querySelector(`.ss-main[data-id="${slim.settings.id}"]`) as HTMLElement
+      expect(mainDiv).toBeTruthy()
+
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 300)) // after animation
+
+      // SlimSelect should be closed
+      expect(slim.settings.isOpen).toBe(false)
+
+      slim.destroy()
+    })
+
+    test('deselect button works when wrapped in label', async () => {
+      document.body.innerHTML = `
+        <label>
+          Select a Country
+          <select id="wrapped-label-deselect-test">
+            <option value="usa">United States</option>
+            <option value="uk">United Kingdom</option>
+          </select>
+        </label>
+      `
+
+      const slim = new SlimSelect({
+        select: '#wrapped-label-deselect-test',
+        settings: {
+          allowDeselect: true
+        }
+      })
+
+      // Select an option
+      slim.setSelected('usa')
+      await new Promise((r) => setTimeout(r, 10))
+      expect(slim.getSelected()).toEqual(['usa'])
+
+      // Click the deselect button
+      const deselectButton = document.querySelector(`[data-id="${slim.settings.id}"] .ss-deselect`) as HTMLElement
+      expect(deselectButton).toBeTruthy()
+
+      deselectButton.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+
+      // Should be deselected (returns array with empty string for single select)
+      expect(slim.getSelected()).toEqual([''])
+
+      slim.destroy()
+    })
+
+    test('clicking main div toggles when wrapped in label', async () => {
+      document.body.innerHTML = `
+        <label>
+          Select a Country
+          <select id="wrapped-label-toggle-test">
+            <option value="usa">United States</option>
+            <option value="uk">United Kingdom</option>
+          </select>
+        </label>
+      `
+
+      const slim = new SlimSelect({
+        select: '#wrapped-label-toggle-test'
+      })
+
+      // Initially closed
+      expect(slim.settings.isOpen).toBe(false)
+
+      // Click main div to open
+      const mainDiv = document.querySelector(`.ss-main[data-id="${slim.settings.id}"]`) as HTMLElement
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(slim.settings.isOpen).toBe(true)
+
+      // Click main div again to close
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(slim.settings.isOpen).toBe(false)
+
+      // Click main div again to open
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 10))
+      expect(slim.settings.isOpen).toBe(true)
+
+      slim.destroy()
+    })
+
+    test('clicking label on second select closes first select when both have labels', async () => {
+      document.body.innerHTML = `
+        <label>
+          First Select
+          <select id="first-select">
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+          </select>
+        </label>
+        <label>
+          Second Select
+          <select id="second-select">
+            <option value="a">Option A</option>
+            <option value="b">Option B</option>
+          </select>
+        </label>
+      `
+
+      const slim1 = new SlimSelect({
+        select: '#first-select'
+      })
+
+      const slim2 = new SlimSelect({
+        select: '#second-select'
+      })
+
+      // Both should be closed initially
+      expect(slim1.settings.isOpen).toBe(false)
+      expect(slim2.settings.isOpen).toBe(false)
+
+      // Click first label to open first select
+      const label1 = document.querySelector('label:first-of-type') as HTMLLabelElement
+      label1.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 300))
+      expect(slim1.settings.isOpen).toBe(true)
+      expect(slim2.settings.isOpen).toBe(false)
+
+      // Click second label - should close first and open second
+      const label2 = document.querySelector('label:last-of-type') as HTMLLabelElement
+      label2.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 300))
+      expect(slim1.settings.isOpen).toBe(false)
+      expect(slim2.settings.isOpen).toBe(true)
+
+      // Click first label again - should close second and open first
+      label1.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      await new Promise((r) => setTimeout(r, 300))
+      expect(slim1.settings.isOpen).toBe(true)
+      expect(slim2.settings.isOpen).toBe(false)
+
+      slim1.destroy()
+      slim2.destroy()
+    })
   })
 
   describe('option changes race condition scenarios', () => {
