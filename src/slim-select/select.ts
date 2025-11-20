@@ -558,20 +558,15 @@ export default class Select {
       const labelClickHandler = (e: MouseEvent) => {
         const target = e.target as HTMLElement
 
-        // Only continue if the target is the label
-        if (target !== label) {
-          return
-        }
-
-        // At this point, we know the click is directly on the label element
         // Prevent default label behavior (focusing the select)
-        // Don't stop propagation to allow other handlers (like closing other SlimSelect instances)
+        // This needs to happen for all clicks on the label or its children
+        // to prevent the browser from focusing the hidden select
         e.preventDefault()
         // e.stopPropagation() // dont stop propagation
 
-        // Trigger the callback to toggle SlimSelect
-        if (this.onLabelClick) {
-          this.onLabelClick!()
+        // Only handle the click if it's directly on the label
+        if (target === label && this.onLabelClick) {
+          this.onLabelClick()
         }
       }
 
