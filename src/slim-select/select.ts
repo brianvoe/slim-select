@@ -1,4 +1,4 @@
-import { kebabCase } from './helpers'
+import { kebabCase, hasClassInTree } from './helpers'
 import { Optgroup, Option } from './store'
 
 export default class Select {
@@ -167,7 +167,7 @@ export default class Select {
     let classChanged = false
     let disabledChanged = false
     let optgroupOptionChanged = false
-    let selectionChanged = false;
+    let selectionChanged = false
 
     // Loop through mutations and check various things
     for (const m of mutations) {
@@ -187,7 +187,7 @@ export default class Select {
           for (const n of Array.from(m.addedNodes)) {
             if (n.nodeName === 'OPTION' && (<HTMLOptionElement>n).value === this.select.value) {
               // we added a new option that's now the select value
-              selectionChanged = true;
+              selectionChanged = true
               break
             }
           }
@@ -228,7 +228,7 @@ export default class Select {
             this.pendingOptionsChange = currentData
           }
         }
-        if(selectionChanged) {
+        if (selectionChanged) {
           this.select.dispatchEvent(new Event('change'))
         }
         return
@@ -239,7 +239,7 @@ export default class Select {
       this.changeListen(true)
     }
 
-    if(selectionChanged) {
+    if (selectionChanged) {
       this.select.dispatchEvent(new Event('change'))
     }
   }
@@ -566,14 +566,18 @@ export default class Select {
       const labelClickHandler = (e: MouseEvent) => {
         const target = e.target as HTMLElement
 
+        // Check if click is on SlimSelect UI elements (main div or content)
+        const isSlimSelectElement = hasClassInTree(target, this.select.dataset.id!)
+
         // Prevent default label behavior (focusing the select)
         // This needs to happen for all clicks on the label or its children
         // to prevent the browser from focusing the hidden select
         e.preventDefault()
         // e.stopPropagation() // dont stop propagation
 
-        // Only handle the click if it's directly on the label
-        if (target === label && this.onLabelClick) {
+        // Only trigger the toggle if the click is NOT on SlimSelect elements
+        // This allows clicking label text/children to toggle, while wrapped SlimSelect handles its own clicks
+        if (!isSlimSelectElement && this.onLabelClick) {
           this.onLabelClick()
         }
       }

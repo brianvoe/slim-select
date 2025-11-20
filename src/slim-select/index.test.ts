@@ -1278,15 +1278,15 @@ describe('SlimSelect Module', () => {
       document.getElementById('test-select')!.innerHTML = `
         <option value="opt1">Option 1 updated</option>
         <option value="opt2" selected>Option 2 updated</option>
-      `;
+      `
 
       // Wait for all mutations to process
       await new Promise((r) => setTimeout(r, 200))
 
       // Verify options are still there
       expect(selectElement.options.length).toBe(2)
-      expect(selectElement.options[0].textContent).toBe("Option 1 updated")
-      expect(selectElement.options[1].textContent).toBe("Option 2 updated")
+      expect(selectElement.options[0].textContent).toBe('Option 1 updated')
+      expect(selectElement.options[1].textContent).toBe('Option 2 updated')
       expect(selectElement.value).toBe('opt2')
 
       // Verify SlimSelect also has the options
@@ -1295,7 +1295,7 @@ describe('SlimSelect Module', () => {
 
       // Verify selected value is empty
       const selected = slim.getSelected()
-      expect(selected).toEqual(["opt2"])
+      expect(selected).toEqual(['opt2'])
 
       slim.destroy()
     })
