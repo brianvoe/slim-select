@@ -102,6 +102,7 @@ export default defineComponent({
             { text: 'keepOrder', value: 'settings#keepOrder' },
             { text: 'showSearch', value: 'settings#showSearch' },
             { text: 'focusSearch', value: 'settings#focusSearch' },
+            { text: 'keepSearch', value: 'settings#keepSearch' },
             { text: 'searchText', value: 'settings#searchText' },
             { text: 'searchPlaceholder', value: 'settings#searchPlaceholder' },
             { text: 'searchHighlight', value: 'settings#searchHighlight' },
