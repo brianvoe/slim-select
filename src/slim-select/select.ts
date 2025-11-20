@@ -167,7 +167,7 @@ export default class Select {
     let classChanged = false
     let disabledChanged = false
     let optgroupOptionChanged = false
-    let selectionChanged = false;
+    let selectionChanged = false
 
     // Loop through mutations and check various things
     for (const m of mutations) {
@@ -187,7 +187,7 @@ export default class Select {
           for (const n of Array.from(m.addedNodes)) {
             if (n.nodeName === 'OPTION' && (<HTMLOptionElement>n).value === this.select.value) {
               // we added a new option that's now the select value
-              selectionChanged = true;
+              selectionChanged = true
               break
             }
           }
@@ -228,7 +228,7 @@ export default class Select {
             this.pendingOptionsChange = currentData
           }
         }
-        if(selectionChanged) {
+        if (selectionChanged) {
           this.select.dispatchEvent(new Event('change'))
         }
         return
@@ -239,7 +239,7 @@ export default class Select {
       this.changeListen(true)
     }
 
-    if(selectionChanged) {
+    if (selectionChanged) {
       this.select.dispatchEvent(new Event('change'))
     }
   }

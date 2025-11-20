@@ -11,7 +11,9 @@ export interface FieldOption {
 export default defineComponent({
   name: 'ComplexFieldExample',
   components: {
-    ShikiStyle, SlimSelect },
+    ShikiStyle,
+    SlimSelect
+  },
   props: {
     modelValue: {
       type: Array as PropType<string[]>,
