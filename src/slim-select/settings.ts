@@ -16,6 +16,7 @@ export default class Settings {
   public alwaysOpen: boolean
   public showSearch: boolean
   public focusSearch: boolean
+  public keepSearch: boolean
   public ariaLabel: string
   public searchPlaceholder: string
   public searchText: string
@@ -50,6 +51,7 @@ export default class Settings {
     this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
     this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
     this.focusSearch = settings.focusSearch !== undefined ? settings.focusSearch : true
+    this.keepSearch = settings.keepSearch !== undefined ? settings.keepSearch : false
     this.ariaLabel = settings.ariaLabel || 'Combobox'
     this.searchPlaceholder = settings.searchPlaceholder || 'Search...'
     this.searchText = settings.searchText || 'No Results'
