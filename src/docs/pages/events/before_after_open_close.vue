@@ -10,8 +10,10 @@ export default defineComponent({
     return {
       beforeAfterOpenCloseSingle: null as SlimSelect | null,
       singleState: '',
+      singleStateTimeout: null as ReturnType<typeof setTimeout> | null,
       beforeAfterOpenCloseMultiple: null as SlimSelect | null,
-      multipleState: ''
+      multipleState: '',
+      multipleStateTimeout: null as ReturnType<typeof setTimeout> | null
     }
   },
   mounted() {
@@ -62,19 +64,30 @@ export default defineComponent({
   methods: {
     setState(el: string, state: string) {
       if (el === 'single') {
-        this.singleState = state
-      } else {
-        this.multipleState = state
-      }
-
-      // Set timer to clear state
-      setTimeout(() => {
-        if (el === 'single') {
-          this.singleState = ''
-        } else {
-          this.multipleState = ''
+        // Clear any pending timeout
+        if (this.singleStateTimeout) {
+          clearTimeout(this.singleStateTimeout)
+          this.singleStateTimeout = null
         }
-      }, 1000)
+        this.singleState = state
+        // Set timer to clear state
+        this.singleStateTimeout = setTimeout(() => {
+          this.singleState = ''
+          this.singleStateTimeout = null
+        }, 1000)
+      } else {
+        // Clear any pending timeout
+        if (this.multipleStateTimeout) {
+          clearTimeout(this.multipleStateTimeout)
+          this.multipleStateTimeout = null
+        }
+        this.multipleState = state
+        // Set timer to clear state
+        this.multipleStateTimeout = setTimeout(() => {
+          this.multipleState = ''
+          this.multipleStateTimeout = null
+        }, 1000)
+      }
     }
   },
   components: {
