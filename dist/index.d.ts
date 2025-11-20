@@ -138,6 +138,7 @@ declare class Render {
     disable(): void;
     open(): void;
     close(): void;
+    private getAnimationTiming;
     updateClassStyles(): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
@@ -227,6 +228,7 @@ export declare class Settings {
     alwaysOpen: boolean;
     showSearch: boolean;
     focusSearch: boolean;
+    keepSearch: boolean;
     ariaLabel: string;
     searchPlaceholder: string;
     searchText: string;

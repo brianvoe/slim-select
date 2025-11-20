@@ -78,10 +78,10 @@ function M(h, e) {
 function O(h, e = 50, t = !1) {
   let s;
   return function(...i) {
-    const l = self, a = () => {
+    const l = self, n = () => {
       s = null, t || h.apply(l, i);
-    }, n = t && !s;
-    clearTimeout(s), s = setTimeout(a, e), n && h.apply(l, i);
+    }, a = t && !s;
+    clearTimeout(s), s = setTimeout(n, e), a && h.apply(l, i);
   };
 }
 function y(h, e) {
@@ -109,7 +109,7 @@ class p {
     this.id = !e.id || e.id === "" ? C() : e.id, this.value = e.value === void 0 ? e.text || "" : e.value || "", this.text = e.text || "", this.html = e.html || "", this.defaultSelected = e.defaultSelected !== void 0 ? e.defaultSelected : !1, this.selected = e.selected !== void 0 ? e.selected : !1, this.display = e.display !== void 0 ? e.display : !0, this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.mandatory = e.mandatory !== void 0 ? e.mandatory : !1, this.placeholder = e.placeholder !== void 0 ? e.placeholder : !1, this.class = e.class || "", this.style = e.style || "", this.data = e.data || {};
   }
 }
-class g {
+class m {
   id;
   label;
   selectAll;
@@ -136,7 +136,7 @@ class V {
       return new Error("Data must be an array");
     for (let t of e)
       if (t)
-        if (t instanceof g || "label" in t) {
+        if (t instanceof m || "label" in t) {
           if (!("label" in t))
             return new Error("Optgroup must have a label");
           if ("options" in t && t.options)
@@ -161,11 +161,11 @@ class V {
     let t = [];
     return e.forEach((s) => {
       if (s) {
-        if (s instanceof g || "label" in s) {
+        if (s instanceof m || "label" in s) {
           let i = [];
           "options" in s && s.options && s.options.forEach((l) => {
             i.push(new p(l));
-          }), i.length > 0 && t.push(new g(s));
+          }), i.length > 0 && t.push(new m(s));
         }
         (s instanceof p || "text" in s) && t.push(new p(s));
       }
@@ -175,22 +175,22 @@ class V {
     const s = this.partialToFullData(e);
     if (t) {
       const i = this.getSelectedOptions(), l = [];
-      i.forEach((a) => {
-        let n = !1;
+      i.forEach((n) => {
+        let a = !1;
         for (const o of s) {
-          if (o instanceof p && o.id === a.id) {
-            n = !0;
+          if (o instanceof p && o.id === n.id) {
+            a = !0;
             break;
           }
-          if (o instanceof g) {
+          if (o instanceof m) {
             for (const c of o.options)
-              if (c.id === a.id) {
-                n = !0;
+              if (c.id === n.id) {
+                a = !0;
                 break;
               }
           }
         }
-        n || l.push(a);
+        a || l.push(n);
       }), this.data = [...l, ...s];
     } else
       this.data = s;
@@ -218,18 +218,18 @@ class V {
   setSelectedBy(e, t) {
     let s = null, i = !1;
     const l = [];
-    for (let n of this.data) {
-      if (n instanceof g)
-        for (let o of n.options) {
+    for (let a of this.data) {
+      if (a instanceof m)
+        for (let o of a.options) {
           s || (s = o);
           let c = o[e] || "";
           o.selected = i ? !1 : t.includes(c), o.selected && (l.push(o), this.selectType === "single" && (i = !0));
         }
-      n instanceof p && (s || (s = n), n.selected = i ? !1 : t.includes(n[e]), n.selected && (l.push(n), this.selectType === "single" && (i = !0)));
+      a instanceof p && (s || (s = a), a.selected = i ? !1 : t.includes(a[e]), a.selected && (l.push(a), this.selectType === "single" && (i = !0)));
     }
     this.selectType === "single" && s && !i && (s.selected = !0, l.push(s));
-    const a = t.map((n) => l.find((o) => o[e] === n)?.id || "");
-    this.selectedOrder = a;
+    const n = t.map((a) => l.find((o) => o[e] === a)?.id || "");
+    this.selectedOrder = n;
   }
   getSelected() {
     return this.getSelectedOptions().map((e) => e.id);
@@ -242,7 +242,7 @@ class V {
   }
   getOptgroupByID(e) {
     for (let t of this.data)
-      if (t instanceof g && t.id === e)
+      if (t instanceof m && t.id === e)
         return t;
     return null;
   }
@@ -256,7 +256,7 @@ class V {
   getFirstOption() {
     let e = null;
     for (let t of this.data)
-      if (t instanceof g ? e = t.options[0] : t instanceof p && (e = t), e)
+      if (t instanceof m ? e = t.options[0] : t instanceof p && (e = t), e)
         break;
     return e;
   }
@@ -269,13 +269,13 @@ class V {
   filter(e, t) {
     const s = [];
     return this.data.forEach((i) => {
-      if (i instanceof g) {
+      if (i instanceof m) {
         let l = [];
-        if (i.options.forEach((n) => {
-          (!e || e(n)) && (t ? l.push(new p(n)) : s.push(new p(n)));
+        if (i.options.forEach((a) => {
+          (!e || e(a)) && (t ? l.push(new p(a)) : s.push(new p(a)));
         }), l.length > 0) {
-          let n = new g(i);
-          n.options = l, s.push(n);
+          let a = new m(i);
+          a.options = l, s.push(a);
         }
       }
       i instanceof p && (!e || e(i)) && s.push(new p(i));
@@ -331,9 +331,21 @@ class B {
     }
   }
   close() {
-    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.main.classList.remove(this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant"), setTimeout(() => {
+    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.main.classList.remove(this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
+    const e = this.getAnimationTiming();
+    setTimeout(() => {
       this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow), this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow);
-    }, 100);
+    }, e);
+  }
+  getAnimationTiming() {
+    const t = getComputedStyle(this.content.main).getPropertyValue("--ss-animation-timing").trim();
+    if (t) {
+      if (t.endsWith("ms"))
+        return parseFloat(t);
+      if (t.endsWith("s"))
+        return parseFloat(t) * 1e3;
+    }
+    return 200;
   }
   updateClassStyles() {
     if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.main.main.classList.add(this.classes.main), this.content.main.classList.add(this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length)
@@ -381,29 +393,29 @@ class B {
         if (this.settings.isMultiple)
           this.callbacks.setSelected([], !1), this.updateDeselectAll();
         else {
-          const u = this.store.getFirstOption(), m = u ? u.id : "";
-          this.callbacks.setSelected(m, !1);
+          const u = this.store.getFirstOption(), g = u ? u.id : "";
+          this.callbacks.setSelected(g, !1);
         }
         this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(this.store.getSelectedOptions());
       }
     };
     const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     l.setAttribute("viewBox", "0 0 100 100");
-    const a = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    a.setAttribute("d", this.classes.deselectPath), l.appendChild(a), s.appendChild(l), e.appendChild(s);
-    const n = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    n.classList.add(this.classes.arrow), n.setAttribute("viewBox", "0 0 100 100");
+    const n = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    n.setAttribute("d", this.classes.deselectPath), l.appendChild(n), s.appendChild(l), e.appendChild(s);
+    const a = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    a.classList.add(this.classes.arrow), a.setAttribute("viewBox", "0 0 100 100");
     const o = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    return o.setAttribute("d", this.classes.arrowClose), this.settings.alwaysOpen && n.classList.add(this.classes.hide), n.appendChild(o), e.appendChild(n), {
+    return o.setAttribute("d", this.classes.arrowClose), this.settings.alwaysOpen && a.classList.add(this.classes.hide), a.appendChild(o), e.appendChild(a), {
       main: e,
       values: t,
       deselect: {
         main: s,
         svg: l,
-        path: a
+        path: n
       },
       arrow: {
-        main: n,
+        main: a,
         path: o
       }
     };
@@ -457,8 +469,8 @@ class B {
     this.settings.keepOrder && (t = this.store.selectedOrderOptions(t));
     let s = [];
     for (let i = 0; i < e.length; i++) {
-      const l = e[i], a = l.getAttribute("data-id");
-      a && (t.filter((o) => o.id === a, !1).length || s.push(l));
+      const l = e[i], n = l.getAttribute("data-id");
+      n && (t.filter((o) => o.id === n, !1).length || s.push(l));
     }
     for (const i of s)
       i.classList.add(this.classes.valueOut), setTimeout(() => {
@@ -467,8 +479,8 @@ class B {
     e = this.main.values.childNodes;
     for (let i = 0; i < t.length; i++) {
       let l = !0;
-      for (let a = 0; a < e.length; a++)
-        t[i].id === String(e[a].dataset.id) && (l = !1);
+      for (let n = 0; n < e.length; n++)
+        t[i].id === String(e[n].dataset.id) && (l = !1);
       l && (this.settings.keepOrder ? this.main.values.appendChild(this.multipleValue(t[i])) : e.length === 0 ? this.main.values.appendChild(this.multipleValue(t[i])) : i === 0 ? this.main.values.insertBefore(this.multipleValue(t[i]), e[i]) : e[i - 1].insertAdjacentElement("afterend", this.multipleValue(t[i])));
     }
   }
@@ -478,15 +490,15 @@ class B {
     const s = document.createElement("div");
     if (s.classList.add(this.classes.valueText), s.textContent = e.text, t.appendChild(s), !e.mandatory) {
       const i = document.createElement("div");
-      i.classList.add(this.classes.valueDelete), i.setAttribute("tabindex", "0"), i.onclick = (n) => {
-        if (n.preventDefault(), n.stopPropagation(), this.settings.disabled)
+      i.classList.add(this.classes.valueDelete), i.setAttribute("tabindex", "0"), i.onclick = (a) => {
+        if (a.preventDefault(), a.stopPropagation(), this.settings.disabled)
           return;
         let o = !0;
         const c = this.store.getSelectedOptions(), r = c.filter((d) => d.selected && d.id !== e.id, !0);
         if (!(this.settings.minSelected && r.length < this.settings.minSelected) && (this.callbacks.beforeChange && (o = this.callbacks.beforeChange(r, c) === !0), o)) {
           let d = [];
           for (const f of r) {
-            if (f instanceof g)
+            if (f instanceof m)
               for (const u of f.options)
                 u.id && d.push(u.id);
             f instanceof p && d.push(f.id);
@@ -496,9 +508,9 @@ class B {
       };
       const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       l.setAttribute("viewBox", "0 0 100 100");
-      const a = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      a.setAttribute("d", this.classes.optionDelete), l.appendChild(a), i.appendChild(l), t.appendChild(i), i.onkeydown = (n) => {
-        n.key === "Enter" && i.click();
+      const n = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      n.setAttribute("d", this.classes.optionDelete), l.appendChild(n), i.appendChild(l), t.appendChild(i), i.onkeydown = (a) => {
+        a.key === "Enter" && i.click();
       };
     }
     return t;
@@ -549,20 +561,20 @@ class B {
         case "Escape":
           return this.callbacks.close(), !1;
         case " ":
-          const a = this.content.list.querySelector("." + this.classes.highlighted);
-          return a ? (a.click(), !1) : !0;
-        case "Enter":
           const n = this.content.list.querySelector("." + this.classes.highlighted);
-          return n ? (n.click(), !1) : this.callbacks.addable ? (s.click(), !1) : !0;
+          return n ? (n.click(), !1) : !0;
+        case "Enter":
+          const a = this.content.list.querySelector("." + this.classes.highlighted);
+          return a ? (a.click(), !1) : this.callbacks.addable ? (s.click(), !1) : !0;
       }
       return !0;
     }, e.appendChild(t), this.callbacks.addable) {
       s.classList.add(this.classes.addable);
       const l = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       l.setAttribute("viewBox", "0 0 100 100");
-      const a = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      a.setAttribute("d", this.classes.addablePath), l.appendChild(a), s.appendChild(l), s.onclick = (n) => {
-        if (n.preventDefault(), n.stopPropagation(), !this.callbacks.addable)
+      const n = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      n.setAttribute("d", this.classes.addablePath), l.appendChild(n), s.appendChild(l), s.onclick = (a) => {
+        if (a.preventDefault(), a.stopPropagation(), !this.callbacks.addable)
           return;
         const o = this.content.search.input.value.trim();
         if (o === "") {
@@ -592,13 +604,13 @@ class B {
       }, e.appendChild(s), i.addable = {
         main: s,
         svg: l,
-        path: a
+        path: n
       };
     }
     return i;
   }
   searchFocus() {
-    this.content.search.input.focus();
+    this.content.search.input.focus({ preventScroll: !0 });
   }
   getOptions(e = !1, t = !1, s = !1) {
     let i = "." + this.classes.option;
@@ -625,11 +637,11 @@ class B {
     }
     for (let l = 0; l < t.length; l++)
       if (t[l].classList.contains(this.classes.highlighted)) {
-        const a = t[l];
-        a.classList.remove(this.classes.highlighted);
-        const n = a.parentElement;
-        if (n && n.classList.contains(this.classes.mainOpen)) {
-          const r = n.querySelector("." + this.classes.optgroupLabel);
+        const n = t[l];
+        n.classList.remove(this.classes.highlighted);
+        const a = n.parentElement;
+        if (a && a.classList.contains(this.classes.mainOpen)) {
+          const r = a.querySelector("." + this.classes.optgroupLabel);
           r && r.click();
         }
         let o = t[e === "down" ? l + 1 < t.length ? l + 1 : 0 : l - 1 >= 0 ? l - 1 : t.length - 1];
@@ -679,20 +691,20 @@ class B {
     ));
     const t = document.createDocumentFragment();
     for (const s of e) {
-      if (s instanceof g) {
+      if (s instanceof m) {
         const i = document.createElement("div");
         i.classList.add(this.classes.optgroup);
         const l = document.createElement("div");
         l.classList.add(this.classes.optgroupLabel), i.appendChild(l);
-        const a = document.createElement("div");
-        a.classList.add(this.classes.optgroupLabelText), a.textContent = s.label, l.appendChild(a);
         const n = document.createElement("div");
-        if (n.classList.add(this.classes.optgroupActions), l.appendChild(n), this.settings.isMultiple && s.selectAll) {
+        n.classList.add(this.classes.optgroupLabelText), n.textContent = s.label, l.appendChild(n);
+        const a = document.createElement("div");
+        if (a.classList.add(this.classes.optgroupActions), l.appendChild(a), this.settings.isMultiple && s.selectAll) {
           const o = document.createElement("div");
           o.classList.add(this.classes.optgroupSelectAll);
           let c = !0;
-          for (const m of s.options)
-            if (!m.selected) {
+          for (const g of s.options)
+            if (!g.selected) {
               c = !1;
               break;
             }
@@ -704,8 +716,8 @@ class B {
           const f = document.createElementNS("http://www.w3.org/2000/svg", "path");
           f.setAttribute("d", this.classes.optgroupSelectAllBox), d.appendChild(f);
           const u = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          u.setAttribute("d", this.classes.optgroupSelectAllCheck), d.appendChild(u), o.addEventListener("click", (m) => {
-            m.preventDefault(), m.stopPropagation();
+          u.setAttribute("d", this.classes.optgroupSelectAllCheck), d.appendChild(u), o.addEventListener("click", (g) => {
+            g.preventDefault(), g.stopPropagation();
             const v = this.store.getSelected();
             if (c) {
               const w = v.filter((S) => {
@@ -724,7 +736,7 @@ class B {
               this.callbacks.setSelected(S, !0);
               return;
             }
-          }), n.appendChild(o);
+          }), a.appendChild(o);
         }
         if (s.closable !== "off") {
           const o = document.createElement("div");
@@ -734,7 +746,7 @@ class B {
           const r = document.createElementNS("http://www.w3.org/2000/svg", "path");
           c.appendChild(r), s.options.some((d) => d.selected) || this.content.search.input.value.trim() !== "" ? (o.classList.add(this.classes.mainOpen), r.setAttribute("d", this.classes.arrowOpen)) : s.closable === "open" ? (i.classList.add(this.classes.mainOpen), r.setAttribute("d", this.classes.arrowOpen)) : s.closable === "close" && (i.classList.add(this.classes.close), r.setAttribute("d", this.classes.arrowClose)), l.addEventListener("click", (d) => {
             d.preventDefault(), d.stopPropagation(), i.classList.contains(this.classes.close) ? (i.classList.remove(this.classes.close), i.classList.add(this.classes.mainOpen), r.setAttribute("d", this.classes.arrowOpen)) : (i.classList.remove(this.classes.mainOpen), i.classList.add(this.classes.close), r.setAttribute("d", this.classes.arrowClose));
-          }), n.appendChild(o);
+          }), a.appendChild(o);
         }
         i.appendChild(l);
         for (const o of s.options)
@@ -759,25 +771,25 @@ class B {
       this.classes.searchHighlighter
     ) : e.html !== "" ? t.innerHTML = e.html : t.textContent = e.text, this.settings.showOptionTooltips && t.textContent && t.setAttribute("title", t.textContent), e.display || t.classList.add(this.classes.hide), e.disabled && t.classList.add(this.classes.disabled), e.selected && this.settings.hideSelected && t.classList.add(this.classes.hide), e.selected ? (t.classList.add(this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (t.classList.remove(this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (s) => {
       s.preventDefault(), s.stopPropagation();
-      const i = this.store.getSelected(), l = s.currentTarget, a = String(l.dataset.id), n = s.ctrlKey || s.metaKey;
-      if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || e.selected && e.mandatory || this.settings.isMultiple && this.settings.maxSelected <= i.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= i.length && e.selected && !n)
+      const i = this.store.getSelected(), l = s.currentTarget, n = String(l.dataset.id), a = s.ctrlKey || s.metaKey;
+      if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || e.selected && e.mandatory || this.settings.isMultiple && this.settings.maxSelected <= i.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= i.length && e.selected && !a)
         return;
       let o = !1;
       const c = this.store.getSelectedOptions();
       let r = [];
       if (this.settings.isMultiple) {
-        const d = c.some((u) => u.id === a);
+        const d = c.some((u) => u.id === n);
         if (s.shiftKey && this.lastSelectedOption) {
-          const u = this.store.getDataOptions(), m = u.findIndex((w) => w.id === this.lastSelectedOption.id), v = u.findIndex((w) => w.id === e.id);
-          if (m >= 0 && v >= 0) {
-            const w = Math.min(m, v), S = Math.max(m, v), L = u.slice(w, S + 1).filter((A) => !c.find((x) => x.id === A.id));
+          const u = this.store.getDataOptions(), g = u.findIndex((w) => w.id === this.lastSelectedOption.id), v = u.findIndex((w) => w.id === e.id);
+          if (g >= 0 && v >= 0) {
+            const w = Math.min(g, v), S = Math.max(g, v), L = u.slice(w, S + 1).filter((A) => !c.find((x) => x.id === A.id));
             c.length + L.length <= this.settings.maxSelected ? r = c.concat(L) : r = c;
           } else
             r = c;
-        } else n ? (d ? r = c.filter((u) => u.id !== a) : r = c.concat(e), this.lastSelectedOption = e) : (d ? r = c.filter((u) => u.id !== a) : r = c.concat(e), this.lastSelectedOption = e);
+        } else a ? (d ? r = c.filter((u) => u.id !== n) : r = c.concat(e), this.lastSelectedOption = e) : (d ? r = c.filter((u) => u.id !== n) : r = c.concat(e), this.lastSelectedOption = e);
       }
       if (this.settings.isMultiple || (e.selected ? r = [] : r = [e]), this.callbacks.beforeChange || (o = !0), this.callbacks.beforeChange && (this.callbacks.beforeChange(r, c) === !1 ? o = !1 : o = !0), o) {
-        this.store.getOptionByID(a) || this.callbacks.addOption(e), this.callbacks.setSelected(
+        this.store.getOptionByID(n) || this.callbacks.addOption(e), this.callbacks.setSelected(
           r.map((u) => u.id),
           !1
         );
@@ -793,23 +805,23 @@ class B {
     const i = t.trim();
     if (i === "")
       return e;
-    const l = i.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), a = document.createElement("div");
-    a.innerHTML = e;
-    const n = (o) => {
+    const l = i.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), n = document.createElement("div");
+    n.innerHTML = e;
+    const a = (o) => {
       if (o.nodeType === Node.TEXT_NODE) {
         const c = o.textContent || "", r = new RegExp("(" + l + ")", "i");
         if (r.test(c)) {
           const d = document.createElement("span");
-          c.split(r).forEach((u, m) => {
+          c.split(r).forEach((u, g) => {
             if (u && r.test(u)) {
               const v = document.createElement("mark");
               v.className = s, v.textContent = u, d.appendChild(v);
             } else u && d.appendChild(document.createTextNode(u));
           }), o.parentNode?.replaceChild(d, o);
         }
-      } else o.nodeType === Node.ELEMENT_NODE && Array.from(o.childNodes).forEach((c) => n(c));
+      } else o.nodeType === Node.ELEMENT_NODE && Array.from(o.childNodes).forEach((c) => a(c));
     };
-    return Array.from(a.childNodes).forEach((o) => n(o)), a.innerHTML;
+    return Array.from(n.childNodes).forEach((o) => a(o)), n.innerHTML;
   }
   moveContentAbove() {
     const e = this.main.main.offsetHeight, t = this.content.main.offsetHeight;
@@ -823,8 +835,8 @@ class B {
     this.content.main.style.margin = "-1px 0px 0px 0px", this.settings.contentPosition !== "relative" && (this.content.main.style.top = e.top + e.height + (this.settings.contentPosition === "fixed" ? 0 : window.scrollY) + "px", this.content.main.style.left = e.left + (this.settings.contentPosition === "fixed" ? 0 : window.scrollX) + "px", this.content.main.style.width = e.width + "px");
   }
   ensureElementInView(e, t) {
-    const s = e.scrollTop + e.offsetTop, i = s + e.clientHeight, l = t.offsetTop, a = l + t.clientHeight;
-    l < s ? e.scrollTop -= s - l : a > i && (e.scrollTop += a - i);
+    const s = e.scrollTop + e.offsetTop, i = s + e.clientHeight, l = t.offsetTop, n = l + t.clientHeight;
+    l < s ? e.scrollTop -= s - l : n > i && (e.scrollTop += n - i);
   }
   putContent() {
     const e = this.main.main.offsetHeight, t = this.main.main.getBoundingClientRect(), s = this.content.main.offsetHeight;
@@ -834,8 +846,8 @@ class B {
   updateDeselectAll() {
     if (!this.store || !this.settings)
       return;
-    const e = this.store.getSelectedOptions(), t = e && e.length > 0, s = this.settings.isMultiple, i = this.settings.allowDeselect, l = this.main.deselect.main, a = this.classes.hide;
-    i && !(s && !t) ? l.classList.remove(a) : l.classList.add(a);
+    const e = this.store.getSelectedOptions(), t = e && e.length > 0, s = this.settings.isMultiple, i = this.settings.allowDeselect, l = this.main.deselect.main, n = this.classes.hide;
+    i && !(s && !t) ? l.classList.remove(n) : l.classList.add(n);
   }
 }
 class I {
@@ -897,28 +909,30 @@ class I {
   observeCall(e) {
     if (!this.listen)
       return;
-    let t = !1, s = !1, i = !1;
-    for (const l of e) {
-      if (l.target === this.select && (l.attributeName === "disabled" && (s = !0), l.attributeName === "class" && (t = !0), l.type === "childList")) {
-        for (const a of Array.from(l.addedNodes))
+    let t = !1, s = !1, i = !1, l = !1;
+    for (const n of e) {
+      if (n.target === this.select && (n.attributeName === "disabled" && (s = !0), n.attributeName === "class" && (t = !0), n.type === "childList")) {
+        for (const a of Array.from(n.addedNodes))
           if (a.nodeName === "OPTION" && a.value === this.select.value) {
-            this.select.dispatchEvent(new Event("change"));
+            l = !0;
             break;
           }
         i = !0;
       }
-      (l.target.nodeName === "OPTGROUP" || l.target.nodeName === "OPTION") && (i = !0);
+      (n.target.nodeName === "OPTGROUP" || n.target.nodeName === "OPTION") && (i = !0);
     }
     if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), s && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), i && this.onOptionsChange) {
       if (this.isUpdating) {
         if (this.select.options.length > 0) {
-          const l = this.getData();
-          l.length > 0 && (this.pendingOptionsChange = l);
+          const n = this.getData();
+          n.length > 0 && (this.pendingOptionsChange = n);
         }
+        l && this.select.dispatchEvent(new Event("change"));
         return;
       }
       this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0);
     }
+    l && this.select.dispatchEvent(new Event("change"));
   }
   // From the select element pull optgroup and options into data
   getData() {
@@ -968,8 +982,8 @@ class I {
         const i = s.childNodes;
         for (const l of i)
           if (l.nodeName === "OPTION") {
-            const a = l;
-            a.selected && e.push(this.getDataFromOption(a));
+            const n = l;
+            n.selected && e.push(this.getDataFromOption(n));
           }
       }
       if (s.nodeName === "OPTION") {
@@ -988,10 +1002,10 @@ class I {
     for (const s of t) {
       if (s.nodeName === "OPTGROUP") {
         const l = s.childNodes;
-        for (const a of l)
-          if (a.nodeName === "OPTION") {
-            const n = a;
-            n.selected = e.includes(n.id);
+        for (const n of l)
+          if (n.nodeName === "OPTION") {
+            const a = n;
+            a.selected = e.includes(a.id);
           }
       }
       if (s.nodeName === "OPTION") {
@@ -1011,10 +1025,10 @@ class I {
     for (const s of t) {
       if (s.nodeName === "OPTGROUP") {
         const l = s.childNodes;
-        for (const a of l)
-          if (a.nodeName === "OPTION") {
-            const n = a;
-            n.selected = e.includes(n.value);
+        for (const n of l)
+          if (n.nodeName === "OPTION") {
+            const a = n;
+            a.selected = e.includes(a.value);
           }
       }
       if (s.nodeName === "OPTION") {
@@ -1033,7 +1047,7 @@ class I {
     if (!(!e || e.length === 0)) {
       this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1), this.select.innerHTML = "";
       for (const t of e)
-        t instanceof g && this.select.appendChild(this.createOptgroup(t)), t instanceof p && this.select.appendChild(this.createOption(t));
+        t instanceof m && this.select.appendChild(this.createOptgroup(t)), t instanceof p && this.select.appendChild(this.createOption(t));
       if (this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
         const t = this.pendingOptionsChange;
         t.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(t), this.changeListen(!0)) : this.pendingOptionsChange = null;
@@ -1058,7 +1072,7 @@ class I {
   // Find and handle labels associated with this select
   setupLabelHandlers() {
     const e = [], t = this.select.id;
-    t && document.querySelectorAll(`label[for="${t}"]`).forEach((a) => e.push(a));
+    t && document.querySelectorAll(`label[for="${t}"]`).forEach((n) => e.push(n));
     let s = this.select.parentElement;
     for (; s && s !== document.body; ) {
       if (s.tagName === "LABEL") {
@@ -1070,16 +1084,17 @@ class I {
     Array.from(new Set(e)).forEach((l) => {
       if (l.__slimSelectLabelHandler)
         return;
-      const a = (n) => {
-        n.target === l && (n.preventDefault(), this.onLabelClick && this.onLabelClick());
+      const n = (a) => {
+        const o = a.target;
+        a.preventDefault(), o === l && this.onLabelClick && this.onLabelClick();
       };
-      l.__slimSelectLabelHandler = a, l.addEventListener("click", a, { capture: !0, passive: !1 });
+      l.__slimSelectLabelHandler = n, l.addEventListener("click", n, { capture: !0, passive: !1 });
     });
   }
   // Remove label handlers
   removeLabelHandlers() {
     const e = [], t = this.select.id;
-    t && document.querySelectorAll(`label[for="${t}"]`).forEach((a) => e.push(a));
+    t && document.querySelectorAll(`label[for="${t}"]`).forEach((n) => e.push(n));
     let s = this.select.parentElement;
     for (; s && s !== document.body; ) {
       if (s.tagName === "LABEL") {
@@ -1089,8 +1104,8 @@ class I {
       s = s.parentElement;
     }
     Array.from(new Set(e)).forEach((l) => {
-      const a = l.__slimSelectLabelHandler;
-      a && (l.removeEventListener("click", a, { capture: !0 }), delete l.__slimSelectLabelHandler);
+      const n = l.__slimSelectLabelHandler;
+      n && (l.removeEventListener("click", n, { capture: !0 }), delete l.__slimSelectLabelHandler);
     });
   }
   destroy() {
@@ -1114,6 +1129,7 @@ class H {
   alwaysOpen;
   showSearch;
   focusSearch;
+  keepSearch;
   ariaLabel;
   searchPlaceholder;
   searchText;
@@ -1135,7 +1151,7 @@ class H {
   maxValuesMessage;
   addableText;
   constructor(e) {
-    e || (e = {}), this.id = "ss-" + C(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
+    e || (e = {}), this.id = "ss-" + C(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.keepSearch = e.keepSearch !== void 0 ? e.keepSearch : !1, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
   }
 }
 let F = class {
@@ -1172,16 +1188,16 @@ let F = class {
     }
     this.selectEl.dataset.ssid && this.destroy(), this.settings = new H(e.settings), this.cssClasses = new N(e.cssClasses);
     const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
-    for (const n in e.events)
-      e.events.hasOwnProperty(n) && (t.indexOf(n) !== -1 ? this.events[n] = O(e.events[n], 100) : this.events[n] = e.events[n]);
-    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new I(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (n) => {
-      this.setSelected(n.map((o) => o.id));
-    }, this.select.onClassChange = (n) => {
-      this.settings.class = n, this.render.updateClassStyles();
-    }, this.select.onDisabledChange = (n) => {
-      n ? this.disable() : this.enable();
-    }, this.select.onOptionsChange = (n) => {
-      this.setData(n || []);
+    for (const a in e.events)
+      e.events.hasOwnProperty(a) && (t.indexOf(a) !== -1 ? this.events[a] = O(e.events[a], 100) : this.events[a] = e.events[a]);
+    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new I(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (a) => {
+      this.setSelected(a.map((o) => o.id));
+    }, this.select.onClassChange = (a) => {
+      this.settings.class = a, this.render.updateClassStyles();
+    }, this.select.onDisabledChange = (a) => {
+      a ? this.disable() : this.enable();
+    }, this.select.onOptionsChange = (a) => {
+      this.setData(a || []);
     }, this.select.onLabelClick = () => {
       this.settings.disabled || (this.settings.isOpen ? this.close() : this.open());
     };
@@ -1198,8 +1214,8 @@ let F = class {
       afterChange: this.events.afterChange
     };
     this.render = new B(this.settings, this.cssClasses, this.store, i), this.render.renderValues(), this.render.renderOptions(this.store.getData());
-    const l = this.selectEl.getAttribute("aria-label"), a = this.selectEl.getAttribute("aria-labelledby");
-    l ? this.render.main.main.setAttribute("aria-label", l) : a && this.render.main.main.setAttribute("aria-labelledby", a), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
+    const l = this.selectEl.getAttribute("aria-label"), n = this.selectEl.getAttribute("aria-labelledby");
+    l ? this.render.main.main.setAttribute("aria-label", l) : n && this.render.main.main.setAttribute("aria-labelledby", n), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
   }
   // Set to enabled and remove disabled classes
   enable() {
@@ -1231,17 +1247,17 @@ let F = class {
     const s = this.store.getSelected(), i = this.store.getDataOptions();
     e = Array.isArray(e) ? e : [e];
     const l = [];
-    for (const n of e) {
-      if (i.find((o) => o.id == n)) {
-        l.push(n);
+    for (const a of e) {
+      if (i.find((o) => o.id == a)) {
+        l.push(a);
         continue;
       }
-      for (const o of i.filter((c) => c.value == n))
+      for (const o of i.filter((c) => c.value == a))
         l.push(o.id);
     }
     this.store.setSelectedBy("id", l);
-    const a = this.store.getData();
-    this.select.updateOptions(a), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(a), t && this.events.afterChange && !y(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    const n = this.store.getData();
+    this.select.updateOptions(n), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(n), t && this.events.afterChange && !y(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   addOption(e) {
     const t = this.store.getSelected();
@@ -1255,7 +1271,7 @@ let F = class {
     }, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
   }
   close(e = null) {
-    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), this.render.content.search.input.value !== "" && this.search(""), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
+    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && this.search(""), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
       this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
   }
@@ -1382,8 +1398,8 @@ const R = E({
     },
     handleAfterChange(h, e) {
       if (!this.slim) return;
-      const t = this.multiple ? h.map((o) => o.value) : h.length > 0 ? h[0].value : "", s = this.getCleanValue(this.$props.modelValue), i = this.slim.store.getDataOptions(), l = Array.isArray(s) ? s.length > 0 && s.every((o) => i.some((c) => c.value === o)) : s !== "" && i.some((o) => o.value === s), a = Array.isArray(t) ? t.length > 0 && t.every((o) => i.some((c) => c.value === o)) : t !== "" && i.some((o) => o.value === t);
-      (Array.isArray(t) && Array.isArray(this.value) ? JSON.stringify(t.sort()) !== JSON.stringify(this.value.sort()) : this.value !== t) && (l || a) && (this.value = t), e && e(h);
+      const t = this.multiple ? h.map((o) => o.value) : h.length > 0 ? h[0].value : "", s = this.getCleanValue(this.$props.modelValue), i = this.slim.store.getDataOptions(), l = Array.isArray(s) ? s.length > 0 && s.every((o) => i.some((c) => c.value === o)) : s !== "" && i.some((o) => o.value === s), n = Array.isArray(t) ? t.length > 0 && t.every((o) => i.some((c) => c.value === o)) : t !== "" && i.some((o) => o.value === t);
+      (Array.isArray(t) && Array.isArray(this.value) ? JSON.stringify(t.sort()) !== JSON.stringify(this.value.sort()) : this.value !== t) && (l || n) && (this.value = t), e && e(h);
     },
     getCleanValue(h) {
       const e = this.$props.multiple;
@@ -1393,13 +1409,13 @@ const R = E({
       if (!this.slim || this.$props.modelValue === void 0)
         return;
       const e = this.getCleanValue(this.$props.modelValue), s = this.slim.getData().flatMap((l) => "label" in l ? l.options : [l]);
-      if (!(Array.isArray(e) ? e.length > 0 && e.every((l) => s.some((a) => a.value === l)) : e !== "" && s.some((l) => l.value === e)) && !Array.isArray(e) && !s.some((a) => a.placeholder)) {
-        const a = this.slim.getData(), n = {
+      if (!(Array.isArray(e) ? e.length > 0 && e.every((l) => s.some((n) => n.value === l)) : e !== "" && s.some((l) => l.value === e)) && !Array.isArray(e) && !s.some((n) => n.placeholder)) {
+        const n = this.slim.getData(), a = {
           value: "",
           text: "",
           placeholder: !0
         };
-        this.slim.setData([n].concat(a));
+        this.slim.setData([a].concat(n));
       }
       this.slim.setSelected(e, h);
     }
@@ -1420,7 +1436,7 @@ function q(h, e, t, s, i, l) {
 }
 const z = /* @__PURE__ */ _(R, [["render", q]]);
 export {
-  g as Optgroup,
+  m as Optgroup,
   p as Option,
   H as Settings,
   z as default
