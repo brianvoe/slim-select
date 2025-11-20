@@ -157,10 +157,28 @@ export default class Render {
     this.main.main.removeAttribute('aria-activedescendant')
 
     // Remove direction class from main and content after animation is complete
+    const animationTiming = this.getAnimationTiming()
     setTimeout(() => {
       this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
       this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
-    }, 100)
+    }, animationTiming)
+  }
+
+  private getAnimationTiming(): number {
+    const computedStyle = getComputedStyle(this.content.main)
+    const cssValue = computedStyle.getPropertyValue('--ss-animation-timing').trim()
+
+    if (cssValue) {
+      // Parse CSS time value (e.g., "0.2s" or "200ms")
+      if (cssValue.endsWith('ms')) {
+        return parseFloat(cssValue)
+      } else if (cssValue.endsWith('s')) {
+        return parseFloat(cssValue) * 1000
+      }
+    }
+
+    // Fall back to default 200ms
+    return 200
   }
 
   public updateClassStyles(): void {
@@ -881,7 +899,7 @@ export default class Render {
   }
 
   public searchFocus(): void {
-    this.content.search.input.focus()
+    this.content.search.input.focus({ preventScroll: true })
   }
 
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
