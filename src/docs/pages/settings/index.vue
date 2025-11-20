@@ -25,6 +25,7 @@ import OpenPosition from './open_position.vue'
 import Placeholder from './placeholder.vue'
 import ShowSearch from './show_search.vue'
 import FocusSearch from './focus_search.vue'
+import KeepSearch from './keep_search.vue'
 import SearchText from './search_text.vue'
 import SearchPlaceholder from './search_placeholder.vue'
 import SearchHighlight from './search_highlight.vue'
@@ -55,6 +56,7 @@ export default defineComponent({
     KeepOrder,
     ShowSearch,
     FocusSearch,
+    KeepSearch,
     SearchText,
     SearchPlaceholder,
     SearchHighlight,
@@ -106,21 +108,22 @@ export default defineComponent({
     <AdSlot ad-slot="1270131515" />
 
     <FocusSearch />
+    <KeepSearch />
+    <AdSlot ad-slot="1270131515" />
+
     <SearchText />
-    <AdSlot ad-slot="1270131515" />
-
     <SearchPlaceholder />
+    <AdSlot ad-slot="1270131515" />
+
     <SearchHighlight />
-    <AdSlot ad-slot="1270131515" />
-
     <CloseOnSelect />
+    <AdSlot ad-slot="1270131515" />
+
     <ShowTooltip />
-    <AdSlot ad-slot="1270131515" />
-
     <Closable />
-    <HideSelected />
     <AdSlot ad-slot="1270131515" />
 
+    <HideSelected />
     <MaxValuesShown />
   </div>
 </template>

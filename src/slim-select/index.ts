@@ -419,8 +419,8 @@ export default class SlimSelect {
     // Tell render to close
     this.render.close()
 
-    // Clear search only if not empty
-    if (this.render.content.search.input.value !== '') {
+    // Clear search only if not empty and keepSearch is false
+    if (!this.settings.keepSearch && this.render.content.search.input.value !== '') {
       this.search('') // Clear search
     }
 

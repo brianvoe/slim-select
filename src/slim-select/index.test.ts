@@ -503,6 +503,41 @@ describe('SlimSelect Module', () => {
       expect(slim.render.content.search.input.value).toBe('')
     })
 
+    test('should keep search input when keepSearch is true', async () => {
+      // Create new instance with keepSearch enabled
+      const select = document.createElement('select')
+      select.innerHTML = `
+        <option value="a">A</option>
+        <option value="b">B</option>
+        <option value="c">C</option>
+      `
+      document.body.appendChild(select)
+
+      const slimWithKeepSearch = new SlimSelect({
+        select: select,
+        settings: {
+          keepSearch: true
+        }
+      })
+
+      // Open dropdown
+      slimWithKeepSearch.open()
+
+      // Search for something
+      slimWithKeepSearch.search('test')
+      expect(slimWithKeepSearch.render.content.search.input.value).toBe('test')
+
+      // Close dropdown
+      slimWithKeepSearch.close()
+
+      // Search input should NOT be cleared when keepSearch is true
+      expect(slimWithKeepSearch.render.content.search.input.value).toBe('test')
+
+      // Cleanup
+      slimWithKeepSearch.destroy()
+      document.body.removeChild(select)
+    })
+
     test('should persist search results in store across close/open cycles', () => {
       // Search for something
       slim.search('te')

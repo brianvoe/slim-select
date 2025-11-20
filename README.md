@@ -140,6 +140,7 @@ new SlimSelect({
     alwaysOpen: false, // Keep dropdown always open
     showSearch: true, // Show search input
     focusSearch: true, // Auto focus search on open
+    keepSearch: false, // Keep search input value when dropdown closes
     ariaLabel: 'Combobox', // ARIA label for accessibility
     searchPlaceholder: 'Search', // Search input placeholder
     searchText: 'No Results', // Text when no results found
