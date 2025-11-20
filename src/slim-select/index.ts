@@ -362,6 +362,12 @@ export default class SlimSelect {
       return
     }
 
+    // Clear any pending close timeout to prevent race conditions
+    if (this.closeTimeout) {
+      clearTimeout(this.closeTimeout)
+      this.closeTimeout = null
+    }
+
     // Run beforeOpen callback
     if (this.events.beforeOpen) {
       this.events.beforeOpen()
@@ -409,6 +415,12 @@ export default class SlimSelect {
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
       return
+    }
+
+    // Clear any pending open timeout to prevent race conditions
+    if (this.openTimeout) {
+      clearTimeout(this.openTimeout)
+      this.openTimeout = null
     }
 
     // Run beforeClose calback

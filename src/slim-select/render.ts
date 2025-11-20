@@ -54,6 +54,9 @@ export default class Render {
   // Used to compute the range selection
   private lastSelectedOption: Option | null
 
+  // Timeout tracking for cleanup
+  private closeAnimationTimeout: ReturnType<typeof setTimeout> | null = null
+
   // Elements
   public main: Main
   public content: Content
@@ -116,6 +119,12 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
     this.main.main.setAttribute('aria-expanded', 'true')
 
+    // Clear any pending close animation timeout to prevent race conditions
+    if (this.closeAnimationTimeout) {
+      clearTimeout(this.closeAnimationTimeout)
+      this.closeAnimationTimeout = null
+    }
+
     // Set direction class on both main and content (persists, never removed)
     const isAbove = this.settings.openPosition === 'up'
     const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
@@ -158,9 +167,10 @@ export default class Render {
 
     // Remove direction class from main and content after animation is complete
     const animationTiming = this.getAnimationTiming()
-    setTimeout(() => {
+    this.closeAnimationTimeout = setTimeout(() => {
       this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
       this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
+      this.closeAnimationTimeout = null
     }, animationTiming)
   }
 
@@ -1480,6 +1490,12 @@ export default class Render {
   }
 
   public destroy(): void {
+    // Clear any pending timeouts
+    if (this.closeAnimationTimeout) {
+      clearTimeout(this.closeAnimationTimeout)
+      this.closeAnimationTimeout = null
+    }
+
     // Remove main
     this.main.main.remove()
 
