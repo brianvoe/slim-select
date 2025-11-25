@@ -1555,48 +1555,73 @@ export default class Render {
     return tempDiv.innerHTML
   }
 
-  public moveContentAbove(): void {
-    // Get main and content height
-    const mainHeight = this.main.main.offsetHeight
-    const contentHeight = this.content.main.offsetHeight
+  private setContentDirection(direction: 'above' | 'below'): void {
+    if (direction === 'above') {
+      // Set direction classes on both main and content
+      this.main.main.classList.remove(this.classes.dirBelow)
+      this.main.main.classList.add(this.classes.dirAbove)
+      this.content.main.classList.remove(this.classes.dirBelow)
+      this.content.main.classList.add(this.classes.dirAbove)
 
-    // Set direction classes on both main and content
-    this.main.main.classList.remove(this.classes.dirBelow)
-    this.main.main.classList.add(this.classes.dirAbove)
-    this.content.main.classList.remove(this.classes.dirBelow)
-    this.content.main.classList.add(this.classes.dirAbove)
+      // Set margin to position content above
+      const mainHeight = this.main.main.offsetHeight
+      const contentHeight = this.content.main.offsetHeight
+      this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
+    } else {
+      // Set direction classes on both main and content
+      this.main.main.classList.remove(this.classes.dirAbove)
+      this.main.main.classList.add(this.classes.dirBelow)
+      this.content.main.classList.remove(this.classes.dirAbove)
+      this.content.main.classList.add(this.classes.dirBelow)
 
-    // Set the content position
+      // Set margin to position content below
+      this.content.main.style.margin = '-1px 0px 0px 0px'
+    }
+  }
+
+  private setContentPosition(): void {
+    if (this.settings.contentPosition === 'relative') {
+      return
+    }
+
     const containerRect = this.main.main.getBoundingClientRect()
-    this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
-    this.content.main.style.top =
-      containerRect.top + containerRect.height + (this.settings.contentPosition === 'fixed' ? 0 : window.scrollY) + 'px'
-    this.content.main.style.left =
-      containerRect.left + (this.settings.contentPosition === 'fixed' ? 0 : window.scrollX) + 'px'
+    let top: number
+    let left: number
+
+    if (this.settings.contentPosition === 'fixed') {
+      // Fixed positioning - use viewport coordinates directly
+      top = containerRect.top + containerRect.height
+      left = containerRect.left
+    } else {
+      // Absolute positioning - calculate relative to offsetParent
+      const offsetParent = this.content.main.offsetParent as HTMLElement
+      const offsetParentRect = offsetParent
+        ? offsetParent.getBoundingClientRect()
+        : { top: 0, left: 0 }
+
+      top = containerRect.top - offsetParentRect.top + containerRect.height - (offsetParent?.clientTop || 0)
+      left = containerRect.left - offsetParentRect.left - (offsetParent?.clientLeft || 0)
+
+      // Add scroll offset if contentLocation is scrollable
+      if (this.settings.contentLocation) {
+        top += this.settings.contentLocation.scrollTop || 0
+        left += this.settings.contentLocation.scrollLeft || 0
+      }
+    }
+
+    this.content.main.style.top = top + 'px'
+    this.content.main.style.left = left + 'px'
     this.content.main.style.width = containerRect.width + 'px'
   }
 
-  public moveContentBelow(): void {
-    // Set direction classes on both main and content
-    this.main.main.classList.remove(this.classes.dirAbove)
-    this.main.main.classList.add(this.classes.dirBelow)
-    this.content.main.classList.remove(this.classes.dirAbove)
-    this.content.main.classList.add(this.classes.dirBelow)
+  public moveContentAbove(): void {
+    this.setContentDirection('above')
+    this.setContentPosition()
+  }
 
-    // Set the content position
-    const containerRect = this.main.main.getBoundingClientRect()
-    this.content.main.style.margin = '-1px 0px 0px 0px'
-    // Dont do anything if the content is relative
-    if (this.settings.contentPosition !== 'relative') {
-      this.content.main.style.top =
-        containerRect.top +
-        containerRect.height +
-        (this.settings.contentPosition === 'fixed' ? 0 : window.scrollY) +
-        'px'
-      this.content.main.style.left =
-        containerRect.left + (this.settings.contentPosition === 'fixed' ? 0 : window.scrollX) + 'px'
-      this.content.main.style.width = containerRect.width + 'px'
-    }
+  public moveContentBelow(): void {
+    this.setContentDirection('below')
+    this.setContentPosition()
   }
 
   public ensureElementInView(container: HTMLElement, element: HTMLElement): void {
