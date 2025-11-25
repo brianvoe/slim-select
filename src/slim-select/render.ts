@@ -1599,12 +1599,6 @@ export default class Render {
 
       top = containerRect.top - offsetParentRect.top + containerRect.height - (offsetParent?.clientTop || 0)
       left = containerRect.left - offsetParentRect.left - (offsetParent?.clientLeft || 0)
-
-      // Add scroll offset if contentLocation is scrollable
-      if (this.settings.contentLocation) {
-        top += this.settings.contentLocation.scrollTop || 0
-        left += this.settings.contentLocation.scrollLeft || 0
-      }
     }
 
     this.content.main.style.top = top + 'px'
