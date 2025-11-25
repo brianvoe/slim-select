@@ -1595,9 +1595,7 @@ export default class Render {
     } else {
       // Absolute positioning - calculate relative to offsetParent
       const offsetParent = this.content.main.offsetParent as HTMLElement
-      const offsetParentRect = offsetParent
-        ? offsetParent.getBoundingClientRect()
-        : { top: 0, left: 0 }
+      const offsetParentRect = offsetParent ? offsetParent.getBoundingClientRect() : { top: 0, left: 0 }
 
       top = containerRect.top - offsetParentRect.top + containerRect.height - (offsetParent?.clientTop || 0)
       left = containerRect.left - offsetParentRect.left - (offsetParent?.clientLeft || 0)
