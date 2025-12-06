@@ -1556,25 +1556,22 @@ export default class Render {
   }
 
   private setContentDirection(direction: 'above' | 'below'): void {
-    if (direction === 'above') {
-      // Set direction classes on both main and content
-      this.main.main.classList.remove(this.classes.dirBelow)
-      this.main.main.classList.add(this.classes.dirAbove)
-      this.content.main.classList.remove(this.classes.dirBelow)
-      this.content.main.classList.add(this.classes.dirAbove)
+    const isAbove = direction === 'above'
+    const addClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
+    const removeClass = isAbove ? this.classes.dirBelow : this.classes.dirAbove
 
-      // Set margin to position content above
+    // Set direction classes on both main and content
+    this.main.main.classList.remove(removeClass)
+    this.main.main.classList.add(addClass)
+    this.content.main.classList.remove(removeClass)
+    this.content.main.classList.add(addClass)
+
+    // Set margin to position content
+    if (isAbove) {
       const mainHeight = this.main.main.offsetHeight
       const contentHeight = this.content.main.offsetHeight
       this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
     } else {
-      // Set direction classes on both main and content
-      this.main.main.classList.remove(this.classes.dirAbove)
-      this.main.main.classList.add(this.classes.dirBelow)
-      this.content.main.classList.remove(this.classes.dirAbove)
-      this.content.main.classList.add(this.classes.dirBelow)
-
-      // Set margin to position content below
       this.content.main.style.margin = '-1px 0px 0px 0px'
     }
   }
