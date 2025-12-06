@@ -362,6 +362,11 @@
     }
   }
 
+  &.ss-dir-above .ss-search {
+    border-bottom: none;
+    border-top: 1px solid var(--ss-border-color);
+  }
+
   .ss-list {
     flex: 1 1 auto;
     height: auto;
