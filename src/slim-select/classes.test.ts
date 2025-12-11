@@ -59,10 +59,10 @@ describe('CssClasses module', () => {
     })
   })
 
-  test('classes can be overwritten via the constructor', () => {
+  test('classes can be added via the constructor', () => {
     const classesWithOverride = JSON.parse(JSON.stringify(defaultClasses))
-    classesWithOverride['main'] = 'new-main'
-    classesWithOverride['mainOpen'] = 'new-open'
+    classesWithOverride['main'] = 'ss-main new-main'
+    classesWithOverride['mainOpen'] = 'ss-open new-open'
 
     // Convert to unknown and then to custom object to prevent TS from throwing errors
     const classes = new CssClasses({ main: 'new-main', mainOpen: 'new-open' }) as unknown as { [key: string]: string }

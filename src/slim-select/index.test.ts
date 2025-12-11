@@ -1312,6 +1312,7 @@ describe('SlimSelect Module', () => {
         }
       })
 
+      expect(slim.render.main.main.classList.contains('ss-main')).toBe(true)
       expect(slim.render.main.main.classList.contains('class1')).toBe(true)
       expect(slim.render.main.main.classList.contains('class2')).toBe(true)
 

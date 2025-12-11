@@ -302,7 +302,9 @@ export default class Render {
         case 'Enter':
         case ' ':
           this.callbacks.open()
-          const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          const highlighted = this.content.list.querySelector(
+            '.' + this.classes.getFirst('highlighted')
+          ) as HTMLDivElement
           if (highlighted) {
             highlighted.click()
           }
@@ -519,7 +521,7 @@ export default class Render {
       return
     } else {
       // If there is a placeholder, remove it
-      const placeholder = this.main.values.querySelector('.' + this.classes.placeholder)
+      const placeholder = this.main.values.querySelector('.' + this.classes.getFirst('placeholder'))
       if (placeholder) {
         placeholder.remove()
       }
@@ -537,7 +539,7 @@ export default class Render {
       return
     } else {
       // If there is a message, remove it
-      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.max)
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.getFirst('max'))
       if (maxValuesMessage) {
         maxValuesMessage.remove()
       }
@@ -799,7 +801,9 @@ export default class Render {
           this.callbacks.close()
           return false
         case ' ':
-          const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          const highlighted = this.content.list.querySelector(
+            '.' + this.classes.getFirst('highlighted')
+          ) as HTMLDivElement
           if (highlighted) {
             highlighted.click()
             return false
@@ -807,7 +811,9 @@ export default class Render {
           return true
         case 'Enter':
           // Check if there's a highlighted option first
-          const highlightedEnter = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          const highlightedEnter = this.content.list.querySelector(
+            '.' + this.classes.getFirst('highlighted')
+          ) as HTMLDivElement
           if (highlightedEnter) {
             // If an option is highlighted, select it (even if addable is enabled)
             highlightedEnter.click()
@@ -939,15 +945,15 @@ export default class Render {
 
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
     // Put together query string
-    let query = '.' + this.classes.option
+    let query = '.' + this.classes.getFirst('option')
     if (notPlaceholder) {
-      query += ':not(.' + this.classes.placeholder + ')'
+      query += ':not(.' + this.classes.getFirst('placeholder') + ')'
     }
     if (notDisabled) {
-      query += ':not(.' + this.classes.disabled + ')'
+      query += ':not(.' + this.classes.getFirst('disabled') + ')'
     }
     if (notHidden) {
-      query += ':not(.' + this.classes.hide + ')'
+      query += ':not(.' + this.classes.getFirst('hide') + ')'
     }
 
     return Array.from(this.content.list.querySelectorAll(query))
@@ -966,7 +972,7 @@ export default class Render {
     // If length is 1, highlight it
     if (options.length === 1) {
       // Check if option doesnt already have highlighted class
-      if (!options[0].classList.contains(this.classes.highlighted)) {
+      if (!options[0].classList.contains(this.classes.getFirst('highlighted'))) {
         this.addClasses(options[0], this.classes.highlighted)
         return
       }
@@ -975,7 +981,7 @@ export default class Render {
     // Loop through options and see if there are no highlighted ones
     let highlighted = false
     for (const o of options) {
-      if (o.classList.contains(this.classes.highlighted)) {
+      if (o.classList.contains(this.classes.getFirst('highlighted'))) {
         highlighted = true
       }
     }
@@ -983,7 +989,7 @@ export default class Render {
     // If no highlighted, see if any are selected and if so highlight selected first one
     if (!highlighted) {
       for (const o of options) {
-        if (o.classList.contains(this.classes.selected)) {
+        if (o.classList.contains(this.classes.getFirst('selected'))) {
           this.addClasses(o, this.classes.highlighted)
           break
         }
@@ -993,15 +999,15 @@ export default class Render {
     // Loop through options and find the highlighted one
     for (let i = 0; i < options.length; i++) {
       // Found highlighted option
-      if (options[i].classList.contains(this.classes.highlighted)) {
+      if (options[i].classList.contains(this.classes.getFirst('highlighted'))) {
         const prevOption = options[i]
         // Remove highlighted class from current one
         this.removeClasses(prevOption, this.classes.highlighted)
 
         // If previous option has parent classes ss-optgroup with ss-open then click it
         const prevParent = prevOption.parentElement
-        if (prevParent && prevParent.classList.contains(this.classes.mainOpen)) {
-          const optgroupLabel = prevParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
+        if (prevParent && prevParent.classList.contains(this.classes.getFirst('mainOpen'))) {
+          const optgroupLabel = prevParent.querySelector('.' + this.classes.getFirst('optgroupLabel')) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
           }
@@ -1020,8 +1026,10 @@ export default class Render {
 
         // If selected option has parent classes ss-optgroup with ss-close then click it
         const selectParent = selectOption.parentElement
-        if (selectParent && selectParent.classList.contains(this.classes.close)) {
-          const optgroupLabel = selectParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
+        if (selectParent && selectParent.classList.contains(this.classes.getFirst('close'))) {
+          const optgroupLabel = selectParent.querySelector(
+            '.' + this.classes.getFirst('optgroupLabel')
+          ) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
           }
@@ -1260,7 +1268,7 @@ export default class Render {
             e.stopPropagation()
 
             // If optgroup is closed, open it
-            if (optgroupEl.classList.contains(this.classes.close)) {
+            if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
               this.removeClasses(optgroupEl, this.classes.close)
               this.addClasses(optgroupEl, this.classes.mainOpen)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
