@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import SlimSelect from '@/slim-select/vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 export interface FieldOption {
   value: string
@@ -11,7 +11,7 @@ export interface FieldOption {
 export default defineComponent({
   name: 'ComplexFieldExample',
   components: {
-    ShikiStyle,
+    HighlightStyle,
     SlimSelect
   },
   props: {

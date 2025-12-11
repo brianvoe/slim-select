@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'ContentLocation',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.contentLocation as HTMLSelectElement,
@@ -14,9 +17,6 @@ export default defineComponent({
         contentLocation: this.$refs.local as HTMLElement
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -55,7 +55,7 @@ export default defineComponent({
       <div class="content-location-content" ref="local"></div>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -67,9 +67,9 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="contentLocation"&gt;
           &lt;option value="value1"&gt;Value 1&lt;/option&gt;
@@ -80,6 +80,6 @@ export default defineComponent({
         &lt;!-- The content will go in this div --&gt;
         &lt;div id="local"&gt;&lt;/div&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

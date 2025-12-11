@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Html',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.htmlSingle as HTMLSelectElement,
@@ -52,9 +55,6 @@ export default defineComponent({
       //   },
       // ],
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -83,7 +83,7 @@ export default defineComponent({
     </div>
 
     <h3>Via data</h3>
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement',
@@ -94,10 +94,10 @@ export default defineComponent({
           ]
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <h3>Via data attribute</h3>
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectElement"&gt;
           &lt;option value="bold text" data-html="&lt;b&gt;Bold Text&lt;/b&gt;"&gt;Bold Text&lt;/option&gt;
@@ -105,6 +105,6 @@ export default defineComponent({
           &lt;option value="slim select" data-html="&lt;i&gt;Slim Select is awesome&lt;/i&gt;"&gt;Slim Select awesome&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

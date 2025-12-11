@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
 import AdSlot from '@/docs/components/adslot.vue'
 
 // Sections
@@ -11,7 +10,6 @@ import Styles from './style/styles.vue'
 export default defineComponent({
   name: 'Style',
   components: {
-    ShikiStyle,
     AdSlot,
     Variables,
     Classes,

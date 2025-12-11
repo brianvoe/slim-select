@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Mandatory',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     const mandatorySelect = new SlimSelect({
       select: this.$refs.selectMultiMandatory as HTMLSelectElement
@@ -23,9 +26,6 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.selectMultiMandatory2 as HTMLSelectElement
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -48,7 +48,7 @@ export default defineComponent({
       <select ref="selectMultiMandatory" multiple></select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         const slim = new SlimSelect({
           select: '#selectElement'
@@ -63,13 +63,13 @@ export default defineComponent({
         slim.setData(data)
         slim.set(["value1", "value3"])
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectMultiMandatory" multiple&gt;&lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <p>Or</p>
     <div class="row">
@@ -80,15 +80,15 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         const slim = new SlimSelect({
           select: '#selectElement'
         });
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectMultiMandatory" multiple&gt;
           &lt;option value="value1" data-mandatory="true" selected&gt;Value 1&lt;/option&gt;
@@ -96,6 +96,6 @@ export default defineComponent({
           &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

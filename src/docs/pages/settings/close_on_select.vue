@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'CloseOnSelect',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.closeOnSelectSingle as HTMLSelectElement,
@@ -20,9 +23,6 @@ export default defineComponent({
         closeOnSelect: false
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -64,7 +64,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#search',
@@ -73,6 +73,6 @@ export default defineComponent({
           },
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

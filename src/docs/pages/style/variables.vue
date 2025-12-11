@@ -1,12 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
+import HighlightStyle from '@/docs/components/highlight_style.vue'
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Variables',
   components: {
-    ShikiStyle
+    HighlightStyle
   },
   data() {
     return {
@@ -517,7 +517,7 @@ export default defineComponent({
     <!-- Generated CSS -->
     <div class="generated-css">
       <h3>Generated CSS</h3>
-      <ShikiStyle language="css">
+      <HighlightStyle language="css">
         <pre>
           .variable-showcase {
             /* Colors */
@@ -543,7 +543,7 @@ export default defineComponent({
             --ss-animation-timing: {{ variables.animationTiming }};
           }
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
   </div>
 </template>

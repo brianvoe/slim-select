@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect, { Option, Optgroup } from '@/slim-select'
 
 export default defineComponent({
   name: 'GetData',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       getDataOptions: null as SlimSelect | null,
@@ -27,9 +30,6 @@ export default defineComponent({
       this.getDataOptionsValue = this.getDataOptions!.getData()
       this.getDataOptgroupsValue = this.getDataOptgroups!.getData()
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -81,7 +81,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement'
@@ -89,6 +89,6 @@ export default defineComponent({
         var data = select.getData() // Will return an array of options and optgroups
         console.log(data)
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

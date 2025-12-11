@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
@@ -62,6 +62,9 @@ const countries = [
 
 export default defineComponent({
   name: 'Countries',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       countrySelect: null as SlimSelect | null
@@ -75,9 +78,6 @@ export default defineComponent({
         contentLocation: document.getElementById('localCountry')
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -129,13 +129,13 @@ export default defineComponent({
       <div id="localCountry" style="width: 100%"></div>
     </div>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectElement" class="countries"&gt;&lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="css">
+    <HighlightStyle language="css">
       <pre>
         .countries {
           /* Use CSS variables for consistent styling */
@@ -166,9 +166,9 @@ export default defineComponent({
           padding: 0 8px 0 8px;
         }
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         // Data
         const countries = [
@@ -196,6 +196,6 @@ export default defineComponent({
         })
         </pre
       >
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

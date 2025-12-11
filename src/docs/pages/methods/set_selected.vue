@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'SetSelected',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       selectedSingle: null as SlimSelect | null,
@@ -42,9 +45,6 @@ export default defineComponent({
         this.selectedKeepOrder!.close()
       }, 2000)
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -85,7 +85,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement'
@@ -99,6 +99,6 @@ export default defineComponent({
         // To not trigger the afterChange callback
         select.setSelected('value1', false)
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

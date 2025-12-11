@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'MaxValuesShown',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.maxValuesShown as HTMLSelectElement,
@@ -15,9 +18,6 @@ export default defineComponent({
         allowDeselect: true
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -50,7 +50,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -60,9 +60,9 @@ export default defineComponent({
           },
         });
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="maxValuesShown" multiple&gt;
           &lt;option value="value1" selected&gt;Value 1&lt;/option&gt;
@@ -75,6 +75,6 @@ export default defineComponent({
           &lt;option value="value8"&gt;Value 8&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

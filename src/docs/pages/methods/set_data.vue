@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'SetData',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       setDataSingle: null as SlimSelect | null,
@@ -56,9 +59,6 @@ export default defineComponent({
         })
         .catch((err) => console.error(err))
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -92,7 +92,7 @@ export default defineComponent({
       <select ref="setDataMultiple" multiple></select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement'
@@ -111,6 +111,6 @@ export default defineComponent({
           }
         ])
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

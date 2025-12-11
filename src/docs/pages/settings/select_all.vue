@@ -1,18 +1,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'SelectAll',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.selectAll as HTMLSelectElement
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -49,7 +49,7 @@ export default defineComponent({
     <br />
 
     <h3>Via data</h3>
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -76,11 +76,11 @@ export default defineComponent({
           ],
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
     <br />
 
     <h3>Via html</h3>
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select ref="selectAll" multiple&gt;
           &lt;optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!"&gt;
@@ -95,6 +95,6 @@ export default defineComponent({
           &lt;/optgroup&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

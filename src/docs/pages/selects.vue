@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
+import HighlightStyle from '@/docs/components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Selects',
   components: {
-    ShikiStyle
+    HighlightStyle
   },
   data() {
     return {
@@ -121,15 +121,15 @@ export default defineComponent({
         </div>
       </div>
 
-      <ShikiStyle language="javascript">
+      <HighlightStyle language="javascript">
         <pre>
           new SlimSelect({
             select: '#single'
           })
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
 
-      <ShikiStyle language="html">
+      <HighlightStyle language="html">
         <pre>
           &lt;!-- Options --&gt;
           &lt;select id="single"&gt;
@@ -152,7 +152,7 @@ export default defineComponent({
             &lt;/optgroup&gt;
           &lt;/select&gt;
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
 
     <div id="multiple" class="content">
@@ -180,15 +180,15 @@ export default defineComponent({
         </div>
       </div>
 
-      <ShikiStyle language="javascript">
+      <HighlightStyle language="javascript">
         <pre>
           new SlimSelect({
             select: '#multiple'
           })
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
 
-      <ShikiStyle language="html">
+      <HighlightStyle language="html">
         <pre>
           &lt;!-- Options --&gt;
           &lt;select id="multiple" multiple&gt;
@@ -211,7 +211,7 @@ export default defineComponent({
             &lt;/optgroup&gt;
           &lt;/select&gt;
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
   </div>
 </template>

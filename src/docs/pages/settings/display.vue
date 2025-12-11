@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Display',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     const displaySelect = new SlimSelect({
       select: this.$refs.selectdisplay as HTMLSelectElement
@@ -23,9 +26,6 @@ export default defineComponent({
     new SlimSelect({
       select: this.$refs.selectdisplay2 as HTMLSelectElement
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -48,7 +48,7 @@ export default defineComponent({
       <select ref="selectdisplay" multiple></select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         const displaySelect = new SlimSelect({
           select: '#selectElement'
@@ -63,13 +63,13 @@ export default defineComponent({
         displaySelect.setData(displayData)
         displaySelect.set(['value1', 'value3'])
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectMultiMandatory" multiple&gt;&lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <p>Or</p>
     <div class="row">
@@ -80,15 +80,15 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         const slim = new SlimSelect({
           select: '#selectElement'
         });
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectdisplay2" multiple&gt;
           &lt;option value="value1" style="display: none;" selected&gt;Value 1&lt;/option&gt;
@@ -96,6 +96,6 @@ export default defineComponent({
           &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

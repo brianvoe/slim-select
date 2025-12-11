@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../components/shiki_style.vue'
+import HighlightStyle from '../components/highlight_style.vue'
 
 import SlimSelect, { Optgroup } from '@/slim-select'
 
 export default defineComponent({
   name: 'Data',
   components: {
-    ShikiStyle
+    HighlightStyle
   },
   mounted() {
     new SlimSelect({
@@ -49,7 +49,7 @@ export default defineComponent({
         There are two types of data types. The option which consists of a variation of fields to customize the option.
         You can also provide an optgroup which has a label and an array of options.
       </p>
-      <ShikiStyle language="javascript">
+      <HighlightStyle language="javascript">
         <pre>
           var optgroup = {
             label: 'label',   // Required
@@ -72,7 +72,7 @@ export default defineComponent({
             data: {}             // Optional - If you have data attributes
           }
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
 
     <div id="field" class="content">
@@ -91,7 +91,7 @@ export default defineComponent({
         <select ref="dataMultiple" multiple></select>
       </div>
 
-      <ShikiStyle language="javascript">
+      <HighlightStyle language="javascript">
         <pre>
           new SlimSelect({
             select: '#selectElement',
@@ -135,7 +135,7 @@ export default defineComponent({
             text: 'placeholder text'
           }
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
   </div>
 </template>

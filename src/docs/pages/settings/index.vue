@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
 
 import AdSlot from '../../components/adslot.vue'
 
@@ -36,22 +35,21 @@ import ShowTooltip from './show_tooltip.vue'
 export default defineComponent({
   name: 'Settings',
   components: {
-    ShikiStyle,
-    AdSlot,
     Select,
     Classes,
+    AdSlot,
     AlwaysOpen,
     ContentLocation,
     ContentPosition,
     OpenPosition,
     Placeholder,
+    SelectAll,
     Deselect,
     Display,
     Disabled,
     Mandatory,
     MinMax,
     DataAttributes,
-    MaxValuesShown,
     Html,
     KeepOrder,
     ShowSearch,
@@ -62,9 +60,9 @@ export default defineComponent({
     SearchHighlight,
     CloseOnSelect,
     ShowTooltip,
-    SelectAll,
     Closable,
-    HideSelected
+    HideSelected,
+    MaxValuesShown
   }
 })
 </script>
@@ -99,31 +97,30 @@ export default defineComponent({
     <DataAttributes />
     <AdSlot ad-slot="1270131515" />
 
-    <Styles />
     <Html />
-    <AdSlot ad-slot="1270131515" />
-
     <KeepOrder />
+    <AdSlot ad-slot="1270131515" />
+
     <ShowSearch />
-    <AdSlot ad-slot="1270131515" />
-
     <FocusSearch />
+    <AdSlot ad-slot="1270131515" />
+
     <KeepSearch />
-    <AdSlot ad-slot="1270131515" />
-
     <SearchText />
+    <AdSlot ad-slot="1270131515" />
+
     <SearchPlaceholder />
-    <AdSlot ad-slot="1270131515" />
-
     <SearchHighlight />
+    <AdSlot ad-slot="1270131515" />
+
     <CloseOnSelect />
-    <AdSlot ad-slot="1270131515" />
-
     <ShowTooltip />
-    <Closable />
     <AdSlot ad-slot="1270131515" />
 
+    <Closable />
     <HideSelected />
+    <AdSlot ad-slot="1270131515" />
+
     <MaxValuesShown />
   </div>
 </template>

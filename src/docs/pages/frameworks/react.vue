@@ -2,14 +2,14 @@
 import { defineComponent } from 'vue'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
+import HighlightStyle from '@/docs/components/highlight_style.vue'
 
 const h = React.createElement
 
 export default defineComponent({
   name: 'React',
   components: {
-    ShikiStyle
+    HighlightStyle
   },
   data() {
     return {
@@ -278,27 +278,27 @@ export default defineComponent({
 
     <h3>Install</h3>
     <p>Install the slim-select package:</p>
-    <ShikiStyle language="bash">
+    <HighlightStyle language="bash">
       <pre>
         npm install slim-select
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <p>Import the React component and styles:</p>
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         import SlimSelect from 'slim-select/react'
         import 'slim-select/styles' // CSS
         // or
         import 'slim-select/scss' // SCSS
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
     <br />
 
     <h3>Simple example</h3>
     <div ref="simpleHost"></div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         import { useState } from 'react'
         import SlimSelect from 'slim-select/react'
@@ -334,7 +334,7 @@ export default defineComponent({
           )
         }
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <br />
     <div class="separator"></div>
@@ -345,7 +345,7 @@ export default defineComponent({
 
     <div ref="propsHost"></div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         import SlimSelect from 'slim-select/react'
 
@@ -367,7 +367,7 @@ export default defineComponent({
           )
         }
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <br />
     <div class="separator"></div>
@@ -381,7 +381,7 @@ export default defineComponent({
 
     <div ref="dataHost"></div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         import { useState } from 'react'
         import SlimSelect from 'slim-select/react'
@@ -410,7 +410,7 @@ export default defineComponent({
           )
         }
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <br />
     <div class="separator"></div>
@@ -424,7 +424,7 @@ export default defineComponent({
 
     <div ref="eventsHost"></div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         import { useState } from 'react'
         import SlimSelect from 'slim-select/react'
@@ -460,7 +460,7 @@ export default defineComponent({
           )
         }
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <br />
     <div class="separator"></div>

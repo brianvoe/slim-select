@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'TextOverflow',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       singleConstrained: null as SlimSelect | null,
@@ -23,9 +26,6 @@ export default defineComponent({
     this.multipleConstrained = new SlimSelect({
       select: this.$refs.multipleConstrained as HTMLSelectElement
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -108,7 +108,7 @@ export default defineComponent({
     </div>
 
     <h3>HTML</h3>
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;div style="max-width: 250px;"&gt;
           &lt;!-- Selected value with long text --&gt;
@@ -128,10 +128,10 @@ export default defineComponent({
           &lt;/select&gt;
         &lt;/div&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <h3>Javascript</h3>
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         // Selected value with long text
         new SlimSelect({
@@ -147,7 +147,7 @@ export default defineComponent({
         // Arrow and deselect buttons remain visible
         // Works for both selected values and placeholders
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <div class="alert">
       <p><strong>How it works:</strong></p>

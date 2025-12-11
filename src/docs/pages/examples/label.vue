@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
+import HighlightStyle from '@/docs/components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Label',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       countryFor: null as SlimSelect | null,
@@ -27,9 +30,6 @@ export default defineComponent({
     this.countryMultiple = new SlimSelect({
       select: this.$refs.countryMultiple as HTMLSelectElement
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -144,7 +144,7 @@ export default defineComponent({
     </div>
 
     <h3>HTML</h3>
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;!-- Method 1: Label with "for" attribute --&gt;
         &lt;label for="country-select"&gt;Select a Country&lt;/label&gt;
@@ -171,6 +171,6 @@ export default defineComponent({
           &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SlimSelect, { Option, Optgroup } from '@/slim-select'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 interface Person {
   first_name: string
@@ -10,6 +10,9 @@ interface Person {
 
 export default defineComponent({
   name: 'SearchEvent',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.searchSingle as HTMLSelectElement,
@@ -85,9 +88,6 @@ export default defineComponent({
           })
       })
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -111,7 +111,7 @@ export default defineComponent({
       <select ref="searchMultiple" multiple></select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -171,6 +171,6 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect, { Option } from '@/slim-select'
 
 export default defineComponent({
   name: 'BeforeAfterChange',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       beforeChangeSingle: [] as Option[],
@@ -58,9 +61,6 @@ export default defineComponent({
         }
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -105,7 +105,7 @@ export default defineComponent({
       <option value="value3">Value 3</option>
     </select>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -117,7 +117,7 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 
   <div id="afterChange" class="content">
@@ -154,7 +154,7 @@ export default defineComponent({
       <option value="value3">Value 3</option>
     </select>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -165,6 +165,6 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

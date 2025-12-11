@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'MinMax',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.selectMultiMax as HTMLSelectElement,
@@ -21,9 +24,6 @@ export default defineComponent({
         }
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -53,7 +53,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         let slim = new SlimSelect({
           select: '#selectElement',
@@ -63,9 +63,9 @@ export default defineComponent({
           },
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select id="selectMultiMax" multiple&gt;
           &lt;option value="value1"&gt;Value 1&lt;/option&gt;
@@ -76,6 +76,6 @@ export default defineComponent({
           &lt;option value="value6"&gt;Value 6&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

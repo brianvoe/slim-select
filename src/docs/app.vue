@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
 
 import SlimSelect, { type Settings } from '@/slim-select'
 import { debounce } from '@/slim-select/helpers'
@@ -10,7 +9,6 @@ import { useAppStore } from '@/docs/store'
 export default defineComponent({
   name: 'App',
   components: {
-    ShikiStyle,
     AdSlot
   },
   data() {
@@ -85,7 +83,7 @@ export default defineComponent({
           closable: 'close',
           options: [
             { text: 'select', value: 'settings#select' },
-            { text: 'classes', value: 'settings#classes' },
+            { text: 'classes', value: 'settings#cssClasses' },
             { text: 'alwaysOpen', value: 'settings#alwaysOpen' },
             { text: 'contentLocation', value: 'settings#contentLocation' },
             { text: 'contentPosition', value: 'settings#contentPosition' },

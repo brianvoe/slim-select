@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Deselect',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.allowDeselectSingle as HTMLSelectElement,
@@ -20,9 +23,6 @@ export default defineComponent({
         allowDeselect: true
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -56,7 +56,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -65,8 +65,8 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
-    <ShikiStyle language="html">
+    </HighlightStyle>
+    <HighlightStyle language="html">
       <pre>
         &lt;!-- Requires emtpy data-placeholder option --&gt;
         &lt;select id="allowDeselect"&gt;
@@ -76,6 +76,6 @@ export default defineComponent({
           &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

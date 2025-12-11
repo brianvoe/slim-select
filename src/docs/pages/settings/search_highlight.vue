@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'SearchHighlight',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       htmlData: [
@@ -77,9 +80,6 @@ export default defineComponent({
       },
       data: this.htmlData
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -150,7 +150,7 @@ export default defineComponent({
       example above. Notice how the emoji flags and colors remain intact while only the matching text is highlighted.
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         // Basic usage
         new SlimSelect({
@@ -180,6 +180,6 @@ export default defineComponent({
           ]
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

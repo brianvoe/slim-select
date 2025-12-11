@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Required',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       country: null as SlimSelect | null,
@@ -41,9 +44,6 @@ export default defineComponent({
         this.message = '❌ Please fill in all required fields'
       }
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -119,7 +119,7 @@ export default defineComponent({
     </form>
 
     <h3>HTML</h3>
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;form id="form"&gt;
           &lt;label for="country"&gt;Country *&lt;/label&gt;
@@ -139,10 +139,10 @@ export default defineComponent({
           &lt;button type="submit"&gt;Submit Form&lt;/button&gt;
         &lt;/form&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <h3>Javascript</h3>
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#country'
@@ -165,7 +165,7 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
     <div class="alert">
       <p>

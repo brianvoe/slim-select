@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Search',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       searchSingle: null as SlimSelect | null,
@@ -28,9 +31,6 @@ export default defineComponent({
       this.searchMultiple!.open()
       this.searchMultiple!.search('value 2')
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -63,13 +63,13 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement'
         })
         select.search('value')
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

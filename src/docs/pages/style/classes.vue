@@ -1,12 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
+import HighlightStyle from '@/docs/components/highlight_style.vue'
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Classes',
   components: {
-    ShikiStyle
+    HighlightStyle
   },
   mounted() {
     new SlimSelect({
@@ -139,7 +139,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;!-- Forest Theme: Complete styling for select and options --&gt;
         &lt;select class="forest-main"&gt;
@@ -155,9 +155,9 @@ export default defineComponent({
           &lt;option class="fire-option" value="value3"&gt;Coal Black&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="css">
+    <HighlightStyle language="css">
       <pre>
         /* Forest Theme - Main element */
         .forest-main.ss-main {
@@ -215,6 +215,6 @@ export default defineComponent({
           }
         }
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

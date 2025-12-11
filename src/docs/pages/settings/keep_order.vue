@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'KeepOrder',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.keepOrder as HTMLSelectElement,
@@ -13,9 +16,6 @@ export default defineComponent({
         keepOrder: true
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -75,7 +75,7 @@ export default defineComponent({
     <br />
 
     <h3>Via html</h3>
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;select ref="closable" multiple&gt;
           &lt;option value="value1"&gt;Value 1&lt;/option&gt;
@@ -93,6 +93,6 @@ export default defineComponent({
           &lt;/optgroup&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'EnableDisable',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       setEnableSingle: null as SlimSelect | null,
@@ -29,9 +32,6 @@ export default defineComponent({
       this.setEnableSingle!.disable()
       this.setEnableMultiple!.disable()
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -65,7 +65,7 @@ export default defineComponent({
         <option value="value3">Value 3</option>
       </select>
     </div>
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement'
@@ -74,6 +74,6 @@ export default defineComponent({
         // or
         select.disable()
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

@@ -1,12 +1,12 @@
 <script lang="ts">
 import download from 'downloadjs'
 import { defineComponent } from 'vue'
-import ShikiStyle from '@/docs/components/shiki_style.vue'
+import HighlightStyle from '@/docs/components/highlight_style.vue'
 
 export default defineComponent({
   name: 'Install',
   components: {
-    ShikiStyle
+    HighlightStyle
   },
   methods: {
     downloadJs() {
@@ -39,13 +39,13 @@ export default defineComponent({
       <h2 class="header">Npm</h2>
       <p>Most common usage is npm</p>
 
-      <ShikiStyle language="bash">
+      <HighlightStyle language="bash">
         <pre>
           npm install slim-select
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
 
-      <ShikiStyle language="javascript">
+      <HighlightStyle language="javascript">
         <pre>
           import SlimSelect from 'slim-select'
           import 'slim-select/styles' // optional css import method
@@ -55,7 +55,7 @@ export default defineComponent({
             select: '#selectElement'
           })
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
 
     <div id="cdn" class="content">
@@ -83,7 +83,7 @@ export default defineComponent({
       </ul>
       <div class="alert info">New releases may be delayed until the next time its indexed</div>
 
-      <ShikiStyle language="html">
+      <HighlightStyle language="html">
         <pre>
           &lt;html&gt;
             &lt;head&gt;
@@ -104,7 +104,7 @@ export default defineComponent({
             &lt;/body&gt;
           &lt;/html&gt;
         </pre>
-      </ShikiStyle>
+      </HighlightStyle>
     </div>
 
     <div id="download" class="content">

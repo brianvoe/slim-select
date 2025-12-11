@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Styles',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.selectStyle as HTMLSelectElement,
@@ -25,9 +28,6 @@ export default defineComponent({
         showSearch: false
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -169,7 +169,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;!-- Ocean Theme: Complete styling for select and options --&gt;
         &lt;select style="
@@ -234,6 +234,6 @@ export default defineComponent({
           " value="value3"&gt;Teal Horizon&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

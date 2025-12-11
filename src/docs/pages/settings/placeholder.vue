@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'Placeholder',
+  components: {
+    HighlightStyle
+  },
   mounted() {
     new SlimSelect({
       select: this.$refs.placeholderSingle as HTMLSelectElement,
@@ -27,9 +30,6 @@ export default defineComponent({
         placeholderText: ''
       }
     })
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -70,7 +70,7 @@ export default defineComponent({
       </select>
     </div>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#placeholder',
@@ -79,9 +79,9 @@ export default defineComponent({
           }
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;!-- Set empty option with data-placeholder if you to have placeholder --&gt;
         &lt;!-- text for single select, otherwise first option will be selected --&gt;
@@ -92,6 +92,6 @@ export default defineComponent({
           &lt;option value="value3"&gt;Value 3&lt;/option&gt;
         &lt;/select&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>

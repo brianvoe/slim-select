@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../components/shiki_style.vue'
 
 export default defineComponent({
   name: 'Privacy',
@@ -8,9 +7,6 @@ export default defineComponent({
     return {
       lastUpdated: '2025-01-01'
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>

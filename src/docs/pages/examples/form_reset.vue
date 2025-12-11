@@ -1,11 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import ShikiStyle from '../../components/shiki_style.vue'
+import HighlightStyle from '../../components/highlight_style.vue'
 
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
   name: 'FormReset',
+  components: {
+    HighlightStyle
+  },
   data() {
     return {
       single: null as SlimSelect | null,
@@ -55,9 +58,6 @@ export default defineComponent({
         )
       })
     }
-  },
-  components: {
-    ShikiStyle
   }
 })
 </script>
@@ -136,7 +136,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <ShikiStyle language="html">
+    <HighlightStyle language="html">
       <pre>
         &lt;form id="form"&gt;
           &lt;select id="selectElement" name="select"&gt;
@@ -147,9 +147,9 @@ export default defineComponent({
           &lt;button type="reset"&gt;Reset form&lt;/button&gt;
         &lt;/form&gt;
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
 
-    <ShikiStyle language="javascript">
+    <HighlightStyle language="javascript">
       <pre>
         var select = new SlimSelect({
           select: '#selectElement'
@@ -163,6 +163,6 @@ export default defineComponent({
           )
         })
       </pre>
-    </ShikiStyle>
+    </HighlightStyle>
   </div>
 </template>
