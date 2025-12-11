@@ -95,10 +95,33 @@ export default class Render {
     }
   }
 
+  // Helper method to add classes that may contain spaces
+  // Splits by spaces and adds each class individually to avoid DOMException
+  private addClasses(element: HTMLElement | SVGElement, classValue: string): void {
+    if (!classValue || classValue.trim() === '') {
+      return
+    }
+    const classes = classValue.split(' ').filter((c) => c.trim() !== '')
+    for (const cls of classes) {
+      element.classList.add(cls.trim())
+    }
+  }
+
+  // Helper method to remove classes that may contain spaces
+  private removeClasses(element: HTMLElement | SVGElement, classValue: string): void {
+    if (!classValue || classValue.trim() === '') {
+      return
+    }
+    const classes = classValue.split(' ').filter((c) => c.trim() !== '')
+    for (const cls of classes) {
+      element.classList.remove(cls.trim())
+    }
+  }
+
   // Remove disabled classes
   public enable(): void {
     // Remove disabled class
-    this.main.main.classList.remove(this.classes.disabled)
+    this.removeClasses(this.main.main, this.classes.disabled)
     this.main.main.setAttribute('aria-disabled', 'false')
 
     // Set search input to "enabled"
@@ -108,7 +131,7 @@ export default class Render {
   // Set disabled classes
   public disable(): void {
     // Add disabled class
-    this.main.main.classList.add(this.classes.disabled)
+    this.addClasses(this.main.main, this.classes.disabled)
     this.main.main.setAttribute('aria-disabled', 'true')
 
     // Set search input to disabled
@@ -128,11 +151,11 @@ export default class Render {
     // Set direction class on both main and content (persists, never removed)
     const isAbove = this.settings.openPosition === 'up'
     const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
-    this.main.main.classList.add(dirClass)
-    this.content.main.classList.add(dirClass)
+    this.addClasses(this.main.main, dirClass)
+    this.addClasses(this.content.main, dirClass)
 
     // Add open class to content to trigger open animation
-    this.content.main.classList.add(this.classes.contentOpen)
+    this.addClasses(this.content.main, this.classes.contentOpen)
 
     // Make search visible to screen readers when opened
     this.content.search.input.removeAttribute('aria-hidden')
@@ -157,7 +180,7 @@ export default class Render {
 
     // Remove open class from content to trigger close animation
     // Direction class (dirAbove/dirBelow) persists to maintain correct transform-origin
-    this.content.main.classList.remove(this.classes.contentOpen)
+    this.removeClasses(this.content.main, this.classes.contentOpen)
 
     // Hide search from screen readers when closed
     this.content.search.input.setAttribute('aria-hidden', 'true')
@@ -168,8 +191,10 @@ export default class Render {
     // Remove direction class from main and content after animation is complete
     const animationTiming = this.getAnimationTiming()
     this.closeAnimationTimeout = setTimeout(() => {
-      this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
-      this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow)
+      this.removeClasses(this.main.main, this.classes.dirAbove)
+      this.removeClasses(this.main.main, this.classes.dirBelow)
+      this.removeClasses(this.content.main, this.classes.dirAbove)
+      this.removeClasses(this.content.main, this.classes.dirBelow)
       this.closeAnimationTimeout = null
     }, animationTiming)
   }
@@ -199,8 +224,8 @@ export default class Render {
     this.content.main.removeAttribute('style')
 
     // Make sure main/content has its base class
-    this.main.main.classList.add(this.classes.main)
-    this.content.main.classList.add(this.classes.content)
+    this.addClasses(this.main.main, this.classes.main)
+    this.addClasses(this.content.main, this.classes.content)
 
     // Add styles
     if (this.settings.style !== '') {
@@ -277,7 +302,9 @@ export default class Render {
         case 'Enter':
         case ' ':
           this.callbacks.open()
-          const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          const highlighted = this.content.list.querySelector(
+            '.' + this.classes.getFirst('highlighted')
+          ) as HTMLDivElement
           if (highlighted) {
             highlighted.click()
           }
@@ -307,19 +334,19 @@ export default class Render {
 
     // Add values
     const values = document.createElement('div')
-    values.classList.add(this.classes.values)
+    this.addClasses(values, this.classes.values)
     main.appendChild(values)
 
     // Add deselect
     const deselect = document.createElement('div')
-    deselect.classList.add(this.classes.deselect)
+    this.addClasses(deselect, this.classes.deselect)
 
     // Check if deselect is to be shown or not
     const selectedOptions = this.store?.getSelectedOptions()
     if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
-      deselect.classList.add(this.classes.hide)
+      this.addClasses(deselect, this.classes.hide)
     } else {
-      deselect.classList.remove(this.classes.hide)
+      this.removeClasses(deselect, this.classes.hide)
     }
 
     // Add deselect onclick event
@@ -376,12 +403,12 @@ export default class Render {
 
     // Add arrow
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    arrow.classList.add(this.classes.arrow)
+    this.addClasses(arrow, this.classes.arrow)
     arrow.setAttribute('viewBox', '0 0 100 100')
     const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     arrowPath.setAttribute('d', this.classes.arrowClose)
     if (this.settings.alwaysOpen) {
-      arrow.classList.add(this.classes.hide)
+      this.addClasses(arrow, this.classes.hide)
     }
     arrow.appendChild(arrowPath)
     main.appendChild(arrow)
@@ -430,7 +457,7 @@ export default class Render {
 
     // Create placeholder div
     const placeholder = document.createElement('div')
-    placeholder.classList.add(this.classes.placeholder)
+    this.addClasses(placeholder, this.classes.placeholder)
     placeholder.innerHTML = placeholderText
     return placeholder
   }
@@ -461,7 +488,7 @@ export default class Render {
     } else {
       // Create single value container
       const singleValue = document.createElement('div')
-      singleValue.classList.add(this.classes.single)
+      this.addClasses(singleValue, this.classes.single)
       if (selectedSingle.html) {
         singleValue.innerHTML = selectedSingle.html
       } else {
@@ -474,9 +501,9 @@ export default class Render {
 
     // If allowDeselect is false or selected value is empty just hide deselect
     if (!this.settings.allowDeselect || !selected.length) {
-      this.main.deselect.main.classList.add(this.classes.hide)
+      this.addClasses(this.main.deselect.main, this.classes.hide)
     } else {
-      this.main.deselect.main.classList.remove(this.classes.hide)
+      this.removeClasses(this.main.deselect.main, this.classes.hide)
     }
   }
 
@@ -494,7 +521,7 @@ export default class Render {
       return
     } else {
       // If there is a placeholder, remove it
-      const placeholder = this.main.values.querySelector('.' + this.classes.placeholder)
+      const placeholder = this.main.values.querySelector('.' + this.classes.getFirst('placeholder'))
       if (placeholder) {
         placeholder.remove()
       }
@@ -504,7 +531,7 @@ export default class Render {
     if (selectedOptions.length > this.settings.maxValuesShown) {
       // Creating the element that shows the number of selected items
       const singleValue = document.createElement('div')
-      singleValue.classList.add(this.classes.max)
+      this.addClasses(singleValue, this.classes.max)
       singleValue.textContent = this.settings.maxValuesMessage.replace('{number}', selectedOptions.length.toString())
 
       // If there is a selected value, set a single div
@@ -512,7 +539,7 @@ export default class Render {
       return
     } else {
       // If there is a message, remove it
-      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.max)
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.getFirst('max'))
       if (maxValuesMessage) {
         maxValuesMessage.remove()
       }
@@ -543,7 +570,7 @@ export default class Render {
 
     // Loop through and remove
     for (const n of removeNodes) {
-      n.classList.add(this.classes.valueOut)
+      this.addClasses(n, this.classes.valueOut)
       setTimeout(() => {
         if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
           this.main.values.removeChild(n)
@@ -582,11 +609,11 @@ export default class Render {
 
   public multipleValue(option: Option): HTMLDivElement {
     const value = document.createElement('div')
-    value.classList.add(this.classes.value)
+    this.addClasses(value, this.classes.value)
     value.dataset.id = option.id
 
     const text = document.createElement('div')
-    text.classList.add(this.classes.valueText)
+    this.addClasses(text, this.classes.valueText)
     text.textContent = option.text // For multiple values always use text
     value.appendChild(text)
 
@@ -594,7 +621,7 @@ export default class Render {
     if (!option.mandatory) {
       // Create delete div element
       const deleteDiv = document.createElement('div')
-      deleteDiv.classList.add(this.classes.valueDelete)
+      this.addClasses(deleteDiv, this.classes.valueDelete)
       deleteDiv.setAttribute('tabindex', '0') // Make the div focusable for tab navigation
 
       // Add delete onclick event
@@ -727,7 +754,7 @@ export default class Render {
     const main = document.createElement('div')
     const input = document.createElement('input')
     const addable = document.createElement('div')
-    main.classList.add(this.classes.search)
+    this.addClasses(main, this.classes.search)
 
     // Setup search return object
     const searchReturn: Search = {
@@ -737,7 +764,7 @@ export default class Render {
 
     // We still want the search to be tabable but not shown
     if (!this.settings.showSearch) {
-      main.classList.add(this.classes.hide)
+      this.addClasses(main, this.classes.hide)
       input.readOnly = true
     }
 
@@ -774,7 +801,9 @@ export default class Render {
           this.callbacks.close()
           return false
         case ' ':
-          const highlighted = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          const highlighted = this.content.list.querySelector(
+            '.' + this.classes.getFirst('highlighted')
+          ) as HTMLDivElement
           if (highlighted) {
             highlighted.click()
             return false
@@ -782,7 +811,9 @@ export default class Render {
           return true
         case 'Enter':
           // Check if there's a highlighted option first
-          const highlightedEnter = this.content.list.querySelector('.' + this.classes.highlighted) as HTMLDivElement
+          const highlightedEnter = this.content.list.querySelector(
+            '.' + this.classes.getFirst('highlighted')
+          ) as HTMLDivElement
           if (highlightedEnter) {
             // If an option is highlighted, select it (even if addable is enabled)
             highlightedEnter.click()
@@ -803,7 +834,7 @@ export default class Render {
     // If addable is enabled, add the addable div
     if (this.callbacks.addable) {
       // Add main class
-      addable.classList.add(this.classes.addable)
+      this.addClasses(addable, this.classes.addable)
 
       // Add svg icon
       const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
@@ -914,15 +945,15 @@ export default class Render {
 
   public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
     // Put together query string
-    let query = '.' + this.classes.option
+    let query = '.' + this.classes.getFirst('option')
     if (notPlaceholder) {
-      query += ':not(.' + this.classes.placeholder + ')'
+      query += ':not(.' + this.classes.getFirst('placeholder') + ')'
     }
     if (notDisabled) {
-      query += ':not(.' + this.classes.disabled + ')'
+      query += ':not(.' + this.classes.getFirst('disabled') + ')'
     }
     if (notHidden) {
-      query += ':not(.' + this.classes.hide + ')'
+      query += ':not(.' + this.classes.getFirst('hide') + ')'
     }
 
     return Array.from(this.content.list.querySelectorAll(query))
@@ -941,8 +972,8 @@ export default class Render {
     // If length is 1, highlight it
     if (options.length === 1) {
       // Check if option doesnt already have highlighted class
-      if (!options[0].classList.contains(this.classes.highlighted)) {
-        options[0].classList.add(this.classes.highlighted)
+      if (!options[0].classList.contains(this.classes.getFirst('highlighted'))) {
+        this.addClasses(options[0], this.classes.highlighted)
         return
       }
     }
@@ -950,7 +981,7 @@ export default class Render {
     // Loop through options and see if there are no highlighted ones
     let highlighted = false
     for (const o of options) {
-      if (o.classList.contains(this.classes.highlighted)) {
+      if (o.classList.contains(this.classes.getFirst('highlighted'))) {
         highlighted = true
       }
     }
@@ -958,8 +989,8 @@ export default class Render {
     // If no highlighted, see if any are selected and if so highlight selected first one
     if (!highlighted) {
       for (const o of options) {
-        if (o.classList.contains(this.classes.selected)) {
-          o.classList.add(this.classes.highlighted)
+        if (o.classList.contains(this.classes.getFirst('selected'))) {
+          this.addClasses(o, this.classes.highlighted)
           break
         }
       }
@@ -968,15 +999,15 @@ export default class Render {
     // Loop through options and find the highlighted one
     for (let i = 0; i < options.length; i++) {
       // Found highlighted option
-      if (options[i].classList.contains(this.classes.highlighted)) {
+      if (options[i].classList.contains(this.classes.getFirst('highlighted'))) {
         const prevOption = options[i]
         // Remove highlighted class from current one
-        prevOption.classList.remove(this.classes.highlighted)
+        this.removeClasses(prevOption, this.classes.highlighted)
 
         // If previous option has parent classes ss-optgroup with ss-open then click it
         const prevParent = prevOption.parentElement
-        if (prevParent && prevParent.classList.contains(this.classes.mainOpen)) {
-          const optgroupLabel = prevParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
+        if (prevParent && prevParent.classList.contains(this.classes.getFirst('mainOpen'))) {
+          const optgroupLabel = prevParent.querySelector('.' + this.classes.getFirst('optgroupLabel')) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
           }
@@ -985,7 +1016,7 @@ export default class Render {
         // Highlight the next one
         let selectOption =
           options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1]
-        selectOption.classList.add(this.classes.highlighted)
+        this.addClasses(selectOption, this.classes.highlighted)
         this.ensureElementInView(this.content.list, selectOption)
 
         // Update aria-activedescendant for screen readers
@@ -995,8 +1026,10 @@ export default class Render {
 
         // If selected option has parent classes ss-optgroup with ss-close then click it
         const selectParent = selectOption.parentElement
-        if (selectParent && selectParent.classList.contains(this.classes.close)) {
-          const optgroupLabel = selectParent.querySelector('.' + this.classes.optgroupLabel) as HTMLDivElement
+        if (selectParent && selectParent.classList.contains(this.classes.getFirst('close'))) {
+          const optgroupLabel = selectParent.querySelector(
+            '.' + this.classes.getFirst('optgroupLabel')
+          ) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
           }
@@ -1009,7 +1042,7 @@ export default class Render {
     // If we get here, there is no highlighted option
     // So we will highlight the first or last based upon direction
     const firstHighlight = options[dir === 'down' ? 0 : options.length - 1]
-    firstHighlight.classList.add(this.classes.highlighted)
+    this.addClasses(firstHighlight, this.classes.highlighted)
 
     // Update aria-activedescendant for screen readers
     if (firstHighlight.id) {
@@ -1023,7 +1056,7 @@ export default class Render {
   // Create main container that options will reside
   public listDiv(): HTMLDivElement {
     const options = document.createElement('div')
-    options.classList.add(this.classes.list)
+    this.addClasses(options, this.classes.list)
 
     // Add id for ARIA controls reference
     const listId = this.settings.id + '-list'
@@ -1038,7 +1071,7 @@ export default class Render {
     this.content.list.innerHTML = ''
 
     const errorDiv = document.createElement('div')
-    errorDiv.classList.add(this.classes.error)
+    this.addClasses(errorDiv, this.classes.error)
     errorDiv.textContent = error
     this.content.list.appendChild(errorDiv)
   }
@@ -1048,7 +1081,7 @@ export default class Render {
     this.content.list.innerHTML = ''
 
     const searchingDiv = document.createElement('div')
-    searchingDiv.classList.add(this.classes.searching)
+    this.addClasses(searchingDiv, this.classes.searching)
     searchingDiv.textContent = this.settings.searchingText
     this.content.list.appendChild(searchingDiv)
   }
@@ -1061,7 +1094,7 @@ export default class Render {
     // If no results show no results text
     if (data.length === 0) {
       const noResults = document.createElement('div')
-      noResults.classList.add(this.classes.search)
+      this.addClasses(noResults, this.classes.search)
 
       //
       if (this.callbacks.addable) {
@@ -1097,29 +1130,29 @@ export default class Render {
       if (d instanceof Optgroup) {
         // Create optgroup
         const optgroupEl = document.createElement('div')
-        optgroupEl.classList.add(this.classes.optgroup)
+        this.addClasses(optgroupEl, this.classes.optgroup)
 
         // Create label
         const optgroupLabel = document.createElement('div')
-        optgroupLabel.classList.add(this.classes.optgroupLabel)
+        this.addClasses(optgroupLabel, this.classes.optgroupLabel)
         optgroupEl.appendChild(optgroupLabel)
 
         // Create label text div element
         const optgroupLabelText = document.createElement('div')
-        optgroupLabelText.classList.add(this.classes.optgroupLabelText)
+        this.addClasses(optgroupLabelText, this.classes.optgroupLabelText)
         optgroupLabelText.textContent = d.label
         optgroupLabel.appendChild(optgroupLabelText)
 
         // Create options container
         const optgroupActions = document.createElement('div')
-        optgroupActions.classList.add(this.classes.optgroupActions)
+        this.addClasses(optgroupActions, this.classes.optgroupActions)
         optgroupLabel.appendChild(optgroupActions)
 
         // If selectByGroup is true and isMultiple then add click event to label
         if (this.settings.isMultiple && d.selectAll) {
           // Create new div to hold a checkbox svg
           const selectAll = document.createElement('div')
-          selectAll.classList.add(this.classes.optgroupSelectAll)
+          this.addClasses(selectAll, this.classes.optgroupSelectAll)
 
           // Check options and if all are selected, if so add class selected
           let allSelected = true
@@ -1132,7 +1165,7 @@ export default class Render {
 
           // Add class if all selected
           if (allSelected) {
-            selectAll.classList.add(this.classes.selected)
+            this.addClasses(selectAll, this.classes.selected)
           }
 
           // Add select all text span
@@ -1205,12 +1238,12 @@ export default class Render {
         if (d.closable !== 'off') {
           // Create new div to hold a checkbox svg
           const optgroupClosable = document.createElement('div')
-          optgroupClosable.classList.add(this.classes.optgroupClosable)
+          this.addClasses(optgroupClosable, this.classes.optgroupClosable)
 
           // Create svg arrow
           const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100')
-          optgroupClosableSvg.classList.add(this.classes.arrow)
+          this.addClasses(optgroupClosableSvg, this.classes.arrow)
           optgroupClosable.appendChild(optgroupClosableSvg)
 
           // Create new path for arrow
@@ -1219,13 +1252,13 @@ export default class Render {
 
           // If any options are selected or someone is searching, set optgroup to open
           if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
-            optgroupClosable.classList.add(this.classes.mainOpen)
+            this.addClasses(optgroupClosable, this.classes.mainOpen)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
-            optgroupEl.classList.add(this.classes.mainOpen)
+            this.addClasses(optgroupEl, this.classes.mainOpen)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'close') {
-            optgroupEl.classList.add(this.classes.close)
+            this.addClasses(optgroupEl, this.classes.close)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
           }
 
@@ -1235,13 +1268,13 @@ export default class Render {
             e.stopPropagation()
 
             // If optgroup is closed, open it
-            if (optgroupEl.classList.contains(this.classes.close)) {
-              optgroupEl.classList.remove(this.classes.close)
-              optgroupEl.classList.add(this.classes.mainOpen)
+            if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+              this.removeClasses(optgroupEl, this.classes.close)
+              this.addClasses(optgroupEl, this.classes.mainOpen)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
             } else {
-              optgroupEl.classList.remove(this.classes.mainOpen)
-              optgroupEl.classList.add(this.classes.close)
+              this.removeClasses(optgroupEl, this.classes.mainOpen)
+              this.addClasses(optgroupEl, this.classes.close)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
             }
           })
@@ -1275,8 +1308,8 @@ export default class Render {
     // Add hidden placeholder
     if (option.placeholder) {
       const placeholder = document.createElement('div')
-      placeholder.classList.add(this.classes.option)
-      placeholder.classList.add(this.classes.hide)
+      this.addClasses(placeholder, this.classes.option)
+      this.addClasses(placeholder, this.classes.hide)
       return placeholder
     }
 
@@ -1284,7 +1317,7 @@ export default class Render {
     const optionEl = document.createElement('div')
     optionEl.dataset.id = option.id // Dataset id for identifying an option
     optionEl.id = this.settings.id + '-' + option.id // Unique ID for ARIA references
-    optionEl.classList.add(this.classes.option)
+    this.addClasses(optionEl, this.classes.option)
     optionEl.setAttribute('role', 'option') // WCAG attribute
     if (option.class) {
       option.class.split(' ').forEach((dataClass: string) => {
@@ -1315,26 +1348,26 @@ export default class Render {
 
     // If option is disabled
     if (!option.display) {
-      optionEl.classList.add(this.classes.hide)
+      this.addClasses(optionEl, this.classes.hide)
     }
 
     // If allowed to deselect, null onclick and add disabled
     if (option.disabled) {
-      optionEl.classList.add(this.classes.disabled)
+      this.addClasses(optionEl, this.classes.disabled)
     }
 
     // If option is selected and hideSelectedOption is true, hide it
     if (option.selected && this.settings.hideSelected) {
-      optionEl.classList.add(this.classes.hide)
+      this.addClasses(optionEl, this.classes.hide)
     }
 
     // If option is selected
     if (option.selected) {
-      optionEl.classList.add(this.classes.selected)
+      this.addClasses(optionEl, this.classes.selected)
       optionEl.setAttribute('aria-selected', 'true')
       this.main.main.setAttribute('aria-activedescendant', optionEl.id)
     } else {
-      optionEl.classList.remove(this.classes.selected)
+      this.removeClasses(optionEl, this.classes.selected)
       optionEl.setAttribute('aria-selected', 'false')
     }
 
@@ -1561,10 +1594,10 @@ export default class Render {
     const removeClass = isAbove ? this.classes.dirBelow : this.classes.dirAbove
 
     // Set direction classes on both main and content
-    this.main.main.classList.remove(removeClass)
-    this.main.main.classList.add(addClass)
-    this.content.main.classList.remove(removeClass)
-    this.content.main.classList.add(addClass)
+    this.removeClasses(this.main.main, removeClass)
+    this.addClasses(this.main.main, addClass)
+    this.removeClasses(this.content.main, removeClass)
+    this.addClasses(this.content.main, addClass)
 
     // Set margin to position content
     if (isAbove) {
@@ -1669,9 +1702,9 @@ export default class Render {
     const hideClass = this.classes.hide
 
     if (allowDeselect && !(isMultiple && !hasSelectedItems)) {
-      deselectButton.classList.remove(hideClass)
+      this.removeClasses(deselectButton, hideClass)
     } else {
-      deselectButton.classList.add(hideClass)
+      this.addClasses(deselectButton, hideClass)
     }
   }
 }

@@ -49,14 +49,14 @@ export default defineComponent({
   <div id="cssClasses" class="content">
     <h2 class="header">cssClasses</h2>
     <p>
-      The cssClasses setting allows you to override SlimSelect's default CSS classes with your own custom classes. This
-      gives you complete control over the styling of different parts of the dropdown, enabling you to match your
-      application's design system perfectly.
+      The cssClasses setting allows you to add custom CSS classes to SlimSelect's default classes. Your custom classes
+      are appended to the default SlimSelect classes (like 'ss-main', 'ss-option', etc.), giving you the ability to add
+      additional styling without breaking SlimSelect's core functionality.
     </p>
     <p>
-      You can customize classes for various elements like options, the main container, search input, and more. This is
-      particularly useful when you need to apply specific styling that integrates seamlessly with your existing CSS
-      framework or design requirements.
+      You can add classes to various elements like options, the main container, search input, and more. The default
+      classes are always preserved to ensure proper functionality, while your custom classes provide additional styling
+      hooks. This allows you to integrate seamlessly with CSS frameworks like Tailwind CSS or your own design system.
     </p>
 
     <div class="row">
@@ -87,7 +87,8 @@ export default defineComponent({
         new SlimSelect({
           select: '#primary-select',
           cssClasses: {
-            option: "primary-option" 
+            option: "primary-option" // Appended to 'ss-option', resulting in class="ss-option primary-option"
+          }
         })
       </pre>
     </ShikiStyle>

@@ -1300,4 +1300,23 @@ describe('SlimSelect Module', () => {
       slim.destroy()
     })
   })
+
+  describe('cssClasses with space-separated strings', () => {
+    test('space-separated cssClasses are applied as individual classes', () => {
+      document.body.innerHTML = '<select id="test"><option>Test</option></select>'
+
+      const slim = new SlimSelect({
+        select: '#test',
+        cssClasses: {
+          main: 'class1 class2'
+        }
+      })
+
+      expect(slim.render.main.main.classList.contains('ss-main')).toBe(true)
+      expect(slim.render.main.main.classList.contains('class1')).toBe(true)
+      expect(slim.render.main.main.classList.contains('class2')).toBe(true)
+
+      slim.destroy()
+    })
+  })
 })
