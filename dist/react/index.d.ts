@@ -66,6 +66,7 @@ declare class CssClasses {
     disabled: string;
     hide: string;
     constructor(classes?: Partial<CssClasses>);
+    getFirst(name: keyof Omit<CssClasses, 'getFirst'>): string;
 }
 
 export declare interface Events {
@@ -130,10 +131,13 @@ declare class Render {
     store: Store;
     callbacks: Callbacks;
     private lastSelectedOption;
+    private closeAnimationTimeout;
     main: Main;
     content: Content;
     classes: CssClasses;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
+    private addClasses;
+    private removeClasses;
     enable(): void;
     disable(): void;
     open(): void;
@@ -161,6 +165,8 @@ declare class Render {
     option(option: Option_2): HTMLDivElement;
     destroy(): void;
     private highlightText;
+    private setContentDirection;
+    private setContentPosition;
     moveContentAbove(): void;
     moveContentBelow(): void;
     ensureElementInView(container: HTMLElement, element: HTMLElement): void;

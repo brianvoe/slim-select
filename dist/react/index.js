@@ -1,10 +1,10 @@
-import ae, { forwardRef as re, useRef as V, useImperativeHandle as oe, useEffect as $ } from "react";
-var F = { exports: {} }, R = {};
+import re, { forwardRef as oe, useRef as I, useImperativeHandle as ce, useEffect as Y } from "react";
+var V = { exports: {} }, R = {};
 var ee;
-function ce() {
+function he() {
   if (ee) return R;
   ee = 1;
-  var f = Symbol.for("react.transitional.element"), e = Symbol.for("react.fragment");
+  var p = Symbol.for("react.transitional.element"), e = Symbol.for("react.fragment");
   function t(s, i, n) {
     var r = null;
     if (n !== void 0 && (r = "" + n), i.key !== void 0 && (r = "" + i.key), "key" in i) {
@@ -13,7 +13,7 @@ function ce() {
         a !== "key" && (n[a] = i[a]);
     } else n = i;
     return i = n.ref, {
-      $$typeof: f,
+      $$typeof: p,
       type: s,
       key: r,
       ref: i !== void 0 ? i : null,
@@ -24,19 +24,19 @@ function ce() {
 }
 var _ = {};
 var te;
-function he() {
+function de() {
   return te || (te = 1, process.env.NODE_ENV !== "production" && function() {
-    function f(l) {
+    function p(l) {
       if (l == null) return null;
       if (typeof l == "function")
-        return l.$$typeof === ie ? null : l.displayName || l.name || null;
+        return l.$$typeof === ne ? null : l.displayName || l.name || null;
       if (typeof l == "string") return l;
       switch (l) {
-        case L:
+        case A:
           return "Fragment";
         case v:
           return "Profiler";
-        case O:
+        case S:
           return "StrictMode";
         case D:
           return "Suspense";
@@ -51,19 +51,19 @@ function he() {
         ), l.$$typeof) {
           case m:
             return "Portal";
-          case k:
+          case L:
             return l.displayName || "Context";
-          case T:
+          case k:
             return (l._context.displayName || "Context") + ".Consumer";
           case b:
             var u = l.render;
             return l = l.displayName, l || (l = u.displayName || u.name || "", l = l !== "" ? "ForwardRef(" + l + ")" : "ForwardRef"), l;
-          case H:
-            return u = l.displayName || null, u !== null ? u : f(l.type) || "Memo";
-          case A:
+          case B:
+            return u = l.displayName || null, u !== null ? u : p(l.type) || "Memo";
+          case T:
             u = l._payload, l = l._init;
             try {
-              return f(l(u));
+              return p(l(u));
             } catch {
             }
         }
@@ -81,20 +81,20 @@ function he() {
       }
       if (u) {
         u = console;
-        var w = u.error, y = typeof Symbol == "function" && Symbol.toStringTag && l[Symbol.toStringTag] || l.constructor.name || "Object";
-        return w.call(
+        var C = u.error, O = typeof Symbol == "function" && Symbol.toStringTag && l[Symbol.toStringTag] || l.constructor.name || "Object";
+        return C.call(
           u,
           "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
-          y
+          O
         ), e(l);
       }
     }
     function s(l) {
-      if (l === L) return "<>";
-      if (typeof l == "object" && l !== null && l.$$typeof === A)
+      if (l === A) return "<>";
+      if (typeof l == "object" && l !== null && l.$$typeof === T)
         return "<...>";
       try {
-        var u = f(l);
+        var u = p(l);
         return u ? "<" + u + ">" : "<...>";
       } catch {
         return "<...>";
@@ -115,32 +115,32 @@ function he() {
       return l.key !== void 0;
     }
     function a(l, u) {
-      function w() {
+      function C() {
         G || (G = !0, console.error(
           "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
           u
         ));
       }
-      w.isReactWarning = !0, Object.defineProperty(l, "key", {
-        get: w,
+      C.isReactWarning = !0, Object.defineProperty(l, "key", {
+        get: C,
         configurable: !0
       });
     }
     function c() {
-      var l = f(this.type);
+      var l = p(this.type);
       return X[l] || (X[l] = !0, console.error(
         "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
       )), l = this.props.ref, l !== void 0 ? l : null;
     }
-    function h(l, u, w, y, I, q) {
-      var E = w.ref;
+    function h(l, u, C, O, F, q) {
+      var y = C.ref;
       return l = {
-        $$typeof: C,
+        $$typeof: E,
         type: l,
         key: u,
-        props: w,
-        _owner: y
-      }, (E !== void 0 ? E : null) !== null ? Object.defineProperty(l, "ref", {
+        props: C,
+        _owner: O
+      }, (y !== void 0 ? y : null) !== null ? Object.defineProperty(l, "ref", {
         enumerable: !1,
         get: c
       }) : Object.defineProperty(l, "ref", { enumerable: !1, value: null }), l._store = {}, Object.defineProperty(l._store, "validated", {
@@ -157,7 +157,7 @@ function he() {
         configurable: !1,
         enumerable: !1,
         writable: !0,
-        value: I
+        value: F
       }), Object.defineProperty(l, "_debugTask", {
         configurable: !1,
         enumerable: !1,
@@ -165,100 +165,100 @@ function he() {
         value: q
       }), Object.freeze && (Object.freeze(l.props), Object.freeze(l)), l;
     }
-    function o(l, u, w, y, I, q) {
-      var E = u.children;
-      if (E !== void 0)
-        if (y)
-          if (ne(E)) {
-            for (y = 0; y < E.length; y++)
-              d(E[y]);
-            Object.freeze && Object.freeze(E);
+    function o(l, u, C, O, F, q) {
+      var y = u.children;
+      if (y !== void 0)
+        if (O)
+          if (le(y)) {
+            for (O = 0; O < y.length; O++)
+              d(y[O]);
+            Object.freeze && Object.freeze(y);
           } else
             console.error(
               "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
             );
-        else d(E);
+        else d(y);
       if (J.call(u, "key")) {
-        E = f(l);
-        var N = Object.keys(u).filter(function(le) {
-          return le !== "key";
+        y = p(l);
+        var N = Object.keys(u).filter(function(ae) {
+          return ae !== "key";
         });
-        y = 0 < N.length ? "{key: someKey, " + N.join(": ..., ") + ": ...}" : "{key: someKey}", Q[E + y] || (N = 0 < N.length ? "{" + N.join(": ..., ") + ": ...}" : "{}", console.error(
+        O = 0 < N.length ? "{key: someKey, " + N.join(": ..., ") + ": ...}" : "{key: someKey}", Q[y + O] || (N = 0 < N.length ? "{" + N.join(": ..., ") + ": ...}" : "{}", console.error(
           `A props object containing a "key" prop is being spread into JSX:
   let props = %s;
   <%s {...props} />
 React keys must be passed directly to JSX without using spread:
   let props = %s;
   <%s key={someKey} {...props} />`,
+          O,
           y,
-          E,
           N,
-          E
-        ), Q[E + y] = !0);
+          y
+        ), Q[y + O] = !0);
       }
-      if (E = null, w !== void 0 && (t(w), E = "" + w), r(u) && (t(u.key), E = "" + u.key), "key" in u) {
-        w = {};
-        for (var Y in u)
-          Y !== "key" && (w[Y] = u[Y]);
-      } else w = u;
-      return E && a(
-        w,
+      if (y = null, C !== void 0 && (t(C), y = "" + C), r(u) && (t(u.key), y = "" + u.key), "key" in u) {
+        C = {};
+        for (var $ in u)
+          $ !== "key" && (C[$] = u[$]);
+      } else C = u;
+      return y && a(
+        C,
         typeof l == "function" ? l.displayName || l.name || "Unknown" : l
       ), h(
         l,
-        E,
-        w,
+        y,
+        C,
         i(),
-        I,
+        F,
         q
       );
     }
     function d(l) {
-      g(l) ? l._store && (l._store.validated = 1) : typeof l == "object" && l !== null && l.$$typeof === A && (l._payload.status === "fulfilled" ? g(l._payload.value) && l._payload.value._store && (l._payload.value._store.validated = 1) : l._store && (l._store.validated = 1));
+      g(l) ? l._store && (l._store.validated = 1) : typeof l == "object" && l !== null && l.$$typeof === T && (l._payload.status === "fulfilled" ? g(l._payload.value) && l._payload.value._store && (l._payload.value._store.validated = 1) : l._store && (l._store.validated = 1));
     }
     function g(l) {
-      return typeof l == "object" && l !== null && l.$$typeof === C;
+      return typeof l == "object" && l !== null && l.$$typeof === E;
     }
-    var p = ae, C = Symbol.for("react.transitional.element"), m = Symbol.for("react.portal"), L = Symbol.for("react.fragment"), O = Symbol.for("react.strict_mode"), v = Symbol.for("react.profiler"), T = Symbol.for("react.consumer"), k = Symbol.for("react.context"), b = Symbol.for("react.forward_ref"), D = Symbol.for("react.suspense"), P = Symbol.for("react.suspense_list"), H = Symbol.for("react.memo"), A = Symbol.for("react.lazy"), M = Symbol.for("react.activity"), ie = Symbol.for("react.client.reference"), j = p.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, J = Object.prototype.hasOwnProperty, ne = Array.isArray, U = console.createTask ? console.createTask : function() {
+    var f = re, E = Symbol.for("react.transitional.element"), m = Symbol.for("react.portal"), A = Symbol.for("react.fragment"), S = Symbol.for("react.strict_mode"), v = Symbol.for("react.profiler"), k = Symbol.for("react.consumer"), L = Symbol.for("react.context"), b = Symbol.for("react.forward_ref"), D = Symbol.for("react.suspense"), P = Symbol.for("react.suspense_list"), B = Symbol.for("react.memo"), T = Symbol.for("react.lazy"), M = Symbol.for("react.activity"), ne = Symbol.for("react.client.reference"), j = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, J = Object.prototype.hasOwnProperty, le = Array.isArray, U = console.createTask ? console.createTask : function() {
       return null;
     };
-    p = {
+    f = {
       react_stack_bottom_frame: function(l) {
         return l();
       }
     };
-    var G, X = {}, K = p.react_stack_bottom_frame.bind(
-      p,
+    var G, X = {}, K = f.react_stack_bottom_frame.bind(
+      f,
       n
     )(), Z = U(s(n)), Q = {};
-    _.Fragment = L, _.jsx = function(l, u, w) {
-      var y = 1e4 > j.recentlyCreatedOwnerStacks++;
+    _.Fragment = A, _.jsx = function(l, u, C) {
+      var O = 1e4 > j.recentlyCreatedOwnerStacks++;
       return o(
         l,
         u,
-        w,
+        C,
         !1,
-        y ? Error("react-stack-top-frame") : K,
-        y ? U(s(l)) : Z
+        O ? Error("react-stack-top-frame") : K,
+        O ? U(s(l)) : Z
       );
-    }, _.jsxs = function(l, u, w) {
-      var y = 1e4 > j.recentlyCreatedOwnerStacks++;
+    }, _.jsxs = function(l, u, C) {
+      var O = 1e4 > j.recentlyCreatedOwnerStacks++;
       return o(
         l,
         u,
-        w,
+        C,
         !0,
-        y ? Error("react-stack-top-frame") : K,
-        y ? U(s(l)) : Z
+        O ? Error("react-stack-top-frame") : K,
+        O ? U(s(l)) : Z
       );
     };
   }()), _;
 }
 var se;
-function de() {
-  return se || (se = 1, process.env.NODE_ENV === "production" ? F.exports = ce() : F.exports = he()), F.exports;
+function ue() {
+  return se || (se = 1, process.env.NODE_ENV === "production" ? V.exports = he() : V.exports = de()), V.exports;
 }
-var ue = de();
+var fe = ue();
 class pe {
   main;
   // Placeholder
@@ -320,38 +320,43 @@ class pe {
   disabled;
   hide;
   constructor(e) {
-    e || (e = {}), this.main = e.main || "ss-main", this.placeholder = e.placeholder || "ss-placeholder", this.values = e.values || "ss-values", this.single = e.single || "ss-single", this.max = e.max || "ss-max", this.value = e.value || "ss-value", this.valueText = e.valueText || "ss-value-text", this.valueDelete = e.valueDelete || "ss-value-delete", this.valueOut = e.valueOut || "ss-value-out", this.deselect = e.deselect || "ss-deselect", this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = e.arrow || "ss-arrow", this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = e.content || "ss-content", this.contentOpen = e.contentOpen || "ss-open", this.dirAbove = e.dirAbove || "ss-dir-above", this.dirBelow = e.dirBelow || "ss-dir-below", this.search = e.search || "ss-search", this.searchHighlighter = e.searchHighlighter || "ss-search-highlight", this.searching = e.searching || "ss-searching", this.addable = e.addable || "ss-addable", this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = e.list || "ss-list", this.optgroup = e.optgroup || "ss-optgroup", this.optgroupLabel = e.optgroupLabel || "ss-optgroup-label", this.optgroupLabelText = e.optgroupLabelText || "ss-optgroup-label-text", this.optgroupActions = e.optgroupActions || "ss-optgroup-actions", this.optgroupSelectAll = e.optgroupSelectAll || "ss-selectall", this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = e.optgroupClosable || "ss-closable", this.option = e.option || "ss-option", this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = e.highlighted || "ss-highlighted", this.mainOpen = e.mainOpen || "ss-open", this.close = e.close || "ss-close", this.selected = e.selected || "ss-selected", this.error = e.error || "ss-error", this.disabled = e.disabled || "ss-disabled", this.hide = e.hide || "ss-hide";
+    e || (e = {});
+    let t = (s = "", i = "") => `${s} ${i}`.trim();
+    this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
+  }
+  getFirst(e) {
+    return this[e].split(" ")[0];
   }
 }
 function z() {
   return Math.random().toString(36).substring(2, 10);
 }
-function fe(f, e) {
+function ie(p, e) {
   function t(i, n) {
     return n && i && i.classList && i.classList.contains(n) || n && i && i.dataset && i.dataset.id && i.dataset.id === e ? i : null;
   }
   function s(i, n) {
     return !i || i === document ? null : t(i, n) ? i : s(i.parentNode, n);
   }
-  return t(f, e) || s(f, e);
+  return t(p, e) || s(p, e);
 }
-function B(f, e = 50, t = !1) {
+function H(p, e = 50, t = !1) {
   let s;
   return function(...i) {
     const n = self, r = () => {
-      s = null, t || f.apply(n, i);
+      s = null, t || p.apply(n, i);
     }, a = t && !s;
-    clearTimeout(s), s = setTimeout(r, e), a && f.apply(n, i);
+    clearTimeout(s), s = setTimeout(r, e), a && p.apply(n, i);
   };
 }
-function W(f, e) {
-  return JSON.stringify(f) === JSON.stringify(e);
+function W(p, e) {
+  return JSON.stringify(p) === JSON.stringify(e);
 }
-function me(f) {
-  const e = f.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (t) => "-" + t.toLowerCase());
-  return f[0] === f[0].toUpperCase() ? e.substring(1) : e;
+function me(p) {
+  const e = p.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (t) => "-" + t.toLowerCase());
+  return p[0] === p[0].toUpperCase() ? e.substring(1) : e;
 }
-class S {
+class w {
   id;
   value;
   text;
@@ -379,7 +384,7 @@ class x {
   constructor(e) {
     if (this.id = !e.id || e.id === "" ? z() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.closable = e.closable || "off", this.options = [], e.options)
       for (const t of e.options)
-        this.options.push(new S(t));
+        this.options.push(new w(t));
   }
 }
 class ge {
@@ -405,7 +410,7 @@ class ge {
               if (i)
                 return i;
             }
-        } else if (t instanceof S || "text" in t) {
+        } else if (t instanceof w || "text" in t) {
           const s = this.validateOption(t);
           if (s)
             return s;
@@ -424,10 +429,10 @@ class ge {
         if (s instanceof x || "label" in s) {
           let i = [];
           "options" in s && s.options && s.options.forEach((n) => {
-            i.push(new S(n));
+            i.push(new w(n));
           }), i.length > 0 && t.push(new x(s));
         }
-        (s instanceof S || "text" in s) && t.push(new S(s));
+        (s instanceof w || "text" in s) && t.push(new w(s));
       }
     }), t;
   }
@@ -438,7 +443,7 @@ class ge {
       i.forEach((r) => {
         let a = !1;
         for (const c of s) {
-          if (c instanceof S && c.id === r.id) {
+          if (c instanceof w && c.id === r.id) {
             a = !0;
             break;
           }
@@ -467,10 +472,10 @@ class ge {
   }
   addOption(e, t = !1) {
     if (t) {
-      let s = [new S(e)];
+      let s = [new w(e)];
       this.setData(s.concat(this.getData()));
     } else
-      this.setData(this.getData().concat(new S(e)));
+      this.setData(this.getData().concat(new w(e)));
   }
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
@@ -485,7 +490,7 @@ class ge {
           let h = c[e] || "";
           c.selected = i ? !1 : t.includes(h), c.selected && (n.push(c), this.selectType === "single" && (i = !0));
         }
-      a instanceof S && (s || (s = a), a.selected = i ? !1 : t.includes(a[e]), a.selected && (n.push(a), this.selectType === "single" && (i = !0)));
+      a instanceof w && (s || (s = a), a.selected = i ? !1 : t.includes(a[e]), a.selected && (n.push(a), this.selectType === "single" && (i = !0)));
     }
     this.selectType === "single" && s && !i && (s.selected = !0, n.push(s));
     const r = t.map((a) => n.find((c) => c[e] === a)?.id || "");
@@ -516,7 +521,7 @@ class ge {
   getFirstOption() {
     let e = null;
     for (let t of this.data)
-      if (t instanceof x ? e = t.options[0] : t instanceof S && (e = t), e)
+      if (t instanceof x ? e = t.options[0] : t instanceof w && (e = t), e)
         break;
     return e;
   }
@@ -532,13 +537,13 @@ class ge {
       if (i instanceof x) {
         let n = [];
         if (i.options.forEach((a) => {
-          (!e || e(a)) && (t ? n.push(new S(a)) : s.push(new S(a)));
+          (!e || e(a)) && (t ? n.push(new w(a)) : s.push(new w(a)));
         }), n.length > 0) {
           let a = new x(i);
           a.options = n, s.push(a);
         }
       }
-      i instanceof S && (!e || e(i)) && s.push(new S(i));
+      i instanceof w && (!e || e(i)) && s.push(new w(i));
     }), s;
   }
   // Take in an array of options and reoder them based upon the selected order
@@ -564,6 +569,8 @@ class ve {
   callbacks;
   // Used to compute the range selection
   lastSelectedOption;
+  // Timeout tracking for cleanup
+  closeAnimationTimeout = null;
   // Elements
   main;
   content;
@@ -572,18 +579,35 @@ class ve {
   constructor(e, t, s, i) {
     this.store = s, this.settings = e, this.classes = t, this.callbacks = i, this.lastSelectedOption = null, this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
   }
+  // Helper method to add classes that may contain spaces
+  // Splits by spaces and adds each class individually to avoid DOMException
+  addClasses(e, t) {
+    if (!t || t.trim() === "")
+      return;
+    const s = t.split(" ").filter((i) => i.trim() !== "");
+    for (const i of s)
+      e.classList.add(i.trim());
+  }
+  // Helper method to remove classes that may contain spaces
+  removeClasses(e, t) {
+    if (!t || t.trim() === "")
+      return;
+    const s = t.split(" ").filter((i) => i.trim() !== "");
+    for (const i of s)
+      e.classList.remove(i.trim());
+  }
   // Remove disabled classes
   enable() {
-    this.main.main.classList.remove(this.classes.disabled), this.main.main.setAttribute("aria-disabled", "false"), this.content.search.input.disabled = !1;
+    this.removeClasses(this.main.main, this.classes.disabled), this.main.main.setAttribute("aria-disabled", "false"), this.content.search.input.disabled = !1;
   }
   // Set disabled classes
   disable() {
-    this.main.main.classList.add(this.classes.disabled), this.main.main.setAttribute("aria-disabled", "true"), this.content.search.input.disabled = !0;
+    this.addClasses(this.main.main, this.classes.disabled), this.main.main.setAttribute("aria-disabled", "true"), this.content.search.input.disabled = !0;
   }
   open() {
-    this.main.arrow.path.setAttribute("d", this.classes.arrowOpen), this.main.main.setAttribute("aria-expanded", "true");
+    this.main.arrow.path.setAttribute("d", this.classes.arrowOpen), this.main.main.setAttribute("aria-expanded", "true"), this.closeAnimationTimeout && (clearTimeout(this.closeAnimationTimeout), this.closeAnimationTimeout = null);
     const t = this.settings.openPosition === "up" ? this.classes.dirAbove : this.classes.dirBelow;
-    this.main.main.classList.add(t), this.content.main.classList.add(t), this.content.main.classList.add(this.classes.contentOpen), this.content.search.input.removeAttribute("aria-hidden"), this.moveContent();
+    this.addClasses(this.main.main, t), this.addClasses(this.content.main, t), this.addClasses(this.content.main, this.classes.contentOpen), this.content.search.input.removeAttribute("aria-hidden"), this.moveContent();
     const s = this.store.getSelectedOptions();
     if (s.length) {
       const i = s[s.length - 1].id, n = this.content.list.querySelector('[data-id="' + i + '"]');
@@ -591,10 +615,10 @@ class ve {
     }
   }
   close() {
-    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.content.main.classList.remove(this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
+    this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.removeClasses(this.content.main, this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
     const e = this.getAnimationTiming();
-    setTimeout(() => {
-      this.main.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow), this.content.main.classList.remove(this.classes.dirAbove, this.classes.dirBelow);
+    this.closeAnimationTimeout = setTimeout(() => {
+      this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow), this.removeClasses(this.content.main, this.classes.dirAbove), this.removeClasses(this.content.main, this.classes.dirBelow), this.closeAnimationTimeout = null;
     }, e);
   }
   getAnimationTiming() {
@@ -608,7 +632,7 @@ class ve {
     return 200;
   }
   updateClassStyles() {
-    if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.main.main.classList.add(this.classes.main), this.content.main.classList.add(this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length)
+    if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length)
       for (const e of this.settings.class)
         e.trim() !== "" && (this.main.main.classList.add(e.trim()), this.content.main.classList.add(e.trim()));
     (this.settings.contentPosition === "relative" || this.settings.contentPosition === "fixed") && this.content.main.classList.add("ss-" + this.settings.contentPosition);
@@ -630,7 +654,9 @@ class ve {
         case "Enter":
         case " ":
           this.callbacks.open();
-          const o = this.content.list.querySelector("." + this.classes.highlighted);
+          const o = this.content.list.querySelector(
+            "." + this.classes.getFirst("highlighted")
+          );
           return o && o.click(), !1;
         case "Escape":
           return this.callbacks.close(), !1;
@@ -640,11 +666,11 @@ class ve {
       this.settings.disabled || (this.settings.isOpen ? this.callbacks.close() : this.callbacks.open());
     };
     const t = document.createElement("div");
-    t.classList.add(this.classes.values), e.appendChild(t);
+    this.addClasses(t, this.classes.values), e.appendChild(t);
     const s = document.createElement("div");
-    s.classList.add(this.classes.deselect);
+    this.addClasses(s, this.classes.deselect);
     const i = this.store?.getSelectedOptions();
-    !this.settings.allowDeselect || this.settings.isMultiple && i && i.length <= 0 ? s.classList.add(this.classes.hide) : s.classList.remove(this.classes.hide), s.onclick = (h) => {
+    !this.settings.allowDeselect || this.settings.isMultiple && i && i.length <= 0 ? this.addClasses(s, this.classes.hide) : this.removeClasses(s, this.classes.hide), s.onclick = (h) => {
       if (h.stopPropagation(), this.settings.disabled)
         return;
       let o = !0;
@@ -653,8 +679,8 @@ class ve {
         if (this.settings.isMultiple)
           this.callbacks.setSelected([], !1), this.updateDeselectAll();
         else {
-          const p = this.store.getFirstOption(), C = p ? p.id : "";
-          this.callbacks.setSelected(C, !1);
+          const f = this.store.getFirstOption(), E = f ? f.id : "";
+          this.callbacks.setSelected(E, !1);
         }
         this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(this.store.getSelectedOptions());
       }
@@ -664,9 +690,9 @@ class ve {
     const r = document.createElementNS("http://www.w3.org/2000/svg", "path");
     r.setAttribute("d", this.classes.deselectPath), n.appendChild(r), s.appendChild(n), e.appendChild(s);
     const a = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    a.classList.add(this.classes.arrow), a.setAttribute("viewBox", "0 0 100 100");
+    this.addClasses(a, this.classes.arrow), a.setAttribute("viewBox", "0 0 100 100");
     const c = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    return c.setAttribute("d", this.classes.arrowClose), this.settings.alwaysOpen && a.classList.add(this.classes.hide), a.appendChild(c), e.appendChild(a), {
+    return c.setAttribute("d", this.classes.arrowClose), this.settings.alwaysOpen && this.addClasses(a, this.classes.hide), a.appendChild(c), e.appendChild(a), {
       main: e,
       values: t,
       deselect: {
@@ -688,7 +714,7 @@ class ve {
     let t = this.settings.placeholderText;
     e.length && (e[0].html !== "" ? t = e[0].html : e[0].text !== "" && (t = e[0].text));
     const s = document.createElement("div");
-    return s.classList.add(this.classes.placeholder), s.innerHTML = t, s;
+    return this.addClasses(s, this.classes.placeholder), s.innerHTML = t, s;
   }
   // Get selected values and append to multiSelected values container
   // and remove those who shouldnt exist
@@ -705,9 +731,9 @@ class ve {
       this.main.values.innerHTML = this.placeholder().outerHTML;
     else {
       const s = document.createElement("div");
-      s.classList.add(this.classes.single), t.html ? s.innerHTML = t.html : s.innerText = t.text, this.main.values.innerHTML = s.outerHTML;
+      this.addClasses(s, this.classes.single), t.html ? s.innerHTML = t.html : s.innerText = t.text, this.main.values.innerHTML = s.outerHTML;
     }
-    !this.settings.allowDeselect || !e.length ? this.main.deselect.main.classList.add(this.classes.hide) : this.main.deselect.main.classList.remove(this.classes.hide);
+    !this.settings.allowDeselect || !e.length ? this.addClasses(this.main.deselect.main, this.classes.hide) : this.removeClasses(this.main.deselect.main, this.classes.hide);
   }
   renderMultipleValues() {
     let e = this.main.values.childNodes, t = this.store.filter((i) => i.selected && i.display, !1);
@@ -715,15 +741,15 @@ class ve {
       this.main.values.innerHTML = this.placeholder().outerHTML;
       return;
     } else {
-      const i = this.main.values.querySelector("." + this.classes.placeholder);
+      const i = this.main.values.querySelector("." + this.classes.getFirst("placeholder"));
       i && i.remove();
     }
     if (t.length > this.settings.maxValuesShown) {
       const i = document.createElement("div");
-      i.classList.add(this.classes.max), i.textContent = this.settings.maxValuesMessage.replace("{number}", t.length.toString()), this.main.values.innerHTML = i.outerHTML;
+      this.addClasses(i, this.classes.max), i.textContent = this.settings.maxValuesMessage.replace("{number}", t.length.toString()), this.main.values.innerHTML = i.outerHTML;
       return;
     } else {
-      const i = this.main.values.querySelector("." + this.classes.max);
+      const i = this.main.values.querySelector("." + this.classes.getFirst("max"));
       i && i.remove();
     }
     this.settings.keepOrder && (t = this.store.selectedOrderOptions(t));
@@ -733,7 +759,7 @@ class ve {
       r && (t.filter((c) => c.id === r, !1).length || s.push(n));
     }
     for (const i of s)
-      i.classList.add(this.classes.valueOut), setTimeout(() => {
+      this.addClasses(i, this.classes.valueOut), setTimeout(() => {
         this.main.values.hasChildNodes() && this.main.values.contains(i) && this.main.values.removeChild(i);
       }, 100);
     e = this.main.values.childNodes;
@@ -746,11 +772,11 @@ class ve {
   }
   multipleValue(e) {
     const t = document.createElement("div");
-    t.classList.add(this.classes.value), t.dataset.id = e.id;
+    this.addClasses(t, this.classes.value), t.dataset.id = e.id;
     const s = document.createElement("div");
-    if (s.classList.add(this.classes.valueText), s.textContent = e.text, t.appendChild(s), !e.mandatory) {
+    if (this.addClasses(s, this.classes.valueText), s.textContent = e.text, t.appendChild(s), !e.mandatory) {
       const i = document.createElement("div");
-      i.classList.add(this.classes.valueDelete), i.setAttribute("tabindex", "0"), i.onclick = (a) => {
+      this.addClasses(i, this.classes.valueDelete), i.setAttribute("tabindex", "0"), i.onclick = (a) => {
         if (a.preventDefault(), a.stopPropagation(), this.settings.disabled)
           return;
         let c = !0;
@@ -759,9 +785,9 @@ class ve {
           let d = [];
           for (const g of o) {
             if (g instanceof x)
-              for (const p of g.options)
-                p.id && d.push(p.id);
-            g instanceof S && d.push(g.id);
+              for (const f of g.options)
+                f.id && d.push(f.id);
+            g instanceof w && d.push(g.id);
           }
           this.callbacks.setSelected(d, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o), this.updateDeselectAll();
         }
@@ -803,12 +829,12 @@ class ve {
   }
   searchDiv() {
     const e = document.createElement("div"), t = document.createElement("input"), s = document.createElement("div");
-    e.classList.add(this.classes.search);
+    this.addClasses(e, this.classes.search);
     const i = {
       main: e,
       input: t
     };
-    if (this.settings.showSearch || (e.classList.add(this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true"), t.oninput = B((n) => {
+    if (this.settings.showSearch || (this.addClasses(e, this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true"), t.oninput = H((n) => {
       this.callbacks.search(n.target.value);
     }, 100), t.onkeydown = (n) => {
       switch (n.key) {
@@ -821,15 +847,19 @@ class ve {
         case "Escape":
           return this.callbacks.close(), !1;
         case " ":
-          const r = this.content.list.querySelector("." + this.classes.highlighted);
+          const r = this.content.list.querySelector(
+            "." + this.classes.getFirst("highlighted")
+          );
           return r ? (r.click(), !1) : !0;
         case "Enter":
-          const a = this.content.list.querySelector("." + this.classes.highlighted);
+          const a = this.content.list.querySelector(
+            "." + this.classes.getFirst("highlighted")
+          );
           return a ? (a.click(), !1) : this.callbacks.addable ? (s.click(), !1) : !0;
       }
       return !0;
     }, e.appendChild(t), this.callbacks.addable) {
-      s.classList.add(this.classes.addable);
+      this.addClasses(s, this.classes.addable);
       const n = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       n.setAttribute("viewBox", "0 0 100 100");
       const r = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -842,10 +872,10 @@ class ve {
           return;
         }
         const h = (d) => {
-          let g = new S(d);
+          let g = new w(d);
           if (this.callbacks.addOption(g), this.settings.isMultiple) {
-            let p = this.store.getSelected();
-            p.push(g.id), this.callbacks.setSelected(p, !0);
+            let f = this.store.getSelected();
+            f.push(g.id), this.callbacks.setSelected(f, !0);
           } else
             this.callbacks.setSelected([g.id], !0);
           this.callbacks.search(""), this.settings.closeOnSelect && setTimeout(() => {
@@ -873,75 +903,77 @@ class ve {
     this.content.search.input.focus({ preventScroll: !0 });
   }
   getOptions(e = !1, t = !1, s = !1) {
-    let i = "." + this.classes.option;
-    return e && (i += ":not(." + this.classes.placeholder + ")"), t && (i += ":not(." + this.classes.disabled + ")"), s && (i += ":not(." + this.classes.hide + ")"), Array.from(this.content.list.querySelectorAll(i));
+    let i = "." + this.classes.getFirst("option");
+    return e && (i += ":not(." + this.classes.getFirst("placeholder") + ")"), t && (i += ":not(." + this.classes.getFirst("disabled") + ")"), s && (i += ":not(." + this.classes.getFirst("hide") + ")"), Array.from(this.content.list.querySelectorAll(i));
   }
   // highlightUp is used to highlight the previous option in the list
   highlight(e) {
     const t = this.getOptions(!0, !0, !0);
     if (t.length === 0)
       return;
-    if (t.length === 1 && !t[0].classList.contains(this.classes.highlighted)) {
-      t[0].classList.add(this.classes.highlighted);
+    if (t.length === 1 && !t[0].classList.contains(this.classes.getFirst("highlighted"))) {
+      this.addClasses(t[0], this.classes.highlighted);
       return;
     }
     let s = !1;
     for (const n of t)
-      n.classList.contains(this.classes.highlighted) && (s = !0);
+      n.classList.contains(this.classes.getFirst("highlighted")) && (s = !0);
     if (!s) {
       for (const n of t)
-        if (n.classList.contains(this.classes.selected)) {
-          n.classList.add(this.classes.highlighted);
+        if (n.classList.contains(this.classes.getFirst("selected"))) {
+          this.addClasses(n, this.classes.highlighted);
           break;
         }
     }
     for (let n = 0; n < t.length; n++)
-      if (t[n].classList.contains(this.classes.highlighted)) {
+      if (t[n].classList.contains(this.classes.getFirst("highlighted"))) {
         const r = t[n];
-        r.classList.remove(this.classes.highlighted);
+        this.removeClasses(r, this.classes.highlighted);
         const a = r.parentElement;
-        if (a && a.classList.contains(this.classes.mainOpen)) {
-          const o = a.querySelector("." + this.classes.optgroupLabel);
+        if (a && a.classList.contains(this.classes.getFirst("mainOpen"))) {
+          const o = a.querySelector("." + this.classes.getFirst("optgroupLabel"));
           o && o.click();
         }
         let c = t[e === "down" ? n + 1 < t.length ? n + 1 : 0 : n - 1 >= 0 ? n - 1 : t.length - 1];
-        c.classList.add(this.classes.highlighted), this.ensureElementInView(this.content.list, c), c.id && this.main.main.setAttribute("aria-activedescendant", c.id);
+        this.addClasses(c, this.classes.highlighted), this.ensureElementInView(this.content.list, c), c.id && this.main.main.setAttribute("aria-activedescendant", c.id);
         const h = c.parentElement;
-        if (h && h.classList.contains(this.classes.close)) {
-          const o = h.querySelector("." + this.classes.optgroupLabel);
+        if (h && h.classList.contains(this.classes.getFirst("close"))) {
+          const o = h.querySelector(
+            "." + this.classes.getFirst("optgroupLabel")
+          );
           o && o.click();
         }
         return;
       }
     const i = t[e === "down" ? 0 : t.length - 1];
-    i.classList.add(this.classes.highlighted), i.id && this.main.main.setAttribute("aria-activedescendant", i.id), this.ensureElementInView(this.content.list, i);
+    this.addClasses(i, this.classes.highlighted), i.id && this.main.main.setAttribute("aria-activedescendant", i.id), this.ensureElementInView(this.content.list, i);
   }
   // Create main container that options will reside
   listDiv() {
     const e = document.createElement("div");
-    e.classList.add(this.classes.list);
+    this.addClasses(e, this.classes.list);
     const t = this.settings.id + "-list";
     return e.id = t, e.dataset.id = t, e;
   }
   renderError(e) {
     this.content.list.innerHTML = "";
     const t = document.createElement("div");
-    t.classList.add(this.classes.error), t.textContent = e, this.content.list.appendChild(t);
+    this.addClasses(t, this.classes.error), t.textContent = e, this.content.list.appendChild(t);
   }
   renderSearching() {
     this.content.list.innerHTML = "";
     const e = document.createElement("div");
-    e.classList.add(this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e);
+    this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e);
   }
   // Take in data and add options to
   renderOptions(e) {
     if (this.content.list.innerHTML = "", e.length === 0) {
       const s = document.createElement("div");
-      s.classList.add(this.classes.search), this.callbacks.addable ? s.innerHTML = this.settings.addableText.replace("{value}", this.content.search.input.value) : s.innerHTML = this.settings.searchText, this.content.list.appendChild(s);
+      this.addClasses(s, this.classes.search), this.callbacks.addable ? s.innerHTML = this.settings.addableText.replace("{value}", this.content.search.input.value) : s.innerHTML = this.settings.searchText, this.content.list.appendChild(s);
       return;
     }
     this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((i) => i.placeholder, !1).length || this.store.addOption(
-      new S({
+      new w({
         text: "",
         value: "",
         selected: !1,
@@ -953,66 +985,66 @@ class ve {
     for (const s of e) {
       if (s instanceof x) {
         const i = document.createElement("div");
-        i.classList.add(this.classes.optgroup);
+        this.addClasses(i, this.classes.optgroup);
         const n = document.createElement("div");
-        n.classList.add(this.classes.optgroupLabel), i.appendChild(n);
+        this.addClasses(n, this.classes.optgroupLabel), i.appendChild(n);
         const r = document.createElement("div");
-        r.classList.add(this.classes.optgroupLabelText), r.textContent = s.label, n.appendChild(r);
+        this.addClasses(r, this.classes.optgroupLabelText), r.textContent = s.label, n.appendChild(r);
         const a = document.createElement("div");
-        if (a.classList.add(this.classes.optgroupActions), n.appendChild(a), this.settings.isMultiple && s.selectAll) {
+        if (this.addClasses(a, this.classes.optgroupActions), n.appendChild(a), this.settings.isMultiple && s.selectAll) {
           const c = document.createElement("div");
-          c.classList.add(this.classes.optgroupSelectAll);
+          this.addClasses(c, this.classes.optgroupSelectAll);
           let h = !0;
-          for (const C of s.options)
-            if (!C.selected) {
+          for (const E of s.options)
+            if (!E.selected) {
               h = !1;
               break;
             }
-          h && c.classList.add(this.classes.selected);
+          h && this.addClasses(c, this.classes.selected);
           const o = document.createElement("span");
           o.textContent = s.selectAllText, c.appendChild(o);
           const d = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           d.setAttribute("viewBox", "0 0 100 100"), c.appendChild(d);
           const g = document.createElementNS("http://www.w3.org/2000/svg", "path");
           g.setAttribute("d", this.classes.optgroupSelectAllBox), d.appendChild(g);
-          const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          p.setAttribute("d", this.classes.optgroupSelectAllCheck), d.appendChild(p), c.addEventListener("click", (C) => {
-            C.preventDefault(), C.stopPropagation();
+          const f = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          f.setAttribute("d", this.classes.optgroupSelectAllCheck), d.appendChild(f), c.addEventListener("click", (E) => {
+            E.preventDefault(), E.stopPropagation();
             const m = this.store.getSelected();
             if (h) {
-              const L = m.filter((O) => {
+              const A = m.filter((S) => {
                 for (const v of s.options)
-                  if (O === v.id)
+                  if (S === v.id)
                     return !1;
                 return !0;
               });
-              this.callbacks.setSelected(L, !0);
+              this.callbacks.setSelected(A, !0);
               return;
             } else {
-              let L = s.options.map((v) => v.id).filter((v) => v !== void 0);
-              const O = m.concat(L);
+              let A = s.options.map((v) => v.id).filter((v) => v !== void 0);
+              const S = m.concat(A);
               for (const v of s.options)
-                v.id && !this.store.getOptionByID(v.id) && this.callbacks.addOption(new S(v));
-              this.callbacks.setSelected(O, !0);
+                v.id && !this.store.getOptionByID(v.id) && this.callbacks.addOption(new w(v));
+              this.callbacks.setSelected(S, !0);
               return;
             }
           }), a.appendChild(c);
         }
         if (s.closable !== "off") {
           const c = document.createElement("div");
-          c.classList.add(this.classes.optgroupClosable);
+          this.addClasses(c, this.classes.optgroupClosable);
           const h = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          h.setAttribute("viewBox", "0 0 100 100"), h.classList.add(this.classes.arrow), c.appendChild(h);
+          h.setAttribute("viewBox", "0 0 100 100"), this.addClasses(h, this.classes.arrow), c.appendChild(h);
           const o = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          h.appendChild(o), s.options.some((d) => d.selected) || this.content.search.input.value.trim() !== "" ? (c.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "open" ? (i.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "close" && (i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose)), n.addEventListener("click", (d) => {
-            d.preventDefault(), d.stopPropagation(), i.classList.contains(this.classes.close) ? (i.classList.remove(this.classes.close), i.classList.add(this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : (i.classList.remove(this.classes.mainOpen), i.classList.add(this.classes.close), o.setAttribute("d", this.classes.arrowClose));
+          h.appendChild(o), s.options.some((d) => d.selected) || this.content.search.input.value.trim() !== "" ? (this.addClasses(c, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "open" ? (this.addClasses(i, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : s.closable === "close" && (this.addClasses(i, this.classes.close), o.setAttribute("d", this.classes.arrowClose)), n.addEventListener("click", (d) => {
+            d.preventDefault(), d.stopPropagation(), i.classList.contains(this.classes.getFirst("close")) ? (this.removeClasses(i, this.classes.close), this.addClasses(i, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : (this.removeClasses(i, this.classes.mainOpen), this.addClasses(i, this.classes.close), o.setAttribute("d", this.classes.arrowClose));
           }), a.appendChild(c);
         }
         i.appendChild(n);
         for (const c of s.options)
-          i.appendChild(this.option(new S(c))), t.appendChild(i);
+          i.appendChild(this.option(new w(c))), t.appendChild(i);
       }
-      s instanceof S && t.appendChild(this.option(s));
+      s instanceof w && t.appendChild(this.option(s));
     }
     this.content.list.appendChild(t);
   }
@@ -1020,16 +1052,16 @@ class ve {
   option(e) {
     if (e.placeholder) {
       const s = document.createElement("div");
-      return s.classList.add(this.classes.option), s.classList.add(this.classes.hide), s;
+      return this.addClasses(s, this.classes.option), this.addClasses(s, this.classes.hide), s;
     }
     const t = document.createElement("div");
-    return t.dataset.id = e.id, t.id = this.settings.id + "-" + e.id, t.classList.add(this.classes.option), t.setAttribute("role", "option"), e.class && e.class.split(" ").forEach((s) => {
+    return t.dataset.id = e.id, t.id = this.settings.id + "-" + e.id, this.addClasses(t, this.classes.option), t.setAttribute("role", "option"), e.class && e.class.split(" ").forEach((s) => {
       t.classList.add(s);
     }), e.style && (t.style.cssText = e.style), this.settings.searchHighlight && this.content.search.input.value.trim() !== "" ? t.innerHTML = this.highlightText(
       e.html !== "" ? e.html : e.text,
       this.content.search.input.value,
       this.classes.searchHighlighter
-    ) : e.html !== "" ? t.innerHTML = e.html : t.textContent = e.text, this.settings.showOptionTooltips && t.textContent && t.setAttribute("title", t.textContent), e.display || t.classList.add(this.classes.hide), e.disabled && t.classList.add(this.classes.disabled), e.selected && this.settings.hideSelected && t.classList.add(this.classes.hide), e.selected ? (t.classList.add(this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (t.classList.remove(this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (s) => {
+    ) : e.html !== "" ? t.innerHTML = e.html : t.textContent = e.text, this.settings.showOptionTooltips && t.textContent && t.setAttribute("title", t.textContent), e.display || this.addClasses(t, this.classes.hide), e.disabled && this.addClasses(t, this.classes.disabled), e.selected && this.settings.hideSelected && this.addClasses(t, this.classes.hide), e.selected ? (this.addClasses(t, this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (this.removeClasses(t, this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (s) => {
       s.preventDefault(), s.stopPropagation();
       const i = this.store.getSelected(), n = s.currentTarget, r = String(n.dataset.id), a = s.ctrlKey || s.metaKey;
       if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || e.selected && e.mandatory || this.settings.isMultiple && this.settings.maxSelected <= i.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= i.length && e.selected && !a)
@@ -1038,19 +1070,19 @@ class ve {
       const h = this.store.getSelectedOptions();
       let o = [];
       if (this.settings.isMultiple) {
-        const d = h.some((p) => p.id === r);
+        const d = h.some((f) => f.id === r);
         if (s.shiftKey && this.lastSelectedOption) {
-          const p = this.store.getDataOptions(), C = p.findIndex((L) => L.id === this.lastSelectedOption.id), m = p.findIndex((L) => L.id === e.id);
-          if (C >= 0 && m >= 0) {
-            const L = Math.min(C, m), O = Math.max(C, m), T = p.slice(L, O + 1).filter((k) => !h.find((b) => b.id === k.id));
-            h.length + T.length <= this.settings.maxSelected ? o = h.concat(T) : o = h;
+          const f = this.store.getDataOptions(), E = f.findIndex((A) => A.id === this.lastSelectedOption.id), m = f.findIndex((A) => A.id === e.id);
+          if (E >= 0 && m >= 0) {
+            const A = Math.min(E, m), S = Math.max(E, m), k = f.slice(A, S + 1).filter((L) => !h.find((b) => b.id === L.id));
+            h.length + k.length <= this.settings.maxSelected ? o = h.concat(k) : o = h;
           } else
             o = h;
-        } else a ? (d ? o = h.filter((p) => p.id !== r) : o = h.concat(e), this.lastSelectedOption = e) : (d ? o = h.filter((p) => p.id !== r) : o = h.concat(e), this.lastSelectedOption = e);
+        } else a ? (d ? o = h.filter((f) => f.id !== r) : o = h.concat(e), this.lastSelectedOption = e) : (d ? o = h.filter((f) => f.id !== r) : o = h.concat(e), this.lastSelectedOption = e);
       }
       if (this.settings.isMultiple || (e.selected ? o = [] : o = [e]), this.callbacks.beforeChange || (c = !0), this.callbacks.beforeChange && (this.callbacks.beforeChange(o, h) === !1 ? c = !1 : c = !0), c) {
         this.store.getOptionByID(r) || this.callbacks.addOption(e), this.callbacks.setSelected(
-          o.map((p) => p.id),
+          o.map((f) => f.id),
           !1
         );
         const d = s.ctrlKey || s.metaKey || s.shiftKey;
@@ -1059,7 +1091,7 @@ class ve {
     }), t;
   }
   destroy() {
-    this.main.main.remove(), this.content.main.remove();
+    this.closeAnimationTimeout && (clearTimeout(this.closeAnimationTimeout), this.closeAnimationTimeout = null), this.main.main.remove(), this.content.main.remove();
   }
   highlightText(e, t, s) {
     const i = t.trim();
@@ -1072,27 +1104,43 @@ class ve {
         const h = c.textContent || "", o = new RegExp("(" + n + ")", "i");
         if (o.test(h)) {
           const d = document.createElement("span");
-          h.split(o).forEach((p, C) => {
-            if (p && o.test(p)) {
+          h.split(o).forEach((f, E) => {
+            if (f && o.test(f)) {
               const m = document.createElement("mark");
-              m.className = s, m.textContent = p, d.appendChild(m);
-            } else p && d.appendChild(document.createTextNode(p));
+              m.className = s, m.textContent = f, d.appendChild(m);
+            } else f && d.appendChild(document.createTextNode(f));
           }), c.parentNode?.replaceChild(d, c);
         }
       } else c.nodeType === Node.ELEMENT_NODE && Array.from(c.childNodes).forEach((h) => a(h));
     };
     return Array.from(r.childNodes).forEach((c) => a(c)), r.innerHTML;
   }
+  setContentDirection(e) {
+    const t = e === "above", s = t ? this.classes.dirAbove : this.classes.dirBelow, i = t ? this.classes.dirBelow : this.classes.dirAbove;
+    if (this.removeClasses(this.main.main, i), this.addClasses(this.main.main, s), this.removeClasses(this.content.main, i), this.addClasses(this.content.main, s), t) {
+      const n = this.main.main.offsetHeight, r = this.content.main.offsetHeight;
+      this.content.main.style.margin = "-" + (n + r - 1) + "px 0px 0px 0px";
+    } else
+      this.content.main.style.margin = "-1px 0px 0px 0px";
+  }
+  setContentPosition() {
+    if (this.settings.contentPosition === "relative")
+      return;
+    const e = this.main.main.getBoundingClientRect();
+    let t, s;
+    if (this.settings.contentPosition === "fixed")
+      t = e.top + e.height, s = e.left;
+    else {
+      const i = this.content.main.offsetParent, n = i ? i.getBoundingClientRect() : { top: 0, left: 0 };
+      t = e.top - n.top + e.height - (i?.clientTop || 0), s = e.left - n.left - (i?.clientLeft || 0);
+    }
+    this.content.main.style.top = t + "px", this.content.main.style.left = s + "px", this.content.main.style.width = e.width + "px";
+  }
   moveContentAbove() {
-    const e = this.main.main.offsetHeight, t = this.content.main.offsetHeight;
-    this.main.main.classList.remove(this.classes.dirBelow), this.main.main.classList.add(this.classes.dirAbove), this.content.main.classList.remove(this.classes.dirBelow), this.content.main.classList.add(this.classes.dirAbove);
-    const s = this.main.main.getBoundingClientRect();
-    this.content.main.style.margin = "-" + (e + t - 1) + "px 0px 0px 0px", this.content.main.style.top = s.top + s.height + (this.settings.contentPosition === "fixed" ? 0 : window.scrollY) + "px", this.content.main.style.left = s.left + (this.settings.contentPosition === "fixed" ? 0 : window.scrollX) + "px", this.content.main.style.width = s.width + "px";
+    this.setContentDirection("above"), this.setContentPosition();
   }
   moveContentBelow() {
-    this.main.main.classList.remove(this.classes.dirAbove), this.main.main.classList.add(this.classes.dirBelow), this.content.main.classList.remove(this.classes.dirAbove), this.content.main.classList.add(this.classes.dirBelow);
-    const e = this.main.main.getBoundingClientRect();
-    this.content.main.style.margin = "-1px 0px 0px 0px", this.settings.contentPosition !== "relative" && (this.content.main.style.top = e.top + e.height + (this.settings.contentPosition === "fixed" ? 0 : window.scrollY) + "px", this.content.main.style.left = e.left + (this.settings.contentPosition === "fixed" ? 0 : window.scrollX) + "px", this.content.main.style.width = e.width + "px");
+    this.setContentDirection("below"), this.setContentPosition();
   }
   ensureElementInView(e, t) {
     const s = e.scrollTop + e.offsetTop, i = s + e.clientHeight, n = t.offsetTop, r = n + t.clientHeight;
@@ -1107,7 +1155,7 @@ class ve {
     if (!this.store || !this.settings)
       return;
     const e = this.store.getSelectedOptions(), t = e && e.length > 0, s = this.settings.isMultiple, i = this.settings.allowDeselect, n = this.main.deselect.main, r = this.classes.hide;
-    i && !(s && !t) ? n.classList.remove(r) : n.classList.add(r);
+    i && !(s && !t) ? this.removeClasses(n, r) : this.addClasses(n, r);
   }
 }
 class be {
@@ -1307,7 +1355,7 @@ class be {
     if (!(!e || e.length === 0)) {
       this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1), this.select.innerHTML = "";
       for (const t of e)
-        t instanceof x && this.select.appendChild(this.createOptgroup(t)), t instanceof S && this.select.appendChild(this.createOption(t));
+        t instanceof x && this.select.appendChild(this.createOptgroup(t)), t instanceof w && this.select.appendChild(this.createOption(t));
       if (this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
         const t = this.pendingOptionsChange;
         t.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(t), this.changeListen(!0)) : this.pendingOptionsChange = null;
@@ -1345,8 +1393,8 @@ class be {
       if (n.__slimSelectLabelHandler)
         return;
       const r = (a) => {
-        const c = a.target;
-        a.preventDefault(), c === n && this.onLabelClick && this.onLabelClick();
+        const c = a.target, h = ie(c, this.select.dataset.id);
+        a.preventDefault(), !h && this.onLabelClick && this.onLabelClick();
       };
       n.__slimSelectLabelHandler = r, n.addEventListener("click", r, { capture: !0, passive: !1 });
     });
@@ -1372,7 +1420,7 @@ class be {
     this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect && (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), this.preventNativeSelect = null), this.preventNativeSelectMousedown && (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), this.preventNativeSelectMousedown = null), this.preventNativeSelectFocus && (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), this.preventNativeSelectFocus = null), this.observer && (this.observer.disconnect(), this.observer = null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
   }
 }
-class we {
+class Ce {
   id = "";
   // Primary ID for the select
   style = "";
@@ -1414,7 +1462,7 @@ class we {
     e || (e = {}), this.id = "ss-" + z(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.keepSearch = e.keepSearch !== void 0 ? e.keepSearch : !1, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
   }
 }
-let Se = class {
+let we = class {
   selectEl;
   // Classes
   settings;
@@ -1446,10 +1494,10 @@ let Se = class {
       e.events && e.events.error && e.events.error(new Error("Element isnt of type select"));
       return;
     }
-    this.selectEl.dataset.ssid && this.destroy(), this.settings = new we(e.settings), this.cssClasses = new pe(e.cssClasses);
+    this.selectEl.dataset.ssid && this.destroy(), this.settings = new Ce(e.settings), this.cssClasses = new pe(e.cssClasses);
     const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
     for (const a in e.events)
-      e.events.hasOwnProperty(a) && (t.indexOf(a) !== -1 ? this.events[a] = B(e.events[a], 100) : this.events[a] = e.events[a]);
+      e.events.hasOwnProperty(a) && (t.indexOf(a) !== -1 ? this.events[a] = H(e.events[a], 100) : this.events[a] = e.events[a]);
     this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new be(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (a) => {
       this.setSelected(a.map((c) => c.id));
     }, this.select.onClassChange = (a) => {
@@ -1526,12 +1574,12 @@ let Se = class {
     this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !W(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   open() {
-    this.settings.disabled || this.settings.isOpen || (this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
+    this.settings.disabled || this.settings.isOpen || (this.closeTimeout && (clearTimeout(this.closeTimeout), this.closeTimeout = null), this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
       this.events.afterOpen && this.events.afterOpen(), this.settings.isOpen && (this.settings.isFullOpen = !0), document.addEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
   }
   close(e = null) {
-    !this.settings.isOpen || this.settings.alwaysOpen || (this.events.beforeClose && this.events.beforeClose(), this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && this.search(""), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
+    !this.settings.isOpen || this.settings.alwaysOpen || (this.openTimeout && (clearTimeout(this.openTimeout), this.openTimeout = null), this.events.beforeClose && this.events.beforeClose(), this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && this.search(""), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
       this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
     }, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
   }
@@ -1560,33 +1608,33 @@ let Se = class {
   destroy() {
     this.openTimeout && (clearTimeout(this.openTimeout), this.openTimeout = null), this.closeTimeout && (clearTimeout(this.closeTimeout), this.closeTimeout = null), this.settings.intervalMove && (clearInterval(this.settings.intervalMove), this.settings.intervalMove = null), document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
   }
-  windowResize = B(() => {
+  windowResize = H(() => {
     !this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
   });
   // Event listener for window scrolling
-  windowScroll = B(() => {
+  windowScroll = H(() => {
     !this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
   });
   // Event listener for document click
   documentClick = (e) => {
-    this.settings.isOpen && e.target && !fe(e.target, this.settings.id) && this.close(e.type);
+    this.settings.isOpen && e.target && !ie(e.target, this.settings.id) && this.close(e.type);
   };
   // Event Listener for window visibility change
   windowVisibilityChange = () => {
     document.hidden && this.close();
   };
 };
-const Oe = re(
-  ({ data: f, settings: e, events: t, cssClasses: s, value: i, onChange: n, children: r, multiple: a }, c) => {
-    const h = V(null), o = V(null), d = V(!0), g = V(i);
-    oe(c, () => ({
+const Se = oe(
+  ({ data: p, settings: e, events: t, cssClasses: s, value: i, onChange: n, children: r, multiple: a }, c) => {
+    const h = I(null), o = I(null), d = I(!0), g = I(i);
+    ce(c, () => ({
       slimSelect: o.current
     }));
-    const p = (m) => typeof m == "string" ? a ? [m] : m : Array.isArray(m) ? a ? m : m[0] : a ? [] : "", C = (m, L = !1) => {
+    const f = (m) => typeof m == "string" ? a ? [m] : m : Array.isArray(m) ? a ? m : m[0] : a ? [] : "", E = (m, A = !1) => {
       if (!o.current || m === void 0)
         return;
-      const O = p(m), T = o.current.getData().flatMap((b) => "label" in b ? b.options : [b]);
-      if (!(Array.isArray(O) ? O.length > 0 && O.every((b) => T.some((D) => D.value === b)) : O !== "" && T.some((b) => b.value === O)) && !Array.isArray(O) && !T.some((D) => D.placeholder)) {
+      const S = f(m), k = o.current.getData().flatMap((b) => "label" in b ? b.options : [b]);
+      if (!(Array.isArray(S) ? S.length > 0 && S.every((b) => k.some((D) => D.value === b)) : S !== "" && k.some((b) => b.value === S)) && !Array.isArray(S) && !k.some((D) => D.placeholder)) {
         const D = o.current.getData(), P = {
           value: "",
           text: "",
@@ -1594,42 +1642,42 @@ const Oe = re(
         };
         o.current.setData([P].concat(D));
       }
-      o.current.setSelected(O, L);
+      o.current.setSelected(S, A);
     };
-    return $(() => {
+    return Y(() => {
       if (!h.current) return;
       const m = {
         select: h.current
       };
-      f && (m.data = f), e && (m.settings = e), s && (m.cssClasses = s);
-      const L = t?.afterChange;
+      p && (m.data = p), e && (m.settings = e), s && (m.cssClasses = s);
+      const A = t?.afterChange;
       return m.events = {
         ...t,
-        afterChange: (O) => {
+        afterChange: (S) => {
           if (!o.current) return;
-          const v = a ? O.map((A) => A.value) : O[0]?.value ?? "", k = o.current.getData().flatMap(
-            (A) => "label" in A ? A.options : [A]
-          ), b = g.current, D = b === void 0 ? !1 : Array.isArray(b) ? b.length > 0 && b.every((A) => k.some((M) => M.value === A)) : b !== "" && k.some((A) => A.value === b), P = Array.isArray(v) ? v.length > 0 && v.every((A) => k.some((M) => M.value === A)) : v !== "" && k.some((A) => A.value === v), H = Array.isArray(v) && Array.isArray(b) ? JSON.stringify(v.sort()) !== JSON.stringify(b.sort()) : b !== v;
-          n && H && (D || P) && (n(v), g.current = v), L && L(O);
+          const v = a ? S.map((T) => T.value) : S[0]?.value ?? "", L = o.current.getData().flatMap(
+            (T) => "label" in T ? T.options : [T]
+          ), b = g.current, D = b === void 0 ? !1 : Array.isArray(b) ? b.length > 0 && b.every((T) => L.some((M) => M.value === T)) : b !== "" && L.some((T) => T.value === b), P = Array.isArray(v) ? v.length > 0 && v.every((T) => L.some((M) => M.value === T)) : v !== "" && L.some((T) => T.value === v), B = Array.isArray(v) && Array.isArray(b) ? JSON.stringify(v.sort()) !== JSON.stringify(b.sort()) : b !== v;
+          n && B && (D || P) && (n(v), g.current = v), A && A(S);
         }
-      }, o.current = new Se(m), i !== void 0 && C(i, !1), () => {
+      }, o.current = new we(m), i !== void 0 && E(i, !1), () => {
         o.current && (o.current.destroy(), o.current = null);
       };
-    }, []), $(() => {
+    }, []), Y(() => {
       if (d.current) {
         d.current = !1, g.current = i;
         return;
       }
-      o.current && i !== void 0 && (g.current = i, C(i, !1));
-    }, [i]), $(() => {
-      o.current && f && !d.current && (o.current.setData(f), i !== void 0 && C(i, !1));
-    }, [f]), /* @__PURE__ */ ue.jsx("select", { ref: h, multiple: a, children: r });
+      o.current && i !== void 0 && (g.current = i, E(i, !1));
+    }, [i]), Y(() => {
+      o.current && p && !d.current && (o.current.setData(p), i !== void 0 && E(i, !1));
+    }, [p]), /* @__PURE__ */ fe.jsx("select", { ref: h, multiple: a, children: r });
   }
 );
-Oe.displayName = "SlimSelect";
+Se.displayName = "SlimSelect";
 export {
   x as Optgroup,
-  S as Option,
-  we as Settings,
-  Oe as default
+  w as Option,
+  Ce as Settings,
+  Se as default
 };
