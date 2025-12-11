@@ -940,7 +940,9 @@ describe('SlimSelect Module', () => {
       expect(slim.getSelected()).toEqual(['usa'])
 
       // Click the deselect button
-      const deselectButton = document.querySelector(`[data-id="${slim.settings.id}"] .ss-deselect`) as HTMLElement
+      const deselectButton = document.querySelector(
+        `.ss-main[data-id="${slim.settings.id}"] .ss-deselect`
+      ) as HTMLElement
       expect(deselectButton).toBeTruthy()
 
       deselectButton.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
