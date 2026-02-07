@@ -1658,4 +1658,138 @@ describe('render module', () => {
       expect(render.content.main.classList.contains(render.classes.dirBelow)).toBe(true)
     })
   })
+
+  describe('setContentPosition (via moveContentBelow)', () => {
+    // Helper: mock getBoundingClientRect on an element to return specific values
+    function mockRect(el: HTMLElement, rect: Partial<DOMRect>) {
+      el.getBoundingClientRect = vi.fn(
+        () =>
+          ({
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0,
+            toJSON: () => {},
+            ...rect
+          }) as DOMRect
+      )
+    }
+
+    test('absolute (default): content aligns below trigger using document coords', () => {
+      // Simulate trigger at viewport (100, 50) with height 40 and width 200
+      mockRect(render.main.main, { top: 100, left: 50, height: 40, width: 200 })
+
+      // No scroll
+      Object.defineProperty(window, 'scrollY', { value: 0, writable: true })
+      Object.defineProperty(window, 'scrollX', { value: 0, writable: true })
+
+      render.settings.contentPosition = 'absolute'
+      render.moveContentBelow()
+
+      // top = viewportTop(100) + scrollY(0) + height(40) = 140
+      // left = viewportLeft(50) + scrollX(0) = 50
+      expect(render.content.main.style.top).toBe('140px')
+      expect(render.content.main.style.left).toBe('50px')
+      expect(render.content.main.style.width).toBe('200px')
+    })
+
+    test('absolute: content accounts for page scroll', () => {
+      // Trigger at viewport (100, 50) but page is scrolled down 300px and right 20px
+      mockRect(render.main.main, { top: 100, left: 50, height: 40, width: 200 })
+
+      Object.defineProperty(window, 'scrollY', { value: 300, writable: true })
+      Object.defineProperty(window, 'scrollX', { value: 20, writable: true })
+
+      render.settings.contentPosition = 'absolute'
+      render.moveContentBelow()
+
+      // top = viewportTop(100) + scrollY(300) + height(40) = 440
+      // left = viewportLeft(50) + scrollX(20) = 70
+      expect(render.content.main.style.top).toBe('440px')
+      expect(render.content.main.style.left).toBe('70px')
+      expect(render.content.main.style.width).toBe('200px')
+    })
+
+    test('absolute: content aligns correctly when trigger is near top of page', () => {
+      // Trigger is at very top, no scroll
+      mockRect(render.main.main, { top: 0, left: 10, height: 30, width: 150 })
+
+      Object.defineProperty(window, 'scrollY', { value: 0, writable: true })
+      Object.defineProperty(window, 'scrollX', { value: 0, writable: true })
+
+      render.settings.contentPosition = 'absolute'
+      render.moveContentBelow()
+
+      // top = 0 + 0 + 30 = 30
+      // left = 10 + 0 = 10
+      expect(render.content.main.style.top).toBe('30px')
+      expect(render.content.main.style.left).toBe('10px')
+      expect(render.content.main.style.width).toBe('150px')
+    })
+
+    test('fixed: content uses viewport coords without scroll offset', () => {
+      // Same trigger position and scroll as the absolute+scroll test
+      mockRect(render.main.main, { top: 100, left: 50, height: 40, width: 200 })
+
+      Object.defineProperty(window, 'scrollY', { value: 300, writable: true })
+      Object.defineProperty(window, 'scrollX', { value: 20, writable: true })
+
+      render.settings.contentPosition = 'fixed'
+      render.moveContentBelow()
+
+      // Fixed ignores scroll: top = viewportTop(100) + height(40) = 140
+      // left = viewportLeft(50) = 50
+      expect(render.content.main.style.top).toBe('140px')
+      expect(render.content.main.style.left).toBe('50px')
+      expect(render.content.main.style.width).toBe('200px')
+    })
+
+    test('relative: content position styles are not set', () => {
+      mockRect(render.main.main, { top: 100, left: 50, height: 40, width: 200 })
+
+      render.settings.contentPosition = 'relative'
+
+      // Reset styles to confirm they aren't changed
+      render.content.main.style.top = ''
+      render.content.main.style.left = ''
+      render.content.main.style.width = ''
+
+      render.moveContentBelow()
+
+      // setContentPosition returns early for relative, so no inline positioning
+      expect(render.content.main.style.top).toBe('')
+      expect(render.content.main.style.left).toBe('')
+      expect(render.content.main.style.width).toBe('')
+    })
+
+    test('absolute vs fixed diverge only by scroll offset', () => {
+      const triggerRect = { top: 200, left: 80, height: 36, width: 250 }
+
+      Object.defineProperty(window, 'scrollY', { value: 500, writable: true })
+      Object.defineProperty(window, 'scrollX', { value: 0, writable: true })
+
+      // Absolute
+      mockRect(render.main.main, triggerRect)
+      render.settings.contentPosition = 'absolute'
+      render.moveContentBelow()
+      const absTop = render.content.main.style.top
+      const absLeft = render.content.main.style.left
+
+      // Fixed
+      mockRect(render.main.main, triggerRect)
+      render.settings.contentPosition = 'fixed'
+      render.moveContentBelow()
+      const fixedTop = render.content.main.style.top
+      const fixedLeft = render.content.main.style.left
+
+      // Absolute top should be exactly scrollY more than fixed top
+      expect(parseFloat(absTop)).toBe(parseFloat(fixedTop) + 500)
+      // Left should differ by scrollX (which is 0 here, so equal)
+      expect(parseFloat(absLeft)).toBe(parseFloat(fixedLeft))
+    })
+  })
 })

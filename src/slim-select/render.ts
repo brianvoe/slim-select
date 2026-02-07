@@ -1614,21 +1614,24 @@ export default class Render {
       return
     }
 
+    // getBoundingClientRect() returns viewport-relative coordinates.
     const containerRect = this.main.main.getBoundingClientRect()
     let top: number
     let left: number
 
     if (this.settings.contentPosition === 'fixed') {
-      // Fixed positioning - use viewport coordinates directly
+      // position:fixed is relative to the viewport, so viewport coords work directly.
       top = containerRect.top + containerRect.height
       left = containerRect.left
     } else {
-      // Absolute positioning - calculate relative to offsetParent
-      const offsetParent = this.content.main.offsetParent as HTMLElement
-      const offsetParentRect = offsetParent ? offsetParent.getBoundingClientRect() : { top: 0, left: 0 }
-
-      top = containerRect.top - offsetParentRect.top + containerRect.height - (offsetParent?.clientTop || 0)
-      left = containerRect.left - offsetParentRect.left - (offsetParent?.clientLeft || 0)
+      // position:absolute is relative to the containing block. By default the content
+      // is appended to document.body (static), so the containing block is the initial
+      // containing block (document origin). We must convert viewport coords to document
+      // coords by adding scroll offsets. Using offsetParent subtraction was unreliable
+      // because offsetParent for body children varies across browsers (body vs html)
+      // and body margin caused misalignment.
+      top = containerRect.top + window.scrollY + containerRect.height
+      left = containerRect.left + window.scrollX
     }
 
     this.content.main.style.top = top + 'px'
