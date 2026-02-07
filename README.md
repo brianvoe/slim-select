@@ -149,6 +149,7 @@ new SlimSelect({
     closeOnSelect: true, // Close dropdown after selection
     contentLocation: document.body, // Where to append dropdown
     contentPosition: 'absolute', // CSS position: absolute, relative, fixed
+    contentWidth: '', // Content width: "500px" exact, ">500px" min-width, "<500px" max-width
     openPosition: 'auto', // Open direction: auto, up, down
     placeholderText: 'Select Value', // Placeholder text
     allowDeselect: false, // Allow deselecting in single select
