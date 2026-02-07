@@ -1636,7 +1636,30 @@ export default class Render {
 
     this.content.main.style.top = top + 'px'
     this.content.main.style.left = left + 'px'
-    this.content.main.style.width = containerRect.width + 'px'
+
+    // Apply content width based on contentWidth setting
+    // ""           → width matches trigger (default/current behavior)
+    // "500px"      → exact width of 500px
+    // ">500px"     → min-width of 500px, width auto (content can grow)
+    // "<500px"     → max-width of 500px, width auto (content can shrink)
+    const cw = this.settings.contentWidth
+    this.content.main.style.width = ''
+    this.content.main.style.minWidth = ''
+    this.content.main.style.maxWidth = ''
+
+    if (!cw) {
+      // Default: match trigger width exactly
+      this.content.main.style.width = containerRect.width + 'px'
+    } else if (cw.startsWith('>')) {
+      // Min-width mode: at least this wide, can grow to fit content
+      this.content.main.style.minWidth = cw.slice(1)
+    } else if (cw.startsWith('<')) {
+      // Max-width mode: no wider than this, content wraps if longer
+      this.content.main.style.maxWidth = cw.slice(1)
+    } else {
+      // Exact width
+      this.content.main.style.width = cw
+    }
   }
 
   public moveContentAbove(): void {

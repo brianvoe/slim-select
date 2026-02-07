@@ -25,6 +25,7 @@ export default class Settings {
   public closeOnSelect: boolean
   public contentLocation: HTMLElement | null
   public contentPosition: 'relative' | 'absolute' | 'fixed'
+  public contentWidth: string
   public openPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
@@ -60,6 +61,7 @@ export default class Settings {
     this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
     this.contentLocation = settings.contentLocation || document.body
     this.contentPosition = settings.contentPosition || 'absolute'
+    this.contentWidth = settings.contentWidth || ''
     this.openPosition = settings.openPosition || 'auto' // options: auto, up, down
     this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false

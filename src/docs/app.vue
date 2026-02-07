@@ -87,6 +87,7 @@ export default defineComponent({
             { text: 'alwaysOpen', value: 'settings#alwaysOpen' },
             { text: 'contentLocation', value: 'settings#contentLocation' },
             { text: 'contentPosition', value: 'settings#contentPosition' },
+            { text: 'contentWidth', value: 'settings#contentWidth' },
             { text: 'openPosition', value: 'settings#openPosition' },
             { text: 'placeholder', value: 'settings#placeholder' },
             { text: 'selectAll', value: 'settings#selectAll' },

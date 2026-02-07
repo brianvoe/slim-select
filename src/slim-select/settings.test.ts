@@ -36,7 +36,8 @@ const defaultSettings: { [key: string]: any } = {
   maxSelected: 1000,
   timeoutDelay: 200,
   maxValuesShown: 20,
-  maxValuesMessage: '{number} selected'
+  maxValuesMessage: '{number} selected',
+  contentWidth: ''
 }
 
 describe('Settings module', () => {

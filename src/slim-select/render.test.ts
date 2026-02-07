@@ -1791,5 +1791,87 @@ describe('render module', () => {
       // Left should differ by scrollX (which is 0 here, so equal)
       expect(parseFloat(absLeft)).toBe(parseFloat(fixedLeft))
     })
+
+    describe('contentWidth setting', () => {
+      beforeEach(() => {
+        mockRect(render.main.main, { top: 100, left: 50, height: 40, width: 200 })
+        Object.defineProperty(window, 'scrollY', { value: 0, writable: true })
+        Object.defineProperty(window, 'scrollX', { value: 0, writable: true })
+        render.settings.contentPosition = 'absolute'
+      })
+
+      test('default (empty): width matches trigger', () => {
+        render.settings.contentWidth = ''
+        render.moveContentBelow()
+
+        expect(render.content.main.style.width).toBe('200px')
+        expect(render.content.main.style.minWidth).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('exact value: sets width to given value', () => {
+        render.settings.contentWidth = '500px'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.width).toBe('500px')
+        expect(render.content.main.style.minWidth).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('> prefix: sets min-width, no fixed width', () => {
+        render.settings.contentWidth = '>300px'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.minWidth).toBe('300px')
+        expect(render.content.main.style.width).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('< prefix: sets max-width, no fixed width', () => {
+        render.settings.contentWidth = '<600px'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.maxWidth).toBe('600px')
+        expect(render.content.main.style.width).toBe('')
+        expect(render.content.main.style.minWidth).toBe('')
+      })
+
+      test('exact value with percentage', () => {
+        render.settings.contentWidth = '100%'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.width).toBe('100%')
+        expect(render.content.main.style.minWidth).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('clears previous width styles when switching modes', () => {
+        // First set min-width
+        render.settings.contentWidth = '>300px'
+        render.moveContentBelow()
+        expect(render.content.main.style.minWidth).toBe('300px')
+
+        // Now switch to exact width — min-width should be cleared
+        render.settings.contentWidth = '500px'
+        render.moveContentBelow()
+        expect(render.content.main.style.width).toBe('500px')
+        expect(render.content.main.style.minWidth).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('clears previous width styles when switching to default', () => {
+        // First set max-width
+        render.settings.contentWidth = '<600px'
+        render.moveContentBelow()
+        expect(render.content.main.style.maxWidth).toBe('600px')
+
+        // Now switch to default — max-width should be cleared, width matches trigger
+        render.settings.contentWidth = ''
+        render.moveContentBelow()
+        expect(render.content.main.style.width).toBe('200px')
+        expect(render.content.main.style.minWidth).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+    })
   })
 })

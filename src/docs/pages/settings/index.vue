@@ -9,6 +9,7 @@ import Closable from './closable.vue'
 import CloseOnSelect from './close_on_select.vue'
 import ContentLocation from './content_location.vue'
 import ContentPosition from './content_position.vue'
+import ContentWidth from './content_width.vue'
 import Classes from './classes.vue'
 import DataAttributes from './data_attributes.vue'
 import Deselect from './deselect.vue'
@@ -41,6 +42,7 @@ export default defineComponent({
     AlwaysOpen,
     ContentLocation,
     ContentPosition,
+    ContentWidth,
     OpenPosition,
     Placeholder,
     SelectAll,
@@ -78,49 +80,50 @@ export default defineComponent({
     <AdSlot ad-slot="1270131515" />
 
     <ContentPosition />
+    <ContentWidth />
+    <AdSlot ad-slot="1270131515" />
+
     <OpenPosition />
-    <AdSlot ad-slot="1270131515" />
-
     <Placeholder />
+    <AdSlot ad-slot="1270131515" />
+
     <SelectAll />
-    <AdSlot ad-slot="1270131515" />
-
     <Deselect />
+    <AdSlot ad-slot="1270131515" />
+
     <Display />
-    <AdSlot ad-slot="1270131515" />
-
     <Disabled />
+    <AdSlot ad-slot="1270131515" />
+
     <Mandatory />
-    <AdSlot ad-slot="1270131515" />
-
     <MinMax />
+    <AdSlot ad-slot="1270131515" />
+
     <DataAttributes />
-    <AdSlot ad-slot="1270131515" />
-
     <Html />
+    <AdSlot ad-slot="1270131515" />
+
     <KeepOrder />
-    <AdSlot ad-slot="1270131515" />
-
     <ShowSearch />
+    <AdSlot ad-slot="1270131515" />
+
     <FocusSearch />
-    <AdSlot ad-slot="1270131515" />
-
     <KeepSearch />
+    <AdSlot ad-slot="1270131515" />
+
     <SearchText />
-    <AdSlot ad-slot="1270131515" />
-
     <SearchPlaceholder />
+    <AdSlot ad-slot="1270131515" />
+
     <SearchHighlight />
-    <AdSlot ad-slot="1270131515" />
-
     <CloseOnSelect />
+    <AdSlot ad-slot="1270131515" />
+
     <ShowTooltip />
-    <AdSlot ad-slot="1270131515" />
-
     <Closable />
-    <HideSelected />
     <AdSlot ad-slot="1270131515" />
 
+    <HideSelected />
     <MaxValuesShown />
   </div>
 </template>
