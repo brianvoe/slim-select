@@ -1,10 +1,10 @@
-import re, { forwardRef as oe, useRef as I, useImperativeHandle as ce, useEffect as Y } from "react";
+import re, { forwardRef as oe, useRef as I, useImperativeHandle as ce, useEffect as $ } from "react";
 var V = { exports: {} }, R = {};
 var ee;
 function he() {
   if (ee) return R;
   ee = 1;
-  var p = Symbol.for("react.transitional.element"), e = Symbol.for("react.fragment");
+  var p = /* @__PURE__ */ Symbol.for("react.transitional.element"), e = /* @__PURE__ */ Symbol.for("react.fragment");
   function t(s, i, n) {
     var r = null;
     if (n !== void 0 && (r = "" + n), i.key !== void 0 && (r = "" + i.key), "key" in i) {
@@ -25,7 +25,7 @@ function he() {
 var _ = {};
 var te;
 function de() {
-  return te || (te = 1, process.env.NODE_ENV !== "production" && function() {
+  return te || (te = 1, process.env.NODE_ENV !== "production" && (function() {
     function p(l) {
       if (l == null) return null;
       if (typeof l == "function")
@@ -198,8 +198,8 @@ React keys must be passed directly to JSX without using spread:
       }
       if (y = null, C !== void 0 && (t(C), y = "" + C), r(u) && (t(u.key), y = "" + u.key), "key" in u) {
         C = {};
-        for (var $ in u)
-          $ !== "key" && (C[$] = u[$]);
+        for (var W in u)
+          W !== "key" && (C[W] = u[W]);
       } else C = u;
       return y && a(
         C,
@@ -219,7 +219,7 @@ React keys must be passed directly to JSX without using spread:
     function g(l) {
       return typeof l == "object" && l !== null && l.$$typeof === E;
     }
-    var f = re, E = Symbol.for("react.transitional.element"), m = Symbol.for("react.portal"), A = Symbol.for("react.fragment"), S = Symbol.for("react.strict_mode"), v = Symbol.for("react.profiler"), k = Symbol.for("react.consumer"), L = Symbol.for("react.context"), b = Symbol.for("react.forward_ref"), D = Symbol.for("react.suspense"), P = Symbol.for("react.suspense_list"), B = Symbol.for("react.memo"), T = Symbol.for("react.lazy"), M = Symbol.for("react.activity"), ne = Symbol.for("react.client.reference"), j = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, J = Object.prototype.hasOwnProperty, le = Array.isArray, U = console.createTask ? console.createTask : function() {
+    var f = re, E = /* @__PURE__ */ Symbol.for("react.transitional.element"), m = /* @__PURE__ */ Symbol.for("react.portal"), A = /* @__PURE__ */ Symbol.for("react.fragment"), S = /* @__PURE__ */ Symbol.for("react.strict_mode"), v = /* @__PURE__ */ Symbol.for("react.profiler"), k = /* @__PURE__ */ Symbol.for("react.consumer"), L = /* @__PURE__ */ Symbol.for("react.context"), b = /* @__PURE__ */ Symbol.for("react.forward_ref"), D = /* @__PURE__ */ Symbol.for("react.suspense"), P = /* @__PURE__ */ Symbol.for("react.suspense_list"), B = /* @__PURE__ */ Symbol.for("react.memo"), T = /* @__PURE__ */ Symbol.for("react.lazy"), M = /* @__PURE__ */ Symbol.for("react.activity"), ne = /* @__PURE__ */ Symbol.for("react.client.reference"), j = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, J = Object.prototype.hasOwnProperty, le = Array.isArray, U = console.createTask ? console.createTask : function() {
       return null;
     };
     f = {
@@ -252,7 +252,7 @@ React keys must be passed directly to JSX without using spread:
         O ? U(s(l)) : Z
       );
     };
-  }()), _;
+  })()), _;
 }
 var se;
 function ue() {
@@ -349,7 +349,7 @@ function H(p, e = 50, t = !1) {
     clearTimeout(s), s = setTimeout(r, e), a && p.apply(n, i);
   };
 }
-function W(p, e) {
+function Y(p, e) {
   return JSON.stringify(p) === JSON.stringify(e);
 }
 function me(p) {
@@ -1128,13 +1128,9 @@ class ve {
       return;
     const e = this.main.main.getBoundingClientRect();
     let t, s;
-    if (this.settings.contentPosition === "fixed")
-      t = e.top + e.height, s = e.left;
-    else {
-      const i = this.content.main.offsetParent, n = i ? i.getBoundingClientRect() : { top: 0, left: 0 };
-      t = e.top - n.top + e.height - (i?.clientTop || 0), s = e.left - n.left - (i?.clientLeft || 0);
-    }
-    this.content.main.style.top = t + "px", this.content.main.style.left = s + "px", this.content.main.style.width = e.width + "px";
+    this.settings.contentPosition === "fixed" ? (t = e.top + e.height, s = e.left) : (t = e.top + window.scrollY + e.height, s = e.left + window.scrollX), this.content.main.style.top = t + "px", this.content.main.style.left = s + "px";
+    const i = this.settings.contentWidth;
+    this.content.main.style.width = "", this.content.main.style.minWidth = "", this.content.main.style.maxWidth = "", i ? i.startsWith(">") ? this.content.main.style.minWidth = i.slice(1) : i.startsWith("<") ? this.content.main.style.maxWidth = i.slice(1) : this.content.main.style.width = i : this.content.main.style.width = e.width + "px";
   }
   moveContentAbove() {
     this.setContentDirection("above"), this.setContentPosition();
@@ -1446,6 +1442,7 @@ class Ce {
   closeOnSelect;
   contentLocation;
   contentPosition;
+  contentWidth;
   openPosition;
   placeholderText;
   allowDeselect;
@@ -1459,7 +1456,7 @@ class Ce {
   maxValuesMessage;
   addableText;
   constructor(e) {
-    e || (e = {}), this.id = "ss-" + z(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.keepSearch = e.keepSearch !== void 0 ? e.keepSearch : !1, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
+    e || (e = {}), this.id = "ss-" + z(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.keepSearch = e.keepSearch !== void 0 ? e.keepSearch : !1, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
   }
 }
 let we = class {
@@ -1544,7 +1541,7 @@ let we = class {
     }
     this.store.setData(e);
     const i = this.store.getData();
-    this.select.updateOptions(i), this.render.renderValues(), this.render.renderOptions(i), this.events.afterChange && !W(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    this.select.updateOptions(i), this.render.renderValues(), this.render.renderOptions(i), this.events.afterChange && !Y(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   getSelected() {
     let e = this.store.getSelectedOptions();
@@ -1565,13 +1562,13 @@ let we = class {
     }
     this.store.setSelectedBy("id", n);
     const r = this.store.getData();
-    this.select.updateOptions(r), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(r), t && this.events.afterChange && !W(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    this.select.updateOptions(r), this.render.renderValues(), this.render.content.search.input.value !== "" ? this.search(this.render.content.search.input.value) : this.render.renderOptions(r), t && this.events.afterChange && !Y(s, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   addOption(e) {
     const t = this.store.getSelected();
     this.store.getDataOptions().some((i) => i.value === (e.value ?? e.text)) || this.store.addOption(e);
     const s = this.store.getData();
-    this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !W(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+    this.select.updateOptions(s), this.render.renderValues(), this.render.renderOptions(s), this.events.afterChange && !Y(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
   }
   open() {
     this.settings.disabled || this.settings.isOpen || (this.closeTimeout && (clearTimeout(this.closeTimeout), this.closeTimeout = null), this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
@@ -1644,7 +1641,7 @@ const Se = oe(
       }
       o.current.setSelected(S, A);
     };
-    return Y(() => {
+    return $(() => {
       if (!h.current) return;
       const m = {
         select: h.current
@@ -1663,13 +1660,13 @@ const Se = oe(
       }, o.current = new we(m), i !== void 0 && E(i, !1), () => {
         o.current && (o.current.destroy(), o.current = null);
       };
-    }, []), Y(() => {
+    }, []), $(() => {
       if (d.current) {
         d.current = !1, g.current = i;
         return;
       }
       o.current && i !== void 0 && (g.current = i, E(i, !1));
-    }, [i]), Y(() => {
+    }, [i]), $(() => {
       o.current && p && !d.current && (o.current.setData(p), i !== void 0 && E(i, !1));
     }, [p]), /* @__PURE__ */ fe.jsx("select", { ref: h, multiple: a, children: r });
   }

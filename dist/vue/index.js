@@ -1,4 +1,4 @@
-import { defineComponent as L, createElementBlock as D, openBlock as k, renderSlot as N } from "vue";
+import { defineComponent as L, openBlock as D, createElementBlock as k, renderSlot as N } from "vue";
 class M {
   main;
   // Placeholder
@@ -868,13 +868,9 @@ class F {
       return;
     const e = this.main.main.getBoundingClientRect();
     let t, s;
-    if (this.settings.contentPosition === "fixed")
-      t = e.top + e.height, s = e.left;
-    else {
-      const i = this.content.main.offsetParent, l = i ? i.getBoundingClientRect() : { top: 0, left: 0 };
-      t = e.top - l.top + e.height - (i?.clientTop || 0), s = e.left - l.left - (i?.clientLeft || 0);
-    }
-    this.content.main.style.top = t + "px", this.content.main.style.left = s + "px", this.content.main.style.width = e.width + "px";
+    this.settings.contentPosition === "fixed" ? (t = e.top + e.height, s = e.left) : (t = e.top + window.scrollY + e.height, s = e.left + window.scrollX), this.content.main.style.top = t + "px", this.content.main.style.left = s + "px";
+    const i = this.settings.contentWidth;
+    this.content.main.style.width = "", this.content.main.style.minWidth = "", this.content.main.style.maxWidth = "", i ? i.startsWith(">") ? this.content.main.style.minWidth = i.slice(1) : i.startsWith("<") ? this.content.main.style.maxWidth = i.slice(1) : this.content.main.style.width = i : this.content.main.style.width = e.width + "px";
   }
   moveContentAbove() {
     this.setContentDirection("above"), this.setContentPosition();
@@ -898,7 +894,7 @@ class F {
     i && !(s && !t) ? this.removeClasses(l, n) : this.addClasses(l, n);
   }
 }
-class B {
+class I {
   select;
   // Mutation observer fields
   onValueChange;
@@ -1160,7 +1156,7 @@ class B {
     this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect && (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), this.preventNativeSelect = null), this.preventNativeSelectMousedown && (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), this.preventNativeSelectMousedown = null), this.preventNativeSelectFocus && (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), this.preventNativeSelectFocus = null), this.observer && (this.observer.disconnect(), this.observer = null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
   }
 }
-class I {
+class B {
   id = "";
   // Primary ID for the select
   style = "";
@@ -1186,6 +1182,7 @@ class I {
   closeOnSelect;
   contentLocation;
   contentPosition;
+  contentWidth;
   openPosition;
   placeholderText;
   allowDeselect;
@@ -1199,7 +1196,7 @@ class I {
   maxValuesMessage;
   addableText;
   constructor(e) {
-    e || (e = {}), this.id = "ss-" + y(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.keepSearch = e.keepSearch !== void 0 ? e.keepSearch : !1, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
+    e || (e = {}), this.id = "ss-" + y(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 ? e.disabled : !1, this.alwaysOpen = e.alwaysOpen !== void 0 ? e.alwaysOpen : !1, this.showSearch = e.showSearch !== void 0 ? e.showSearch : !0, this.focusSearch = e.focusSearch !== void 0 ? e.focusSearch : !0, this.keepSearch = e.keepSearch !== void 0 ? e.keepSearch : !1, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.searchHighlight = e.searchHighlight !== void 0 ? e.searchHighlight : !1, this.closeOnSelect = e.closeOnSelect !== void 0 ? e.closeOnSelect : !0, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText !== void 0 ? e.placeholderText : "Select Value", this.allowDeselect = e.allowDeselect !== void 0 ? e.allowDeselect : !1, this.hideSelected = e.hideSelected !== void 0 ? e.hideSelected : !1, this.keepOrder = e.keepOrder !== void 0 ? e.keepOrder : !1, this.showOptionTooltips = e.showOptionTooltips !== void 0 ? e.showOptionTooltips : !1, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || 'Press "Enter" to add {value}';
   }
 }
 let H = class {
@@ -1234,11 +1231,11 @@ let H = class {
       e.events && e.events.error && e.events.error(new Error("Element isnt of type select"));
       return;
     }
-    this.selectEl.dataset.ssid && this.destroy(), this.settings = new I(e.settings), this.cssClasses = new M(e.cssClasses);
+    this.selectEl.dataset.ssid && this.destroy(), this.settings = new B(e.settings), this.cssClasses = new M(e.cssClasses);
     const t = ["beforeOpen", "afterOpen", "beforeClose", "afterClose"];
     for (const a in e.events)
       e.events.hasOwnProperty(a) && (t.indexOf(a) !== -1 ? this.events[a] = w(e.events[a], 100) : this.events[a] = e.events[a]);
-    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new B(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (a) => {
+    this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new I(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (a) => {
       this.setSelected(a.map((o) => o.id));
     }, this.select.onClassChange = (a) => {
       this.settings.class = a, this.render.updateClassStyles();
@@ -1364,7 +1361,7 @@ let H = class {
     document.hidden && this.close();
   };
 };
-const R = L({
+const $ = L({
   name: "SlimSelect",
   props: {
     modelValue: {
@@ -1468,24 +1465,24 @@ const R = L({
       this.slim.setSelected(e, c);
     }
   }
-}), $ = (c, e) => {
+}), _ = (c, e) => {
   const t = c.__vccOpts || c;
   for (const [s, i] of e)
     t[s] = i;
   return t;
-}, _ = ["multiple"];
+}, R = ["multiple"];
 function q(c, e, t, s, i, l) {
-  return k(), D("select", {
+  return D(), k("select", {
     multiple: c.multiple,
     ref: "slim"
   }, [
     N(c.$slots, "default")
-  ], 8, _);
+  ], 8, R);
 }
-const z = /* @__PURE__ */ $(R, [["render", q]]);
+const K = /* @__PURE__ */ _($, [["render", q]]);
 export {
   m as Optgroup,
   p as Option,
-  I as Settings,
-  z as default
+  B as Settings,
+  K as default
 };

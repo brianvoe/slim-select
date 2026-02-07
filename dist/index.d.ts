@@ -243,6 +243,7 @@ export declare class Settings {
     closeOnSelect: boolean;
     contentLocation: HTMLElement | null;
     contentPosition: 'relative' | 'absolute' | 'fixed';
+    contentWidth: string;
     openPosition: 'auto' | 'up' | 'down';
     placeholderText: string;
     allowDeselect: boolean;
