@@ -14,7 +14,8 @@ export default defineComponent({
       defaultWidth: null as SlimSelect | null,
       exactWidth: null as SlimSelect | null,
       minWidth: null as SlimSelect | null,
-      maxWidth: null as SlimSelect | null
+      maxWidth: null as SlimSelect | null,
+      overflowDemo: null as SlimSelect | null
     }
   },
   mounted() {
@@ -46,12 +47,21 @@ export default defineComponent({
         contentWidth: '<300px'
       }
     })
+
+    // Wide dropdown aligned right — resize window narrow and open to see it shift left
+    this.overflowDemo = new SlimSelect({
+      select: this.$refs.overflowDemo as HTMLSelectElement,
+      settings: {
+        contentWidth: '>320px'
+      }
+    })
   },
   beforeUnmount() {
     this.defaultWidth?.destroy()
     this.exactWidth?.destroy()
     this.minWidth?.destroy()
     this.maxWidth?.destroy()
+    this.overflowDemo?.destroy()
   }
 })
 </script>
@@ -84,6 +94,19 @@ export default defineComponent({
       margin-bottom: var(--spacing-quarter);
       font-weight: 600;
     }
+  }
+
+  .overflow-demo-wrapper {
+    margin-top: var(--spacing);
+    padding: var(--spacing);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .overflow-demo-inner {
+    width: 120px;
   }
 }
 </style>
@@ -162,6 +185,25 @@ export default defineComponent({
               <option>Option 3</option>
             </select>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Right-edge overflow: dropdown shifts left</h3>
+    <p>
+      When the dropdown is wider than the viewport, it shifts left so its <strong>right edge</strong>
+      lines up with the trigger and doesn’t go off the right side of the window.
+    </p>
+    <div class="overflow-demo-wrapper">
+      <div class="overflow-demo-inner">
+        <div class="form-group">
+          <label>Narrow your browser window, then open this dropdown</label>
+          <select ref="overflowDemo">
+            <option>Short</option>
+            <option>Option with a long label that would overflow</option>
+            <option>Another very long option from the backend API</option>
+            <option>Third option that extends past the viewport</option>
+          </select>
         </div>
       </div>
     </div>

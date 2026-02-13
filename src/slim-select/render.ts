@@ -1660,6 +1660,35 @@ export default class Render {
       // Exact width
       this.content.main.style.width = cw
     }
+
+    // If content overflows the right side of the viewport, shift it left so the right edge
+    // lines up with the trigger (or stays inside the viewport). Use rAF so we measure after
+    // layout (and after width:auto / min-width have been applied).
+    const padding = 20
+    const viewportRight = window.innerWidth - padding
+
+    const applyOverflowShift = (): void => {
+      const contentRect = this.content.main.getBoundingClientRect()
+      const contentRight = contentRect.right
+      if (contentRight <= viewportRight) return
+
+      const overflow = contentRight - viewportRight
+      const currentLeft = parseFloat(this.content.main.style.left) || 0
+
+      if (this.settings.contentPosition === 'fixed') {
+        const newLeft = Math.max(padding, currentLeft - overflow)
+        this.content.main.style.left = newLeft + 'px'
+      } else {
+        const newLeft = Math.max(window.scrollX + padding, currentLeft - overflow)
+        this.content.main.style.left = newLeft + 'px'
+      }
+    }
+
+    // First rAF: layout done (width/min-width applied). Second rAF: catch scrollbar etc.
+    requestAnimationFrame(() => {
+      applyOverflowShift()
+      requestAnimationFrame(applyOverflowShift)
+    })
   }
 
   public moveContentAbove(): void {
