@@ -706,6 +706,38 @@ describe('SlimSelect Module', () => {
       expect(reopenedAsyncOptions[0].textContent).toBe('Async Result 1')
     })
 
+    test('issue #671: first search result is selectable when allowDeselect and no prior selection (single select)', async () => {
+      document.body.innerHTML = '<select id="searchFirstResult"></select>'
+
+      const asyncSearchMock = vi.fn().mockResolvedValue([
+        { value: 'first', text: 'First Result' },
+        { value: 'second', text: 'Second Result' }
+      ])
+
+      const slimFirst = new SlimSelect({
+        select: '#searchFirstResult',
+        data: [],
+        settings: { allowDeselect: true },
+        events: { search: asyncSearchMock }
+      })
+
+      slimFirst.open()
+      slimFirst.search('xy')
+      await new Promise((r) => setTimeout(r, 100))
+
+      const options = document.querySelectorAll('.ss-option')
+      expect(options.length).toBeGreaterThanOrEqual(2)
+
+      const firstOption = Array.from(options).find((el) => el.textContent?.trim() === 'First Result')
+      expect(firstOption).toBeTruthy()
+      expect(firstOption?.getAttribute('aria-selected')).toBe('false')
+
+      firstOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      expect(slimFirst.getSelected()).toEqual(['first'])
+
+      slimFirst.destroy()
+    })
+
     test('should update store data with search results', () => {
       // Test that search updates the store
       slim.search('te')

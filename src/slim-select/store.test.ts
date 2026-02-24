@@ -707,6 +707,23 @@ describe('store module', () => {
       expect(data[2].selected).toBe(true)
       expect(data[3].selected).toBe(false)
     })
+
+    test('allowEmptySelection true leaves no option selected (e.g. after search with no prior selection)', () => {
+      store.setSelectedBy('id', [], true)
+
+      const data = store.getDataOptions()
+      const selected = data.filter((o) => o.selected)
+
+      expect(selected).toHaveLength(0)
+      expect(data[0].selected).toBe(false)
+    })
+
+    test('allowEmptySelection false (default) selects first option when given empty ids', () => {
+      store.setSelectedBy('id', [])
+
+      const data = store.getDataOptions()
+      expect(data[0].selected).toBe(true)
+    })
   })
 
   describe('getSelected', () => {

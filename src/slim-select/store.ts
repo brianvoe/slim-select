@@ -147,13 +147,15 @@ export default class Store {
     // Convert new data to full data array
     const newData = this.partialToFullData(data)
 
+    let selectedOptionsBeforeUpdate: Option[] = []
+
     if (preserveSelected) {
       // Get currently selected options before updating data
-      const selectedOptions = this.getSelectedOptions()
+      selectedOptionsBeforeUpdate = this.getSelectedOptions()
 
       // Check which selected options are missing from new data
       const missingSelected: (Option | Optgroup)[] = []
-      selectedOptions.forEach((selectedOption) => {
+      selectedOptionsBeforeUpdate.forEach((selectedOption) => {
         let found = false
 
         // Check if this selected option exists in new data
@@ -186,7 +188,9 @@ export default class Store {
     // Run this.data through setSelected by value
     // to set the selected property and clean any wrong selected
     if (this.selectType === 'single') {
-      this.setSelectedBy('id', this.getSelected())
+      // When search returns new data and user had nothing selected, don't auto-select first option
+      const allowEmptySelection = preserveSelected && selectedOptionsBeforeUpdate.length === 0
+      this.setSelectedBy('id', this.getSelected(), allowEmptySelection)
     }
   }
 
@@ -213,7 +217,12 @@ export default class Store {
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
   // but also clean selected by determining selectType
-  public setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]) {
+  // When allowEmptySelection is true (e.g. after search with no prior selection), single select will not auto-select the first option
+  public setSelectedBy(
+    selectedType: 'id' | 'value',
+    selectedValues: string[],
+    allowEmptySelection: boolean = false
+  ) {
     let firstOption: Partial<Option> | null = null
     let hasSelected = false
     const selectedObjects: Partial<Option>[] = []
@@ -261,8 +270,13 @@ export default class Store {
       }
     }
 
-    // If no options are selected, select the first option
-    if (this.selectType === 'single' && firstOption && !hasSelected) {
+    // If no options are selected, select the first option (unless allowEmptySelection, e.g. after search with no selection)
+    if (
+      this.selectType === 'single' &&
+      firstOption &&
+      !hasSelected &&
+      !allowEmptySelection
+    ) {
       firstOption.selected = true
       selectedObjects.push(firstOption)
     }

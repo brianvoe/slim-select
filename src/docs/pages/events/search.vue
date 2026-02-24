@@ -51,19 +51,18 @@ export default defineComponent({
           return reject('Search must be at least 2 characters')
         }
 
-        fetch('https://api.gofakeit.com/statics/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            first_name: search
-          })
+        const queryParams = new URLSearchParams({
+          first_name: search,
+          limit: '20'
         })
+        const url = `https://api.gofakeit.com/statics/users?${queryParams}`
+
+        fetch(url)
           .then((response) => response.json())
-          .then((data: Person[]) => {
+          .then((resp: { results?: Person[]; error?: string }) => {
+            const data = resp?.results
             if (!data || data.length === 0) {
-              return reject('No results found')
+              return reject(resp?.error || 'No results found')
             }
 
             // Take the results and create an array of options excluding any that are already selected in currentData
@@ -128,23 +127,22 @@ export default defineComponent({
                   return reject('Search must be at least 2 characters')
                 }
 
-                // Fetch users from gofakeit API based on search term
-                fetch('https://api.gofakeit.com/statics/users', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    first_name: search
-                  })
+                // GoFakeIt Statics API: build URL with query params (first_name, limit)
+                const queryParams = new URLSearchParams({
+                  first_name: search,
+                  limit: '20'
                 })
+                const url = `https://api.gofakeit.com/statics/users?${queryParams}`
+
+                fetch(url)
                   .then((response) => response.json())
-                  .then((data) => {
-                    if (!data || data.length === 0) {
-                      return reject('No results found')
+                  .then((resp) => {
+                    const data = resp?.results || []
+                    if (!data.length) {
+                      return reject(resp?.error || 'No results found')
                     }
 
-                    // Take the results and create an array of options 
+                    // Take the results and create an array of options
                     // excluding any that are already selected in currentData
                     const options = data
                       .filter((person) => {
