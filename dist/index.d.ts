@@ -300,7 +300,7 @@ declare class Store {
     getData(): Option_2[] | Optgroup[];
     getDataOptions(): Option_2[];
     addOption(option: Partial<Option_2>, addToStart?: boolean): void;
-    setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[]): void;
+    setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[], allowEmptySelection?: boolean): void;
     getSelected(): string[];
     getSelectedValues(): string[];
     getSelectedOptions(): Option_2[];
