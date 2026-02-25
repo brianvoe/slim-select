@@ -1557,6 +1557,56 @@ describe('render module', () => {
         opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
         expect(closeMock).not.toHaveBeenCalled()
       })
+
+      test('Shift+Click with search filter selects only the filtered elements', async () => {
+        render.settings.showSearch = true
+        render.store = new Store('multiple', [
+          {
+            text: 'A0',
+            value: 'A0'
+          },
+          {
+            text: 'A1',
+            value: 'A1'
+          },
+          {
+            text: 'B0',
+            value: 'B0'
+          },
+          {
+            text: 'C0',
+            value: 'C0'
+          }
+        ])
+
+        render.renderValues()
+        render.renderOptions(render.store.getDataOptions())
+        let opts = render.getOptions(false, false, true)
+        expect(opts.length).toEqual(4)
+
+        // Simulate search
+        const searchFilter = (opt: Option, search: string): boolean => {
+          return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1
+        }
+        const searchResults = render.store.search('0', searchFilter)
+        expect(searchResults).toHaveLength(3)
+        render.renderOptions(searchResults)
+
+        opts = render.getOptions(false, false, true)
+        expect(opts.length).toEqual(3)
+
+        // Click first option
+        opts[0].dispatchEvent(new MouseEvent('click'))
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'A0' })])
+
+        // Shift+Click third option - should select A0, B0, C0 and should not select A1
+        opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
+        expect(afterChangeMock).toHaveBeenCalledWith([
+          expect.objectContaining({ value: 'A0' }),
+          expect.objectContaining({ value: 'B0' }),
+          expect.objectContaining({ value: 'C0' })
+        ])
+      })
     })
 
     describe('Combined modifier keys', () => {

@@ -53,6 +53,7 @@ export default class Render {
 
   // Used to compute the range selection
   private lastSelectedOption: Option | null
+  private lastRenderedOptions: Option[]
 
   // Timeout tracking for cleanup
   private closeAnimationTimeout: ReturnType<typeof setTimeout> | null = null
@@ -70,6 +71,7 @@ export default class Render {
     this.classes = classes
     this.callbacks = callbacks
     this.lastSelectedOption = null
+    this.lastRenderedOptions = []
 
     this.main = this.mainDiv()
     this.content = this.contentDiv()
@@ -1088,6 +1090,10 @@ export default class Render {
 
   // Take in data and add options to
   public renderOptions(data: (Option | Optgroup)[]): void {
+    this.lastRenderedOptions = data
+      .map((o) => (o instanceof Option ? [o] : o.options.map((po) => new Option(po))))
+      .flat()
+
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
@@ -1419,7 +1425,7 @@ export default class Render {
 
         // Shift+Click: Select range from last clicked to current
         if (isShift && this.lastSelectedOption) {
-          const options = this.store.getDataOptions()
+          const options = this.lastRenderedOptions
           const lastIndex = options.findIndex((o: Option) => o.id === this.lastSelectedOption!.id)
           const currentIndex = options.findIndex((o: Option) => o.id === option.id)
 
