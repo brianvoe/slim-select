@@ -55,7 +55,7 @@ function de() {
             return a.displayName || "Context";
           case k:
             return (a._context.displayName || "Context") + ".Consumer";
-          case b:
+          case C:
             var u = a.render;
             return a = a.displayName, a || (a = u.displayName || u.name || "", a = a !== "" ? "ForwardRef(" + a + ")" : "ForwardRef"), a;
           case B:
@@ -81,8 +81,8 @@ function de() {
       }
       if (u) {
         u = console;
-        var C = u.error, O = typeof Symbol == "function" && Symbol.toStringTag && a[Symbol.toStringTag] || a.constructor.name || "Object";
-        return C.call(
+        var w = u.error, O = typeof Symbol == "function" && Symbol.toStringTag && a[Symbol.toStringTag] || a.constructor.name || "Object";
+        return w.call(
           u,
           "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
           O
@@ -115,14 +115,14 @@ function de() {
       return a.key !== void 0;
     }
     function r(a, u) {
-      function C() {
+      function w() {
         G || (G = !0, console.error(
           "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
           u
         ));
       }
-      C.isReactWarning = !0, Object.defineProperty(a, "key", {
-        get: C,
+      w.isReactWarning = !0, Object.defineProperty(a, "key", {
+        get: w,
         configurable: !0
       });
     }
@@ -132,13 +132,13 @@ function de() {
         "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
       )), a = this.props.ref, a !== void 0 ? a : null;
     }
-    function h(a, u, C, O, F, U) {
-      var y = C.ref;
+    function h(a, u, w, O, F, U) {
+      var y = w.ref;
       return a = {
         $$typeof: E,
         type: a,
         key: u,
-        props: C,
+        props: w,
         _owner: O
       }, (y !== void 0 ? y : null) !== null ? Object.defineProperty(a, "ref", {
         enumerable: !1,
@@ -165,7 +165,7 @@ function de() {
         value: U
       }), Object.freeze && (Object.freeze(a.props), Object.freeze(a)), a;
     }
-    function o(a, u, C, O, F, U) {
+    function o(a, u, w, O, F, U) {
       var y = u.children;
       if (y !== void 0)
         if (O)
@@ -196,18 +196,18 @@ React keys must be passed directly to JSX without using spread:
           y
         ), Q[y + O] = !0);
       }
-      if (y = null, C !== void 0 && (t(C), y = "" + C), l(u) && (t(u.key), y = "" + u.key), "key" in u) {
-        C = {};
+      if (y = null, w !== void 0 && (t(w), y = "" + w), l(u) && (t(u.key), y = "" + u.key), "key" in u) {
+        w = {};
         for (var W in u)
-          W !== "key" && (C[W] = u[W]);
-      } else C = u;
+          W !== "key" && (w[W] = u[W]);
+      } else w = u;
       return y && r(
-        C,
+        w,
         typeof a == "function" ? a.displayName || a.name || "Unknown" : a
       ), h(
         a,
         y,
-        C,
+        w,
         i(),
         F,
         U
@@ -219,7 +219,7 @@ React keys must be passed directly to JSX without using spread:
     function m(a) {
       return typeof a == "object" && a !== null && a.$$typeof === E;
     }
-    var f = re, E = /* @__PURE__ */ Symbol.for("react.transitional.element"), g = /* @__PURE__ */ Symbol.for("react.portal"), A = /* @__PURE__ */ Symbol.for("react.fragment"), S = /* @__PURE__ */ Symbol.for("react.strict_mode"), v = /* @__PURE__ */ Symbol.for("react.profiler"), k = /* @__PURE__ */ Symbol.for("react.consumer"), L = /* @__PURE__ */ Symbol.for("react.context"), b = /* @__PURE__ */ Symbol.for("react.forward_ref"), D = /* @__PURE__ */ Symbol.for("react.suspense"), P = /* @__PURE__ */ Symbol.for("react.suspense_list"), B = /* @__PURE__ */ Symbol.for("react.memo"), T = /* @__PURE__ */ Symbol.for("react.lazy"), R = /* @__PURE__ */ Symbol.for("react.activity"), ne = /* @__PURE__ */ Symbol.for("react.client.reference"), j = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, J = Object.prototype.hasOwnProperty, le = Array.isArray, q = console.createTask ? console.createTask : function() {
+    var f = re, E = /* @__PURE__ */ Symbol.for("react.transitional.element"), g = /* @__PURE__ */ Symbol.for("react.portal"), A = /* @__PURE__ */ Symbol.for("react.fragment"), S = /* @__PURE__ */ Symbol.for("react.strict_mode"), v = /* @__PURE__ */ Symbol.for("react.profiler"), k = /* @__PURE__ */ Symbol.for("react.consumer"), L = /* @__PURE__ */ Symbol.for("react.context"), C = /* @__PURE__ */ Symbol.for("react.forward_ref"), D = /* @__PURE__ */ Symbol.for("react.suspense"), P = /* @__PURE__ */ Symbol.for("react.suspense_list"), B = /* @__PURE__ */ Symbol.for("react.memo"), T = /* @__PURE__ */ Symbol.for("react.lazy"), R = /* @__PURE__ */ Symbol.for("react.activity"), ne = /* @__PURE__ */ Symbol.for("react.client.reference"), j = f.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, J = Object.prototype.hasOwnProperty, le = Array.isArray, q = console.createTask ? console.createTask : function() {
       return null;
     };
     f = {
@@ -231,22 +231,22 @@ React keys must be passed directly to JSX without using spread:
       f,
       n
     )(), Z = q(s(n)), Q = {};
-    _.Fragment = A, _.jsx = function(a, u, C) {
+    _.Fragment = A, _.jsx = function(a, u, w) {
       var O = 1e4 > j.recentlyCreatedOwnerStacks++;
       return o(
         a,
         u,
-        C,
+        w,
         !1,
         O ? Error("react-stack-top-frame") : K,
         O ? q(s(a)) : Z
       );
-    }, _.jsxs = function(a, u, C) {
+    }, _.jsxs = function(a, u, w) {
       var O = 1e4 > j.recentlyCreatedOwnerStacks++;
       return o(
         a,
         u,
-        C,
+        w,
         !0,
         O ? Error("react-stack-top-frame") : K,
         O ? q(s(a)) : Z
@@ -356,7 +356,7 @@ function me(p) {
   const e = p.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (t) => "-" + t.toLowerCase());
   return p[0] === p[0].toUpperCase() ? e.substring(1) : e;
 }
-class w {
+class b {
   id;
   value;
   text;
@@ -384,7 +384,7 @@ class x {
   constructor(e) {
     if (this.id = !e.id || e.id === "" ? z() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.closable = e.closable || "off", this.options = [], e.options)
       for (const t of e.options)
-        this.options.push(new w(t));
+        this.options.push(new b(t));
   }
 }
 class ge {
@@ -410,7 +410,7 @@ class ge {
               if (i)
                 return i;
             }
-        } else if (t instanceof w || "text" in t) {
+        } else if (t instanceof b || "text" in t) {
           const s = this.validateOption(t);
           if (s)
             return s;
@@ -429,10 +429,10 @@ class ge {
         if (s instanceof x || "label" in s) {
           let i = [];
           "options" in s && s.options && s.options.forEach((n) => {
-            i.push(new w(n));
+            i.push(new b(n));
           }), i.length > 0 && t.push(new x(s));
         }
-        (s instanceof w || "text" in s) && t.push(new w(s));
+        (s instanceof b || "text" in s) && t.push(new b(s));
       }
     }), t;
   }
@@ -445,7 +445,7 @@ class ge {
       i.forEach((l) => {
         let r = !1;
         for (const c of s) {
-          if (c instanceof w && c.id === l.id) {
+          if (c instanceof b && c.id === l.id) {
             r = !0;
             break;
           }
@@ -477,10 +477,10 @@ class ge {
   }
   addOption(e, t = !1) {
     if (t) {
-      let s = [new w(e)];
+      let s = [new b(e)];
       this.setData(s.concat(this.getData()));
     } else
-      this.setData(this.getData().concat(new w(e)));
+      this.setData(this.getData().concat(new b(e)));
   }
   // Pass in an array of id that will loop through
   // each option and set the selected property to true
@@ -496,7 +496,7 @@ class ge {
           let o = h[e] || "";
           h.selected = n ? !1 : t.includes(o), h.selected && (l.push(h), this.selectType === "single" && (n = !0));
         }
-      c instanceof w && (i || (i = c), c.selected = n ? !1 : t.includes(c[e]), c.selected && (l.push(c), this.selectType === "single" && (n = !0)));
+      c instanceof b && (i || (i = c), c.selected = n ? !1 : t.includes(c[e]), c.selected && (l.push(c), this.selectType === "single" && (n = !0)));
     }
     this.selectType === "single" && i && !n && !s && (i.selected = !0, l.push(i));
     const r = t.map((c) => l.find((h) => h[e] === c)?.id || "");
@@ -527,7 +527,7 @@ class ge {
   getFirstOption() {
     let e = null;
     for (let t of this.data)
-      if (t instanceof x ? e = t.options[0] : t instanceof w && (e = t), e)
+      if (t instanceof x ? e = t.options[0] : t instanceof b && (e = t), e)
         break;
     return e;
   }
@@ -543,13 +543,13 @@ class ge {
       if (i instanceof x) {
         let n = [];
         if (i.options.forEach((r) => {
-          (!e || e(r)) && (t ? n.push(new w(r)) : s.push(new w(r)));
+          (!e || e(r)) && (t ? n.push(new b(r)) : s.push(new b(r)));
         }), n.length > 0) {
           let r = new x(i);
           r.options = n, s.push(r);
         }
       }
-      i instanceof w && (!e || e(i)) && s.push(new w(i));
+      i instanceof b && (!e || e(i)) && s.push(new b(i));
     }), s;
   }
   // Take in an array of options and reoder them based upon the selected order
@@ -575,6 +575,7 @@ class ve {
   callbacks;
   // Used to compute the range selection
   lastSelectedOption;
+  lastRenderedOptions;
   // Timeout tracking for cleanup
   closeAnimationTimeout = null;
   // Elements
@@ -583,7 +584,7 @@ class ve {
   // Classes
   classes;
   constructor(e, t, s, i) {
-    this.store = s, this.settings = e, this.classes = t, this.callbacks = i, this.lastSelectedOption = null, this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
+    this.store = s, this.settings = e, this.classes = t, this.callbacks = i, this.lastSelectedOption = null, this.lastRenderedOptions = [], this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
   }
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
@@ -793,7 +794,7 @@ class ve {
             if (m instanceof x)
               for (const f of m.options)
                 f.id && d.push(f.id);
-            m instanceof w && d.push(m.id);
+            m instanceof b && d.push(m.id);
           }
           this.callbacks.setSelected(d, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(o), this.updateDeselectAll();
         }
@@ -878,7 +879,7 @@ class ve {
           return;
         }
         const h = (d) => {
-          let m = new w(d);
+          let m = new b(d);
           if (this.callbacks.addOption(m), this.settings.isMultiple) {
             let f = this.store.getSelected();
             f.push(m.id), this.callbacks.setSelected(f, !0);
@@ -973,13 +974,13 @@ class ve {
   }
   // Take in data and add options to
   renderOptions(e) {
-    if (this.content.list.innerHTML = "", e.length === 0) {
+    if (this.lastRenderedOptions = e.map((s) => s instanceof b ? [s] : s.options.map((i) => new b(i))).flat(), this.content.list.innerHTML = "", e.length === 0) {
       const s = document.createElement("div");
       this.addClasses(s, this.classes.search), this.callbacks.addable ? s.innerHTML = this.settings.addableText.replace("{value}", this.content.search.input.value) : s.innerHTML = this.settings.searchText, this.content.list.appendChild(s);
       return;
     }
     this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((i) => i.placeholder, !1).length || this.store.addOption(
-      new w({
+      new b({
         text: "",
         value: "",
         selected: !1,
@@ -1030,7 +1031,7 @@ class ve {
               let A = s.options.map((v) => v.id).filter((v) => v !== void 0);
               const S = g.concat(A);
               for (const v of s.options)
-                v.id && !this.store.getOptionByID(v.id) && this.callbacks.addOption(new w(v));
+                v.id && !this.store.getOptionByID(v.id) && this.callbacks.addOption(new b(v));
               this.callbacks.setSelected(S, !0);
               return;
             }
@@ -1048,9 +1049,9 @@ class ve {
         }
         i.appendChild(n);
         for (const c of s.options)
-          i.appendChild(this.option(new w(c))), t.appendChild(i);
+          i.appendChild(this.option(new b(c))), t.appendChild(i);
       }
-      s instanceof w && t.appendChild(this.option(s));
+      s instanceof b && t.appendChild(this.option(s));
     }
     this.content.list.appendChild(t);
   }
@@ -1078,9 +1079,9 @@ class ve {
       if (this.settings.isMultiple) {
         const d = h.some((f) => f.id === l);
         if (s.shiftKey && this.lastSelectedOption) {
-          const f = this.store.getDataOptions(), E = f.findIndex((A) => A.id === this.lastSelectedOption.id), g = f.findIndex((A) => A.id === e.id);
+          const f = this.lastRenderedOptions, E = f.findIndex((A) => A.id === this.lastSelectedOption.id), g = f.findIndex((A) => A.id === e.id);
           if (E >= 0 && g >= 0) {
-            const A = Math.min(E, g), S = Math.max(E, g), k = f.slice(A, S + 1).filter((L) => !h.find((b) => b.id === L.id));
+            const A = Math.min(E, g), S = Math.max(E, g), k = f.slice(A, S + 1).filter((L) => !h.find((C) => C.id === L.id));
             h.length + k.length <= this.settings.maxSelected ? o = h.concat(k) : o = h;
           } else
             o = h;
@@ -1372,7 +1373,7 @@ class be {
     if (!(!e || e.length === 0)) {
       this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1), this.select.innerHTML = "";
       for (const t of e)
-        t instanceof x && this.select.appendChild(this.createOptgroup(t)), t instanceof w && this.select.appendChild(this.createOption(t));
+        t instanceof x && this.select.appendChild(this.createOptgroup(t)), t instanceof b && this.select.appendChild(this.createOption(t));
       if (this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
         const t = this.pendingOptionsChange;
         t.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(t), this.changeListen(!0)) : this.pendingOptionsChange = null;
@@ -1651,8 +1652,8 @@ const Se = oe(
     const f = (g) => typeof g == "string" ? r ? [g] : g : Array.isArray(g) ? r ? g : g[0] : r ? [] : "", E = (g, A = !1) => {
       if (!o.current || g === void 0)
         return;
-      const S = f(g), k = o.current.getData().flatMap((b) => "label" in b ? b.options : [b]);
-      if (!(Array.isArray(S) ? S.length > 0 && S.every((b) => k.some((D) => D.value === b)) : S !== "" && k.some((b) => b.value === S)) && !Array.isArray(S) && !k.some((D) => D.placeholder)) {
+      const S = f(g), k = o.current.getData().flatMap((C) => "label" in C ? C.options : [C]);
+      if (!(Array.isArray(S) ? S.length > 0 && S.every((C) => k.some((D) => D.value === C)) : S !== "" && k.some((C) => C.value === S)) && !Array.isArray(S) && !k.some((D) => D.placeholder)) {
         const D = o.current.getData(), P = {
           value: "",
           text: "",
@@ -1675,7 +1676,7 @@ const Se = oe(
           if (!o.current) return;
           const v = r ? S.map((T) => T.value) : S[0]?.value ?? "", L = o.current.getData().flatMap(
             (T) => "label" in T ? T.options : [T]
-          ), b = m.current, D = b === void 0 ? !1 : Array.isArray(b) ? b.length > 0 && b.every((T) => L.some((R) => R.value === T)) : b !== "" && L.some((T) => T.value === b), P = Array.isArray(v) ? v.length > 0 && v.every((T) => L.some((R) => R.value === T)) : v !== "" && L.some((T) => T.value === v), B = Array.isArray(v) && Array.isArray(b) ? JSON.stringify(v.sort()) !== JSON.stringify(b.sort()) : b !== v;
+          ), C = m.current, D = C === void 0 ? !1 : Array.isArray(C) ? C.length > 0 && C.every((T) => L.some((R) => R.value === T)) : C !== "" && L.some((T) => T.value === C), P = Array.isArray(v) ? v.length > 0 && v.every((T) => L.some((R) => R.value === T)) : v !== "" && L.some((T) => T.value === v), B = Array.isArray(v) && Array.isArray(C) ? JSON.stringify(v.sort()) !== JSON.stringify(C.sort()) : C !== v;
           n && B && (D || P) && (n(v), m.current = v), A && A(S);
         }
       }, o.current = new we(g), i !== void 0 && E(i, !1), () => {
@@ -1695,7 +1696,7 @@ const Se = oe(
 Se.displayName = "SlimSelect";
 export {
   x as Optgroup,
-  w as Option,
+  b as Option,
   Ce as Settings,
   Se as default
 };

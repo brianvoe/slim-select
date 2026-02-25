@@ -315,6 +315,7 @@ class V {
   callbacks;
   // Used to compute the range selection
   lastSelectedOption;
+  lastRenderedOptions;
   // Timeout tracking for cleanup
   closeAnimationTimeout = null;
   // Elements
@@ -323,7 +324,7 @@ class V {
   // Classes
   classes;
   constructor(e, t, s, i) {
-    this.store = s, this.settings = e, this.classes = t, this.callbacks = i, this.lastSelectedOption = null, this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
+    this.store = s, this.settings = e, this.classes = t, this.callbacks = i, this.lastSelectedOption = null, this.lastRenderedOptions = [], this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
   }
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
@@ -713,7 +714,7 @@ class V {
   }
   // Take in data and add options to
   renderOptions(e) {
-    if (this.content.list.innerHTML = "", e.length === 0) {
+    if (this.lastRenderedOptions = e.map((s) => s instanceof p ? [s] : s.options.map((i) => new p(i))).flat(), this.content.list.innerHTML = "", e.length === 0) {
       const s = document.createElement("div");
       this.addClasses(s, this.classes.search), this.callbacks.addable ? s.innerHTML = this.settings.addableText.replace("{value}", this.content.search.input.value) : s.innerHTML = this.settings.searchText, this.content.list.appendChild(s);
       return;
@@ -818,7 +819,7 @@ class V {
       if (this.settings.isMultiple) {
         const d = r.some((u) => u.id === n);
         if (s.shiftKey && this.lastSelectedOption) {
-          const u = this.store.getDataOptions(), g = u.findIndex((C) => C.id === this.lastSelectedOption.id), v = u.findIndex((C) => C.id === e.id);
+          const u = this.lastRenderedOptions, g = u.findIndex((C) => C.id === this.lastSelectedOption.id), v = u.findIndex((C) => C.id === e.id);
           if (g >= 0 && v >= 0) {
             const C = Math.min(g, v), w = Math.max(g, v), A = u.slice(C, w + 1).filter((x) => !r.find((T) => T.id === x.id));
             r.length + A.length <= this.settings.maxSelected ? h = r.concat(A) : h = r;
