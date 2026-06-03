@@ -16,6 +16,7 @@ export default defineConfig({
   build: {
     outDir: 'docs',
     emptyOutDir: true,
+    chunkSizeWarningLimit: 1700,
     rollupOptions: {
       output: {
         entryFileNames: `assets/[name].js`,

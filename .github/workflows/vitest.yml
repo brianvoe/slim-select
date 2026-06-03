@@ -1,29 +1,30 @@
-name: 'Vitest unit tests'
+name: CI
+
 on:
   push:
     paths-ignore:
       - '**/dist/**'
       - '**/*.md'
-      - '.github/**'
       - '.vscode/**'
   pull_request:
     paths-ignore:
       - '**/dist/**'
       - '**/*.md'
-      - '.github/**'
       - '.vscode/**'
+
 jobs:
-  vitest:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24.2.0'
+          node-version: '24'
           cache: 'npm'
       - run: npm ci
       - run: npm run typecheck
-      - run: npm run test
+      - run: npm run test:coverage
+      - run: npm run build:library
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         if: success()

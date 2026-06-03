@@ -11,11 +11,11 @@ export default defineConfig({
     }
   },
   test: {
-    globals: true,
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
+      reportsDirectory: './coverage',
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/slim-select/**/*.ts'],
       exclude: ['src/slim-select/**/*.test.ts', 'src/slim-select/vue/index.ts'],
