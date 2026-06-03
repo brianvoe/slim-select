@@ -3,6 +3,7 @@ export default class CssClasses {
     placeholder: string;
     values: string;
     single: string;
+    multiString: string;
     max: string;
     value: string;
     valueText: string;
