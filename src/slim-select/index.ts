@@ -192,7 +192,17 @@ export default class SlimSelect {
     if (selectAriaLabel) {
       this.render.main.main.setAttribute('aria-label', selectAriaLabel)
     } else if (selectAriaLabelledBy) {
+      this.render.main.main.removeAttribute('aria-label')
       this.render.main.main.setAttribute('aria-labelledby', selectAriaLabelledBy)
+    } else if (this.selectEl.labels && this.selectEl.labels.length > 0) {
+      const labelledByIds = Array.from(this.selectEl.labels).map((label, i) => {
+        if (!label.id) {
+          label.id = `${this.settings.id}-label-${i}`
+        }
+        return label.id
+      })
+      this.render.main.main.removeAttribute('aria-label')
+      this.render.main.main.setAttribute('aria-labelledby', labelledByIds.join(' '))
     }
 
     // Add render after original select element

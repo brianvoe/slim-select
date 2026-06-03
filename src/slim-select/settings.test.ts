@@ -22,6 +22,8 @@ const defaultSettings: { [key: string]: any } = {
   searchPlaceholder: 'Search...',
   searchText: 'No Results',
   searchingText: 'Searching...',
+  deselectText: 'Clear',
+  removeText: 'Remove',
   searchHighlight: false,
   closeOnSelect: true,
   contentLocation: HTMLBodyElement,

@@ -21,6 +21,8 @@ export default class Settings {
   public searchPlaceholder: string
   public searchText: string
   public searchingText: string
+  public deselectText: string
+  public removeText: string
   public searchHighlight: boolean
   public closeOnSelect: boolean
   public contentLocation: HTMLElement | null
@@ -57,6 +59,8 @@ export default class Settings {
     this.searchPlaceholder = settings.searchPlaceholder || 'Search...'
     this.searchText = settings.searchText || 'No Results'
     this.searchingText = settings.searchingText || 'Searching...'
+    this.deselectText = settings.deselectText || 'Clear'
+    this.removeText = settings.removeText || 'Remove'
     this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false
     this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
     this.contentLocation = settings.contentLocation || document.body

@@ -524,12 +524,77 @@ describe('SlimSelect Accessibility', () => {
       })
 
       const main = document.querySelector('.ss-main')
+      expect(main?.getAttribute('aria-label')).toBe('Select an option')
+    })
 
-      // Should have aria-label or aria-labelledby
-      const hasLabel = main?.getAttribute('aria-label') || main?.getAttribute('aria-labelledby')
+    test('combobox is named from associated label when no explicit aria attributes', () => {
+      const label = document.createElement('label')
+      label.setAttribute('for', 'test-select')
+      label.textContent = 'Country'
+      container.insertBefore(label, select)
 
-      // Note: This test documents expected behavior
-      // SlimSelect might not currently copy aria-label from select
+      select.innerHTML = `
+        <option value="1">Option 1</option>
+      `
+
+      slim = new SlimSelect({
+        select: select
+      })
+
+      const main = document.querySelector('.ss-main')
+      const labelledBy = main?.getAttribute('aria-labelledby')
+      expect(labelledBy).toBeTruthy()
+
+      const labelIds = labelledBy!.split(' ')
+      expect(labelIds.some((id) => document.getElementById(id)?.textContent === 'Country')).toBe(true)
+      expect(main?.getAttribute('aria-label')).toBeNull()
+    })
+
+    test('deselect button exposes role, name, and keyboard support', () => {
+      select.innerHTML = `
+        <option value="1" selected>Option 1</option>
+        <option value="2">Option 2</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          allowDeselect: true
+        }
+      })
+
+      const deselect = document.querySelector('.ss-deselect') as HTMLElement
+      expect(deselect.getAttribute('role')).toBe('button')
+      expect(deselect.getAttribute('aria-label')).toBe('Clear')
+      expect(deselect.getAttribute('tabindex')).toBe('0')
+
+      deselect.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+      expect(slim.getSelected()).toEqual([''])
+
+      slim.setSelected('1')
+      deselect.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      expect(slim.getSelected()).toEqual([''])
+    })
+
+    test('multi-select remove button exposes role and accessible name', () => {
+      select.setAttribute('multiple', 'true')
+      select.innerHTML = `
+        <option value="1" selected>Italy</option>
+        <option value="2" selected>France</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          allowDeselect: true
+        }
+      })
+
+      const deleteButtons = document.querySelectorAll('.ss-value-delete')
+      expect(deleteButtons.length).toBe(2)
+      expect(deleteButtons[0].getAttribute('role')).toBe('button')
+      expect(deleteButtons[0].getAttribute('aria-label')).toBe('Remove Italy')
+      expect(deleteButtons[1].getAttribute('aria-label')).toBe('Remove France')
     })
 
     test('multiple select announces selection count', () => {

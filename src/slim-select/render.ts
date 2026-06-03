@@ -342,6 +342,9 @@ export default class Render {
     // Add deselect
     const deselect = document.createElement('div')
     this.addClasses(deselect, this.classes.deselect)
+    deselect.setAttribute('role', 'button')
+    deselect.setAttribute('aria-label', this.settings.deselectText)
+    deselect.setAttribute('tabindex', '0')
 
     // Check if deselect is to be shown or not
     const selectedOptions = this.store?.getSelectedOptions()
@@ -391,6 +394,13 @@ export default class Render {
         if (this.callbacks.afterChange) {
           this.callbacks.afterChange(this.store.getSelectedOptions())
         }
+      }
+    }
+
+    deselect.onkeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        deselect.click()
       }
     }
 
@@ -625,6 +635,8 @@ export default class Render {
       const deleteDiv = document.createElement('div')
       this.addClasses(deleteDiv, this.classes.valueDelete)
       deleteDiv.setAttribute('tabindex', '0') // Make the div focusable for tab navigation
+      deleteDiv.setAttribute('role', 'button')
+      deleteDiv.setAttribute('aria-label', `${this.settings.removeText} ${option.text}`)
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
