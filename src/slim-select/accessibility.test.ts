@@ -218,7 +218,9 @@ describe('SlimSelect Accessibility', () => {
       expect(options.length).toBeGreaterThan(0)
 
       // At least one should have aria-selected
-      const selectedOptions = Array.from(options).filter((opt) => opt.getAttribute('aria-selected') === 'true')
+      const selectedOptions = Array.from(options).filter(
+        (opt) => opt.getAttribute('aria-selected') === 'true'
+      )
       expect(selectedOptions.length).toBeGreaterThan(0)
     })
 
@@ -278,7 +280,9 @@ describe('SlimSelect Accessibility', () => {
       const main = document.querySelector('.ss-main') as HTMLElement
 
       // Arrow down should highlight
-      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      main.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })
+      )
 
       const highlighted = document.querySelector('.ss-highlighted')
       expect(highlighted).toBeTruthy()
@@ -297,7 +301,9 @@ describe('SlimSelect Accessibility', () => {
       expect(slim.settings.isOpen).toBe(true)
 
       const main = document.querySelector('.ss-main') as HTMLElement
-      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      main.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+      )
 
       expect(slim.settings.isOpen).toBe(false)
     })
@@ -316,7 +322,9 @@ describe('SlimSelect Accessibility', () => {
 
       slim.open()
 
-      const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement
+      const searchInput = document.querySelector(
+        'input[type="search"]'
+      ) as HTMLInputElement
 
       // Search input has tabindex=-1 because it's programmatically focused
       // This is intentional - focus is managed by SlimSelect
@@ -367,7 +375,9 @@ describe('SlimSelect Accessibility', () => {
 
       slim.open()
 
-      const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement
+      const searchInput = document.querySelector(
+        'input[type="search"]'
+      ) as HTMLInputElement
       const options = document.querySelectorAll('[role="option"]')
 
       // Search input should be focusable
@@ -392,7 +402,9 @@ describe('SlimSelect Accessibility', () => {
 
       slim.open()
 
-      const selectedOption = document.querySelector('[role="option"][aria-selected="true"]')
+      const selectedOption = document.querySelector(
+        '[role="option"][aria-selected="true"]'
+      )
       expect(selectedOption).toBeTruthy()
       expect(selectedOption?.textContent).toContain('Option 2')
     })
@@ -413,7 +425,9 @@ describe('SlimSelect Accessibility', () => {
       const main = document.querySelector('.ss-main') as HTMLElement
 
       // Simulate arrow down key
-      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      main.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })
+      )
 
       // Check that aria-activedescendant is set to highlighted option
       const activedescendant = main.getAttribute('aria-activedescendant')
@@ -442,13 +456,17 @@ describe('SlimSelect Accessibility', () => {
       const main = document.querySelector('.ss-main') as HTMLElement
 
       // First arrow down - starts from selected (Apple by default)
-      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      main.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })
+      )
       let activedescendant = main.getAttribute('aria-activedescendant')
       let highlightedOption = document.getElementById(activedescendant!)
       const firstText = highlightedOption?.textContent
 
       // Second arrow down - should move to next option
-      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      main.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })
+      )
       activedescendant = main.getAttribute('aria-activedescendant')
       highlightedOption = document.getElementById(activedescendant!)
       const secondText = highlightedOption?.textContent
@@ -477,7 +495,9 @@ describe('SlimSelect Accessibility', () => {
       const main = document.querySelector('.ss-main') as HTMLElement
 
       // Highlight an option
-      main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+      main.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })
+      )
       expect(main.getAttribute('aria-activedescendant')).toBeTruthy()
 
       // Close dropdown
@@ -546,7 +566,11 @@ describe('SlimSelect Accessibility', () => {
       expect(labelledBy).toBeTruthy()
 
       const labelIds = labelledBy!.split(' ')
-      expect(labelIds.some((id) => document.getElementById(id)?.textContent === 'Country')).toBe(true)
+      expect(
+        labelIds.some(
+          (id) => document.getElementById(id)?.textContent === 'Country'
+        )
+      ).toBe(true)
       expect(main?.getAttribute('aria-label')).toBeNull()
     })
 
@@ -568,11 +592,15 @@ describe('SlimSelect Accessibility', () => {
       expect(deselect.getAttribute('aria-label')).toBe('Clear')
       expect(deselect.getAttribute('tabindex')).toBe('0')
 
-      deselect.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+      deselect.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+      )
       expect(slim.getSelected()).toEqual([''])
 
       slim.setSelected('1')
-      deselect.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      deselect.dispatchEvent(
+        new KeyboardEvent('keydown', { key: ' ', bubbles: true })
+      )
       expect(slim.getSelected()).toEqual([''])
     })
 
@@ -616,7 +644,9 @@ describe('SlimSelect Accessibility', () => {
       expect(listbox?.getAttribute('aria-multiselectable')).toBe('true')
 
       // Check selected options
-      const selectedOptions = document.querySelectorAll('[role="option"][aria-selected="true"]')
+      const selectedOptions = document.querySelectorAll(
+        '[role="option"][aria-selected="true"]'
+      )
       expect(selectedOptions.length).toBe(2)
     })
   })
@@ -639,7 +669,9 @@ describe('SlimSelect Accessibility', () => {
       slim.open()
 
       // Search for results
-      const searchInput = document.querySelector('input[type="search"]') as HTMLInputElement
+      const searchInput = document.querySelector(
+        'input[type="search"]'
+      ) as HTMLInputElement
       searchInput.value = 'app'
       searchInput.dispatchEvent(new Event('input', { bubbles: true }))
 

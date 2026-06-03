@@ -65,7 +65,10 @@ describe('CssClasses module', () => {
     classesWithOverride['mainOpen'] = 'ss-open new-open'
 
     // Convert to unknown and then to custom object to prevent TS from throwing errors
-    const classes = new CssClasses({ main: 'new-main', mainOpen: 'new-open' }) as unknown as { [key: string]: string }
+    const classes = new CssClasses({
+      main: 'new-main',
+      mainOpen: 'new-open'
+    }) as unknown as { [key: string]: string }
     Object.keys(classesWithOverride).forEach((key) => {
       expect(classes[key]).toBe(classesWithOverride[key])
     })

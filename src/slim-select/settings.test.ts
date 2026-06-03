@@ -32,6 +32,7 @@ const defaultSettings: { [key: string]: any } = {
   placeholderText: 'Select Value',
   allowDeselect: false,
   hideSelected: false,
+  multiString: false,
   keepOrder: false,
   showOptionTooltips: false,
   minSelected: 0,
@@ -74,6 +75,7 @@ describe('Settings module', () => {
       closeOnSelect: false,
       placeholderText: 'new placeholder',
       hideSelected: true,
+      multiString: true,
       keepOrder: true,
       showOptionTooltips: true
     }
@@ -84,7 +86,9 @@ describe('Settings module', () => {
     } as unknown as { [key: string]: any }
 
     // Convert to unknown and then to custom object to prevent TS from throwing errors
-    const settings = new Settings(customSettings) as unknown as { [key: string]: any }
+    const settings = new Settings(customSettings) as unknown as {
+      [key: string]: any
+    }
     Object.keys(settingsWithOverride).forEach((key) => {
       if (key === 'id') {
         expect(settings[key].substring(0, 3)).toBe('ss-')

@@ -8,7 +8,14 @@ export interface Callbacks {
   close: () => void
   addable?: (
     value: string
-  ) => Promise<Partial<Option> | string> | Partial<Option> | string | false | undefined | null | Error
+  ) =>
+    | Promise<Partial<Option> | string>
+    | Partial<Option>
+    | string
+    | false
+    | undefined
+    | null
+    | Error
   setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
@@ -65,7 +72,12 @@ export default class Render {
   // Classes
   public classes: CssClasses
 
-  constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks) {
+  constructor(
+    settings: Required<Settings>,
+    classes: Required<CssClasses>,
+    store: Store,
+    callbacks: Callbacks
+  ) {
     this.store = store
     this.settings = settings
     this.classes = classes
@@ -99,7 +111,10 @@ export default class Render {
 
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
-  private addClasses(element: HTMLElement | SVGElement, classValue: string): void {
+  private addClasses(
+    element: HTMLElement | SVGElement,
+    classValue: string
+  ): void {
     if (!classValue || classValue.trim() === '') {
       return
     }
@@ -110,7 +125,10 @@ export default class Render {
   }
 
   // Helper method to remove classes that may contain spaces
-  private removeClasses(element: HTMLElement | SVGElement, classValue: string): void {
+  private removeClasses(
+    element: HTMLElement | SVGElement,
+    classValue: string
+  ): void {
     if (!classValue || classValue.trim() === '') {
       return
     }
@@ -169,7 +187,9 @@ export default class Render {
     const selectedOptions = this.store.getSelectedOptions()
     if (selectedOptions.length) {
       const selectedId = selectedOptions[selectedOptions.length - 1].id
-      const selectedOption = this.content.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
+      const selectedOption = this.content.list.querySelector(
+        '[data-id="' + selectedId + '"]'
+      ) as HTMLElement
       if (selectedOption) {
         this.ensureElementInView(this.content.list, selectedOption)
       }
@@ -203,7 +223,9 @@ export default class Render {
 
   private getAnimationTiming(): number {
     const computedStyle = getComputedStyle(this.content.main)
-    const cssValue = computedStyle.getPropertyValue('--ss-animation-timing').trim()
+    const cssValue = computedStyle
+      .getPropertyValue('--ss-animation-timing')
+      .trim()
 
     if (cssValue) {
       // Parse CSS time value (e.g., "0.2s" or "200ms")
@@ -247,7 +269,10 @@ export default class Render {
 
     // Misc classes
     // Add content position class
-    if (this.settings.contentPosition === 'relative' || this.settings.contentPosition === 'fixed') {
+    if (
+      this.settings.contentPosition === 'relative' ||
+      this.settings.contentPosition === 'fixed'
+    ) {
       this.content.main.classList.add('ss-' + this.settings.contentPosition)
     }
   }
@@ -262,7 +287,10 @@ export default class Render {
     this.main.main.setAttribute('aria-expanded', 'false')
 
     this.content.list.setAttribute('role', 'listbox')
-    this.content.list.setAttribute('aria-label', this.settings.ariaLabel + ' listbox')
+    this.content.list.setAttribute(
+      'aria-label',
+      this.settings.ariaLabel + ' listbox'
+    )
 
     // Add aria-multiselectable for multiple selects
     if (this.settings.isMultiple) {
@@ -348,7 +376,12 @@ export default class Render {
 
     // Check if deselect is to be shown or not
     const selectedOptions = this.store?.getSelectedOptions()
-    if (!this.settings.allowDeselect || (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0)) {
+    if (
+      !this.settings.allowDeselect ||
+      (this.settings.isMultiple &&
+        selectedOptions &&
+        selectedOptions.length <= 0)
+    ) {
       this.addClasses(deselect, this.classes.hide)
     } else {
       this.removeClasses(deselect, this.classes.hide)
@@ -405,9 +438,15 @@ export default class Render {
     }
 
     // Add deselect svg
-    const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    const deselectSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    )
     deselectSvg.setAttribute('viewBox', '0 0 100 100')
-    const deselectPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    const deselectPath = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'path'
+    )
     deselectPath.setAttribute('d', this.classes.deselectPath)
     deselectSvg.appendChild(deselectPath)
     deselect.appendChild(deselectSvg)
@@ -417,7 +456,10 @@ export default class Render {
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     this.addClasses(arrow, this.classes.arrow)
     arrow.setAttribute('viewBox', '0 0 100 100')
-    const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    const arrowPath = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'path'
+    )
     arrowPath.setAttribute('d', this.classes.arrowClose)
     if (this.settings.alwaysOpen) {
       this.addClasses(arrow, this.classes.hide)
@@ -452,7 +494,10 @@ export default class Render {
 
   public placeholder(): HTMLDivElement {
     // Figure out if there is a placeholder option
-    const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+    const placeholderOption = this.store.filter(
+      (o) => o.placeholder,
+      false
+    ) as Option[]
 
     // If there is a placeholder option use that
     // If placeholder has an html value, use that
@@ -533,10 +578,35 @@ export default class Render {
       return
     } else {
       // If there is a placeholder, remove it
-      const placeholder = this.main.values.querySelector('.' + this.classes.getFirst('placeholder'))
+      const placeholder = this.main.values.querySelector(
+        '.' + this.classes.getFirst('placeholder')
+      )
       if (placeholder) {
         placeholder.remove()
       }
+    }
+
+    // If multiString is enabled, render a single text element containing the
+    // selected values joined by commas instead of individual value pills.
+    // CSS truncates the text with an ellipsis when it exceeds the container width.
+    if (this.settings.multiString) {
+      let commaOptions = selectedOptions
+      if (this.settings.keepOrder) {
+        commaOptions = this.store.selectedOrderOptions(commaOptions)
+      }
+
+      const commaValue = document.createElement('div')
+      this.addClasses(commaValue, this.classes.multiString)
+      commaValue.textContent = commaOptions
+        .map((o: Option) => o.text)
+        .join(', ')
+
+      if (this.settings.showOptionTooltips) {
+        commaValue.setAttribute('title', commaValue.textContent)
+      }
+
+      this.main.values.innerHTML = commaValue.outerHTML
+      return
     }
 
     // If selectedOptions is greater than maxItems, set maxValuesMessage
@@ -544,14 +614,19 @@ export default class Render {
       // Creating the element that shows the number of selected items
       const singleValue = document.createElement('div')
       this.addClasses(singleValue, this.classes.max)
-      singleValue.textContent = this.settings.maxValuesMessage.replace('{number}', selectedOptions.length.toString())
+      singleValue.textContent = this.settings.maxValuesMessage.replace(
+        '{number}',
+        selectedOptions.length.toString()
+      )
 
       // If there is a selected value, set a single div
       this.main.values.innerHTML = singleValue.outerHTML
       return
     } else {
       // If there is a message, remove it
-      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.getFirst('max'))
+      const maxValuesMessage = this.main.values.querySelector(
+        '.' + this.classes.getFirst('max')
+      )
       if (maxValuesMessage) {
         maxValuesMessage.remove()
       }
@@ -610,9 +685,15 @@ export default class Render {
           if (currentNodes.length === 0) {
             this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
           } else if (d === 0) {
-            this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
+            this.main.values.insertBefore(
+              this.multipleValue(selectedOptions[d]),
+              currentNodes[d]
+            )
           } else {
-            currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
+            currentNodes[d - 1].insertAdjacentElement(
+              'afterend',
+              this.multipleValue(selectedOptions[d])
+            )
           }
         }
       }
@@ -636,7 +717,10 @@ export default class Render {
       this.addClasses(deleteDiv, this.classes.valueDelete)
       deleteDiv.setAttribute('tabindex', '0') // Make the div focusable for tab navigation
       deleteDiv.setAttribute('role', 'button')
-      deleteDiv.setAttribute('aria-label', `${this.settings.removeText} ${option.text}`)
+      deleteDiv.setAttribute(
+        'aria-label',
+        `${this.settings.removeText} ${option.text}`
+      )
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
@@ -656,7 +740,10 @@ export default class Render {
         }, true)
 
         // Check if minSelected is set and if after length so, return
-        if (this.settings.minSelected && after.length < this.settings.minSelected) {
+        if (
+          this.settings.minSelected &&
+          after.length < this.settings.minSelected
+        ) {
           return
         }
 
@@ -698,9 +785,15 @@ export default class Render {
       }
 
       // Add delete svg
-      const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+      const deleteSvg = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg'
+      )
       deleteSvg.setAttribute('viewBox', '0 0 100 100')
-      const deletePath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      const deletePath = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'path'
+      )
       deletePath.setAttribute('d', this.classes.optionDelete)
       deleteSvg.appendChild(deletePath)
       deleteDiv.appendChild(deleteSvg)
@@ -853,7 +946,10 @@ export default class Render {
       // Add svg icon
       const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       plus.setAttribute('viewBox', '0 0 100 100')
-      const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      const plusPath = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'path'
+      )
       plusPath.setAttribute('d', this.classes.addablePath)
       plus.appendChild(plusPath)
       addable.appendChild(plus)
@@ -909,7 +1005,11 @@ export default class Render {
         const addableValue = this.callbacks.addable(inputValue)
 
         // If addableValue is false, undefined or null, do nothing
-        if (addableValue === false || addableValue === undefined || addableValue === null) {
+        if (
+          addableValue === false ||
+          addableValue === undefined ||
+          addableValue === null
+        ) {
           return
         }
 
@@ -957,7 +1057,11 @@ export default class Render {
     this.content.search.input.focus({ preventScroll: true })
   }
 
-  public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
+  public getOptions(
+    notPlaceholder = false,
+    notDisabled = false,
+    notHidden = false
+  ): HTMLDivElement[] {
     // Put together query string
     let query = '.' + this.classes.getFirst('option')
     if (notPlaceholder) {
@@ -986,7 +1090,9 @@ export default class Render {
     // If length is 1, highlight it
     if (options.length === 1) {
       // Check if option doesnt already have highlighted class
-      if (!options[0].classList.contains(this.classes.getFirst('highlighted'))) {
+      if (
+        !options[0].classList.contains(this.classes.getFirst('highlighted'))
+      ) {
         this.addClasses(options[0], this.classes.highlighted)
         return
       }
@@ -1020,8 +1126,13 @@ export default class Render {
 
         // If previous option has parent classes ss-optgroup with ss-open then click it
         const prevParent = prevOption.parentElement
-        if (prevParent && prevParent.classList.contains(this.classes.getFirst('mainOpen'))) {
-          const optgroupLabel = prevParent.querySelector('.' + this.classes.getFirst('optgroupLabel')) as HTMLDivElement
+        if (
+          prevParent &&
+          prevParent.classList.contains(this.classes.getFirst('mainOpen'))
+        ) {
+          const optgroupLabel = prevParent.querySelector(
+            '.' + this.classes.getFirst('optgroupLabel')
+          ) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
           }
@@ -1029,7 +1140,15 @@ export default class Render {
 
         // Highlight the next one
         let selectOption =
-          options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1]
+          options[
+            dir === 'down'
+              ? i + 1 < options.length
+                ? i + 1
+                : 0
+              : i - 1 >= 0
+                ? i - 1
+                : options.length - 1
+          ]
         this.addClasses(selectOption, this.classes.highlighted)
         this.ensureElementInView(this.content.list, selectOption)
 
@@ -1040,7 +1159,10 @@ export default class Render {
 
         // If selected option has parent classes ss-optgroup with ss-close then click it
         const selectParent = selectOption.parentElement
-        if (selectParent && selectParent.classList.contains(this.classes.getFirst('close'))) {
+        if (
+          selectParent &&
+          selectParent.classList.contains(this.classes.getFirst('close'))
+        ) {
           const optgroupLabel = selectParent.querySelector(
             '.' + this.classes.getFirst('optgroupLabel')
           ) as HTMLDivElement
@@ -1103,7 +1225,9 @@ export default class Render {
   // Take in data and add options to
   public renderOptions(data: (Option | Optgroup)[]): void {
     this.lastRenderedOptions = data
-      .map((o) => (o instanceof Option ? [o] : o.options.map((po) => new Option(po))))
+      .map((o) =>
+        o instanceof Option ? [o] : o.options.map((po) => new Option(po))
+      )
       .flat()
 
     // Clear out innerHtml
@@ -1116,7 +1240,10 @@ export default class Render {
 
       //
       if (this.callbacks.addable) {
-        noResults.innerHTML = this.settings.addableText.replace('{value}', this.content.search.input.value)
+        noResults.innerHTML = this.settings.addableText.replace(
+          '{value}',
+          this.content.search.input.value
+        )
       } else {
         noResults.innerHTML = this.settings.searchText
       }
@@ -1127,7 +1254,10 @@ export default class Render {
     // If settings has allowDeselect and isSingle, add empty placeholder in the event they want to deselect
     if (this.settings.allowDeselect && !this.settings.isMultiple) {
       // Check if store options have a placeholder
-      const placeholderOption = this.store.filter((o) => o.placeholder, false) as Option[]
+      const placeholderOption = this.store.filter(
+        (o) => o.placeholder,
+        false
+      ) as Option[]
       if (!placeholderOption.length) {
         this.store.addOption(
           new Option({
@@ -1192,17 +1322,26 @@ export default class Render {
           selectAll.appendChild(selectAllText)
 
           // Create new svg for checkbox
-          const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+          const selectAllSvg = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg'
+          )
           selectAllSvg.setAttribute('viewBox', '0 0 100 100')
           selectAll.appendChild(selectAllSvg)
 
           // Create new path for box
-          const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          const selectAllBox = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
           selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox)
           selectAllSvg.appendChild(selectAllBox)
 
           // Create new path for check
-          const selectAllCheck = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          const selectAllCheck = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
           selectAllCheck.setAttribute('d', this.classes.optgroupSelectAllCheck)
           selectAllSvg.appendChild(selectAllCheck)
 
@@ -1232,7 +1371,9 @@ export default class Render {
               return
             } else {
               // Put together new list with all options in this optgroup
-              let optionIds = d.options.map((o) => o.id).filter((id) => id !== undefined)
+              let optionIds = d.options
+                .map((o) => o.id)
+                .filter((id) => id !== undefined)
               const newSelected = currentSelected.concat(optionIds)
 
               // Loop through options and if they don't exist in the store
@@ -1259,17 +1400,26 @@ export default class Render {
           this.addClasses(optgroupClosable, this.classes.optgroupClosable)
 
           // Create svg arrow
-          const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+          const optgroupClosableSvg = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg'
+          )
           optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100')
           this.addClasses(optgroupClosableSvg, this.classes.arrow)
           optgroupClosable.appendChild(optgroupClosableSvg)
 
           // Create new path for arrow
-          const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          const optgroupClosableArrow = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
           optgroupClosableSvg.appendChild(optgroupClosableArrow)
 
           // If any options are selected or someone is searching, set optgroup to open
-          if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
+          if (
+            d.options.some((o) => o.selected) ||
+            this.content.search.input.value.trim() !== ''
+          ) {
             this.addClasses(optgroupClosable, this.classes.mainOpen)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
@@ -1347,7 +1497,10 @@ export default class Render {
     }
 
     // Set option content
-    if (this.settings.searchHighlight && this.content.search.input.value.trim() !== '') {
+    if (
+      this.settings.searchHighlight &&
+      this.content.search.input.value.trim() !== ''
+    ) {
       optionEl.innerHTML = this.highlightText(
         option.html !== '' ? option.html : option.text,
         this.content.search.input.value,
@@ -1407,7 +1560,11 @@ export default class Render {
 
       // allowDeselect only applies to single-select mode
       // In multi-select, you can always toggle options on/off
-      if (!this.settings.isMultiple && option.selected && !this.settings.allowDeselect) {
+      if (
+        !this.settings.isMultiple &&
+        option.selected &&
+        !this.settings.allowDeselect
+      ) {
         return
       }
 
@@ -1419,8 +1576,13 @@ export default class Render {
       // Check limit and do nothing if limit is reached and the option is not selected
       // Also check reverse for min limit and is selected (allow Cmd to bypass minSelected)
       if (
-        (this.settings.isMultiple && this.settings.maxSelected <= selectedOptions.length && !option.selected) ||
-        (this.settings.isMultiple && this.settings.minSelected >= selectedOptions.length && option.selected && !isCmd)
+        (this.settings.isMultiple &&
+          this.settings.maxSelected <= selectedOptions.length &&
+          !option.selected) ||
+        (this.settings.isMultiple &&
+          this.settings.minSelected >= selectedOptions.length &&
+          option.selected &&
+          !isCmd)
       ) {
         return
       }
@@ -1432,14 +1594,20 @@ export default class Render {
 
       // If multiple - mimic native browser multi-select behavior
       if (this.settings.isMultiple) {
-        const isCurrentlySelected = before.some((o: Option) => o.id === elementID)
+        const isCurrentlySelected = before.some(
+          (o: Option) => o.id === elementID
+        )
         const isShift = e.shiftKey
 
         // Shift+Click: Select range from last clicked to current
         if (isShift && this.lastSelectedOption) {
           const options = this.lastRenderedOptions
-          const lastIndex = options.findIndex((o: Option) => o.id === this.lastSelectedOption!.id)
-          const currentIndex = options.findIndex((o: Option) => o.id === option.id)
+          const lastIndex = options.findIndex(
+            (o: Option) => o.id === this.lastSelectedOption!.id
+          )
+          const currentIndex = options.findIndex(
+            (o: Option) => o.id === option.id
+          )
 
           if (lastIndex >= 0 && currentIndex >= 0) {
             const startIndex = Math.min(lastIndex, currentIndex)
@@ -1447,8 +1615,13 @@ export default class Render {
             const rangeOptions = options.slice(startIndex, endIndex + 1)
 
             // Check if range would exceed maxSelected
-            const newSelections = rangeOptions.filter((opt) => !before.find((b) => b.id === opt.id))
-            if (before.length + newSelections.length <= this.settings.maxSelected) {
+            const newSelections = rangeOptions.filter(
+              (opt) => !before.find((b) => b.id === opt.id)
+            )
+            if (
+              before.length + newSelections.length <=
+              this.settings.maxSelected
+            ) {
               // Add range to existing selections
               after = before.concat(newSelections)
             } else {
@@ -1524,7 +1697,9 @@ export default class Render {
         // Close dropdown unless using modifier keys in multi-select
         // (mimics native multi-select behavior where you can keep selecting)
         const isModifierKey = e.ctrlKey || e.metaKey || e.shiftKey // Cmd/Ctrl or Shift
-        const shouldClose = this.settings.closeOnSelect && !(this.settings.isMultiple && isModifierKey)
+        const shouldClose =
+          this.settings.closeOnSelect &&
+          !(this.settings.isMultiple && isModifierKey)
 
         if (shouldClose) {
           this.callbacks.close()
@@ -1596,7 +1771,9 @@ export default class Render {
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         // Recursively process child nodes
-        Array.from(node.childNodes).forEach((child) => highlightTextNodes(child))
+        Array.from(node.childNodes).forEach((child) =>
+          highlightTextNodes(child)
+        )
       }
     }
 
@@ -1621,7 +1798,8 @@ export default class Render {
     if (isAbove) {
       const mainHeight = this.main.main.offsetHeight
       const contentHeight = this.content.main.offsetHeight
-      this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
+      this.content.main.style.margin =
+        '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
     } else {
       this.content.main.style.margin = '-1px 0px 0px 0px'
     }
@@ -1697,7 +1875,10 @@ export default class Render {
         const newLeft = Math.max(padding, currentLeft - overflow)
         this.content.main.style.left = newLeft + 'px'
       } else {
-        const newLeft = Math.max(window.scrollX + padding, currentLeft - overflow)
+        const newLeft = Math.max(
+          window.scrollX + padding,
+          currentLeft - overflow
+        )
         this.content.main.style.left = newLeft + 'px'
       }
     }
@@ -1719,7 +1900,10 @@ export default class Render {
     this.setContentPosition()
   }
 
-  public ensureElementInView(container: HTMLElement, element: HTMLElement): void {
+  public ensureElementInView(
+    container: HTMLElement,
+    element: HTMLElement
+  ): void {
     // Determine container top and bottom
     const cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
     const cBottom = cTop + container.clientHeight

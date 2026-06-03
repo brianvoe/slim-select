@@ -89,9 +89,19 @@ export default class Select {
       }
 
       // Add event listeners with capture phase to catch events before they reach the select
-      this.select.addEventListener('click', this.preventNativeSelect, { capture: true, passive: false })
-      this.select.addEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true, passive: false })
-      this.select.addEventListener('focus', this.preventNativeSelectFocus, { capture: true, passive: false })
+      this.select.addEventListener('click', this.preventNativeSelect, {
+        capture: true,
+        passive: false
+      })
+      this.select.addEventListener(
+        'mousedown',
+        this.preventNativeSelectMousedown,
+        { capture: true, passive: false }
+      )
+      this.select.addEventListener('focus', this.preventNativeSelectFocus, {
+        capture: true,
+        passive: false
+      })
     }
   }
 
@@ -112,15 +122,23 @@ export default class Select {
 
     // Remove event listeners that prevent native select behavior
     if (this.preventNativeSelect) {
-      this.select.removeEventListener('click', this.preventNativeSelect, { capture: true })
+      this.select.removeEventListener('click', this.preventNativeSelect, {
+        capture: true
+      })
       this.preventNativeSelect = null
     }
     if (this.preventNativeSelectMousedown) {
-      this.select.removeEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true })
+      this.select.removeEventListener(
+        'mousedown',
+        this.preventNativeSelectMousedown,
+        { capture: true }
+      )
       this.preventNativeSelectMousedown = null
     }
     if (this.preventNativeSelectFocus) {
-      this.select.removeEventListener('focus', this.preventNativeSelectFocus, { capture: true })
+      this.select.removeEventListener('focus', this.preventNativeSelectFocus, {
+        capture: true
+      })
       this.preventNativeSelectFocus = null
     }
   }
@@ -185,7 +203,10 @@ export default class Select {
 
         if (m.type === 'childList') {
           for (const n of Array.from(m.addedNodes)) {
-            if (n.nodeName === 'OPTION' && (<HTMLOptionElement>n).value === this.select.value) {
+            if (
+              n.nodeName === 'OPTION' &&
+              (<HTMLOptionElement>n).value === this.select.value
+            ) {
               // we added a new option that's now the select value
               selectionChanged = true
               break
@@ -249,7 +270,9 @@ export default class Select {
     let data = []
 
     // Loop through nodes and get data
-    const nodes = this.select.childNodes as any as HTMLOptGroupElement[] | HTMLOptionElement[]
+    const nodes = this.select.childNodes as any as
+      | HTMLOptGroupElement[]
+      | HTMLOptionElement[]
     for (const n of nodes) {
       // Optgroup
       if (n.nodeName === 'OPTGROUP') {
@@ -269,8 +292,12 @@ export default class Select {
     let data = {
       id: optgroup.id,
       label: optgroup.label,
-      selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
-      selectAllText: optgroup.dataset ? optgroup.dataset.selectalltext : 'Select all',
+      selectAll: optgroup.dataset
+        ? optgroup.dataset.selectall === 'true'
+        : false,
+      selectAllText: optgroup.dataset
+        ? optgroup.dataset.selectalltext
+        : 'Select all',
       closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
       options: []
     } as Optgroup
@@ -308,7 +335,10 @@ export default class Select {
     let options = []
 
     // Loop through options and set selected
-    const opts = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    const opts = this.select.childNodes as any as (
+      | HTMLOptGroupElement
+      | HTMLOptionElement
+    )[]
     for (const o of opts) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroupOptions = o.childNodes as any as HTMLOptionElement[]
@@ -342,11 +372,15 @@ export default class Select {
     this.changeListen(false)
 
     // Loop through options and set selected
-    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    const options = this.select.childNodes as any as (
+      | HTMLOptGroupElement
+      | HTMLOptionElement
+    )[]
     for (const o of options) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroup = o as HTMLOptGroupElement
-        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
+        const optgroupOptions =
+          optgroup.childNodes as any as HTMLOptionElement[]
         for (const oo of optgroupOptions) {
           if (oo.nodeName === 'OPTION') {
             const option = oo as HTMLOptionElement
@@ -374,11 +408,15 @@ export default class Select {
     this.changeListen(false)
 
     // Loop through options and set selected
-    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
+    const options = this.select.childNodes as any as (
+      | HTMLOptGroupElement
+      | HTMLOptionElement
+    )[]
     for (const o of options) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroup = o as HTMLOptGroupElement
-        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
+        const optgroupOptions =
+          optgroup.childNodes as any as HTMLOptionElement[]
         for (const oo of optgroupOptions) {
           if (oo.nodeName === 'OPTION') {
             const option = oo as HTMLOptionElement
@@ -539,7 +577,9 @@ export default class Select {
     // Find labels that point to this select via 'for' attribute
     const selectId = this.select.id
     if (selectId) {
-      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(`label[for="${selectId}"]`)
+      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(
+        `label[for="${selectId}"]`
+      )
       labelsByFor.forEach((label) => labels.push(label))
     }
 
@@ -567,7 +607,10 @@ export default class Select {
         const target = e.target as HTMLElement
 
         // Check if click is on SlimSelect UI elements (main div or content)
-        const isSlimSelectElement = hasClassInTree(target, this.select.dataset.id!)
+        const isSlimSelectElement = hasClassInTree(
+          target,
+          this.select.dataset.id!
+        )
 
         // Prevent default label behavior (focusing the select)
         // This needs to happen for all clicks on the label or its children
@@ -584,7 +627,10 @@ export default class Select {
 
       // Store the handler on the label for cleanup later
       ;(label as any).__slimSelectLabelHandler = labelClickHandler
-      label.addEventListener('click', labelClickHandler, { capture: true, passive: false })
+      label.addEventListener('click', labelClickHandler, {
+        capture: true,
+        passive: false
+      })
     })
   }
 
@@ -595,7 +641,9 @@ export default class Select {
     // Find labels that point to this select via 'for' attribute
     const selectId = this.select.id
     if (selectId) {
-      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(`label[for="${selectId}"]`)
+      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(
+        `label[for="${selectId}"]`
+      )
       labelsByFor.forEach((label) => labels.push(label))
     }
 
@@ -629,15 +677,23 @@ export default class Select {
 
     // Remove event listeners that prevent native select behavior
     if (this.preventNativeSelect) {
-      this.select.removeEventListener('click', this.preventNativeSelect, { capture: true })
+      this.select.removeEventListener('click', this.preventNativeSelect, {
+        capture: true
+      })
       this.preventNativeSelect = null
     }
     if (this.preventNativeSelectMousedown) {
-      this.select.removeEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true })
+      this.select.removeEventListener(
+        'mousedown',
+        this.preventNativeSelectMousedown,
+        { capture: true }
+      )
       this.preventNativeSelectMousedown = null
     }
     if (this.preventNativeSelectFocus) {
-      this.select.removeEventListener('focus', this.preventNativeSelectFocus, { capture: true })
+      this.select.removeEventListener('focus', this.preventNativeSelectFocus, {
+        capture: true
+      })
       this.preventNativeSelectFocus = null
     }
 

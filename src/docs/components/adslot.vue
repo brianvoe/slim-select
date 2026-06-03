@@ -301,7 +301,7 @@ export default defineComponent({
     margin: 16px 0;
 
     // Prevent ads from being too large on mobile
-    :deep(.adsbygoogle) {
+    .adsbygoogle {
       max-width: 100% !important;
       height: auto !important;
     }
@@ -309,7 +309,7 @@ export default defineComponent({
 }
 
 // Ensure proper spacing from content
-:deep(.adsbygoogle) {
+.adsbygoogle {
   display: block;
   margin: 0 auto;
 }

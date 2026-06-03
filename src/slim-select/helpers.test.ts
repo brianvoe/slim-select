@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 'use strict'
 
 import { describe, expect, test, vi } from 'vitest'
@@ -142,7 +138,9 @@ describe('helpers module', () => {
     })
 
     test('more complex objects are equal', () => {
-      expect(isEqual({ a: 1, b: { c: 'asdf' } }, { a: 1, b: { c: 'asdf' } })).toBe(true)
+      expect(
+        isEqual({ a: 1, b: { c: 'asdf' } }, { a: 1, b: { c: 'asdf' } })
+      ).toBe(true)
     })
   })
 

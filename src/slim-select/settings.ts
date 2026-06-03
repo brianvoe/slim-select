@@ -32,6 +32,7 @@ export default class Settings {
   public placeholderText: string
   public allowDeselect: boolean
   public hideSelected: boolean
+  public multiString: boolean
   public keepOrder: boolean
   public showOptionTooltips: boolean
   public minSelected: number
@@ -51,27 +52,44 @@ export default class Settings {
     this.class = settings.class || []
 
     this.disabled = settings.disabled !== undefined ? settings.disabled : false
-    this.alwaysOpen = settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
-    this.showSearch = settings.showSearch !== undefined ? settings.showSearch : true
-    this.focusSearch = settings.focusSearch !== undefined ? settings.focusSearch : true
-    this.keepSearch = settings.keepSearch !== undefined ? settings.keepSearch : false
+    this.alwaysOpen =
+      settings.alwaysOpen !== undefined ? settings.alwaysOpen : false
+    this.showSearch =
+      settings.showSearch !== undefined ? settings.showSearch : true
+    this.focusSearch =
+      settings.focusSearch !== undefined ? settings.focusSearch : true
+    this.keepSearch =
+      settings.keepSearch !== undefined ? settings.keepSearch : false
     this.ariaLabel = settings.ariaLabel || 'Combobox'
     this.searchPlaceholder = settings.searchPlaceholder || 'Search...'
     this.searchText = settings.searchText || 'No Results'
     this.searchingText = settings.searchingText || 'Searching...'
     this.deselectText = settings.deselectText || 'Clear'
     this.removeText = settings.removeText || 'Remove'
-    this.searchHighlight = settings.searchHighlight !== undefined ? settings.searchHighlight : false
-    this.closeOnSelect = settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
+    this.searchHighlight =
+      settings.searchHighlight !== undefined ? settings.searchHighlight : false
+    this.closeOnSelect =
+      settings.closeOnSelect !== undefined ? settings.closeOnSelect : true
     this.contentLocation = settings.contentLocation || document.body
     this.contentPosition = settings.contentPosition || 'absolute'
     this.contentWidth = settings.contentWidth || ''
     this.openPosition = settings.openPosition || 'auto' // options: auto, up, down
-    this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value'
-    this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
-    this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
-    this.keepOrder = settings.keepOrder !== undefined ? settings.keepOrder : false
-    this.showOptionTooltips = settings.showOptionTooltips !== undefined ? settings.showOptionTooltips : false
+    this.placeholderText =
+      settings.placeholderText !== undefined
+        ? settings.placeholderText
+        : 'Select Value'
+    this.allowDeselect =
+      settings.allowDeselect !== undefined ? settings.allowDeselect : false
+    this.hideSelected =
+      settings.hideSelected !== undefined ? settings.hideSelected : false
+    this.multiString =
+      settings.multiString !== undefined ? settings.multiString : false
+    this.keepOrder =
+      settings.keepOrder !== undefined ? settings.keepOrder : false
+    this.showOptionTooltips =
+      settings.showOptionTooltips !== undefined
+        ? settings.showOptionTooltips
+        : false
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
     this.timeoutDelay = settings.timeoutDelay || 200

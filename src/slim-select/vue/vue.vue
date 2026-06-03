@@ -1,12 +1,20 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import SlimSelect, { Config, Events, Option, Optgroup, Settings } from '../index'
+import SlimSelect, {
+  Config,
+  Events,
+  Option,
+  Optgroup,
+  Settings
+} from '../index'
 
 export default defineComponent({
   name: 'SlimSelect',
   props: {
     modelValue: {
-      type: [String, Array, undefined] as PropType<string | string[] | undefined>
+      type: [String, Array, undefined] as PropType<
+        string | string[] | undefined
+      >
     },
     multiple: {
       type: Boolean,
@@ -33,7 +41,8 @@ export default defineComponent({
   },
   mounted() {
     // Warning: If both slot and data are provided, data takes precedence
-    const hasSlotContent = this.$slots.default && this.$slots.default().length > 0
+    const hasSlotContent =
+      this.$slots.default && this.$slots.default().length > 0
     if (hasSlotContent && this.data) {
       console.warn(
         '[SlimSelect Vue] Both slot content and data prop are provided. Data prop will take precedence and slot content will be ignored.'
@@ -75,7 +84,9 @@ export default defineComponent({
     if (this.slim && !this.data) {
       const currentSelected = this.slim.getSelected()
       const modelValues = Array.isArray(this.value) ? this.value : [this.value]
-      const needsSync = JSON.stringify(currentSelected.sort()) !== JSON.stringify(modelValues.sort())
+      const needsSync =
+        JSON.stringify(currentSelected.sort()) !==
+        JSON.stringify(modelValues.sort())
 
       if (needsSync) {
         // Use the same sync method to handle invalid values properly
@@ -120,22 +131,32 @@ export default defineComponent({
     getSlimSelect() {
       return this.slim
     },
-    handleAfterChange(newVal: Option[], ogAfterChange?: (newVal: Option[]) => void): void {
+    handleAfterChange(
+      newVal: Option[],
+      ogAfterChange?: (newVal: Option[]) => void
+    ): void {
       if (!this.slim) return
 
-      const value = this.multiple ? newVal.map((option) => option.value) : newVal.length > 0 ? newVal[0].value : ''
+      const value = this.multiple
+        ? newVal.map((option) => option.value)
+        : newVal.length > 0
+          ? newVal[0].value
+          : ''
 
       // Check if the current v-model value exists in options
       // If it doesn't exist, don't update v-model (preserve invalid value like regular HTML select)
       const currentValue = this.getCleanValue(this.$props.modelValue)
       const options = this.slim.store.getDataOptions()
       const currentValueExists = Array.isArray(currentValue)
-        ? currentValue.length > 0 && currentValue.every((val) => options.some((opt) => opt.value === val))
-        : currentValue !== '' && options.some((opt) => opt.value === currentValue)
+        ? currentValue.length > 0 &&
+          currentValue.every((val) => options.some((opt) => opt.value === val))
+        : currentValue !== '' &&
+          options.some((opt) => opt.value === currentValue)
 
       // Check if the new value is valid (exists in options)
       const newValueIsValid = Array.isArray(value)
-        ? value.length > 0 && value.every((val) => options.some((opt) => opt.value === val))
+        ? value.length > 0 &&
+          value.every((val) => options.some((opt) => opt.value === val))
         : value !== '' && options.some((opt) => opt.value === value)
 
       // Check if value actually changed (properly compare arrays)
@@ -184,11 +205,14 @@ export default defineComponent({
       const cleanValue = this.getCleanValue(this.$props.modelValue)
       const data = this.slim.getData()
       // Extract options from data (flatten optgroups if any)
-      const options = data.flatMap((item: Option | Optgroup) => ('label' in item ? item.options : [item])) as Option[]
+      const options = data.flatMap((item: Option | Optgroup) =>
+        'label' in item ? item.options : [item]
+      ) as Option[]
 
       // Check if the value exists in options
       const valueExists = Array.isArray(cleanValue)
-        ? cleanValue.length > 0 && cleanValue.every((val) => options.some((opt) => opt.value === val))
+        ? cleanValue.length > 0 &&
+          cleanValue.every((val) => options.some((opt) => opt.value === val))
         : cleanValue !== '' && options.some((opt) => opt.value === cleanValue)
 
       // If value doesn't exist in options and it's not empty, add a placeholder option

@@ -1,4 +1,9 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
+import React, {
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle
+} from 'react'
 import SlimSelectCore from '../index'
 import type { Config, Option, Optgroup } from '../index'
 
@@ -18,7 +23,10 @@ export interface SlimSelectRef {
 }
 
 const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
-  ({ data, settings, events, cssClasses, value, onChange, children, multiple }, ref) => {
+  (
+    { data, settings, events, cssClasses, value, onChange, children, multiple },
+    ref
+  ) => {
     const selectRef = useRef<HTMLSelectElement>(null)
     const slimSelectRef = useRef<SlimSelectCore | null>(null)
     const isInitialMount = useRef(true)
@@ -30,7 +38,9 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
     }))
 
     // Helper to get clean value (similar to Vue's getCleanValue)
-    const getCleanValue = (val: string | string[] | undefined): string | string[] => {
+    const getCleanValue = (
+      val: string | string[] | undefined
+    ): string | string[] => {
       // If its multiple and the value is a string, return an array with the string
       if (typeof val === 'string') {
         return multiple ? [val] : val
@@ -45,7 +55,10 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
     }
 
     // Helper to sync value to SlimSelect (similar to Vue's syncModelValueToSlimSelect)
-    const syncValueToSlimSelect = (val: string | string[] | undefined, runAfterChange: boolean = false) => {
+    const syncValueToSlimSelect = (
+      val: string | string[] | undefined,
+      runAfterChange: boolean = false
+    ) => {
       if (!slimSelectRef.current) return
 
       // Only sync if value is explicitly set (not undefined)
@@ -57,11 +70,14 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
       const cleanValue = getCleanValue(val)
       const data = slimSelectRef.current.getData()
       // Extract options from data (flatten optgroups if any)
-      const options = data.flatMap((item: Option | Optgroup) => ('label' in item ? item.options : [item])) as Option[]
+      const options = data.flatMap((item: Option | Optgroup) =>
+        'label' in item ? item.options : [item]
+      ) as Option[]
 
       // Check if the value exists in options
       const valueExists = Array.isArray(cleanValue)
-        ? cleanValue.length > 0 && cleanValue.every((val) => options.some((opt) => opt.value === val))
+        ? cleanValue.length > 0 &&
+          cleanValue.every((val) => options.some((opt) => opt.value === val))
         : cleanValue !== '' && options.some((opt) => opt.value === cleanValue)
 
       // If value doesn't exist in options, add a placeholder option
@@ -78,7 +94,9 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
               text: '',
               placeholder: true
             }
-            slimSelectRef.current.setData([placeholderOption].concat(currentData))
+            slimSelectRef.current.setData(
+              [placeholderOption].concat(currentData)
+            )
           }
         }
       }
@@ -115,7 +133,9 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
         afterChange: (newVal) => {
           if (!slimSelectRef.current) return
 
-          const newValue = multiple ? newVal.map((option) => option.value) : (newVal[0]?.value ?? '')
+          const newValue = multiple
+            ? newVal.map((option) => option.value)
+            : (newVal[0]?.value ?? '')
           const slimData = slimSelectRef.current.getData()
           const options = slimData.flatMap((item: Option | Optgroup) =>
             'label' in item ? item.options : [item]
@@ -127,25 +147,35 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
             currentValue === undefined
               ? false
               : Array.isArray(currentValue)
-                ? currentValue.length > 0 && currentValue.every((val) => options.some((opt) => opt.value === val))
-                : currentValue !== '' && options.some((opt) => opt.value === currentValue)
+                ? currentValue.length > 0 &&
+                  currentValue.every((val) =>
+                    options.some((opt) => opt.value === val)
+                  )
+                : currentValue !== '' &&
+                  options.some((opt) => opt.value === currentValue)
 
           // Check if the new value is valid (exists in options)
           const newValueIsValid = Array.isArray(newValue)
-            ? newValue.length > 0 && newValue.every((val) => options.some((opt) => opt.value === val))
+            ? newValue.length > 0 &&
+              newValue.every((val) => options.some((opt) => opt.value === val))
             : newValue !== '' && options.some((opt) => opt.value === newValue)
 
           // Check if value actually changed (properly compare arrays)
           const valueChanged =
             Array.isArray(newValue) && Array.isArray(currentValue)
-              ? JSON.stringify(newValue.sort()) !== JSON.stringify(currentValue.sort())
+              ? JSON.stringify(newValue.sort()) !==
+                JSON.stringify(currentValue.sort())
               : currentValue !== newValue
 
           // Only call onChange if:
           // 1. The value actually changed, AND
           // 2. Either the current value exists in options, OR we're setting to a valid non-empty value
           // This prevents clearing invalid values when we show placeholder
-          if (onChange && valueChanged && (currentValueExists || newValueIsValid)) {
+          if (
+            onChange &&
+            valueChanged &&
+            (currentValueExists || newValueIsValid)
+          ) {
             onChange(newValue)
             currentValueRef.current = newValue
           }

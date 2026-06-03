@@ -568,7 +568,9 @@ describe('SlimSelect Vue Component', () => {
       // Verify v-model emitted the update
       const emitted = wrapper.emitted('update:modelValue')
       expect(emitted).toBeTruthy()
-      expect(emitted?.[emitted.length - 1]).toEqual([['option2', 'option3', 'option4']])
+      expect(emitted?.[emitted.length - 1]).toEqual([
+        ['option2', 'option3', 'option4']
+      ])
     })
 
     test('updates when parent changes computed data based on new modelValue', async () => {
@@ -863,7 +865,9 @@ describe('SlimSelect Vue Component', () => {
       // Verify options exist in SlimSelect (may include placeholder if added)
       const data = slim.getData()
       // Filter out placeholder options to check actual options
-      const actualOptions = (data as Option[]).filter((opt: any) => !opt.placeholder)
+      const actualOptions = (data as Option[]).filter(
+        (opt: any) => !opt.placeholder
+      )
       expect(actualOptions.length).toBe(3)
       expect(actualOptions[0].value).toBe('opt1')
       expect(actualOptions[0].text).toBe('Option 1')
@@ -953,7 +957,9 @@ describe('SlimSelect Vue Component', () => {
 
       // Verify SlimSelect has a placeholder option
       const data = slim.getData()
-      const hasPlaceholder = (data as Option[]).some((opt: any) => opt.placeholder)
+      const hasPlaceholder = (data as Option[]).some(
+        (opt: any) => opt.placeholder
+      )
       expect(hasPlaceholder).toBe(true)
 
       // Verify no valid option is selected (placeholder should be selected internally,
@@ -961,7 +967,9 @@ describe('SlimSelect Vue Component', () => {
       const selectedValues = slim.getSelected()
       // If placeholder is selected, getSelected() might return empty or the placeholder value
       // The key is that no valid option value is selected
-      const hasValidOptionSelected = selectedValues.some((val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val))
+      const hasValidOptionSelected = selectedValues.some(
+        (val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val)
+      )
       expect(hasValidOptionSelected).toBe(false)
 
       // The key test: v-model should still have the invalid value
@@ -1006,12 +1014,16 @@ describe('SlimSelect Vue Component', () => {
 
       // Verify placeholder exists
       const data = slim.getData()
-      const hasPlaceholder = (data as Option[]).some((opt: any) => opt.placeholder)
+      const hasPlaceholder = (data as Option[]).some(
+        (opt: any) => opt.placeholder
+      )
       expect(hasPlaceholder).toBe(true)
 
       // Verify no valid option is selected
       const selectedValues = slim.getSelected()
-      const hasValidOptionSelected = selectedValues.some((val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val))
+      const hasValidOptionSelected = selectedValues.some(
+        (val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val)
+      )
       expect(hasValidOptionSelected).toBe(false)
     })
 
@@ -1044,12 +1056,16 @@ describe('SlimSelect Vue Component', () => {
 
       // Verify placeholder was added
       const data = slim.getData()
-      const hasPlaceholder = (data as Option[]).some((opt: any) => opt.placeholder)
+      const hasPlaceholder = (data as Option[]).some(
+        (opt: any) => opt.placeholder
+      )
       expect(hasPlaceholder).toBe(true)
 
       // Verify no valid option is selected
       const selectedValues = slim.getSelected()
-      const hasValidOptionSelected = selectedValues.some((val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val))
+      const hasValidOptionSelected = selectedValues.some(
+        (val) => val !== '' && ['opt1', 'opt2', 'opt3'].includes(val)
+      )
       expect(hasValidOptionSelected).toBe(false)
     })
 

@@ -17,15 +17,18 @@ export class Option {
 
   constructor(option: Partial<Option>) {
     this.id = !option.id || option.id === '' ? generateID() : option.id
-    this.value = option.value === undefined ? option.text || '' : option.value || ''
+    this.value =
+      option.value === undefined ? option.text || '' : option.value || ''
     this.text = option.text || ''
     this.html = option.html || ''
-    this.defaultSelected = option.defaultSelected !== undefined ? option.defaultSelected : false
+    this.defaultSelected =
+      option.defaultSelected !== undefined ? option.defaultSelected : false
     this.selected = option.selected !== undefined ? option.selected : false
     this.display = option.display !== undefined ? option.display : true
     this.disabled = option.disabled !== undefined ? option.disabled : false
     this.mandatory = option.mandatory !== undefined ? option.mandatory : false
-    this.placeholder = option.placeholder !== undefined ? option.placeholder : false
+    this.placeholder =
+      option.placeholder !== undefined ? option.placeholder : false
     this.class = option.class || ''
     this.style = option.style || ''
     this.data = option.data || {}
@@ -42,7 +45,8 @@ export class Optgroup {
   constructor(optgroup: Partial<Optgroup>) {
     this.id = !optgroup.id || optgroup.id === '' ? generateID() : optgroup.id
     this.label = optgroup.label || ''
-    this.selectAll = optgroup.selectAll === undefined ? false : optgroup.selectAll
+    this.selectAll =
+      optgroup.selectAll === undefined ? false : optgroup.selectAll
     this.selectAllText = optgroup.selectAllText || 'Select All'
     this.closable = optgroup.closable || 'off'
 
@@ -64,13 +68,18 @@ export default class Store {
   private data: (Option | Optgroup)[] = []
   private selectedOrder: string[] = []
 
-  constructor(type: 'single' | 'multiple', data: (Partial<Option> | Partial<Optgroup>)[]) {
+  constructor(
+    type: 'single' | 'multiple',
+    data: (Partial<Option> | Partial<Optgroup>)[]
+  ) {
     this.selectType = type
     this.setData(data)
   }
 
   // Validate DataArrayPartial
-  public validateDataArray(data: (Partial<Option> | Partial<Optgroup>)[]): Error | null {
+  public validateDataArray(
+    data: (Partial<Option> | Partial<Optgroup>)[]
+  ): Error | null {
     if (!Array.isArray(data)) {
       return new Error('Data must be an array')
     }
@@ -115,7 +124,9 @@ export default class Store {
     return null
   }
 
-  public partialToFullData(data: (Partial<Option> | Partial<Optgroup>)[]): (Option | Optgroup)[] {
+  public partialToFullData(
+    data: (Partial<Option> | Partial<Optgroup>)[]
+  ): (Option | Optgroup)[] {
     let dataFinal: (Option | Optgroup)[] = []
     data.forEach((dataObj) => {
       if (!dataObj) return
@@ -143,7 +154,10 @@ export default class Store {
     return dataFinal
   }
 
-  public setData(data: (Partial<Option> | Partial<Optgroup>)[], preserveSelected: boolean = false) {
+  public setData(
+    data: (Partial<Option> | Partial<Optgroup>)[],
+    preserveSelected: boolean = false
+  ) {
     // Convert new data to full data array
     const newData = this.partialToFullData(data)
 
@@ -189,7 +203,8 @@ export default class Store {
     // to set the selected property and clean any wrong selected
     if (this.selectType === 'single') {
       // When search returns new data and user had nothing selected, don't auto-select first option
-      const allowEmptySelection = preserveSelected && selectedOptionsBeforeUpdate.length === 0
+      const allowEmptySelection =
+        preserveSelected && selectedOptionsBeforeUpdate.length === 0
       this.setSelectedBy('id', this.getSelected(), allowEmptySelection)
     }
   }
@@ -236,7 +251,9 @@ export default class Store {
           }
 
           let optionValue = option[selectedType] || ''
-          option.selected = hasSelected ? false : selectedValues.includes(optionValue)
+          option.selected = hasSelected
+            ? false
+            : selectedValues.includes(optionValue)
 
           // If the option is selected, set hasSelected to true
           // for single based selects
@@ -256,7 +273,9 @@ export default class Store {
           firstOption = dataObj
         }
 
-        dataObj.selected = hasSelected ? false : selectedValues.includes(dataObj[selectedType])
+        dataObj.selected = hasSelected
+          ? false
+          : selectedValues.includes(dataObj[selectedType])
 
         // If the option is selected, set hasSelected to true
         // for single based selects
@@ -283,7 +302,10 @@ export default class Store {
 
     // Put together a list of selected ids in the order of the selected values
     const selectedIds = selectedValues.map((value) => {
-      return selectedObjects.find((option) => option[selectedType] === value)?.id || ''
+      return (
+        selectedObjects.find((option) => option[selectedType] === value)?.id ||
+        ''
+      )
     })
 
     this.selectedOrder = selectedIds
@@ -344,7 +366,10 @@ export default class Store {
   }
 
   // Take in search string and return filtered list of values
-  public search(search: string, searchFilter: (opt: Option, search: string) => boolean): (Option | Optgroup)[] {
+  public search(
+    search: string,
+    searchFilter: (opt: Option, search: string) => boolean
+  ): (Option | Optgroup)[] {
     search = search.trim()
 
     // If search is empty, return all data
@@ -360,7 +385,10 @@ export default class Store {
 
   // Filter takes in a function that will be used to filter the data
   // This will also keep optgroups of sub options meet the filter requirements
-  public filter(filter: { (opt: Option): boolean } | null, includeOptgroup: boolean): (Option | Optgroup)[] {
+  public filter(
+    filter: { (opt: Option): boolean } | null,
+    includeOptgroup: boolean
+  ): (Option | Optgroup)[] {
     const dataSearch: (Option | Optgroup)[] = []
     this.data.forEach((dataObj: Option | Optgroup) => {
       // Optgroup

@@ -84,6 +84,7 @@ export default defineComponent({
           options: [
             { text: 'select', value: 'settings#select' },
             { text: 'classes', value: 'settings#cssClasses' },
+            { text: 'multiString', value: 'settings#multiString' },
             { text: 'alwaysOpen', value: 'settings#alwaysOpen' },
             { text: 'contentLocation', value: 'settings#contentLocation' },
             { text: 'contentPosition', value: 'settings#contentPosition' },

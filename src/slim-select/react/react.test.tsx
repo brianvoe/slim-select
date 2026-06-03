@@ -356,7 +356,9 @@ describe('SlimSelect React Component', () => {
       if (slimInstance) {
         // Verify placeholder exists in data
         const data = slimInstance.getData()
-        const hasPlaceholder = (data as Option[]).some((opt: any) => opt.placeholder)
+        const hasPlaceholder = (data as Option[]).some(
+          (opt: any) => opt.placeholder
+        )
         expect(hasPlaceholder).toBe(true)
 
         // CRITICAL: Verify what's actually selected - should be empty string (placeholder)
@@ -364,7 +366,9 @@ describe('SlimSelect React Component', () => {
         expect(selectedValues).toEqual([''])
 
         // Verify no valid option is selected
-        const hasValidOptionSelected = selectedValues.some((val) => val !== '' && ['1', '2'].includes(val))
+        const hasValidOptionSelected = selectedValues.some(
+          (val) => val !== '' && ['1', '2'].includes(val)
+        )
         expect(hasValidOptionSelected).toBe(false)
       }
     })
@@ -393,7 +397,9 @@ describe('SlimSelect React Component', () => {
           if (slimInstance) {
             // Verify placeholder exists in data (with empty value, not 'banana')
             const data = slimInstance.getData()
-            const hasPlaceholder = (data as Option[]).some((opt: any) => opt.placeholder)
+            const hasPlaceholder = (data as Option[]).some(
+              (opt: any) => opt.placeholder
+            )
             expect(hasPlaceholder).toBe(true)
 
             // CRITICAL: Check what's actually displayed in the SlimSelect UI
@@ -402,13 +408,19 @@ describe('SlimSelect React Component', () => {
             expect(slimMain).toBeDefined()
 
             // Check what's in the .ss-values container
-            const ssValues = slimMain?.querySelector('.ss-values') as HTMLElement
+            const ssValues = slimMain?.querySelector(
+              '.ss-values'
+            ) as HTMLElement
             expect(ssValues).toBeDefined()
 
             // If placeholder is selected, it should show placeholder (no .ss-single element)
             // If a real option is selected, it will show .ss-single with the option text
-            const singleValue = ssValues?.querySelector('.ss-single') as HTMLElement
-            const placeholderEl = ssValues?.querySelector('.ss-placeholder') as HTMLElement
+            const singleValue = ssValues?.querySelector(
+              '.ss-single'
+            ) as HTMLElement
+            const placeholderEl = ssValues?.querySelector(
+              '.ss-placeholder'
+            ) as HTMLElement
 
             // CRITICAL: If placeholder is correctly selected, we should NOT see .ss-single with "Option 1"
             // Instead, we should either see placeholder OR empty (if placeholder text is empty)
@@ -424,10 +436,17 @@ describe('SlimSelect React Component', () => {
             }
 
             // Check the store to see what's actually selected
-            const selectedOptions = (slimInstance as any).store.getSelectedOptions()
-            const hasPlaceholderSelected = selectedOptions.some((opt: any) => opt.placeholder && opt.selected)
+            const selectedOptions = (
+              slimInstance as any
+            ).store.getSelectedOptions()
+            const hasPlaceholderSelected = selectedOptions.some(
+              (opt: any) => opt.placeholder && opt.selected
+            )
             const hasValidOptionSelected = selectedOptions.some(
-              (opt: any) => opt.selected && !opt.placeholder && ['1', '2', '3'].includes(opt.value)
+              (opt: any) =>
+                opt.selected &&
+                !opt.placeholder &&
+                ['1', '2', '3'].includes(opt.value)
             )
 
             // The placeholder should be selected, not a valid option

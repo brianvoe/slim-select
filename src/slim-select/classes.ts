@@ -6,6 +6,7 @@ export default class CssClasses {
   // Values
   public values: string
   public single: string
+  public multiString: string
   public max: string
   public value: string
   public valueText: string
@@ -71,6 +72,7 @@ export default class CssClasses {
     this.placeholder = join('ss-placeholder', classes.placeholder)
     this.values = join('ss-values', classes.values)
     this.single = join('ss-single', classes.single)
+    this.multiString = join('ss-multi-string', classes.multiString)
     this.max = join('ss-max', classes.max)
     this.value = join('ss-value', classes.value)
     this.valueText = join('ss-value-text', classes.valueText)
@@ -87,18 +89,26 @@ export default class CssClasses {
     this.dirAbove = join('ss-dir-above', classes.dirAbove)
     this.dirBelow = join('ss-dir-below', classes.dirBelow)
     this.search = join('ss-search', classes.search)
-    this.searchHighlighter = join('ss-search-highlight', classes.searchHighlighter)
+    this.searchHighlighter = join(
+      'ss-search-highlight',
+      classes.searchHighlighter
+    )
     this.searching = join('ss-searching', classes.searching)
     this.addable = join('ss-addable', classes.addable)
     this.addablePath = classes.addablePath || 'M50,10 L50,90 M10,50 L90,50'
     this.list = join('ss-list', classes.list)
     this.optgroup = join('ss-optgroup', classes.optgroup)
     this.optgroupLabel = join('ss-optgroup-label', classes.optgroupLabel)
-    this.optgroupLabelText = join('ss-optgroup-label-text', classes.optgroupLabelText)
+    this.optgroupLabelText = join(
+      'ss-optgroup-label-text',
+      classes.optgroupLabelText
+    )
     this.optgroupActions = join('ss-optgroup-actions', classes.optgroupActions)
     this.optgroupSelectAll = join('ss-selectall', classes.optgroupSelectAll)
-    this.optgroupSelectAllBox = classes.optgroupSelectAllBox || 'M60,10 L10,10 L10,90 L90,90 L90,50'
-    this.optgroupSelectAllCheck = classes.optgroupSelectAllCheck || 'M30,45 L50,70 L90,10'
+    this.optgroupSelectAllBox =
+      classes.optgroupSelectAllBox || 'M60,10 L10,10 L10,90 L90,90 L90,50'
+    this.optgroupSelectAllCheck =
+      classes.optgroupSelectAllCheck || 'M30,45 L50,70 L90,10'
     this.optgroupClosable = join('ss-closable', classes.optgroupClosable)
     this.option = join('ss-option', classes.option)
     this.optionDelete = classes.optionDelete || 'M10,10 L90,90 M10,90 L90,10'

@@ -23,11 +23,20 @@ export interface Events {
   search?: (
     searchValue: string,
     currentData: (Option | Optgroup)[]
-  ) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[]
+  ) =>
+    | Promise<(Partial<Option> | Partial<Optgroup>)[]>
+    | (Partial<Option> | Partial<Optgroup>)[]
   searchFilter?: (option: Option, search: string) => boolean
   addable?: (
     value: string
-  ) => Promise<Partial<Option> | string> | Partial<Option> | string | false | null | undefined | Error
+  ) =>
+    | Promise<Partial<Option> | string>
+    | Partial<Option>
+    | string
+    | false
+    | null
+    | undefined
+    | Error
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
   afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void
@@ -69,7 +78,9 @@ export default class SlimSelect {
   constructor(config: Config) {
     // Make sure you get the right element
     this.selectEl = (
-      typeof config.select === 'string' ? document.querySelector(config.select) : config.select
+      typeof config.select === 'string'
+        ? document.querySelector(config.select)
+        : config.select
     ) as HTMLSelectElement
     if (!this.selectEl) {
       if (config.events && config.events.error) {
@@ -96,7 +107,12 @@ export default class SlimSelect {
     this.cssClasses = new CssClasses(config.cssClasses)
 
     // Set events
-    const debounceEvents = ['beforeOpen', 'afterOpen', 'beforeClose', 'afterClose']
+    const debounceEvents = [
+      'beforeOpen',
+      'afterOpen',
+      'beforeClose',
+      'afterClose'
+    ]
     for (const key in config.events) {
       // Check if key exists in events
       if (!config.events.hasOwnProperty(key)) {
@@ -105,14 +121,21 @@ export default class SlimSelect {
 
       // Check if key is in debounceEvents
       if (debounceEvents.indexOf(key) !== -1) {
-        ;(this.events as { [key: string]: any })[key] = debounce((config.events as { [key: string]: any })[key], 100)
+        ;(this.events as { [key: string]: any })[key] = debounce(
+          (config.events as { [key: string]: any })[key],
+          100
+        )
       } else {
-        ;(this.events as { [key: string]: any })[key] = (config.events as { [key: string]: any })[key]
+        ;(this.events as { [key: string]: any })[key] = (
+          config.events as { [key: string]: any }
+        )[key]
       }
     }
 
     // Upate settings with type, style and classname
-    this.settings.disabled = config.settings?.disabled ? config.settings.disabled : this.selectEl.disabled
+    this.settings.disabled = config.settings?.disabled
+      ? config.settings.disabled
+      : this.selectEl.disabled
     this.settings.isMultiple = this.selectEl.multiple
     this.settings.style = this.selectEl.style.cssText
     this.settings.class = this.selectEl.className.split(' ')
@@ -123,7 +146,11 @@ export default class SlimSelect {
     if (!this.selectEl.id) {
       this.selectEl.id = this.settings.id
     }
-    this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class)
+    this.select.updateSelect(
+      this.settings.id,
+      this.settings.style,
+      this.settings.class
+    )
     this.select.hideUI() // Hide the original select element
 
     // Add select listeners
@@ -161,7 +188,10 @@ export default class SlimSelect {
 
     // Set store class
     const data = config.data ? config.data : this.select.getData()
-    this.store = new Store(this.settings.isMultiple ? 'multiple' : 'single', data)
+    this.store = new Store(
+      this.settings.isMultiple ? 'multiple' : 'single',
+      data
+    )
 
     // If data is passed update the original select element
     if (config.data) {
@@ -181,7 +211,12 @@ export default class SlimSelect {
     }
 
     // Setup render class
-    this.render = new Render(this.settings, this.cssClasses, this.store, renderCallbacks)
+    this.render = new Render(
+      this.settings,
+      this.cssClasses,
+      this.store,
+      renderCallbacks
+    )
     this.render.renderValues()
     this.render.renderOptions(this.store.getData())
 
@@ -193,7 +228,10 @@ export default class SlimSelect {
       this.render.main.main.setAttribute('aria-label', selectAriaLabel)
     } else if (selectAriaLabelledBy) {
       this.render.main.main.removeAttribute('aria-label')
-      this.render.main.main.setAttribute('aria-labelledby', selectAriaLabelledBy)
+      this.render.main.main.setAttribute(
+        'aria-labelledby',
+        selectAriaLabelledBy
+      )
     } else if (this.selectEl.labels && this.selectEl.labels.length > 0) {
       const labelledByIds = Array.from(this.selectEl.labels).map((label, i) => {
         if (!label.id) {
@@ -202,12 +240,18 @@ export default class SlimSelect {
         return label.id
       })
       this.render.main.main.removeAttribute('aria-label')
-      this.render.main.main.setAttribute('aria-labelledby', labelledByIds.join(' '))
+      this.render.main.main.setAttribute(
+        'aria-labelledby',
+        labelledByIds.join(' ')
+      )
     }
 
     // Add render after original select element
     if (this.selectEl.parentNode) {
-      this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling)
+      this.selectEl.parentNode.insertBefore(
+        this.render.main.main,
+        this.selectEl.nextSibling
+      )
     }
 
     // Add window resize listener to moveContent if window size changes
@@ -284,7 +328,10 @@ export default class SlimSelect {
     this.render.renderOptions(dataClean)
 
     // Trigger afterChange event, if it doesnt equal the original selected values
-    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+    if (
+      this.events.afterChange &&
+      !isEqual(selected, this.store.getSelected())
+    ) {
       this.events.afterChange(this.store.getSelectedOptions())
     }
   }
@@ -337,7 +384,11 @@ export default class SlimSelect {
     }
 
     // Trigger afterChange event, if it doesnt equal the original selected values
-    if (runAfterChange && this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+    if (
+      runAfterChange &&
+      this.events.afterChange &&
+      !isEqual(selected, this.store.getSelected())
+    ) {
       this.events.afterChange(this.store.getSelectedOptions())
     }
   }
@@ -347,7 +398,11 @@ export default class SlimSelect {
     const selected = this.store.getSelected()
 
     // Add option to store if it does not already include the option
-    if (!this.store.getDataOptions().some((o) => o.value === (option.value ?? option.text))) {
+    if (
+      !this.store
+        .getDataOptions()
+        .some((o) => o.value === (option.value ?? option.text))
+    ) {
       this.store.addOption(option)
     }
     const data = this.store.getData()
@@ -360,7 +415,10 @@ export default class SlimSelect {
     this.render.renderOptions(data)
 
     // Trigger afterChange event, if it doesnt equal the original selected values
-    if (this.events.afterChange && !isEqual(selected, this.store.getSelected())) {
+    if (
+      this.events.afterChange &&
+      !isEqual(selected, this.store.getSelected())
+    ) {
       this.events.afterChange(this.store.getSelectedOptions())
     }
   }
@@ -416,7 +474,10 @@ export default class SlimSelect {
       if (this.settings.intervalMove) {
         clearInterval(this.settings.intervalMove)
       }
-      this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)
+      this.settings.intervalMove = setInterval(
+        this.render.moveContent.bind(this.render),
+        500
+      )
     }
   }
 
@@ -442,7 +503,10 @@ export default class SlimSelect {
     this.render.close()
 
     // Clear search only if not empty and keepSearch is false
-    if (!this.settings.keepSearch && this.render.content.search.input.value !== '') {
+    if (
+      !this.settings.keepSearch &&
+      this.render.content.search.input.value !== ''
+    ) {
       this.search('') // Clear search
     }
 
@@ -486,7 +550,10 @@ export default class SlimSelect {
     // If no search event run regular search
     if (!this.events.search) {
       // If value is empty then render all options
-      const searchResults = value === '' ? this.store.getData() : this.store.search(value, this.events.searchFilter!)
+      const searchResults =
+        value === ''
+          ? this.store.getData()
+          : this.store.search(value, this.events.searchFilter!)
       this.render.renderOptions(searchResults)
       return
     }
@@ -495,7 +562,10 @@ export default class SlimSelect {
     this.render.renderSearching()
 
     // Based upon the search event deal with the response
-    const searchResp = this.events.search(value, this.store.getSelectedOptions())
+    const searchResp = this.events.search(
+      value,
+      this.store.getSelectedOptions()
+    )
 
     // If the search event returns a promise
     if (searchResp instanceof Promise) {
@@ -527,7 +597,9 @@ export default class SlimSelect {
       this.render.renderOptions(this.store.getData())
     } else {
       // Update the render with error
-      this.render.renderError('Search event must return a promise or an array of data')
+      this.render.renderError(
+        'Search event must return a promise or an array of data'
+      )
     }
   }
 
@@ -552,7 +624,10 @@ export default class SlimSelect {
     if (this.settings.openPosition === 'auto') {
       window.removeEventListener('scroll', this.windowScroll, false)
     }
-    document.removeEventListener('visibilitychange', this.windowVisibilityChange)
+    document.removeEventListener(
+      'visibilitychange',
+      this.windowVisibilityChange
+    )
 
     // Delete the store data
     this.store.setData([])
@@ -590,7 +665,10 @@ export default class SlimSelect {
     }
 
     // Check if the click was on the content by looking at the parents
-    if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
+    if (
+      e.target &&
+      !hasClassInTree(e.target as HTMLElement, this.settings.id)
+    ) {
       this.close(e.type)
     }
   }

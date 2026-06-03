@@ -220,7 +220,9 @@ describe('store module', () => {
 
       const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
-      expect(res?.message).toBe('Data object must be a valid optgroup or option')
+      expect(res?.message).toBe(
+        'Data object must be a valid optgroup or option'
+      )
     })
 
     test('invalid data and valid option returns error', () => {
@@ -235,7 +237,9 @@ describe('store module', () => {
 
       const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
-      expect(res?.message).toBe('Data object must be a valid optgroup or option')
+      expect(res?.message).toBe(
+        'Data object must be a valid optgroup or option'
+      )
     })
 
     test('valid option and invalid data returns error', () => {
@@ -250,7 +254,9 @@ describe('store module', () => {
 
       const res = store.validateDataArray(invalidData)
       expect(res).toBeInstanceOf(Error)
-      expect(res?.message).toBe('Data object must be a valid optgroup or option')
+      expect(res?.message).toBe(
+        'Data object must be a valid optgroup or option'
+      )
     })
 
     test('valid opt group with invalid data returns error', () => {
@@ -389,7 +395,10 @@ describe('store module', () => {
     })
 
     test("invalid data get's ignored", () => {
-      const res = store.partialToFullData([{ error: 'this is invalid' } as any, { text: 'valid' }])
+      const res = store.partialToFullData([
+        { error: 'this is invalid' } as any,
+        { text: 'valid' }
+      ])
       expect(res).toBeInstanceOf(Array)
       expect(res).toHaveLength(1)
 

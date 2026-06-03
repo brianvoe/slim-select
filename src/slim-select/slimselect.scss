@@ -112,11 +112,19 @@
     max-width: 100%; // Ensure container doesn't exceed parent
     overflow: hidden; // Prevent overflow
 
+    // When multiString is enabled, values container holds a single text line
+    &:has(.ss-multi-string) {
+      flex-wrap: nowrap;
+      gap: 0;
+      align-items: center;
+    }
+
     .ss-placeholder {
       display: block; // Use block for proper ellipsis
       width: 100%;
       min-width: 0; // Allow placeholder to shrink
-      padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s) var(--ss-spacing-m);
+      padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s)
+        var(--ss-spacing-m);
       margin: auto 0px auto 0px;
       line-height: 1em;
       color: var(--ss-placeholder-color);
@@ -144,6 +152,23 @@
       display: block; // Use block for proper ellipsis
       margin: auto 0px auto var(--ss-spacing-s);
       min-width: 0; // Allow flex item to shrink below content size
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; // Prevent text wrapping
+      flex: 1 1 auto; // Allow it to grow but also shrink
+      max-width: calc(100% - 20px); // Leave space for arrow and padding
+    }
+
+    // Used for multiple select when multiString is enabled
+    // Shows selected values as comma separated text truncated with an ellipsis
+    .ss-multi-string {
+      display: block; // Use block for proper ellipsis
+      width: 100%;
+      min-width: 0; // Allow flex item to shrink below content size
+      padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s)
+        var(--ss-spacing-m);
+      margin: auto 0px auto 0px;
+      line-height: 1em;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; // Prevent text wrapping
@@ -420,7 +445,8 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
+        padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m)
+          var(--ss-spacing-l);
 
         .ss-optgroup-label-text {
           flex: 1 1 auto;
@@ -516,7 +542,8 @@
       }
 
       .ss-option {
-        padding: var(--ss-spacing-s) var(--ss-spacing-s) var(--ss-spacing-s) calc(var(--ss-spacing-l) * 3);
+        padding: var(--ss-spacing-s) var(--ss-spacing-s) var(--ss-spacing-s)
+          calc(var(--ss-spacing-l) * 3);
       }
     }
 
@@ -524,7 +551,8 @@
       display: flex;
       align-items: center;
       min-height: var(--ss-option-height);
-      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
+      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m)
+        var(--ss-spacing-l);
       white-space: normal;
       color: var(--ss-font-color);
       cursor: pointer;
@@ -563,7 +591,8 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m) var(--ss-spacing-l);
+      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m)
+        var(--ss-spacing-l);
     }
   }
 }
