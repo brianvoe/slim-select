@@ -1,0 +1,38 @@
+import { Optgroup, Option } from './store';
+export default class Select {
+    select: HTMLSelectElement;
+    onValueChange?: (value: Option[]) => void;
+    onClassChange?: (classes: string[]) => void;
+    onDisabledChange?: (disabled: boolean) => void;
+    onOptionsChange?: (data: (Option | Optgroup)[]) => void;
+    onLabelClick?: () => void;
+    private listen;
+    private observer;
+    private isUpdating;
+    private pendingOptionsChange;
+    private preventNativeSelect;
+    private preventNativeSelectMousedown;
+    private preventNativeSelectFocus;
+    constructor(select: HTMLSelectElement);
+    enable(): void;
+    disable(): void;
+    hideUI(): void;
+    showUI(): void;
+    changeListen(listen: boolean): void;
+    valueChange(ev: Event): boolean;
+    private observeCall;
+    getData(): (Option | Optgroup)[];
+    getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup;
+    getDataFromOption(option: HTMLOptionElement): Option;
+    getSelectedOptions(): Option[];
+    getSelectedValues(): string[];
+    setSelected(ids: string[]): void;
+    setSelectedByValue(values: string[]): void;
+    updateSelect(id?: string, style?: string, classes?: string[]): void;
+    updateOptions(data: (Option | Optgroup)[]): void;
+    createOptgroup(optgroup: Optgroup): HTMLOptGroupElement;
+    createOption(info: Option): HTMLOptionElement;
+    setupLabelHandlers(): void;
+    removeLabelHandlers(): void;
+    destroy(): void;
+}

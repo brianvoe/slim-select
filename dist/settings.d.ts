@@ -1,0 +1,38 @@
+export default class Settings {
+    id: string;
+    style: string;
+    class: string[];
+    isMultiple: boolean;
+    isOpen: boolean;
+    isFullOpen: boolean;
+    intervalMove: ReturnType<typeof setInterval> | null;
+    disabled: boolean;
+    alwaysOpen: boolean;
+    showSearch: boolean;
+    focusSearch: boolean;
+    keepSearch: boolean;
+    ariaLabel: string;
+    searchPlaceholder: string;
+    searchText: string;
+    searchingText: string;
+    deselectText: string;
+    removeText: string;
+    searchHighlight: boolean;
+    closeOnSelect: boolean;
+    contentLocation: HTMLElement | null;
+    contentPosition: 'relative' | 'absolute' | 'fixed';
+    contentWidth: string;
+    openPosition: 'auto' | 'up' | 'down';
+    placeholderText: string;
+    allowDeselect: boolean;
+    hideSelected: boolean;
+    keepOrder: boolean;
+    showOptionTooltips: boolean;
+    minSelected: number;
+    maxSelected: number;
+    timeoutDelay: number;
+    maxValuesShown: number;
+    maxValuesMessage: string;
+    addableText: string;
+    constructor(settings?: Partial<Settings>);
+}
