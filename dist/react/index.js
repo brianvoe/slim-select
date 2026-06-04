@@ -26,6 +26,7 @@ var i = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 	search;
 	searchHighlighter;
 	searching;
+	status;
 	addable;
 	addablePath;
 	list;
@@ -49,7 +50,7 @@ var i = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 	constructor(e) {
 		e ||= {};
 		let t = (e = "", t = "") => `${e} ${t}`.trim();
-		this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.multiString = t("ss-multi-string", e.multiString), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
+		this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.multiString = t("ss-multi-string", e.multiString), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.status = t("ss-status", e.status), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
 	}
 	getFirst(e) {
 		return this[e].split(" ")[0];
@@ -480,12 +481,18 @@ var f = class {
 		e.dataset.id = this.settings.id;
 		let t = this.searchDiv();
 		e.appendChild(t.main);
-		let n = this.listDiv();
-		return e.appendChild(n), {
+		let n = document.createElement("div");
+		this.addClasses(n, this.classes.status), n.setAttribute("aria-live", "polite"), n.setAttribute("aria-atomic", "true"), n.setAttribute("role", "status"), e.appendChild(n);
+		let r = this.listDiv();
+		return e.appendChild(r), {
 			main: e,
 			search: t,
-			list: n
+			status: n,
+			list: r
 		};
+	}
+	announce(e) {
+		this.settings.showSearch && (this.content.status.textContent = e);
 	}
 	moveContent() {
 		if (this.settings.contentPosition === "relative") {
@@ -619,12 +626,16 @@ var f = class {
 	renderSearching() {
 		this.content.list.innerHTML = "";
 		let e = document.createElement("div");
-		this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e);
+		this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e), this.announce(this.settings.searchingText);
 	}
 	renderOptions(e) {
 		if (this.lastRenderedOptions = e.map((e) => e instanceof f ? [e] : e.options.map((e) => new f(e))).flat(), this.content.list.innerHTML = "", e.length === 0) {
 			let e = document.createElement("div");
-			this.addClasses(e, this.classes.search), this.callbacks.addable ? e.innerHTML = this.settings.addableText.replace("{value}", this.content.search.input.value) : e.innerHTML = this.settings.searchText, this.content.list.appendChild(e);
+			if (this.addClasses(e, this.classes.search), this.callbacks.addable) {
+				let t = this.settings.addableText.replace("{value}", this.content.search.input.value);
+				e.innerHTML = t, this.announce(t);
+			} else e.innerHTML = this.settings.searchText, this.announce(this.settings.searchText);
+			this.content.list.appendChild(e);
 			return;
 		}
 		this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((e) => e.placeholder, !1).length || this.store.addOption(new f({
@@ -692,7 +703,7 @@ var f = class {
 			}
 			n instanceof f && t.appendChild(this.option(n));
 		}
-		this.content.list.appendChild(t);
+		this.content.list.appendChild(t), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length)));
 	}
 	option(e) {
 		if (e.placeholder) {
@@ -1053,6 +1064,7 @@ var f = class {
 	searchPlaceholder;
 	searchText;
 	searchingText;
+	resultsText;
 	deselectText;
 	removeText;
 	searchHighlight;
@@ -1074,7 +1086,7 @@ var f = class {
 	maxValuesMessage;
 	addableText;
 	constructor(e) {
-		e ||= {}, this.id = "ss-" + s(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.alwaysOpen = e.alwaysOpen === void 0 ? !1 : e.alwaysOpen, this.showSearch = e.showSearch === void 0 ? !0 : e.showSearch, this.focusSearch = e.focusSearch === void 0 ? !0 : e.focusSearch, this.keepSearch = e.keepSearch === void 0 ? !1 : e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight === void 0 ? !1 : e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 ? !0 : e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect === void 0 ? !1 : e.allowDeselect, this.hideSelected = e.hideSelected === void 0 ? !1 : e.hideSelected, this.multiString = e.multiString === void 0 ? !1 : e.multiString, this.keepOrder = e.keepOrder === void 0 ? !1 : e.keepOrder, this.showOptionTooltips = e.showOptionTooltips === void 0 ? !1 : e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}";
+		e ||= {}, this.id = "ss-" + s(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.alwaysOpen = e.alwaysOpen === void 0 ? !1 : e.alwaysOpen, this.showSearch = e.showSearch === void 0 ? !0 : e.showSearch, this.focusSearch = e.focusSearch === void 0 ? !0 : e.focusSearch, this.keepSearch = e.keepSearch === void 0 ? !1 : e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight === void 0 ? !1 : e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 ? !0 : e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect === void 0 ? !1 : e.allowDeselect, this.hideSelected = e.hideSelected === void 0 ? !1 : e.hideSelected, this.multiString = e.multiString === void 0 ? !1 : e.multiString, this.keepOrder = e.keepOrder === void 0 ? !1 : e.keepOrder, this.showOptionTooltips = e.showOptionTooltips === void 0 ? !1 : e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}";
 	}
 }, v = class {
 	selectEl;

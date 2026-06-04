@@ -21,6 +21,7 @@ export default class CssClasses {
     search: string;
     searchHighlighter: string;
     searching: string;
+    status: string;
     addable: string;
     addablePath: string;
     list: string;

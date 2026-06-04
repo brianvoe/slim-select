@@ -15,6 +15,7 @@ export default class Settings {
     searchPlaceholder: string;
     searchText: string;
     searchingText: string;
+    resultsText: string;
     deselectText: string;
     removeText: string;
     searchHighlight: boolean;

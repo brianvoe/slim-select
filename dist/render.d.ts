@@ -27,6 +27,7 @@ export interface Main {
 export interface Content {
     main: HTMLDivElement;
     search: Search;
+    status: HTMLDivElement;
     list: HTMLDivElement;
 }
 export interface Search {
@@ -66,6 +67,7 @@ export default class Render {
     private renderMultipleValues;
     multipleValue(option: Option): HTMLDivElement;
     contentDiv(): Content;
+    private announce;
     moveContent(): void;
     searchDiv(): Search;
     searchFocus(): void;
