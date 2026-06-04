@@ -21,6 +21,7 @@ export default class Settings {
   public searchPlaceholder: string
   public searchText: string
   public searchingText: string
+  public resultsText: string
   public deselectText: string
   public removeText: string
   public searchHighlight: boolean
@@ -64,6 +65,7 @@ export default class Settings {
     this.searchPlaceholder = settings.searchPlaceholder || 'Search...'
     this.searchText = settings.searchText || 'No Results'
     this.searchingText = settings.searchingText || 'Searching...'
+    this.resultsText = settings.resultsText || '{count} results available'
     this.deselectText = settings.deselectText || 'Clear'
     this.removeText = settings.removeText || 'Remove'
     this.searchHighlight =

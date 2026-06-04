@@ -32,6 +32,7 @@ export default class CssClasses {
   public search: string
   public searchHighlighter: string
   public searching: string
+  public status: string
   public addable: string
   public addablePath: string // Not a class but whatever
 
@@ -94,6 +95,7 @@ export default class CssClasses {
       classes.searchHighlighter
     )
     this.searching = join('ss-searching', classes.searching)
+    this.status = join('ss-status', classes.status)
     this.addable = join('ss-addable', classes.addable)
     this.addablePath = classes.addablePath || 'M50,10 L50,90 M10,50 L90,50'
     this.list = join('ss-list', classes.list)

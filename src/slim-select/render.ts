@@ -40,6 +40,7 @@ export interface Main {
 export interface Content {
   main: HTMLDivElement
   search: Search
+  status: HTMLDivElement
   list: HTMLDivElement
 }
 
@@ -822,6 +823,14 @@ export default class Render {
     const search = this.searchDiv()
     main.appendChild(search.main)
 
+    // Screen reader announcements for search result updates
+    const status = document.createElement('div')
+    this.addClasses(status, this.classes.status)
+    status.setAttribute('aria-live', 'polite')
+    status.setAttribute('aria-atomic', 'true')
+    status.setAttribute('role', 'status')
+    main.appendChild(status)
+
     // Add list
     const list = this.listDiv()
     main.appendChild(list)
@@ -829,8 +838,17 @@ export default class Render {
     return {
       main: main,
       search: search,
+      status: status,
       list: list
     }
+  }
+
+  private announce(message: string): void {
+    if (!this.settings.showSearch) {
+      return
+    }
+
+    this.content.status.textContent = message
   }
 
   public moveContent(): void {
@@ -1220,6 +1238,7 @@ export default class Render {
     this.addClasses(searchingDiv, this.classes.searching)
     searchingDiv.textContent = this.settings.searchingText
     this.content.list.appendChild(searchingDiv)
+    this.announce(this.settings.searchingText)
   }
 
   // Take in data and add options to
@@ -1240,12 +1259,15 @@ export default class Render {
 
       //
       if (this.callbacks.addable) {
-        noResults.innerHTML = this.settings.addableText.replace(
+        const addableMessage = this.settings.addableText.replace(
           '{value}',
           this.content.search.input.value
         )
+        noResults.innerHTML = addableMessage
+        this.announce(addableMessage)
       } else {
         noResults.innerHTML = this.settings.searchText
+        this.announce(this.settings.searchText)
       }
       this.content.list.appendChild(noResults)
       return
@@ -1469,6 +1491,12 @@ export default class Render {
 
     // Append fragment to list
     this.content.list.appendChild(fragment)
+    this.announce(
+      this.settings.resultsText.replace(
+        '{count}',
+        String(this.lastRenderedOptions.length)
+      )
+    )
   }
 
   // Create option div element

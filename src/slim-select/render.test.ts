@@ -1216,6 +1216,7 @@ describe('render module', () => {
         render.classes.searching
       )
       expect(render.content.list.children.item(0)?.textContent).toBe('search')
+      expect(render.content.status.textContent).toBe('search')
     })
 
     test('list is reset on new search text', () => {

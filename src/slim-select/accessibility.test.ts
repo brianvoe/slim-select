@@ -4,7 +4,7 @@
  * These tests verify SlimSelect meets WCAG and ARIA standards
  */
 
-import { describe, expect, test, beforeEach, afterEach } from 'vitest'
+import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { run as axe, type AxeResults } from 'axe-core'
 import SlimSelect from '@/slim-select'
 
@@ -652,11 +652,10 @@ describe('SlimSelect Accessibility', () => {
   })
 
   describe('Live Region for Dynamic Updates', () => {
-    test('search results should be announced', async () => {
+    test('search status region is present when search is enabled', () => {
       select.innerHTML = `
         <option value="1">Apple</option>
         <option value="2">Banana</option>
-        <option value="3">Cherry</option>
       `
 
       slim = new SlimSelect({
@@ -668,16 +667,110 @@ describe('SlimSelect Accessibility', () => {
 
       slim.open()
 
-      // Search for results
-      const searchInput = document.querySelector(
-        'input[type="search"]'
-      ) as HTMLInputElement
-      searchInput.value = 'app'
-      searchInput.dispatchEvent(new Event('input', { bubbles: true }))
+      const status = document.querySelector('.ss-status')
+      expect(status?.getAttribute('role')).toBe('status')
+      expect(status?.getAttribute('aria-live')).toBe('polite')
+      expect(status?.getAttribute('aria-atomic')).toBe('true')
+    })
 
-      // Check for live region or status updates
-      // This documents what should exist for screen readers
-      const liveRegion = document.querySelector('[role="status"], [aria-live]')
+    test('search results are announced in the live region', async () => {
+      select.innerHTML = `
+        <option value="1">Apple</option>
+        <option value="2">Banana</option>
+        <option value="3">Cherry</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true,
+          resultsText: '{count} results available'
+        }
+      })
+
+      slim.open()
+
+      const status = document.querySelector('.ss-status') as HTMLDivElement
+      expect(status.textContent).toBe('3 results available')
+
+      slim.search('app')
+
+      expect(status.textContent).toBe('1 results available')
+    })
+
+    test('no results message is announced in the live region', () => {
+      select.innerHTML = `
+        <option value="1">Apple</option>
+        <option value="2">Banana</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true,
+          searchText: 'No Results'
+        }
+      })
+
+      slim.open()
+
+      slim.search('xyz')
+
+      const status = document.querySelector('.ss-status')
+      expect(status?.textContent).toBe('No Results')
+    })
+
+    test('searching state is announced in the live region', async () => {
+      select.innerHTML = `
+        <option value="1">Apple</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true,
+          searchingText: 'Searching...'
+        },
+        events: {
+          search: () =>
+            new Promise((resolve) => {
+              setTimeout(() => resolve([{ text: 'Async', value: 'async' }]), 50)
+            })
+        }
+      })
+
+      slim.open()
+
+      const status = document.querySelector('.ss-status')
+
+      slim.search('a')
+      expect(status?.textContent).toBe('Searching...')
+
+      await vi.waitFor(
+        () => {
+          expect(status?.textContent).toBe('2 results available')
+        },
+        { timeout: 500 }
+      )
+    })
+
+    test('live region is not updated when search is disabled', () => {
+      select.innerHTML = `
+        <option value="1">Apple</option>
+        <option value="2">Banana</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: false
+        }
+      })
+
+      slim.open()
+
+      const status = document.querySelector('.ss-status')
+      expect(status?.textContent).toBe('')
     })
   })
 })

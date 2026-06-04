@@ -25,6 +25,7 @@ const defaultClasses: { [key: string]: string } = {
   search: 'ss-search',
   searchHighlighter: 'ss-search-highlight',
   searching: 'ss-searching',
+  status: 'ss-status',
   addable: 'ss-addable',
   addablePath: 'M50,10 L50,90 M10,50 L90,50',
   list: 'ss-list',

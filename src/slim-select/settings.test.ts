@@ -22,6 +22,7 @@ const defaultSettings: { [key: string]: any } = {
   searchPlaceholder: 'Search...',
   searchText: 'No Results',
   searchingText: 'Searching...',
+  resultsText: '{count} results available',
   deselectText: 'Clear',
   removeText: 'Remove',
   searchHighlight: false,
