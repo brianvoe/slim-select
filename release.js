@@ -157,15 +157,25 @@ async function main() {
   }
   log('✅ Package-lock.json updated!', 'green')
 
-  // Step 5: NPM login
-  log('\n🔐 Step 5: NPM login...', 'yellow')
-  if (!exec('npm login')) {
-    log('❌ NPM login failed. Aborting release.', 'red')
-    process.exit(1)
+  // Step 5: Ensure NPM authentication
+  // Note: `npm publish` performs its own auth flow, so running an explicit
+  // `npm login` beforehand causes you to sign in twice. We only check whether
+  // you're already authenticated and let `npm publish` handle login if needed.
+  log('\n🔐 Step 5: Checking NPM authentication...', 'yellow')
+  let npmUser = ''
+  try {
+    npmUser = execSync('npm whoami', { cwd: rootDir }).toString().trim()
+  } catch {
+    npmUser = ''
   }
-  log('✅ NPM login successful!', 'green')
 
-  // Step 6: NPM publish
+  if (npmUser) {
+    log(`✅ Already logged in to NPM as ${npmUser}`, 'green')
+  } else {
+    log('ℹ️  Not logged in. `npm publish` will prompt you to authenticate.', 'cyan')
+  }
+
+  // Step 6: NPM publish (handles authentication if not already logged in)
   log('\n📤 Step 6: Publishing to NPM...', 'yellow')
   if (!exec('npm publish')) {
     log('❌ NPM publish failed. Aborting release.', 'red')
