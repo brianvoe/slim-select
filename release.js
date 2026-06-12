@@ -67,6 +67,79 @@ function askQuestion(question) {
   })
 }
 
+function askYesNo(question) {
+  return askQuestion(question).then((answer) => {
+    const normalized = answer.trim().toLowerCase()
+    return normalized === 'y' || normalized === 'yes'
+  })
+}
+
+function execOutput(command) {
+  return execSync(command, { cwd: rootDir, encoding: 'utf8' }).trim()
+}
+
+function tagExists(tag) {
+  try {
+    execSync(`git rev-parse -q --verify "refs/tags/${tag}"`, {
+      cwd: rootDir,
+      stdio: 'pipe'
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function createAndPushTag(version) {
+  const tag = `v${version}`
+
+  if (tagExists(tag)) {
+    log(`❌ Tag ${tag} already exists locally.`, 'red')
+    return false
+  }
+
+  const status = execOutput('git status --porcelain')
+  if (status) {
+    const packageChanges = execOutput(
+      'git status --porcelain package.json package-lock.json'
+    )
+
+    if (packageChanges) {
+      log('\n📝 Committing version bump...', 'yellow')
+      if (!exec('git add package.json package-lock.json')) return false
+      if (!exec(`git commit -m "Release ${tag}"`)) return false
+      log('✅ Version bump committed!', 'green')
+    }
+
+    const otherChanges = status
+      .split('\n')
+      .filter(
+        (line) =>
+          line &&
+          !line.endsWith(' package.json') &&
+          !line.endsWith(' package-lock.json')
+      )
+
+    if (otherChanges.length > 0) {
+      log(
+        '⚠️  Other uncommitted changes remain and were not included in the tag commit.',
+        'yellow'
+      )
+    }
+  }
+
+  log(`\n🏷️  Creating tag ${tag}...`, 'yellow')
+  if (!exec(`git tag -a ${tag} -m "Release ${tag}"`)) return false
+  log(`✅ Tag ${tag} created!`, 'green')
+
+  log('\n📤 Pushing commits and tag to remote...', 'yellow')
+  if (!exec('git push')) return false
+  if (!exec(`git push origin ${tag}`)) return false
+  log(`✅ Tag ${tag} pushed to remote!`, 'green')
+
+  return true
+}
+
 function validateVersion(currentVersion, newVersion) {
   // Check if version format is valid (x.y.z)
   const versionRegex = /^\d+\.\d+\.\d+$/
@@ -186,6 +259,21 @@ async function main() {
   log('\n🎉 Release completed successfully!', 'bright')
   log(`📦 Version ${newVersion} is now published on NPM`, 'green')
   log(`🔗 Package: https://www.npmjs.com/package/${packageJson.name}`, 'blue')
+
+  // Step 7: Optional git tag and push
+  log('\n🏷️  Step 7: Git tag (optional)...', 'yellow')
+  const shouldTag = await askYesNo(
+    `Would you like to create and push git tag v${newVersion}? (y/n): `
+  )
+
+  if (shouldTag) {
+    if (!(await createAndPushTag(newVersion))) {
+      log('❌ Git tag step failed. You can tag and push manually.', 'red')
+      process.exit(1)
+    }
+  } else {
+    log('ℹ️  Skipped git tag. You can tag and push manually when ready.', 'cyan')
+  }
 }
 
 // Handle errors
