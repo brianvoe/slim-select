@@ -50,7 +50,7 @@ export default defineComponent({
   watch: {
     currentRoute: {
       handler: async function (newPath: string) {
-        console.log('AdSlot: Route changed, re-evaluating ad eligibility')
+        // console.log('AdSlot: Route changed, re-evaluating ad eligibility')
         this.isAdInitialized = false
         this.shouldShowAd = false
 
@@ -107,14 +107,14 @@ export default defineComponent({
       }
 
       if (!mainContent) {
-        console.log('AdSlot: No main content area found')
+        // console.log('AdSlot: No main content area found')
         return false
       }
 
       // Check for title
       const title = mainContent.querySelector('h1, h2, h3, .title, .heading')
       if (!title) {
-        console.log('AdSlot: No title found in content')
+        // console.log('AdSlot: No title found in content')
         return false
       }
 
@@ -124,18 +124,18 @@ export default defineComponent({
 
       // Check minimum length
       if (cleanText.length < this.minContentLength) {
-        console.log(`AdSlot: Content too short (${cleanText.length} < ${this.minContentLength})`)
+        // console.log(`AdSlot: Content too short (${cleanText.length} < ${this.minContentLength})`)
         return false
       }
 
       // Check minimum word count
       const wordCount = cleanText.split(' ').filter((word) => word.length > 0).length
       if (wordCount < MIN_CONTENT_WORDS) {
-        console.log(`AdSlot: Not enough words (${wordCount} < ${MIN_CONTENT_WORDS})`)
+        // console.log(`AdSlot: Not enough words (${wordCount} < ${MIN_CONTENT_WORDS})`)
         return false
       }
 
-      console.log(`AdSlot: Content check passed (${cleanText.length} chars, ${wordCount} words)`)
+      // console.log(`AdSlot: Content check passed (${cleanText.length} chars, ${wordCount} words)`)
       return true
     },
 
@@ -155,7 +155,7 @@ export default defineComponent({
         script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${this.adClient}`
         script.crossOrigin = 'anonymous'
         script.onload = () => {
-          console.log('AdSlot: AdSense script loaded')
+          // console.log('AdSlot: AdSense script loaded')
           resolve()
         }
         script.onerror = () => {
@@ -182,7 +182,7 @@ export default defineComponent({
 
         // Check if already initialized
         if (ins.getAttribute('data-adsbygoogle-status')) {
-          console.log('AdSlot: Ad already initialized')
+          // console.log('AdSlot: Ad already initialized')
           return
         }
 
@@ -191,7 +191,7 @@ export default defineComponent({
         ;(window as any).adsbygoogle.push({})
 
         this.isAdInitialized = true
-        console.log('AdSlot: Ad initialized successfully')
+        // console.log('AdSlot: Ad initialized successfully')
       } catch (error) {
         console.error('AdSlot: Failed to initialize ad', error)
       }
@@ -201,7 +201,7 @@ export default defineComponent({
     async checkAdEligibility(): Promise<boolean> {
       // Don't show on localhost
       if (location.hostname === 'localhost') {
-        console.log('AdSlot: Skipping ad on localhost')
+        // console.log('AdSlot: Skipping ad on localhost')
         return false
       }
 
