@@ -90,6 +90,41 @@ function tagExists(tag) {
   }
 }
 
+const RELEASE_PATHS = [
+  'package.json',
+  'package-lock.json',
+  'dist',
+  'docs',
+  'public',
+  'CHANGELOG.md'
+]
+
+function commitReleaseChanges() {
+  const changes = execOutput(
+    `git status --porcelain ${RELEASE_PATHS.join(' ')}`
+  )
+
+  if (!changes) {
+    log('ℹ️  No release files to commit.', 'cyan')
+    return true
+  }
+
+  log(`   Staging: ${RELEASE_PATHS.join(', ')}`, 'cyan')
+  if (!exec(`git add ${RELEASE_PATHS.join(' ')}`)) return false
+  if (!exec('git commit -m "output - dist/docs update"')) return false
+  log('✅ Release changes committed!', 'green')
+
+  const otherChanges = execOutput('git status --porcelain')
+  if (otherChanges) {
+    log(
+      '⚠️  Other uncommitted changes were not included in the release commit.',
+      'yellow'
+    )
+  }
+
+  return true
+}
+
 async function createAndPushTag(version) {
   const tag = `v${version}`
 
@@ -100,32 +135,10 @@ async function createAndPushTag(version) {
 
   const status = execOutput('git status --porcelain')
   if (status) {
-    const packageChanges = execOutput(
-      'git status --porcelain package.json package-lock.json'
+    log(
+      '⚠️  Uncommitted changes remain. The tag will point at the last commit only.',
+      'yellow'
     )
-
-    if (packageChanges) {
-      log('\n📝 Committing version bump...', 'yellow')
-      if (!exec('git add package.json package-lock.json')) return false
-      if (!exec(`git commit -m "Release ${tag}"`)) return false
-      log('✅ Version bump committed!', 'green')
-    }
-
-    const otherChanges = status
-      .split('\n')
-      .filter(
-        (line) =>
-          line &&
-          !line.endsWith(' package.json') &&
-          !line.endsWith(' package-lock.json')
-      )
-
-    if (otherChanges.length > 0) {
-      log(
-        '⚠️  Other uncommitted changes remain and were not included in the tag commit.',
-        'yellow'
-      )
-    }
   }
 
   log(`\n🏷️  Creating tag ${tag}...`, 'yellow')
@@ -286,12 +299,19 @@ async function main() {
   }
   log('✅ Package published to NPM!', 'green')
 
+  // Step 7: Commit version bump and build outputs
+  log('\n📝 Step 7: Committing release changes to git...', 'yellow')
+  if (!commitReleaseChanges()) {
+    log('❌ Failed to commit release changes.', 'red')
+    process.exit(1)
+  }
+
   log('\n🎉 Release completed successfully!', 'bright')
   log(`📦 Version ${newVersion} is now published on NPM`, 'green')
   log(`🔗 Package: https://www.npmjs.com/package/${packageJson.name}`, 'blue')
 
-  // Step 7: Optional git tag and push
-  log('\n🏷️  Step 7: Git tag (optional)...', 'yellow')
+  // Step 8: Optional git tag and push
+  log('\n🏷️  Step 8: Git tag (optional)...', 'yellow')
   const shouldTag = await askYesNo(
     `Would you like to create and push git tag v${newVersion}? (y/n): `
   )
