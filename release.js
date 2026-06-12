@@ -231,13 +231,12 @@ async function main() {
   log('✅ Package-lock.json updated!', 'green')
 
   // Step 5: Ensure NPM authentication
-  // Note: `npm publish` performs its own auth flow, so running an explicit
-  // `npm login` beforehand causes you to sign in twice. We only check whether
-  // you're already authenticated and let `npm publish` handle login if needed.
   log('\n🔐 Step 5: Checking NPM authentication...', 'yellow')
   let npmUser = ''
   try {
-    npmUser = execSync('npm whoami', { cwd: rootDir }).toString().trim()
+    npmUser = execSync('npm whoami', { cwd: rootDir, stdio: 'pipe' })
+      .toString()
+      .trim()
   } catch {
     npmUser = ''
   }
@@ -245,13 +244,44 @@ async function main() {
   if (npmUser) {
     log(`✅ Already logged in to NPM as ${npmUser}`, 'green')
   } else {
-    log('ℹ️  Not logged in. `npm publish` will prompt you to authenticate.', 'cyan')
+    log('❌ Not logged in to NPM.', 'red')
+    log(
+      '   npm publish does not always prompt for login and may fail with a misleading 404.',
+      'yellow'
+    )
+
+    const shouldLogin = await askYesNo('Would you like to run npm login now? (y/n): ')
+    if (!shouldLogin) {
+      log('❌ NPM login is required to publish. Aborting release.', 'red')
+      process.exit(1)
+    }
+
+    if (!exec('npm login')) {
+      log('❌ NPM login failed. Aborting release.', 'red')
+      process.exit(1)
+    }
+
+    try {
+      npmUser = execSync('npm whoami', { cwd: rootDir, stdio: 'pipe' })
+        .toString()
+        .trim()
+    } catch {
+      log('❌ Still not authenticated after login. Aborting release.', 'red')
+      process.exit(1)
+    }
+
+    log(`✅ Logged in to NPM as ${npmUser}`, 'green')
   }
 
-  // Step 6: NPM publish (handles authentication if not already logged in)
+  // Step 6: NPM publish
   log('\n📤 Step 6: Publishing to NPM...', 'yellow')
   if (!exec('npm publish')) {
     log('❌ NPM publish failed. Aborting release.', 'red')
+    log(
+      '   A 404 usually means you are not logged in or lack publish access to this package.',
+      'yellow'
+    )
+    log('   Verify with `npm whoami` and try `npm login` if needed.', 'cyan')
     process.exit(1)
   }
   log('✅ Package published to NPM!', 'green')
