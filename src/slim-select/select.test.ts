@@ -77,6 +77,33 @@ describe('select module', () => {
       // If clip is empty, the other hiding properties (position, width, height, opacity) are sufficient
       expect(select.select.getAttribute('aria-hidden')).toBe('true')
     })
+
+    test('aria-hidden is not applied while the select has focus', () => {
+      // Browsers block aria-hidden on a focused element and log a console
+      // warning, so it must only be applied once focus has left the select
+      select.select.focus()
+      expect(document.activeElement).toBe(select.select)
+
+      select.hideUI()
+      expect(select.select.getAttribute('aria-hidden')).toBeNull()
+
+      // Once focus leaves the select, aria-hidden gets applied
+      select.select.blur()
+      expect(select.select.getAttribute('aria-hidden')).toBe('true')
+    })
+
+    test('aria-hidden is lifted when the hidden select regains focus', () => {
+      select.hideUI()
+      expect(select.select.getAttribute('aria-hidden')).toBe('true')
+
+      // e.g. the browser focusing an invalid control during form validation
+      select.select.focus()
+      expect(select.select.getAttribute('aria-hidden')).toBeNull()
+
+      // and restored when focus leaves again
+      select.select.blur()
+      expect(select.select.getAttribute('aria-hidden')).toBe('true')
+    })
   })
 
   describe('showUI', () => {

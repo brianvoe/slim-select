@@ -21,6 +21,7 @@ export default class Select {
   private preventNativeSelect: ((e: Event) => void) | null = null
   private preventNativeSelectMousedown: ((e: Event) => void) | null = null
   private preventNativeSelectFocus: ((e: Event) => void) | null = null
+  private restoreAriaHiddenOnBlur: ((e: Event) => void) | null = null
 
   constructor(select: HTMLSelectElement) {
     this.select = select
@@ -63,7 +64,14 @@ export default class Select {
     this.select.style.borderWidth = '0'
     // Clip to completely hide the 1px
     this.select.style.clip = 'rect(0 0 0 0)'
-    this.select.setAttribute('aria-hidden', 'true')
+    // Only apply aria-hidden if the select doesn't currently hold focus.
+    // Browsers (Chrome) block aria-hidden on a focused element and log a
+    // warning, since focus must not be hidden from assistive technology.
+    // If the select is focused right now, the blur handler below will
+    // apply aria-hidden once focus leaves the element.
+    if (document.activeElement !== this.select) {
+      this.select.setAttribute('aria-hidden', 'true')
+    }
 
     // Prevent native select from opening when label is clicked (especially on iOS Safari)
     // iOS Safari programmatically focuses/clicks the select when label is clicked,
@@ -83,9 +91,20 @@ export default class Select {
       }
 
       this.preventNativeSelectFocus = (e: Event) => {
+        // Focus events are not cancelable, so the select may still end up
+        // focused (e.g. the browser focusing an invalid control during form
+        // validation, or a programmatic select.focus() call). Lift aria-hidden
+        // while the element holds focus so assistive technology isn't blocked
+        // from it; it gets restored by the blur handler.
+        this.select.removeAttribute('aria-hidden')
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
+      }
+
+      // Re-apply aria-hidden once focus leaves the hidden select
+      this.restoreAriaHiddenOnBlur = () => {
+        this.select.setAttribute('aria-hidden', 'true')
       }
 
       // Add event listeners with capture phase to catch events before they reach the select
@@ -101,6 +120,10 @@ export default class Select {
       this.select.addEventListener('focus', this.preventNativeSelectFocus, {
         capture: true,
         passive: false
+      })
+      this.select.addEventListener('blur', this.restoreAriaHiddenOnBlur, {
+        capture: true,
+        passive: true
       })
     }
   }
@@ -140,6 +163,12 @@ export default class Select {
         capture: true
       })
       this.preventNativeSelectFocus = null
+    }
+    if (this.restoreAriaHiddenOnBlur) {
+      this.select.removeEventListener('blur', this.restoreAriaHiddenOnBlur, {
+        capture: true
+      })
+      this.restoreAriaHiddenOnBlur = null
     }
   }
 
@@ -695,6 +724,12 @@ export default class Select {
         capture: true
       })
       this.preventNativeSelectFocus = null
+    }
+    if (this.restoreAriaHiddenOnBlur) {
+      this.select.removeEventListener('blur', this.restoreAriaHiddenOnBlur, {
+        capture: true
+      })
+      this.restoreAriaHiddenOnBlur = null
     }
 
     // Disconnect observer and null
