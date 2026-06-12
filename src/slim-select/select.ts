@@ -63,7 +63,7 @@ export default class Select {
     this.select.style.padding = '0'
     this.select.style.borderWidth = '0'
     // Clip to completely hide the 1px
-    this.select.style.clip = 'rect(0 0 0 0)'
+    this.select.style.clipPath = 'inset(50%)'
     // Only apply aria-hidden if the select doesn't currently hold focus.
     // Browsers (Chrome) block aria-hidden on a focused element and log a
     // warning, since focus must not be hidden from assistive technology.
@@ -140,7 +140,7 @@ export default class Select {
     this.select.style.margin = ''
     this.select.style.padding = ''
     this.select.style.borderWidth = ''
-    this.select.style.clip = ''
+    this.select.style.clipPath = ''
     this.select.removeAttribute('aria-hidden')
 
     // Remove event listeners that prevent native select behavior

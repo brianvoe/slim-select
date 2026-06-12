@@ -221,14 +221,7 @@ describe('SlimSelect Module', () => {
       expect(selectEl.style.opacity).toBe('0')
       expect(selectEl.style.margin).toBe('0px')
       expect(selectEl.style.padding).toBe('0px')
-      // clip property is deprecated and may not be accessible in all test environments
-      // The code sets it, but some browsers/test environments may ignore or clear it
-      // Check if clip is set OR if the other hiding properties are sufficient
-      const clipValue = selectEl.style.clip
-      if (clipValue) {
-        expect(clipValue).toContain('rect')
-      }
-      // If clip is empty, the other hiding properties (position, width, height, opacity) are sufficient
+      expect(selectEl.style.clipPath).toBe('inset(50%)')
 
       // Required attribute should still be present
       expect(selectEl.hasAttribute('required')).toBe(true)
