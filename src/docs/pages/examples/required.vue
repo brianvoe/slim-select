@@ -79,7 +79,7 @@ export default defineComponent({
       <div class="form-group">
         <label for="country-select">Country *</label>
         <select id="country-select" ref="country" name="country" required>
-          <option value="">Select a country</option>
+          <option value="" data-placeholder="true">Select a country</option>
           <option value="usa">United States</option>
           <option value="uk">United Kingdom</option>
           <option value="canada">Canada</option>
@@ -103,7 +103,7 @@ export default defineComponent({
       <div class="form-group">
         <label for="priority-select">Priority *</label>
         <select id="priority-select" ref="priority" name="priority" required>
-          <option value="">Select priority level</option>
+          <option value="" data-placeholder="true">Select priority level</option>
           <option value="low">Low</option>
           <option value="medium">Medium</option>
           <option value="high">High</option>
@@ -124,7 +124,7 @@ export default defineComponent({
         &lt;form id="form"&gt;
           &lt;label for="country"&gt;Country *&lt;/label&gt;
           &lt;select id="country" name="country" required&gt;
-            &lt;option value=""&gt;Select a country&lt;/option&gt;
+            &lt;option value="" data-placeholder="true"&gt;Select a country&lt;/option&gt;
             &lt;option value="usa"&gt;United States&lt;/option&gt;
             &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
           &lt;/select&gt;
