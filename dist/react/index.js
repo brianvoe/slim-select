@@ -821,6 +821,7 @@ var f = class {
 	preventNativeSelect = null;
 	preventNativeSelectMousedown = null;
 	preventNativeSelectFocus = null;
+	restoreAriaHiddenOnBlur = null;
 	constructor(e) {
 		this.select = e, this.valueChange = this.valueChange.bind(this), this.select.addEventListener("change", this.valueChange, { passive: !0 }), this.observer = new MutationObserver(this.observeCall.bind(this)), this.changeListen(!0);
 	}
@@ -831,12 +832,14 @@ var f = class {
 		this.select.disabled = !0;
 	}
 	hideUI() {
-		this.select.tabIndex = -1, this.select.style.position = "absolute", this.select.style.width = "1px", this.select.style.height = "1px", this.select.style.opacity = "0", this.select.style.overflow = "hidden", this.select.style.pointerEvents = "none", this.select.style.margin = "0", this.select.style.padding = "0", this.select.style.borderWidth = "0", this.select.style.clip = "rect(0 0 0 0)", this.select.setAttribute("aria-hidden", "true"), this.preventNativeSelect || (this.preventNativeSelect = (e) => {
+		this.select.tabIndex = -1, this.select.style.position = "absolute", this.select.style.width = "1px", this.select.style.height = "1px", this.select.style.opacity = "0", this.select.style.overflow = "hidden", this.select.style.pointerEvents = "none", this.select.style.margin = "0", this.select.style.padding = "0", this.select.style.borderWidth = "0", this.select.style.clipPath = "inset(50%)", document.activeElement !== this.select && this.select.setAttribute("aria-hidden", "true"), this.preventNativeSelect || (this.preventNativeSelect = (e) => {
 			e.preventDefault(), e.stopPropagation(), e.stopImmediatePropagation();
 		}, this.preventNativeSelectMousedown = (e) => {
 			e.preventDefault(), e.stopPropagation(), e.stopImmediatePropagation();
 		}, this.preventNativeSelectFocus = (e) => {
-			e.preventDefault(), e.stopPropagation(), e.stopImmediatePropagation();
+			this.select.removeAttribute("aria-hidden"), e.preventDefault(), e.stopPropagation(), e.stopImmediatePropagation();
+		}, this.restoreAriaHiddenOnBlur = () => {
+			this.select.setAttribute("aria-hidden", "true");
 		}, this.select.addEventListener("click", this.preventNativeSelect, {
 			capture: !0,
 			passive: !1
@@ -846,10 +849,13 @@ var f = class {
 		}), this.select.addEventListener("focus", this.preventNativeSelectFocus, {
 			capture: !0,
 			passive: !1
+		}), this.select.addEventListener("blur", this.restoreAriaHiddenOnBlur, {
+			capture: !0,
+			passive: !0
 		}));
 	}
 	showUI() {
-		this.select.removeAttribute("tabindex"), this.select.style.position = "", this.select.style.width = "", this.select.style.height = "", this.select.style.opacity = "", this.select.style.overflow = "", this.select.style.pointerEvents = "", this.select.style.margin = "", this.select.style.padding = "", this.select.style.borderWidth = "", this.select.style.clip = "", this.select.removeAttribute("aria-hidden"), this.preventNativeSelect &&= (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), null), this.preventNativeSelectMousedown &&= (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), null), this.preventNativeSelectFocus &&= (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), null);
+		this.select.removeAttribute("tabindex"), this.select.style.position = "", this.select.style.width = "", this.select.style.height = "", this.select.style.opacity = "", this.select.style.overflow = "", this.select.style.pointerEvents = "", this.select.style.margin = "", this.select.style.padding = "", this.select.style.borderWidth = "", this.select.style.clipPath = "", this.select.removeAttribute("aria-hidden"), this.preventNativeSelect &&= (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), null), this.preventNativeSelectMousedown &&= (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), null), this.preventNativeSelectFocus &&= (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), null), this.restoreAriaHiddenOnBlur &&= (this.select.removeEventListener("blur", this.restoreAriaHiddenOnBlur, { capture: !0 }), null);
 	}
 	changeListen(e) {
 		this.listen = e, e && this.observer && this.observer.observe(this.select, {
@@ -1045,7 +1051,7 @@ var f = class {
 		});
 	}
 	destroy() {
-		this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect &&= (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), null), this.preventNativeSelectMousedown &&= (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), null), this.preventNativeSelectFocus &&= (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), null), this.observer &&= (this.observer.disconnect(), null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
+		this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect &&= (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), null), this.preventNativeSelectMousedown &&= (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), null), this.preventNativeSelectFocus &&= (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), null), this.restoreAriaHiddenOnBlur &&= (this.select.removeEventListener("blur", this.restoreAriaHiddenOnBlur, { capture: !0 }), null), this.observer &&= (this.observer.disconnect(), null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
 	}
 }, _ = class {
 	id = "";

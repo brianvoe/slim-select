@@ -13,6 +13,7 @@ export default class Select {
     private preventNativeSelect;
     private preventNativeSelectMousedown;
     private preventNativeSelectFocus;
+    private restoreAriaHiddenOnBlur;
     constructor(select: HTMLSelectElement);
     enable(): void;
     disable(): void;
