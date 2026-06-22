@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Internal `SyncCoordinator` for batched native/API/UI update routing
+- `Lifecycle` scheduler for open/close timing with `transitionend` fallback
+- JS animation helpers (`animations.ts`) replacing hardcoded animation delays
+- Playwright smoke tests for open/close and native mutation sync
+- Expanded Playwright E2E suite (selection, search, keyboard, sync API, accessibility)
+- Characterization tests for sync engine and lifecycle races
+
+### Changed
+
+- Mutation classification extracted to `mutations.ts`
+- Global window/document listeners extracted to `events.ts`
+- Selection-only updates use lightweight native `setSelectedByValue` instead of full DOM rebuilds
+- Native option+selection mutations coalesce into a single structure sync
+- Fixed stale lifecycle callbacks overwriting `isOpen` after `closeOnSelect`
+
 ## [3.6.1] - 2026-06-12
 
 ### Fixed
