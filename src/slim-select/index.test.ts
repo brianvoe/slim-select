@@ -3,6 +3,26 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import SlimSelect from '@/slim-select'
 
+/** Destroy every SlimSelect still attached to a select in the document. */
+function destroyAllSlimSelects(): void {
+  document.querySelectorAll('select').forEach((selectEl) => {
+    const instance = (selectEl as HTMLSelectElement & { slim?: SlimSelect })
+      .slim
+    if (!instance) {
+      return
+    }
+    delete (selectEl as HTMLSelectElement & { slim?: SlimSelect }).slim
+    instance.destroy()
+  })
+}
+
+/** Destroy the shared fixture instance (may reference a select removed from the DOM). */
+function destroyFixture(slim?: SlimSelect): void {
+  if (slim?.render) {
+    slim.destroy()
+  }
+}
+
 describe('SlimSelect Module', () => {
   let slim: SlimSelect
 
@@ -15,9 +35,8 @@ describe('SlimSelect Module', () => {
   })
 
   afterEach(() => {
-    if (slim) {
-      slim.destroy()
-    }
+    destroyAllSlimSelects()
+    destroyFixture(slim)
   })
 
   describe('constructor', () => {
@@ -462,13 +481,6 @@ describe('SlimSelect Module', () => {
       })
     })
 
-    afterEach(() => {
-      // Clean up to avoid timeout errors
-      if (slim) {
-        slim.destroy()
-      }
-    })
-
     test('should maintain search results when reopening dropdown', () => {
       // 1. Open dropdown - should show static options [A, B]
       slim.open()
@@ -539,10 +551,6 @@ describe('SlimSelect Module', () => {
 
       // Search input should NOT be cleared when keepSearch is true
       expect(slimWithKeepSearch.render.content.search.input.value).toBe('test')
-
-      // Cleanup
-      slimWithKeepSearch.destroy()
-      document.body.removeChild(select)
     })
 
     test('should persist search results in store across close/open cycles', () => {
@@ -591,6 +599,7 @@ describe('SlimSelect Module', () => {
 
     test('should handle multiple selections from search results', () => {
       // Configure for multi-select
+      slim.destroy()
       slim = new SlimSelect({
         select: '#searchTest',
         data: [
@@ -675,6 +684,7 @@ describe('SlimSelect Module', () => {
         { value: 'async2', text: 'Async Result 2' }
       ])
 
+      slim.destroy()
       slim = new SlimSelect({
         select: '#searchTest',
         data: [
@@ -747,8 +757,6 @@ describe('SlimSelect Module', () => {
 
       firstOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       expect(slimFirst.getSelected()).toEqual(['first'])
-
-      slimFirst.destroy()
     })
 
     test('should update store data with search results', () => {
@@ -803,8 +811,6 @@ describe('SlimSelect Module', () => {
 
       // SlimSelect should be open
       expect(slim.settings.isOpen).toBe(true)
-
-      slim.destroy()
     })
 
     test('clicking wrapped label opens SlimSelect', async () => {
@@ -836,8 +842,6 @@ describe('SlimSelect Module', () => {
 
       // SlimSelect should be open
       expect(slim.settings.isOpen).toBe(true)
-
-      slim.destroy()
     })
 
     test('clicking label does not open SlimSelect when disabled', async () => {
@@ -871,8 +875,6 @@ describe('SlimSelect Module', () => {
 
       // SlimSelect should remain closed when disabled
       expect(slim.settings.isOpen).toBe(false)
-
-      slim.destroy()
     })
 
     test('SlimSelect automatically assigns id to select if missing for label association', () => {
@@ -900,8 +902,6 @@ describe('SlimSelect Module', () => {
       // SlimSelect should have assigned an id to the select
       expect(selectElement.id).toBeTruthy()
       expect(selectElement.id).toBe(slim.settings.id)
-
-      slim.destroy()
     })
 
     test('label handlers are cleaned up on destroy', async () => {
@@ -978,8 +978,6 @@ describe('SlimSelect Module', () => {
 
       // SlimSelect should be closed
       expect(slim.settings.isOpen).toBe(false)
-
-      slim.destroy()
     })
 
     test('deselect button works when wrapped in label', async () => {
@@ -1018,8 +1016,6 @@ describe('SlimSelect Module', () => {
 
       // Should be deselected (returns array with empty string for single select)
       expect(slim.getSelected()).toEqual([''])
-
-      slim.destroy()
     })
 
     test('clicking main div toggles when wrapped in label', async () => {
@@ -1063,8 +1059,6 @@ describe('SlimSelect Module', () => {
       )
       await new Promise((r) => setTimeout(r, 10))
       expect(slim.settings.isOpen).toBe(true)
-
-      slim.destroy()
     })
 
     test('clicking label on second select closes first select when both have labels', async () => {
@@ -1126,9 +1120,6 @@ describe('SlimSelect Module', () => {
       await new Promise((r) => setTimeout(r, 300))
       expect(slim1.settings.isOpen).toBe(true)
       expect(slim2.settings.isOpen).toBe(false)
-
-      slim1.destroy()
-      slim2.destroy()
     })
   })
 
@@ -1167,8 +1158,6 @@ describe('SlimSelect Module', () => {
       expect(data.length).toBe(1)
       expect((data[0] as any).value).toBe('1')
       expect((data[0] as any).text).toBe('one')
-
-      slim.destroy()
     })
 
     test('rapid option and value changes should preserve final state', async () => {
@@ -1229,8 +1218,6 @@ describe('SlimSelect Module', () => {
       // Verify selected value
       const selected = slim.getSelected()
       expect(selected).toEqual(['3'])
-
-      slim.destroy()
     })
 
     test('should handle removing all options and adding new ones', async () => {
@@ -1291,8 +1278,6 @@ describe('SlimSelect Module', () => {
       expect(selectElement.options[1].textContent).toBe('New Two')
       expect(selectElement.options[2].value).toBe('new3')
       expect(selectElement.options[2].textContent).toBe('New Three')
-
-      slim.destroy()
     })
 
     test('should handle rapidly removing all options', async () => {
@@ -1341,8 +1326,6 @@ describe('SlimSelect Module', () => {
       // Verify selected value is empty
       const selected = slim.getSelected()
       expect(selected).toEqual([])
-
-      slim.destroy()
     })
 
     test('should handle option change after first render', async () => {
@@ -1394,8 +1377,71 @@ describe('SlimSelect Module', () => {
       // Verify selected value is empty
       const selected = slim.getSelected()
       expect(selected).toEqual(['opt2'])
+    })
+  })
 
-      slim.destroy()
+  describe('sync and lifecycle', () => {
+    test('native option add with selection triggers single updateOptions', async () => {
+      document.body.innerHTML = '<select id="sync-native"></select>'
+
+      const selectElement = document.getElementById(
+        'sync-native'
+      ) as HTMLSelectElement
+      const slim = new SlimSelect({ select: selectElement })
+      const updateOptionsSpy = vi.spyOn(slim.select, 'updateOptions')
+
+      const option = document.createElement('option')
+      option.value = '1'
+      option.textContent = 'One'
+      selectElement.appendChild(option)
+      selectElement.value = '1'
+
+      await new Promise<void>((resolve) => queueMicrotask(resolve))
+
+      expect(updateOptionsSpy.mock.calls.length).toBeLessThanOrEqual(1)
+      expect(slim.getData().length).toBe(1)
+      expect(slim.getSelected()).toEqual(['1'])
+    })
+
+    test('api setSelected uses lightweight native update', () => {
+      document.body.innerHTML = `
+        <select id="sync-select">
+          <option value="1">One</option>
+          <option value="2">Two</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({ select: '#sync-select' })
+      const setSelectedByValueSpy = vi.spyOn(slim.select, 'setSelectedByValue')
+      const updateOptionsSpy = vi.spyOn(slim.select, 'updateOptions')
+
+      updateOptionsSpy.mockClear()
+
+      slim.setSelected('2')
+
+      expect(setSelectedByValueSpy).toHaveBeenCalled()
+      expect(updateOptionsSpy).not.toHaveBeenCalled()
+      expect(slim.getSelected()).toEqual(['2'])
+    })
+
+    test('rapid open then close does not leave isFullOpen true', async () => {
+      document.body.innerHTML =
+        '<select id="sync-open"><option value="1">One</option></select>'
+
+      const slim = new SlimSelect({
+        select: '#sync-open',
+        settings: { timeoutDelay: 100 }
+      })
+
+      slim.open()
+      expect(slim.settings.isOpen).toBe(true)
+
+      slim.close()
+      expect(slim.settings.isOpen).toBe(false)
+      expect(slim.settings.isFullOpen).toBe(false)
+
+      await new Promise((r) => setTimeout(r, 150))
+      expect(slim.settings.isFullOpen).toBe(false)
     })
   })
 
@@ -1414,8 +1460,6 @@ describe('SlimSelect Module', () => {
       expect(slim.render.main.main.classList.contains('ss-main')).toBe(true)
       expect(slim.render.main.main.classList.contains('class1')).toBe(true)
       expect(slim.render.main.main.classList.contains('class2')).toBe(true)
-
-      slim.destroy()
     })
   })
 })

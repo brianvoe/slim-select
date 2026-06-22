@@ -1,4 +1,5 @@
 import { kebabCase, hasClassInTree } from './helpers'
+import { classifyMutations } from './mutations'
 import { Optgroup, Option } from './store'
 
 export default class Select {
@@ -211,47 +212,14 @@ export default class Select {
       return
     }
 
-    let classChanged = false
-    let disabledChanged = false
-    let optgroupOptionChanged = false
-    let selectionChanged = false
-
-    // Loop through mutations and check various things
-    for (const m of mutations) {
-      // Check if its the select
-      if (m.target === this.select) {
-        // Check if disabled has changed
-        if (m.attributeName === 'disabled') {
-          disabledChanged = true
-        }
-
-        // Check if class has changed
-        if (m.attributeName === 'class') {
-          classChanged = true
-        }
-
-        if (m.type === 'childList') {
-          for (const n of Array.from(m.addedNodes)) {
-            if (
-              n.nodeName === 'OPTION' &&
-              (<HTMLOptionElement>n).value === this.select.value
-            ) {
-              // we added a new option that's now the select value
-              selectionChanged = true
-              break
-            }
-          }
-
-          // options changed, so we need the optionsChange event to fire
-          optgroupOptionChanged = true
-        }
-      }
-
-      // Check if its an optgroup or option
-      if (m.target.nodeName === 'OPTGROUP' || m.target.nodeName === 'OPTION') {
-        optgroupOptionChanged = true
-      }
-    }
+    // Pure classifier — separates class/disabled/structure/selection mutations
+    const {
+      classChanged,
+      disabledChanged,
+      optgroupOptionChanged,
+      selectionChanged: initialSelectionChanged
+    } = classifyMutations(mutations, this.select)
+    let selectionChanged = initialSelectionChanged
 
     // If class has changed then call the class change function
     if (classChanged && this.onClassChange) {
@@ -287,6 +255,9 @@ export default class Select {
       this.changeListen(false)
       this.onOptionsChange(this.getData())
       this.changeListen(true)
+
+      // Structure sync includes selection from getData(); skip redundant change event
+      selectionChanged = false
     }
 
     if (selectionChanged) {
@@ -424,11 +395,17 @@ export default class Select {
       }
     }
 
-    // Stop listening to changes
+    // Keep native value in sync for form validation and parent bindings
+    const selected = this.getSelectedOptions()
+    if (!this.select.multiple) {
+      this.select.value = selected.length === 1 ? selected[0].value : ''
+    }
+
     this.changeListen(true)
   }
 
-  // Set selected options by value instead of id
+  // Set selected options by value instead of id.
+  // SyncCoordinator uses this path — HTML option ids are often empty.
   // This is useful when the id is not known
   // and only the value is known
   // but the value is not unique and can be duplicated
@@ -460,7 +437,12 @@ export default class Select {
       }
     }
 
-    // Stop listening to changes
+    const selected = this.getSelectedOptions()
+    if (!this.select.multiple) {
+      // Sync native value for form validation / Vue v-model
+      this.select.value = selected.length === 1 ? selected[0].value : ''
+    }
+
     this.changeListen(true)
   }
 

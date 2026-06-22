@@ -1,4 +1,9 @@
 import { debounce } from './helpers'
+import {
+  animateValueOut,
+  getAnimationDuration,
+  waitForTransitionEnd
+} from './animations'
 import Settings from './settings'
 import Store, { Optgroup, Option } from './store'
 import CssClasses from './classes'
@@ -112,7 +117,7 @@ export default class Render {
 
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
-  private addClasses(
+  public addClasses(
     element: HTMLElement | SVGElement,
     classValue: string
   ): void {
@@ -126,7 +131,7 @@ export default class Render {
   }
 
   // Helper method to remove classes that may contain spaces
-  private removeClasses(
+  public removeClasses(
     element: HTMLElement | SVGElement,
     classValue: string
   ): void {
@@ -197,6 +202,12 @@ export default class Render {
     }
   }
 
+  /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
+  public waitForAnimation(phase: 'open' | 'close'): Promise<void> {
+    const duration = getAnimationDuration(this.content.main)
+    return waitForTransitionEnd(this.content.main, undefined, duration)
+  }
+
   public close(): void {
     this.main.main.setAttribute('aria-expanded', 'false')
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
@@ -212,7 +223,7 @@ export default class Render {
     this.main.main.removeAttribute('aria-activedescendant')
 
     // Remove direction class from main and content after animation is complete
-    const animationTiming = this.getAnimationTiming()
+    const animationTiming = getAnimationDuration(this.content.main)
     this.closeAnimationTimeout = setTimeout(() => {
       this.removeClasses(this.main.main, this.classes.dirAbove)
       this.removeClasses(this.main.main, this.classes.dirBelow)
@@ -220,25 +231,6 @@ export default class Render {
       this.removeClasses(this.content.main, this.classes.dirBelow)
       this.closeAnimationTimeout = null
     }, animationTiming)
-  }
-
-  private getAnimationTiming(): number {
-    const computedStyle = getComputedStyle(this.content.main)
-    const cssValue = computedStyle
-      .getPropertyValue('--ss-animation-timing')
-      .trim()
-
-    if (cssValue) {
-      // Parse CSS time value (e.g., "0.2s" or "200ms")
-      if (cssValue.endsWith('ms')) {
-        return parseFloat(cssValue)
-      } else if (cssValue.endsWith('s')) {
-        return parseFloat(cssValue) * 1000
-      }
-    }
-
-    // Fall back to default 200ms
-    return 200
   }
 
   public updateClassStyles(): void {
@@ -656,14 +648,19 @@ export default class Render {
       }
     }
 
+    const animationDuration = getAnimationDuration(this.main.main)
+
     // Loop through and remove
     for (const n of removeNodes) {
       this.addClasses(n, this.classes.valueOut)
-      setTimeout(() => {
-        if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
-          this.main.values.removeChild(n)
+      void animateValueOut(n, {
+        duration: animationDuration,
+        onFinish: () => {
+          if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
+            this.main.values.removeChild(n)
+          }
         }
-      }, 100)
+      })
     }
 
     // Add values that dont currently exist
@@ -852,13 +849,11 @@ export default class Render {
   }
 
   public moveContent(): void {
-    // If contentPosition is relative, dont move the content anywhere other than below
     if (this.settings.contentPosition === 'relative') {
       this.moveContentBelow()
       return
     }
 
-    // If openContent is not auto set content
     if (this.settings.openPosition === 'down') {
       this.moveContentBelow()
       return
@@ -867,7 +862,6 @@ export default class Render {
       return
     }
 
-    // Auto - Determine where to put the content
     if (this.putContent() === 'up') {
       this.moveContentAbove()
     } else {
@@ -1012,10 +1006,10 @@ export default class Render {
 
           // Close it only if closeOnSelect = true
           if (this.settings.closeOnSelect) {
+            const animationDuration = getAnimationDuration(this.content.main)
             setTimeout(() => {
-              // Give it a little padding for a better looking animation
               this.callbacks.close()
-            }, 100)
+            }, animationDuration)
           }
         }
 
@@ -1816,13 +1810,11 @@ export default class Render {
     const addClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
     const removeClass = isAbove ? this.classes.dirBelow : this.classes.dirAbove
 
-    // Set direction classes on both main and content
     this.removeClasses(this.main.main, removeClass)
     this.addClasses(this.main.main, addClass)
     this.removeClasses(this.content.main, removeClass)
     this.addClasses(this.content.main, addClass)
 
-    // Set margin to position content
     if (isAbove) {
       const mainHeight = this.main.main.offsetHeight
       const contentHeight = this.content.main.offsetHeight
@@ -1838,22 +1830,14 @@ export default class Render {
       return
     }
 
-    // getBoundingClientRect() returns viewport-relative coordinates.
     const containerRect = this.main.main.getBoundingClientRect()
     let top: number
     let left: number
 
     if (this.settings.contentPosition === 'fixed') {
-      // position:fixed is relative to the viewport, so viewport coords work directly.
       top = containerRect.top + containerRect.height
       left = containerRect.left
     } else {
-      // position:absolute is relative to the containing block. By default the content
-      // is appended to document.body (static), so the containing block is the initial
-      // containing block (document origin). We must convert viewport coords to document
-      // coords by adding scroll offsets. Using offsetParent subtraction was unreliable
-      // because offsetParent for body children varies across browsers (body vs html)
-      // and body margin caused misalignment.
       top = containerRect.top + window.scrollY + containerRect.height
       left = containerRect.left + window.scrollX
     }
@@ -1861,33 +1845,21 @@ export default class Render {
     this.content.main.style.top = top + 'px'
     this.content.main.style.left = left + 'px'
 
-    // Apply content width based on contentWidth setting
-    // ""           → width matches trigger (default/current behavior)
-    // "500px"      → exact width of 500px
-    // ">500px"     → min-width of 500px, width auto (content can grow)
-    // "<500px"     → max-width of 500px, width auto (content can shrink)
     const cw = this.settings.contentWidth
     this.content.main.style.width = ''
     this.content.main.style.minWidth = ''
     this.content.main.style.maxWidth = ''
 
     if (!cw) {
-      // Default: match trigger width exactly
       this.content.main.style.width = containerRect.width + 'px'
     } else if (cw.startsWith('>')) {
-      // Min-width mode: at least this wide, can grow to fit content
       this.content.main.style.minWidth = cw.slice(1)
     } else if (cw.startsWith('<')) {
-      // Max-width mode: no wider than this, content wraps if longer
       this.content.main.style.maxWidth = cw.slice(1)
     } else {
-      // Exact width
       this.content.main.style.width = cw
     }
 
-    // If content overflows the right side of the viewport, shift it left so the right edge
-    // lines up with the trigger (or stays inside the viewport). Use rAF so we measure after
-    // layout (and after width:auto / min-width have been applied).
     const padding = 20
     const viewportRight = window.innerWidth - padding
 
@@ -1911,7 +1883,6 @@ export default class Render {
       }
     }
 
-    // First rAF: layout done (width/min-width applied). Second rAF: catch scrollbar etc.
     requestAnimationFrame(() => {
       applyOverflowShift()
       requestAnimationFrame(applyOverflowShift)
@@ -1932,15 +1903,11 @@ export default class Render {
     container: HTMLElement,
     element: HTMLElement
   ): void {
-    // Determine container top and bottom
-    const cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
+    const cTop = container.scrollTop + container.offsetTop
     const cBottom = cTop + container.clientHeight
-
-    // Determine element top and bottom
     const eTop = element.offsetTop
     const eBottom = eTop + element.clientHeight
 
-    // Check if out of view
     if (eTop < cTop) {
       container.scrollTop -= cTop - eTop
     } else if (eBottom > cBottom) {
@@ -1949,27 +1916,18 @@ export default class Render {
   }
 
   public putContent(): 'up' | 'down' {
-    // Get main and content height
     const mainHeight = this.main.main.offsetHeight
     const mainRect = this.main.main.getBoundingClientRect()
     const contentHeight = this.content.main.offsetHeight
-
-    // From bottom of mainHeight figure out if content will fit below without going below the window
     const spaceBelow = window.innerHeight - (mainRect.top + mainHeight)
 
-    // If space below is less than content height
     if (spaceBelow <= contentHeight) {
-      // If space above is more than content height
       if (mainRect.top > contentHeight) {
-        // Move content above
         return 'up'
-      } else {
-        // Move content below
-        return 'down'
       }
+      return 'down'
     }
 
-    // Move content below
     return 'down'
   }
 
