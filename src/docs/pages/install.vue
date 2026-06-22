@@ -3,10 +3,82 @@ import download from 'downloadjs'
 import { defineComponent } from 'vue'
 import HighlightStyle from '@/docs/components/highlight_style.vue'
 
+type CdnProvider = 'jsdelivr' | 'unpkg' | 'cdnjs'
+
+const cdnProviders: Record<
+  CdnProvider,
+  {
+    name: string
+    description: string
+    browseUrl: string
+    jsUrl: string
+    cssUrl: string
+    note?: string
+  }
+> = {
+  jsdelivr: {
+    name: 'jsDelivr',
+    description: 'Fast, reliable CDN with npm and GitHub support.',
+    browseUrl: 'https://www.jsdelivr.com/package/npm/slim-select',
+    jsUrl: 'https://cdn.jsdelivr.net/npm/slim-select@latest/dist/slimselect.js',
+    cssUrl: 'https://cdn.jsdelivr.net/npm/slim-select@latest/dist/slimselect.css'
+  },
+  unpkg: {
+    name: 'unpkg',
+    description: 'CDN for everything on npm, served directly from the registry.',
+    browseUrl: 'https://unpkg.com/browse/slim-select/dist/',
+    jsUrl: 'https://unpkg.com/slim-select@latest/dist/slimselect.js',
+    cssUrl: 'https://unpkg.com/slim-select@latest/dist/slimselect.css'
+  },
+  cdnjs: {
+    name: 'cdnjs',
+    description: 'Community-powered CDN hosted by Cloudflare.',
+    browseUrl: 'https://cdnjs.com/libraries/slim-select',
+    jsUrl: 'https://cdnjs.cloudflare.com/ajax/libs/slim-select/2.13.1/slimselect.min.js',
+    cssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/slim-select/2.13.1/slimselect.min.css',
+    note: 'cdnjs indexes releases manually — check the library page for the latest available version.'
+  }
+}
+
 export default defineComponent({
   name: 'Install',
   components: {
     HighlightStyle
+  },
+  data() {
+    return {
+      activeCdn: 'jsdelivr' as CdnProvider,
+      cdnProviders,
+      codepenUrl: 'https://codepen.io/brianvoe/pen/MWXqXXV',
+      codepenEmbedUrl: 'https://codepen.io/brianvoe/embed/MWXqXXV?default-tab=result&height=400&theme-id=light'
+    }
+  },
+  computed: {
+    activeProvider() {
+      return this.cdnProviders[this.activeCdn]
+    },
+    cdnExampleHtml() {
+      const { jsUrl, cssUrl } = this.activeProvider
+
+      return `<html>
+  <head>
+    <script src="${jsUrl}"><\/script>
+    <link href="${cssUrl}" rel="stylesheet">
+  </head>
+  <body>
+    <select id="selectElement">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </select>
+    <script>
+      new SlimSelect({
+        select: '#selectElement'
+      })
+    <\/script>
+  </body>
+</html>`
+    }
   },
   methods: {
     downloadJs() {
@@ -14,6 +86,9 @@ export default defineComponent({
     },
     downloadCss() {
       download(`https://unpkg.com/slim-select@latest/dist/slimselect.css`)
+    },
+    setActiveCdn(provider: string) {
+      this.activeCdn = provider as CdnProvider
     }
   }
 })
@@ -28,6 +103,168 @@ export default defineComponent({
 
     .btn {
       flex: 1 1 auto;
+    }
+  }
+
+  #cdn {
+    .cdn-providers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--spacing-half);
+    }
+
+    .cdn-provider-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-quarter);
+      min-width: 0;
+    }
+
+    .cdn-provider {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: var(--spacing-quarter);
+      width: 100%;
+      min-width: 0;
+      height: auto;
+      min-height: 0;
+      padding: var(--spacing-half);
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius);
+      background: var(--color-white);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      box-sizing: border-box;
+      white-space: normal;
+      overflow: hidden;
+      transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+
+      &:hover {
+        box-shadow: var(--box-shadow);
+        transform: translateY(-2px);
+      }
+
+      &.active {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
+      }
+
+      .cdn-provider-name {
+        width: 100%;
+        min-width: 0;
+        color: var(--color-primary);
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .cdn-provider-description {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--color-secondary);
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+    }
+
+    .cdn-provider-link {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 var(--spacing-quarter);
+    }
+
+    .cdn-example-header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-quarter);
+      padding: var(--spacing-half) 0 0 0;
+
+      h3 {
+        margin: 0;
+        color: var(--color-primary);
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .cdn-files {
+      padding: var(--spacing-half);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      background: #fafbfc;
+
+      h3 {
+        margin: 0 0 var(--spacing-quarter) 0;
+        color: var(--color-primary);
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: var(--spacing);
+        line-height: 1.7;
+      }
+    }
+
+    .codepen-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-half);
+      padding: var(--spacing);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      background: linear-gradient(135deg, #fafbfc 0%, #f0f4ff 100%);
+
+      .codepen-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-half);
+
+        h3 {
+          margin: 0;
+          color: var(--color-primary);
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        .btn {
+          flex: 0 0 auto;
+          text-decoration: none;
+        }
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .codepen-embed {
+        width: 100%;
+        min-height: 420px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius);
+        background: var(--color-white);
+      }
     }
   }
 }
@@ -48,8 +285,10 @@ export default defineComponent({
       <HighlightStyle language="javascript">
         <pre>
           import SlimSelect from 'slim-select'
-          import 'slim-select/styles' // optional css import method
-          import 'slim-select/scss' // optional scss import method
+
+          // optional - import styles
+          import 'slim-select/styles' // css
+          import 'slim-select/scss' // scss
 
           new SlimSelect({
             select: '#selectElement'
@@ -61,50 +300,71 @@ export default defineComponent({
     <div id="cdn" class="content">
       <h2 class="header">Cdn</h2>
       <p>
-        Cdn has a url link you can grab. Cdn exists on both
-        <a target="_blank" href="https://cdnjs.com">cdnjs.com</a> and
-        <a target="_blank" href="https://unpkg.com">unpkg.com</a>
+        Include SlimSelect directly in your HTML with a script and stylesheet tag. Choose a CDN provider below to see
+        the matching URLs and a ready-to-use example.
       </p>
-      <p>
-        See full list of available options.<br />
-        <strong>cdnjs</strong> -
-        <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a><br />
-        <strong>unpkg</strong> -
-        <a target="_blank" href="https://unpkg.com/browse/slim-select/dist/"
-          >https://unpkg.com/browse/slim-select/dist/</a
-        >
-      </p>
-      <ul>
-        <li>slimselect.js - UMD minified (default)</li>
-        <li>slimselect.es.js - ES module build for modern browsers</li>
-        <li>slimselect.cjs.js - CommonJS build for Node.js</li>
-        <li>slimselect.iife.js - IIFE build for direct browser usage</li>
-        <li>*.js.map - Source maps for debugging (included automatically)</li>
-      </ul>
-      <div class="alert info">New releases may be delayed until the next time its indexed</div>
 
-      <HighlightStyle language="html">
-        <pre>
-          &lt;html&gt;
-            &lt;head&gt;
-              &lt;script src="https://unpkg.com/slim-select@latest/dist/slimselect.js"&gt;&lt;/script&gt;
-              &lt;link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"&gt;&lt;/link&gt;
-            &lt;/head&gt;
-            &lt;body&gt;
-              &lt;select id="selectElement"&gt;
-                &lt;option&gt;Option 1&lt;/option&gt;
-                &lt;option&gt;Option 2&lt;/option&gt;
-                &lt;option&gt;Option 3&lt;/option&gt;
-              &lt;/select&gt;
-              &lt;script&gt;
-                new SlimSelect({
-                  select: '#selectElement'
-                })
-              &lt;/script&gt;
-            &lt;/body&gt;
-          &lt;/html&gt;
-        </pre>
+      <div class="cdn-providers">
+        <div v-for="(provider, key) in cdnProviders" :key="key" class="cdn-provider-col">
+          <button
+            type="button"
+            class="cdn-provider"
+            :class="{ active: activeCdn === key }"
+            @click="setActiveCdn(key)"
+          >
+            <h3 class="cdn-provider-name">{{ provider.name }}</h3>
+            <p class="cdn-provider-description">{{ provider.description }}</p>
+          </button>
+          <a class="cdn-provider-link" :href="provider.browseUrl" target="_blank" rel="noopener noreferrer">
+            Browse files &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="cdn-example-header">
+        <h3>Quick Start</h3>
+        <p>
+          Example using <strong>{{ activeProvider.name }}</strong
+          >.
+          <span v-if="activeProvider.note">{{ activeProvider.note }}</span>
+        </p>
+      </div>
+
+      <HighlightStyle :key="activeCdn" language="html">
+        <pre>{{ cdnExampleHtml }}</pre>
       </HighlightStyle>
+
+      <div class="cdn-files">
+        <h3>Available Files</h3>
+        <ul>
+          <li><code>slimselect.js</code> — UMD minified (default)</li>
+          <li><code>slimselect.es.js</code> — ES module build for modern browsers</li>
+          <li><code>slimselect.cjs.js</code> — CommonJS build for Node.js</li>
+          <li><code>slimselect.iife.js</code> — IIFE build for direct browser usage</li>
+          <li><code>*.js.map</code> — Source maps for debugging (included automatically)</li>
+        </ul>
+      </div>
+
+      <div class="alert info">New releases may be delayed until the next time a CDN indexes the package.</div>
+
+      <div class="codepen-section">
+        <div class="codepen-header">
+          <h3>Live Example</h3>
+          <a class="btn" :href="codepenUrl" target="_blank" rel="noopener noreferrer">Open in CodePen</a>
+        </div>
+        <p>
+          Fork and experiment with SlimSelect in the browser. This CodePen is a great starting point for bug reports and
+          quick prototypes.
+        </p>
+        <iframe
+          class="codepen-embed"
+          title="SlimSelect CodePen Example"
+          :src="codepenEmbedUrl"
+          loading="lazy"
+          allowtransparency="true"
+          allowfullscreen="true"
+        ></iframe>
+      </div>
     </div>
 
     <div id="download" class="content">
