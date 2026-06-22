@@ -28,7 +28,10 @@ export default defineComponent({
       }
     })
     this.countryMultiple = new SlimSelect({
-      select: this.$refs.countryMultiple as HTMLSelectElement
+      select: this.$refs.countryMultiple as HTMLSelectElement,
+      settings: {
+        placeholderText: 'Select countries...'
+      }
     })
   }
 })
@@ -58,6 +61,10 @@ export default defineComponent({
           &:hover {
             color: var(--color-primary);
           }
+
+          .ss-main {
+            font-weight: normal;
+          }
         }
       }
     }
@@ -81,7 +88,7 @@ export default defineComponent({
         <div class="form-group">
           <label for="country-for-label">Select a Country</label>
           <select id="country-for-label" ref="countryFor">
-            <option value="">Choose a country...</option>
+            <option data-placeholder="true">Choose a country...</option>
             <option value="usa">United States</option>
             <option value="uk">United Kingdom</option>
             <option value="canada">Canada</option>
@@ -101,7 +108,7 @@ export default defineComponent({
           <label>
             Select a Country
             <select ref="countryWrap">
-              <option value="">Choose a country...</option>
+              <option data-placeholder="true">Choose a country...</option>
               <option value="usa">United States</option>
               <option value="uk">United Kingdom</option>
               <option value="canada">Canada</option>
@@ -149,7 +156,7 @@ export default defineComponent({
         &lt;!-- Method 1: Label with "for" attribute --&gt;
         &lt;label for="country-select"&gt;Select a Country&lt;/label&gt;
         &lt;select id="country-select"&gt;
-          &lt;option value=""&gt;Choose a country...&lt;/option&gt;
+          &lt;option data-placeholder="true"&gt;Choose a country...&lt;/option&gt;
           &lt;option value="usa"&gt;United States&lt;/option&gt;
           &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
         &lt;/select&gt;
@@ -158,7 +165,7 @@ export default defineComponent({
         &lt;label&gt;
           Select a Country
           &lt;select&gt;
-            &lt;option value=""&gt;Choose a country...&lt;/option&gt;
+            &lt;option data-placeholder="true"&gt;Choose a country...&lt;/option&gt;
             &lt;option value="usa"&gt;United States&lt;/option&gt;
             &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
           &lt;/select&gt;
@@ -170,6 +177,15 @@ export default defineComponent({
           &lt;option value="usa"&gt;United States&lt;/option&gt;
           &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
         &lt;/select&gt;
+
+        &lt;script&gt;
+          new SlimSelect({
+            select: '#countries-select',
+            settings: {
+              placeholderText: 'Select countries...'
+            }
+          })
+        &lt;/script&gt;
       </pre>
     </HighlightStyle>
   </div>
