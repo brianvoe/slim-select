@@ -1,8 +1,10 @@
 import { default as CssClasses } from './classes';
+import { default as Lifecycle } from './lifecycle';
 import { default as Render } from './render';
 import { default as Select } from './select';
 import { default as Settings } from './settings';
 import { default as Store, Option, Optgroup } from './store';
+import { default as SyncCoordinator } from './sync';
 export { Settings, Option, Optgroup };
 export type { Main, Content, Search } from './render';
 export interface Config {
@@ -31,8 +33,9 @@ export default class SlimSelect {
     select: Select;
     store: Store;
     render: Render;
-    private openTimeout;
-    private closeTimeout;
+    sync: SyncCoordinator;
+    lifecycle: Lifecycle;
+    private globalEvents;
     events: Events;
     constructor(config: Config);
     enable(): void;
@@ -46,8 +49,5 @@ export default class SlimSelect {
     close(eventType?: string | null): void;
     search(value: string): void;
     destroy(): void;
-    private windowResize;
-    private windowScroll;
     private documentClick;
-    private windowVisibilityChange;
 }

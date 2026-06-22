@@ -50,13 +50,14 @@ export default class Render {
     content: Content;
     classes: CssClasses;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
-    private addClasses;
-    private removeClasses;
+    addClasses(element: HTMLElement | SVGElement, classValue: string): void;
+    removeClasses(element: HTMLElement | SVGElement, classValue: string): void;
     enable(): void;
     disable(): void;
     open(): void;
+    /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
+    waitForAnimation(phase: 'open' | 'close'): Promise<void>;
     close(): void;
-    private getAnimationTiming;
     updateClassStyles(): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
