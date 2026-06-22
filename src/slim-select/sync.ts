@@ -1,0 +1,316 @@
+/**
+ * Central sync pipeline for SlimSelect.
+ *
+ * All paths that change store, native <select>, or custom UI should go through
+ * SyncCoordinator instead of calling setData/setSelected directly. This gives us:
+ *   - One place to batch/coalesce updates
+ *   - Lightweight selection sync (no full native DOM rebuild)
+ *   - No-op skips when nothing actually changed
+ *
+ * Wired from SlimSelect: native observer → enqueue(native), public API → enqueue(api),
+ * render callbacks → enqueue(ui).
+ */
+
+import { isEqual } from './helpers'
+import Render from './render'
+import Select from './select'
+import Store from './store'
+import type { Optgroup, Option } from './store'
+
+/** Where a change originated — affects batching and render behavior. */
+export type ChangeSource = 'native' | 'ui' | 'api'
+
+export interface SyncEvents {
+  afterChange?: (newVal: Option[]) => void
+  error?: (err: Error) => void
+}
+
+/**
+ * A single unit of work in the sync queue.
+ * Structure = replace option list; selection = change selected only; addOption = append one.
+ */
+export type SyncChange =
+  | {
+      type: 'structure'
+      data: (Partial<Option> | Partial<Optgroup>)[]
+      source: ChangeSource
+      /** Keep current selection when replacing data (async search results). */
+      preserveSelection?: boolean
+    }
+  | {
+      type: 'selection'
+      values: string | string[]
+      source: ChangeSource
+      /** false when Vue/parent is pushing modelValue down (avoid emit loop). */
+      runAfterChange?: boolean
+    }
+  | { type: 'addOption'; option: Partial<Option>; source: ChangeSource }
+
+export interface SyncDeps {
+  select: Select
+  store: Store
+  render: Render
+  events: SyncEvents
+  search?: (value: string) => void
+  onError?: (err: Error) => void
+}
+
+/** Compare selected id sets regardless of order (multi-select). */
+export function selectedIdsEqual(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) {
+    return false
+  }
+  const sortedA = [...a].sort()
+  const sortedB = [...b].sort()
+  return sortedA.every((id, i) => id === sortedB[i])
+}
+
+/** Skip structure sync when incoming data matches what's already in the store. */
+export function shouldSkipStructureUpdate(
+  store: Store,
+  data: (Partial<Option> | Partial<Optgroup>)[]
+): boolean {
+  return isEqual(store.getData(), data)
+}
+
+/**
+ * Resolve setSelected() arguments to option ids.
+ * Accepts either ids or values for backward compatibility.
+ */
+export function resolveSelectedIds(
+  store: Store,
+  values: string | string[]
+): string[] {
+  const valueList = Array.isArray(values) ? values : [values]
+  const options = store.getDataOptions()
+  const ids: string[] = []
+
+  for (const value of valueList) {
+    if (options.find((option) => option.id == value)) {
+      ids.push(value)
+      continue
+    }
+
+    // Value may match multiple options (duplicate values) — select all matches
+    for (const option of options.filter((option) => option.value == value)) {
+      ids.push(option.id)
+    }
+  }
+
+  return ids
+}
+
+export default class SyncCoordinator {
+  private queue: SyncChange[] = []
+  private flushScheduled = false
+  /** True while applyChange is running — prevents re-entrant flush loops. */
+  public isSyncing = false
+
+  constructor(private deps: SyncDeps) {}
+
+  public enqueue(change: SyncChange): void {
+    this.queue.push(change)
+
+    // Native mutations often arrive in bursts from MutationObserver; coalesce
+    // them in one microtask so we render once per frame.
+    if (change.source === 'native') {
+      if (!this.flushScheduled) {
+        this.flushScheduled = true
+        queueMicrotask(() => this.flush())
+      }
+      return
+    }
+
+    // API/UI (setData, setSelected, clicks) should feel instant to callers.
+    // If we're already inside flush(), defer until the current batch finishes.
+    if (!this.isSyncing) {
+      this.flush()
+    }
+  }
+
+  /** Process everything in the queue. Callable from tests for deterministic native sync. */
+  public flush(): void {
+    this.flushScheduled = false
+
+    if (this.queue.length === 0) {
+      return
+    }
+
+    const batch = this.coalesceBatch(this.queue)
+    this.queue = []
+
+    this.isSyncing = true
+    try {
+      for (const change of batch) {
+        this.applyChange(change)
+      }
+    } finally {
+      this.isSyncing = false
+      // Changes enqueued during applyChange (e.g. async search) run next
+      if (this.queue.length > 0) {
+        this.flush()
+      }
+    }
+  }
+
+  /**
+   * Collapse a batch into the minimum work needed.
+   * Structure sync already includes selection from getData(), so drop redundant
+   * selection changes in the same batch. When multiple structure updates arrive,
+   * only the last one wins.
+   */
+  private coalesceBatch(changes: SyncChange[]): SyncChange[] {
+    const hasStructure = changes.some((c) => c.type === 'structure')
+    const hasAddOption = changes.some((c) => c.type === 'addOption')
+
+    if (hasStructure || hasAddOption) {
+      const structureChanges = changes.filter(
+        (c) => c.type === 'structure' || c.type === 'addOption'
+      )
+      const lastStructure = structureChanges[structureChanges.length - 1]
+
+      if (lastStructure?.type === 'structure') {
+        return [lastStructure]
+      }
+
+      return structureChanges
+    }
+
+    const selectionChanges = changes.filter((c) => c.type === 'selection')
+    if (selectionChanges.length > 0) {
+      return [selectionChanges[selectionChanges.length - 1]]
+    }
+
+    return changes
+  }
+
+  private applyChange(change: SyncChange): void {
+    switch (change.type) {
+      case 'structure':
+        this.applyStructure(
+          change.data,
+          change.source,
+          change.preserveSelection
+        )
+        break
+      case 'selection':
+        this.applySelection(
+          change.values,
+          change.source,
+          change.runAfterChange !== false
+        )
+        break
+      case 'addOption':
+        this.applyAddOption(change.option)
+        break
+    }
+  }
+
+  /**
+   * Full sync: store → native <select> rebuild → render values + options.
+   * Used when the option list itself changes (setData, native DOM edits, search results).
+   */
+  private applyStructure(
+    data: (Partial<Option> | Partial<Optgroup>)[],
+    _source: ChangeSource,
+    preserveSelection = false
+  ): void {
+    const { store, select, render, events } = this.deps
+
+    if (shouldSkipStructureUpdate(store, data)) {
+      return
+    }
+
+    const selected = store.getSelected()
+
+    const err = store.validateDataArray(data)
+    if (err) {
+      if (events.error) {
+        events.error(err)
+      } else if (this.deps.onError) {
+        this.deps.onError(err)
+      }
+      return
+    }
+
+    store.setData(data, preserveSelection)
+    const dataClean = store.getData()
+
+    select.updateOptions(dataClean)
+    render.renderValues()
+    render.renderOptions(dataClean)
+
+    if (events.afterChange && !isEqual(selected, store.getSelected())) {
+      events.afterChange(store.getSelectedOptions())
+    }
+  }
+
+  /**
+   * Lightweight selection sync: flip option.selected on native DOM only.
+   * Avoids select.updateOptions() (innerHTML rebuild) for selection-only changes.
+   */
+  private applySelection(
+    values: string | string[],
+    _source: ChangeSource,
+    runAfterChange: boolean
+  ): void {
+    const { store, select, render, events } = this.deps
+
+    const selected = store.getSelected()
+    const ids = resolveSelectedIds(store, values)
+
+    if (selectedIdsEqual(selected, ids)) {
+      return
+    }
+
+    store.setSelectedBy('id', ids)
+
+    // Use values on the native DOM — HTML option ids may be empty while store uses generated ids
+    select.setSelectedByValue(store.getSelectedValues())
+    render.renderValues()
+
+    const searchValue = render.content.search.input.value
+    if (searchValue !== '') {
+      // User clicked an option while searching — re-run search event for custom search
+      if (_source === 'ui' && this.deps.search) {
+        this.deps.search(searchValue)
+      } else {
+        // Native/API path: just refresh the option list from store (no search re-fetch)
+        render.renderOptions(store.getData())
+      }
+    } else {
+      render.renderOptions(store.getData())
+    }
+
+    if (
+      runAfterChange &&
+      events.afterChange &&
+      !isEqual(selected, store.getSelected())
+    ) {
+      events.afterChange(store.getSelectedOptions())
+    }
+  }
+
+  /** Append a single option then full-sync native + render (same as legacy addOption). */
+  private applyAddOption(option: Partial<Option>): void {
+    const { store, select, render, events } = this.deps
+    const selected = store.getSelected()
+
+    if (
+      !store
+        .getDataOptions()
+        .some((o) => o.value === (option.value ?? option.text))
+    ) {
+      store.addOption(option)
+    }
+
+    const data = store.getData()
+    select.updateOptions(data)
+    render.renderValues()
+    render.renderOptions(data)
+
+    if (events.afterChange && !isEqual(selected, store.getSelected())) {
+      events.afterChange(store.getSelectedOptions())
+    }
+  }
+}
