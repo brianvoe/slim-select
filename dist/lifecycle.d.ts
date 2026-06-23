@@ -8,8 +8,8 @@
  *   - isOpen: true during opening + open
  *   - isFullOpen: true only in open state (after animation / afterOpen)
  *
- * Lifecycle waits for render.waitForAnimation() (CSS transitionend + timeout fallback)
- * before firing afterOpen/afterClose and attaching the outside-click listener.
+ * Lifecycle waits for render.waitForAnimation() before firing afterOpen/afterClose.
+ * When no animation waiter is provided, falls back to settings.timeoutDelay.
  */
 export type LifecycleState = 'closed' | 'opening' | 'open' | 'closing';
 export interface LifecycleHandlers {
@@ -23,9 +23,9 @@ export interface LifecycleHandlers {
     onCloseReady?: () => void;
 }
 export interface LifecycleOptions {
-    /** Public settings.timeoutDelay — fallback if transitionend never fires. */
+    /** Fallback when waitForAnimation is not provided (no CSS element yet). */
     timeoutDelay: number;
-    waitForAnimation?: (phase: 'open' | 'close') => Promise<void>;
+    waitForAnimation?: (phase: 'open' | 'close', signal?: AbortSignal) => Promise<void>;
 }
 export default class Lifecycle {
     private handlers;
@@ -36,6 +36,7 @@ export default class Lifecycle {
     private waitResolvers;
     /** Incremented on cancelPending(); stale async completions check this before firing handlers. */
     private generation;
+    private animationAbort;
     constructor(handlers: LifecycleHandlers, options: LifecycleOptions);
     get isOpen(): boolean;
     get isFullOpen(): boolean;
@@ -45,8 +46,8 @@ export default class Lifecycle {
     cancelPending(): void;
     destroy(): void;
     /**
-     * Wait for animation and/or timeout, whichever finishes first.
-     * generation guard prevents afterOpen firing if close interrupted open.
+     * Wait for the CSS animation to finish (or timeoutDelay when no waiter exists).
+     * cancelPending() resolves the wait early for rapid open/close toggles.
      */
     private waitForPhase;
 }

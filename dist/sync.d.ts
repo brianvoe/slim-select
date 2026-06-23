@@ -17,6 +17,8 @@ export type SyncChange = {
     source: ChangeSource;
     /** Keep current selection when replacing data (async search results). */
     preserveSelection?: boolean;
+    /** API search results — do not update the catalog baseline. */
+    isSearchResult?: boolean;
 } | {
     type: 'selection';
     values: string | string[];
@@ -36,8 +38,6 @@ export interface SyncDeps {
     search?: (value: string) => void;
     onError?: (err: Error) => void;
 }
-/** Compare selected id sets regardless of order (multi-select). */
-export declare function selectedIdsEqual(a: string[], b: string[]): boolean;
 /** Skip structure sync when incoming data matches what's already in the store. */
 export declare function shouldSkipStructureUpdate(store: Store, data: (Partial<Option> | Partial<Optgroup>)[]): boolean;
 /**

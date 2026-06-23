@@ -5,7 +5,6 @@ export default class Settings {
     isMultiple: boolean;
     isOpen: boolean;
     isFullOpen: boolean;
-    intervalMove: ReturnType<typeof setInterval> | null;
     disabled: boolean;
     alwaysOpen: boolean;
     showSearch: boolean;

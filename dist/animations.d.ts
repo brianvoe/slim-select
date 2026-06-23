@@ -1,41 +1,37 @@
 /**
- * Animation timing helpers for SlimSelect
+ * Animation timing helpers.
  *
- * Replaces scattered setTimeout delays with duration-aware promises. Used by:
- *   - Lifecycle (open/close via render.waitForAnimation → waitForTransitionEnd)
- *   - Render (value chip removal via animateValueOut, addable close delay)
- *
- * CSS still drives the visible transitions (.ss-content, .ss-value-out). These
- * helpers keep JS lifecycle callbacks in sync with --ss-animation-timing.
+ * CSS still runs the motion — these keep lifecycle and DOM cleanup aligned with
+ * --ss-animation-timing so we are not guessing with hardcoded setTimeout values.
  */
+/** Extra ms added to CSS duration for transitionend/animationend safety-net timeouts. */
+export declare const ANIMATION_TIMEOUT_BUFFER_MS = 50;
+/** .ss-content open/close transitions — wait for both before lifecycle continues. */
+export declare const CONTENT_PANEL_TRANSITION_PROPERTIES: readonly ["transform", "opacity"];
 /** Parse a CSS time value (e.g. "0.2s", "200ms") into milliseconds. */
 export declare function parseAnimationDuration(cssValue: string, fallback?: number): number;
 /** Read --ss-animation-timing from an element's computed styles. */
 export declare function getAnimationDuration(element: HTMLElement, fallback?: number): number;
+/**
+ * Safety-net timeout for animation waits.
+ * Derived from --ss-animation-timing (+ buffer). An explicit settings.timeoutDelay
+ * is treated as a minimum — never shorter than the CSS-driven duration.
+ */
+export declare function getAnimationTimeout(element: HTMLElement, userTimeout?: number, fallback?: number): number;
 /** Respect user OS accessibility preference and jsdom (no matchMedia). */
 export declare function prefersReducedMotion(): boolean;
-export interface AnimateOptions {
-    duration: number;
-    /** Called when animation completes or is skipped (reduced motion / no WAAPI). */
-    onFinish?: () => void;
-}
 /**
- * WAAPI open animation for dropdown panel (scaleY + opacity).
- * Mirrors .ss-content.ss-open CSS transition; available for future lifecycle wiring.
- */
-export declare function animateOpen(element: HTMLElement, options: AnimateOptions): Promise<void>;
-/** WAAPI close animation — inverse of animateOpen. */
-export declare function animateClose(element: HTMLElement, options: AnimateOptions): Promise<void>;
-/**
- * Animate a multi-select value chip out before DOM removal.
- * Replaces the old hardcoded 100ms setTimeout in renderValues.
- */
-export declare function animateValueOut(element: HTMLElement, options: AnimateOptions): Promise<void>;
-/**
- * Wait for a CSS transition to finish, with a timeout fallback.
+ * Wait for CSS transition(s) to finish, with a timeout fallback.
  *
- * Used by render.waitForAnimation() so Lifecycle afterOpen/afterClose align with
- * the real .ss-content transition. jsdom never fires transitionend, so the
- * timeout (from getAnimationDuration) always wins in unit tests.
+ * Pass a single property name to resolve on that transitionend, or an array to
+ * wait until every listed property has fired (e.g. transform + opacity on .ss-content).
+ * Optional AbortSignal cleans up listeners when lifecycle cancels a rapid toggle.
  */
-export declare function waitForTransitionEnd(element: HTMLElement, propertyName?: string, timeoutMs?: number): Promise<void>;
+export declare function waitForTransitionEnd(element: HTMLElement, propertyNames?: string | readonly string[], timeoutMs?: number, signal?: AbortSignal): Promise<void>;
+/**
+ * Wait for a CSS @keyframes animation to finish, with a timeout fallback.
+ *
+ * Used when removing multi-select value chips (.ss-value-out). jsdom does not
+ * fire animationend, so the timeout wins in unit tests.
+ */
+export declare function waitForAnimationEnd(element: HTMLElement, animationName?: string, timeoutMs?: number, signal?: AbortSignal): Promise<void>;

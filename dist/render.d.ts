@@ -45,10 +45,13 @@ export default class Render {
     callbacks: Callbacks;
     private lastSelectedOption;
     private lastRenderedOptions;
-    private closeAnimationTimeout;
+    private optionsListIsFullData;
+    private lastSearchFilterTerm;
     main: Main;
     content: Content;
     classes: CssClasses;
+    private positionObserver;
+    private positionObserverRaf;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
     addClasses(element: HTMLElement | SVGElement, classValue: string): void;
     removeClasses(element: HTMLElement | SVGElement, classValue: string): void;
@@ -56,8 +59,10 @@ export default class Render {
     disable(): void;
     open(): void;
     /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
-    waitForAnimation(phase: 'open' | 'close'): Promise<void>;
+    waitForAnimation(phase: 'open' | 'close', signal?: AbortSignal): Promise<void>;
     close(): void;
+    /** Remove open-direction classes after close animation (lifecycle afterClose). */
+    clearDirectionClasses(): void;
     updateClassStyles(): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
@@ -70,6 +75,10 @@ export default class Render {
     contentDiv(): Content;
     private announce;
     moveContent(): void;
+    /** Track trigger/content layout changes and reposition the dropdown panel. */
+    startPositionTracking(): void;
+    stopPositionTracking(): void;
+    private observePositionTargets;
     searchDiv(): Search;
     searchFocus(): void;
     getOptions(notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean): HTMLDivElement[];
@@ -78,6 +87,23 @@ export default class Render {
     renderError(error: string): void;
     renderSearching(): void;
     renderOptions(data: (Option | Optgroup)[]): void;
+    /** True when the list DOM contains every store option (local search can show/hide in place). */
+    canFilterOptionsInPlace(): boolean;
+    resetSearchFilterState(): void;
+    /** Filter visible options by search without rebuilding the list. */
+    filterOptionsInPlace(search: string, searchFilter: (opt: Option, search: string) => boolean): void;
+    private setOptionsListFullData;
+    private updateOptgroupVisibilityAfterSearch;
+    private updateSearchResultsMessage;
+    private removeListSearchMessage;
+    private setOptionElementContent;
+    /** True when option nodes exist in the list (selection can sync without re-searching). */
+    hasRenderedOptions(): boolean;
+    /** True when the open list already has options and search is not filtering. */
+    canUpdateOptionSelectionInPlace(): boolean;
+    /** Sync selected/hidden state on existing option nodes without rebuilding the list. */
+    updateOptionSelection(): void;
+    private updateOptgroupSelectAllStates;
     option(option: Option): HTMLDivElement;
     destroy(): void;
     private highlightText;
