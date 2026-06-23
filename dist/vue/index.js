@@ -1,4 +1,4 @@
-import { createElementBlock as e, defineComponent as t, openBlock as n, renderSlot as r } from "vue";
+import { createElementBlock as e, defineComponent as t, openBlock as n, toRaw as r } from "vue";
 //#region src/slim-select/classes.ts
 var i = class {
 	main;
@@ -407,11 +407,11 @@ var E = class {
 		} else this.data = n;
 		!t && this.selectType === "single" && this.setSelectedBy("id", this.getSelected(), !1);
 	}
-	getData() {
-		return this.filter(null, !0);
+	getData(e = !0) {
+		return this.filter(null, !0, e);
 	}
-	getDataOptions() {
-		return this.filter(null, !1);
+	getDataOptions(e = !0) {
+		return this.filter(null, !1, e);
 	}
 	addOption(e, t = !1) {
 		if (t) {
@@ -440,15 +440,20 @@ var E = class {
 		return this.getSelectedOptions().map((e) => e.value);
 	}
 	getSelectedOptions() {
-		return this.filter((e) => e.selected, !1);
+		let e = [];
+		for (let t of this.data) if (t instanceof k) for (let n of t.options) n.selected && e.push(n);
+		else t.selected && e.push(t);
+		return e;
 	}
 	getOptgroupByID(e) {
 		for (let t of this.data) if (t instanceof k && t.id === e) return t;
 		return null;
 	}
 	getOptionByID(e) {
-		let t = this.filter((t) => t.id === e, !1);
-		return t.length ? t[0] : null;
+		for (let t of this.data) if (t instanceof k) {
+			for (let n of t.options) if (n.id === e) return n;
+		} else if (t.id === e) return t;
+		return null;
 	}
 	getSelectType() {
 		return this.selectType;
@@ -459,22 +464,33 @@ var E = class {
 		return e;
 	}
 	search(e, t) {
-		return e = e.trim(), e === "" ? this.getData() : this.filter((n) => t(n, e), !0);
+		return e = e.trim(), e === "" ? this.getData(!1) : this.filter((n) => t(n, e), !0, !1);
 	}
-	filter(e, t) {
-		let n = [];
-		return this.data.forEach((r) => {
-			if (r instanceof k) {
-				let i = [];
-				if (r.options.forEach((r) => {
-					(!e || e(r)) && (t ? i.push(new O(r)) : n.push(new O(r)));
-				}), i.length > 0) {
-					let e = new k(r);
-					e.options = i, n.push(e);
-				}
+	createOptgroupView(e, t) {
+		let n = new k({
+			id: e.id,
+			label: e.label,
+			selectAll: e.selectAll,
+			selectAllText: e.selectAllText,
+			closable: e.closable,
+			options: []
+		});
+		return n.options = t, n;
+	}
+	filter(e, t, n = !0) {
+		let r = [];
+		return this.data.forEach((i) => {
+			if (i instanceof k) {
+				let a = [];
+				if (i.options.forEach((i) => {
+					(!e || e(i)) && (t ? a.push(n ? new O(i) : i) : r.push(n ? new O(i) : i));
+				}), a.length > 0) if (n) {
+					let e = new k(i);
+					e.options = a, r.push(e);
+				} else r.push(this.createOptgroupView(i, a));
 			}
-			r instanceof O && (!e || e(r)) && n.push(new O(r));
-		}), n;
+			i instanceof O && (!e || e(i)) && r.push(n ? new O(i) : i);
+		}), r;
 	}
 	selectedOrderOptions(e) {
 		let t = [];
@@ -613,7 +629,7 @@ var E = class {
 		e !== "click" && this.main.main.focus({ preventScroll: !0 });
 	}
 	placeholder() {
-		let e = this.store.filter((e) => e.placeholder, !1), t = this.settings.placeholderText;
+		let e = this.store.filter((e) => e.placeholder, !1, !1), t = this.settings.placeholderText;
 		e.length && (e[0].html === "" ? e[0].text !== "" && (t = e[0].text) : t = e[0].html);
 		let n = document.createElement("div");
 		return this.addClasses(n, this.classes.placeholder), n.innerHTML = t, n;
@@ -626,7 +642,7 @@ var E = class {
 		this.renderMultipleValues(), this.updateDeselectAll();
 	}
 	renderSingleValue() {
-		let e = this.store.filter((e) => e.selected && !e.placeholder, !1), t = e.length > 0 ? e[0] : null;
+		let e = this.store.filter((e) => e.selected && !e.placeholder, !1, !1), t = e.length > 0 ? e[0] : null;
 		if (!t) this.main.values.innerHTML = this.placeholder().outerHTML;
 		else {
 			let e = document.createElement("div");
@@ -635,7 +651,7 @@ var E = class {
 		!this.settings.allowDeselect || !e.length ? this.addClasses(this.main.deselect.main, this.classes.hide) : this.removeClasses(this.main.deselect.main, this.classes.hide);
 	}
 	renderMultipleValues() {
-		let e = this.main.values.childNodes, t = this.store.filter((e) => e.selected && e.display, !1);
+		let e = this.main.values.childNodes, t = this.store.filter((e) => e.selected && e.display, !1, !1);
 		if (t.length === 0) {
 			this.main.values.innerHTML = this.placeholder().outerHTML;
 			return;
@@ -887,7 +903,7 @@ var E = class {
 			this.content.list.appendChild(e);
 			return;
 		}
-		this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((e) => e.placeholder, !1).length || this.store.addOption(new O({
+		this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((e) => e.placeholder, !1, !1).length || this.store.addOption(new O({
 			text: "",
 			value: "",
 			selected: !1,
@@ -976,7 +992,7 @@ var E = class {
 		this.lastRenderedOptions = r, this.updateOptgroupVisibilityAfterSearch(n), r.length === 0 ? this.updateSearchResultsMessage(0, n) : (this.removeListSearchMessage(), this.announce(this.settings.resultsText.replace("{count}", String(r.length)))), this.updateOptgroupSelectAllStates();
 	}
 	setOptionsListFullData(e) {
-		let t = this.store.getDataOptions(), n = e.map((e) => e instanceof O ? [e] : e.options.map((e) => new O(e))).flat();
+		let t = this.store.getDataOptions(!1), n = e.map((e) => e instanceof O ? [e] : e.options.map((e) => new O(e))).flat();
 		if (n.length !== t.length) {
 			this.optionsListIsFullData = !1;
 			return;
@@ -1458,10 +1474,10 @@ var N = class {
 //#endregion
 //#region src/slim-select/sync.ts
 function F(e, t) {
-	return w(e.getData(), t);
+	return w(e.getData(!1), t);
 }
 function I(e, t) {
-	let n = Array.isArray(t) ? t : [t], r = e.getDataOptions(), i = [];
+	let n = Array.isArray(t) ? t : [t], r = e.getDataOptions(!1), i = [];
 	for (let e of n) {
 		if (r.find((t) => t.id == e)) {
 			i.push(e);
@@ -1527,7 +1543,7 @@ var L = class {
 			return;
 		}
 		i.setData(e, n);
-		let u = i.getData();
+		let u = i.getData(!1);
 		r || i.snapshotCatalog(), a.updateOptions(u), o.renderValues(), o.renderOptions(u), s.afterChange && !_(c, i.getSelected()) && s.afterChange(i.getSelectedOptions());
 	}
 	applySelection(e, t, n) {
@@ -1535,7 +1551,7 @@ var L = class {
 		if (_(s, c)) return;
 		r.setSelectedBy("id", c), i.setSelectedByValue(r.getSelectedValues()), a.renderValues();
 		let l = a.content.search.input.value.trim();
-		l === "" ? a.canUpdateOptionSelectionInPlace() ? a.updateOptionSelection() : a.renderOptions(r.getData()) : a.hasRenderedOptions() ? a.updateOptionSelection() : this.deps.search && this.deps.search(l), n && o.afterChange && !_(s, r.getSelected()) && o.afterChange(r.getSelectedOptions());
+		l === "" ? a.canUpdateOptionSelectionInPlace() ? a.updateOptionSelection() : a.renderOptions(r.getData(!1)) : a.hasRenderedOptions() ? a.updateOptionSelection() : this.deps.search && this.deps.search(l), n && o.afterChange && !_(s, r.getSelected()) && o.afterChange(r.getSelectedOptions());
 	}
 	applyAddOption(e) {
 		let { store: t, select: n, render: r, events: i } = this.deps, a = t.getSelected(), o = r.content.search.input.value.trim() !== "" && !!this.deps.search, s = e.value ?? e.text ?? "", c = (e) => {
@@ -1548,11 +1564,11 @@ var L = class {
 			}
 			return !1;
 		};
-		if (!c(t.getData())) if (o) {
+		if (!c(t.getData(!1))) if (o) {
 			let n = t.getCatalogData();
 			c(n) || t.setData([...n, new O(e)], !0), t.snapshotCatalog();
 		} else t.addOption(e), t.snapshotCatalog();
-		let l = t.getData();
+		let l = t.getData(!1);
 		n.updateOptions(l), r.renderValues(), r.renderOptions(l), i.afterChange && !_(a, t.getSelected()) && i.afterChange(t.getSelectedOptions());
 	}
 }, R = class {
@@ -1667,7 +1683,7 @@ var L = class {
 			onVisibilityChange: () => {
 				document.hidden && this.close();
 			}
-		}), this.render.renderValues(), this.render.renderOptions(this.store.getData());
+		}), this.render.renderValues(), this.render.renderOptions(this.store.getData(!1));
 		let a = this.selectEl.getAttribute("aria-label"), o = this.selectEl.getAttribute("aria-labelledby");
 		if (a) this.render.main.main.setAttribute("aria-label", a);
 		else if (o) this.render.main.main.removeAttribute("aria-label"), this.render.main.main.setAttribute("aria-labelledby", o);
@@ -1799,7 +1815,10 @@ var L = class {
 			type: Boolean,
 			default: !1
 		},
-		data: { type: Array },
+		data: {
+			type: Array,
+			required: !0
+		},
 		settings: { type: Object },
 		events: {
 			type: Object,
@@ -1808,25 +1827,24 @@ var L = class {
 	},
 	emits: ["update:modelValue"],
 	data() {
-		return { slim: null };
+		return {
+			slim: null,
+			lastAppliedData: null
+		};
 	},
 	mounted() {
-		this.$slots.default && this.$slots.default().length > 0 && this.data && console.warn("[SlimSelect Vue] Both slot content and data prop are provided. Data prop will take precedence and slot content will be ignored.");
-		let e = { select: this.$refs.slim };
-		this.data && (e.data = this.data), this.settings && (e.settings = this.settings);
+		let e = {
+			select: this.$refs.slim,
+			data: this.data
+		};
+		this.settings && (e.settings = this.settings);
 		let t = this.events?.afterChange;
 		e.events = {
 			...this.events,
 			afterChange: (e) => {
 				this.handleAfterChange(e, t);
 			}
-		}, this.slim = new R(e), this.syncModelValueToSlimSelect(!1);
-	},
-	updated() {
-		if (this.slim && !this.data) {
-			let e = this.slim.getSelected(), t = Array.isArray(this.value) ? this.value : [this.value];
-			JSON.stringify(e.sort()) !== JSON.stringify(t.sort()) && this.syncModelValueToSlimSelect(!1);
-		}
+		}, this.slim = new R(e), this.lastAppliedData = structuredClone(r(this.data)), this.syncModelValueToSlimSelect(!1);
 	},
 	beforeUnmount() {
 		this.slim && this.slim.destroy();
@@ -1837,7 +1855,7 @@ var L = class {
 		} },
 		data: {
 			handler: function(e) {
-				this.slim && this.slim.setData(e);
+				this.slim && (this.lastAppliedData !== null && w(this.lastAppliedData, r(e)) || (this.slim.setData(e), this.lastAppliedData = structuredClone(r(e)), this.syncModelValueToSlimSelect(!1)));
 			},
 			deep: !0
 		}
@@ -1856,7 +1874,7 @@ var L = class {
 		},
 		handleAfterChange(e, t) {
 			if (!this.slim) return;
-			let n = this.multiple ? e.map((e) => e.value) : e.length > 0 ? e[0].value : "", r = this.getCleanValue(this.$props.modelValue), i = this.slim.store.getDataOptions(), a = Array.isArray(r) ? r.length > 0 && r.every((e) => i.some((t) => t.value === e)) : r !== "" && i.some((e) => e.value === r), o = Array.isArray(n) ? n.length > 0 && n.every((e) => i.some((t) => t.value === e)) : n !== "" && i.some((e) => e.value === n);
+			let n = this.multiple ? e.map((e) => e.value) : e.length > 0 ? e[0].value : "", r = this.getCleanValue(this.$props.modelValue), i = this.slim.store.getDataOptions(!1), a = Array.isArray(r) ? r.length > 0 && r.every((e) => i.some((t) => t.value === e)) : r !== "" && i.some((e) => e.value === r), o = Array.isArray(n) ? n.length > 0 && n.every((e) => i.some((t) => t.value === e)) : n !== "" && i.some((e) => e.value === n);
 			(Array.isArray(n) && Array.isArray(this.value) ? JSON.stringify(n.sort()) !== JSON.stringify(this.value.sort()) : this.value !== n) && (a || o) && (this.value = n), t && t(e);
 		},
 		getCleanValue(e) {
@@ -1882,11 +1900,11 @@ var L = class {
 	for (let [e, r] of t) n[e] = r;
 	return n;
 }, V = ["multiple"];
-function H(t, i, a, o, s, c) {
+function H(t, r, i, a, o, s) {
 	return n(), e("select", {
 		multiple: t.multiple,
 		ref: "slim"
-	}, [r(t.$slots, "default")], 8, V);
+	}, null, 8, V);
 }
 //#endregion
 //#region src/slim-select/vue/index.ts

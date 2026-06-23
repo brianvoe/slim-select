@@ -38,6 +38,10 @@ and this project adheres to
 - Replaced dropdown position polling (`setInterval`) with `ResizeObserver` for absolute content
 - Option rows use `content-visibility: auto` to reduce layout cost for long lists
 - `store.filter()` supports read-only views without cloning; hot paths use live store references
+- Vue component requires the `data` prop; slot content for `<option>` children is no longer supported. Slot-based options caused Vue to patch the native `<select>` on re-renders, which re-triggered Slim Select's mutation observer and structure sync — risking redundant work and v-model feedback loops. Pass options via `:data` instead (same shape as core SlimSelect).
+- Removed Vue `updated()` hook; v-model sync is handled by the `modelValue` watcher and initial `mounted` sync only
+- Vue `data` watcher skips `setData` when the prop structure is unchanged (field-wise compare), avoiding thrash when parents recreate arrays each render
+- Vue `data` watcher re-applies `modelValue` after `setData` so selection is preserved when options are replaced
 - Native option+selection mutations coalesce into a single structure sync
 - Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
 - Value chip removal uses CSS animation only (`.ss-value-out`)

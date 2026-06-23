@@ -4,6 +4,12 @@ import { nextTick, PropType } from 'vue'
 import SlimSelect, { Option, Events } from '@/slim-select'
 import SlimSelectVue from './vue.vue'
 
+const THREE_OPTIONS = [
+  { value: 'opt1', text: 'Option 1' },
+  { value: 'opt2', text: 'Option 2' },
+  { value: 'opt3', text: 'Option 3' }
+]
+
 describe('SlimSelect Vue Component', () => {
   let wrapper: VueWrapper<any>
   let consoleInfoSpy: any
@@ -26,13 +32,17 @@ describe('SlimSelect Vue Component', () => {
 
   describe('Basic Rendering', () => {
     test('renders a select element', () => {
-      wrapper = mount(SlimSelectVue)
+      wrapper = mount(SlimSelectVue, {
+        props: { data: [] }
+      })
       const select = wrapper.find('select')
       expect(select.exists()).toBe(true)
     })
 
     test('renders with single select by default', () => {
-      wrapper = mount(SlimSelectVue)
+      wrapper = mount(SlimSelectVue, {
+        props: { data: [] }
+      })
       const select = wrapper.find('select')
       expect(select.attributes('multiple')).toBeUndefined()
     })
@@ -40,83 +50,12 @@ describe('SlimSelect Vue Component', () => {
     test('renders with multiple attribute when multiple prop is true', () => {
       wrapper = mount(SlimSelectVue, {
         props: {
-          multiple: true
+          multiple: true,
+          data: []
         }
       })
       const select = wrapper.find('select')
       expect(select.attributes('multiple')).toBeDefined()
-    })
-  })
-
-  describe('Slot Content', () => {
-    test('renders slot content', () => {
-      wrapper = mount(SlimSelectVue, {
-        slots: {
-          default: `
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-          `
-        }
-      })
-
-      const options = wrapper.findAll('option')
-      expect(options).toHaveLength(2)
-      expect(options[0].text()).toBe('Option 1')
-      expect(options[1].text()).toBe('Option 2')
-    })
-
-    test('shows warning when both slot and data prop are provided', () => {
-      wrapper = mount(SlimSelectVue, {
-        props: {
-          data: [{ value: '1', text: 'Data Option' }]
-        },
-        slots: {
-          default: '<option value="2">Slot Option</option>'
-        }
-      })
-
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Both slot content and data prop are provided')
-      )
-    })
-
-    test('reactive slot content WITHOUT :selected attribute works with v-model', async () => {
-      // Test that v-model auto-syncs without needing :selected
-      const TestComponent = {
-        components: { SlimSelectVue },
-        template: `
-          <SlimSelectVue v-model="selected" multiple>
-            <option v-for="opt in options" :key="opt.value" :value="opt.value">
-              {{ opt.text }}
-            </option>
-          </SlimSelectVue>
-        `,
-        data() {
-          return {
-            selected: ['v1'] as string[],
-            options: [
-              { value: 'v1', text: 'Value 1' },
-              { value: 'v2', text: 'Value 2' },
-              { value: 'v3', text: 'Value 3' }
-            ]
-          }
-        }
-      }
-
-      const wrapper = mount(TestComponent)
-      await nextTick()
-
-      // Verify initial selection works without :selected
-      const slimComponent = wrapper.findComponent(SlimSelectVue)
-      const slim = (slimComponent.vm as any).slim as SlimSelect
-      expect(slim.getSelected()).toEqual(['v1'])
-
-      // Parent component updates selected
-      ;(wrapper.vm.selected as string[]) = ['v2', 'v3']
-      await nextTick()
-
-      // Verify SlimSelect reflects the change
-      expect(slim.getSelected()).toEqual(['v2', 'v3'])
     })
   })
 
@@ -252,6 +191,150 @@ describe('SlimSelect Vue Component', () => {
 
       expect(data).toHaveLength(3)
     })
+
+    test('skips setData when data prop is recreated with identical structure', async () => {
+      wrapper = mount(SlimSelectVue, {
+        props: {
+          data: [
+            { value: '1', text: 'Option 1' },
+            { value: '2', text: 'Option 2' }
+          ]
+        }
+      })
+
+      await nextTick()
+      const slim = (wrapper.vm as any).slim as SlimSelect
+      const setDataSpy = vi.spyOn(slim, 'setData')
+      setDataSpy.mockClear()
+
+      await wrapper.setProps({
+        data: [
+          { value: '1', text: 'Option 1' },
+          { value: '2', text: 'Option 2' }
+        ]
+      })
+      await nextTick()
+
+      expect(setDataSpy).not.toHaveBeenCalled()
+    })
+
+    test('calls setData when nested option fields change in place', async () => {
+      const ParentComponent = {
+        components: { SlimSelectVue },
+        template: `<SlimSelectVue :data="options" />`,
+        data() {
+          return {
+            options: [
+              { value: '1', text: 'Option 1' },
+              { value: '2', text: 'Option 2' }
+            ]
+          }
+        }
+      }
+
+      const parentWrapper = mount(ParentComponent)
+      await nextTick()
+
+      const slimComponent = parentWrapper.findComponent(SlimSelectVue)
+      const slim = (slimComponent.vm as any).slim as SlimSelect
+      const setDataSpy = vi.spyOn(slim, 'setData')
+      setDataSpy.mockClear()
+
+      ;(parentWrapper.vm as any).options[0].text = 'Updated Option 1'
+      await nextTick()
+
+      expect(setDataSpy).toHaveBeenCalledTimes(1)
+      expect(setDataSpy).toHaveBeenCalledWith(
+        (parentWrapper.vm as any).options
+      )
+      parentWrapper.unmount()
+    })
+
+    test('parent that recreates data array each render does not thrash setData', async () => {
+      const ParentComponent = {
+        components: { SlimSelectVue },
+        template: `<SlimSelectVue :data="options" />`,
+        computed: {
+          options() {
+            return [
+              { value: '1', text: 'Option 1' },
+              { value: '2', text: 'Option 2' }
+            ]
+          }
+        }
+      }
+
+      const parentWrapper = mount(ParentComponent)
+      await nextTick()
+
+      const slimComponent = parentWrapper.findComponent(SlimSelectVue)
+      const slim = (slimComponent.vm as any).slim as SlimSelect
+      const setDataSpy = vi.spyOn(slim, 'setData')
+      setDataSpy.mockClear()
+
+      await parentWrapper.vm.$forceUpdate()
+      await nextTick()
+      await parentWrapper.vm.$forceUpdate()
+      await nextTick()
+
+      expect(setDataSpy).not.toHaveBeenCalled()
+      parentWrapper.unmount()
+    })
+
+    test('re-syncs modelValue selection after data prop changes', async () => {
+      wrapper = mount(SlimSelectVue, {
+        props: {
+          modelValue: 'b',
+          data: [
+            { value: 'a', text: 'A' },
+            { value: 'b', text: 'B' }
+          ]
+        }
+      })
+
+      await nextTick()
+      const slim = (wrapper.vm as any).slim as SlimSelect
+      expect(slim.getSelected()).toEqual(['b'])
+
+      await wrapper.setProps({
+        data: [
+          { value: 'b', text: 'B updated' },
+          { value: 'c', text: 'C' }
+        ]
+      })
+      await nextTick()
+
+      expect(slim.getSelected()).toEqual(['b'])
+    })
+
+    test('re-syncs multiple modelValue after data prop changes', async () => {
+      wrapper = mount(SlimSelectVue, {
+        props: {
+          modelValue: ['b', 'c'],
+          multiple: true,
+          data: [
+            { value: 'a', text: 'A' },
+            { value: 'b', text: 'B' },
+            { value: 'c', text: 'C' }
+          ]
+        }
+      })
+
+      await nextTick()
+      const slim = (wrapper.vm as any).slim as SlimSelect
+      expect(slim.getSelected()).toEqual(['b', 'c'])
+
+      await wrapper.setProps({
+        data: [
+          { value: 'b', text: 'B updated' },
+          { value: 'c', text: 'C updated' },
+          { value: 'd', text: 'D' }
+        ]
+      })
+      await nextTick()
+
+      expect(slim.getSelected()).toEqual(['b', 'c'])
+    })
   })
 
   describe('Settings Prop', () => {
@@ -349,7 +432,8 @@ describe('SlimSelect Vue Component', () => {
     test('getCleanValue handles string values correctly', () => {
       wrapper = mount(SlimSelectVue, {
         props: {
-          multiple: false
+          multiple: false,
+          data: []
         }
       })
 
@@ -360,7 +444,8 @@ describe('SlimSelect Vue Component', () => {
     test('getCleanValue converts string to array for multiple select', () => {
       wrapper = mount(SlimSelectVue, {
         props: {
-          multiple: true
+          multiple: true,
+          data: []
         }
       })
 
@@ -371,7 +456,8 @@ describe('SlimSelect Vue Component', () => {
     test('getCleanValue converts array to string for single select', () => {
       wrapper = mount(SlimSelectVue, {
         props: {
-          multiple: false
+          multiple: false,
+          data: []
         }
       })
 
@@ -382,7 +468,8 @@ describe('SlimSelect Vue Component', () => {
     test('getCleanValue returns empty array for undefined value in multiple select', () => {
       wrapper = mount(SlimSelectVue, {
         props: {
-          multiple: true
+          multiple: true,
+          data: []
         }
       })
 
@@ -393,7 +480,8 @@ describe('SlimSelect Vue Component', () => {
     test('getCleanValue returns empty string for undefined value in single select', () => {
       wrapper = mount(SlimSelectVue, {
         props: {
-          multiple: false
+          multiple: false,
+          data: []
         }
       })
 
@@ -468,26 +556,36 @@ describe('SlimSelect Vue Component', () => {
   })
 
   describe('Reactivity Edge Cases', () => {
-    test('does not cause conflicts with v-once on slot', async () => {
-      // This test ensures v-once prevents reactivity issues
-      wrapper = mount(SlimSelectVue, {
-        slots: {
-          default: `
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-          `
+    test('reactive data with v-model syncs without selected on options', async () => {
+      const TestComponent = {
+        components: { SlimSelectVue },
+        template: `
+          <SlimSelectVue v-model="selected" multiple :data="options" />
+        `,
+        data() {
+          return {
+            selected: ['v1'] as string[],
+            options: [
+              { value: 'v1', text: 'Value 1' },
+              { value: 'v2', text: 'Value 2' },
+              { value: 'v3', text: 'Value 3' }
+            ]
+          }
         }
-      })
+      }
 
+      const testWrapper = mount(TestComponent)
       await nextTick()
 
-      // The slot should render only once
-      const initialOptions = wrapper.findAll('option')
-      expect(initialOptions).toHaveLength(2)
+      const slimComponent = testWrapper.findComponent(SlimSelectVue)
+      const slim = (slimComponent.vm as any).slim as SlimSelect
+      expect(slim.getSelected()).toEqual(['v1'])
 
-      // SlimSelect should be initialized without errors
-      const slim = (wrapper.vm as any).slim
-      expect(slim).toBeInstanceOf(SlimSelect)
+      ;(testWrapper.vm as any).selected = ['v2', 'v3']
+      await nextTick()
+
+      expect(slim.getSelected()).toEqual(['v2', 'v3'])
+      testWrapper.unmount()
     })
 
     test('data prop changes are reactive', async () => {
@@ -751,20 +849,16 @@ describe('SlimSelect Vue Component', () => {
       expect(data).toHaveLength(3)
     })
 
-    test('CustomFields use case: parent-child pattern with reactive slot content', async () => {
-      // Recreate the actual working pattern: parent passes value to child via v-model
+    test('CustomFields use case: parent-child pattern with reactive data prop', async () => {
       const ChildComponent = {
         components: { SlimSelectVue },
         template: `
           <SlimSelectVue
             v-model="value"
             multiple
+            :data="selectData"
             :events="{ afterChange: () => handleChange() }"
-          >
-            <option v-for="opt in fieldOptions" :key="opt.value" :value="opt.value">
-              {{ opt.name }}
-            </option>
-          </SlimSelectVue>
+          />
         `,
         props: {
           modelValue: { type: Array as PropType<string[]>, required: true },
@@ -772,6 +866,12 @@ describe('SlimSelect Vue Component', () => {
         },
         emits: ['update:modelValue'],
         computed: {
+          selectData(this: any) {
+            return this.fieldOptions.map((opt: { value: string; name: string }) => ({
+              value: opt.value,
+              text: opt.name
+            }))
+          },
           value: {
             get(this: any): string[] {
               return this.modelValue || []
@@ -832,22 +932,17 @@ describe('SlimSelect Vue Component', () => {
     })
   })
 
-  describe('Empty v-model with slot options', () => {
+  describe('Empty v-model with data prop', () => {
     test('should operate like a normal select with empty v-model and 3 options', async () => {
-      // Test scenario: SlimSelectVue with 3 options and v-model bound to empty string
-      // Should behave like a normal select - no option selected initially, can select options
       const TestComponent = {
         components: { SlimSelectVue },
         template: `
-          <SlimSelectVue v-model="selected">
-            <option value="opt1">Option 1</option>
-            <option value="opt2">Option 2</option>
-            <option value="opt3">Option 3</option>
-          </SlimSelectVue>
+          <SlimSelectVue v-model="selected" :data="options" />
         `,
         data() {
           return {
-            selected: '' as string
+            selected: '' as string,
+            options: THREE_OPTIONS
           }
         }
       }
@@ -932,15 +1027,12 @@ describe('SlimSelect Vue Component', () => {
       const TestComponent = {
         components: { SlimSelectVue },
         template: `
-          <SlimSelectVue v-model="selected">
-            <option value="opt1">Option 1</option>
-            <option value="opt2">Option 2</option>
-            <option value="opt3">Option 3</option>
-          </SlimSelectVue>
+          <SlimSelectVue v-model="selected" :data="options" />
         `,
         data() {
           return {
-            selected: 'banana' as string // Value that doesn't exist in options
+            selected: 'banana' as string,
+            options: THREE_OPTIONS
           }
         }
       }
@@ -982,15 +1074,12 @@ describe('SlimSelect Vue Component', () => {
       const TestComponent = {
         components: { SlimSelectVue },
         template: `
-          <SlimSelectVue v-model="selected">
-            <option value="opt1">Option 1</option>
-            <option value="opt2">Option 2</option>
-            <option value="opt3">Option 3</option>
-          </SlimSelectVue>
+          <SlimSelectVue v-model="selected" :data="options" />
         `,
         data() {
           return {
-            selected: 'opt1' as string
+            selected: 'opt1' as string,
+            options: THREE_OPTIONS
           }
         }
       }
@@ -1001,7 +1090,6 @@ describe('SlimSelect Vue Component', () => {
       const slimComponent = wrapper.findComponent(SlimSelectVue)
       const slim = (slimComponent.vm as any).slim as SlimSelect
 
-      // Verify initial valid selection
       expect((wrapper.vm as any).selected).toBe('opt1')
       expect(slim.getSelected()).toEqual(['opt1'])
 
@@ -1032,15 +1120,12 @@ describe('SlimSelect Vue Component', () => {
       const TestComponent = {
         components: { SlimSelectVue },
         template: `
-          <SlimSelectVue v-model="selected">
-            <option value="opt1">Option 1</option>
-            <option value="opt2">Option 2</option>
-            <option value="opt3">Option 3</option>
-          </SlimSelectVue>
+          <SlimSelectVue v-model="selected" :data="options" />
         `,
         data() {
           return {
-            selected: '' as string
+            selected: '' as string,
+            options: THREE_OPTIONS
           }
         }
       }
@@ -1051,7 +1136,6 @@ describe('SlimSelect Vue Component', () => {
       const slimComponent = wrapper.findComponent(SlimSelectVue)
       const slim = (slimComponent.vm as any).slim as SlimSelect
 
-      // Verify v-model is empty
       expect((wrapper.vm as any).selected).toBe('')
 
       // Verify placeholder was added
@@ -1074,15 +1158,12 @@ describe('SlimSelect Vue Component', () => {
       const TestComponent = {
         components: { SlimSelectVue },
         template: `
-          <SlimSelectVue v-model="selected" multiple>
-            <option value="opt1">Option 1</option>
-            <option value="opt2">Option 2</option>
-            <option value="opt3">Option 3</option>
-          </SlimSelectVue>
+          <SlimSelectVue v-model="selected" multiple :data="options" />
         `,
         data() {
           return {
-            selected: ['banana', 'apple'] as string[] // Values that don't exist in options
+            selected: ['banana', 'apple'] as string[],
+            options: THREE_OPTIONS
           }
         }
       }
