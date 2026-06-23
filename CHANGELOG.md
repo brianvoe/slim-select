@@ -32,6 +32,8 @@ and this project adheres to
 - Reopening with `keepSearch` re-runs the active search query
 - API search merges preserve selection without duplicating options that match by id or value
 - Search input is trimmed; whitespace-only input clears search and restores the catalog
+- Structure sync skip checks use field-wise data comparison instead of JSON.stringify
+- Moved `dataStructureEqual` and `selectedIdsEqual` into `helpers.ts`
 - Native option+selection mutations coalesce into a single structure sync
 - Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
 - Value chip removal uses CSS animation only (`.ss-value-out`)

@@ -1,7 +1,6 @@
 import { describe, expect, test, vi, beforeEach } from 'vitest'
 import SyncCoordinator, {
   resolveSelectedIds,
-  selectedIdsEqual,
   shouldSkipStructureUpdate
 } from './sync'
 import Store, { Option } from './store'
@@ -11,11 +10,6 @@ import Settings from './settings'
 import CssClasses from './classes'
 
 describe('sync helpers', () => {
-  test('selectedIdsEqual compares sorted ids', () => {
-    expect(selectedIdsEqual(['b', 'a'], ['a', 'b'])).toBe(true)
-    expect(selectedIdsEqual(['a'], ['b'])).toBe(false)
-  })
-
   test('shouldSkipStructureUpdate when data unchanged', () => {
     const store = new Store('single', [{ text: 'One', value: '1' }])
     const data = store.getData()

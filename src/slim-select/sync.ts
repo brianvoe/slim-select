@@ -11,10 +11,10 @@
  * render callbacks → enqueue(ui).
  */
 
-import { isEqual } from './helpers'
 import Render from './render'
 import Select from './select'
 import Store, { Optgroup, Option } from './store'
+import { dataStructureEqual, selectedIdsEqual } from './helpers'
 
 /** Where a change originated — affects batching and render behavior. */
 export type ChangeSource = 'native' | 'ui' | 'api'
@@ -56,22 +56,12 @@ export interface SyncDeps {
   onError?: (err: Error) => void
 }
 
-/** Compare selected id sets regardless of order (multi-select). */
-export function selectedIdsEqual(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) {
-    return false
-  }
-  const sortedA = [...a].sort()
-  const sortedB = [...b].sort()
-  return sortedA.every((id, i) => id === sortedB[i])
-}
-
 /** Skip structure sync when incoming data matches what's already in the store. */
 export function shouldSkipStructureUpdate(
   store: Store,
   data: (Partial<Option> | Partial<Optgroup>)[]
 ): boolean {
-  return isEqual(store.getData(), data)
+  return dataStructureEqual(store.getData(), data)
 }
 
 /**
@@ -247,7 +237,7 @@ export default class SyncCoordinator {
     render.renderValues()
     render.renderOptions(dataClean)
 
-    if (events.afterChange && !isEqual(selected, store.getSelected())) {
+    if (events.afterChange && !selectedIdsEqual(selected, store.getSelected())) {
       events.afterChange(store.getSelectedOptions())
     }
   }
@@ -292,7 +282,7 @@ export default class SyncCoordinator {
     if (
       runAfterChange &&
       events.afterChange &&
-      !isEqual(selected, store.getSelected())
+      !selectedIdsEqual(selected, store.getSelected())
     ) {
       events.afterChange(store.getSelectedOptions())
     }
@@ -343,7 +333,7 @@ export default class SyncCoordinator {
     render.renderValues()
     render.renderOptions(data)
 
-    if (events.afterChange && !isEqual(selected, store.getSelected())) {
+    if (events.afterChange && !selectedIdsEqual(selected, store.getSelected())) {
       events.afterChange(store.getSelectedOptions())
     }
   }

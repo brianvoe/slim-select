@@ -1,7 +1,8 @@
 'use strict'
 
 import { describe, expect, test, vi } from 'vitest'
-import { hasClassInTree, debounce, isEqual, kebabCase } from './helpers'
+import { hasClassInTree, debounce, isEqual, kebabCase, dataStructureEqual, selectedIdsEqual } from './helpers'
+import { Optgroup, Option } from './store'
 
 describe('helpers module', () => {
   describe('hasClassInTree', () => {
@@ -141,6 +142,79 @@ describe('helpers module', () => {
       expect(
         isEqual({ a: 1, b: { c: 'asdf' } }, { a: 1, b: { c: 'asdf' } })
       ).toBe(true)
+    })
+  })
+
+  describe('selectedIdsEqual', () => {
+    test('compares sorted ids regardless of order', () => {
+      expect(selectedIdsEqual(['b', 'a'], ['a', 'b'])).toBe(true)
+      expect(selectedIdsEqual(['a'], ['b'])).toBe(false)
+      expect(selectedIdsEqual([], [])).toBe(true)
+      expect(selectedIdsEqual(['a'], ['a', 'b'])).toBe(false)
+    })
+  })
+
+  describe('dataStructureEqual', () => {
+    test('compares options and optgroups without JSON.stringify', () => {
+      const left = [
+        new Option({ id: '1', text: 'One', value: '1', selected: true }),
+        new Optgroup({
+          id: 'g1',
+          label: 'Group',
+          options: [{ id: '2', text: 'Two', value: '2', data: { foo: 'bar' } }]
+        })
+      ]
+      const right = [
+        { id: '1', text: 'One', value: '1', selected: true },
+        {
+          id: 'g1',
+          label: 'Group',
+          options: [{ id: '2', text: 'Two', value: '2', data: { foo: 'bar' } }]
+        }
+      ]
+
+      expect(dataStructureEqual(left, right)).toBe(true)
+      expect(
+        dataStructureEqual(left, [
+          { id: '1', text: 'One', value: '1', selected: false },
+          right[1]
+        ])
+      ).toBe(false)
+      expect(dataStructureEqual(left, left)).toBe(true)
+    })
+
+    test('detects length and item type mismatches', () => {
+      const options = [{ id: '1', text: 'One', value: '1' }]
+
+      expect(dataStructureEqual(options, options)).toBe(true)
+      expect(dataStructureEqual(options, [])).toBe(false)
+      expect(
+        dataStructureEqual(options, [{ label: 'Group', options: [] }])
+      ).toBe(false)
+    })
+
+    test('detects option id differences against partial data', () => {
+      expect(
+        dataStructureEqual(
+          [{ id: 'abc', text: 'One', value: '1' }],
+          [{ text: 'One', value: '1' }]
+        )
+      ).toBe(false)
+    })
+
+    test('matches isEqual for full option arrays', () => {
+      const a = Array.from({ length: 5 }, (_, i) =>
+        new Option({
+          id: `id-${i}`,
+          text: `Option ${i}`,
+          value: `value-${i}`,
+          selected: i === 0
+        })
+      )
+      const b = a.map((option) => ({ ...option }))
+
+      expect(dataStructureEqual(a, b)).toBe(true)
+      expect(isEqual(a, b)).toBe(true)
     })
   })
 
