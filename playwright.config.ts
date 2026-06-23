@@ -22,8 +22,9 @@ export default defineConfig({
   webServer: {
     command:
       'npm run build:library:js && npm run build:library:css && npx serve . -l 4174',
-    url: 'http://127.0.0.1:4174/e2e/index.html',
-    reuseExistingServer: !process.env.CI,
+    url: 'http://127.0.0.1:4174/e2e/',
+    // Always start our own server — reusing port 4174 can pick up an unrelated process
+    reuseExistingServer: false,
     timeout: 180000
   }
 })

@@ -18,7 +18,7 @@ export type E2EInstanceKey =
   | 'keyboard'
 
 export async function gotoFixture(page: Page): Promise<void> {
-  await page.goto('/e2e/index.html')
+  await page.goto('/e2e/')
   await page.waitForFunction(() => (window as any).e2e?.instances?.basic)
 }
 
