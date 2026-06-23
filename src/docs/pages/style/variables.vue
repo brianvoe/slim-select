@@ -111,6 +111,34 @@ export default defineComponent({
             }
           `
     },
+    randomSpacing(): { spacingS: string; spacingM: string; spacingL: string } {
+      const randomFrom = <T>(array: T[]): T =>
+        array[Math.floor(Math.random() * array.length)]
+
+      // Harmonious s/m/l triples — always ordered with sensible gaps
+      const spacingTriples: [number, number, number][] = [
+        [3, 5, 7],
+        [4, 6, 8],
+        [4, 6, 9],
+        [4, 7, 9],
+        [5, 7, 9],
+        [5, 7, 10],
+        [5, 8, 10],
+        [5, 8, 12],
+        [6, 8, 10],
+        [6, 9, 12],
+        [6, 10, 14]
+      ]
+
+      const [s, m, l] = randomFrom(spacingTriples)
+      const toPx = (n: number) => `${n}px`
+
+      return {
+        spacingS: toPx(s),
+        spacingM: toPx(m),
+        spacingL: toPx(l)
+      }
+    },
     randomizeVariables() {
       // Color randomizer
       const colors = [
@@ -138,9 +166,6 @@ export default defineComponent({
       const heights = ['25px', '30px', '35px', '40px', '45px', '50px', '55px', '60px']
       const contentHeights = ['200px', '250px', '300px', '350px', '400px', '450px', '500px']
 
-      // Spacing randomizer
-      const spacingValues = ['3px', '4px', '5px', '6px', '7px', '8px', '9px', '10px', '12px', '15px']
-
       // Border radius randomizer
       const borderRadii = ['2px', '4px', '6px', '8px', '10px', '12px', '15px', '20px']
 
@@ -158,11 +183,13 @@ export default defineComponent({
       this.variables.borderRadius = randomFrom(borderRadii)
       this.variables.mainHeight = randomFrom(heights)
       this.variables.contentHeight = randomFrom(contentHeights)
-      this.variables.searchHeight = randomFrom(heights)
-      this.variables.optionHeight = randomFrom(['25px', '30px', '35px', '40px'])
-      this.variables.spacingL = randomFrom(spacingValues)
-      this.variables.spacingM = randomFrom(spacingValues)
-      this.variables.spacingS = randomFrom(spacingValues)
+      this.variables.searchHeight = this.variables.mainHeight
+      this.variables.optionHeight = this.variables.mainHeight
+
+      const spacing = this.randomSpacing()
+      this.variables.spacingS = spacing.spacingS
+      this.variables.spacingM = spacing.spacingM
+      this.variables.spacingL = spacing.spacingL
       this.variables.animationTiming = randomFrom(timings)
 
       // Update the CSS
