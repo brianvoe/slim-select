@@ -1233,6 +1233,41 @@ describe('render module', () => {
     })
   })
 
+  describe('updateOptionSelection', () => {
+    test('updates selected classes without rebuilding the list', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+      const list = render.content.list
+      const initialChildCount = list.children.length
+      const target = store.getDataOptions()[0]
+
+      store.setSelectedBy('id', [target.id])
+      render.updateOptionSelection()
+
+      expect(list.children.length).toBe(initialChildCount)
+      const optionEl = render.content.list.querySelector(
+        '[data-id="' + target.id + '"]'
+      ) as HTMLDivElement
+      expect(optionEl.classList.contains(render.classes.selected)).toBe(true)
+      expect(optionEl.getAttribute('aria-selected')).toBe('true')
+    })
+
+    test('hides selected options when hideSelected is enabled', () => {
+      const store = render.store
+      render.settings.hideSelected = true
+      render.renderOptions(store.getData())
+      const target = store.getDataOptions()[0]
+
+      store.setSelectedBy('id', [target.id])
+      render.updateOptionSelection()
+
+      const optionEl = render.content.list.querySelector(
+        '[data-id="' + target.id + '"]'
+      ) as HTMLDivElement
+      expect(optionEl.classList.contains(render.classes.hide)).toBe(true)
+    })
+  })
+
   describe('option', () => {
     test('add inline styles correctly', () => {
       const option = render.option(

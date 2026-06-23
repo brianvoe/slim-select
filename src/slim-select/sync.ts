@@ -278,6 +278,8 @@ export default class SyncCoordinator {
         // Native/API path: just refresh the option list from store (no search re-fetch)
         render.renderOptions(store.getData())
       }
+    } else if (render.canUpdateOptionSelectionInPlace()) {
+      render.updateOptionSelection()
     } else {
       render.renderOptions(store.getData())
     }

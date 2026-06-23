@@ -114,6 +114,43 @@ describe('SyncCoordinator', () => {
     expect(updateOptionsSpy).not.toHaveBeenCalled()
   })
 
+  test('selection-only update syncs option DOM in place when search is empty', () => {
+    const { coordinator, store, render } = createCoordinator()
+    render.renderOptions(store.getData())
+    const renderOptionsSpy = vi.spyOn(render, 'renderOptions')
+    const updateSpy = vi.spyOn(render, 'updateOptionSelection')
+    const ids = store.getDataOptions().map((o) => o.id)
+
+    coordinator.enqueue({
+      type: 'selection',
+      values: ids[1],
+      source: 'ui'
+    })
+    coordinator.flush()
+
+    expect(updateSpy).toHaveBeenCalled()
+    expect(renderOptionsSpy).not.toHaveBeenCalled()
+  })
+
+  test('selection with active search still renders options', () => {
+    const { coordinator, store, render } = createCoordinator()
+    render.renderOptions(store.getData())
+    render.content.search.input.value = 'Two'
+    const renderOptionsSpy = vi.spyOn(render, 'renderOptions')
+    const updateSpy = vi.spyOn(render, 'updateOptionSelection')
+    const ids = store.getDataOptions().map((o) => o.id)
+
+    coordinator.enqueue({
+      type: 'selection',
+      values: ids[1],
+      source: 'api'
+    })
+    coordinator.flush()
+
+    expect(renderOptionsSpy).toHaveBeenCalled()
+    expect(updateSpy).not.toHaveBeenCalled()
+  })
+
   test('skips no-op selection updates', () => {
     const { coordinator, store, render } = createCoordinator()
     const renderValuesSpy = vi.spyOn(render, 'renderValues')

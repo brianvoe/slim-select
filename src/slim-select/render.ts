@@ -1497,6 +1497,111 @@ export default class Render {
     )
   }
 
+  /** True when the open list already has options and search is not filtering. */
+  public canUpdateOptionSelectionInPlace(): boolean {
+    if (this.content.search.input.value.trim() !== '') {
+      return false
+    }
+
+    return (
+      this.content.list.querySelector(
+        '.' + this.classes.getFirst('option')
+      ) !== null
+    )
+  }
+
+  /** Sync selected/hidden state on existing option nodes without rebuilding the list. */
+  public updateOptionSelection(): void {
+    const selectedIds = new Set(this.store.getSelected())
+    const optionEls = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('option')
+    ) as NodeListOf<HTMLDivElement>
+
+    let lastSelectedEl: HTMLDivElement | null = null
+
+    for (const optionEl of optionEls) {
+      const id = optionEl.dataset.id
+      if (!id) {
+        continue
+      }
+
+      const storeOption = this.store.getOptionByID(id)
+      if (!storeOption) {
+        continue
+      }
+
+      const isSelected = selectedIds.has(id)
+
+      if (isSelected) {
+        this.addClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'true')
+        lastSelectedEl = optionEl
+      } else {
+        this.removeClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'false')
+      }
+
+      if (this.settings.hideSelected) {
+        if (isSelected) {
+          this.addClasses(optionEl, this.classes.hide)
+        } else {
+          this.removeClasses(optionEl, this.classes.hide)
+          if (!storeOption.display) {
+            this.addClasses(optionEl, this.classes.hide)
+          }
+        }
+      }
+    }
+
+    if (!this.settings.isMultiple && lastSelectedEl) {
+      this.main.main.setAttribute('aria-activedescendant', lastSelectedEl.id)
+    } else if (!this.settings.isMultiple && selectedIds.size === 0) {
+      this.main.main.removeAttribute('aria-activedescendant')
+    }
+
+    this.updateOptgroupSelectAllStates()
+  }
+
+  private updateOptgroupSelectAllStates(): void {
+    if (!this.settings.isMultiple) {
+      return
+    }
+
+    const selectedIds = new Set(this.store.getSelected())
+    const optgroups = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('optgroup')
+    )
+
+    for (const optgroupEl of optgroups) {
+      const selectAll = optgroupEl.querySelector(
+        '.' + this.classes.getFirst('optgroupSelectAll')
+      ) as HTMLDivElement | null
+
+      if (!selectAll) {
+        continue
+      }
+
+      const optionEls = optgroupEl.querySelectorAll(
+        '.' + this.classes.getFirst('option')
+      ) as NodeListOf<HTMLDivElement>
+
+      let allSelected = optionEls.length > 0
+      for (const optionEl of optionEls) {
+        const id = optionEl.dataset.id
+        if (!id || !selectedIds.has(id)) {
+          allSelected = false
+          break
+        }
+      }
+
+      if (allSelected) {
+        this.addClasses(selectAll, this.classes.selected)
+      } else {
+        this.removeClasses(selectAll, this.classes.selected)
+      }
+    }
+  }
+
   // Create option div element
   public option(option: Option): HTMLDivElement {
     // Add hidden placeholder
