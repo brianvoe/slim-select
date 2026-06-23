@@ -911,6 +911,155 @@ describe('store module', () => {
     })
   })
 
+  describe('preserveSelected merge', () => {
+    test('does not prepend when new data contains the same option id', () => {
+      const store = new Store('single', [
+        { text: 'A', value: 'a', id: 'id-a' }
+      ])
+      store.setSelectedBy('id', ['id-a'])
+
+      store.setData([{ text: 'A remote', value: 'a', id: 'id-a' }], true)
+
+      expect(store.getDataOptions()).toHaveLength(1)
+      expect(store.getSelected()).toEqual(['id-a'])
+    })
+
+    test('prepends selected option when it is missing from new data', () => {
+      const store = new Store('single', [
+        { text: 'A', value: 'a', id: 'id-a' },
+        { text: 'B', value: 'b', id: 'id-b' }
+      ])
+      store.setSelectedBy('id', ['id-a'])
+
+      store.setData([{ text: 'Remote', value: 'r1', id: 'id-r1' }], true)
+
+      const options = store.getDataOptions()
+      expect(options).toHaveLength(2)
+      expect(options[0].text).toBe('A')
+      expect(options[0].selected).toBe(true)
+      expect(store.getSelected()).toEqual(['id-a'])
+    })
+
+    test('matches selected in optgroup options by id without prepending', () => {
+      const store = new Store('single', [
+        { text: 'A', value: 'a', id: 'id-a' }
+      ])
+      store.setSelectedBy('id', ['id-a'])
+
+      store.setData(
+        [
+          {
+            label: 'Group',
+            options: [{ text: 'A remote', value: 'a', id: 'id-a' }]
+          }
+        ],
+        true
+      )
+
+      expect(store.getDataOptions()).toHaveLength(1)
+      expect(store.getSelected()).toEqual(['id-a'])
+    })
+
+    test('dedupes when new data returns same value with a different id', () => {
+      const store = new Store('single', [
+        { text: 'Eins', value: 'eins', id: 'id-selected' }
+      ])
+      store.setSelectedBy('id', ['id-selected'])
+
+      store.setData(
+        [{ text: 'Eins', value: 'eins', id: 'id-api-new' }],
+        true
+      )
+
+      expect(store.getSelectedValues()).toEqual(['eins'])
+      const einsOptions = store
+        .getDataOptions()
+        .filter((o) => o.value === 'eins')
+      expect(einsOptions).toHaveLength(1)
+      expect(einsOptions[0].selected).toBe(true)
+      expect(einsOptions[0].id).toBe('id-api-new')
+    })
+
+    test('multi dedupes when new data returns same values with different ids', () => {
+      const store = new Store('multiple', [
+        { text: 'Null', value: 'null', id: 'id-null' },
+        { text: 'Eins', value: 'eins', id: 'id-eins' }
+      ])
+      store.setSelectedBy('id', ['id-null', 'id-eins'])
+
+      store.setData(
+        [
+          { text: 'Null', value: 'null', id: 'id-null-api' },
+          { text: 'Eins', value: 'eins', id: 'id-eins-api' },
+          { text: 'Zwei', value: 'zwei', id: 'id-zwei' }
+        ],
+        true
+      )
+
+      const options = store.getDataOptions()
+      expect(options).toHaveLength(3)
+      expect(options.filter((o) => o.value === 'null')).toHaveLength(1)
+      expect(options.filter((o) => o.value === 'eins')).toHaveLength(1)
+      expect(store.getSelectedValues()).toEqual(['null', 'eins'])
+    })
+
+    test('multi prepends each selected option missing from new data', () => {
+      const store = new Store('multiple', [
+        { text: 'A', value: 'a', id: 'id-a' },
+        { text: 'B', value: 'b', id: 'id-b' },
+        { text: 'C', value: 'c', id: 'id-c' }
+      ])
+      store.setSelectedBy('id', ['id-a', 'id-c'])
+
+      store.setData(
+        [
+          { text: 'Remote 1', value: 'r1', id: 'id-r1' },
+          { text: 'Remote 2', value: 'r2', id: 'id-r2' }
+        ],
+        true
+      )
+
+      const options = store.getDataOptions()
+      expect(options).toHaveLength(4)
+      expect(options[0].id).toBe('id-a')
+      expect(options[1].id).toBe('id-c')
+      expect(store.getSelected()).toEqual(['id-a', 'id-c'])
+    })
+  })
+
+  describe('catalog', () => {
+    test('getCatalogData returns baseline after search data is applied', () => {
+      const store = new Store('single', [
+        { text: 'A', value: 'a' },
+        { text: 'B', value: 'b' }
+      ])
+      store.setSelectedBy('id', [], true)
+
+      expect(store.getCatalogData()).toHaveLength(2)
+
+      store.setData(
+        [
+          { text: 'Remote 1', value: 'r1' },
+          { text: 'Remote 2', value: 'r2' }
+        ],
+        true
+      )
+
+      expect(store.getData()).toHaveLength(2)
+      expect(store.getCatalogData()).toHaveLength(2)
+      expect((store.getCatalogData()[0] as Option).text).toBe('A')
+    })
+
+    test('snapshotCatalog updates baseline after setData', () => {
+      const store = new Store('single', [{ text: 'A', value: 'a' }])
+      store.setData([{ text: 'B', value: 'b' }])
+      store.snapshotCatalog()
+
+      expect(store.getCatalogData()).toHaveLength(1)
+      expect((store.getCatalogData()[0] as Option).text).toBe('B')
+    })
+  })
+
   describe('search', () => {
     test('search with term returns correct option', () => {
       const store = new Store('single', [

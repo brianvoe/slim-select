@@ -132,7 +132,7 @@ describe('SyncCoordinator', () => {
     expect(renderOptionsSpy).not.toHaveBeenCalled()
   })
 
-  test('selection with active search still renders options', () => {
+  test('selection with active search updates options in place', () => {
     const { coordinator, store, render } = createCoordinator()
     render.renderOptions(store.getData())
     render.content.search.input.value = 'Two'
@@ -147,8 +147,8 @@ describe('SyncCoordinator', () => {
     })
     coordinator.flush()
 
-    expect(renderOptionsSpy).toHaveBeenCalled()
-    expect(updateSpy).not.toHaveBeenCalled()
+    expect(updateSpy).toHaveBeenCalled()
+    expect(renderOptionsSpy).not.toHaveBeenCalled()
   })
 
   test('skips no-op selection updates', () => {

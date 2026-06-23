@@ -20,8 +20,8 @@ test.describe('search', () => {
     await search.fill('tw')
 
     await expect(option(page, 'basic', 'Two')).toBeVisible()
-    await expect(option(page, 'basic', 'One')).toHaveCount(0)
-    await expect(option(page, 'basic', 'Three')).toHaveCount(0)
+    await expect(option(page, 'basic', 'One')).toBeHidden()
+    await expect(option(page, 'basic', 'Three')).toBeHidden()
   })
 
   test('shows no results message when nothing matches', async ({ page }) => {

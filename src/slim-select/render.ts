@@ -69,6 +69,8 @@ export default class Render {
   // Used to compute the range selection
   private lastSelectedOption: Option | null
   private lastRenderedOptions: Option[]
+  private optionsListIsFullData = false
+  private lastSearchFilterTerm = ''
 
   // Timeout tracking for cleanup
 
@@ -1219,6 +1221,7 @@ export default class Render {
   }
 
   public renderError(error: string) {
+    this.optionsListIsFullData = false
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
@@ -1229,6 +1232,7 @@ export default class Render {
   }
 
   public renderSearching() {
+    this.optionsListIsFullData = false
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
@@ -1241,6 +1245,7 @@ export default class Render {
 
   // Take in data and add options to
   public renderOptions(data: (Option | Optgroup)[]): void {
+    this.lastSearchFilterTerm = ''
     this.lastRenderedOptions = data
       .map((o) =>
         o instanceof Option ? [o] : o.options.map((po) => new Option(po))
@@ -1252,6 +1257,7 @@ export default class Render {
 
     // If no results show no results text
     if (data.length === 0) {
+      this.optionsListIsFullData = false
       const noResults = document.createElement('div')
       this.addClasses(noResults, this.classes.search)
 
@@ -1489,11 +1495,219 @@ export default class Render {
 
     // Append fragment to list
     this.content.list.appendChild(fragment)
+    this.setOptionsListFullData(data)
     this.announce(
       this.settings.resultsText.replace(
         '{count}',
         String(this.lastRenderedOptions.length)
       )
+    )
+  }
+
+  /** True when the list DOM contains every store option (local search can show/hide in place). */
+  public canFilterOptionsInPlace(): boolean {
+    if (!this.optionsListIsFullData) {
+      return false
+    }
+
+    return (
+      this.content.list.querySelector(
+        '.' + this.classes.getFirst('option')
+      ) !== null
+    )
+  }
+
+  public resetSearchFilterState(): void {
+    this.lastSearchFilterTerm = ''
+  }
+
+  /** Filter visible options by search without rebuilding the list. */
+  public filterOptionsInPlace(
+    search: string,
+    searchFilter: (opt: Option, search: string) => boolean
+  ): void {
+    const searchTrim = search.trim()
+    if (searchTrim === this.lastSearchFilterTerm) {
+      return
+    }
+    this.lastSearchFilterTerm = searchTrim
+
+    const visibleOptions: Option[] = []
+    const optionEls = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('option')
+    ) as NodeListOf<HTMLDivElement>
+
+    for (const optionEl of optionEls) {
+      const id = optionEl.dataset.id
+      if (!id) {
+        continue
+      }
+
+      const storeOption = this.store.getOptionByID(id)
+      if (!storeOption) {
+        continue
+      }
+
+      const isPermanentlyHidden =
+        storeOption.placeholder ||
+        !storeOption.display ||
+        (storeOption.selected && this.settings.hideSelected)
+
+      const matchesSearch = searchFilter(storeOption, searchTrim)
+
+      if (isPermanentlyHidden || !matchesSearch) {
+        this.addClasses(optionEl, this.classes.hide)
+        this.removeClasses(optionEl, this.classes.highlighted)
+      } else {
+        this.removeClasses(optionEl, this.classes.hide)
+        this.setOptionElementContent(optionEl, storeOption, searchTrim)
+        visibleOptions.push(storeOption)
+      }
+
+      if (storeOption.selected) {
+        this.addClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'true')
+      } else {
+        this.removeClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'false')
+      }
+    }
+
+    this.lastRenderedOptions = visibleOptions
+    this.updateOptgroupVisibilityAfterSearch(searchTrim)
+
+    if (visibleOptions.length === 0) {
+      this.updateSearchResultsMessage(0, searchTrim)
+    } else {
+      this.removeListSearchMessage()
+      this.announce(
+        this.settings.resultsText.replace(
+          '{count}',
+          String(visibleOptions.length)
+        )
+      )
+    }
+
+    this.updateOptgroupSelectAllStates()
+  }
+
+  private setOptionsListFullData(data: (Option | Optgroup)[]): void {
+    const storeOptions = this.store.getDataOptions()
+    const renderedOptions = data
+      .map((o) =>
+        o instanceof Option ? [o] : o.options.map((po) => new Option(po))
+      )
+      .flat()
+
+    if (renderedOptions.length !== storeOptions.length) {
+      this.optionsListIsFullData = false
+      return
+    }
+
+    const storeIds = new Set(storeOptions.map((o) => o.id))
+    this.optionsListIsFullData = renderedOptions.every((o) =>
+      storeIds.has(o.id)
+    )
+  }
+
+  private updateOptgroupVisibilityAfterSearch(searchTrim: string): void {
+    const optgroups = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('optgroup')
+    )
+
+    for (const optgroupEl of optgroups) {
+      const optionEls = optgroupEl.querySelectorAll(
+        '.' + this.classes.getFirst('option')
+      ) as NodeListOf<HTMLDivElement>
+
+      let hasVisibleOption = false
+      for (const optionEl of optionEls) {
+        if (!optionEl.classList.contains(this.classes.getFirst('hide'))) {
+          hasVisibleOption = true
+          break
+        }
+      }
+
+      if (!hasVisibleOption) {
+        this.addClasses(optgroupEl as HTMLDivElement, this.classes.hide)
+        continue
+      }
+
+      this.removeClasses(optgroupEl as HTMLDivElement, this.classes.hide)
+
+      if (searchTrim !== '') {
+        this.removeClasses(optgroupEl as HTMLDivElement, this.classes.close)
+        this.addClasses(optgroupEl as HTMLDivElement, this.classes.mainOpen)
+      }
+    }
+  }
+
+  private updateSearchResultsMessage(
+    visibleCount: number,
+    searchTrim: string
+  ): void {
+    this.removeListSearchMessage()
+
+    if (visibleCount > 0) {
+      return
+    }
+
+    const noResults = document.createElement('div')
+    this.addClasses(noResults, this.classes.search)
+
+    if (this.callbacks.addable) {
+      const addableMessage = this.settings.addableText.replace(
+        '{value}',
+        searchTrim
+      )
+      noResults.innerHTML = addableMessage
+      this.announce(addableMessage)
+    } else {
+      noResults.innerHTML = this.settings.searchText
+      this.announce(this.settings.searchText)
+    }
+
+    this.content.list.appendChild(noResults)
+  }
+
+  private removeListSearchMessage(): void {
+    const messages = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('search')
+    )
+    messages.forEach((message) => message.remove())
+  }
+
+  private setOptionElementContent(
+    optionEl: HTMLDivElement,
+    option: Option,
+    search: string
+  ): void {
+    const searchTrim = search.trim()
+    if (this.settings.searchHighlight && searchTrim !== '') {
+      optionEl.innerHTML = this.highlightText(
+        option.html !== '' ? option.html : option.text,
+        searchTrim,
+        this.classes.searchHighlighter
+      )
+    } else if (option.html !== '') {
+      optionEl.innerHTML = option.html
+    } else {
+      optionEl.textContent = option.text
+    }
+
+    if (this.settings.showOptionTooltips && optionEl.textContent) {
+      optionEl.setAttribute('title', optionEl.textContent)
+    } else {
+      optionEl.removeAttribute('title')
+    }
+  }
+
+  /** True when option nodes exist in the list (selection can sync without re-searching). */
+  public hasRenderedOptions(): boolean {
+    return (
+      this.content.list.querySelector(
+        '.' + this.classes.getFirst('option')
+      ) !== null
     )
   }
 
@@ -1503,11 +1717,7 @@ export default class Render {
       return false
     }
 
-    return (
-      this.content.list.querySelector(
-        '.' + this.classes.getFirst('option')
-      ) !== null
-    )
+    return this.hasRenderedOptions()
   }
 
   /** Sync selected/hidden state on existing option nodes without rebuilding the list. */
@@ -1628,25 +1838,11 @@ export default class Render {
     }
 
     // Set option content
-    if (
-      this.settings.searchHighlight &&
-      this.content.search.input.value.trim() !== ''
-    ) {
-      optionEl.innerHTML = this.highlightText(
-        option.html !== '' ? option.html : option.text,
-        this.content.search.input.value,
-        this.classes.searchHighlighter
-      )
-    } else if (option.html !== '') {
-      optionEl.innerHTML = option.html
-    } else {
-      optionEl.textContent = option.text
-    }
-
-    // Set title attribute
-    if (this.settings.showOptionTooltips && optionEl.textContent) {
-      optionEl.setAttribute('title', optionEl.textContent)
-    }
+    this.setOptionElementContent(
+      optionEl,
+      option,
+      this.content.search.input.value
+    )
 
     // If option is disabled
     if (!option.display) {

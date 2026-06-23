@@ -177,10 +177,19 @@ new SlimSelect({
   select: '#selectElement',
 
   events: {
-    // Custom search function - return Promise or data array
-    search: (searchValue: string, currentData: (Option | Optgroup)[]) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[],
+    // Remote/API search — return Promise or data array to show while searching
+    // searchValue: current input text
+    // selected: currently selected Option[] (exclude from API results, etc.)
+    // catalog: baseline option list restored when search clears (not getData() during API search)
+    search: (
+      searchValue: string,
+      selected: Option[],
+      catalog?: (Option | Optgroup)[]
+    ) =>
+      Promise<(Partial<Option> | Partial<Optgroup>)[]> |
+      (Partial<Option> | Partial<Optgroup>)[],
 
-    // Filter function for search - return true to show option
+    // Local search filter — return true to show option (used when events.search is not set)
     searchFilter: (option: Option, search: string) => boolean,
 
     // Allow user to add options - return new option or error

@@ -16,14 +16,32 @@ and this project adheres to
 - Playwright smoke tests for open/close and native mutation sync
 - Expanded Playwright E2E suite (selection, search, keyboard, sync API, accessibility)
 - Characterization tests for sync engine and lifecycle races
+- Integration tests for API search error recovery, hideSelected, and addable + catalog
+- `prefers-reduced-motion` support for value removal and content panel transitions
 
 ### Changed
 
+- `events.search` second argument is typed as selected options (`Option[]`); optional third argument passes the catalog baseline (`getCatalogData()`)
+- Documentation updated for `events.search` callback parameters (`searchValue`, `selected`, `catalog`)
 - Mutation classification extracted to `mutations.ts`
 - Global window/document listeners extracted to `events.ts`
-- Selection-only updates use lightweight native `setSelectedByValue` instead of full DOM rebuilds
+- Selection-only updates use lightweight native `setSelectedByValue` instead of full native `<select>` rebuilds
+- Selection-only updates sync existing dropdown option nodes instead of rebuilding the full option list
+- Local search filters existing option nodes in place instead of rebuilding the list on each keystroke
+- API search results are temporary — clearing search restores the catalog baseline while preserving selection
+- Reopening with `keepSearch` re-runs the active search query
+- API search merges preserve selection without duplicating options that match by id or value
+- Search input is trimmed; whitespace-only input clears search and restores the catalog
 - Native option+selection mutations coalesce into a single structure sync
+- Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
+- Value chip removal uses CSS animation only (`.ss-value-out`)
+- Open/close waits for content panel opacity and transform transitions, with cleanup on cancel
+
+### Fixed
+
+- Adding an option during API search updates the catalog baseline instead of replacing it with search overlay data
 - Fixed stale lifecycle callbacks overwriting `isOpen` after `closeOnSelect`
+- Fixed Playwright E2E webServer health check failing on `/e2e/index.html` redirect
 
 ## [3.6.1] - 2026-06-12
 

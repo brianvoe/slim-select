@@ -26,7 +26,8 @@ export interface Config {
 export interface Events {
   search?: (
     searchValue: string,
-    currentData: (Option | Optgroup)[]
+    selected: Option[],
+    catalog?: (Option | Optgroup)[]
   ) =>
     | Promise<(Partial<Option> | Partial<Optgroup>)[]>
     | (Partial<Option> | Partial<Optgroup>)[]
@@ -62,6 +63,8 @@ export default class SlimSelect {
   public sync!: SyncCoordinator
   public lifecycle!: Lifecycle
   private globalEvents!: GlobalEvents
+  /** Invalidates in-flight API search responses when the query changes or clears. */
+  private searchGeneration = 0
 
   // Events
   public events = {
@@ -454,6 +457,11 @@ export default class SlimSelect {
         500
       )
     }
+
+    const searchValue = this.render.content.search.input.value.trim()
+    if (searchValue !== '') {
+      this.search(searchValue)
+    }
   }
 
   public close(eventType: string | null = null): void {
@@ -473,6 +481,7 @@ export default class SlimSelect {
       !this.settings.keepSearch &&
       this.render.content.search.input.value !== ''
     ) {
+      this.sync.flush()
       this.search('') // Clear search
     }
 
@@ -500,68 +509,106 @@ export default class SlimSelect {
 
   // Take in string value and search current options
   public search(value: string): void {
-    // If the passed in value is not the same as the search input value
-    // then lets update the search input value
-    if (this.render.content.search.input.value !== value) {
-      this.render.content.search.input.value = value
+    const searchValue = value.trim()
+
+    if (this.render.content.search.input.value !== searchValue) {
+      this.render.content.search.input.value = searchValue
     }
 
-    // If value is empty then render all options
-    if (value === '') {
-      this.render.renderOptions(this.store.getData())
+    if (searchValue === '') {
+      this.clearSearch()
       return
     }
 
-    // If no search event run regular search
-    if (!this.events.search) {
-      // If value is empty then render all options
-      const searchResults =
-        value === ''
-          ? this.store.getData()
-          : this.store.search(value, this.events.searchFilter!)
-      this.render.renderOptions(searchResults)
+    if (this.events.search) {
+      this.runApiSearch(searchValue)
       return
     }
 
-    // Search event exists so lets render the searching text
+    this.runLocalSearch(searchValue)
+  }
+
+  private clearSearch(): void {
+    this.searchGeneration++
+
+    if (
+      !this.events.search &&
+      this.render.canFilterOptionsInPlace()
+    ) {
+      this.render.filterOptionsInPlace('', this.events.searchFilter!)
+      this.render.resetSearchFilterState()
+      return
+    }
+
+    this.render.resetSearchFilterState()
+    this.sync.enqueue({
+      type: 'structure',
+      data: this.store.getCatalogData(),
+      source: 'api',
+      preserveSelection: true
+    })
+  }
+
+  private runLocalSearch(value: string): void {
+    if (this.render.canFilterOptionsInPlace()) {
+      this.render.filterOptionsInPlace(value, this.events.searchFilter!)
+      return
+    }
+
+    const searchResults = this.store.search(value, this.events.searchFilter!)
+    this.render.renderOptions(searchResults)
+  }
+
+  private runApiSearch(value: string): void {
+    const generation = ++this.searchGeneration
     this.render.renderSearching()
 
-    // Based upon the search event deal with the response
-    const searchResp = this.events.search(
+    const searchResp = this.events.search!(
       value,
-      this.store.getSelectedOptions()
+      this.store.getSelectedOptions(),
+      this.store.getCatalogData()
     )
 
-    // If the search event returns a promise
+    const applyResults = (
+      data: (Partial<Option> | Partial<Optgroup>)[]
+    ): void => {
+      if (generation !== this.searchGeneration) {
+        return
+      }
+      if (this.render.content.search.input.value.trim() !== value) {
+        return
+      }
+
+      this.sync.enqueue({
+        type: 'structure',
+        data,
+        source: 'api',
+        preserveSelection: true,
+        isSearchResult: true
+      })
+    }
+
     if (searchResp instanceof Promise) {
       searchResp
-        .then((data: (Partial<Option> | Partial<Optgroup>)[]) => {
-          this.sync.enqueue({
-            type: 'structure',
-            data,
-            source: 'api',
-            preserveSelection: true
-          })
-        })
+        .then(applyResults)
         .catch((err: Error | string) => {
-          // Update the render with error
+          if (generation !== this.searchGeneration) {
+            return
+          }
           this.render.renderError(typeof err === 'string' ? err : err.message)
         })
 
       return
-    } else if (Array.isArray(searchResp)) {
-      this.sync.enqueue({
-        type: 'structure',
-        data: searchResp,
-        source: 'api',
-        preserveSelection: true
-      })
-    } else {
-      // Update the render with error
-      this.render.renderError(
-        'Search event must return a promise or an array of data'
-      )
     }
+
+    if (Array.isArray(searchResp)) {
+      applyResults(searchResp)
+      return
+    }
+
+    this.render.renderError(
+      'Search event must return a promise or an array of data'
+    )
   }
 
   public destroy(): void {

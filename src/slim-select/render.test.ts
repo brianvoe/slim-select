@@ -1233,6 +1233,51 @@ describe('render module', () => {
     })
   })
 
+  describe('filterOptionsInPlace', () => {
+    test('filters options without rebuilding the list', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+      const list = render.content.list
+      const initialChildCount = list.children.length
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(list.children.length).toBe(initialChildCount)
+      expect(render.getOptions(true, true, true)).toHaveLength(1)
+      expect(render.getOptions(true, true, true)[0].textContent).toBe('test1')
+    })
+
+    test('shows no results message when nothing matches', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+
+      render.filterOptionsInPlace('nomatch', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(render.content.list.querySelector('.ss-search')).toBeTruthy()
+      expect(render.getOptions(true, true, true)).toHaveLength(0)
+    })
+
+    test('skips work when search term is unchanged', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+      const htmlAfterFilter = render.content.list.innerHTML
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(render.content.list.innerHTML).toBe(htmlAfterFilter)
+    })
+  })
+
   describe('updateOptionSelection', () => {
     test('updates selected classes without rebuilding the list', () => {
       const store = render.store

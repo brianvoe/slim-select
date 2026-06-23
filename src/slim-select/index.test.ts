@@ -1,6 +1,6 @@
 'use strict'
 
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi, type Mock } from 'vitest'
 import SlimSelect from '@/slim-select'
 
 /** Destroy every SlimSelect still attached to a select in the document. */
@@ -442,14 +442,16 @@ describe('SlimSelect Module', () => {
 
   describe('Search State Regression Tests', () => {
     let slim: SlimSelect
-    let searchMock: (searchValue: string, currentData: any[]) => any[]
+    let searchMock: Mock<
+      (searchValue: string, selected: any[], catalog?: any[]) => any[]
+    >
 
     beforeEach(() => {
+      destroyAllSlimSelects()
       document.body.innerHTML = '<select id="searchTest"></select>'
 
-      searchMock = vi
-        .fn()
-        .mockImplementation((searchValue: string, currentData: any[]) => {
+      searchMock = vi.fn(
+        (searchValue: string, selected: any[], catalog?: any[]) => {
           // Mock search results based on search value
           if (searchValue.length >= 2) {
             return [
@@ -467,7 +469,8 @@ describe('SlimSelect Module', () => {
             ]
           }
           return []
-        }) as typeof searchMock
+        }
+      )
 
       slim = new SlimSelect({
         select: '#searchTest',
@@ -481,27 +484,53 @@ describe('SlimSelect Module', () => {
       })
     })
 
-    test('should maintain search results when reopening dropdown', () => {
-      // 1. Open dropdown - should show static options [A, B]
+    test('should restore catalog when search is cleared on close', () => {
       slim.open()
       let options = document.querySelectorAll('.ss-option')
       expect(options).toHaveLength(2)
-      expect(options[0].textContent).toBe('A')
-      expect(options[1].textContent).toBe('B')
-      slim.close()
 
-      // 2. Search - should update store data with search results
       slim.search('te')
       options = document.querySelectorAll('.ss-option')
-      // Should have search results (11) - static options are replaced
       expect(options.length).toBeGreaterThanOrEqual(11)
 
-      // 3. Close and reopen - search results persist in store
       slim.close()
       slim.open()
       options = document.querySelectorAll('.ss-option')
-      // Store data should still contain search results
-      expect(options.length).toBeGreaterThanOrEqual(11)
+      expect(options).toHaveLength(2)
+      expect(options[0].textContent).toBe('A')
+      expect(options[1].textContent).toBe('B')
+    })
+
+    test('should re-run API search on reopen when keepSearch is true', () => {
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        settings: {
+          keepSearch: true
+        },
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(
+        11
+      )
+
+      slim.close()
+      expect(slim.render.content.search.input.value).toBe('te')
+
+      slim.open()
+      expect(searchMock).toHaveBeenCalledTimes(2)
+      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(
+        11
+      )
     })
 
     test('should clear search input when closing dropdown', async () => {
@@ -553,52 +582,7 @@ describe('SlimSelect Module', () => {
       expect(slimWithKeepSearch.render.content.search.input.value).toBe('test')
     })
 
-    test('should persist search results in store across close/open cycles', () => {
-      // Search for something
-      slim.search('te')
-
-      // Search results are now in the store
-      let options = document.querySelectorAll('.ss-option')
-      expect(options.length).toBeGreaterThanOrEqual(11)
-
-      // Close and reopen - store data persists
-      slim.close()
-      slim.open()
-      options = document.querySelectorAll('.ss-option')
-      expect(options.length).toBeGreaterThanOrEqual(11) // Store data maintained
-
-      slim.close()
-      slim.open()
-      options = document.querySelectorAll('.ss-option')
-      expect(options.length).toBeGreaterThanOrEqual(11) // Still maintained after multiple cycles
-    })
-
-    test('should handle selection from search results correctly', () => {
-      // Search for options
-      slim.search('te')
-
-      // Select first search result (should be from search results)
-      const options = document.querySelectorAll('.ss-option')
-      options[0].dispatchEvent(new MouseEvent('click'))
-
-      // Check that an option is selected
-      const selected = slim.getSelected()
-      expect(selected.length).toBe(1)
-
-      // Close and reopen
-      slim.close()
-      slim.open()
-
-      // Should still have search results in store
-      const reopenedOptions = document.querySelectorAll('.ss-option')
-      expect(reopenedOptions.length).toBeGreaterThanOrEqual(11)
-
-      // Selected value should be preserved
-      expect(slim.getSelected()).toEqual(selected)
-    })
-
-    test('should handle multiple selections from search results', () => {
-      // Configure for multi-select
+    test('should persist API search results while keepSearch is enabled', () => {
       slim.destroy()
       slim = new SlimSelect({
         select: '#searchTest',
@@ -607,74 +591,115 @@ describe('SlimSelect Module', () => {
           { value: 'b', text: 'B' }
         ],
         settings: {
-          isMultiple: true
+          keepSearch: true
         },
         events: {
           search: searchMock
         }
       })
 
-      // Search for options
-      slim.search('te')
-
-      // Select first two search results (Null, Eins) using Cmd+Click
-      const options = document.querySelectorAll('.ss-option')
-      options[0].dispatchEvent(new MouseEvent('click', { metaKey: true })) // Cmd+Click to keep dropdown open
-      options[1].dispatchEvent(new MouseEvent('click', { metaKey: true })) // Cmd+Click to keep dropdown open
-
-      // Note: Search results are temporary and not added to the store
-      // So the selection won't persist in the store, but the search state should be maintained
-
-      // Close and reopen
-      slim.close()
-      slim.open()
-
-      // Should still show search results (search state maintained)
-      const reopenedOptions = document.querySelectorAll('.ss-option')
-      // Multi-select may have additional options like deselect all, so we check for at least 11
-      expect(reopenedOptions.length).toBeGreaterThanOrEqual(11)
-
-      // Search results are maintained but selections from search results don't persist in store
-      // This is expected behavior - search results are temporary
-    })
-
-    test('should handle new search after reopening', () => {
-      // Initial search
       slim.search('te')
       let options = document.querySelectorAll('.ss-option')
       expect(options.length).toBeGreaterThanOrEqual(11)
 
-      // Close and reopen
+      slim.close()
+      slim.open()
+      options = document.querySelectorAll('.ss-option')
+      expect(options.length).toBeGreaterThanOrEqual(11)
+    })
+
+    test('should handle selection from search results correctly', () => {
+      slim.open()
+      slim.search('te')
+
+      const options = document.querySelectorAll('.ss-option')
+      options[0].dispatchEvent(new MouseEvent('click'))
+
+      const selected = slim.getSelected()
+      expect(selected.length).toBe(1)
+
       slim.close()
       slim.open()
 
-      // Should still have previous search results in store
+      const reopenedOptions = document.querySelectorAll('.ss-option')
+      expect(reopenedOptions.length).toBeGreaterThanOrEqual(2)
+      expect(slim.getSelected()).toEqual(selected)
+    })
+
+    test('should handle multiple selections from search results', () => {
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        settings: {
+          isMultiple: true,
+          keepSearch: true
+        },
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+
+      const options = document.querySelectorAll('.ss-option')
+      options[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+      options[1].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+
+      slim.close()
+      slim.open()
+
+      const reopenedOptions = document.querySelectorAll('.ss-option')
+      expect(reopenedOptions.length).toBeGreaterThanOrEqual(11)
+    })
+
+    test('should handle new search after reopening', () => {
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        settings: {
+          keepSearch: true
+        },
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+      let options = document.querySelectorAll('.ss-option')
+      expect(options.length).toBeGreaterThanOrEqual(11)
+
+      slim.close()
+      slim.open()
       options = document.querySelectorAll('.ss-option')
       expect(options.length).toBeGreaterThanOrEqual(11)
 
-      // Perform new search - this updates the store with new results
       slim.search('ei')
       options = document.querySelectorAll('.ss-option')
-
-      // Should show new search results
       expect(options.length).toBeGreaterThanOrEqual(11)
     })
 
     test('should handle search with no results correctly', () => {
-      // Search for something that returns no results
+      slim.open()
       slim.search('xyz')
 
-      // Should show no results message (searchText)
       const noResults = document.querySelector('.ss-search')
       expect(noResults).toBeTruthy()
 
-      // Close and reopen
       slim.close()
       slim.open()
 
-      // Should still show no results (search state maintained)
-      const stillNoResults = document.querySelector('.ss-search')
-      expect(stillNoResults).toBeTruthy()
+      const options = document.querySelectorAll('.ss-option')
+      expect(options).toHaveLength(2)
     })
 
     test('should handle async search results correctly', async () => {
@@ -697,6 +722,7 @@ describe('SlimSelect Module', () => {
       })
 
       // Trigger async search
+      slim.open()
       slim.search('async')
 
       // Wait for async results
@@ -714,17 +740,11 @@ describe('SlimSelect Module', () => {
       expect(asyncOptions[0].textContent).toBe('Async Result 1')
       expect(asyncOptions[1].textContent).toBe('Async Result 2')
 
-      // Close and reopen
       slim.close()
       slim.open()
 
-      // Should still show async search results
       options = document.querySelectorAll('.ss-option')
-      const reopenedAsyncOptions = Array.from(options).filter((option) =>
-        option.textContent?.includes('Async Result')
-      )
-      expect(reopenedAsyncOptions).toHaveLength(2)
-      expect(reopenedAsyncOptions[0].textContent).toBe('Async Result 1')
+      expect(options).toHaveLength(2)
     })
 
     test('issue #671: first search result is selectable when allowDeselect and no prior selection (single select)', async () => {
@@ -759,24 +779,425 @@ describe('SlimSelect Module', () => {
       expect(slimFirst.getSelected()).toEqual(['first'])
     })
 
-    test('should update store data with search results', () => {
-      // Test that search updates the store
+    test('API search select then search again keeps selection without duplicates', () => {
+      slim.open()
       slim.search('te')
-      expect(searchMock).toHaveBeenCalledWith('te', expect.any(Array))
+
+      const nullOption = Array.from(
+        document.querySelectorAll('.ss-option')
+      ).find((el) => el.textContent?.trim() === 'Null')
+      expect(nullOption).toBeTruthy()
+      nullOption!.dispatchEvent(new MouseEvent('click'))
+      expect(slim.getSelected()).toEqual(['null'])
+
+      slim.search('ei')
+
+      const nullLabels = Array.from(
+        document.querySelectorAll('.ss-option')
+      ).filter((el) => el.textContent?.trim() === 'Null')
+      expect(nullLabels.length).toBe(1)
+      expect(slim.getSelected()).toEqual(['null'])
+    })
+
+    test('should pass selected options and catalog baseline to search callback', () => {
+      slim.setSelected('a')
+      slim.open()
+      slim.search('te')
+
+      const [, selected, catalog] = searchMock.mock.calls[0]
+      expect(selected).toEqual(
+        expect.arrayContaining([expect.objectContaining({ value: 'a', text: 'A' })])
+      )
+      expect(catalog).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ value: 'a', text: 'A' }),
+          expect.objectContaining({ value: 'b', text: 'B' })
+        ])
+      )
+    })
+
+    test('should update store data with search results and restore catalog on clear', () => {
+      slim.open()
+      slim.search('te')
+      expect(searchMock).toHaveBeenCalledWith(
+        'te',
+        expect.any(Array),
+        expect.arrayContaining([
+          expect.objectContaining({ value: 'a', text: 'A' }),
+          expect.objectContaining({ value: 'b', text: 'B' })
+        ])
+      )
 
       let options = document.querySelectorAll('.ss-option')
       expect(options.length).toBeGreaterThanOrEqual(11)
 
-      // Search results are now in the store
       const storeData = slim.getData()
       expect(storeData.length).toBeGreaterThanOrEqual(11)
 
-      // Clear search - this now returns all current data in store
       slim.search('')
       options = document.querySelectorAll('.ss-option')
+      expect(options).toHaveLength(2)
+      expect(slim.getData()).toHaveLength(2)
+    })
 
-      // Empty search now shows all current data in store (search results)
-      expect(options.length).toBeGreaterThanOrEqual(11)
+    test('shows error message when async API search rejects', async () => {
+      const failingSearch = vi.fn().mockRejectedValue('Something went wrong')
+
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: failingSearch
+        }
+      })
+
+      slim.open()
+      slim.search('fail')
+
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      const error = document.querySelector('.ss-error')
+      expect(error).toBeTruthy()
+      expect(error?.textContent).toBe('Something went wrong')
+      expect(document.querySelectorAll('.ss-option')).toHaveLength(0)
+    })
+
+    test('recovers with new results after API search error', async () => {
+      const recoverySearch = vi
+        .fn()
+        .mockRejectedValueOnce('Temporary failure')
+        .mockResolvedValueOnce([{ value: 'recovered', text: 'Recovered' }])
+
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: recoverySearch
+        }
+      })
+
+      slim.open()
+      slim.search('bad')
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      expect(document.querySelector('.ss-error')?.textContent).toBe(
+        'Temporary failure'
+      )
+
+      slim.search('good')
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(document.querySelector('.ss-error')).toBeFalsy()
+      const recovered = Array.from(document.querySelectorAll('.ss-option')).find(
+        (el) => el.textContent?.trim() === 'Recovered'
+      )
+      expect(recovered).toBeTruthy()
+    })
+
+    test('ignores stale API search response when query changes', async () => {
+      let resolveSlow: (value: { value: string; text: string }[]) => void
+      const slowPromise = new Promise<{ value: string; text: string }[]>(
+        (resolve) => {
+          resolveSlow = resolve
+        }
+      )
+
+      const raceSearch = vi
+        .fn()
+        .mockImplementationOnce(() => slowPromise)
+        .mockImplementationOnce(() => [{ value: 'fast', text: 'Fast Result' }])
+
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: raceSearch
+        }
+      })
+
+      slim.open()
+      slim.search('slow')
+      slim.search('fast')
+
+      resolveSlow!([{ value: 'slow', text: 'Slow Result' }])
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      const labels = Array.from(document.querySelectorAll('.ss-option')).map(
+        (el) => el.textContent?.trim()
+      )
+      expect(labels).toContain('Fast Result')
+      expect(labels).not.toContain('Slow Result')
+    })
+
+    test('ignores stale API search error when query changes', async () => {
+      let rejectSlow: (reason: string) => void
+      const slowPromise = new Promise<{ value: string; text: string }[]>(
+        (_resolve, reject) => {
+          rejectSlow = reject
+        }
+      )
+
+      const raceSearch = vi
+        .fn()
+        .mockImplementationOnce(() => slowPromise)
+        .mockImplementationOnce(() => [{ value: 'fast', text: 'Fast Result' }])
+
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: raceSearch
+        }
+      })
+
+      slim.open()
+      slim.search('slow')
+      slim.search('fast')
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      rejectSlow!('Stale error')
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(document.querySelector('.ss-error')).toBeFalsy()
+      expect(
+        Array.from(document.querySelectorAll('.ss-option')).some(
+          (el) => el.textContent?.trim() === 'Fast Result'
+        )
+      ).toBe(true)
+    })
+
+    test('hides selected options in API search results when hideSelected is true', () => {
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        settings: {
+          isMultiple: true,
+          hideSelected: true,
+          keepSearch: true
+        },
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+
+      const nullOption = Array.from(
+        document.querySelectorAll('.ss-option')
+      ).find((el) => el.textContent?.trim() === 'Null')
+      expect(nullOption).toBeTruthy()
+      nullOption!.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, metaKey: true })
+      )
+      expect(slim.getSelected()).toContain('null')
+
+      slim.search('te')
+
+      const visibleOptions = slim.render.getOptions(true, true, true)
+      expect(
+        visibleOptions.some((el) => el.textContent?.trim() === 'Null')
+      ).toBe(false)
+      expect(slim.getSelected()).toContain('null')
+    })
+
+    test('addable during API search adds option to catalog baseline', async () => {
+      const emptySearch = vi.fn().mockReturnValue([])
+
+      slim.destroy()
+      document.body.innerHTML = '<select id="searchTest" multiple></select>'
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: emptySearch,
+          addable: (value: string) => ({
+            text: value,
+            value: value.toLowerCase()
+          })
+        }
+      })
+
+      slim.open()
+      slim.search('new')
+      expect(
+        slim.render.content.list.querySelectorAll('.ss-option')
+      ).toHaveLength(0)
+
+      slim.render.content.search.input.value = 'Custom'
+      slim.render.content.search.input.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+      )
+
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      expect(slim.getSelected()).toEqual(['custom'])
+      const values = slim.store
+        .getDataOptions()
+        .map((option) => option.value)
+      expect(values).toContain('a')
+      expect(values).toContain('b')
+      expect(values).toContain('custom')
+      expect(slim.render.content.search.input.value).toBe('')
+      expect(
+        slim.render.content.list.querySelectorAll('.ss-option')
+      ).toHaveLength(3)
+    })
+  })
+
+  describe('local search', () => {
+    test('filters options in place without rebuilding the list', () => {
+      document.body.innerHTML = `
+        <select id="local-search">
+          <option value="1">Apple</option>
+          <option value="2">Banana</option>
+          <option value="3">Cherry</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({ select: '#local-search' })
+      slim.open()
+      const renderOptionsSpy = vi.spyOn(slim.render, 'renderOptions')
+      const list = slim.render.content.list
+      const initialChildCount = list.children.length
+
+      slim.search('app')
+
+      expect(renderOptionsSpy).not.toHaveBeenCalled()
+      expect(list.children.length).toBe(initialChildCount)
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
+      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
+        'Apple'
+      )
+    })
+
+    test('trims leading and trailing spaces when filtering', () => {
+      document.body.innerHTML = `
+        <select id="local-search-trim">
+          <option value="1">Apple</option>
+          <option value="2">Banana</option>
+          <option value="3">Cherry</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({ select: '#local-search-trim' })
+      slim.open()
+      slim.search('  app  ')
+
+      expect(slim.render.content.search.input.value).toBe('app')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
+      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
+        'Apple'
+      )
+    })
+
+    test('whitespace-only input clears search and restores all options', () => {
+      document.body.innerHTML = `
+        <select id="local-search-clear">
+          <option value="1">Apple</option>
+          <option value="2">Banana</option>
+          <option value="3">Cherry</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({ select: '#local-search-clear' })
+      slim.open()
+      slim.search('app')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
+
+      slim.search('   ')
+
+      expect(slim.render.content.search.input.value).toBe('')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(3)
+    })
+  })
+
+  describe('search whitespace', () => {
+    test('API search receives trimmed searchValue', () => {
+      destroyAllSlimSelects()
+      document.body.innerHTML = '<select id="searchTrim"></select>'
+
+      const searchMock = vi.fn().mockReturnValue([
+        { value: 'x', text: 'X' }
+      ])
+
+      const slim = new SlimSelect({
+        select: '#searchTrim',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('  te  ')
+
+      expect(slim.render.content.search.input.value).toBe('te')
+      expect(searchMock).toHaveBeenCalledWith(
+        'te',
+        expect.any(Array),
+        expect.any(Array)
+      )
+    })
+
+    test('whitespace-only input clears API search without calling search callback', () => {
+      destroyAllSlimSelects()
+      document.body.innerHTML = '<select id="searchWhitespace"></select>'
+
+      const searchMock = vi.fn().mockReturnValue([
+        { value: 'x', text: 'X' }
+      ])
+
+      const slim = new SlimSelect({
+        select: '#searchWhitespace',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+      expect(
+        slim.render.content.list.querySelectorAll('.ss-option').length
+      ).toBeGreaterThanOrEqual(1)
+
+      searchMock.mockClear()
+      slim.search('   ')
+
+      expect(searchMock).not.toHaveBeenCalled()
+      expect(slim.render.content.search.input.value).toBe('')
+      expect(
+        slim.render.content.list.querySelectorAll('.ss-option')
+      ).toHaveLength(2)
     })
   })
 

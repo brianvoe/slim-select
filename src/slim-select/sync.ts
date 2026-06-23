@@ -14,8 +14,7 @@
 import { isEqual } from './helpers'
 import Render from './render'
 import Select from './select'
-import Store from './store'
-import type { Optgroup, Option } from './store'
+import Store, { Optgroup, Option } from './store'
 
 /** Where a change originated — affects batching and render behavior. */
 export type ChangeSource = 'native' | 'ui' | 'api'
@@ -36,6 +35,8 @@ export type SyncChange =
       source: ChangeSource
       /** Keep current selection when replacing data (async search results). */
       preserveSelection?: boolean
+      /** API search results — do not update the catalog baseline. */
+      isSearchResult?: boolean
     }
   | {
       type: 'selection'
@@ -190,7 +191,8 @@ export default class SyncCoordinator {
         this.applyStructure(
           change.data,
           change.source,
-          change.preserveSelection
+          change.preserveSelection,
+          change.isSearchResult
         )
         break
       case 'selection':
@@ -213,7 +215,8 @@ export default class SyncCoordinator {
   private applyStructure(
     data: (Partial<Option> | Partial<Optgroup>)[],
     _source: ChangeSource,
-    preserveSelection = false
+    preserveSelection = false,
+    isSearchResult = false
   ): void {
     const { store, select, render, events } = this.deps
 
@@ -235,6 +238,10 @@ export default class SyncCoordinator {
 
     store.setData(data, preserveSelection)
     const dataClean = store.getData()
+
+    if (!isSearchResult) {
+      store.snapshotCatalog()
+    }
 
     select.updateOptions(dataClean)
     render.renderValues()
@@ -269,14 +276,12 @@ export default class SyncCoordinator {
     select.setSelectedByValue(store.getSelectedValues())
     render.renderValues()
 
-    const searchValue = render.content.search.input.value
+    const searchValue = render.content.search.input.value.trim()
     if (searchValue !== '') {
-      // User clicked an option while searching — re-run search event for custom search
-      if (_source === 'ui' && this.deps.search) {
+      if (render.hasRenderedOptions()) {
+        render.updateOptionSelection()
+      } else if (this.deps.search) {
         this.deps.search(searchValue)
-      } else {
-        // Native/API path: just refresh the option list from store (no search re-fetch)
-        render.renderOptions(store.getData())
       }
     } else if (render.canUpdateOptionSelectionInPlace()) {
       render.updateOptionSelection()
@@ -297,13 +302,40 @@ export default class SyncCoordinator {
   private applyAddOption(option: Partial<Option>): void {
     const { store, select, render, events } = this.deps
     const selected = store.getSelected()
+    const searchValue = render.content.search.input.value.trim()
+    const isApiSearchOverlay = searchValue !== '' && !!this.deps.search
+    const optionValue = option.value ?? option.text ?? ''
 
-    if (
-      !store
-        .getDataOptions()
-        .some((o) => o.value === (option.value ?? option.text))
-    ) {
-      store.addOption(option)
+    const optionExists = (data: (Option | Optgroup)[]): boolean => {
+      for (const item of data) {
+        if (item instanceof Optgroup) {
+          if (
+            item.options.some((opt) => (opt.value ?? opt.text) === optionValue)
+          ) {
+            return true
+          }
+          continue
+        }
+
+        if ((item.value ?? item.text) === optionValue) {
+          return true
+        }
+      }
+
+      return false
+    }
+
+    if (!optionExists(store.getData())) {
+      if (isApiSearchOverlay) {
+        const baseline = store.getCatalogData()
+        if (!optionExists(baseline)) {
+          store.setData([...baseline, new Option(option)], true)
+        }
+        store.snapshotCatalog()
+      } else {
+        store.addOption(option)
+        store.snapshotCatalog()
+      }
     }
 
     const data = store.getData()

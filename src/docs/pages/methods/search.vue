@@ -48,6 +48,11 @@ export default defineComponent({
       options, showing only those that match the search criteria. This is essential for creating responsive search
       experiences where the search term can be set programmatically based on user interactions or external data.
     </p>
+    <p>
+      If <code>events.search</code> is configured, this method triggers your API search callback with
+      <code>searchValue</code>, <code>selected</code>, and <code>catalog</code> instead of filtering local options.
+      Leading and trailing whitespace is trimmed; whitespace-only values clear the search.
+    </p>
 
     <div class="row">
       <div class="btn" @click="setSearch()">Set Search</div>

@@ -81,6 +81,10 @@ export default defineComponent({
       custom filtering logic.
     </p>
     <p>
+      <code>searchFilter</code> applies to <strong>local search</strong> only — when options are already loaded in the
+      control. For loading options from an API as the user types, use the <code>search</code> event instead.
+    </p>
+    <p>
       This is perfect for implementing advanced search features like fuzzy matching, exact phrase matching, or custom
       business logic for filtering options based on your specific requirements.
     </p>

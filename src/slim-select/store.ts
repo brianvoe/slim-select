@@ -67,6 +67,8 @@ export default class Store {
   // Main data set, never null
   private data: (Option | Optgroup)[] = []
   private selectedOrder: string[] = []
+  /** Baseline option list — restored when search is cleared (API results are temporary). */
+  private catalog: (Option | Optgroup)[] | null = null
 
   constructor(
     type: 'single' | 'multiple',
@@ -74,6 +76,7 @@ export default class Store {
   ) {
     this.selectType = type
     this.setData(data)
+    this.snapshotCatalog()
   }
 
   // Validate DataArrayPartial
@@ -154,6 +157,72 @@ export default class Store {
     return dataFinal
   }
 
+  /** Snapshot the current data as the catalog baseline (not called for API search results). */
+  public snapshotCatalog(): void {
+    this.catalog = this.cloneData(this.data)
+  }
+
+  /** Catalog baseline used when clearing search. */
+  public getCatalogData(): (Option | Optgroup)[] {
+    return this.cloneData(this.catalog ?? this.data)
+  }
+
+  private cloneData(data: (Option | Optgroup)[]): (Option | Optgroup)[] {
+    return data.map((item) => {
+      if (item instanceof Optgroup) {
+        return new Optgroup({
+          id: item.id,
+          label: item.label,
+          selectAll: item.selectAll,
+          selectAllText: item.selectAllText,
+          closable: item.closable,
+          options: item.options.map((option) =>
+            new Option(option instanceof Option ? { ...option } : option)
+          )
+        })
+      }
+
+      return new Option({ ...(item as Option) })
+    })
+  }
+
+  private optionMatchesSelected(
+    candidate: Option,
+    selected: Option
+  ): boolean {
+    if (candidate.id === selected.id) {
+      return true
+    }
+
+    return (
+      selected.value !== '' &&
+      candidate.value !== '' &&
+      candidate.value === selected.value
+    )
+  }
+
+  private findOptionInData(
+    data: (Option | Optgroup)[],
+    selected: Option
+  ): Option | null {
+    for (const item of data) {
+      if (item instanceof Option) {
+        if (this.optionMatchesSelected(item, selected)) {
+          return item
+        }
+        continue
+      }
+
+      for (const option of item.options as Option[]) {
+        if (this.optionMatchesSelected(option, selected)) {
+          return option
+        }
+      }
+    }
+
+    return null
+  }
+
   public setData(
     data: (Partial<Option> | Partial<Optgroup>)[],
     preserveSelected: boolean = false
@@ -168,44 +237,33 @@ export default class Store {
       selectedOptionsBeforeUpdate = this.getSelectedOptions()
 
       // Check which selected options are missing from new data
-      const missingSelected: (Option | Optgroup)[] = []
+      const missingSelected: Option[] = []
       selectedOptionsBeforeUpdate.forEach((selectedOption) => {
-        let found = false
-
-        // Check if this selected option exists in new data
-        for (const newItem of newData) {
-          if (newItem instanceof Option && newItem.id === selectedOption.id) {
-            found = true
-            break
-          }
-          if (newItem instanceof Optgroup) {
-            for (const opt of newItem.options) {
-              if (opt.id === selectedOption.id) {
-                found = true
-                break
-              }
-            }
-          }
-        }
-
-        if (!found) {
+        if (!this.findOptionInData(newData, selectedOption)) {
           missingSelected.push(selectedOption)
         }
       })
 
       // Add missing selected options to the beginning of the data
       this.data = [...missingSelected, ...newData]
+
+      const allowEmptySelection =
+        this.selectType === 'single' &&
+        selectedOptionsBeforeUpdate.length === 0
+      const selectedIds = selectedOptionsBeforeUpdate.map((selected) => {
+        const match = this.findOptionInData(this.data, selected)
+        return match ? match.id : selected.id
+      })
+
+      this.setSelectedBy('id', selectedIds, allowEmptySelection)
     } else {
       this.data = newData
     }
 
     // Run this.data through setSelected by value
     // to set the selected property and clean any wrong selected
-    if (this.selectType === 'single') {
-      // When search returns new data and user had nothing selected, don't auto-select first option
-      const allowEmptySelection =
-        preserveSelected && selectedOptionsBeforeUpdate.length === 0
-      this.setSelectedBy('id', this.getSelected(), allowEmptySelection)
+    if (!preserveSelected && this.selectType === 'single') {
+      this.setSelectedBy('id', this.getSelected(), false)
     }
   }
 
