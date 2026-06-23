@@ -12,7 +12,6 @@ const defaultSettings: { [key: string]: any } = {
   isMultiple: false,
   isOpen: false,
   isFullOpen: false,
-  intervalMove: null,
   disabled: false,
   alwaysOpen: false,
   showSearch: true,

@@ -578,6 +578,8 @@
       color: var(--ss-font-color);
       cursor: pointer;
       user-select: none;
+      content-visibility: auto;
+      contain-intrinsic-size: auto var(--ss-option-height);
 
       &:hover:not(.ss-disabled) {
         color: var(--ss-bg-color);

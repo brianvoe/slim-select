@@ -1,6 +1,6 @@
 'use strict'
 
-import { describe, expect, test, vi, beforeEach } from 'vitest'
+import { describe, expect, test, vi, beforeEach, afterEach, type Mock } from 'vitest'
 import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { Option } from './store'
@@ -668,6 +668,56 @@ describe('render module', () => {
       render.moveContent()
       expect(contentAboveMock).not.toHaveBeenCalled()
       expect(contentBelowMock).toHaveBeenCalled()
+    })
+  })
+
+  describe('position tracking', () => {
+    let observeMock: Mock<(target: Element) => void>
+    let disconnectMock: Mock<() => void>
+    let ResizeObserverConstructor: ReturnType<typeof vi.fn>
+
+    beforeEach(() => {
+      observeMock = vi.fn()
+      disconnectMock = vi.fn()
+
+      ResizeObserverConstructor = vi.fn(
+        class {
+          observe = observeMock
+          disconnect = disconnectMock
+          constructor(_cb: ResizeObserverCallback) {}
+        }
+      )
+
+      vi.stubGlobal('ResizeObserver', ResizeObserverConstructor)
+      render.settings.contentPosition = 'absolute'
+      render.settings.isOpen = true
+    })
+
+    afterEach(() => {
+      render.stopPositionTracking()
+      vi.unstubAllGlobals()
+    })
+
+    test('startPositionTracking observes trigger and content', () => {
+      render.startPositionTracking()
+
+      expect(ResizeObserverConstructor).toHaveBeenCalled()
+      expect(observeMock).toHaveBeenCalledWith(render.main.main)
+      expect(observeMock).toHaveBeenCalledWith(render.content.main)
+    })
+
+    test('stopPositionTracking disconnects observer', () => {
+      render.startPositionTracking()
+      render.stopPositionTracking()
+
+      expect(disconnectMock).toHaveBeenCalled()
+    })
+
+    test('does not track when content position is relative', () => {
+      render.settings.contentPosition = 'relative'
+      render.startPositionTracking()
+
+      expect(ResizeObserverConstructor).not.toHaveBeenCalled()
     })
   })
 

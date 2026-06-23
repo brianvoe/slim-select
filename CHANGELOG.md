@@ -34,6 +34,8 @@ and this project adheres to
 - Search input is trimmed; whitespace-only input clears search and restores the catalog
 - Structure sync skip checks use field-wise data comparison instead of JSON.stringify
 - Moved `dataStructureEqual` and `selectedIdsEqual` into `helpers.ts`
+- Replaced dropdown position polling (`setInterval`) with `ResizeObserver` for absolute content
+- Option rows use `content-visibility: auto` to reduce layout cost for long lists
 - Native option+selection mutations coalesce into a single structure sync
 - Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
 - Value chip removal uses CSS animation only (`.ss-value-out`)

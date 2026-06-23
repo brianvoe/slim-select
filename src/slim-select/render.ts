@@ -81,6 +81,9 @@ export default class Render {
   // Classes
   public classes: CssClasses
 
+  private positionObserver: ResizeObserver | null = null
+  private positionObserverRaf = 0
+
   constructor(
     settings: Required<Settings>,
     classes: Required<CssClasses>,
@@ -872,6 +875,68 @@ export default class Render {
       this.moveContentAbove()
     } else {
       this.moveContentBelow()
+    }
+  }
+
+  /** Track trigger/content layout changes and reposition the dropdown panel. */
+  public startPositionTracking(): void {
+    if (this.settings.contentPosition !== 'absolute') {
+      return
+    }
+
+    this.stopPositionTracking()
+
+    if (typeof ResizeObserver === 'undefined') {
+      return
+    }
+
+    this.positionObserver = new ResizeObserver(() => {
+      if (!this.settings.isOpen) {
+        return
+      }
+
+      cancelAnimationFrame(this.positionObserverRaf)
+      this.positionObserverRaf = requestAnimationFrame(() => {
+        this.moveContent()
+      })
+    })
+
+    this.observePositionTargets()
+  }
+
+  public stopPositionTracking(): void {
+    cancelAnimationFrame(this.positionObserverRaf)
+    this.positionObserver?.disconnect()
+    this.positionObserver = null
+  }
+
+  private observePositionTargets(): void {
+    if (!this.positionObserver) {
+      return
+    }
+
+    const observed = new Set<Element>()
+    const observe = (el: Element | null): void => {
+      if (!el || observed.has(el)) {
+        return
+      }
+
+      observed.add(el)
+      this.positionObserver!.observe(el)
+    }
+
+    observe(this.main.main)
+    observe(this.content.main)
+
+    let parent: HTMLElement | null = this.main.main.parentElement
+    const stopAt = this.settings.contentLocation
+
+    for (let depth = 0; parent && depth < 8; depth++) {
+      observe(parent)
+      if (parent === stopAt) {
+        break
+      }
+      parent = parent.parentElement
     }
   }
 
@@ -2043,6 +2108,8 @@ export default class Render {
   }
 
   public destroy(): void {
+    this.stopPositionTracking()
+
     // Remove main
     this.main.main.remove()
 

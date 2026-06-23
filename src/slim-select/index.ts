@@ -446,16 +446,9 @@ export default class SlimSelect {
       this.settings.isOpen = this.lifecycle.isOpen
     })
 
-    // Start an interval to check if main has moved
-    // in order to keep content close to main
+    // Reposition when trigger or ancestors resize (absolute content only)
     if (this.settings.contentPosition === 'absolute') {
-      if (this.settings.intervalMove) {
-        clearInterval(this.settings.intervalMove)
-      }
-      this.settings.intervalMove = setInterval(
-        this.render.moveContent.bind(this.render),
-        500
-      )
+      this.render.startPositionTracking()
     }
 
     const searchValue = this.render.content.search.input.value.trim()
@@ -502,9 +495,7 @@ export default class SlimSelect {
       this.settings.isFullOpen = this.lifecycle.isFullOpen
     })
 
-    if (this.settings.intervalMove) {
-      clearInterval(this.settings.intervalMove)
-    }
+    this.render.stopPositionTracking()
   }
 
   // Take in string value and search current options
@@ -531,10 +522,7 @@ export default class SlimSelect {
   private clearSearch(): void {
     this.searchGeneration++
 
-    if (
-      !this.events.search &&
-      this.render.canFilterOptionsInPlace()
-    ) {
+    if (!this.events.search && this.render.canFilterOptionsInPlace()) {
       this.render.filterOptionsInPlace('', this.events.searchFilter!)
       this.render.resetSearchFilterState()
       return
@@ -589,14 +577,12 @@ export default class SlimSelect {
     }
 
     if (searchResp instanceof Promise) {
-      searchResp
-        .then(applyResults)
-        .catch((err: Error | string) => {
-          if (generation !== this.searchGeneration) {
-            return
-          }
-          this.render.renderError(typeof err === 'string' ? err : err.message)
-        })
+      searchResp.then(applyResults).catch((err: Error | string) => {
+        if (generation !== this.searchGeneration) {
+          return
+        }
+        this.render.renderError(typeof err === 'string' ? err : err.message)
+      })
 
       return
     }
@@ -614,10 +600,7 @@ export default class SlimSelect {
   public destroy(): void {
     this.lifecycle.destroy()
 
-    if (this.settings.intervalMove) {
-      clearInterval(this.settings.intervalMove)
-      this.settings.intervalMove = null
-    }
+    this.render.stopPositionTracking()
 
     this.globalEvents.detach({
       listenScroll: this.settings.openPosition === 'auto'
