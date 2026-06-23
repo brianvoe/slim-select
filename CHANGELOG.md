@@ -15,6 +15,7 @@ and this project adheres to
 - JS animation helpers (`animations.ts`) replacing hardcoded animation delays
 - Playwright smoke tests for open/close and native mutation sync
 - Expanded Playwright E2E suite (selection, search, keyboard, sync API, accessibility)
+- Playwright E2E tests for API search, error recovery, hideSelected, and addable
 - Characterization tests for sync engine and lifecycle races
 - Integration tests for API search error recovery, hideSelected, and addable + catalog
 - `prefers-reduced-motion` support for value removal and content panel transitions

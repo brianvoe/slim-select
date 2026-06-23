@@ -23,8 +23,44 @@ function init(key, selector, config = {}) {
   return instance
 }
 
+/** @type {{ calls: { searchValue: string }[], nextError: string | null, results: { value: string, text: string }[] }} */
+const apiSearchState = {
+  calls: [],
+  nextError: null,
+  results: [
+    { value: 'api-one', text: 'API One' },
+    { value: 'api-two', text: 'API Two' },
+    { value: 'api-null', text: 'API Null' }
+  ]
+}
+
+/**
+ * @param {string} searchValue
+ */
+function apiSearchHandler(searchValue) {
+  apiSearchState.calls.push({ searchValue })
+
+  if (apiSearchState.nextError) {
+    const message = apiSearchState.nextError
+    apiSearchState.nextError = null
+    return Promise.reject(message)
+  }
+
+  if (searchValue.length >= 2) {
+    return apiSearchState.results
+  }
+
+  return []
+}
+
+/** @param {string} searchValue */
+function apiSearchEmpty(searchValue) {
+  apiSearchState.calls.push({ searchValue })
+  return []
+}
+
 window.SlimSelect = SlimSelect
-window.e2e = { instances, selects }
+window.e2e = { instances, selects, apiSearchState }
 
 init('basic', '#basic')
 
@@ -93,5 +129,43 @@ init('disabledOption', '#disabled-option')
 init('keyboard', '#keyboard', {
   settings: {
     showSearch: false
+  }
+})
+
+init('apiSearch', '#api-search', {
+  data: [
+    { value: 'a', text: 'Catalog A' },
+    { value: 'b', text: 'Catalog B' }
+  ],
+  events: {
+    search: apiSearchHandler
+  }
+})
+
+init('apiSearchMulti', '#api-search-multi', {
+  data: [
+    { value: 'a', text: 'Catalog A' },
+    { value: 'b', text: 'Catalog B' }
+  ],
+  settings: {
+    hideSelected: true,
+    keepSearch: true
+  },
+  events: {
+    search: apiSearchHandler
+  }
+})
+
+init('apiSearchAddable', '#api-search-addable', {
+  data: [
+    { value: 'a', text: 'Catalog A' },
+    { value: 'b', text: 'Catalog B' }
+  ],
+  events: {
+    search: apiSearchEmpty,
+    addable: (value) => ({
+      text: value,
+      value: value.toLowerCase()
+    })
   }
 })

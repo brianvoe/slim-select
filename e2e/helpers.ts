@@ -16,6 +16,9 @@ export type E2EInstanceKey =
   | 'searchHighlight'
   | 'disabledOption'
   | 'keyboard'
+  | 'apiSearch'
+  | 'apiSearchMulti'
+  | 'apiSearchAddable'
 
 export async function gotoFixture(page: Page): Promise<void> {
   await page.goto('/e2e/')
