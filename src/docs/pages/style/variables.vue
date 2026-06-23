@@ -21,7 +21,7 @@ export default defineComponent({
         mainHeight: '40px',
         contentHeight: '300px',
         searchHeight: '40px',
-        optionHeight: 'auto',
+        optionHeight: '40px',
         spacingL: '9px',
         spacingM: '7px',
         spacingS: '5px',
@@ -77,6 +77,10 @@ export default defineComponent({
   methods: {
     updateVariable(variable: string, value: string) {
       this.variables[variable as keyof typeof this.variables] = value
+      if (variable === 'mainHeight') {
+        this.variables.searchHeight = value
+        this.variables.optionHeight = value
+      }
       this.updateVariables()
     },
     handleInputChange(event: Event, variable: string) {
@@ -97,8 +101,8 @@ export default defineComponent({
               --ss-border-color: ${this.variables.borderColor};
               --ss-border-radius: ${this.variables.borderRadius};
               --ss-main-height: ${this.variables.mainHeight};
-              --ss-search-height: ${this.variables.searchHeight};
-              --ss-option-height: ${this.variables.optionHeight};
+              --ss-search-height: var(--ss-main-height);
+              --ss-option-height: var(--ss-main-height);
               --ss-content-height: ${this.variables.contentHeight};
               --ss-spacing-l: ${this.variables.spacingL};
               --ss-spacing-m: ${this.variables.spacingM};
@@ -155,7 +159,7 @@ export default defineComponent({
       this.variables.mainHeight = randomFrom(heights)
       this.variables.contentHeight = randomFrom(contentHeights)
       this.variables.searchHeight = randomFrom(heights)
-      this.variables.optionHeight = randomFrom(['auto', '25px', '30px', '35px', '40px'])
+      this.variables.optionHeight = randomFrom(['25px', '30px', '35px', '40px'])
       this.variables.spacingL = randomFrom(spacingValues)
       this.variables.spacingM = randomFrom(spacingValues)
       this.variables.spacingS = randomFrom(spacingValues)
@@ -421,10 +425,10 @@ export default defineComponent({
               id="searchHeight"
               type="text"
               v-model="variables.searchHeight"
-              @input="handleInputChange($event, 'searchHeight')"
+              disabled
               placeholder="30px"
             />
-            <span class="default-value">Default: 40px</span>
+            <span class="default-value">Default: var(--ss-main-height)</span>
           </div>
 
           <div class="control-group">
@@ -433,10 +437,10 @@ export default defineComponent({
               id="optionHeight"
               type="text"
               v-model="variables.optionHeight"
-              @input="handleInputChange($event, 'optionHeight')"
-              placeholder="auto"
+              disabled
+              placeholder="40px"
             />
-            <span class="default-value">Default: auto</span>
+            <span class="default-value">Default: var(--ss-main-height)</span>
           </div>
         </div>
       </div>
@@ -529,8 +533,8 @@ export default defineComponent({
 
             /* Heights */
             --ss-main-height: {{ variables.mainHeight }};
-            --ss-search-height: {{ variables.searchHeight }};
-            --ss-option-height: {{ variables.optionHeight }};
+            --ss-search-height: var(--ss-main-height);
+            --ss-option-height: var(--ss-main-height);
             --ss-content-height: {{ variables.contentHeight }};
 
             /* Spacing */

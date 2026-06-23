@@ -5,12 +5,13 @@ import { debounce } from './helpers'
 import Lifecycle from './lifecycle'
 import Render from './render'
 import Select from './select'
-import Settings from './settings'
+import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Store, { Option, Optgroup } from './store'
 import SyncCoordinator from './sync'
 
 // Export classes
-export { Settings, Option, Optgroup }
+export { Settings, Option, Optgroup, MODAL_MOBILE_BREAKPOINT }
+export type { ModalSetting } from './settings'
 
 // Export interfaces from render
 export type { Main, Content, Search } from './render'
@@ -266,6 +267,7 @@ export default class SlimSelect {
         beforeClose: this.events.beforeClose,
         afterClose: () => {
           this.render.clearDirectionClasses()
+          this.render.finalizeModalClose()
           if (this.events.afterClose) {
             this.events.afterClose()
           }
@@ -447,7 +449,10 @@ export default class SlimSelect {
     })
 
     // Reposition when trigger or ancestors resize (absolute content only)
-    if (this.settings.contentPosition === 'absolute') {
+    if (
+      this.settings.contentPosition === 'absolute' &&
+      !this.render.isModalViewActive()
+    ) {
       this.render.startPositionTracking()
     }
 

@@ -1,4 +1,4 @@
-import { debounce } from './helpers'
+import { debounce, shouldUseModalView } from './helpers'
 import {
   CONTENT_PANEL_TRANSITION_PROPERTIES,
   getAnimationDuration,
@@ -61,6 +61,12 @@ export interface Search {
   }
 }
 
+export interface ModalElements {
+  overlay: HTMLDivElement
+  dialog: HTMLDivElement
+  closeButton: HTMLButtonElement
+}
+
 export default class Render {
   public settings: Settings
   public store: Store
@@ -83,6 +89,11 @@ export default class Render {
 
   private positionObserver: ResizeObserver | null = null
   private positionObserverRaf = 0
+
+  private modalElements: ModalElements | null = null
+  private modalSessionActive: boolean | null = null
+  private bodyScrollLocked = false
+  private savedBodyOverflow = ''
 
   constructor(
     settings: Required<Settings>,
@@ -118,6 +129,11 @@ export default class Render {
     // Add content to the content location settings
     if (this.settings.contentLocation) {
       this.settings.contentLocation.appendChild(this.content.main)
+    }
+
+    if (this.settings.modal !== 'off' && !this.settings.alwaysOpen) {
+      this.modalElements = this.createModalElements()
+      document.body.appendChild(this.modalElements.overlay)
     }
   }
 
@@ -174,11 +190,14 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
     this.main.main.setAttribute('aria-expanded', 'true')
 
-    // Set direction class on both main and content (persists, never removed)
-    const isAbove = this.settings.openPosition === 'up'
-    const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
-    this.addClasses(this.main.main, dirClass)
-    this.addClasses(this.content.main, dirClass)
+    const useModal = this.resolveModalView()
+
+    if (!useModal) {
+      const isAbove = this.settings.openPosition === 'up'
+      const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
+      this.addClasses(this.main.main, dirClass)
+      this.addClasses(this.content.main, dirClass)
+    }
 
     // Add open class to content to trigger open animation
     this.addClasses(this.content.main, this.classes.contentOpen)
@@ -186,8 +205,11 @@ export default class Render {
     // Make search visible to screen readers when opened
     this.content.search.input.removeAttribute('aria-hidden')
 
-    // move the content in to the right location
-    this.moveContent()
+    if (useModal) {
+      this.showModal()
+    } else {
+      this.moveContent()
+    }
 
     // Move to last selected option
     const selectedOptions = this.store.getSelectedOptions()
@@ -200,6 +222,145 @@ export default class Render {
         this.ensureElementInView(this.content.list, selectedOption)
       }
     }
+  }
+
+  public isModalViewActive(): boolean {
+    return this.modalSessionActive === true
+  }
+
+  private resolveModalView(): boolean {
+    if (
+      this.settings.alwaysOpen ||
+      this.settings.modal === 'off' ||
+      !this.modalElements
+    ) {
+      return false
+    }
+
+    if (this.modalSessionActive === null) {
+      this.modalSessionActive = shouldUseModalView(this.settings.modal)
+    }
+
+    return this.modalSessionActive
+  }
+
+  private createModalElements(): ModalElements {
+    const overlay = document.createElement('div')
+    this.addClasses(overlay, this.classes.modalOverlay)
+    this.addClasses(overlay, this.classes.hide)
+    overlay.dataset.id = this.settings.id
+
+    const dialog = document.createElement('div')
+    this.addClasses(dialog, this.classes.modalDialog)
+    dialog.setAttribute('role', 'dialog')
+    dialog.setAttribute('aria-modal', 'true')
+    dialog.setAttribute('aria-label', this.settings.ariaLabel)
+
+    const closeButton = document.createElement('button')
+    closeButton.type = 'button'
+    this.addClasses(closeButton, this.classes.modalClose)
+    closeButton.setAttribute('aria-label', 'Close')
+    closeButton.onclick = (e: Event) => {
+      e.stopPropagation()
+      this.callbacks.close()
+    }
+
+    const closeSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    )
+    closeSvg.setAttribute('viewBox', '0 0 100 100')
+    const closePath = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'path'
+    )
+    closePath.setAttribute('d', this.classes.deselectPath)
+    closeSvg.appendChild(closePath)
+    closeButton.appendChild(closeSvg)
+
+    overlay.onclick = (e: Event) => {
+      if (e.target === overlay) {
+        this.callbacks.close()
+      }
+    }
+
+    dialog.appendChild(closeButton)
+    overlay.appendChild(dialog)
+
+    return { overlay, dialog, closeButton }
+  }
+
+  private showModal(): void {
+    if (!this.modalElements) {
+      return
+    }
+
+    this.modalElements.dialog.appendChild(this.content.main)
+    this.addClasses(this.content.main, this.classes.modalContent)
+    this.content.main.style.top = ''
+    this.content.main.style.left = ''
+    this.content.main.style.margin = ''
+    this.content.main.style.width = ''
+
+    this.removeClasses(this.modalElements.overlay, this.classes.hide)
+    requestAnimationFrame(() => {
+      if (!this.modalElements) {
+        return
+      }
+      this.addClasses(this.modalElements.overlay, this.classes.contentOpen)
+    })
+
+    this.lockBodyScroll()
+  }
+
+  private lockBodyScroll(): void {
+    if (this.bodyScrollLocked) {
+      return
+    }
+
+    this.savedBodyOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    this.bodyScrollLocked = true
+  }
+
+  private unlockBodyScroll(): void {
+    if (!this.bodyScrollLocked) {
+      return
+    }
+
+    document.body.style.overflow = this.savedBodyOverflow
+    this.bodyScrollLocked = false
+    this.savedBodyOverflow = ''
+  }
+
+  private restoreContentOffscreen(): void {
+    if (this.settings.contentLocation) {
+      this.settings.contentLocation.appendChild(this.content.main)
+    }
+
+    if (this.settings.contentPosition !== 'relative') {
+      this.content.main.style.top = '-9999px'
+      this.content.main.style.left = '-9999px'
+      this.content.main.style.margin = '0'
+      this.content.main.style.width = 'auto'
+    }
+  }
+
+  /** Tear down modal shell after close animation completes. */
+  public finalizeModalClose(): void {
+    if (!this.modalElements) {
+      return
+    }
+
+    if (this.content.main.parentElement !== this.modalElements.dialog) {
+      return
+    }
+
+    this.addClasses(this.modalElements.overlay, this.classes.hide)
+    this.removeClasses(this.modalElements.overlay, this.classes.contentOpen)
+    this.removeClasses(this.content.main, this.classes.modalContent)
+    this.restoreContentOffscreen()
+    this.unlockBodyScroll()
   }
 
   /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
@@ -223,9 +384,17 @@ export default class Render {
     this.main.main.setAttribute('aria-expanded', 'false')
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
 
+    const wasModal = this.modalSessionActive === true
+
     // Remove open class from content to trigger close animation
     // Direction class (dirAbove/dirBelow) persists to maintain correct transform-origin
     this.removeClasses(this.content.main, this.classes.contentOpen)
+
+    if (wasModal && this.modalElements) {
+      this.removeClasses(this.modalElements.overlay, this.classes.contentOpen)
+    }
+
+    this.modalSessionActive = null
 
     // Hide search from screen readers when closed
     this.content.search.input.setAttribute('aria-hidden', 'true')
@@ -859,6 +1028,10 @@ export default class Render {
   }
 
   public moveContent(): void {
+    if (this.isModalViewActive()) {
+      return
+    }
+
     if (this.settings.contentPosition === 'relative') {
       this.moveContentBelow()
       return
@@ -881,7 +1054,7 @@ export default class Render {
 
   /** Track trigger/content layout changes and reposition the dropdown panel. */
   public startPositionTracking(): void {
-    if (this.settings.contentPosition !== 'absolute') {
+    if (this.settings.contentPosition !== 'absolute' || this.isModalViewActive()) {
       return
     }
 
@@ -2111,6 +2284,15 @@ export default class Render {
 
   public destroy(): void {
     this.stopPositionTracking()
+
+    if (this.modalElements) {
+      this.unlockBodyScroll()
+      if (this.content.main.parentElement === this.modalElements.dialog) {
+        this.restoreContentOffscreen()
+      }
+      this.modalElements.overlay.remove()
+      this.modalElements = null
+    }
 
     // Remove main
     this.main.main.remove()

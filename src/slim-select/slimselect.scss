@@ -14,8 +14,8 @@
   // Heights
   --ss-main-height: 40px;
   --ss-content-height: 300px;
-  --ss-search-height: 40px;
-  --ss-option-height: auto;
+  --ss-search-height: var(--ss-main-height);
+  --ss-option-height: var(--ss-main-height);
 
   // Spacing
   --ss-spacing-l: 9px;
@@ -25,6 +25,7 @@
   // Misc
   --ss-animation-timing: 0.2s;
   --ss-border-radius: 4px;
+  --ss-modal-z-index: 1000001;
 }
 
 // Animation keyframes
@@ -58,12 +59,13 @@
 .ss-main {
   display: flex;
   flex-direction: row;
+  align-items: center;
   position: relative;
   user-select: none;
   color: var(--ss-font-color);
   min-height: var(--ss-main-height);
   width: 100%;
-  padding: var(--ss-spacing-s);
+  padding: 0 var(--ss-spacing-s);
   cursor: pointer;
   border: 1px solid var(--ss-border-color);
   border-radius: var(--ss-border-radius);
@@ -106,6 +108,8 @@
   .ss-values {
     display: inline-flex;
     flex-wrap: wrap;
+    align-items: center;
+    align-self: stretch;
     gap: var(--ss-spacing-m);
     flex: 1 1 100%;
     min-width: 0; // Allow container to shrink
@@ -116,21 +120,28 @@
     &:has(.ss-multi-string) {
       flex-wrap: nowrap;
       gap: 0;
-      align-items: center;
     }
 
-    .ss-placeholder {
-      display: block; // Use block for proper ellipsis
-      width: 100%;
-      min-width: 0; // Allow placeholder to shrink
-      padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s)
-        var(--ss-spacing-m);
-      margin: auto 0px auto 0px;
-      line-height: 1em;
-      color: var(--ss-placeholder-color);
+    // Shared layout for single value, placeholder, and multiString text
+    .ss-single,
+    .ss-placeholder,
+    .ss-multi-string {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: calc(100% - 20px);
+      margin: 0;
+      padding: 0 var(--ss-spacing-m) 0
+        calc(var(--ss-spacing-l) - var(--ss-spacing-s));
+      line-height: 1.2;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+    .ss-placeholder {
+      color: var(--ss-placeholder-color);
     }
 
     // Max is used to display max number of values
@@ -145,35 +156,6 @@
       padding: var(--ss-spacing-s) var(--ss-spacing-m);
       background-color: var(--ss-primary-color);
       border-radius: var(--ss-border-radius);
-    }
-
-    // Used for single select selected value
-    .ss-single {
-      display: block; // Use block for proper ellipsis
-      margin: auto 0px auto var(--ss-spacing-s);
-      min-width: 0; // Allow flex item to shrink below content size
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; // Prevent text wrapping
-      flex: 1 1 auto; // Allow it to grow but also shrink
-      max-width: calc(100% - 20px); // Leave space for arrow and padding
-    }
-
-    // Used for multiple select when multiString is enabled
-    // Shows selected values as comma separated text truncated with an ellipsis
-    .ss-multi-string {
-      display: block; // Use block for proper ellipsis
-      width: 100%;
-      min-width: 0; // Allow flex item to shrink below content size
-      padding: var(--ss-spacing-s) var(--ss-spacing-m) var(--ss-spacing-s)
-        var(--ss-spacing-m);
-      margin: auto 0px auto 0px;
-      line-height: 1em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; // Prevent text wrapping
-      flex: 1 1 auto; // Allow it to grow but also shrink
-      max-width: calc(100% - 20px); // Leave space for arrow and padding
     }
 
     // Used for the selected values
@@ -359,7 +341,7 @@
       width: 100%;
       min-width: 0px;
       height: var(--ss-search-height);
-      padding: var(--ss-spacing-m) var(--ss-spacing-l);
+      padding: 0 var(--ss-spacing-l);
       margin: 0;
       border: none;
       background-color: var(--ss-bg-color);
@@ -431,8 +413,10 @@
 
     .ss-optgroup {
       .ss-option {
+        min-height: 0;
         transition:
           max-height var(--ss-animation-timing) ease,
+          min-height var(--ss-animation-timing) ease,
           opacity var(--ss-animation-timing) ease,
           padding-top var(--ss-animation-timing) ease,
           padding-bottom var(--ss-animation-timing) ease,
@@ -440,8 +424,13 @@
           margin-bottom var(--ss-animation-timing) ease;
       }
 
+      &:not(.ss-close):not(.ss-open) .ss-option {
+        min-height: var(--ss-option-height);
+      }
+
       &.ss-open {
         .ss-option {
+          min-height: var(--ss-option-height);
           max-height: 100px;
           opacity: 1;
           overflow: visible;
@@ -451,6 +440,7 @@
       // If optgroup has close, hide all options
       &.ss-close {
         .ss-option {
+          min-height: 0 !important;
           padding-top: 0 !important;
           padding-bottom: 0 !important;
           margin-top: 0 !important;
@@ -466,8 +456,8 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m)
-          var(--ss-spacing-l);
+        min-height: var(--ss-option-height);
+        padding: 0 var(--ss-spacing-l);
 
         .ss-optgroup-label-text {
           flex: 1 1 auto;
@@ -563,8 +553,7 @@
       }
 
       .ss-option {
-        padding: var(--ss-spacing-s) var(--ss-spacing-s) var(--ss-spacing-s)
-          calc(var(--ss-spacing-l) * 3);
+        padding: 0 var(--ss-spacing-l) 0 calc(var(--ss-spacing-l) * 3);
       }
     }
 
@@ -572,8 +561,7 @@
       display: flex;
       align-items: center;
       min-height: var(--ss-option-height);
-      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m)
-        var(--ss-spacing-l);
+      padding: 0 var(--ss-spacing-l);
       white-space: normal;
       color: var(--ss-font-color);
       cursor: pointer;
@@ -614,8 +602,105 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding: var(--ss-spacing-m) var(--ss-spacing-l) var(--ss-spacing-m)
-        var(--ss-spacing-l);
+      min-height: var(--ss-search-height);
+      padding: 0 var(--ss-spacing-l);
+    }
+  }
+}
+
+// Modal overlay
+.ss-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ss-modal-z-index);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ss-spacing-l);
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity var(--ss-animation-timing);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &.ss-open {
+    opacity: 1;
+  }
+
+  .ss-modal-dialog {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    max-height: min(85vh, var(--ss-content-height));
+    overflow: visible;
+
+    .ss-modal-close {
+      position: absolute;
+      top: var(--ss-spacing-s);
+      right: var(--ss-spacing-s);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-radius: var(--ss-border-radius);
+      background-color: var(--ss-bg-color);
+      color: var(--ss-font-color);
+      cursor: pointer;
+      outline: 0;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+
+      &:hover {
+        background-color: var(--ss-bg-color);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+      }
+
+      &:focus {
+        box-shadow: 0 0 5px var(--ss-focus-color);
+      }
+
+      svg {
+        width: 10px;
+        height: 10px;
+
+        path {
+          fill: none;
+          stroke: currentColor;
+          stroke-width: 20;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+      }
+    }
+
+    .ss-content {
+      &.ss-modal-content {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        max-width: 400px;
+        margin: 0 !important;
+        transform-origin: center center;
+        z-index: 1;
+        border-radius: var(--ss-border-radius);
+        overflow: hidden;
+
+        &.ss-dir-above,
+        &.ss-dir-below {
+          flex-direction: column;
+          transform-origin: center center;
+        }
+      }
     }
   }
 }

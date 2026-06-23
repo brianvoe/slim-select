@@ -181,6 +181,12 @@ body {
       }
 
       .ss-dropdown {
+        --ss-main-height: var(--height-nav);
+        --ss-option-height: 28px;
+        --ss-search-height: var(--height-nav);
+        --ss-spacing-l: 8px;
+        --ss-spacing-m: 4px;
+        --ss-spacing-s: 4px;
         height: auto;
         min-height: 0;
         box-shadow: var(--box-shadow);
@@ -189,6 +195,8 @@ body {
         .ss-main {
           flex: 0 1 auto;
           height: var(--height-nav);
+          min-height: var(--height-nav);
+          font-size: 13px;
           font-weight: bold;
         }
 
@@ -203,6 +211,7 @@ body {
           .ss-content {
             height: 100% !important;
             max-height: calc(100vh - var(--height-header) - var(--height-nav) - 100px) !important;
+            font-size: 13px;
           }
         }
       }

@@ -35,7 +35,7 @@ describe('render module', () => {
     ])
 
     // default settings
-    const settings = new Settings()
+    const settings = new Settings({ modal: 'off' })
     const classes = new CssClasses()
 
     openMock = vi.fn(() => {})
@@ -718,6 +718,113 @@ describe('render module', () => {
       render.startPositionTracking()
 
       expect(ResizeObserverConstructor).not.toHaveBeenCalled()
+    })
+
+    test('does not track when modal view is active', () => {
+      render.settings.modal = 'on'
+      ;(render as any).modalSessionActive = true
+      render.startPositionTracking()
+
+      expect(ResizeObserverConstructor).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('modal', () => {
+    test('creates modal overlay when modal is not off', () => {
+      const settings = new Settings({ modal: 'on' })
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
+
+      const overlay = document.querySelector('.ss-modal-overlay')
+      expect(overlay).not.toBeNull()
+      expect(overlay?.classList.contains('ss-hide')).toBe(true)
+
+      modalRender.destroy()
+    })
+
+    test('does not create modal overlay when modal is off', () => {
+      const settings = new Settings({ modal: 'off' })
+      const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
+
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
+      modalRender.destroy()
+    })
+
+    test('does not create modal overlay when alwaysOpen is true', () => {
+      const settings = new Settings({ modal: 'on', alwaysOpen: true })
+      const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
+
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
+      modalRender.destroy()
+    })
+
+    test('open does not use modal when alwaysOpen is true', () => {
+      const settings = new Settings({
+        modal: 'on',
+        alwaysOpen: true,
+        contentPosition: 'relative'
+      })
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [
+        { text: 'One', value: '1' }
+      ]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
+
+      modalRender.open()
+
+      expect(modalRender.isModalViewActive()).toBe(false)
+      expect(document.body.style.overflow).not.toBe('hidden')
+      modalRender.destroy()
+    })
+
+    test('open with modal on moves content into modal dialog', () => {
+      const settings = new Settings({ modal: 'on' })
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [
+        { text: 'One', value: '1' }
+      ]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
+
+      modalRender.open()
+
+      const dialog = (modalRender as unknown as { modalElements: { dialog: HTMLElement } })
+        .modalElements.dialog
+      expect(dialog.contains(modalRender.content.main)).toBe(true)
+      expect(modalRender.content.main.classList.contains('ss-modal-content')).toBe(true)
+      expect(document.body.style.overflow).toBe('hidden')
+
+      modalRender.close()
+      modalRender.finalizeModalClose()
+
+      expect(document.body.style.overflow).not.toBe('hidden')
+      modalRender.destroy()
     })
   })
 

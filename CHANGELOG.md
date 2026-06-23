@@ -10,6 +10,9 @@ and this project adheres to
 
 ### Added
 
+- `modal` setting (`'off'` | `'on'` | `'mobile'`, default `'mobile'`) — opens the option panel as a centered modal with backdrop on small viewports or always when set to `'on'`
+- Modal UI: semi-transparent backdrop, centered 400px card, close button, Escape and backdrop dismiss, body scroll lock while open
+- Settings documentation page for modal (first in settings section) and live modal demos on the home page
 - Internal `SyncCoordinator` for batched native/API/UI update routing
 - `Lifecycle` scheduler for open/close timing with `transitionend` fallback
 - JS animation helpers (`animations.ts`) replacing hardcoded animation delays

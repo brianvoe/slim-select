@@ -8,15 +8,28 @@ export default defineComponent({
   data() {
     return {
       single: null as SlimSelect | null,
-      multiple: null as SlimSelect | null
+      multiple: null as SlimSelect | null,
+      modalMobile: null as SlimSelect | null,
+      modalOn: null as SlimSelect | null
     }
   },
   mounted() {
     this.single = new SlimSelect({
-      select: this.$refs.slimSingle as HTMLSelectElement
+      select: this.$refs.slimSingle as HTMLSelectElement,
+      settings: { modal: 'off' }
     })
     this.multiple = new SlimSelect({
-      select: this.$refs.slimMulti as HTMLSelectElement
+      select: this.$refs.slimMulti as HTMLSelectElement,
+      settings: { modal: 'off' }
+    })
+
+    this.modalMobile = new SlimSelect({
+      select: this.$refs.slimModalMobile as HTMLSelectElement,
+      settings: { modal: 'mobile' }
+    })
+    this.modalOn = new SlimSelect({
+      select: this.$refs.slimModalOn as HTMLSelectElement,
+      settings: { modal: 'on' }
     })
 
     setTimeout(() => {
@@ -76,6 +89,12 @@ export default defineComponent({
     if (this.multiple) {
       this.multiple.destroy()
     }
+    if (this.modalMobile) {
+      this.modalMobile.destroy()
+    }
+    if (this.modalOn) {
+      this.modalOn.destroy()
+    }
   },
   methods: {
     handleClick() {
@@ -95,6 +114,66 @@ export default defineComponent({
     line-height: 1;
     padding: 0 0 var(--spacing) 0;
     color: var(--color-primary);
+  }
+
+  .modal-feature {
+    position: relative;
+    margin: 0 0 var(--spacing);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing);
+    overflow: hidden;
+    color: #fff;
+
+    .modal-header {
+      text-align: center;
+      padding: 0 0 var(--spacing-half) 0;
+
+      h2 {
+        font-size: 32px;
+        font-weight: 700;
+        padding: 0 0 var(--spacing-quarter) 0;
+        color: #fff;
+      }
+
+      p {
+        max-width: 640px;
+        margin: 0 auto;
+        font-size: 16px;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+
+    .modal-demos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-half);
+
+      .modal-demo {
+        flex: 1 1 280px;
+        background: rgba(255, 255, 255, 0.97);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-half);
+        color: var(--color-font);
+
+        h3 {
+          color: var(--color-primary);
+          font-size: 18px;
+          font-weight: 600;
+          text-align: center;
+          padding: 0 0 var(--spacing-quarter) 0;
+        }
+
+        .hint {
+          text-align: center;
+          font-size: 13px;
+          color: var(--color-secondary);
+          padding: 0 0 var(--spacing-quarter) 0;
+        }
+      }
+    }
   }
 
   .samples {
@@ -302,6 +381,44 @@ export default defineComponent({
     <div class="content">
       <h1 class="title-header">Advanced Select Dropdown</h1>
 
+      <div class="modal-feature">
+        <div class="modal-header">
+          <h2>Modal Mode</h2>
+          <p>
+            Open SlimSelect as a centered modal with backdrop — ideal for mobile. Resize your browser below 768px to see
+            the default <strong>mobile</strong> behavior, or try <strong>always modal</strong> on any screen size.
+          </p>
+        </div>
+        <div class="modal-demos row">
+          <div class="modal-demo">
+            <h3>Default (mobile)</h3>
+            <p class="hint">Modal below 768px · dropdown on desktop</p>
+            <select ref="slimModalMobile">
+              <option data-placeholder="true"></option>
+              <option value="design">Design</option>
+              <option value="development">Development</option>
+              <option value="marketing">Marketing</option>
+              <option value="sales">Sales</option>
+              <option value="support">Support</option>
+              <option value="operations">Operations</option>
+            </select>
+          </div>
+          <div class="modal-demo">
+            <h3>Always modal</h3>
+            <p class="hint">Opens as modal on every screen size</p>
+            <select ref="slimModalOn">
+              <option data-placeholder="true"></option>
+              <option value="north">North America</option>
+              <option value="south">South America</option>
+              <option value="europe">Europe</option>
+              <option value="asia">Asia</option>
+              <option value="africa">Africa</option>
+              <option value="oceania">Oceania</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div class="samples">
         <h2 class="try-it-out">Try It Out</h2>
         <div class="demos row">
@@ -348,6 +465,7 @@ export default defineComponent({
         <ul class="list">
           <li><img src="../assets/images/check-mark.svg" /> No Dependencies</li>
           <li><img src="../assets/images/check-mark.svg" /> Single Select</li>
+          <li><img src="../assets/images/check-mark.svg" /> Modal Mode</li>
           <li><img src="../assets/images/check-mark.svg" /> Multiple Select</li>
           <li><img src="../assets/images/check-mark.svg" /> Addable Options</li>
           <li><img src="../assets/images/check-mark.svg" /> Html Options</li>

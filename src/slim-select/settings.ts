@@ -1,5 +1,9 @@
 import { generateID } from './helpers'
 
+export type ModalSetting = 'off' | 'on' | 'mobile'
+
+export const MODAL_MOBILE_BREAKPOINT = 768
+
 export default class Settings {
   public id: string = '' // Primary ID for the select
   public style: string = '' // Style attribute from the select element
@@ -41,6 +45,7 @@ export default class Settings {
   public maxValuesShown: number
   public maxValuesMessage: string
   public addableText: string
+  public modal: ModalSetting
 
   constructor(settings?: Partial<Settings>) {
     if (!settings) {
@@ -97,5 +102,6 @@ export default class Settings {
     this.maxValuesShown = settings.maxValuesShown || 20
     this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
     this.addableText = settings.addableText || 'Press "Enter" to add {value}'
+    this.modal = settings.modal || 'mobile'
   }
 }

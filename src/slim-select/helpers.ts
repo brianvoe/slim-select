@@ -1,4 +1,5 @@
 import type { Optgroup, Option } from './store'
+import { MODAL_MOBILE_BREAKPOINT, type ModalSetting } from './settings'
 
 type DataItem = Partial<Option> | Partial<Optgroup>
 
@@ -255,4 +256,19 @@ export function kebabCase(str: string): string {
     (match) => '-' + match.toLowerCase()
   )
   return str[0] === str[0].toUpperCase() ? result.substring(1) : result
+}
+
+export function shouldUseModalView(
+  modal: ModalSetting,
+  viewportWidth: number = typeof window !== 'undefined'
+    ? window.innerWidth
+    : MODAL_MOBILE_BREAKPOINT
+): boolean {
+  if (modal === 'on') {
+    return true
+  }
+  if (modal === 'mobile') {
+    return viewportWidth < MODAL_MOBILE_BREAKPOINT
+  }
+  return false
 }
