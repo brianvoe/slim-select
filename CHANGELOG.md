@@ -42,6 +42,9 @@ and this project adheres to
 - Removed Vue `updated()` hook; v-model sync is handled by the `modelValue` watcher and initial `mounted` sync only
 - Vue `data` watcher skips `setData` when the prop structure is unchanged (field-wise compare), avoiding thrash when parents recreate arrays each render
 - Vue `data` watcher re-applies `modelValue` after `setData` so selection is preserved when options are replaced
+- React component requires the `data` prop; `<option>` children are no longer supported. Child elements re-rendered the native `<select>` and re-triggered structure sync via the mutation observer — pass options via `data` instead (same shape as core SlimSelect).
+- React `data` effect skips `setData` when the prop structure is unchanged and re-applies `value` after updates
+- React wrapper keeps `onChange` and `events` callbacks fresh via refs so parent re-renders do not call stale handlers
 - Native option+selection mutations coalesce into a single structure sync
 - Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
 - Value chip removal uses CSS animation only (`.ss-value-out`)

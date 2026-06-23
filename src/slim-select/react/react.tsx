@@ -1,20 +1,35 @@
+/**
+ * React wrapper around core SlimSelect.
+ *
+ * Data flow:
+ *   Parent value/onChange  ←→  this component  ←→  SlimSelect instance
+ *
+ * Options always come from the required `data` prop (not <option> children).
+ *
+ * Controlled usage: pass `value` + `onChange` (like a native <select>).
+ * Omit `value` for uncontrolled mode — SlimSelect manages selection internally.
+ *
+ * Update `data` with a new array reference when options change (standard React
+ * immutable data). In-place array mutation without a re-render will not sync.
+ */
 import React, {
   useEffect,
   useRef,
+  useState,
   forwardRef,
   useImperativeHandle
 } from 'react'
 import SlimSelectCore from '../index'
 import type { Config, Option, Optgroup } from '../index'
+import { dataStructureEqual } from '../helpers'
 
 export interface SlimSelectProps {
-  data?: (Partial<Option> | Partial<Optgroup>)[]
+  data: (Partial<Option> | Partial<Optgroup>)[]
   settings?: Config['settings']
   events?: Config['events']
   cssClasses?: Config['cssClasses']
   value?: string | string[]
   onChange?: (value: string | string[]) => void
-  children?: React.ReactNode
   multiple?: boolean
 }
 
@@ -24,70 +39,90 @@ export interface SlimSelectRef {
 
 const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
   (
-    { data, settings, events, cssClasses, value, onChange, children, multiple },
+    { data, settings, events, cssClasses, value, onChange, multiple },
     ref
   ) => {
     const selectRef = useRef<HTMLSelectElement>(null)
     const slimSelectRef = useRef<SlimSelectCore | null>(null)
     const isInitialMount = useRef(true)
     const currentValueRef = useRef<string | string[] | undefined>(value)
+    const lastAppliedDataRef = useRef<
+      (Partial<Option> | Partial<Optgroup>)[] | null
+    >(null)
 
-    // Expose SlimSelect instance to parent via ref
-    useImperativeHandle(ref, () => ({
-      slimSelect: slimSelectRef.current
-    }))
+    // Refs keep callbacks/props fresh without re-initializing SlimSelect
+    const onChangeRef = useRef(onChange)
+    const eventsRef = useRef(events)
+    const multipleRef = useRef(multiple)
+    const valueRef = useRef(value)
 
-    // Helper to get clean value (similar to Vue's getCleanValue)
+    const [slimReady, setSlimReady] = useState(false)
+
+    useEffect(() => {
+      onChangeRef.current = onChange
+    }, [onChange])
+
+    useEffect(() => {
+      eventsRef.current = events
+    }, [events])
+
+    useEffect(() => {
+      multipleRef.current = multiple
+    }, [multiple])
+
+    useEffect(() => {
+      valueRef.current = value
+    }, [value])
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        slimSelect: slimSelectRef.current
+      }),
+      [slimReady]
+    )
+
     const getCleanValue = (
       val: string | string[] | undefined
     ): string | string[] => {
-      // If its multiple and the value is a string, return an array with the string
+      const multi = multipleRef.current
+
       if (typeof val === 'string') {
-        return multiple ? [val] : val
+        return multi ? [val] : val
       }
 
-      // If its not multiple and the value is an array, return the first item
       if (Array.isArray(val)) {
-        return multiple ? val : val[0]
+        return multi ? val : val[0]
       }
 
-      return multiple ? [] : ''
+      return multi ? [] : ''
     }
 
-    // Helper to sync value to SlimSelect (similar to Vue's syncModelValueToSlimSelect)
     const syncValueToSlimSelect = (
       val: string | string[] | undefined,
       runAfterChange: boolean = false
     ) => {
       if (!slimSelectRef.current) return
 
-      // Only sync if value is explicitly set (not undefined)
-      // This prevents adding placeholders when value is not provided
       if (val === undefined) {
         return
       }
 
       const cleanValue = getCleanValue(val)
-      const data = slimSelectRef.current.getData()
-      // Extract options from data (flatten optgroups if any)
-      const options = data.flatMap((item: Option | Optgroup) =>
+      const storeData = slimSelectRef.current.getData()
+      const options = storeData.flatMap((item: Option | Optgroup) =>
         'label' in item ? item.options : [item]
       ) as Option[]
 
-      // Check if the value exists in options
       const valueExists = Array.isArray(cleanValue)
         ? cleanValue.length > 0 &&
           cleanValue.every((val) => options.some((opt) => opt.value === val))
         : cleanValue !== '' && options.some((opt) => opt.value === cleanValue)
 
-      // If value doesn't exist in options, add a placeholder option
       if (!valueExists) {
-        // If its not multiple, add a placeholder option
         if (!Array.isArray(cleanValue)) {
-          // For single select, check if placeholder already exists
           const hasPlaceholder = options.some((opt) => opt.placeholder)
           if (!hasPlaceholder) {
-            // Get current data and prepend placeholder option
             const currentData = slimSelectRef.current.getData()
             const placeholderOption: Partial<Option> = {
               value: '',
@@ -101,21 +136,64 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
         }
       }
 
-      // Set the selected value (will select placeholder if it was just added)
-      // Match Vue component exactly - call setSelected with cleanValue directly
       slimSelectRef.current.setSelected(cleanValue, runAfterChange)
     }
 
-    // Initialize SlimSelect
+    const handleAfterChange = (newVal: Option[]) => {
+      if (!slimSelectRef.current) return
+
+      const multi = multipleRef.current
+      const newValue = multi
+        ? newVal.map((option) => option.value)
+        : (newVal[0]?.value ?? '')
+
+      const slimData = slimSelectRef.current.getData()
+      const options = slimData.flatMap((item: Option | Optgroup) =>
+        'label' in item ? item.options : [item]
+      ) as Option[]
+
+      const currentValue = currentValueRef.current
+      const currentValueExists =
+        currentValue === undefined
+          ? false
+          : Array.isArray(currentValue)
+            ? currentValue.length > 0 &&
+              currentValue.every((val) =>
+                options.some((opt) => opt.value === val)
+              )
+            : currentValue !== '' &&
+              options.some((opt) => opt.value === currentValue)
+
+      const newValueIsValid = Array.isArray(newValue)
+        ? newValue.length > 0 &&
+          newValue.every((val) => options.some((opt) => opt.value === val))
+        : newValue !== '' && options.some((opt) => opt.value === newValue)
+
+      const valueChanged =
+        Array.isArray(newValue) && Array.isArray(currentValue)
+          ? JSON.stringify(newValue.sort()) !==
+            JSON.stringify(currentValue.sort())
+          : currentValue !== newValue
+
+      if (
+        onChangeRef.current &&
+        valueChanged &&
+        (currentValueExists || newValueIsValid)
+      ) {
+        onChangeRef.current(newValue)
+        currentValueRef.current = newValue
+      }
+
+      eventsRef.current?.afterChange?.(newVal)
+    }
+
+    // Initialize SlimSelect once on mount
     useEffect(() => {
       if (!selectRef.current) return
 
       const config: Config = {
-        select: selectRef.current
-      }
-
-      if (data) {
-        config.data = data
+        select: selectRef.current,
+        data
       }
 
       if (settings) {
@@ -126,74 +204,21 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
         config.cssClasses = cssClasses
       }
 
-      // Wrap onChange in afterChange event
-      const ogAfterChange = events?.afterChange
       config.events = {
         ...events,
-        afterChange: (newVal) => {
-          if (!slimSelectRef.current) return
-
-          const newValue = multiple
-            ? newVal.map((option) => option.value)
-            : (newVal[0]?.value ?? '')
-          const slimData = slimSelectRef.current.getData()
-          const options = slimData.flatMap((item: Option | Optgroup) =>
-            'label' in item ? item.options : [item]
-          ) as Option[]
-
-          // Check if the current value exists in options
-          const currentValue = currentValueRef.current
-          const currentValueExists =
-            currentValue === undefined
-              ? false
-              : Array.isArray(currentValue)
-                ? currentValue.length > 0 &&
-                  currentValue.every((val) =>
-                    options.some((opt) => opt.value === val)
-                  )
-                : currentValue !== '' &&
-                  options.some((opt) => opt.value === currentValue)
-
-          // Check if the new value is valid (exists in options)
-          const newValueIsValid = Array.isArray(newValue)
-            ? newValue.length > 0 &&
-              newValue.every((val) => options.some((opt) => opt.value === val))
-            : newValue !== '' && options.some((opt) => opt.value === newValue)
-
-          // Check if value actually changed (properly compare arrays)
-          const valueChanged =
-            Array.isArray(newValue) && Array.isArray(currentValue)
-              ? JSON.stringify(newValue.sort()) !==
-                JSON.stringify(currentValue.sort())
-              : currentValue !== newValue
-
-          // Only call onChange if:
-          // 1. The value actually changed, AND
-          // 2. Either the current value exists in options, OR we're setting to a valid non-empty value
-          // This prevents clearing invalid values when we show placeholder
-          if (
-            onChange &&
-            valueChanged &&
-            (currentValueExists || newValueIsValid)
-          ) {
-            onChange(newValue)
-            currentValueRef.current = newValue
-          }
-
-          if (ogAfterChange) {
-            ogAfterChange(newVal)
-          }
-        }
+        afterChange: handleAfterChange
       }
 
       slimSelectRef.current = new SlimSelectCore(config)
+      lastAppliedDataRef.current = structuredClone(data)
+      setSlimReady(true)
 
-      // Sync initial value if provided
-      if (value !== undefined) {
-        syncValueToSlimSelect(value, false)
+      if (valueRef.current !== undefined) {
+        syncValueToSlimSelect(valueRef.current, false)
       }
 
       return () => {
+        setSlimReady(false)
         if (slimSelectRef.current) {
           slimSelectRef.current.destroy()
           slimSelectRef.current = null
@@ -201,7 +226,7 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
       }
     }, []) // Only run on mount/unmount
 
-    // Handle value changes from parent
+    // Parent changed value
     useEffect(() => {
       if (isInitialMount.current) {
         isInitialMount.current = false
@@ -215,22 +240,26 @@ const SlimSelect = forwardRef<SlimSelectRef, SlimSelectProps>(
       }
     }, [value])
 
-    // Handle data changes
+    // Parent changed options — skip when structure unchanged; re-apply value after setData
     useEffect(() => {
-      if (slimSelectRef.current && data && !isInitialMount.current) {
-        slimSelectRef.current.setData(data)
-        // Re-sync value after data changes
-        if (value !== undefined) {
-          syncValueToSlimSelect(value, false)
-        }
+      if (!slimSelectRef.current || isInitialMount.current) return
+
+      if (
+        lastAppliedDataRef.current !== null &&
+        dataStructureEqual(lastAppliedDataRef.current, data)
+      ) {
+        return
+      }
+
+      slimSelectRef.current.setData(data)
+      lastAppliedDataRef.current = structuredClone(data)
+
+      if (valueRef.current !== undefined) {
+        syncValueToSlimSelect(valueRef.current, false)
       }
     }, [data])
 
-    return (
-      <select ref={selectRef} multiple={multiple}>
-        {children}
-      </select>
-    )
+    return <select ref={selectRef} multiple={multiple} />
   }
 )
 
