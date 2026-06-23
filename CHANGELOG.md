@@ -11,8 +11,9 @@ and this project adheres to
 ### Added
 
 - `modal` setting (`'off'` | `'on'` | `'mobile'`, default `'mobile'`) — opens the option panel as a centered modal with backdrop on small viewports or always when set to `'on'`
-- Modal UI: semi-transparent backdrop, centered 400px card, close button, Escape and backdrop dismiss, body scroll lock while open
-- Settings documentation page for modal (first in settings section) and live modal demos on the home page
+- Modal UI: semi-transparent backdrop, centered 400px card, close button, Escape and backdrop dismiss, body scroll lock while open, and `--ss-modal-z-index` for stacking above page chrome
+- `shouldUseModalView()` helper for resolving modal vs dropdown mode (including the 768px mobile breakpoint)
+- Settings documentation page for modal and live modal demos on the home page
 - Internal `SyncCoordinator` for batched native/API/UI update routing
 - `Lifecycle` scheduler for open/close timing with `transitionend` fallback
 - JS animation helpers (`animations.ts`) replacing hardcoded animation delays
@@ -52,9 +53,18 @@ and this project adheres to
 - Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
 - Value chip removal uses CSS animation only (`.ss-value-out`)
 - Open/close waits for content panel opacity and transform transitions, with cleanup on cancel
+- `--ss-search-height` and `--ss-option-height` default to `var(--ss-main-height)` so customizing main height keeps search and options aligned
+- Main bar, search input, options, and optgroup labels share horizontal alignment via `--ss-spacing-s` / `--ss-spacing-l` (no extra padding variables)
+- Main bar uses horizontal-only padding with vertical centering so single and multiple selects honor `--ss-main-height` consistently (including placeholders)
+- Options and optgroup labels use `min-height` with vertical centering instead of vertical padding for height control
+- Modal mode is skipped when `alwaysOpen` is true (inline always-open panels stay non-modal)
+- Documentation variables page and site nav menu updated for the tighter height and spacing behavior
 
 ### Fixed
 
+- Multi-select placeholder no longer exceeds a customized `--ss-main-height` while single select respects it
+- Collapsed closable optgroups no longer reserve blank row height when options are hidden
+- Modal overlay z-index and close button styling so the backdrop sits above fixed headers and the dismiss control is visible
 - Adding an option during API search updates the catalog baseline instead of replacing it with search overlay data
 - Fixed stale lifecycle callbacks overwriting `isOpen` after `closeOnSelect`
 - Fixed Playwright E2E webServer health check failing on `/e2e/index.html` redirect
