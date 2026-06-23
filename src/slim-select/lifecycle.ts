@@ -8,8 +8,8 @@
  *   - isOpen: true during opening + open
  *   - isFullOpen: true only in open state (after animation / afterOpen)
  *
- * Lifecycle waits for render.waitForAnimation() (CSS transitionend + timeout fallback)
- * before firing afterOpen/afterClose and attaching the outside-click listener.
+ * Lifecycle waits for render.waitForAnimation() before firing afterOpen/afterClose.
+ * When no animation waiter is provided, falls back to settings.timeoutDelay.
  */
 
 export type LifecycleState = 'closed' | 'opening' | 'open' | 'closing'
@@ -26,9 +26,12 @@ export interface LifecycleHandlers {
 }
 
 export interface LifecycleOptions {
-  /** Public settings.timeoutDelay — fallback if transitionend never fires. */
+  /** Fallback when waitForAnimation is not provided (no CSS element yet). */
   timeoutDelay: number
-  waitForAnimation?: (phase: 'open' | 'close') => Promise<void>
+  waitForAnimation?: (
+    phase: 'open' | 'close',
+    signal?: AbortSignal
+  ) => Promise<void>
 }
 
 export default class Lifecycle {
@@ -38,6 +41,7 @@ export default class Lifecycle {
   private waitResolvers: Array<() => void> = []
   /** Incremented on cancelPending(); stale async completions check this before firing handlers. */
   private generation = 0
+  private animationAbort: AbortController | null = null
 
   constructor(
     private handlers: LifecycleHandlers,
@@ -119,6 +123,8 @@ export default class Lifecycle {
   /** Cancel timers and resolve waiting phases — called when open/close race each other. */
   public cancelPending(): void {
     this.generation++
+    this.animationAbort?.abort()
+    this.animationAbort = null
     if (this.pendingTimer) {
       clearTimeout(this.pendingTimer)
       this.pendingTimer = null
@@ -135,38 +141,48 @@ export default class Lifecycle {
   }
 
   /**
-   * Wait for animation and/or timeout, whichever finishes first.
-   * generation guard prevents afterOpen firing if close interrupted open.
+   * Wait for the CSS animation to finish (or timeoutDelay when no waiter exists).
+   * cancelPending() resolves the wait early for rapid open/close toggles.
    */
   private waitForPhase(
     phase: 'open' | 'close',
     gen: number
   ): Promise<void> {
-    const timeoutWait = new Promise<void>((resolve) => {
-      const onResolve = () => {
-        const idx = this.waitResolvers.indexOf(onResolve)
+    return new Promise<void>((resolve) => {
+      let settled = false
+      const finish = () => {
+        if (settled) {
+          return
+        }
+        settled = true
+        const idx = this.waitResolvers.indexOf(finish)
         if (idx !== -1) {
           this.waitResolvers.splice(idx, 1)
         }
         resolve()
       }
 
-      this.waitResolvers.push(onResolve)
-      this.pendingTimer = setTimeout(() => {
-        this.pendingTimer = null
-        onResolve()
-      }, this.options.timeoutDelay)
-    })
+      this.waitResolvers.push(finish)
 
-    const animationWait = this.options.waitForAnimation
-      ? this.options.waitForAnimation(phase).catch(() => undefined)
-      : null
-
-    const waits: Promise<void>[] = animationWait
-      ? [animationWait, timeoutWait]
-      : [timeoutWait]
-
-    return Promise.race(waits).then(() => {
+      if (this.options.waitForAnimation) {
+        const controller = new AbortController()
+        this.animationAbort = controller
+        void this.options
+          .waitForAnimation(phase, controller.signal)
+          .catch(() => undefined)
+          .finally(() => {
+            if (this.animationAbort === controller) {
+              this.animationAbort = null
+            }
+            finish()
+          })
+      } else {
+        this.pendingTimer = setTimeout(() => {
+          this.pendingTimer = null
+          finish()
+        }, this.options.timeoutDelay)
+      }
+    }).then(() => {
       if (gen !== this.generation) {
         return
       }

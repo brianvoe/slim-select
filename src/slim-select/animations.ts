@@ -1,12 +1,21 @@
 /**
- * Animation timing helpers for SlimSelect
+ * Animation timing helpers.
  *
- * CSS drives visible motion (.ss-content transitions, .ss-value-out keyframes).
- * These helpers keep JS lifecycle and DOM updates in sync with --ss-animation-timing.
+ * CSS still runs the motion — these keep lifecycle and DOM cleanup aligned with
+ * --ss-animation-timing so we are not guessing with hardcoded setTimeout values.
  */
 
-/** Matches default --ss-animation-timing in slimselect.scss and settings.timeoutDelay */
+/** Matches default --ss-animation-timing in slimselect.scss */
 const DEFAULT_DURATION_MS = 200
+
+/** Extra ms added to CSS duration for transitionend/animationend safety-net timeouts. */
+export const ANIMATION_TIMEOUT_BUFFER_MS = 50
+
+/** .ss-content open/close transitions — wait for both before lifecycle continues. */
+export const CONTENT_PANEL_TRANSITION_PROPERTIES = [
+  'transform',
+  'opacity'
+] as const
 
 /** Parse a CSS time value (e.g. "0.2s", "200ms") into milliseconds. */
 export function parseAnimationDuration(
@@ -44,6 +53,26 @@ export function getAnimationDuration(
   return parseAnimationDuration(cssValue, fallback)
 }
 
+/**
+ * Safety-net timeout for animation waits.
+ * Derived from --ss-animation-timing (+ buffer). An explicit settings.timeoutDelay
+ * is treated as a minimum — never shorter than the CSS-driven duration.
+ */
+export function getAnimationTimeout(
+  element: HTMLElement,
+  userTimeout?: number,
+  fallback = DEFAULT_DURATION_MS
+): number {
+  const fromCss =
+    getAnimationDuration(element, fallback) + ANIMATION_TIMEOUT_BUFFER_MS
+
+  if (userTimeout === undefined) {
+    return fromCss
+  }
+
+  return Math.max(fromCss, userTimeout)
+}
+
 /** Respect user OS accessibility preference and jsdom (no matchMedia). */
 export function prefersReducedMotion(): boolean {
   if (
@@ -56,48 +85,76 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
+function normalizeTransitionProperties(
+  propertyNames?: string | readonly string[]
+): Set<string> | null {
+  if (propertyNames === undefined) {
+    return null
+  }
+
+  const list = Array.isArray(propertyNames) ? propertyNames : [propertyNames]
+  return new Set(list)
+}
+
 /**
- * Wait for a CSS transition to finish, with a timeout fallback.
+ * Wait for CSS transition(s) to finish, with a timeout fallback.
  *
- * Used by render.waitForAnimation() so Lifecycle afterOpen/afterClose align with
- * the real .ss-content transition. jsdom never fires transitionend, so the
- * timeout (from getAnimationDuration) always wins in unit tests.
+ * Pass a single property name to resolve on that transitionend, or an array to
+ * wait until every listed property has fired (e.g. transform + opacity on .ss-content).
+ * Optional AbortSignal cleans up listeners when lifecycle cancels a rapid toggle.
  */
 export function waitForTransitionEnd(
   element: HTMLElement,
-  propertyName?: string,
-  timeoutMs = DEFAULT_DURATION_MS
+  propertyNames?: string | readonly string[],
+  timeoutMs = DEFAULT_DURATION_MS,
+  signal?: AbortSignal
 ): Promise<void> {
-  if (prefersReducedMotion()) {
+  if (prefersReducedMotion() || signal?.aborted) {
     return Promise.resolve()
   }
 
-  return new Promise((resolve) => {
-    let timer: ReturnType<typeof setTimeout> | null = null
+  const pending = normalizeTransitionProperties(propertyNames)
 
-    const cleanup = () => {
+  return new Promise<void>((resolve) => {
+    let timer: ReturnType<typeof setTimeout> | null = null
+    let settled = false
+
+    const finish = () => {
+      if (settled) {
+        return
+      }
+      settled = true
       element.removeEventListener('transitionend', onTransitionEnd)
+      signal?.removeEventListener('abort', onAbort)
       if (timer) {
         clearTimeout(timer)
       }
+      resolve()
     }
+
+    const onAbort = () => finish()
 
     const onTransitionEnd = (event: TransitionEvent) => {
       if (event.target !== element) {
         return
       }
-      if (propertyName && event.propertyName !== propertyName) {
-        return
+
+      if (pending) {
+        if (!pending.has(event.propertyName)) {
+          return
+        }
+        pending.delete(event.propertyName)
+        if (pending.size > 0) {
+          return
+        }
       }
-      cleanup()
-      resolve()
+
+      finish()
     }
 
+    signal?.addEventListener('abort', onAbort, { once: true })
     element.addEventListener('transitionend', onTransitionEnd)
-    timer = setTimeout(() => {
-      cleanup()
-      resolve()
-    }, timeoutMs)
+    timer = setTimeout(finish, timeoutMs)
   })
 }
 
@@ -110,21 +167,31 @@ export function waitForTransitionEnd(
 export function waitForAnimationEnd(
   element: HTMLElement,
   animationName?: string,
-  timeoutMs = DEFAULT_DURATION_MS
+  timeoutMs = DEFAULT_DURATION_MS,
+  signal?: AbortSignal
 ): Promise<void> {
-  if (prefersReducedMotion()) {
+  if (prefersReducedMotion() || signal?.aborted) {
     return Promise.resolve()
   }
 
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     let timer: ReturnType<typeof setTimeout> | null = null
+    let settled = false
 
-    const cleanup = () => {
+    const finish = () => {
+      if (settled) {
+        return
+      }
+      settled = true
       element.removeEventListener('animationend', onAnimationEnd)
+      signal?.removeEventListener('abort', onAbort)
       if (timer) {
         clearTimeout(timer)
       }
+      resolve()
     }
+
+    const onAbort = () => finish()
 
     const onAnimationEnd = (event: AnimationEvent) => {
       if (event.target !== element) {
@@ -133,14 +200,11 @@ export function waitForAnimationEnd(
       if (animationName && event.animationName !== animationName) {
         return
       }
-      cleanup()
-      resolve()
+      finish()
     }
 
+    signal?.addEventListener('abort', onAbort, { once: true })
     element.addEventListener('animationend', onAnimationEnd)
-    timer = setTimeout(() => {
-      cleanup()
-      resolve()
-    }, timeoutMs)
+    timer = setTimeout(finish, timeoutMs)
   })
 }

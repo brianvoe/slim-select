@@ -1,6 +1,8 @@
 import { debounce } from './helpers'
 import {
+  CONTENT_PANEL_TRANSITION_PROPERTIES,
   getAnimationDuration,
+  getAnimationTimeout,
   waitForAnimationEnd,
   waitForTransitionEnd
 } from './animations'
@@ -196,9 +198,20 @@ export default class Render {
   }
 
   /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
-  public waitForAnimation(phase: 'open' | 'close'): Promise<void> {
-    const duration = getAnimationDuration(this.content.main)
-    return waitForTransitionEnd(this.content.main, undefined, duration)
+  public waitForAnimation(
+    phase: 'open' | 'close',
+    signal?: AbortSignal
+  ): Promise<void> {
+    const timeout = getAnimationTimeout(
+      this.content.main,
+      this.settings.timeoutDelay
+    )
+    return waitForTransitionEnd(
+      this.content.main,
+      CONTENT_PANEL_TRANSITION_PROPERTIES,
+      timeout,
+      signal
+    )
   }
 
   public close(): void {
@@ -639,7 +652,10 @@ export default class Render {
       }
     }
 
-    const animationDuration = getAnimationDuration(this.main.main)
+    const animationDuration = getAnimationTimeout(
+      this.content.main,
+      this.settings.timeoutDelay
+    )
 
     // Loop through and remove
     for (const n of removeNodes) {

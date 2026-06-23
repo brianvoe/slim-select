@@ -190,6 +190,10 @@
       animation-timing-function: ease-out;
       animation-fill-mode: both;
 
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
+      }
+
       &.ss-value-out {
         animation-name: ss-valueOut;
         animation-duration: var(--ss-animation-timing);
@@ -309,6 +313,10 @@
   transform: scaleY(0);
   overflow: hidden;
   z-index: 10000;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 
   &.ss-relative {
     position: relative;

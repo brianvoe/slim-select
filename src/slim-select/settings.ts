@@ -94,7 +94,7 @@ export default class Settings {
         : false
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
-    this.timeoutDelay = settings.timeoutDelay || 200
+    this.timeoutDelay = settings.timeoutDelay || 200 // Default until SlimSelect reads --ss-animation-timing
     this.maxValuesShown = settings.maxValuesShown || 20
     this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
     this.addableText = settings.addableText || 'Press "Enter" to add {value}'

@@ -52,7 +52,7 @@ describe('Lifecycle', () => {
   test('uses animation promise when provided', async () => {
     let resolveAnimation!: () => void
     const waitForAnimation = vi.fn(
-      () =>
+      (_phase: 'open' | 'close', _signal?: AbortSignal) =>
         new Promise<void>((resolve) => {
           resolveAnimation = resolve
         })
@@ -61,16 +61,45 @@ describe('Lifecycle', () => {
     const afterOpen = vi.fn()
     const lifecycle = new Lifecycle(
       { afterOpen },
-      { timeoutDelay: 500, waitForAnimation }
+      { timeoutDelay: 100, waitForAnimation }
     )
 
     const openPromise = lifecycle.requestOpen()
-    expect(waitForAnimation).toHaveBeenCalledWith('open')
+    expect(waitForAnimation).toHaveBeenCalledWith(
+      'open',
+      expect.any(AbortSignal)
+    )
+
+    await vi.advanceTimersByTimeAsync(100)
+    expect(afterOpen).not.toHaveBeenCalled()
 
     resolveAnimation()
     await openPromise
 
     expect(afterOpen).toHaveBeenCalledTimes(1)
     expect(lifecycle.isFullOpen).toBe(true)
+  })
+
+  test('aborts in-flight animation wait on rapid toggle', async () => {
+    const signals: AbortSignal[] = []
+    const waitForAnimation = vi.fn(
+      (_phase: 'open' | 'close', signal?: AbortSignal) => {
+        if (signal) {
+          signals.push(signal)
+        }
+        return new Promise<void>(() => {})
+      }
+    )
+
+    const lifecycle = new Lifecycle(
+      {},
+      { timeoutDelay: 200, waitForAnimation }
+    )
+
+    void lifecycle.requestOpen()
+    expect(signals[0]?.aborted).toBe(false)
+
+    void lifecycle.requestClose()
+    expect(signals[0]?.aborted).toBe(true)
   })
 })

@@ -1,4 +1,5 @@
 import CssClasses from './classes'
+import { getAnimationTimeout } from './animations'
 import GlobalEvents, { hasClassInTree } from './events'
 import { debounce } from './helpers'
 import Lifecycle from './lifecycle'
@@ -224,6 +225,12 @@ export default class SlimSelect {
       renderCallbacks
     )
 
+    // Align JS timeout with --ss-animation-timing (CSS is source of truth)
+    this.settings.timeoutDelay = getAnimationTimeout(
+      this.render.content.main,
+      config.settings?.timeoutDelay
+    )
+
     // Single coordinator batches native + API + UI updates (see sync.ts)
     this.sync = new SyncCoordinator({
       select: this.select,
@@ -265,7 +272,8 @@ export default class SlimSelect {
       },
       {
         timeoutDelay: this.settings.timeoutDelay,
-        waitForAnimation: (phase) => this.render.waitForAnimation(phase)
+        waitForAnimation: (phase, signal) =>
+          this.render.waitForAnimation(phase, signal)
       }
     )
 
