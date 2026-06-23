@@ -1,10 +1,9 @@
 import { describe, expect, test, vi } from 'vitest'
 import {
-  animateClose,
-  animateOpen,
-  animateValueOut,
   getAnimationDuration,
-  parseAnimationDuration
+  parseAnimationDuration,
+  waitForAnimationEnd,
+  waitForTransitionEnd
 } from './animations'
 
 describe('animations', () => {
@@ -21,32 +20,18 @@ describe('animations', () => {
     expect(getAnimationDuration(el)).toBe(150)
   })
 
-  test('animateOpen resolves when element.animate finishes', async () => {
-    document.body.innerHTML = '<div id="anim"></div>'
-    const el = document.getElementById('anim') as HTMLElement
-    const onFinish = vi.fn()
+  test('waitForAnimationEnd resolves on animationend', async () => {
+    document.body.innerHTML = '<div id="chip"></div>'
+    const el = document.getElementById('chip') as HTMLElement
 
-    el.animate = vi.fn(() => {
-      const handlers: { onfinish?: () => void } = {}
-      setTimeout(() => handlers.onfinish?.(), 0)
-      return {
-        get onfinish() {
-          return handlers.onfinish
-        },
-        set onfinish(fn: (() => void) | undefined) {
-          handlers.onfinish = fn
-        },
-        oncancel: null,
-        cancel: vi.fn(),
-        finish: vi.fn()
-      } as unknown as Animation
-    })
-
-    await animateOpen(el, { duration: 200, onFinish })
-    expect(onFinish).toHaveBeenCalled()
+    const promise = waitForAnimationEnd(el, 'ss-valueOut', 500)
+    const event = new Event('animationend', { bubbles: false }) as AnimationEvent
+    Object.defineProperty(event, 'animationName', { value: 'ss-valueOut' })
+    el.dispatchEvent(event)
+    await promise
   })
 
-  test('animateValueOut uses instant path when reduced motion', async () => {
+  test('waitForAnimationEnd uses instant path when reduced motion', async () => {
     const originalMatchMedia = window.matchMedia
     window.matchMedia = vi.fn().mockReturnValue({
       matches: true,
@@ -61,20 +46,23 @@ describe('animations', () => {
 
     document.body.innerHTML = '<div id="chip"></div>'
     const el = document.getElementById('chip') as HTMLElement
-    const onFinish = vi.fn()
 
-    await animateValueOut(el, { duration: 200, onFinish })
-    expect(onFinish).toHaveBeenCalled()
+    await waitForAnimationEnd(el, 'ss-valueOut', 500)
 
     window.matchMedia = originalMatchMedia
   })
 
-  test('animateClose resolves without animate API', async () => {
-    document.body.innerHTML = '<div id="anim"></div>'
-    const el = document.getElementById('anim') as HTMLElement
-    const onFinish = vi.fn()
+  test('waitForTransitionEnd resolves on transitionend', async () => {
+    document.body.innerHTML = '<div id="panel"></div>'
+    const el = document.getElementById('panel') as HTMLElement
 
-    await animateClose(el, { duration: 200, onFinish })
-    expect(onFinish).toHaveBeenCalled()
+    const promise = waitForTransitionEnd(el, 'opacity', 500)
+    el.dispatchEvent(
+      new TransitionEvent('transitionend', {
+        bubbles: false,
+        propertyName: 'opacity'
+      })
+    )
+    await promise
   })
 })

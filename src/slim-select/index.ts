@@ -254,7 +254,12 @@ export default class SlimSelect {
         beforeOpen: this.events.beforeOpen,
         afterOpen: this.events.afterOpen,
         beforeClose: this.events.beforeClose,
-        afterClose: this.events.afterClose,
+        afterClose: () => {
+          this.render.clearDirectionClasses()
+          if (this.events.afterClose) {
+            this.events.afterClose()
+          }
+        },
         onOpenReady: () => this.globalEvents.attachDocumentClick(),
         onCloseReady: () => this.globalEvents.detachDocumentClick()
       },

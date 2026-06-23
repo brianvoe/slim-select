@@ -1,7 +1,7 @@
 import { debounce } from './helpers'
 import {
-  animateValueOut,
   getAnimationDuration,
+  waitForAnimationEnd,
   waitForTransitionEnd
 } from './animations'
 import Settings from './settings'
@@ -69,7 +69,6 @@ export default class Render {
   private lastRenderedOptions: Option[]
 
   // Timeout tracking for cleanup
-  private closeAnimationTimeout: ReturnType<typeof setTimeout> | null = null
 
   // Elements
   public main: Main
@@ -168,12 +167,6 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
     this.main.main.setAttribute('aria-expanded', 'true')
 
-    // Clear any pending close animation timeout to prevent race conditions
-    if (this.closeAnimationTimeout) {
-      clearTimeout(this.closeAnimationTimeout)
-      this.closeAnimationTimeout = null
-    }
-
     // Set direction class on both main and content (persists, never removed)
     const isAbove = this.settings.openPosition === 'up'
     const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
@@ -221,16 +214,14 @@ export default class Render {
 
     // Clear active descendant when closed
     this.main.main.removeAttribute('aria-activedescendant')
+  }
 
-    // Remove direction class from main and content after animation is complete
-    const animationTiming = getAnimationDuration(this.content.main)
-    this.closeAnimationTimeout = setTimeout(() => {
-      this.removeClasses(this.main.main, this.classes.dirAbove)
-      this.removeClasses(this.main.main, this.classes.dirBelow)
-      this.removeClasses(this.content.main, this.classes.dirAbove)
-      this.removeClasses(this.content.main, this.classes.dirBelow)
-      this.closeAnimationTimeout = null
-    }, animationTiming)
+  /** Remove open-direction classes after close animation (lifecycle afterClose). */
+  public clearDirectionClasses(): void {
+    this.removeClasses(this.main.main, this.classes.dirAbove)
+    this.removeClasses(this.main.main, this.classes.dirBelow)
+    this.removeClasses(this.content.main, this.classes.dirAbove)
+    this.removeClasses(this.content.main, this.classes.dirBelow)
   }
 
   public updateClassStyles(): void {
@@ -653,12 +644,9 @@ export default class Render {
     // Loop through and remove
     for (const n of removeNodes) {
       this.addClasses(n, this.classes.valueOut)
-      void animateValueOut(n, {
-        duration: animationDuration,
-        onFinish: () => {
-          if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
-            this.main.values.removeChild(n)
-          }
+      void waitForAnimationEnd(n, 'ss-valueOut', animationDuration).then(() => {
+        if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
+          this.main.values.removeChild(n)
         }
       })
     }
@@ -1738,12 +1726,6 @@ export default class Render {
   }
 
   public destroy(): void {
-    // Clear any pending timeouts
-    if (this.closeAnimationTimeout) {
-      clearTimeout(this.closeAnimationTimeout)
-      this.closeAnimationTimeout = null
-    }
-
     // Remove main
     this.main.main.remove()
 

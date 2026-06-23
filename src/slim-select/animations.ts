@@ -1,12 +1,8 @@
 /**
  * Animation timing helpers for SlimSelect
  *
- * Replaces scattered setTimeout delays with duration-aware promises. Used by:
- *   - Lifecycle (open/close via render.waitForAnimation → waitForTransitionEnd)
- *   - Render (value chip removal via animateValueOut, addable close delay)
- *
- * CSS still drives the visible transitions (.ss-content, .ss-value-out). These
- * helpers keep JS lifecycle callbacks in sync with --ss-animation-timing.
+ * CSS drives visible motion (.ss-content transitions, .ss-value-out keyframes).
+ * These helpers keep JS lifecycle and DOM updates in sync with --ss-animation-timing.
  */
 
 /** Matches default --ss-animation-timing in slimselect.scss and settings.timeoutDelay */
@@ -60,127 +56,6 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-export interface AnimateOptions {
-  duration: number
-  /** Called when animation completes or is skipped (reduced motion / no WAAPI). */
-  onFinish?: () => void
-}
-
-/** Skip animation and run onFinish immediately. */
-function runInstant(options: AnimateOptions): Promise<void> {
-  options.onFinish?.()
-  return Promise.resolve()
-}
-
-/**
- * WAAPI open animation for dropdown panel (scaleY + opacity).
- * Mirrors .ss-content.ss-open CSS transition; available for future lifecycle wiring.
- */
-export function animateOpen(
-  element: HTMLElement,
-  options: AnimateOptions
-): Promise<void> {
-  if (prefersReducedMotion() || options.duration <= 0) {
-    return runInstant(options)
-  }
-
-  if (typeof element.animate !== 'function') {
-    return runInstant(options)
-  }
-
-  const animation = element.animate(
-    [
-      { transform: 'scaleY(0)', opacity: 0 },
-      { transform: 'scaleY(1)', opacity: 1 }
-    ],
-    {
-      duration: options.duration,
-      easing: 'ease-out',
-      fill: 'forwards'
-    }
-  )
-
-  return new Promise((resolve) => {
-    animation.onfinish = () => {
-      options.onFinish?.()
-      resolve()
-    }
-    // Rapid open/close can cancel in-flight animation — still resolve
-    animation.oncancel = () => resolve()
-  })
-}
-
-/** WAAPI close animation — inverse of animateOpen. */
-export function animateClose(
-  element: HTMLElement,
-  options: AnimateOptions
-): Promise<void> {
-  if (prefersReducedMotion() || options.duration <= 0) {
-    return runInstant(options)
-  }
-
-  if (typeof element.animate !== 'function') {
-    return runInstant(options)
-  }
-
-  const animation = element.animate(
-    [
-      { transform: 'scaleY(1)', opacity: 1 },
-      { transform: 'scaleY(0)', opacity: 0 }
-    ],
-    {
-      duration: options.duration,
-      easing: 'ease-out',
-      fill: 'forwards'
-    }
-  )
-
-  return new Promise((resolve) => {
-    animation.onfinish = () => {
-      options.onFinish?.()
-      resolve()
-    }
-    animation.oncancel = () => resolve()
-  })
-}
-
-/**
- * Animate a multi-select value chip out before DOM removal.
- * Replaces the old hardcoded 100ms setTimeout in renderValues.
- */
-export function animateValueOut(
-  element: HTMLElement,
-  options: AnimateOptions
-): Promise<void> {
-  if (prefersReducedMotion() || options.duration <= 0) {
-    return runInstant(options)
-  }
-
-  if (typeof element.animate !== 'function') {
-    return runInstant(options)
-  }
-
-  const animation = element.animate(
-    [
-      { transform: 'scale(1)', opacity: 1 },
-      { transform: 'scale(0)', opacity: 0 }
-    ],
-    {
-      duration: options.duration,
-      easing: 'ease-out',
-      fill: 'forwards'
-    }
-  )
-
-  return new Promise((resolve) => {
-    animation.onfinish = () => {
-      options.onFinish?.()
-      resolve()
-    }
-    animation.oncancel = () => resolve()
-  })
-}
-
 /**
  * Wait for a CSS transition to finish, with a timeout fallback.
  *
@@ -193,6 +68,10 @@ export function waitForTransitionEnd(
   propertyName?: string,
   timeoutMs = DEFAULT_DURATION_MS
 ): Promise<void> {
+  if (prefersReducedMotion()) {
+    return Promise.resolve()
+  }
+
   return new Promise((resolve) => {
     let timer: ReturnType<typeof setTimeout> | null = null
 
@@ -215,6 +94,50 @@ export function waitForTransitionEnd(
     }
 
     element.addEventListener('transitionend', onTransitionEnd)
+    timer = setTimeout(() => {
+      cleanup()
+      resolve()
+    }, timeoutMs)
+  })
+}
+
+/**
+ * Wait for a CSS @keyframes animation to finish, with a timeout fallback.
+ *
+ * Used when removing multi-select value chips (.ss-value-out). jsdom does not
+ * fire animationend, so the timeout wins in unit tests.
+ */
+export function waitForAnimationEnd(
+  element: HTMLElement,
+  animationName?: string,
+  timeoutMs = DEFAULT_DURATION_MS
+): Promise<void> {
+  if (prefersReducedMotion()) {
+    return Promise.resolve()
+  }
+
+  return new Promise((resolve) => {
+    let timer: ReturnType<typeof setTimeout> | null = null
+
+    const cleanup = () => {
+      element.removeEventListener('animationend', onAnimationEnd)
+      if (timer) {
+        clearTimeout(timer)
+      }
+    }
+
+    const onAnimationEnd = (event: AnimationEvent) => {
+      if (event.target !== element) {
+        return
+      }
+      if (animationName && event.animationName !== animationName) {
+        return
+      }
+      cleanup()
+      resolve()
+    }
+
+    element.addEventListener('animationend', onAnimationEnd)
     timer = setTimeout(() => {
       cleanup()
       resolve()
