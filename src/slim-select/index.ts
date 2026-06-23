@@ -303,7 +303,7 @@ export default class SlimSelect {
     })
 
     this.render.renderValues()
-    this.render.renderOptions(this.store.getData())
+    this.render.renderOptions(this.store.getData(false))
 
     // Add aria-label or aria-labelledby if exists
     const selectAriaLabel = this.selectEl.getAttribute('aria-label')

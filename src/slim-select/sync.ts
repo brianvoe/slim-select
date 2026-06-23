@@ -61,7 +61,7 @@ export function shouldSkipStructureUpdate(
   store: Store,
   data: (Partial<Option> | Partial<Optgroup>)[]
 ): boolean {
-  return dataStructureEqual(store.getData(), data)
+  return dataStructureEqual(store.getData(false), data)
 }
 
 /**
@@ -73,7 +73,7 @@ export function resolveSelectedIds(
   values: string | string[]
 ): string[] {
   const valueList = Array.isArray(values) ? values : [values]
-  const options = store.getDataOptions()
+  const options = store.getDataOptions(false)
   const ids: string[] = []
 
   for (const value of valueList) {
@@ -227,7 +227,7 @@ export default class SyncCoordinator {
     }
 
     store.setData(data, preserveSelection)
-    const dataClean = store.getData()
+    const dataClean = store.getData(false)
 
     if (!isSearchResult) {
       store.snapshotCatalog()
@@ -276,7 +276,7 @@ export default class SyncCoordinator {
     } else if (render.canUpdateOptionSelectionInPlace()) {
       render.updateOptionSelection()
     } else {
-      render.renderOptions(store.getData())
+      render.renderOptions(store.getData(false))
     }
 
     if (
@@ -315,7 +315,7 @@ export default class SyncCoordinator {
       return false
     }
 
-    if (!optionExists(store.getData())) {
+    if (!optionExists(store.getData(false))) {
       if (isApiSearchOverlay) {
         const baseline = store.getCatalogData()
         if (!optionExists(baseline)) {
@@ -328,7 +328,7 @@ export default class SyncCoordinator {
       }
     }
 
-    const data = store.getData()
+    const data = store.getData(false)
     select.updateOptions(data)
     render.renderValues()
     render.renderOptions(data)

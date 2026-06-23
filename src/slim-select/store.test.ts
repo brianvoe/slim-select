@@ -1161,5 +1161,31 @@ describe('store module', () => {
       expect(res[1]).toBeInstanceOf(Option)
       expect((res[1] as Option).text).toBe('opt 2')
     })
+
+    test('clone false returns store option references', () => {
+      const refs = store.filter(null, false, false) as Option[]
+      const internal = store.getDataOptions(false)
+
+      expect(refs).toHaveLength(3)
+      expect(refs[0]).toBe(internal[0])
+      expect(refs[1]).toBe(internal[1])
+      expect(refs[2]).toBe(internal[2])
+    })
+
+    test('getOptionByID returns the live store option', () => {
+      const internal = store.getDataOptions(false)[1]
+      const found = store.getOptionByID(internal.id)
+
+      expect(found).toBe(internal)
+    })
+
+    test('getDataOptions(false) returns live references', () => {
+      const refs = store.getDataOptions(false)
+      const cloned = store.getDataOptions()
+
+      expect(refs[0]).not.toBe(cloned[0])
+      expect(refs[0].text).toBe(cloned[0].text)
+      expect(refs[0].id).toBe(cloned[0].id)
+    })
   })
 })

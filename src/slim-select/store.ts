@@ -267,15 +267,14 @@ export default class Store {
     }
   }
 
-  // Get data will return all the data
-  public getData(): Option[] | Optgroup[] {
-    return this.filter(null, true) as Option[] | Optgroup[]
+  // Get data will return all the data (cloned by default for public API safety)
+  public getData(clone = true): Option[] | Optgroup[] {
+    return this.filter(null, true, clone) as Option[] | Optgroup[]
   }
 
-  // Get data options will return the data as a
-  // flat array of just options
-  public getDataOptions(): Option[] {
-    return this.filter(null, false) as Option[]
+  // Get data options will return the data as a flat array of just options
+  public getDataOptions(clone = true): Option[] {
+    return this.filter(null, false, clone) as Option[]
   }
 
   public addOption(option: Partial<Option>, addToStart: boolean = false) {
@@ -378,9 +377,21 @@ export default class Store {
   }
 
   public getSelectedOptions(): Option[] {
-    return this.filter((opt: Option) => {
-      return opt.selected
-    }, false) as Option[]
+    const selected: Option[] = []
+
+    for (const dataObj of this.data) {
+      if (dataObj instanceof Optgroup) {
+        for (const option of dataObj.options as Option[]) {
+          if (option.selected) {
+            selected.push(option)
+          }
+        }
+      } else if (dataObj.selected) {
+        selected.push(dataObj)
+      }
+    }
+
+    return selected
   }
 
   public getOptgroupByID(id: string): Optgroup | null {
@@ -396,11 +407,19 @@ export default class Store {
   }
 
   public getOptionByID(id: string): Option | null {
-    let options = this.filter((opt: Option) => {
-      return opt.id === id
-    }, false) as Option[]
+    for (const dataObj of this.data) {
+      if (dataObj instanceof Optgroup) {
+        for (const option of dataObj.options as Option[]) {
+          if (option.id === id) {
+            return option
+          }
+        }
+      } else if (dataObj.id === id) {
+        return dataObj
+      }
+    }
 
-    return options.length ? options[0] : null
+    return null
   }
 
   public getSelectType(): string {
@@ -432,20 +451,37 @@ export default class Store {
 
     // If search is empty, return all data
     if (search === '') {
-      return this.getData()
+      return this.getData(false)
     }
 
-    // Run filter with search function
+    // Run filter with search function (read-only view for render)
     return this.filter((opt: Option): boolean => {
       return searchFilter(opt, search)
-    }, true)
+    }, true, false)
+  }
+
+  private createOptgroupView(
+    source: Optgroup,
+    options: Option[]
+  ): Optgroup {
+    const view = new Optgroup({
+      id: source.id,
+      label: source.label,
+      selectAll: source.selectAll,
+      selectAllText: source.selectAllText,
+      closable: source.closable,
+      options: []
+    })
+    view.options = options
+    return view
   }
 
   // Filter takes in a function that will be used to filter the data
   // This will also keep optgroups of sub options meet the filter requirements
   public filter(
     filter: { (opt: Option): boolean } | null,
-    includeOptgroup: boolean
+    includeOptgroup: boolean,
+    clone = true
   ): (Option | Optgroup)[] {
     const dataSearch: (Option | Optgroup)[] = []
     this.data.forEach((dataObj: Option | Optgroup) => {
@@ -458,9 +494,9 @@ export default class Store {
             // If you dont want to include optgroups
             // just push to the dataSearch array
             if (!includeOptgroup) {
-              dataSearch.push(new Option(option))
+              dataSearch.push(clone ? new Option(option) : option)
             } else {
-              optOptions.push(new Option(option))
+              optOptions.push(clone ? new Option(option) : option)
             }
           }
         })
@@ -468,19 +504,20 @@ export default class Store {
         // If we pushed any options to the optOptions array
         // push the optgroup to the dataSearch array
         if (optOptions.length > 0) {
-          // Create new optgroup with the new options
-          let optgroup = new Optgroup(dataObj)
-          optgroup.options = optOptions
-
-          // Push optgroup to dataSearch
-          dataSearch.push(optgroup)
+          if (clone) {
+            let optgroup = new Optgroup(dataObj)
+            optgroup.options = optOptions
+            dataSearch.push(optgroup)
+          } else {
+            dataSearch.push(this.createOptgroupView(dataObj, optOptions))
+          }
         }
       }
 
       // Option
       if (dataObj instanceof Option) {
         if (!filter || filter(dataObj)) {
-          dataSearch.push(new Option(dataObj))
+          dataSearch.push(clone ? new Option(dataObj) : dataObj)
         }
       }
     })

@@ -498,6 +498,7 @@ export default class Render {
     // Figure out if there is a placeholder option
     const placeholderOption = this.store.filter(
       (o) => o.placeholder,
+      false,
       false
     ) as Option[]
 
@@ -538,7 +539,7 @@ export default class Render {
   private renderSingleValue(): void {
     const selected = this.store.filter((o: Option): boolean => {
       return o.selected && !o.placeholder
-    }, false) as Option[]
+    }, false, false) as Option[]
     const selectedSingle = selected.length > 0 ? selected[0] : null
 
     // If nothing is seleected use settings placeholder text
@@ -572,7 +573,7 @@ export default class Render {
     let selectedOptions = this.store.filter((opt: Option) => {
       // Only grab options that are selected and display is true
       return opt.selected && opt.display
-    }, false) as Option[]
+    }, false, false) as Option[]
 
     // If selectedOptions is empty set placeholder
     if (selectedOptions.length === 0) {
@@ -1347,6 +1348,7 @@ export default class Render {
       // Check if store options have a placeholder
       const placeholderOption = this.store.filter(
         (o) => o.placeholder,
+        false,
         false
       ) as Option[]
       if (!placeholderOption.length) {
@@ -1657,7 +1659,7 @@ export default class Render {
   }
 
   private setOptionsListFullData(data: (Option | Optgroup)[]): void {
-    const storeOptions = this.store.getDataOptions()
+    const storeOptions = this.store.getDataOptions(false)
     const renderedOptions = data
       .map((o) =>
         o instanceof Option ? [o] : o.options.map((po) => new Option(po))

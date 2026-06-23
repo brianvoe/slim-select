@@ -37,6 +37,7 @@ and this project adheres to
 - Moved `dataStructureEqual` and `selectedIdsEqual` into `helpers.ts`
 - Replaced dropdown position polling (`setInterval`) with `ResizeObserver` for absolute content
 - Option rows use `content-visibility: auto` to reduce layout cost for long lists
+- `store.filter()` supports read-only views without cloning; hot paths use live store references
 - Native option+selection mutations coalesce into a single structure sync
 - Animation timing reads from `--ss-animation-timing` so lifecycle waits stay aligned with CSS
 - Value chip removal uses CSS animation only (`.ss-value-out`)
