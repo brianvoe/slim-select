@@ -1,6 +1,14 @@
 'use strict'
 
-import { describe, expect, test, vi, beforeEach, afterEach, type Mock } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  beforeEach,
+  afterEach,
+  type Mock
+} from 'vitest'
 import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { Option } from './store'
@@ -732,13 +740,18 @@ describe('render module', () => {
   describe('modal', () => {
     test('creates modal overlay when modal is not off', () => {
       const settings = new Settings({ modal: 'on' })
-      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
-        open: vi.fn(),
-        close: vi.fn(),
-        setSelected: vi.fn(),
-        addOption: vi.fn(),
-        search: vi.fn()
-      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', []),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
 
       const overlay = document.querySelector('.ss-modal-overlay')
       expect(overlay).not.toBeNull()
@@ -750,30 +763,44 @@ describe('render module', () => {
     test('does not create modal overlay when modal is off', () => {
       const settings = new Settings({ modal: 'off' })
       const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
-      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
-        open: vi.fn(),
-        close: vi.fn(),
-        setSelected: vi.fn(),
-        addOption: vi.fn(),
-        search: vi.fn()
-      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', []),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
 
-      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(
+        beforeCount
+      )
       modalRender.destroy()
     })
 
     test('does not create modal overlay when alwaysOpen is true', () => {
       const settings = new Settings({ modal: 'on', alwaysOpen: true })
       const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
-      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
-        open: vi.fn(),
-        close: vi.fn(),
-        setSelected: vi.fn(),
-        addOption: vi.fn(),
-        search: vi.fn()
-      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', []),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
 
-      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(
+        beforeCount
+      )
       modalRender.destroy()
     })
 
@@ -783,15 +810,18 @@ describe('render module', () => {
         alwaysOpen: true,
         contentPosition: 'relative'
       })
-      const modalRender = new Render(settings, new CssClasses(), new Store('single', [
-        { text: 'One', value: '1' }
-      ]), {
-        open: vi.fn(),
-        close: vi.fn(),
-        setSelected: vi.fn(),
-        addOption: vi.fn(),
-        search: vi.fn()
-      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
 
       modalRender.open()
 
@@ -802,28 +832,70 @@ describe('render module', () => {
 
     test('open with modal on moves content into modal dialog', () => {
       const settings = new Settings({ modal: 'on' })
-      const modalRender = new Render(settings, new CssClasses(), new Store('single', [
-        { text: 'One', value: '1' }
-      ]), {
-        open: vi.fn(),
-        close: vi.fn(),
-        setSelected: vi.fn(),
-        addOption: vi.fn(),
-        search: vi.fn()
-      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
 
       modalRender.open()
 
-      const dialog = (modalRender as unknown as { modalElements: { dialog: HTMLElement } })
-        .modalElements.dialog
+      const dialog = (
+        modalRender as unknown as { modalElements: { dialog: HTMLElement } }
+      ).modalElements.dialog
       expect(dialog.contains(modalRender.content.main)).toBe(true)
-      expect(modalRender.content.main.classList.contains('ss-modal-content')).toBe(true)
+      expect(
+        modalRender.content.main.classList.contains('ss-modal-content')
+      ).toBe(true)
       expect(document.body.style.overflow).toBe('hidden')
 
       modalRender.close()
       modalRender.finalizeModalClose()
 
       expect(document.body.style.overflow).not.toBe('hidden')
+      modalRender.destroy()
+    })
+
+    test('shows associated label text at top of modal dialog', () => {
+      const settings = new Settings({
+        modal: 'on',
+        modalTitle: 'Country'
+      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      modalRender.open()
+
+      const title = document.querySelector('.ss-modal-title')
+      expect(title).not.toBeNull()
+      expect(title?.textContent).toBe('Country')
+
+      const dialog = (
+        modalRender as unknown as { modalElements: { dialog: HTMLElement } }
+      ).modalElements.dialog
+      expect(dialog.getAttribute('aria-labelledby')).toBe(
+        `${settings.id}-modal-title`
+      )
+
+      modalRender.close()
+      modalRender.finalizeModalClose()
       modalRender.destroy()
     })
   })
@@ -1440,9 +1512,9 @@ describe('render module', () => {
         new MouseEvent('click', { bubbles: true, cancelable: true })
       )
 
-      expect(groupA.classList.contains(render.classes.getFirst('mainOpen'))).toBe(
-        true
-      )
+      expect(
+        groupA.classList.contains(render.classes.getFirst('mainOpen'))
+      ).toBe(true)
       expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
         true
       )
@@ -1454,9 +1526,9 @@ describe('render module', () => {
       expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
         true
       )
-      expect(groupB.classList.contains(render.classes.getFirst('mainOpen'))).toBe(
-        true
-      )
+      expect(
+        groupB.classList.contains(render.classes.getFirst('mainOpen'))
+      ).toBe(true)
       expect(groupC.classList.contains(render.classes.getFirst('close'))).toBe(
         false
       )

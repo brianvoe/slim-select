@@ -1,7 +1,7 @@
 import CssClasses from './classes'
 import { getAnimationTimeout } from './animations'
 import GlobalEvents, { hasClassInTree } from './events'
-import { debounce } from './helpers'
+import { debounce, getAssociatedLabelText } from './helpers'
 import Lifecycle from './lifecycle'
 import Render from './render'
 import Select from './select'
@@ -222,6 +222,9 @@ export default class SlimSelect {
     }
 
     // Setup render class
+    this.settings.modalTitle =
+      config.settings?.modalTitle ?? getAssociatedLabelText(this.selectEl)
+
     this.render = new Render(
       this.settings,
       this.cssClasses,

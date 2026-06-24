@@ -12,27 +12,50 @@ export default defineComponent({
   },
   data() {
     return {
-      modal: 'mobile' as ModalSetting,
-      slim: null as SlimSelect | null
+      modal: 'on' as ModalSetting,
+      slimSmall: null as SlimSelect | null,
+      slimLarge: null as SlimSelect | null,
+      smallOptions: [
+        { value: 'apple', text: 'Apple' },
+        { value: 'banana', text: 'Banana' },
+        { value: 'cherry', text: 'Cherry' }
+      ],
+      largeOptions: Array.from({ length: 50 }, (_, i) => ({
+        value: `value${i + 1}`,
+        text: `Value ${i + 1}`
+      }))
     }
   },
   mounted() {
     this.createSlim()
   },
   unmounted() {
-    if (this.slim) {
-      this.slim.destroy()
+    if (this.slimSmall) {
+      this.slimSmall.destroy()
+    }
+    if (this.slimLarge) {
+      this.slimLarge.destroy()
     }
   },
   methods: {
     createSlim() {
-      if (this.slim) {
-        this.slim.destroy()
+      if (this.slimSmall) {
+        this.slimSmall.destroy()
+      }
+      if (this.slimLarge) {
+        this.slimLarge.destroy()
       }
 
-      this.slim = new SlimSelect({
-        select: this.$refs.modalSelect as HTMLSelectElement,
-        settings: { modal: this.modal }
+      const settings = { modal: this.modal }
+
+      this.slimSmall = new SlimSelect({
+        select: this.$refs.modalSelectSmall as HTMLSelectElement,
+        settings
+      })
+
+      this.slimLarge = new SlimSelect({
+        select: this.$refs.modalSelectLarge as HTMLSelectElement,
+        settings
       })
     },
     setModal(value: ModalSetting) {
@@ -52,12 +75,31 @@ export default defineComponent({
     align-items: flex-start;
     width: 100%;
 
-    select,
-    .ss-main,
     .highlight-style {
       align-self: stretch;
       width: 100%;
       max-width: 100%;
+    }
+  }
+
+  .modal-selects {
+    width: 100%;
+
+    .modal-select-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-quarter);
+
+      label {
+        font-weight: bold;
+        font-size: var(--font-size);
+      }
+
+      select,
+      .ss-main {
+        width: 100%;
+        max-width: 100%;
+      }
     }
   }
 
@@ -84,6 +126,27 @@ export default defineComponent({
       }
     }
   }
+
+  .modal-quick-ref {
+    display: grid;
+    grid-template-columns: minmax(5rem, auto) 1fr;
+    gap: var(--spacing-quarter) var(--spacing-half);
+    margin: 0;
+    font-size: var(--font-size);
+
+    dt {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    dd {
+      margin: 0;
+    }
+
+    code {
+      white-space: nowrap;
+    }
+  }
 }
 </style>
 
@@ -91,16 +154,25 @@ export default defineComponent({
   <div id="modal" class="content">
     <h2 class="header">modal</h2>
     <p>
-      The modal setting controls whether SlimSelect opens as a traditional dropdown or as a centered modal dialog with a
-      backdrop. Modal mode is ideal on smaller screens where a full dropdown panel can feel cramped.
+      Open the option list as a centered modal with backdrop instead of a dropdown. Useful on small screens, but can be
+      forced on or off.
     </p>
-    <p>
-      When modal mode is active, the option list opens in a centered card (max-width 400px) over a semi-transparent
-      backdrop. Close via the X button, clicking the backdrop, or pressing Escape. Page scrolling is locked while the
-      modal is open.
-    </p>
-    <p>Values: <strong>"off"</strong> | <strong>"on"</strong> | <strong>"mobile"</strong></p>
-    <p>Default: <strong>"mobile"</strong> (modal below 768px viewport width, dropdown at or above)</p>
+
+    <dl class="modal-quick-ref">
+      <dt>Values</dt>
+      <dd><code>off</code> · <code>on</code> · <code>mobile</code></dd>
+      <dt>Default</dt>
+      <dd><code>mobile</code> — modal below 768px viewport width</dd>
+      <dt>Close</dt>
+      <dd>X button, backdrop click, or Escape · page scroll locked while open</dd>
+      <dt>Title</dt>
+      <dd>Associated <code>&lt;label&gt;</code> text — override with <code>modalTitle</code></dd>
+      <dt>Size</dt>
+      <dd>
+        <code>--ss-modal-width</code> (90vw),
+        <code>--ss-modal-height</code> (85vh)
+      </dd>
+    </dl>
 
     <div class="modal-demo">
       <div class="modal-controls">
@@ -127,17 +199,35 @@ export default defineComponent({
         </button>
       </div>
 
-      <select ref="modalSelect">
-        <option data-placeholder="true"></option>
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="cherry">Cherry</option>
-        <option value="date">Date</option>
-        <option value="elderberry">Elderberry</option>
-        <option value="fig">Fig</option>
-        <option value="grape">Grape</option>
-        <option value="honeydew">Honeydew</option>
-      </select>
+      <div class="modal-selects row">
+        <div class="modal-select-field">
+          <label for="modal-select-small">Small list (3 options)</label>
+          <select id="modal-select-small" ref="modalSelectSmall">
+            <option data-placeholder="true"></option>
+            <option
+              v-for="option in smallOptions"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.text }}
+            </option>
+          </select>
+        </div>
+
+        <div class="modal-select-field">
+          <label for="modal-select-large">Large list (50 options)</label>
+          <select id="modal-select-large" ref="modalSelectLarge">
+            <option data-placeholder="true"></option>
+            <option
+              v-for="option in largeOptions"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.text }}
+            </option>
+          </select>
+        </div>
+      </div>
 
       <HighlightStyle language="javascript">
       <pre>

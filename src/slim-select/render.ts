@@ -65,6 +65,7 @@ export interface ModalElements {
   overlay: HTMLDivElement
   dialog: HTMLDivElement
   closeButton: HTMLButtonElement
+  title: HTMLDivElement | null
 }
 
 export default class Render {
@@ -254,7 +255,17 @@ export default class Render {
     this.addClasses(dialog, this.classes.modalDialog)
     dialog.setAttribute('role', 'dialog')
     dialog.setAttribute('aria-modal', 'true')
-    dialog.setAttribute('aria-label', this.settings.ariaLabel)
+
+    let title: HTMLDivElement | null = null
+    if (this.settings.modalTitle) {
+      title = document.createElement('div')
+      this.addClasses(title, this.classes.modalTitle)
+      title.id = `${this.settings.id}-modal-title`
+      title.textContent = this.settings.modalTitle
+      dialog.setAttribute('aria-labelledby', title.id)
+    } else {
+      dialog.setAttribute('aria-label', this.settings.ariaLabel)
+    }
 
     const closeButton = document.createElement('button')
     closeButton.type = 'button'
@@ -284,10 +295,12 @@ export default class Render {
       }
     }
 
-    dialog.appendChild(closeButton)
+    if (title) {
+      dialog.appendChild(title)
+    }
     overlay.appendChild(dialog)
 
-    return { overlay, dialog, closeButton }
+    return { overlay, dialog, closeButton, title }
   }
 
   private showModal(): void {
@@ -297,6 +310,7 @@ export default class Render {
 
     this.modalElements.dialog.appendChild(this.content.main)
     this.addClasses(this.content.main, this.classes.modalContent)
+    this.content.main.appendChild(this.modalElements.closeButton)
     this.content.main.style.top = ''
     this.content.main.style.left = ''
     this.content.main.style.margin = ''

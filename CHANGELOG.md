@@ -43,6 +43,8 @@ and this project adheres to
 - Option rows use `content-visibility: auto` to reduce layout cost for long lists
 - `store.filter()` supports read-only views without cloning; hot paths use live store references
 - Vue component requires the `data` prop; slot content for `<option>` children is no longer supported. Slot-based options caused Vue to patch the native `<select>` on re-renders, which re-triggered Slim Select's mutation observer and structure sync — risking redundant work and v-model feedback loops. Pass options via `:data` instead (same shape as core SlimSelect).
+- Modal option panel uses `--ss-modal-height` (default `85vh`) and `--ss-modal-width` (default `90vw`) instead of the dropdown `--ss-content-height` cap
+- Modal dialog shows associated label text (or `aria-label`) as a header above the option list; override with `settings.modalTitle`
 
 ### Fixed
 

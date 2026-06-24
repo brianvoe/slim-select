@@ -1,7 +1,16 @@
 'use strict'
 
 import { describe, expect, test, vi } from 'vitest'
-import { hasClassInTree, debounce, isEqual, kebabCase, dataStructureEqual, selectedIdsEqual, copyOptionData } from './helpers'
+import {
+  hasClassInTree,
+  debounce,
+  isEqual,
+  kebabCase,
+  dataStructureEqual,
+  selectedIdsEqual,
+  copyOptionData,
+  getAssociatedLabelText
+} from './helpers'
 import { Optgroup, Option } from './store'
 
 describe('helpers module', () => {
@@ -203,13 +212,15 @@ describe('helpers module', () => {
     })
 
     test('matches isEqual for full option arrays', () => {
-      const a = Array.from({ length: 5 }, (_, i) =>
-        new Option({
-          id: `id-${i}`,
-          text: `Option ${i}`,
-          value: `value-${i}`,
-          selected: i === 0
-        })
+      const a = Array.from(
+        { length: 5 },
+        (_, i) =>
+          new Option({
+            id: `id-${i}`,
+            text: `Option ${i}`,
+            value: `value-${i}`,
+            selected: i === 0
+          })
       )
       const b = a.map((option) => ({ ...option }))
 
@@ -236,6 +247,48 @@ describe('helpers module', () => {
     test('returns empty object for missing data', () => {
       expect(copyOptionData()).toEqual({})
       expect(copyOptionData(null)).toEqual({})
+    })
+  })
+
+  describe('getAssociatedLabelText', () => {
+    test('reads text from label with for attribute', () => {
+      document.body.innerHTML = `
+        <label for="country-select">Country</label>
+        <select id="country-select">
+          <option value="us">United States</option>
+        </select>
+      `
+
+      const select = document.getElementById(
+        'country-select'
+      ) as HTMLSelectElement
+      expect(getAssociatedLabelText(select)).toBe('Country')
+    })
+
+    test('reads text from wrapped label without option text', () => {
+      document.body.innerHTML = `
+        <label>
+          Favorite fruit
+          <select id="fruit-select">
+            <option value="apple">Apple</option>
+            <option value="banana">Banana</option>
+          </select>
+        </label>
+      `
+
+      const select = document.getElementById(
+        'fruit-select'
+      ) as HTMLSelectElement
+      expect(getAssociatedLabelText(select)).toBe('Favorite fruit')
+    })
+
+    test('falls back to aria-label when no label is associated', () => {
+      document.body.innerHTML = `
+        <select id="aria-select" aria-label="Region"></select>
+      `
+
+      const select = document.getElementById('aria-select') as HTMLSelectElement
+      expect(getAssociatedLabelText(select)).toBe('Region')
     })
   })
 

@@ -46,6 +46,7 @@ export default class Settings {
   public maxValuesMessage: string
   public addableText: string
   public modal: ModalSetting
+  public modalTitle: string
 
   constructor(settings?: Partial<Settings>) {
     if (!settings) {
@@ -103,5 +104,6 @@ export default class Settings {
     this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
     this.addableText = settings.addableText || 'Press "Enter" to add {value}'
     this.modal = settings.modal || 'mobile'
+    this.modalTitle = settings.modalTitle || ''
   }
 }

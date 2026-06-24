@@ -57,6 +57,7 @@ export default class CssClasses {
   // Modal
   public modalOverlay: string
   public modalDialog: string
+  public modalTitle: string
   public modalClose: string
   public modalContent: string
 
@@ -123,6 +124,7 @@ export default class CssClasses {
     this.highlighted = join('ss-highlighted', classes.highlighted)
     this.modalOverlay = join('ss-modal-overlay', classes.modalOverlay)
     this.modalDialog = join('ss-modal-dialog', classes.modalDialog)
+    this.modalTitle = join('ss-modal-title', classes.modalTitle)
     this.modalClose = join('ss-modal-close', classes.modalClose)
     this.modalContent = join('ss-modal-content', classes.modalContent)
     this.mainOpen = join('ss-open', classes.mainOpen)

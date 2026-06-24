@@ -21,6 +21,31 @@ export function copyOptionData(
   return result
 }
 
+/** Label text only — excludes nested form controls (e.g. wrapped select options). */
+export function getLabelElementText(label: HTMLLabelElement): string {
+  const clone = label.cloneNode(true) as HTMLLabelElement
+  clone
+    .querySelectorAll('select, option, optgroup, textarea, input, button')
+    .forEach((el) => el.remove())
+
+  return clone.textContent?.replace(/\s+/g, ' ').trim() || ''
+}
+
+/** Associated label text for a select, or its aria-label when no label is linked. */
+export function getAssociatedLabelText(select: HTMLSelectElement): string {
+  if (select.labels && select.labels.length > 0) {
+    const texts = Array.from(select.labels)
+      .map(getLabelElementText)
+      .filter(Boolean)
+
+    if (texts.length > 0) {
+      return [...new Set(texts)].join(' ')
+    }
+  }
+
+  return select.getAttribute('aria-label')?.trim() || ''
+}
+
 // Generate an 8 character random string
 export function generateID(): string {
   return Math.random().toString(36).substring(2, 10)

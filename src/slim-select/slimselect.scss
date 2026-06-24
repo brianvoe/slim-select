@@ -14,6 +14,8 @@
   // Heights
   --ss-main-height: 40px;
   --ss-content-height: 300px;
+  --ss-modal-height: 85vh;
+  --ss-modal-width: 90vw;
   --ss-search-height: var(--ss-main-height);
   --ss-option-height: var(--ss-main-height);
 
@@ -645,51 +647,22 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 400px;
-    max-height: min(85vh, var(--ss-content-height));
+    max-width: var(--ss-modal-width);
+    max-height: var(--ss-modal-height);
     overflow: visible;
 
-    .ss-modal-close {
-      position: absolute;
-      top: var(--ss-spacing-s);
-      right: var(--ss-spacing-s);
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      margin: 0;
+    .ss-modal-title {
+      flex: 0 0 auto;
+      width: 100%;
+      padding: 0 0 var(--ss-spacing-l);
+      box-sizing: border-box;
+      font-weight: bold;
+      font-size: 1.35em;
+      line-height: 1.3;
+      color: #ffffff;
+      text-align: left;
+      background: none;
       border: none;
-      border-radius: var(--ss-border-radius);
-      background-color: var(--ss-bg-color);
-      color: var(--ss-font-color);
-      cursor: pointer;
-      outline: 0;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-
-      &:hover {
-        background-color: var(--ss-bg-color);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
-      }
-
-      &:focus {
-        box-shadow: 0 0 5px var(--ss-focus-color);
-      }
-
-      svg {
-        width: 10px;
-        height: 10px;
-
-        path {
-          fill: none;
-          stroke: currentColor;
-          stroke-width: 20;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-        }
-      }
     }
 
     .ss-content {
@@ -698,12 +671,64 @@
         top: auto !important;
         left: auto !important;
         width: 100% !important;
-        max-width: 400px;
+        max-width: 100%;
+        max-height: var(--ss-modal-height);
+        min-height: 0;
         margin: 0 !important;
         transform-origin: center center;
         z-index: 1;
         border-radius: var(--ss-border-radius);
-        overflow: hidden;
+        overflow: visible;
+
+        .ss-modal-close {
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          padding: 0;
+          margin: 0;
+          border: none;
+          border-radius: var(--ss-border-radius);
+          background-color: var(--ss-bg-color);
+          color: var(--ss-font-color);
+          cursor: pointer;
+          outline: 0;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+          transform: translate(50%, -50%);
+
+          &:hover {
+            background-color: var(--ss-bg-color);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+          }
+
+          &:focus {
+            box-shadow: 0 0 5px var(--ss-focus-color);
+          }
+
+          svg {
+            width: 10px;
+            height: 10px;
+
+            path {
+              fill: none;
+              stroke: currentColor;
+              stroke-width: 20;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+            }
+          }
+        }
+
+        .ss-list {
+          overflow-x: hidden;
+          overflow-y: auto;
+          border-radius: var(--ss-border-radius);
+        }
 
         &.ss-dir-above,
         &.ss-dir-below {

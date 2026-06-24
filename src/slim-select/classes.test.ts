@@ -42,6 +42,7 @@ const defaultClasses: { [key: string]: string } = {
   highlighted: 'ss-highlighted',
   modalOverlay: 'ss-modal-overlay',
   modalDialog: 'ss-modal-dialog',
+  modalTitle: 'ss-modal-title',
   modalClose: 'ss-modal-close',
   modalContent: 'ss-modal-content',
   mainOpen: 'ss-open',
