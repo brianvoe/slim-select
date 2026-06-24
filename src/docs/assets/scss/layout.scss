@@ -33,7 +33,9 @@ body {
 
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
-      grid-template-rows: calc(var(--height-header) - var(--height-nav) + var(--spacing-half)) var(--height-nav) 1fr;
+      grid-template-rows:
+        calc(var(--height-header) - var(--height-nav) + var(--spacing-half))
+        var(--height-nav) 1fr;
       grid-template-areas:
         'header'
         'nav'
@@ -123,7 +125,8 @@ body {
           align-items: center;
           line-height: 1;
           font-size: 16px;
-          padding: var(--spacing-quarter) var(--spacing-quarter) var(--spacing-quarter) var(--spacing-half);
+          padding: var(--spacing-quarter) var(--spacing-quarter)
+            var(--spacing-quarter) var(--spacing-half);
           margin: 0 auto;
         }
 
@@ -194,10 +197,29 @@ body {
 
         .ss-main {
           flex: 0 1 auto;
-          height: var(--height-nav);
-          min-height: var(--height-nav);
+          height: 40px;
+          min-height: 40px;
           font-size: 13px;
           font-weight: bold;
+
+          .ss-single {
+            color: var(--color-primary);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+          }
+        }
+
+        .ss-content.docs-nav {
+          font-size: 13px;
+
+          .ss-list .ss-option {
+            font-weight: 700;
+          }
+
+          .ss-list .ss-option.ss-selected:not(.ss-disabled) {
+            letter-spacing: 0.02em;
+          }
         }
 
         .nav-content {
@@ -210,8 +232,9 @@ body {
 
           .ss-content {
             height: 100% !important;
-            max-height: calc(100vh - var(--height-header) - var(--height-nav) - 100px) !important;
-            font-size: 13px;
+            max-height: calc(
+              100vh - var(--height-header) - var(--height-nav) - 100px
+            ) !important;
           }
         }
       }

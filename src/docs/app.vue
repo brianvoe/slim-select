@@ -109,7 +109,10 @@ export default defineComponent({
             { text: 'searchPlaceholder', value: 'settings#searchPlaceholder' },
             { text: 'searchHighlight', value: 'settings#searchHighlight' },
             { text: 'closeOnSelect', value: 'settings#closeOnSelect' },
-            { text: 'showOptionTooltips', value: 'settings#showOptionTooltips' },
+            {
+              text: 'showOptionTooltips',
+              value: 'settings#showOptionTooltips'
+            },
             { text: 'closable', value: 'settings#closable' },
             { text: 'hideSelected', value: 'settings#hideSelected' },
             { text: 'maxValuesShown', value: 'settings#maxValuesShown' }
@@ -172,7 +175,9 @@ export default defineComponent({
 
     this.$router.isReady().then(() => {
       if (this.nav) {
-        this.nav.setSelected(this.$router.currentRoute.value.fullPath.replace('/', ''))
+        this.nav.setSelected(
+          this.$router.currentRoute.value.fullPath.replace('/', '')
+        )
       }
     })
 
@@ -182,7 +187,10 @@ export default defineComponent({
         // other things to happen first
         setTimeout(() => {
           if (this.$route.query.p) {
-            this.$router.push({ path: this.$route.query.p.toString(), hash: this.$route.hash })
+            this.$router.push({
+              path: this.$route.query.p.toString(),
+              hash: this.$route.hash
+            })
           }
         }, 200)
 
@@ -206,7 +214,11 @@ export default defineComponent({
             // get header height
             const header = document.querySelector('header') as HTMLElement
             const nav = document.querySelector('nav') as HTMLElement
-            const headerHeight = header ? header.clientHeight + (window.innerWidth < 700 ? nav.clientHeight : 0) + 8 : 0
+            const headerHeight = header
+              ? header.clientHeight +
+                (window.innerWidth < 700 ? nav.clientHeight : 0) +
+                8
+              : 0
 
             window.scroll({
               top: el.offsetTop - headerHeight, // header height + padding
@@ -252,10 +264,14 @@ export default defineComponent({
         openContent: 'below'
       } as Partial<Settings>
 
+      const navDropdown = this.$refs.navDropdown as HTMLDivElement
+
       if (this.width > 700) {
         settings.alwaysOpen = true
         settings.contentPosition = 'relative'
         settings.contentLocation = this.$refs.navContent as HTMLDivElement
+      } else {
+        settings.contentLocation = navDropdown
       }
 
       this.nav = new SlimSelect({
@@ -276,7 +292,9 @@ export default defineComponent({
     updateNav() {
       setTimeout(() => {
         if (this.nav) {
-          this.nav.setSelected(this.$router.currentRoute.value.fullPath.replace('/', ''))
+          this.nav.setSelected(
+            this.$router.currentRoute.value.fullPath.replace('/', '')
+          )
         }
       }, 0)
     }
@@ -309,21 +327,30 @@ export default defineComponent({
     </div>
   </header>
   <nav>
-    <div class="ss-dropdown">
-      <select ref="nav"></select>
+    <div class="ss-dropdown" ref="navDropdown">
+      <select ref="nav" class="docs-nav"></select>
       <div class="nav-content" ref="navContent"></div>
     </div>
-    <AdSlot class="adsense-nav" v-if="!appStore.isMobile" ad-slot="9560132183" />
+    <AdSlot
+      class="adsense-nav"
+      v-if="!appStore.isMobile"
+      ad-slot="9560132183"
+    />
   </nav>
   <main>
     <router-view />
     <AdSlot ad-slot="1270131515" />
     <footer>
-      © {{ year }} <a href="http://webiswhatido.com" style="color: #ffffff" target="_blank">Brian Voelker</a>.
+      © {{ year }}
+      <a href="http://webiswhatido.com" style="color: #ffffff" target="_blank"
+        >Brian Voelker</a
+      >.
       <br />
       Slim Select is under the MIT license.
       <br />
-      <a href="/privacy" style="color: #ffffff; text-decoration: underline">Privacy Policy</a>
+      <a href="/privacy" style="color: #ffffff; text-decoration: underline"
+        >Privacy Policy</a
+      >
     </footer>
   </main>
 </template>
