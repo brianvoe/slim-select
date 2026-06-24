@@ -4,7 +4,7 @@ import HighlightStyle from '@/docs/components/highlight_style.vue'
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
-  name: 'Variables',
+  name: 'Customize',
   components: {
     HighlightStyle
   },
@@ -200,7 +200,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#variables {
+#customize {
+  .intro {
+    margin: 0;
+    line-height: 1.6;
+  }
+
   .examples-section {
     position: sticky;
     top: 0;
@@ -325,16 +330,24 @@ export default defineComponent({
       margin: 0 0 var(--spacing-quarter) 0;
       color: var(--color-primary);
     }
+
+    .generated-css-hint {
+      margin: 0 0 var(--spacing-half);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-font);
+      opacity: 0.85;
+    }
   }
 }
 </style>
 
 <template>
-  <div id="variables" class="content">
-    <h2 class="header">CSS Variables</h2>
-    <p>
-      SlimSelect uses CSS custom properties (variables) that you can easily override to match your website's design
-      system. Use the controls below to modify variables in real-time and see the changes applied to the examples.
+  <div id="customize" class="content">
+    <h2 class="header">customize</h2>
+    <p class="intro">
+      Adjust the controls to preview your dropdown live, then copy the generated css variables for
+      your site.
     </p>
 
     <!-- Live Examples -->
@@ -360,13 +373,9 @@ export default defineComponent({
     <!-- Variable Controls -->
     <div class="controls-section">
       <div class="controls-header">
-        <h3>Variable Controls</h3>
+        <h3>Controls</h3>
         <button @click="randomizeVariables" class="randomize-btn">🎲 Randomize</button>
       </div>
-      <p>
-        Make changes to the variables below to see the changes applied to the examples. You can also copy the generated
-        CSS below to your own CSS file.
-      </p>
 
       <!-- Colors Group -->
       <div class="control-group-section">
@@ -547,10 +556,11 @@ export default defineComponent({
 
     <!-- Generated CSS -->
     <div class="generated-css">
-      <h3>Generated CSS</h3>
+      <h3>Copy for your site</h3>
+      <p class="generated-css-hint">Replace <code>#root</code> with your app's wrapper if needed.</p>
       <HighlightStyle language="css">
         <pre>
-          .variable-showcase {
+          #root {
             /* Colors */
             --ss-primary-color: {{ variables.primaryColor }};
             --ss-bg-color: {{ variables.bgColor }};
@@ -569,8 +579,7 @@ export default defineComponent({
             --ss-spacing-m: {{ variables.spacingM }};
             --ss-spacing-s: {{ variables.spacingS }};
 
-            /* Other Properties */
-            --ss-border-radius: {{ variables.borderRadius }};
+            /* Animation */
             --ss-animation-timing: {{ variables.animationTiming }};
           }
         </pre>

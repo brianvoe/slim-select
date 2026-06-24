@@ -58,7 +58,8 @@ export default defineComponent({
           label: 'Style',
           closable: 'close',
           options: [
-            { text: 'variables', value: 'style#variables' },
+            { text: 'showcase', value: 'style#showcase' },
+            { text: 'customize', value: 'style#customize' },
             { text: 'classes', value: 'style#classes' },
             { text: 'styles', value: 'style#styles' }
           ]
