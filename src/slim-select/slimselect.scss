@@ -15,7 +15,7 @@
   --ss-main-height: 40px;
   --ss-content-height: 300px;
   --ss-modal-height: 85vh;
-  --ss-modal-width: 90vw;
+  --ss-modal-width: min(90vw, 400px);
   --ss-search-height: var(--ss-main-height);
   --ss-option-height: var(--ss-main-height);
 
@@ -115,18 +115,18 @@
   }
 
   .ss-values {
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     align-content: center;
     align-self: stretch;
     gap: var(--ss-spacing-m);
-    flex: 1 1 100%;
-    min-width: 0; // Allow container to shrink
-    max-width: 100%; // Ensure container doesn't exceed parent
+    flex: 1 1 0%;
+    min-width: 0; // Allow container to shrink below content width
+    max-width: 100%;
     padding: var(--ss-spacing-s) 0;
     box-sizing: border-box;
-    overflow: hidden; // Prevent overflow
+    overflow: hidden;
 
     // When multiString is enabled, values container holds a single text line
     &:has(.ss-multi-string) {
@@ -134,14 +134,21 @@
       gap: 0;
     }
 
+    // Single-line value text fills space before the arrow/deselect siblings
+    &:has(.ss-single),
+    &:has(.ss-placeholder) {
+      flex-wrap: nowrap;
+    }
+
     // Shared layout for single value, placeholder, and multiString text
     .ss-single,
     .ss-placeholder,
     .ss-multi-string {
       display: block;
-      flex: 1 1 auto;
+      flex: 1 1 0%;
       min-width: 0;
-      max-width: calc(100% - 20px);
+      width: 100%;
+      max-width: 100%;
       margin: 0;
       padding: 0 var(--ss-spacing-m) 0
         calc(var(--ss-spacing-l) - var(--ss-spacing-s));

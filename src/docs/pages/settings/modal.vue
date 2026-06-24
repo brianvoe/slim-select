@@ -169,7 +169,7 @@ export default defineComponent({
       <dd>Associated <code>&lt;label&gt;</code> text — override with <code>modalTitle</code></dd>
       <dt>Size</dt>
       <dd>
-        <code>--ss-modal-width</code> (90vw),
+        <code>--ss-modal-width</code> (min(90vw, 400px)),
         <code>--ss-modal-height</code> (85vh)
       </dd>
     </dl>
