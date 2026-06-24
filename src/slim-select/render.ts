@@ -1706,13 +1706,20 @@ export default class Render {
             e.preventDefault()
             e.stopPropagation()
 
-            // If optgroup is closed, open it
-            if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+            const isOpen = this.isClosableOptgroupOpen(
+              optgroupEl,
+              optgroupClosable
+            )
+
+            if (!isOpen) {
+              this.closeOtherClosableOptgroups(optgroupEl)
               this.removeClasses(optgroupEl, this.classes.close)
+              this.removeClasses(optgroupClosable, this.classes.mainOpen)
               this.addClasses(optgroupEl, this.classes.mainOpen)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
             } else {
               this.removeClasses(optgroupEl, this.classes.mainOpen)
+              this.removeClasses(optgroupClosable, this.classes.mainOpen)
               this.addClasses(optgroupEl, this.classes.close)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
             }
@@ -1853,6 +1860,56 @@ export default class Render {
     this.optionsListIsFullData = renderedOptions.every((o) =>
       storeIds.has(o.id)
     )
+  }
+
+  private isClosableOptgroupOpen(
+    optgroupEl: HTMLElement,
+    optgroupClosable: HTMLElement
+  ): boolean {
+    if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+      return false
+    }
+
+    return (
+      optgroupEl.classList.contains(this.classes.getFirst('mainOpen')) ||
+      optgroupClosable.classList.contains(this.classes.getFirst('mainOpen'))
+    )
+  }
+
+  private closeClosableOptgroup(optgroupEl: HTMLElement): void {
+    const closable = optgroupEl.querySelector(
+      '.' + this.classes.getFirst('optgroupClosable')
+    ) as HTMLElement | null
+    if (!closable) {
+      return
+    }
+
+    if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+      return
+    }
+
+    this.removeClasses(optgroupEl, this.classes.mainOpen)
+    this.removeClasses(closable, this.classes.mainOpen)
+    this.addClasses(optgroupEl, this.classes.close)
+
+    const arrow = closable.querySelector('path')
+    if (arrow) {
+      arrow.setAttribute('d', this.classes.arrowClose)
+    }
+  }
+
+  private closeOtherClosableOptgroups(exceptOptgroupEl: HTMLElement): void {
+    const optgroups = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('optgroup')
+    )
+
+    for (const optgroupEl of optgroups) {
+      if (optgroupEl === exceptOptgroupEl) {
+        continue
+      }
+
+      this.closeClosableOptgroup(optgroupEl as HTMLElement)
+    }
   }
 
   private updateOptgroupVisibilityAfterSearch(searchTrim: string): void {

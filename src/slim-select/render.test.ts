@@ -1390,6 +1390,79 @@ describe('render module', () => {
     })
   })
 
+  describe('closable optgroups', () => {
+    test('opening one closable optgroup closes other open closable optgroups', () => {
+      const store = new Store('multiple', [
+        {
+          label: 'Group A',
+          closable: 'close',
+          options: [
+            { text: 'A1', value: 'a1' },
+            { text: 'A2', value: 'a2' }
+          ]
+        },
+        {
+          label: 'Group B',
+          closable: 'close',
+          options: [{ text: 'B1', value: 'b1' }]
+        },
+        {
+          label: 'Group C',
+          closable: 'off',
+          options: [{ text: 'C1', value: 'c1' }]
+        }
+      ])
+
+      render.renderOptions(store.getData())
+
+      const optgroups = render.content.list.querySelectorAll(
+        '.' + render.classes.getFirst('optgroup')
+      )
+      const groupA = optgroups[0] as HTMLDivElement
+      const groupB = optgroups[1] as HTMLDivElement
+      const groupC = optgroups[2] as HTMLDivElement
+
+      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+
+      const labelA = groupA.querySelector(
+        '.' + render.classes.getFirst('optgroupLabel')
+      ) as HTMLDivElement
+      const labelB = groupB.querySelector(
+        '.' + render.classes.getFirst('optgroupLabel')
+      ) as HTMLDivElement
+
+      labelA.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(groupA.classList.contains(render.classes.getFirst('mainOpen'))).toBe(
+        true
+      )
+      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+
+      labelB.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+      expect(groupB.classList.contains(render.classes.getFirst('mainOpen'))).toBe(
+        true
+      )
+      expect(groupC.classList.contains(render.classes.getFirst('close'))).toBe(
+        false
+      )
+    })
+  })
+
   describe('filterOptionsInPlace', () => {
     test('filters options without rebuilding the list', () => {
       const store = render.store

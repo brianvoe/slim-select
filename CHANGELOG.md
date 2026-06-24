@@ -59,6 +59,7 @@ and this project adheres to
 - Options and optgroup labels use `min-height` with vertical centering instead of vertical padding for height control
 - Modal mode is skipped when `alwaysOpen` is true (inline always-open panels stay non-modal)
 - Documentation variables page and site nav menu updated for the tighter height and spacing behavior
+- Closable optgroups behave as an accordion — opening one closes any other open closable optgroup, including groups expanded because they contain a selected option
 
 ### Fixed
 
