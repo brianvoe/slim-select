@@ -45,18 +45,36 @@ export default defineComponent({
 
 <style lang="scss">
 #modal {
+  .modal-demo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-quarter);
+    align-items: flex-start;
+    width: 100%;
+
+    select,
+    .ss-main,
+    .highlight-style {
+      align-self: stretch;
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
   .modal-controls {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-half);
-    margin: 0 0 var(--spacing);
+    gap: var(--spacing-quarter);
 
     button {
-      padding: var(--spacing-half) var(--spacing);
+      margin: 0;
+      padding: var(--spacing-quarter) var(--spacing-half);
       border: 1px solid var(--color-border);
       border-radius: var(--border-radius);
       background: var(--color-background);
       color: var(--color-font);
+      font-size: var(--font-size);
+      line-height: 1.2;
       cursor: pointer;
 
       &.active {
@@ -84,31 +102,31 @@ export default defineComponent({
     <p>Values: <strong>"off"</strong> | <strong>"on"</strong> | <strong>"mobile"</strong></p>
     <p>Default: <strong>"mobile"</strong> (modal below 768px viewport width, dropdown at or above)</p>
 
-    <div class="modal-controls">
-      <button
-        type="button"
-        :class="{ active: modal === 'off' }"
-        @click="setModal('off')"
-      >
-        off
-      </button>
-      <button
-        type="button"
-        :class="{ active: modal === 'on' }"
-        @click="setModal('on')"
-      >
-        on
-      </button>
-      <button
-        type="button"
-        :class="{ active: modal === 'mobile' }"
-        @click="setModal('mobile')"
-      >
-        mobile
-      </button>
-    </div>
+    <div class="modal-demo">
+      <div class="modal-controls">
+        <button
+          type="button"
+          :class="{ active: modal === 'off' }"
+          @click="setModal('off')"
+        >
+          off
+        </button>
+        <button
+          type="button"
+          :class="{ active: modal === 'on' }"
+          @click="setModal('on')"
+        >
+          on
+        </button>
+        <button
+          type="button"
+          :class="{ active: modal === 'mobile' }"
+          @click="setModal('mobile')"
+        >
+          mobile
+        </button>
+      </div>
 
-    <div class="row">
       <select ref="modalSelect">
         <option data-placeholder="true"></option>
         <option value="apple">Apple</option>
@@ -120,10 +138,8 @@ export default defineComponent({
         <option value="grape">Grape</option>
         <option value="honeydew">Honeydew</option>
       </select>
-    </div>
-    <br />
 
-    <HighlightStyle language="javascript">
+      <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
           select: '#selectElement',
@@ -132,6 +148,7 @@ export default defineComponent({
           }
         })
       </pre>
-    </HighlightStyle>
+      </HighlightStyle>
+    </div>
   </div>
 </template>
