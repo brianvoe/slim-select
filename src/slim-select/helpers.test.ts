@@ -1,7 +1,7 @@
 'use strict'
 
 import { describe, expect, test, vi } from 'vitest'
-import { hasClassInTree, debounce, isEqual, kebabCase, dataStructureEqual, selectedIdsEqual } from './helpers'
+import { hasClassInTree, debounce, isEqual, kebabCase, dataStructureEqual, selectedIdsEqual, copyOptionData } from './helpers'
 import { Optgroup, Option } from './store'
 
 describe('helpers module', () => {
@@ -215,6 +215,27 @@ describe('helpers module', () => {
 
       expect(dataStructureEqual(a, b)).toBe(true)
       expect(isEqual(a, b)).toBe(true)
+    })
+  })
+
+  describe('copyOptionData', () => {
+    test('copies DOMStringMap to a plain object', () => {
+      const option = document.createElement('option')
+      option.setAttribute('data-placeholder', 'true')
+      option.setAttribute('data-foo', 'bar')
+
+      expect(copyOptionData(option.dataset)).toEqual({
+        placeholder: 'true',
+        foo: 'bar'
+      })
+      expect(JSON.stringify(copyOptionData(option.dataset))).toBe(
+        '{"placeholder":"true","foo":"bar"}'
+      )
+    })
+
+    test('returns empty object for missing data', () => {
+      expect(copyOptionData()).toEqual({})
+      expect(copyOptionData(null)).toEqual({})
     })
   })
 

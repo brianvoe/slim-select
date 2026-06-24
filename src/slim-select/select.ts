@@ -1,4 +1,4 @@
-import { kebabCase, hasClassInTree } from './helpers'
+import { copyOptionData, kebabCase, hasClassInTree } from './helpers'
 import { classifyMutations } from './mutations'
 import { Optgroup, Option } from './store'
 
@@ -327,7 +327,7 @@ export default class Select {
       placeholder: option.dataset.placeholder === 'true',
       class: option.className,
       style: option.style.cssText,
-      data: option.dataset
+      data: copyOptionData(option.dataset)
     } as Option
   }
 

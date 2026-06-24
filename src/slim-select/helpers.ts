@@ -3,6 +3,24 @@ import { MODAL_MOBILE_BREAKPOINT, type ModalSetting } from './settings'
 
 type DataItem = Partial<Option> | Partial<Optgroup>
 
+/** Copy option data attributes into a plain object (not a live DOMStringMap). */
+export function copyOptionData(
+  data?: { [key: string]: string } | DOMStringMap | null
+): { [key: string]: string } {
+  if (!data) {
+    return {}
+  }
+
+  const result: { [key: string]: string } = {}
+  for (const key of Object.keys(data)) {
+    const value = data[key]
+    if (value !== undefined) {
+      result[key] = value
+    }
+  }
+  return result
+}
+
 // Generate an 8 character random string
 export function generateID(): string {
   return Math.random().toString(36).substring(2, 10)
@@ -121,9 +139,7 @@ function normalizedOptionField(
     case 'id':
       return option.id || ''
     case 'value':
-      return option.value === undefined
-        ? option.text || ''
-        : option.value || ''
+      return option.value === undefined ? option.text || '' : option.value || ''
     case 'text':
       return option.text || ''
     case 'html':
@@ -155,10 +171,7 @@ function isOptgroupItem(item: DataItem): item is Partial<Optgroup> {
   )
 }
 
-function optionStructureEqual(
-  a: Partial<Option>,
-  b: Partial<Option>
-): boolean {
+function optionStructureEqual(a: Partial<Option>, b: Partial<Option>): boolean {
   for (const field of OPTION_FIELDS) {
     const av = normalizedOptionField(a, field)
     const bv = normalizedOptionField(b, field)
@@ -213,10 +226,7 @@ function optgroupStructureEqual(
 }
 
 /** Compare option/optgroup arrays without JSON.stringify. */
-export function dataStructureEqual(
-  a: DataItem[],
-  b: DataItem[]
-): boolean {
+export function dataStructureEqual(a: DataItem[], b: DataItem[]): boolean {
   if (a === b) {
     return true
   }
@@ -242,7 +252,9 @@ export function dataStructureEqual(
       continue
     }
 
-    if (!optionStructureEqual(aItem as Partial<Option>, bItem as Partial<Option>)) {
+    if (
+      !optionStructureEqual(aItem as Partial<Option>, bItem as Partial<Option>)
+    ) {
       return false
     }
   }

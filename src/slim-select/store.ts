@@ -1,4 +1,4 @@
-import { generateID } from './helpers'
+import { copyOptionData, generateID } from './helpers'
 
 export class Option {
   id: string
@@ -31,7 +31,7 @@ export class Option {
       option.placeholder !== undefined ? option.placeholder : false
     this.class = option.class || ''
     this.style = option.style || ''
-    this.data = option.data || {}
+    this.data = copyOptionData(option.data)
   }
 }
 export class Optgroup {
