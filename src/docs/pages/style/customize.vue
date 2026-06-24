@@ -90,7 +90,9 @@ export default defineComponent({
       }
     },
     updateVariables() {
-      const style = document.getElementById('dynamic-variables') as HTMLStyleElement
+      const style = document.getElementById(
+        'dynamic-variables'
+      ) as HTMLStyleElement
       if (!style) return
 
       style.textContent = `
@@ -112,7 +114,7 @@ export default defineComponent({
           `
     },
     randomSpacing(): { spacingS: string; spacingM: string; spacingL: string } {
-      const randomFrom = <T>(array: T[]): T =>
+      const randomFrom = <T,>(array: T[]): T =>
         array[Math.floor(Math.random() * array.length)]
 
       // Harmonious s/m/l triples — always ordered with sensible gaps
@@ -163,17 +165,53 @@ export default defineComponent({
       ]
 
       // Height randomizer (reasonable ranges)
-      const heights = ['25px', '30px', '35px', '40px', '45px', '50px', '55px', '60px']
-      const contentHeights = ['200px', '250px', '300px', '350px', '400px', '450px', '500px']
+      const heights = [
+        '25px',
+        '30px',
+        '35px',
+        '40px',
+        '45px',
+        '50px',
+        '55px',
+        '60px'
+      ]
+      const contentHeights = [
+        '200px',
+        '250px',
+        '300px',
+        '350px',
+        '400px',
+        '450px',
+        '500px'
+      ]
 
       // Border radius randomizer
-      const borderRadii = ['2px', '4px', '6px', '8px', '10px', '12px', '15px', '20px']
+      const borderRadii = [
+        '2px',
+        '4px',
+        '6px',
+        '8px',
+        '10px',
+        '12px',
+        '15px',
+        '20px'
+      ]
 
       // Animation timing randomizer
-      const timings = ['0.1s', '0.15s', '0.2s', '0.25s', '0.3s', '0.4s', '0.5s', '0.6s']
+      const timings = [
+        '0.1s',
+        '0.15s',
+        '0.2s',
+        '0.25s',
+        '0.3s',
+        '0.4s',
+        '0.5s',
+        '0.6s'
+      ]
 
       // Random selection function
-      const randomFrom = (array: string[]) => array[Math.floor(Math.random() * array.length)]
+      const randomFrom = (array: string[]) =>
+        array[Math.floor(Math.random() * array.length)]
 
       // Update all variables with random values
       this.variables.primaryColor = randomFrom(colors)
@@ -240,26 +278,48 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     gap: var(--spacing-half);
+    min-width: 0;
+    max-width: 100%;
 
     .controls-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: var(--spacing-half);
       margin-bottom: var(--spacing-half);
 
       h3 {
         color: var(--color-primary);
+        margin: 0;
       }
 
       .randomize-btn {
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background: linear-gradient(
+          135deg,
+          var(--color-primary),
+          var(--color-secondary)
+        );
         border: none;
         transition: all 0.3s ease;
         box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        flex-shrink: 0;
+        box-sizing: border-box;
+        max-width: 100%;
 
         &:hover {
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+      }
+
+      @media (max-width: 700px) {
+        flex-direction: column;
+        align-items: stretch;
+        min-width: 0;
+
+        .randomize-btn {
+          width: 100%;
+          min-height: 44px;
         }
       }
     }
@@ -267,19 +327,27 @@ export default defineComponent({
     .control-group-section {
       h4 {
         color: var(--color-primary);
-
-        margin-bottom: var(--spacing-half);
+        margin-bottom: var(--spacing-quarter);
       }
 
       .controls-row {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: var(--spacing-half);
+
+        @media (max-width: 700px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (max-width: 420px) {
+          grid-template-columns: minmax(0, 1fr);
+        }
 
         .control-group {
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 4px;
+          min-width: 0;
 
           label {
             font-weight: 600;
@@ -293,6 +361,9 @@ export default defineComponent({
             border-radius: var(--border-radius);
             font-size: 12px;
             transition: border-color 0.3s ease;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
 
             &:focus {
               outline: none;
@@ -306,6 +377,17 @@ export default defineComponent({
               padding: 1px;
               cursor: pointer;
             }
+
+            @media (max-width: 700px) {
+              min-height: 44px;
+              padding: 10px 12px;
+              font-size: 16px;
+
+              &[type='color'] {
+                height: 44px;
+                padding: 4px;
+              }
+            }
           }
 
           .default-value {
@@ -317,7 +399,30 @@ export default defineComponent({
             border-radius: 2px;
             display: inline-block;
             width: fit-content;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+
+            @media (max-width: 700px) {
+              font-size: 11px;
+            }
           }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 700px) {
+    .examples-section {
+      position: static;
+      padding: var(--spacing-half);
+
+      .row {
+        flex-direction: column;
+
+        .single,
+        .multi {
+          min-width: 0;
+          width: 100%;
         }
       }
     }
@@ -346,8 +451,8 @@ export default defineComponent({
   <div id="customize" class="content">
     <h2 class="header">customize</h2>
     <p class="intro">
-      Adjust the controls to preview your dropdown live, then copy the generated css variables for
-      your site.
+      Adjust the controls to preview your dropdown live, then copy the generated
+      css variables for your site.
     </p>
 
     <!-- Live Examples -->
@@ -358,14 +463,20 @@ export default defineComponent({
           <select ref="singleSelect" class="variable-showcase">
             <option data-placeholder="true"></option>
           </select>
-          <div ref="singleSelectContent" class="dropdown-content-container"></div>
+          <div
+            ref="singleSelectContent"
+            class="dropdown-content-container"
+          ></div>
         </div>
         <div class="multi">
           <label>Multiple Select</label>
           <select ref="multiSelect" class="variable-showcase" multiple>
             <option data-placeholder="true"></option>
           </select>
-          <div ref="multiSelectContent" class="dropdown-content-container"></div>
+          <div
+            ref="multiSelectContent"
+            class="dropdown-content-container"
+          ></div>
         </div>
       </div>
     </div>
@@ -374,7 +485,9 @@ export default defineComponent({
     <div class="controls-section">
       <div class="controls-header">
         <h3>Controls</h3>
-        <button @click="randomizeVariables" class="randomize-btn">🎲 Randomize</button>
+        <button @click="randomizeVariables" class="randomize-btn">
+          🎲 Randomize
+        </button>
       </div>
 
       <!-- Colors Group -->
@@ -557,7 +670,9 @@ export default defineComponent({
     <!-- Generated CSS -->
     <div class="generated-css">
       <h3>Copy for your site</h3>
-      <p class="generated-css-hint">Replace <code>#root</code> with your app's wrapper if needed.</p>
+      <p class="generated-css-hint">
+        Replace <code>#root</code> with your app's wrapper if needed.
+      </p>
       <HighlightStyle language="css">
         <pre>
           #root {

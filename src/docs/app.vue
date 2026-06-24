@@ -18,6 +18,9 @@ export default defineComponent({
       year: new Date().getFullYear(),
       width: 0,
       height: 0,
+      mobileNavStuck: false,
+      mobileNavSpacerHeight: 0,
+      onMobileScroll: null as (() => void) | null,
 
       navData: [
         { text: 'Home', value: '/', class: 'label' },
@@ -234,10 +237,19 @@ export default defineComponent({
       window.addEventListener('resize', this.navDebounce)
     }
     window.addEventListener('nav-updated', this.updateNav)
+
+    this.onMobileScroll = () => {
+      this.updateMobileNavStick()
+    }
+    window.addEventListener('scroll', this.onMobileScroll, { passive: true })
+    this.updateMobileNavStick()
   },
   unmounted() {
     if (this.navDebounce) {
       window.removeEventListener('resize', this.navDebounce)
+    }
+    if (this.onMobileScroll) {
+      window.removeEventListener('scroll', this.onMobileScroll)
     }
     window.removeEventListener('nav-updated', this.updateNav)
 
@@ -246,12 +258,39 @@ export default defineComponent({
   watch: {
     width() {
       this.runNav()
+      this.updateMobileNavStick()
+    }
+  },
+  computed: {
+    mobileNavAnchorStyle(): Record<string, string> | undefined {
+      if (this.width > 700 || !this.mobileNavStuck) {
+        return undefined
+      }
+
+      return { height: `${this.mobileNavSpacerHeight}px` }
     }
   },
   methods: {
     setDemensions(): void {
       this.width = document.documentElement.clientWidth
       this.height = document.documentElement.clientHeight
+    },
+    updateMobileNavStick(): void {
+      if (this.width > 700) {
+        this.mobileNavStuck = false
+        return
+      }
+
+      const header = document.querySelector('header') as HTMLElement | null
+      const nav = this.$refs.mobileNav as HTMLElement | undefined
+      const threshold = header?.offsetHeight ?? 0
+      const shouldStick = window.scrollY >= threshold
+
+      if (!this.mobileNavStuck && shouldStick && nav) {
+        this.mobileNavSpacerHeight = nav.offsetHeight
+      }
+
+      this.mobileNavStuck = shouldStick
     },
     runNav() {
       if (this.nav) {
@@ -287,6 +326,10 @@ export default defineComponent({
             this.$router.push({ path: val, hash: hash })
           }
         }
+      })
+
+      this.$nextTick(() => {
+        this.updateMobileNavStick()
       })
     },
     updateNav() {
@@ -326,17 +369,14 @@ export default defineComponent({
       </div>
     </div>
   </header>
-  <nav>
-    <div class="ss-dropdown" ref="navDropdown">
-      <select ref="nav" class="docs-nav"></select>
-      <div class="nav-content" ref="navContent"></div>
-    </div>
-    <AdSlot
-      class="adsense-nav"
-      v-if="!appStore.isMobile"
-      ad-slot="9560132183"
-    />
-  </nav>
+  <div class="nav-anchor" :style="mobileNavAnchorStyle">
+    <nav ref="mobileNav" :class="{ 'nav-stuck': mobileNavStuck }">
+      <div class="ss-dropdown" ref="navDropdown">
+        <select ref="nav" class="docs-nav"></select>
+        <div class="nav-content" ref="navContent"></div>
+      </div>
+    </nav>
+  </div>
   <main>
     <router-view />
     <AdSlot ad-slot="1270131515" />

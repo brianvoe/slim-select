@@ -26,8 +26,9 @@
 
   // Sizes
   --width-max: 1000px;
-  --height-header: 90px;
   --width-nav: 200px;
+  --height-header: 90px;
+  --height-header-mobile: calc(var(--height-header) - var(--height-nav));
   --height-nav: 30px;
 
   // Misc
