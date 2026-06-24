@@ -72,7 +72,14 @@
   background-color: var(--ss-bg-color);
   outline: 0;
   box-sizing: border-box;
-  transition: background-color var(--ss-animation-timing);
+  transition:
+    background-color var(--ss-animation-timing),
+    border-radius var(--ss-animation-timing);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color var(--ss-animation-timing);
+  }
+
   overflow: hidden;
 
   &:focus {

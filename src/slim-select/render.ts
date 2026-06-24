@@ -387,8 +387,13 @@ export default class Render {
     const wasModal = this.modalSessionActive === true
 
     // Remove open class from content to trigger close animation
-    // Direction class (dirAbove/dirBelow) persists to maintain correct transform-origin
+    // Direction on content persists for transform-origin during the panel animation
     this.removeClasses(this.content.main, this.classes.contentOpen)
+
+    if (!wasModal) {
+      this.removeClasses(this.main.main, this.classes.dirAbove)
+      this.removeClasses(this.main.main, this.classes.dirBelow)
+    }
 
     if (wasModal && this.modalElements) {
       this.removeClasses(this.modalElements.overlay, this.classes.contentOpen)
