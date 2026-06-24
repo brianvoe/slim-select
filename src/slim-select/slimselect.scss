@@ -109,11 +109,14 @@
     display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
+    align-content: center;
     align-self: stretch;
     gap: var(--ss-spacing-m);
     flex: 1 1 100%;
     min-width: 0; // Allow container to shrink
     max-width: 100%; // Ensure container doesn't exceed parent
+    padding: var(--ss-spacing-s) 0;
+    box-sizing: border-box;
     overflow: hidden; // Prevent overflow
 
     // When multiString is enabled, values container holds a single text line
