@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import SlimSelectReact from '@/slim-select/react'
 import HighlightStyle from '@/docs/components/highlight_style.vue'
 
 const h = React.createElement
@@ -23,8 +24,6 @@ export default defineComponent({
     }
   },
   async mounted() {
-    // Dynamically import the React component from dist
-    const { default: SlimSelectReact } = await import('../../../../dist/react/index.js' as any)
     const { useState } = React
 
     const basicOptions = [
