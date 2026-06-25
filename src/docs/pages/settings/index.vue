@@ -5,6 +5,7 @@ import AdSlot from '../../components/adslot.vue'
 
 // Sections
 import Modal from './modal.vue'
+import Html from './html.vue'
 import AlwaysOpen from './always_open.vue'
 import Closable from './closable.vue'
 import CloseOnSelect from './close_on_select.vue'
@@ -17,7 +18,6 @@ import Deselect from './deselect.vue'
 import Disabled from './disabled.vue'
 import Display from './display.vue'
 import HideSelected from './hide_selected.vue'
-import Html from './html.vue'
 import KeepOrder from './keep_order.vue'
 import Mandatory from './mandatory.vue'
 import MaxValuesShown from './max_values_shown.vue'
@@ -41,6 +41,7 @@ export default defineComponent({
     Select,
     Classes,
     Modal,
+    Html,
     MultiString,
     AdSlot,
     AlwaysOpen,
@@ -56,7 +57,6 @@ export default defineComponent({
     Mandatory,
     MinMax,
     DataAttributes,
-    Html,
     KeepOrder,
     ShowSearch,
     FocusSearch,
@@ -80,35 +80,35 @@ export default defineComponent({
     <AdSlot ad-slot="1270131515" />
 
     <Modal />
-    <MultiString />
-    <AdSlot ad-slot="1270131515" />
-
-    <AlwaysOpen />
-    <ContentLocation />
-    <AdSlot ad-slot="1270131515" />
-
-    <ContentPosition />
-    <ContentWidth />
-    <AdSlot ad-slot="1270131515" />
-
-    <OpenPosition />
-    <Placeholder />
-    <AdSlot ad-slot="1270131515" />
-
-    <SelectAll />
-    <Deselect />
-    <AdSlot ad-slot="1270131515" />
-
-    <Display />
-    <Disabled />
-    <AdSlot ad-slot="1270131515" />
-
-    <Mandatory />
-    <MinMax />
-    <AdSlot ad-slot="1270131515" />
-
-    <DataAttributes />
     <Html />
+    <AdSlot ad-slot="1270131515" />
+
+    <MultiString />
+    <AlwaysOpen />
+    <AdSlot ad-slot="1270131515" />
+
+    <ContentLocation />
+    <ContentPosition />
+    <AdSlot ad-slot="1270131515" />
+
+    <ContentWidth />
+    <OpenPosition />
+    <AdSlot ad-slot="1270131515" />
+
+    <Placeholder />
+    <SelectAll />
+    <AdSlot ad-slot="1270131515" />
+
+    <Deselect />
+    <Display />
+    <AdSlot ad-slot="1270131515" />
+
+    <Disabled />
+    <Mandatory />
+    <AdSlot ad-slot="1270131515" />
+
+    <MinMax />
+    <DataAttributes />
     <AdSlot ad-slot="1270131515" />
 
     <KeepOrder />
