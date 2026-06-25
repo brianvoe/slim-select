@@ -1588,13 +1588,7 @@ export default class Render {
           this.addClasses(selectAll, this.classes.optgroupSelectAll)
 
           // Check options and if all are selected, if so add class selected
-          let allSelected = true
-          for (const o of d.options) {
-            if (!o.selected) {
-              allSelected = false
-              break
-            }
-          }
+          const allSelected = this.isOptgroupAllSelected(d.options as Option[])
 
           // Add class if all selected
           if (allSelected) {
@@ -1602,9 +1596,9 @@ export default class Render {
           }
 
           // Add select all text span
-          const selectAllText = document.createElement('span')
-          selectAllText.textContent = d.selectAllText
-          selectAll.appendChild(selectAllText)
+          const selectAllLabel = document.createElement('span')
+          selectAllLabel.textContent = this.optgroupSelectAllLabel(allSelected)
+          selectAll.appendChild(selectAllLabel)
 
           // Create new svg for checkbox
           const selectAllSvg = document.createElementNS(
@@ -1637,10 +1631,13 @@ export default class Render {
 
             // Get the store current selected values
             const currentSelected = this.store.getSelected()
+            const allSelectedNow = this.isOptgroupAllSelected(
+              d.options as Option[],
+              new Set(currentSelected)
+            )
 
             // If all selected, remove all options from selected
-            // call setSelected and return
-            if (allSelected) {
+            if (allSelectedNow) {
               // Put together new list minus all options in this optgroup
               const newSelected = currentSelected.filter((s) => {
                 for (const o of d.options) {
@@ -2125,7 +2122,37 @@ export default class Render {
       } else {
         this.removeClasses(selectAll, this.classes.selected)
       }
+
+      const selectAllLabel = selectAll.querySelector('span')
+      if (selectAllLabel) {
+        selectAllLabel.textContent = this.optgroupSelectAllLabel(allSelected)
+      }
     }
+  }
+
+  private optgroupSelectAllLabel(allSelected: boolean): string {
+    return allSelected ? 'Unselect All' : 'Select All'
+  }
+
+  private isOptgroupAllSelected(
+    options: Option[],
+    selectedIds?: Set<string>
+  ): boolean {
+    if (options.length === 0) {
+      return false
+    }
+
+    for (const option of options) {
+      const isSelected = selectedIds
+        ? Boolean(option.id && selectedIds.has(option.id))
+        : option.selected
+
+      if (!isSelected) {
+        return false
+      }
+    }
+
+    return true
   }
 
   // Create option div element

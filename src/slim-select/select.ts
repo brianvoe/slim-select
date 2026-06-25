@@ -295,9 +295,6 @@ export default class Select {
       selectAll: optgroup.dataset
         ? optgroup.dataset.selectall === 'true'
         : false,
-      selectAllText: optgroup.dataset
-        ? optgroup.dataset.selectalltext
-        : 'Select all',
       closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
       options: []
     } as Optgroup

@@ -1535,6 +1535,91 @@ describe('render module', () => {
     })
   })
 
+  describe('optgroup select all', () => {
+    test('shows Select All when not every option is selected', () => {
+      render.settings.isMultiple = true
+      render.renderOptions(
+        render.store.partialToFullData([
+          {
+            label: 'Group',
+            selectAll: true,
+            options: [
+              { text: 'A', value: 'a', selected: true },
+              { text: 'B', value: 'b' }
+            ]
+          }
+        ])
+      )
+
+      const label = render.content.list.querySelector(
+        '.' + render.classes.getFirst('optgroupSelectAll') + ' span'
+      )
+
+      expect(label?.textContent).toBe('Select All')
+    })
+
+    test('shows Unselect All when every option is selected', () => {
+      render.settings.isMultiple = true
+      const data = render.store.partialToFullData([
+        {
+          label: 'Group',
+          selectAll: true,
+          options: [
+            { text: 'A', value: 'a', selected: true },
+            { text: 'B', value: 'b', selected: true }
+          ]
+        }
+      ])
+      render.renderOptions(data)
+
+      const label = render.content.list.querySelector(
+        '.' + render.classes.getFirst('optgroupSelectAll') + ' span'
+      )
+
+      expect(label?.textContent).toBe('Unselect All')
+    })
+
+    test('clicking Unselect All clears optgroup selections', () => {
+      const store = new Store('multiple', [
+        {
+          label: 'Group',
+          selectAll: true,
+          options: [
+            { text: 'A', value: 'a', selected: true },
+            { text: 'B', value: 'b', selected: true }
+          ]
+        }
+      ])
+      const selectAllRender = new Render(
+        new Settings({ modal: 'off' }),
+        new CssClasses(),
+        store,
+        {
+          open: openMock as () => void,
+          close: closeMock as () => void,
+          setSelected: setSelectedMock as (
+            value: string | string[],
+            runAfterChange: boolean
+          ) => void,
+          addOption: addOptionMock as (option: Option) => void,
+          search: searchMock as (search: string) => void
+        }
+      )
+      selectAllRender.settings.isMultiple = true
+      selectAllRender.renderOptions(store.getData())
+
+      const selectAll = selectAllRender.content.list.querySelector(
+        '.' + selectAllRender.classes.getFirst('optgroupSelectAll')
+      ) as HTMLDivElement
+
+      selectAll.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(setSelectedMock).toHaveBeenCalledWith([], true)
+    })
+  })
+
   describe('filterOptionsInPlace', () => {
     test('filters options without rebuilding the list', () => {
       const store = render.store

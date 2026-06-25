@@ -38,7 +38,6 @@ export class Optgroup {
   public id: string
   public label: string
   public selectAll: boolean
-  public selectAllText: string
   public closable: 'off' | 'open' | 'close'
   public options: Partial<Option>[]
 
@@ -47,7 +46,6 @@ export class Optgroup {
     this.label = optgroup.label || ''
     this.selectAll =
       optgroup.selectAll === undefined ? false : optgroup.selectAll
-    this.selectAllText = optgroup.selectAllText || 'Select All'
     this.closable = optgroup.closable || 'off'
 
     // If options exist, loop through options and create new option class
@@ -174,7 +172,6 @@ export default class Store {
           id: item.id,
           label: item.label,
           selectAll: item.selectAll,
-          selectAllText: item.selectAllText,
           closable: item.closable,
           options: item.options.map((option) =>
             new Option(option instanceof Option ? { ...option } : option)
@@ -468,7 +465,6 @@ export default class Store {
       id: source.id,
       label: source.label,
       selectAll: source.selectAll,
-      selectAllText: source.selectAllText,
       closable: source.closable,
       options: []
     })

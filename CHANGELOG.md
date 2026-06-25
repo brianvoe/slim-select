@@ -23,6 +23,7 @@ and this project adheres to
 - Characterization tests for sync engine and lifecycle races
 - Integration tests for API search error recovery, hideSelected, and addable + catalog
 - `prefers-reduced-motion` support for value removal and content panel transitions
+- `--ss-scroll-color` and `--ss-track-color` CSS variables for option list scrollbar styling via `scrollbar-color`
 
 ### Changed
 
@@ -45,6 +46,8 @@ and this project adheres to
 - Vue component requires the `data` prop; slot content for `<option>` children is no longer supported. Slot-based options caused Vue to patch the native `<select>` on re-renders, which re-triggered Slim Select's mutation observer and structure sync — risking redundant work and v-model feedback loops. Pass options via `:data` instead (same shape as core SlimSelect).
 - Modal option panel uses `--ss-modal-height` (default `85vh`) and `--ss-modal-width` (default `min(90vw, 400px)`) instead of the dropdown `--ss-content-height` cap
 - Modal dialog shows associated label text (or `aria-label`) as a header above the option list; override with `settings.modalTitle`
+- Optgroup select-all label is always "Select All" or "Unselect All" when every option in the group is selected; `selectAllText` and `data-selectalltext` are no longer supported
+- Style showcase and customize demos use long multi-select lists to preview scrollbar styling; Show CSS output groups variables in the same order as `slimselect.scss`
 
 ### Fixed
 

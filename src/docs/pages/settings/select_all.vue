@@ -26,16 +26,17 @@ export default defineComponent({
       categorized options.
     </p>
     <p>
-      When enabled, a select all option appears at the top of the optgroup, making it easy for users to select multiple
-      related options without having to click each one individually. The selectAllText setting allows you to customize
-      the text that appears for this option.
+      When enabled, a select all option appears at the top of the optgroup. It shows
+      <strong>Select All</strong> until every option in the group is selected, then switches to
+      <strong>Unselect All</strong> to clear the group in one click.
     </p>
     <div class="alert info">
-      You can set selectAll/selectAllText either by data or by html dataset added to the optgroup element
+      You can set <code>selectAll</code> by data or with the <code>data-selectall</code> attribute on an
+      <code>&lt;optgroup&gt;</code> element.
     </div>
 
     <select ref="selectAll" multiple>
-      <optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!">
+      <optgroup label="Label 1" data-selectall="true">
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
@@ -57,7 +58,6 @@ export default defineComponent({
             {
               label: 'Label 1',
               selectAll: true,
-              selectAllText: 'Select them all!',
               options: [
                 { text: 'Option 1', value: '1' },
                 { text: 'Option 2', value: '2' },
@@ -83,7 +83,7 @@ export default defineComponent({
     <HighlightStyle language="html">
       <pre>
         &lt;select ref="selectAll" multiple&gt;
-          &lt;optgroup label="Label 1" data-selectall="true" data-selectalltext="Select them all!"&gt;
+          &lt;optgroup label="Label 1" data-selectall="true"&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;
             &lt;option value="value3"&gt;Value 3&lt;/option&gt;

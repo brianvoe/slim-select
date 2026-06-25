@@ -16,6 +16,9 @@ export interface ShowcaseVariables {
   spacingM?: string
   spacingS?: string
   mainHeight?: string
+  contentHeight?: string
+  scrollColor?: string
+  trackColor?: string
 }
 
 export interface ShowcaseTheme {
@@ -26,45 +29,120 @@ export interface ShowcaseTheme {
   singleLabel: string
   multiLabel: string
   options: { text: string; value: string }[]
+  multiOptions: { text: string; value: string }[]
   vars: ShowcaseVariables
   css: string
 }
 
-function showcaseVarsStyle(vars: ShowcaseVariables): Record<string, string> {
-  const style: Record<string, string> = {
+function showcaseMultiOptions(
+  label: string,
+  id: string,
+  count = 48
+): { text: string; value: string }[] {
+  return Array.from({ length: count }, (_, index) => ({
+    text: `${label} ${index + 1}`,
+    value: `${id}-multi-${index + 1}`
+  }))
+}
+
+const SHOWCASE_VAR_SECTIONS: { label: string; keys: string[] }[] = [
+  {
+    label: 'Colors',
+    keys: [
+      '--ss-primary-color',
+      '--ss-bg-color',
+      '--ss-font-color',
+      '--ss-placeholder-color',
+      '--ss-disabled-color',
+      '--ss-border-color',
+      '--ss-highlight-color',
+      '--ss-focus-color',
+      '--ss-success-color',
+      '--ss-error-color',
+      '--ss-scroll-color',
+      '--ss-track-color'
+    ]
+  },
+  {
+    label: 'Heights',
+    keys: [
+      '--ss-main-height',
+      '--ss-content-height',
+      '--ss-modal-height',
+      '--ss-modal-width',
+      '--ss-search-height',
+      '--ss-option-height'
+    ]
+  },
+  {
+    label: 'Spacing',
+    keys: ['--ss-spacing-l', '--ss-spacing-m', '--ss-spacing-s']
+  },
+  {
+    label: 'Misc',
+    keys: [
+      '--ss-animation-timing',
+      '--ss-border-radius',
+      '--ss-modal-z-index'
+    ]
+  }
+]
+
+function showcaseVarsMap(vars: ShowcaseVariables): Record<string, string> {
+  const map: Record<string, string> = {
     '--ss-primary-color': vars.primaryColor,
     '--ss-bg-color': vars.bgColor,
     '--ss-font-color': vars.fontColor,
-    '--ss-border-color': vars.borderColor,
-    '--ss-border-radius': vars.borderRadius,
     '--ss-placeholder-color': vars.placeholderColor ?? '#8d8d8d',
+    '--ss-border-color': vars.borderColor,
     '--ss-focus-color': vars.focusColor ?? vars.primaryColor,
+    '--ss-scroll-color': vars.scrollColor ?? vars.primaryColor,
+    '--ss-track-color': vars.trackColor ?? vars.bgColor,
+    '--ss-content-height': vars.contentHeight ?? '180px',
     '--ss-search-height': 'var(--ss-main-height)',
-    '--ss-option-height': 'var(--ss-main-height)'
+    '--ss-option-height': 'var(--ss-main-height)',
+    '--ss-border-radius': vars.borderRadius
   }
 
+  if (vars.mainHeight) {
+    map['--ss-main-height'] = vars.mainHeight
+  }
   if (vars.spacingL) {
-    style['--ss-spacing-l'] = vars.spacingL
+    map['--ss-spacing-l'] = vars.spacingL
   }
   if (vars.spacingM) {
-    style['--ss-spacing-m'] = vars.spacingM
+    map['--ss-spacing-m'] = vars.spacingM
   }
   if (vars.spacingS) {
-    style['--ss-spacing-s'] = vars.spacingS
-  }
-  if (vars.mainHeight) {
-    style['--ss-main-height'] = vars.mainHeight
+    map['--ss-spacing-s'] = vars.spacingS
   }
 
-  return style
+  return map
+}
+
+function showcaseVarsStyle(vars: ShowcaseVariables): Record<string, string> {
+  return showcaseVarsMap(vars)
+}
+
+function showcaseVarsLines(vars: ShowcaseVariables): string[] {
+  const map = showcaseVarsMap(vars)
+  const lines: string[] = []
+
+  for (const section of SHOWCASE_VAR_SECTIONS) {
+    const sectionLines = section.keys
+      .filter((key) => key in map)
+      .map((key) => `  ${key}: ${map[key]};`)
+
+    if (sectionLines.length > 0) {
+      lines.push(`  /* ${section.label} */`, ...sectionLines)
+    }
+  }
+
+  return lines
 }
 
 function varsToCssBlock(selector: string, vars: ShowcaseVariables): string {
-  const lines = Object.entries(showcaseVarsStyle(vars)).map(
-    ([key, value]) => `  ${key}: ${value};`
-  )
-
-  return `${selector} {\n${lines.join('\n')}\n}`
+  return `${selector} {\n${showcaseVarsLines(vars).join('\n')}\n}`
 }
 
 function showcaseVarsCss(vars: ShowcaseVariables): string {
@@ -72,10 +150,13 @@ function showcaseVarsCss(vars: ShowcaseVariables): string {
 }
 
 function createTheme(
-  theme: Omit<ShowcaseTheme, 'css'> & { vars: ShowcaseVariables }
+  theme: Omit<ShowcaseTheme, 'css' | 'multiOptions'> & {
+    vars: ShowcaseVariables
+  }
 ): ShowcaseTheme {
   return {
     ...theme,
+    multiOptions: showcaseMultiOptions(theme.multiLabel, theme.id),
     css: showcaseVarsCss(theme.vars)
   }
 }
@@ -342,7 +423,7 @@ export default defineComponent({
               closeOnSelect: false,
               contentLocation: contentLocation ?? undefined
             },
-            data: theme.options
+            data: theme.multiOptions
           })
         )
       }
@@ -383,9 +464,7 @@ export default defineComponent({
         document.head.appendChild(style)
       }
 
-      const varsBlock = Object.entries(showcaseVarsStyle(theme.vars))
-        .map(([key, value]) => `  ${key}: ${value};`)
-        .join('\n')
+      const varsBlock = showcaseVarsLines(theme.vars).join('\n')
 
       style.textContent = `
         body.${MODAL_OPEN_BODY_CLASS} .ss-modal-overlay {
@@ -422,7 +501,7 @@ ${varsBlock}
           modal: 'on',
           closeOnSelect: type === 'single'
         },
-        data: theme.options,
+        data: type === 'single' ? theme.options : theme.multiOptions,
         events: {
           afterClose: () => {
             if (this.activeModalThemeId === theme.id) {

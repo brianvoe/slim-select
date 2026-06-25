@@ -50,7 +50,7 @@ export default defineComponent({
       ]
     })
 
-    // Multi select
+    // Multi select — long list to preview scrollbar styling
     this.multiSelect = new SlimSelect({
       select: this.$refs.multiSelect as HTMLSelectElement,
       settings: {
@@ -58,11 +58,10 @@ export default defineComponent({
         contentPosition: 'relative',
         contentLocation: this.$refs.multiSelectContent as HTMLElement
       },
-      data: [
-        { text: 'Multiple Selection', value: 'multi' },
-        { text: 'Interactive Demo', value: 'interactive' },
-        { text: 'Variable Showcase', value: 'showcase' }
-      ]
+      data: Array.from({ length: 48 }, (_, index) => ({
+        text: `Option ${index + 1}`,
+        value: `option-${index + 1}`
+      }))
     })
 
     this.updateVariables()

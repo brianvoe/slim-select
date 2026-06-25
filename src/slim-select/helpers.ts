@@ -217,7 +217,6 @@ function optgroupStructureEqual(
     id: optgroup.id || '',
     label: optgroup.label || '',
     selectAll: optgroup.selectAll ?? false,
-    selectAllText: optgroup.selectAllText || 'Select All',
     closable: optgroup.closable || 'off'
   })
 
@@ -228,7 +227,6 @@ function optgroupStructureEqual(
     aNormalized.id !== bNormalized.id ||
     aNormalized.label !== bNormalized.label ||
     aNormalized.selectAll !== bNormalized.selectAll ||
-    aNormalized.selectAllText !== bNormalized.selectAllText ||
     aNormalized.closable !== bNormalized.closable
   ) {
     return false
