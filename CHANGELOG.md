@@ -48,11 +48,13 @@ and this project adheres to
 - Modal dialog shows associated label text (or `aria-label`) as a header above the option list; override with `settings.modalTitle`
 - Optgroup select-all label is always "Select All" or "Unselect All" when every option in the group is selected; `selectAllText` and `data-selectalltext` are no longer supported
 - Style showcase and customize demos use long multi-select lists to preview scrollbar styling; Show CSS output groups variables in the same order as `slimselect.scss`
+- Min/max settings documentation uses survey, tag, and scheduling demos with clearer behavior notes
 
 ### Fixed
 
 - `Option.data` is now a plain object when options are read from HTML `data-*` attributes, instead of a live `DOMStringMap` that stringified as `[object DOMStringMap]`
 - Single-select value text no longer ellipsizes prematurely — `.ss-values` now fills space before the arrow and dropped the extra `max-width` offset meant for controls outside that container
+- Multi-select `minSelected` hides value remove buttons and clear-all at the minimum; clear-all with `allowDeselect` reduces to `minSelected` instead of clearing every selection
 - Removed Vue `updated()` hook; v-model sync is handled by the `modelValue` watcher and initial `mounted` sync only
 - Vue `data` watcher skips `setData` when the prop structure is unchanged (field-wise compare), avoiding thrash when parents recreate arrays each render
 - Vue `data` watcher re-applies `modelValue` after `setData` so selection is preserved when options are replaced

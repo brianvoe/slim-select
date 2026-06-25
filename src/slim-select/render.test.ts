@@ -1895,6 +1895,94 @@ describe('render module', () => {
       expect(setSelectedMock).not.toHaveBeenCalled()
     })
 
+    test('hides value delete buttons when at minSelected', () => {
+      render.settings.isMultiple = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true }
+      ])
+
+      render.renderValues()
+
+      const deleteButtons = render.main.values.querySelectorAll(
+        '.' + render.classes.getFirst('valueDelete')
+      )
+
+      expect(deleteButtons).toHaveLength(2)
+      for (const deleteButton of deleteButtons) {
+        expect(
+          (deleteButton as HTMLElement).classList.contains(
+            render.classes.getFirst('hide')
+          )
+        ).toBe(true)
+      }
+    })
+
+    test('shows value delete buttons when above minSelected', () => {
+      render.settings.isMultiple = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true },
+        { text: 'C', value: 'c', selected: true }
+      ])
+
+      render.renderValues()
+
+      const deleteButtons = render.main.values.querySelectorAll(
+        '.' + render.classes.getFirst('valueDelete')
+      )
+
+      expect(deleteButtons).toHaveLength(3)
+      for (const deleteButton of deleteButtons) {
+        expect(
+          (deleteButton as HTMLElement).classList.contains(
+            render.classes.getFirst('hide')
+          )
+        ).toBe(false)
+      }
+    })
+
+    test('deselect all respects minSelected instead of clearing everything', () => {
+      render.settings.isMultiple = true
+      render.settings.allowDeselect = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { id: 'a', text: 'A', value: 'a', selected: true },
+        { id: 'b', text: 'B', value: 'b', selected: true },
+        { id: 'c', text: 'C', value: 'c', selected: true }
+      ])
+      render.renderValues()
+
+      const deselectElement = render.main.main.querySelector(
+        '.' + render.classes.getFirst('deselect')
+      ) as HTMLDivElement
+
+      deselectElement.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(setSelectedMock).toHaveBeenCalledWith(['a', 'b'], false)
+    })
+
+    test('hides deselect all when at minSelected', () => {
+      render.settings.isMultiple = true
+      render.settings.allowDeselect = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true }
+      ])
+      render.renderValues()
+
+      expect(
+        render.main.deselect.main.classList.contains(
+          render.classes.getFirst('hide')
+        )
+      ).toBe(true)
+    })
+
     test('click does nothing when trying to deselect a mandatory option', () => {
       const option = render.option(
         new Option({

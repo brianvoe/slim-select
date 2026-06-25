@@ -570,7 +570,8 @@ export default class Render {
       !this.settings.allowDeselect ||
       (this.settings.isMultiple &&
         selectedOptions &&
-        selectedOptions.length <= 0)
+        selectedOptions.length <= 0) ||
+      this.isAtMinSelected()
     ) {
       this.addClasses(deselect, this.classes.hide)
     } else {
@@ -586,10 +587,29 @@ export default class Render {
         return
       }
 
+      if (this.settings.isMultiple && this.isAtMinSelected()) {
+        return
+      }
+
       // By Default we will delete
       let shouldDelete = true
       const before = this.store.getSelectedOptions()
-      const after = [] as Option[]
+      let after = [] as Option[]
+      let newSelectedIds: string[] | string = ''
+
+      if (this.settings.isMultiple) {
+        const min = this.settings.minSelected
+        const currentIds = this.store.getSelected()
+
+        if (min > 0 && currentIds.length > min) {
+          newSelectedIds = this.getMinimumSelectionIds()
+          after = before.filter((o) => newSelectedIds.includes(o.id))
+        } else if (min <= 0) {
+          newSelectedIds = []
+        } else {
+          return
+        }
+      }
 
       // Add beforeChange callback
       if (this.callbacks.beforeChange) {
@@ -598,7 +618,7 @@ export default class Render {
 
       if (shouldDelete) {
         if (this.settings.isMultiple) {
-          this.callbacks.setSelected([], false)
+          this.callbacks.setSelected(newSelectedIds, false)
           this.updateDeselectAll()
         } else {
           // Get first option and set it as selected
@@ -894,6 +914,46 @@ export default class Render {
         }
       }
     }
+
+    this.updateMultipleValueDeleteVisibility()
+  }
+
+  private isAtMinSelected(): boolean {
+    return (
+      this.settings.isMultiple &&
+      this.settings.minSelected > 0 &&
+      this.store.getSelectedOptions().length <= this.settings.minSelected
+    )
+  }
+
+  private getMinimumSelectionIds(): string[] {
+    let selected = this.store.getSelectedOptions()
+    if (this.settings.keepOrder) {
+      selected = this.store.selectedOrderOptions(selected)
+    }
+
+    return selected
+      .slice(0, this.settings.minSelected)
+      .map((option) => option.id)
+  }
+
+  private updateMultipleValueDeleteVisibility(): void {
+    if (!this.settings.isMultiple || this.settings.multiString) {
+      return
+    }
+
+    const canRemove = !this.isAtMinSelected()
+    const deleteButtons = this.main.values.querySelectorAll(
+      '.' + this.classes.getFirst('valueDelete')
+    )
+
+    for (const deleteButton of deleteButtons) {
+      if (canRemove) {
+        this.removeClasses(deleteButton as HTMLElement, this.classes.hide)
+      } else {
+        this.addClasses(deleteButton as HTMLElement, this.classes.hide)
+      }
+    }
   }
 
   public multipleValue(option: Option): HTMLDivElement {
@@ -917,6 +977,10 @@ export default class Render {
         'aria-label',
         `${this.settings.removeText} ${option.text}`
       )
+
+      if (this.isAtMinSelected()) {
+        this.addClasses(deleteDiv, this.classes.hide)
+      }
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
@@ -977,6 +1041,7 @@ export default class Render {
           }
 
           this.updateDeselectAll()
+          this.updateMultipleValueDeleteVisibility()
         }
       }
 
@@ -2593,11 +2658,16 @@ export default class Render {
     const hasSelectedItems = selected && selected.length > 0
     const isMultiple = this.settings.isMultiple
     const allowDeselect = this.settings.allowDeselect
+    const atMinSelected = this.isAtMinSelected()
 
     const deselectButton = this.main.deselect.main
     const hideClass = this.classes.hide
 
-    if (allowDeselect && !(isMultiple && !hasSelectedItems)) {
+    if (
+      allowDeselect &&
+      !(isMultiple && !hasSelectedItems) &&
+      !atMinSelected
+    ) {
       this.removeClasses(deselectButton, hideClass)
     } else {
       this.addClasses(deselectButton, hideClass)
