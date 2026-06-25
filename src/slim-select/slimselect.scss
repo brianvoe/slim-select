@@ -353,6 +353,11 @@
     flex: 0 1 auto;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    gap: var(--ss-spacing-s);
+    height: var(--ss-search-height);
+    padding: 0 var(--ss-spacing-s);
+    box-sizing: border-box;
     border-bottom: 1px solid var(--ss-border-color);
 
     input {
@@ -361,9 +366,10 @@
       line-height: inherit;
       flex: 1 1 auto;
       width: 100%;
-      min-width: 0px;
-      height: var(--ss-search-height);
-      padding: 0 var(--ss-spacing-l);
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      padding: 0 var(--ss-spacing-m);
       margin: 0;
       border: none;
       background-color: var(--ss-bg-color);
@@ -387,23 +393,27 @@
       align-items: center;
       cursor: pointer;
       flex: 0 0 auto;
-      height: auto;
-      margin: 0 0 0 var(--ss-spacing-m);
-      border: 1px solid var(--ss-border-color);
+      box-sizing: border-box;
+      width: 22px;
+      height: 22px;
+      margin: auto 0;
+      padding: 0;
+      border: none;
       border-radius: var(--ss-border-radius);
+      background-color: var(--ss-primary-color);
 
       svg {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
-        flex: 0 1 auto;
-        width: 12px;
-        height: 12px;
-        margin: auto var(--ss-spacing-m) auto var(--ss-spacing-m);
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 10px;
+        height: 10px;
+        margin: 0;
 
         path {
           fill: none;
-          stroke: var(--ss-font-color);
+          stroke: var(--ss-bg-color);
           stroke-width: 18;
           stroke-linecap: round;
           stroke-linejoin: round;
