@@ -57,6 +57,7 @@ export default defineComponent({
           settings: {
             maxValuesShown: 5, // Default 20
             maxValuesMessage: '{number} values selected', // Default '{number} selected'
+            allowDeselect: true, // necessary to allow deselection when summarised
           },
         });
       </pre>
