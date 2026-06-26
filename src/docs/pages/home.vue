@@ -890,6 +890,8 @@ ${themeVarsCssLines(vars)}
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) * 1.5);
+  min-width: 0;
+  max-width: 100%;
   color: var(--on-dark);
 
   .usage-stats {
@@ -937,7 +939,10 @@ ${themeVarsCssLines(vars)}
     justify-content: center;
     gap: var(--spacing);
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     padding-top: var(--spacing-half);
+    box-sizing: border-box;
   }
 
   .hero-scroll-hint {
@@ -1146,9 +1151,12 @@ ${themeVarsCssLines(vars)}
     gap: var(--spacing-half);
     width: 100%;
     max-width: 760px;
+    min-width: 0;
     padding: var(--spacing);
     border-radius: var(--border-radius);
     text-align: left;
+    box-sizing: border-box;
+    overflow-x: clip;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow:
@@ -1156,6 +1164,16 @@ ${themeVarsCssLines(vars)}
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+
+    .ss-main {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    @media (max-width: 560px) {
+      padding: var(--spacing-half);
+    }
 
     @supports not (
       (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
@@ -1168,6 +1186,7 @@ ${themeVarsCssLines(vars)}
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-half);
+    min-width: 0;
 
     @media (max-width: 560px) {
       grid-template-columns: 1fr;
@@ -1178,6 +1197,7 @@ ${themeVarsCssLines(vars)}
     display: flex;
     flex-direction: column;
     gap: var(--spacing-quarter);
+    min-width: 0;
   }
 
   .hero-field-label {
@@ -1243,6 +1263,7 @@ ${themeVarsCssLines(vars)}
   .hero-field--modal {
     width: 100%;
     max-width: 360px;
+    min-width: 0;
     margin: var(--spacing-quarter) auto 0;
     text-align: left;
 
