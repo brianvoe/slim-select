@@ -197,6 +197,8 @@ export default defineComponent({
   --ss-primary-color: var(--color-primary);
   --ss-placeholder-color: var(--on-dark-muted);
   --ss-content-height: 60vh;
+  --ss-scroll-color: var(--color-primary);
+  --ss-track-color: var(--chrome);
 
   @media (max-width: 900px) {
     display: none;
