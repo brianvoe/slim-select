@@ -7,6 +7,7 @@ import Showcase from './style/showcase.vue'
 import Customize from './style/customize.vue'
 import Classes from './style/classes.vue'
 import Styles from './style/styles.vue'
+import Countries from './style/countries.vue'
 
 export default defineComponent({
   name: 'Style',
@@ -15,7 +16,8 @@ export default defineComponent({
     Showcase,
     Customize,
     Classes,
-    Styles
+    Styles,
+    Countries
   }
 })
 </script>
@@ -32,5 +34,8 @@ export default defineComponent({
     <AdSlot ad-slot="1270131515" />
 
     <Styles />
+    <AdSlot ad-slot="1270131515" />
+
+    <Countries />
   </div>
 </template>

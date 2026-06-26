@@ -38,11 +38,6 @@ export default defineComponent({
     // Single select
     this.singleSelect = new SlimSelect({
       select: this.$refs.singleSelect as HTMLSelectElement,
-      settings: {
-        alwaysOpen: true,
-        contentPosition: 'relative',
-        contentLocation: this.$refs.singleSelectContent as HTMLElement
-      },
       data: [
         { text: 'Single Select Example', value: 'single' },
         { text: 'Customizable Variables', value: 'custom' },
@@ -50,14 +45,9 @@ export default defineComponent({
       ]
     })
 
-    // Multi select — long list to preview scrollbar styling
+    // Multi select
     this.multiSelect = new SlimSelect({
       select: this.$refs.multiSelect as HTMLSelectElement,
-      settings: {
-        alwaysOpen: true,
-        contentPosition: 'relative',
-        contentLocation: this.$refs.multiSelectContent as HTMLElement
-      },
       data: Array.from({ length: 48 }, (_, index) => ({
         text: `Option ${index + 1}`,
         value: `option-${index + 1}`
@@ -243,33 +233,18 @@ export default defineComponent({
     line-height: 1.6;
   }
 
-  .examples-section {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    padding: var(--spacing);
-    background: var(--color-white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+  .examples-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-half);
     margin-bottom: var(--spacing);
 
-    .row {
-      display: flex;
-      gap: var(--spacing);
-      flex-wrap: wrap;
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
 
-      .single,
-      .multi {
-        flex: 1;
-        min-width: 200px;
-
-        label {
-          display: block;
-          margin-bottom: var(--spacing-half);
-          font-weight: 600;
-          color: var(--color-primary);
-        }
-      }
+    .variable-showcase {
+      width: 100%;
     }
   }
 
@@ -411,19 +386,8 @@ export default defineComponent({
   }
 
   @media (max-width: 700px) {
-    .examples-section {
-      position: static;
-      padding: var(--spacing-half);
-
-      .row {
-        flex-direction: column;
-
-        .single,
-        .multi {
-          min-width: 0;
-          width: 100%;
-        }
-      }
+    .examples-row {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -455,29 +419,9 @@ export default defineComponent({
     </p>
 
     <!-- Live Examples -->
-    <div class="examples-section">
-      <div class="row">
-        <div class="single">
-          <label>Single Select</label>
-          <select ref="singleSelect" class="variable-showcase">
-            <option data-placeholder="true"></option>
-          </select>
-          <div
-            ref="singleSelectContent"
-            class="dropdown-content-container"
-          ></div>
-        </div>
-        <div class="multi">
-          <label>Multiple Select</label>
-          <select ref="multiSelect" class="variable-showcase" multiple>
-            <option data-placeholder="true"></option>
-          </select>
-          <div
-            ref="multiSelectContent"
-            class="dropdown-content-container"
-          ></div>
-        </div>
-      </div>
+    <div class="examples-row">
+      <select ref="singleSelect" class="variable-showcase"></select>
+      <select ref="multiSelect" class="variable-showcase" multiple></select>
     </div>
 
     <!-- Variable Controls -->

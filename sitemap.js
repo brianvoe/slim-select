@@ -17,6 +17,12 @@ const routes = [
     priority: '1.0'
   },
   {
+    loc: 'https://slimselectjs.com/get-started',
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'monthly',
+    priority: '0.95'
+  },
+  {
     loc: 'https://slimselectjs.com/install',
     lastmod: new Date().toISOString().split('T')[0],
     changefreq: 'monthly',
@@ -35,7 +41,7 @@ const routes = [
     priority: '0.8'
   },
   {
-    loc: 'https://slimselectjs.com/examples',
+    loc: 'https://slimselectjs.com/usage',
     lastmod: new Date().toISOString().split('T')[0],
     changefreq: 'monthly',
     priority: '0.8'

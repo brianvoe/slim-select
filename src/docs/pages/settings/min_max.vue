@@ -100,7 +100,7 @@ export default defineComponent({
 
 <template>
   <div id="minmax" class="content">
-    <h2 class="header">minSelected / maxSelected</h2>
+    <h2 class="header">min / max</h2>
     <p>
       Enforce how many options someone can pick in a multi-select — useful for surveys, tag limits, and forms that need
       a valid range before submit.

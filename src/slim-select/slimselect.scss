@@ -355,7 +355,7 @@
     flex-direction: row;
     align-items: center;
     gap: var(--ss-spacing-s);
-    height: var(--ss-search-height);
+    min-height: var(--ss-search-height);
     padding: 0 var(--ss-spacing-s);
     box-sizing: border-box;
     border-bottom: 1px solid var(--ss-border-color);

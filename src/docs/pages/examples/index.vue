@@ -4,17 +4,15 @@ import { defineComponent } from 'vue'
 import AdSlot from '../../components/adslot.vue'
 
 // Sections
-import Countries from './countries.vue'
 import FormReset from './form_reset.vue'
 import Required from './required.vue'
 import TextOverflow from './text_overflow.vue'
 import Label from './label.vue'
 
 export default defineComponent({
-  name: 'Examples',
+  name: 'Usage',
   components: {
     AdSlot,
-    Countries,
     FormReset,
     Required,
     TextOverflow,
@@ -24,9 +22,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="examples" class="contents">
-    <Countries />
-    <AdSlot ad-slot="1270131515" />
+  <div id="usage" class="contents">
     <Label />
     <AdSlot ad-slot="1270131515" />
     <FormReset />
