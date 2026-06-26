@@ -10,8 +10,6 @@
   --ss-focus-color: var(--ss-primary-color);
   --ss-success-color: #00b755;
   --ss-error-color: #dc3545;
-  --ss-scroll-color: var(--ss-primary-color);
-  --ss-track-color: var(--ss-bg-color);
 
   // Heights
   --ss-main-height: 40px;
@@ -433,7 +431,7 @@
     min-height: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    scrollbar-color: var(--ss-scroll-color) var(--ss-track-color);
+    scrollbar-color: var(--ss-primary-color) var(--ss-bg-color);
 
     .ss-error {
       color: var(--ss-error-color);
@@ -751,7 +749,7 @@
           overflow-x: hidden;
           overflow-y: auto;
           border-radius: 0 0 var(--ss-border-radius) var(--ss-border-radius);
-          scrollbar-color: var(--ss-scroll-color) var(--ss-track-color);
+          scrollbar-color: var(--ss-primary-color) var(--ss-bg-color);
         }
 
         .ss-search.ss-hide ~ .ss-list {

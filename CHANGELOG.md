@@ -23,7 +23,6 @@ and this project adheres to
 - Characterization tests for sync engine and lifecycle races
 - Integration tests for API search error recovery, hideSelected, and addable + catalog
 - `prefers-reduced-motion` support for value removal and content panel transitions
-- `--ss-scroll-color` and `--ss-track-color` CSS variables for option list scrollbar styling via `scrollbar-color`
 
 ### Changed
 

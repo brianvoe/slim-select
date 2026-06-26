@@ -17,8 +17,6 @@ export interface ShowcaseVariables {
   spacingS?: string
   mainHeight?: string
   contentHeight?: string
-  scrollColor?: string
-  trackColor?: string
 }
 
 export interface ShowcaseTheme {
@@ -58,9 +56,7 @@ const SHOWCASE_VAR_SECTIONS: { label: string; keys: string[] }[] = [
       '--ss-highlight-color',
       '--ss-focus-color',
       '--ss-success-color',
-      '--ss-error-color',
-      '--ss-scroll-color',
-      '--ss-track-color'
+      '--ss-error-color'
     ]
   },
   {
@@ -96,8 +92,6 @@ function showcaseVarsMap(vars: ShowcaseVariables): Record<string, string> {
     '--ss-placeholder-color': vars.placeholderColor ?? '#8d8d8d',
     '--ss-border-color': vars.borderColor,
     '--ss-focus-color': vars.focusColor ?? vars.primaryColor,
-    '--ss-scroll-color': vars.scrollColor ?? vars.primaryColor,
-    '--ss-track-color': vars.trackColor ?? vars.bgColor,
     '--ss-content-height': vars.contentHeight ?? '180px',
     '--ss-search-height': 'var(--ss-main-height)',
     '--ss-option-height': 'var(--ss-main-height)',
