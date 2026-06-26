@@ -750,8 +750,12 @@
           min-height: 0;
           overflow-x: hidden;
           overflow-y: auto;
-          border-radius: var(--ss-border-radius);
+          border-radius: 0 0 var(--ss-border-radius) var(--ss-border-radius);
           scrollbar-color: var(--ss-scroll-color) var(--ss-track-color);
+        }
+
+        .ss-search.ss-hide ~ .ss-list {
+          border-radius: var(--ss-border-radius);
         }
 
         &.ss-dir-above,
