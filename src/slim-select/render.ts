@@ -1,4 +1,11 @@
-import { debounce } from './helpers'
+import { debounce, shouldUseModalView } from './helpers'
+import {
+  CONTENT_PANEL_TRANSITION_PROPERTIES,
+  getAnimationDuration,
+  getAnimationTimeout,
+  waitForAnimationEnd,
+  waitForTransitionEnd
+} from './animations'
 import Settings from './settings'
 import Store, { Optgroup, Option } from './store'
 import CssClasses from './classes'
@@ -54,6 +61,13 @@ export interface Search {
   }
 }
 
+export interface ModalElements {
+  overlay: HTMLDivElement
+  dialog: HTMLDivElement
+  closeButton: HTMLButtonElement
+  title: HTMLDivElement | null
+}
+
 export default class Render {
   public settings: Settings
   public store: Store
@@ -62,9 +76,10 @@ export default class Render {
   // Used to compute the range selection
   private lastSelectedOption: Option | null
   private lastRenderedOptions: Option[]
+  private optionsListIsFullData = false
+  private lastSearchFilterTerm = ''
 
   // Timeout tracking for cleanup
-  private closeAnimationTimeout: ReturnType<typeof setTimeout> | null = null
 
   // Elements
   public main: Main
@@ -72,6 +87,14 @@ export default class Render {
 
   // Classes
   public classes: CssClasses
+
+  private positionObserver: ResizeObserver | null = null
+  private positionObserverRaf = 0
+
+  private modalElements: ModalElements | null = null
+  private modalSessionActive: boolean | null = null
+  private bodyScrollLocked = false
+  private savedBodyOverflow = ''
 
   constructor(
     settings: Required<Settings>,
@@ -108,11 +131,16 @@ export default class Render {
     if (this.settings.contentLocation) {
       this.settings.contentLocation.appendChild(this.content.main)
     }
+
+    if (this.settings.modal !== 'off' && !this.settings.alwaysOpen) {
+      this.modalElements = this.createModalElements()
+      document.body.appendChild(this.modalElements.overlay)
+    }
   }
 
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
-  private addClasses(
+  public addClasses(
     element: HTMLElement | SVGElement,
     classValue: string
   ): void {
@@ -126,7 +154,7 @@ export default class Render {
   }
 
   // Helper method to remove classes that may contain spaces
-  private removeClasses(
+  public removeClasses(
     element: HTMLElement | SVGElement,
     classValue: string
   ): void {
@@ -163,17 +191,14 @@ export default class Render {
     this.main.arrow.path.setAttribute('d', this.classes.arrowOpen)
     this.main.main.setAttribute('aria-expanded', 'true')
 
-    // Clear any pending close animation timeout to prevent race conditions
-    if (this.closeAnimationTimeout) {
-      clearTimeout(this.closeAnimationTimeout)
-      this.closeAnimationTimeout = null
-    }
+    const useModal = this.resolveModalView()
 
-    // Set direction class on both main and content (persists, never removed)
-    const isAbove = this.settings.openPosition === 'up'
-    const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
-    this.addClasses(this.main.main, dirClass)
-    this.addClasses(this.content.main, dirClass)
+    if (!useModal) {
+      const isAbove = this.settings.openPosition === 'up'
+      const dirClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
+      this.addClasses(this.main.main, dirClass)
+      this.addClasses(this.content.main, dirClass)
+    }
 
     // Add open class to content to trigger open animation
     this.addClasses(this.content.main, this.classes.contentOpen)
@@ -181,8 +206,11 @@ export default class Render {
     // Make search visible to screen readers when opened
     this.content.search.input.removeAttribute('aria-hidden')
 
-    // move the content in to the right location
-    this.moveContent()
+    if (useModal) {
+      this.showModal()
+    } else {
+      this.moveContent()
+    }
 
     // Move to last selected option
     const selectedOptions = this.store.getSelectedOptions()
@@ -197,48 +225,209 @@ export default class Render {
     }
   }
 
+  public isModalViewActive(): boolean {
+    return this.modalSessionActive === true
+  }
+
+  private resolveModalView(): boolean {
+    if (
+      this.settings.alwaysOpen ||
+      this.settings.modal === 'off' ||
+      !this.modalElements
+    ) {
+      return false
+    }
+
+    if (this.modalSessionActive === null) {
+      this.modalSessionActive = shouldUseModalView(this.settings.modal)
+    }
+
+    return this.modalSessionActive
+  }
+
+  private createModalElements(): ModalElements {
+    const overlay = document.createElement('div')
+    this.addClasses(overlay, this.classes.modalOverlay)
+    this.addClasses(overlay, this.classes.hide)
+    overlay.dataset.id = this.settings.id
+
+    const dialog = document.createElement('div')
+    this.addClasses(dialog, this.classes.modalDialog)
+    dialog.setAttribute('role', 'dialog')
+    dialog.setAttribute('aria-modal', 'true')
+
+    let title: HTMLDivElement | null = null
+    if (this.settings.modalTitle) {
+      title = document.createElement('div')
+      this.addClasses(title, this.classes.modalTitle)
+      title.id = `${this.settings.id}-modal-title`
+      title.textContent = this.settings.modalTitle
+      dialog.setAttribute('aria-labelledby', title.id)
+    } else {
+      dialog.setAttribute('aria-label', this.settings.ariaLabel)
+    }
+
+    const closeButton = document.createElement('button')
+    closeButton.type = 'button'
+    this.addClasses(closeButton, this.classes.modalClose)
+    closeButton.setAttribute('aria-label', 'Close')
+    closeButton.onclick = (e: Event) => {
+      e.stopPropagation()
+      this.callbacks.close()
+    }
+
+    const closeSvg = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    )
+    closeSvg.setAttribute('viewBox', '0 0 100 100')
+    const closePath = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'path'
+    )
+    closePath.setAttribute('d', this.classes.deselectPath)
+    closeSvg.appendChild(closePath)
+    closeButton.appendChild(closeSvg)
+
+    overlay.onclick = (e: Event) => {
+      if (e.target === overlay) {
+        this.callbacks.close()
+      }
+    }
+
+    if (title) {
+      dialog.appendChild(title)
+    }
+    overlay.appendChild(dialog)
+
+    return { overlay, dialog, closeButton, title }
+  }
+
+  private showModal(): void {
+    if (!this.modalElements) {
+      return
+    }
+
+    this.modalElements.dialog.appendChild(this.content.main)
+    this.addClasses(this.content.main, this.classes.modalContent)
+    this.content.main.appendChild(this.modalElements.closeButton)
+    this.content.main.style.top = ''
+    this.content.main.style.left = ''
+    this.content.main.style.margin = ''
+    this.content.main.style.width = ''
+
+    this.removeClasses(this.modalElements.overlay, this.classes.hide)
+    requestAnimationFrame(() => {
+      if (!this.modalElements) {
+        return
+      }
+      this.addClasses(this.modalElements.overlay, this.classes.contentOpen)
+    })
+
+    this.lockBodyScroll()
+  }
+
+  private lockBodyScroll(): void {
+    if (this.bodyScrollLocked) {
+      return
+    }
+
+    this.savedBodyOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    this.bodyScrollLocked = true
+  }
+
+  private unlockBodyScroll(): void {
+    if (!this.bodyScrollLocked) {
+      return
+    }
+
+    document.body.style.overflow = this.savedBodyOverflow
+    this.bodyScrollLocked = false
+    this.savedBodyOverflow = ''
+  }
+
+  private restoreContentOffscreen(): void {
+    if (this.settings.contentLocation) {
+      this.settings.contentLocation.appendChild(this.content.main)
+    }
+
+    if (this.settings.contentPosition !== 'relative') {
+      this.content.main.style.top = '-9999px'
+      this.content.main.style.left = '-9999px'
+      this.content.main.style.margin = '0'
+      this.content.main.style.width = 'auto'
+    }
+  }
+
+  /** Tear down modal shell after close animation completes. */
+  public finalizeModalClose(): void {
+    if (!this.modalElements) {
+      return
+    }
+
+    if (this.content.main.parentElement !== this.modalElements.dialog) {
+      return
+    }
+
+    this.addClasses(this.modalElements.overlay, this.classes.hide)
+    this.removeClasses(this.modalElements.overlay, this.classes.contentOpen)
+    this.removeClasses(this.content.main, this.classes.modalContent)
+    this.restoreContentOffscreen()
+    this.unlockBodyScroll()
+  }
+
+  /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
+  public waitForAnimation(
+    phase: 'open' | 'close',
+    signal?: AbortSignal
+  ): Promise<void> {
+    const timeout = getAnimationTimeout(
+      this.content.main,
+      this.settings.timeoutDelay
+    )
+    return waitForTransitionEnd(
+      this.content.main,
+      CONTENT_PANEL_TRANSITION_PROPERTIES,
+      timeout,
+      signal
+    )
+  }
+
   public close(): void {
     this.main.main.setAttribute('aria-expanded', 'false')
     this.main.arrow.path.setAttribute('d', this.classes.arrowClose)
 
+    const wasModal = this.modalSessionActive === true
+
     // Remove open class from content to trigger close animation
-    // Direction class (dirAbove/dirBelow) persists to maintain correct transform-origin
+    // Direction on content persists for transform-origin during the panel animation
     this.removeClasses(this.content.main, this.classes.contentOpen)
+
+    if (!wasModal) {
+      this.removeClasses(this.main.main, this.classes.dirAbove)
+      this.removeClasses(this.main.main, this.classes.dirBelow)
+    }
+
+    if (wasModal && this.modalElements) {
+      this.removeClasses(this.modalElements.overlay, this.classes.contentOpen)
+    }
+
+    this.modalSessionActive = null
 
     // Hide search from screen readers when closed
     this.content.search.input.setAttribute('aria-hidden', 'true')
 
     // Clear active descendant when closed
     this.main.main.removeAttribute('aria-activedescendant')
-
-    // Remove direction class from main and content after animation is complete
-    const animationTiming = this.getAnimationTiming()
-    this.closeAnimationTimeout = setTimeout(() => {
-      this.removeClasses(this.main.main, this.classes.dirAbove)
-      this.removeClasses(this.main.main, this.classes.dirBelow)
-      this.removeClasses(this.content.main, this.classes.dirAbove)
-      this.removeClasses(this.content.main, this.classes.dirBelow)
-      this.closeAnimationTimeout = null
-    }, animationTiming)
   }
 
-  private getAnimationTiming(): number {
-    const computedStyle = getComputedStyle(this.content.main)
-    const cssValue = computedStyle
-      .getPropertyValue('--ss-animation-timing')
-      .trim()
-
-    if (cssValue) {
-      // Parse CSS time value (e.g., "0.2s" or "200ms")
-      if (cssValue.endsWith('ms')) {
-        return parseFloat(cssValue)
-      } else if (cssValue.endsWith('s')) {
-        return parseFloat(cssValue) * 1000
-      }
-    }
-
-    // Fall back to default 200ms
-    return 200
+  /** Remove open-direction classes after close animation (lifecycle afterClose). */
+  public clearDirectionClasses(): void {
+    this.removeClasses(this.main.main, this.classes.dirAbove)
+    this.removeClasses(this.main.main, this.classes.dirBelow)
+    this.removeClasses(this.content.main, this.classes.dirAbove)
+    this.removeClasses(this.content.main, this.classes.dirBelow)
   }
 
   public updateClassStyles(): void {
@@ -381,7 +570,8 @@ export default class Render {
       !this.settings.allowDeselect ||
       (this.settings.isMultiple &&
         selectedOptions &&
-        selectedOptions.length <= 0)
+        selectedOptions.length <= 0) ||
+      this.isAtMinSelected()
     ) {
       this.addClasses(deselect, this.classes.hide)
     } else {
@@ -397,10 +587,29 @@ export default class Render {
         return
       }
 
+      if (this.settings.isMultiple && this.isAtMinSelected()) {
+        return
+      }
+
       // By Default we will delete
       let shouldDelete = true
       const before = this.store.getSelectedOptions()
-      const after = [] as Option[]
+      let after = [] as Option[]
+      let newSelectedIds: string[] | string = ''
+
+      if (this.settings.isMultiple) {
+        const min = this.settings.minSelected
+        const currentIds = this.store.getSelected()
+
+        if (min > 0 && currentIds.length > min) {
+          newSelectedIds = this.getMinimumSelectionIds()
+          after = before.filter((o) => newSelectedIds.includes(o.id))
+        } else if (min <= 0) {
+          newSelectedIds = []
+        } else {
+          return
+        }
+      }
 
       // Add beforeChange callback
       if (this.callbacks.beforeChange) {
@@ -409,7 +618,7 @@ export default class Render {
 
       if (shouldDelete) {
         if (this.settings.isMultiple) {
-          this.callbacks.setSelected([], false)
+          this.callbacks.setSelected(newSelectedIds, false)
           this.updateDeselectAll()
         } else {
           // Get first option and set it as selected
@@ -497,6 +706,7 @@ export default class Render {
     // Figure out if there is a placeholder option
     const placeholderOption = this.store.filter(
       (o) => o.placeholder,
+      false,
       false
     ) as Option[]
 
@@ -537,7 +747,7 @@ export default class Render {
   private renderSingleValue(): void {
     const selected = this.store.filter((o: Option): boolean => {
       return o.selected && !o.placeholder
-    }, false) as Option[]
+    }, false, false) as Option[]
     const selectedSingle = selected.length > 0 ? selected[0] : null
 
     // If nothing is seleected use settings placeholder text
@@ -571,7 +781,7 @@ export default class Render {
     let selectedOptions = this.store.filter((opt: Option) => {
       // Only grab options that are selected and display is true
       return opt.selected && opt.display
-    }, false) as Option[]
+    }, false, false) as Option[]
 
     // If selectedOptions is empty set placeholder
     if (selectedOptions.length === 0) {
@@ -656,14 +866,19 @@ export default class Render {
       }
     }
 
+    const animationDuration = getAnimationTimeout(
+      this.content.main,
+      this.settings.timeoutDelay
+    )
+
     // Loop through and remove
     for (const n of removeNodes) {
       this.addClasses(n, this.classes.valueOut)
-      setTimeout(() => {
+      void waitForAnimationEnd(n, 'ss-valueOut', animationDuration).then(() => {
         if (this.main.values.hasChildNodes() && this.main.values.contains(n)) {
           this.main.values.removeChild(n)
         }
-      }, 100)
+      })
     }
 
     // Add values that dont currently exist
@@ -699,6 +914,46 @@ export default class Render {
         }
       }
     }
+
+    this.updateMultipleValueDeleteVisibility()
+  }
+
+  private isAtMinSelected(): boolean {
+    return (
+      this.settings.isMultiple &&
+      this.settings.minSelected > 0 &&
+      this.store.getSelectedOptions().length <= this.settings.minSelected
+    )
+  }
+
+  private getMinimumSelectionIds(): string[] {
+    let selected = this.store.getSelectedOptions()
+    if (this.settings.keepOrder) {
+      selected = this.store.selectedOrderOptions(selected)
+    }
+
+    return selected
+      .slice(0, this.settings.minSelected)
+      .map((option) => option.id)
+  }
+
+  private updateMultipleValueDeleteVisibility(): void {
+    if (!this.settings.isMultiple || this.settings.multiString) {
+      return
+    }
+
+    const canRemove = !this.isAtMinSelected()
+    const deleteButtons = this.main.values.querySelectorAll(
+      '.' + this.classes.getFirst('valueDelete')
+    )
+
+    for (const deleteButton of deleteButtons) {
+      if (canRemove) {
+        this.removeClasses(deleteButton as HTMLElement, this.classes.hide)
+      } else {
+        this.addClasses(deleteButton as HTMLElement, this.classes.hide)
+      }
+    }
   }
 
   public multipleValue(option: Option): HTMLDivElement {
@@ -722,6 +977,10 @@ export default class Render {
         'aria-label',
         `${this.settings.removeText} ${option.text}`
       )
+
+      if (this.isAtMinSelected()) {
+        this.addClasses(deleteDiv, this.classes.hide)
+      }
 
       // Add delete onclick event
       deleteDiv.onclick = (e: Event) => {
@@ -782,6 +1041,7 @@ export default class Render {
           }
 
           this.updateDeselectAll()
+          this.updateMultipleValueDeleteVisibility()
         }
       }
 
@@ -852,13 +1112,15 @@ export default class Render {
   }
 
   public moveContent(): void {
-    // If contentPosition is relative, dont move the content anywhere other than below
+    if (this.isModalViewActive()) {
+      return
+    }
+
     if (this.settings.contentPosition === 'relative') {
       this.moveContentBelow()
       return
     }
 
-    // If openContent is not auto set content
     if (this.settings.openPosition === 'down') {
       this.moveContentBelow()
       return
@@ -867,11 +1129,72 @@ export default class Render {
       return
     }
 
-    // Auto - Determine where to put the content
     if (this.putContent() === 'up') {
       this.moveContentAbove()
     } else {
       this.moveContentBelow()
+    }
+  }
+
+  /** Track trigger/content layout changes and reposition the dropdown panel. */
+  public startPositionTracking(): void {
+    if (this.settings.contentPosition !== 'absolute' || this.isModalViewActive()) {
+      return
+    }
+
+    this.stopPositionTracking()
+
+    if (typeof ResizeObserver === 'undefined') {
+      return
+    }
+
+    this.positionObserver = new ResizeObserver(() => {
+      if (!this.settings.isOpen) {
+        return
+      }
+
+      cancelAnimationFrame(this.positionObserverRaf)
+      this.positionObserverRaf = requestAnimationFrame(() => {
+        this.moveContent()
+      })
+    })
+
+    this.observePositionTargets()
+  }
+
+  public stopPositionTracking(): void {
+    cancelAnimationFrame(this.positionObserverRaf)
+    this.positionObserver?.disconnect()
+    this.positionObserver = null
+  }
+
+  private observePositionTargets(): void {
+    if (!this.positionObserver) {
+      return
+    }
+
+    const observed = new Set<Element>()
+    const observe = (el: Element | null): void => {
+      if (!el || observed.has(el)) {
+        return
+      }
+
+      observed.add(el)
+      this.positionObserver!.observe(el)
+    }
+
+    observe(this.main.main)
+    observe(this.content.main)
+
+    let parent: HTMLElement | null = this.main.main.parentElement
+    const stopAt = this.settings.contentLocation
+
+    for (let depth = 0; parent && depth < 8; depth++) {
+      observe(parent)
+      if (parent === stopAt) {
+        break
+      }
+      parent = parent.parentElement
     }
   }
 
@@ -1012,10 +1335,10 @@ export default class Render {
 
           // Close it only if closeOnSelect = true
           if (this.settings.closeOnSelect) {
+            const animationDuration = getAnimationDuration(this.content.main)
             setTimeout(() => {
-              // Give it a little padding for a better looking animation
               this.callbacks.close()
-            }, 100)
+            }, animationDuration)
           }
         }
 
@@ -1221,6 +1544,7 @@ export default class Render {
   }
 
   public renderError(error: string) {
+    this.optionsListIsFullData = false
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
@@ -1231,6 +1555,7 @@ export default class Render {
   }
 
   public renderSearching() {
+    this.optionsListIsFullData = false
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
@@ -1243,6 +1568,7 @@ export default class Render {
 
   // Take in data and add options to
   public renderOptions(data: (Option | Optgroup)[]): void {
+    this.lastSearchFilterTerm = ''
     this.lastRenderedOptions = data
       .map((o) =>
         o instanceof Option ? [o] : o.options.map((po) => new Option(po))
@@ -1254,6 +1580,7 @@ export default class Render {
 
     // If no results show no results text
     if (data.length === 0) {
+      this.optionsListIsFullData = false
       const noResults = document.createElement('div')
       this.addClasses(noResults, this.classes.search)
 
@@ -1278,6 +1605,7 @@ export default class Render {
       // Check if store options have a placeholder
       const placeholderOption = this.store.filter(
         (o) => o.placeholder,
+        false,
         false
       ) as Option[]
       if (!placeholderOption.length) {
@@ -1325,13 +1653,7 @@ export default class Render {
           this.addClasses(selectAll, this.classes.optgroupSelectAll)
 
           // Check options and if all are selected, if so add class selected
-          let allSelected = true
-          for (const o of d.options) {
-            if (!o.selected) {
-              allSelected = false
-              break
-            }
-          }
+          const allSelected = this.isOptgroupAllSelected(d.options as Option[])
 
           // Add class if all selected
           if (allSelected) {
@@ -1339,9 +1661,9 @@ export default class Render {
           }
 
           // Add select all text span
-          const selectAllText = document.createElement('span')
-          selectAllText.textContent = d.selectAllText
-          selectAll.appendChild(selectAllText)
+          const selectAllLabel = document.createElement('span')
+          selectAllLabel.textContent = this.optgroupSelectAllLabel(allSelected)
+          selectAll.appendChild(selectAllLabel)
 
           // Create new svg for checkbox
           const selectAllSvg = document.createElementNS(
@@ -1374,10 +1696,13 @@ export default class Render {
 
             // Get the store current selected values
             const currentSelected = this.store.getSelected()
+            const allSelectedNow = this.isOptgroupAllSelected(
+              d.options as Option[],
+              new Set(currentSelected)
+            )
 
             // If all selected, remove all options from selected
-            // call setSelected and return
-            if (allSelected) {
+            if (allSelectedNow) {
               // Put together new list minus all options in this optgroup
               const newSelected = currentSelected.filter((s) => {
                 for (const o of d.options) {
@@ -1457,13 +1782,20 @@ export default class Render {
             e.preventDefault()
             e.stopPropagation()
 
-            // If optgroup is closed, open it
-            if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+            const isOpen = this.isClosableOptgroupOpen(
+              optgroupEl,
+              optgroupClosable
+            )
+
+            if (!isOpen) {
+              this.closeOtherClosableOptgroups(optgroupEl)
               this.removeClasses(optgroupEl, this.classes.close)
+              this.removeClasses(optgroupClosable, this.classes.mainOpen)
               this.addClasses(optgroupEl, this.classes.mainOpen)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
             } else {
               this.removeClasses(optgroupEl, this.classes.mainOpen)
+              this.removeClasses(optgroupClosable, this.classes.mainOpen)
               this.addClasses(optgroupEl, this.classes.close)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
             }
@@ -1491,12 +1823,401 @@ export default class Render {
 
     // Append fragment to list
     this.content.list.appendChild(fragment)
+    this.setOptionsListFullData(data)
     this.announce(
       this.settings.resultsText.replace(
         '{count}',
         String(this.lastRenderedOptions.length)
       )
     )
+  }
+
+  /** True when the list DOM contains every store option (local search can show/hide in place). */
+  public canFilterOptionsInPlace(): boolean {
+    if (!this.optionsListIsFullData) {
+      return false
+    }
+
+    return (
+      this.content.list.querySelector(
+        '.' + this.classes.getFirst('option')
+      ) !== null
+    )
+  }
+
+  public resetSearchFilterState(): void {
+    this.lastSearchFilterTerm = ''
+  }
+
+  /** Filter visible options by search without rebuilding the list. */
+  public filterOptionsInPlace(
+    search: string,
+    searchFilter: (opt: Option, search: string) => boolean
+  ): void {
+    const searchTrim = search.trim()
+    if (searchTrim === this.lastSearchFilterTerm) {
+      return
+    }
+    this.lastSearchFilterTerm = searchTrim
+
+    const visibleOptions: Option[] = []
+    const optionEls = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('option')
+    ) as NodeListOf<HTMLDivElement>
+
+    for (const optionEl of optionEls) {
+      const id = optionEl.dataset.id
+      if (!id) {
+        continue
+      }
+
+      const storeOption = this.store.getOptionByID(id)
+      if (!storeOption) {
+        continue
+      }
+
+      const isPermanentlyHidden =
+        storeOption.placeholder ||
+        !storeOption.display ||
+        (storeOption.selected && this.settings.hideSelected)
+
+      const matchesSearch = searchFilter(storeOption, searchTrim)
+
+      if (isPermanentlyHidden || !matchesSearch) {
+        this.addClasses(optionEl, this.classes.hide)
+        this.removeClasses(optionEl, this.classes.highlighted)
+      } else {
+        this.removeClasses(optionEl, this.classes.hide)
+        this.setOptionElementContent(optionEl, storeOption, searchTrim)
+        visibleOptions.push(storeOption)
+      }
+
+      if (storeOption.selected) {
+        this.addClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'true')
+      } else {
+        this.removeClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'false')
+      }
+    }
+
+    this.lastRenderedOptions = visibleOptions
+    this.updateOptgroupVisibilityAfterSearch(searchTrim)
+
+    if (visibleOptions.length === 0) {
+      this.updateSearchResultsMessage(0, searchTrim)
+    } else {
+      this.removeListSearchMessage()
+      this.announce(
+        this.settings.resultsText.replace(
+          '{count}',
+          String(visibleOptions.length)
+        )
+      )
+    }
+
+    this.updateOptgroupSelectAllStates()
+  }
+
+  private setOptionsListFullData(data: (Option | Optgroup)[]): void {
+    const storeOptions = this.store.getDataOptions(false)
+    const renderedOptions = data
+      .map((o) =>
+        o instanceof Option ? [o] : o.options.map((po) => new Option(po))
+      )
+      .flat()
+
+    if (renderedOptions.length !== storeOptions.length) {
+      this.optionsListIsFullData = false
+      return
+    }
+
+    const storeIds = new Set(storeOptions.map((o) => o.id))
+    this.optionsListIsFullData = renderedOptions.every((o) =>
+      storeIds.has(o.id)
+    )
+  }
+
+  private isClosableOptgroupOpen(
+    optgroupEl: HTMLElement,
+    optgroupClosable: HTMLElement
+  ): boolean {
+    if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+      return false
+    }
+
+    return (
+      optgroupEl.classList.contains(this.classes.getFirst('mainOpen')) ||
+      optgroupClosable.classList.contains(this.classes.getFirst('mainOpen'))
+    )
+  }
+
+  private closeClosableOptgroup(optgroupEl: HTMLElement): void {
+    const closable = optgroupEl.querySelector(
+      '.' + this.classes.getFirst('optgroupClosable')
+    ) as HTMLElement | null
+    if (!closable) {
+      return
+    }
+
+    if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
+      return
+    }
+
+    this.removeClasses(optgroupEl, this.classes.mainOpen)
+    this.removeClasses(closable, this.classes.mainOpen)
+    this.addClasses(optgroupEl, this.classes.close)
+
+    const arrow = closable.querySelector('path')
+    if (arrow) {
+      arrow.setAttribute('d', this.classes.arrowClose)
+    }
+  }
+
+  private closeOtherClosableOptgroups(exceptOptgroupEl: HTMLElement): void {
+    const optgroups = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('optgroup')
+    )
+
+    for (const optgroupEl of optgroups) {
+      if (optgroupEl === exceptOptgroupEl) {
+        continue
+      }
+
+      this.closeClosableOptgroup(optgroupEl as HTMLElement)
+    }
+  }
+
+  private updateOptgroupVisibilityAfterSearch(searchTrim: string): void {
+    const optgroups = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('optgroup')
+    )
+
+    for (const optgroupEl of optgroups) {
+      const optionEls = optgroupEl.querySelectorAll(
+        '.' + this.classes.getFirst('option')
+      ) as NodeListOf<HTMLDivElement>
+
+      let hasVisibleOption = false
+      for (const optionEl of optionEls) {
+        if (!optionEl.classList.contains(this.classes.getFirst('hide'))) {
+          hasVisibleOption = true
+          break
+        }
+      }
+
+      if (!hasVisibleOption) {
+        this.addClasses(optgroupEl as HTMLDivElement, this.classes.hide)
+        continue
+      }
+
+      this.removeClasses(optgroupEl as HTMLDivElement, this.classes.hide)
+
+      if (searchTrim !== '') {
+        this.removeClasses(optgroupEl as HTMLDivElement, this.classes.close)
+        this.addClasses(optgroupEl as HTMLDivElement, this.classes.mainOpen)
+      }
+    }
+  }
+
+  private updateSearchResultsMessage(
+    visibleCount: number,
+    searchTrim: string
+  ): void {
+    this.removeListSearchMessage()
+
+    if (visibleCount > 0) {
+      return
+    }
+
+    const noResults = document.createElement('div')
+    this.addClasses(noResults, this.classes.search)
+
+    if (this.callbacks.addable) {
+      const addableMessage = this.settings.addableText.replace(
+        '{value}',
+        searchTrim
+      )
+      noResults.innerHTML = addableMessage
+      this.announce(addableMessage)
+    } else {
+      noResults.innerHTML = this.settings.searchText
+      this.announce(this.settings.searchText)
+    }
+
+    this.content.list.appendChild(noResults)
+  }
+
+  private removeListSearchMessage(): void {
+    const messages = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('search')
+    )
+    messages.forEach((message) => message.remove())
+  }
+
+  private setOptionElementContent(
+    optionEl: HTMLDivElement,
+    option: Option,
+    search: string
+  ): void {
+    const searchTrim = search.trim()
+    if (this.settings.searchHighlight && searchTrim !== '') {
+      optionEl.innerHTML = this.highlightText(
+        option.html !== '' ? option.html : option.text,
+        searchTrim,
+        this.classes.searchHighlighter
+      )
+    } else if (option.html !== '') {
+      optionEl.innerHTML = option.html
+    } else {
+      optionEl.textContent = option.text
+    }
+
+    if (this.settings.showOptionTooltips && optionEl.textContent) {
+      optionEl.setAttribute('title', optionEl.textContent)
+    } else {
+      optionEl.removeAttribute('title')
+    }
+  }
+
+  /** True when option nodes exist in the list (selection can sync without re-searching). */
+  public hasRenderedOptions(): boolean {
+    return (
+      this.content.list.querySelector(
+        '.' + this.classes.getFirst('option')
+      ) !== null
+    )
+  }
+
+  /** True when the open list already has options and search is not filtering. */
+  public canUpdateOptionSelectionInPlace(): boolean {
+    if (this.content.search.input.value.trim() !== '') {
+      return false
+    }
+
+    return this.hasRenderedOptions()
+  }
+
+  /** Sync selected/hidden state on existing option nodes without rebuilding the list. */
+  public updateOptionSelection(): void {
+    const selectedIds = new Set(this.store.getSelected())
+    const optionEls = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('option')
+    ) as NodeListOf<HTMLDivElement>
+
+    let lastSelectedEl: HTMLDivElement | null = null
+
+    for (const optionEl of optionEls) {
+      const id = optionEl.dataset.id
+      if (!id) {
+        continue
+      }
+
+      const storeOption = this.store.getOptionByID(id)
+      if (!storeOption) {
+        continue
+      }
+
+      const isSelected = selectedIds.has(id)
+
+      if (isSelected) {
+        this.addClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'true')
+        lastSelectedEl = optionEl
+      } else {
+        this.removeClasses(optionEl, this.classes.selected)
+        optionEl.setAttribute('aria-selected', 'false')
+      }
+
+      if (this.settings.hideSelected) {
+        if (isSelected) {
+          this.addClasses(optionEl, this.classes.hide)
+        } else {
+          this.removeClasses(optionEl, this.classes.hide)
+          if (!storeOption.display) {
+            this.addClasses(optionEl, this.classes.hide)
+          }
+        }
+      }
+    }
+
+    if (!this.settings.isMultiple && lastSelectedEl) {
+      this.main.main.setAttribute('aria-activedescendant', lastSelectedEl.id)
+    } else if (!this.settings.isMultiple && selectedIds.size === 0) {
+      this.main.main.removeAttribute('aria-activedescendant')
+    }
+
+    this.updateOptgroupSelectAllStates()
+  }
+
+  private updateOptgroupSelectAllStates(): void {
+    if (!this.settings.isMultiple) {
+      return
+    }
+
+    const selectedIds = new Set(this.store.getSelected())
+    const optgroups = this.content.list.querySelectorAll(
+      '.' + this.classes.getFirst('optgroup')
+    )
+
+    for (const optgroupEl of optgroups) {
+      const selectAll = optgroupEl.querySelector(
+        '.' + this.classes.getFirst('optgroupSelectAll')
+      ) as HTMLDivElement | null
+
+      if (!selectAll) {
+        continue
+      }
+
+      const optionEls = optgroupEl.querySelectorAll(
+        '.' + this.classes.getFirst('option')
+      ) as NodeListOf<HTMLDivElement>
+
+      let allSelected = optionEls.length > 0
+      for (const optionEl of optionEls) {
+        const id = optionEl.dataset.id
+        if (!id || !selectedIds.has(id)) {
+          allSelected = false
+          break
+        }
+      }
+
+      if (allSelected) {
+        this.addClasses(selectAll, this.classes.selected)
+      } else {
+        this.removeClasses(selectAll, this.classes.selected)
+      }
+
+      const selectAllLabel = selectAll.querySelector('span')
+      if (selectAllLabel) {
+        selectAllLabel.textContent = this.optgroupSelectAllLabel(allSelected)
+      }
+    }
+  }
+
+  private optgroupSelectAllLabel(allSelected: boolean): string {
+    return allSelected ? 'Unselect All' : 'Select All'
+  }
+
+  private isOptgroupAllSelected(
+    options: Option[],
+    selectedIds?: Set<string>
+  ): boolean {
+    if (options.length === 0) {
+      return false
+    }
+
+    for (const option of options) {
+      const isSelected = selectedIds
+        ? Boolean(option.id && selectedIds.has(option.id))
+        : option.selected
+
+      if (!isSelected) {
+        return false
+      }
+    }
+
+    return true
   }
 
   // Create option div element
@@ -1525,25 +2246,11 @@ export default class Render {
     }
 
     // Set option content
-    if (
-      this.settings.searchHighlight &&
-      this.content.search.input.value.trim() !== ''
-    ) {
-      optionEl.innerHTML = this.highlightText(
-        option.html !== '' ? option.html : option.text,
-        this.content.search.input.value,
-        this.classes.searchHighlighter
-      )
-    } else if (option.html !== '') {
-      optionEl.innerHTML = option.html
-    } else {
-      optionEl.textContent = option.text
-    }
-
-    // Set title attribute
-    if (this.settings.showOptionTooltips && optionEl.textContent) {
-      optionEl.setAttribute('title', optionEl.textContent)
-    }
+    this.setOptionElementContent(
+      optionEl,
+      option,
+      this.content.search.input.value
+    )
 
     // If option is disabled
     if (!option.display) {
@@ -1744,10 +2451,15 @@ export default class Render {
   }
 
   public destroy(): void {
-    // Clear any pending timeouts
-    if (this.closeAnimationTimeout) {
-      clearTimeout(this.closeAnimationTimeout)
-      this.closeAnimationTimeout = null
+    this.stopPositionTracking()
+
+    if (this.modalElements) {
+      this.unlockBodyScroll()
+      if (this.content.main.parentElement === this.modalElements.dialog) {
+        this.restoreContentOffscreen()
+      }
+      this.modalElements.overlay.remove()
+      this.modalElements = null
     }
 
     // Remove main
@@ -1816,13 +2528,11 @@ export default class Render {
     const addClass = isAbove ? this.classes.dirAbove : this.classes.dirBelow
     const removeClass = isAbove ? this.classes.dirBelow : this.classes.dirAbove
 
-    // Set direction classes on both main and content
     this.removeClasses(this.main.main, removeClass)
     this.addClasses(this.main.main, addClass)
     this.removeClasses(this.content.main, removeClass)
     this.addClasses(this.content.main, addClass)
 
-    // Set margin to position content
     if (isAbove) {
       const mainHeight = this.main.main.offsetHeight
       const contentHeight = this.content.main.offsetHeight
@@ -1838,22 +2548,14 @@ export default class Render {
       return
     }
 
-    // getBoundingClientRect() returns viewport-relative coordinates.
     const containerRect = this.main.main.getBoundingClientRect()
     let top: number
     let left: number
 
     if (this.settings.contentPosition === 'fixed') {
-      // position:fixed is relative to the viewport, so viewport coords work directly.
       top = containerRect.top + containerRect.height
       left = containerRect.left
     } else {
-      // position:absolute is relative to the containing block. By default the content
-      // is appended to document.body (static), so the containing block is the initial
-      // containing block (document origin). We must convert viewport coords to document
-      // coords by adding scroll offsets. Using offsetParent subtraction was unreliable
-      // because offsetParent for body children varies across browsers (body vs html)
-      // and body margin caused misalignment.
       top = containerRect.top + window.scrollY + containerRect.height
       left = containerRect.left + window.scrollX
     }
@@ -1861,33 +2563,21 @@ export default class Render {
     this.content.main.style.top = top + 'px'
     this.content.main.style.left = left + 'px'
 
-    // Apply content width based on contentWidth setting
-    // ""           → width matches trigger (default/current behavior)
-    // "500px"      → exact width of 500px
-    // ">500px"     → min-width of 500px, width auto (content can grow)
-    // "<500px"     → max-width of 500px, width auto (content can shrink)
     const cw = this.settings.contentWidth
     this.content.main.style.width = ''
     this.content.main.style.minWidth = ''
     this.content.main.style.maxWidth = ''
 
     if (!cw) {
-      // Default: match trigger width exactly
       this.content.main.style.width = containerRect.width + 'px'
     } else if (cw.startsWith('>')) {
-      // Min-width mode: at least this wide, can grow to fit content
       this.content.main.style.minWidth = cw.slice(1)
     } else if (cw.startsWith('<')) {
-      // Max-width mode: no wider than this, content wraps if longer
       this.content.main.style.maxWidth = cw.slice(1)
     } else {
-      // Exact width
       this.content.main.style.width = cw
     }
 
-    // If content overflows the right side of the viewport, shift it left so the right edge
-    // lines up with the trigger (or stays inside the viewport). Use rAF so we measure after
-    // layout (and after width:auto / min-width have been applied).
     const padding = 20
     const viewportRight = window.innerWidth - padding
 
@@ -1911,7 +2601,6 @@ export default class Render {
       }
     }
 
-    // First rAF: layout done (width/min-width applied). Second rAF: catch scrollbar etc.
     requestAnimationFrame(() => {
       applyOverflowShift()
       requestAnimationFrame(applyOverflowShift)
@@ -1932,15 +2621,11 @@ export default class Render {
     container: HTMLElement,
     element: HTMLElement
   ): void {
-    // Determine container top and bottom
-    const cTop = container.scrollTop + container.offsetTop // Make sure to have offsetTop
+    const cTop = container.scrollTop + container.offsetTop
     const cBottom = cTop + container.clientHeight
-
-    // Determine element top and bottom
     const eTop = element.offsetTop
     const eBottom = eTop + element.clientHeight
 
-    // Check if out of view
     if (eTop < cTop) {
       container.scrollTop -= cTop - eTop
     } else if (eBottom > cBottom) {
@@ -1949,27 +2634,18 @@ export default class Render {
   }
 
   public putContent(): 'up' | 'down' {
-    // Get main and content height
     const mainHeight = this.main.main.offsetHeight
     const mainRect = this.main.main.getBoundingClientRect()
     const contentHeight = this.content.main.offsetHeight
-
-    // From bottom of mainHeight figure out if content will fit below without going below the window
     const spaceBelow = window.innerHeight - (mainRect.top + mainHeight)
 
-    // If space below is less than content height
     if (spaceBelow <= contentHeight) {
-      // If space above is more than content height
       if (mainRect.top > contentHeight) {
-        // Move content above
         return 'up'
-      } else {
-        // Move content below
-        return 'down'
       }
+      return 'down'
     }
 
-    // Move content below
     return 'down'
   }
 
@@ -1982,11 +2658,16 @@ export default class Render {
     const hasSelectedItems = selected && selected.length > 0
     const isMultiple = this.settings.isMultiple
     const allowDeselect = this.settings.allowDeselect
+    const atMinSelected = this.isAtMinSelected()
 
     const deselectButton = this.main.deselect.main
     const hideClass = this.classes.hide
 
-    if (allowDeselect && !(isMultiple && !hasSelectedItems)) {
+    if (
+      allowDeselect &&
+      !(isMultiple && !hasSelectedItems) &&
+      !atMinSelected
+    ) {
       this.removeClasses(deselectButton, hideClass)
     } else {
       this.addClasses(deselectButton, hideClass)

@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('./pages/home.vue')
     },
     {
+      path: '/get-started',
+      name: 'GetStarted',
+      component: () => import('./pages/get-started.vue')
+    },
+    {
       path: '/install',
       name: 'Install',
       component: () => import('./pages/install.vue')
@@ -25,8 +30,8 @@ const router = createRouter({
       component: () => import('./pages/data.vue')
     },
     {
-      path: '/examples',
-      name: 'Examples',
+      path: '/usage',
+      name: 'Usage',
       component: () => import('./pages/examples/index.vue')
     },
     {

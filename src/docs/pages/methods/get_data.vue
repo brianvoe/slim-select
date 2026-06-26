@@ -47,6 +47,10 @@ export default defineComponent({
       values but also any additional data attached to each option, such as custom attributes, metadata, or configuration
       options that were set when the data was loaded.
     </p>
+    <p>
+      During an active <code>events.search</code> API search, <code>getData()</code> reflects temporary search results
+      shown in the dropdown — not the catalog baseline passed as the third argument to your search callback.
+    </p>
 
     <div class="row">
       <div class="btn" @click="getData">Get Data</div>

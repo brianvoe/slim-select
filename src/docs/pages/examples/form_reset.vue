@@ -65,8 +65,9 @@ export default defineComponent({
 <style lang="scss">
 #formReset {
   .form-example {
-    flex: 1;
-    min-width: 300px;
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
     padding: var(--spacing);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);

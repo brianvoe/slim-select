@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import SlimSelectReact from '@/slim-select/react'
 import HighlightStyle from '@/docs/components/highlight_style.vue'
 
 const h = React.createElement
@@ -23,9 +24,19 @@ export default defineComponent({
     }
   },
   async mounted() {
-    // Dynamically import the React component from dist
-    const { default: SlimSelectReact } = await import('../../../../dist/react/index.js' as any)
     const { useState } = React
+
+    const basicOptions = [
+      { value: '1', text: 'Option 1' },
+      { value: '2', text: 'Option 2' },
+      { value: '3', text: 'Option 3' }
+    ]
+
+    const emptyVmodelOptions = [
+      { value: 'opt1', text: 'Option 1' },
+      { value: 'opt2', text: 'Option 2' },
+      { value: 'opt3', text: 'Option 3' }
+    ]
 
     // Simple Example
     const simpleHost = this.$refs.simpleHost as HTMLElement
@@ -46,11 +57,9 @@ export default defineComponent({
               SlimSelectReact,
               {
                 value: singleValue,
-                onChange: (val: any) => setSingleValue(val as string)
-              },
-              h('option', { value: '1' }, 'Option 1'),
-              h('option', { value: '2' }, 'Option 2'),
-              h('option', { value: '3' }, 'Option 3')
+                onChange: (val: any) => setSingleValue(val as string),
+                data: basicOptions
+              }
             )
           ),
           h(
@@ -62,11 +71,9 @@ export default defineComponent({
               {
                 value: multipleValue,
                 onChange: (val: any) => setMultipleValue(val as string[]),
-                multiple: true
-              },
-              h('option', { value: '1' }, 'Option 1'),
-              h('option', { value: '2' }, 'Option 2'),
-              h('option', { value: '3' }, 'Option 3')
+                multiple: true,
+                data: basicOptions
+              }
             )
           )
         )
@@ -85,21 +92,17 @@ export default defineComponent({
           h(
             SlimSelectReact,
             {
-              settings: { showSearch: false }
-            },
-            h('option', { value: '1' }, 'Option 1'),
-            h('option', { value: '2' }, 'Option 2'),
-            h('option', { value: '3' }, 'Option 3')
+              settings: { showSearch: false },
+              data: basicOptions
+            }
           ),
           h(
             SlimSelectReact,
             {
               settings: { showSearch: false },
-              multiple: true
-            },
-            h('option', { value: '1' }, 'Option 1'),
-            h('option', { value: '2' }, 'Option 2'),
-            h('option', { value: '3' }, 'Option 3')
+              multiple: true,
+              data: basicOptions
+            }
           )
         )
       }
@@ -160,21 +163,17 @@ export default defineComponent({
           h(
             SlimSelectReact,
             {
-              events: { afterChange: handleAfterChangeSingle }
-            },
-            h('option', { value: '1' }, 'Option 1'),
-            h('option', { value: '2' }, 'Option 2'),
-            h('option', { value: '3' }, 'Option 3')
+              events: { afterChange: handleAfterChangeSingle },
+              data: basicOptions
+            }
           ),
           h(
             SlimSelectReact,
             {
               events: { afterChange: handleAfterChangeMultiple },
-              multiple: true
-            },
-            h('option', { value: '1' }, 'Option 1'),
-            h('option', { value: '2' }, 'Option 2'),
-            h('option', { value: '3' }, 'Option 3')
+              multiple: true,
+              data: basicOptions
+            }
           )
         )
       }
@@ -206,11 +205,9 @@ export default defineComponent({
               SlimSelectReact,
               {
                 value: emptySelected,
-                onChange: (val: any) => setEmptySelected(val as string)
-              },
-              h('option', { value: 'opt1' }, 'Option 1'),
-              h('option', { value: 'opt2' }, 'Option 2'),
-              h('option', { value: 'opt3' }, 'Option 3')
+                onChange: (val: any) => setEmptySelected(val as string),
+                data: emptyVmodelOptions
+              }
             )
           ),
           h(
@@ -228,11 +225,9 @@ export default defineComponent({
               {
                 value: emptyArraySelected,
                 onChange: (val: any) => setEmptyArraySelected(val as string[]),
-                multiple: true
-              },
-              h('option', { value: 'opt1' }, 'Option 1'),
-              h('option', { value: 'opt2' }, 'Option 2'),
-              h('option', { value: 'opt3' }, 'Option 3')
+                multiple: true,
+                data: emptyVmodelOptions
+              }
             )
           ),
           h(
@@ -307,28 +302,26 @@ export default defineComponent({
         function App() {
           const [singleValue, setSingleValue] = useState('2')
           const [multipleValue, setMultipleValue] = useState(['2', '3'])
+          const options = [
+            { value: '1', text: 'Option 1' },
+            { value: '2', text: 'Option 2' },
+            { value: '3', text: 'Option 3' }
+          ]
 
           return (
             &lt;div&gt;
               &lt;div&gt;
                 &lt;div&gt;Value: &#123;singleValue&#125;&lt;/div&gt;
-                &lt;SlimSelect value=&#123;singleValue&#125; onChange=&#123;setSingleValue&#125;&gt;
-                  &lt;option value="1"&gt;Option 1&lt;/option&gt;
-                  &lt;option value="2"&gt;Option 2&lt;/option&gt;
-                  &lt;option value="3"&gt;Option 3&lt;/option&gt;
-                &lt;/SlimSelect&gt;
+                &lt;SlimSelect value=&#123;singleValue&#125; onChange=&#123;setSingleValue&#125; data=&#123;options&#125; /&gt;
               &lt;/div&gt;
 
               &lt;div&gt;
                 &lt;div&gt;Value: &#123;JSON.stringify(multipleValue)&#125;&lt;/div&gt;
-                &lt;SlimSelect 
-                  value=&#123;multipleValue&#125; 
+                &lt;SlimSelect
+                  value=&#123;multipleValue&#125;
                   onChange=&#123;setMultipleValue&#125;
-                  multiple&gt;
-                  &lt;option value="1"&gt;Option 1&lt;/option&gt;
-                  &lt;option value="2"&gt;Option 2&lt;/option&gt;
-                  &lt;option value="3"&gt;Option 3&lt;/option&gt;
-                &lt;/SlimSelect&gt;
+                  data=&#123;options&#125;
+                  multiple /&gt;
               &lt;/div&gt;
             &lt;/div&gt;
           )
@@ -350,19 +343,17 @@ export default defineComponent({
         import SlimSelect from 'slim-select/react'
 
         function App() {
+          const options = [
+            { value: '1', text: 'Option 1' },
+            { value: '2', text: 'Option 2' },
+            { value: '3', text: 'Option 3' }
+          ]
+
           return (
             &lt;div&gt;
-              &lt;SlimSelect settings=&#123;&#123; showSearch: false &#125;&#125;&gt;
-                &lt;option value="1"&gt;Option 1&lt;/option&gt;
-                &lt;option value="2"&gt;Option 2&lt;/option&gt;
-                &lt;option value="3"&gt;Option 3&lt;/option&gt;
-              &lt;/SlimSelect&gt;
+              &lt;SlimSelect settings=&#123;&#123; showSearch: false &#125;&#125; data=&#123;options&#125; /&gt;
 
-              &lt;SlimSelect settings=&#123;&#123; showSearch: false &#125;&#125; multiple&gt;
-                &lt;option value="1"&gt;Option 1&lt;/option&gt;
-                &lt;option value="2"&gt;Option 2&lt;/option&gt;
-                &lt;option value="3"&gt;Option 3&lt;/option&gt;
-              &lt;/SlimSelect&gt;
+              &lt;SlimSelect settings=&#123;&#123; showSearch: false &#125;&#125; data=&#123;options&#125; multiple /&gt;
             &lt;/div&gt;
           )
         }
@@ -375,8 +366,8 @@ export default defineComponent({
 
     <h3>Data</h3>
     <p>
-      Data can be passed as an array through the <code>data</code> prop. The component will update when the data
-      changes.
+      Pass options via the required <code>data</code> prop — the same array shape as core SlimSelect. The component
+      updates when the array changes.
     </p>
 
     <div ref="dataHost"></div>
@@ -431,6 +422,11 @@ export default defineComponent({
 
         function App() {
           const [afterChangeData, setAfterChangeData] = useState([])
+          const options = [
+            { value: '1', text: 'Option 1' },
+            { value: '2', text: 'Option 2' },
+            { value: '3', text: 'Option 3' }
+          ]
 
           const handleAfterChange = (newVal) => {
             setAfterChangeData(newVal)
@@ -442,20 +438,13 @@ export default defineComponent({
               &#123;afterChangeData.length > 0 &amp;&amp; (
                 &lt;div&gt;afterChange: &#123;JSON.stringify(afterChangeData)&#125;&lt;/div&gt;
               )&#125;
-              
-              &lt;SlimSelect events=&#123;&#123; afterChange: handleAfterChange &#125;&#125;&gt;
-                &lt;option value="1"&gt;Option 1&lt;/option&gt;
-                &lt;option value="2"&gt;Option 2&lt;/option&gt;
-                &lt;option value="3"&gt;Option 3&lt;/option&gt;
-              &lt;/SlimSelect&gt;
 
-              &lt;SlimSelect 
+              &lt;SlimSelect events=&#123;&#123; afterChange: handleAfterChange &#125;&#125; data=&#123;options&#125; /&gt;
+
+              &lt;SlimSelect
                 events=&#123;&#123; afterChange: handleAfterChange &#125;&#125;
-                multiple&gt;
-                &lt;option value="1"&gt;Option 1&lt;/option&gt;
-                &lt;option value="2"&gt;Option 2&lt;/option&gt;
-                &lt;option value="3"&gt;Option 3&lt;/option&gt;
-              &lt;/SlimSelect&gt;
+                data=&#123;options&#125;
+                multiple /&gt;
             &lt;/div&gt;
           )
         }
@@ -471,7 +460,7 @@ export default defineComponent({
     <ul>
       <li><code>value</code> - Controls the selected value(s). String for single select, array for multiple.</li>
       <li><code>onChange</code> - Callback fired when selection changes, receives the new value(s).</li>
-      <li><code>data</code> - Array of option data objects.</li>
+      <li><code>data</code> - Required array of option data objects (same shape as core SlimSelect).</li>
       <li><code>settings</code> - SlimSelect settings object.</li>
       <li><code>events</code> - SlimSelect events object.</li>
       <li><code>multiple</code> - Boolean to enable multiple selection.</li>
@@ -480,8 +469,15 @@ export default defineComponent({
     </ul>
 
     <div class="alert info">
+      <strong>Controlled component:</strong> pass <code>value</code> and <code>onChange</code> together, like a native
+      <code>&lt;select&gt;</code>. Omit <code>value</code> for uncontrolled usage. Update <code>data</code> with a new
+      array reference when options change.
+    </div>
+
+    <div class="alert info">
       <strong>Note:</strong> The React component automatically handles cleanup when unmounted, so you don't need to
-      manually destroy the SlimSelect instance.
+      manually destroy the SlimSelect instance. Use a <code>ref</code> to access the underlying SlimSelect API after
+      mount.
     </div>
 
     <br />

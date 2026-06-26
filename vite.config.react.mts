@@ -20,12 +20,13 @@ export default defineConfig({
     },
     outDir: 'dist/react',
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
         exports: 'named',
         globals: {
           react: 'React',
-          'react-dom': 'ReactDOM'
+          'react-dom': 'ReactDOM',
+          'react/jsx-runtime': 'react_jsx_runtime'
         }
       }
     }

@@ -1,4 +1,4 @@
-import { generateID } from './helpers'
+import { copyOptionData, generateID } from './helpers'
 
 export class Option {
   id: string
@@ -31,14 +31,13 @@ export class Option {
       option.placeholder !== undefined ? option.placeholder : false
     this.class = option.class || ''
     this.style = option.style || ''
-    this.data = option.data || {}
+    this.data = copyOptionData(option.data)
   }
 }
 export class Optgroup {
   public id: string
   public label: string
   public selectAll: boolean
-  public selectAllText: string
   public closable: 'off' | 'open' | 'close'
   public options: Partial<Option>[]
 
@@ -47,7 +46,6 @@ export class Optgroup {
     this.label = optgroup.label || ''
     this.selectAll =
       optgroup.selectAll === undefined ? false : optgroup.selectAll
-    this.selectAllText = optgroup.selectAllText || 'Select All'
     this.closable = optgroup.closable || 'off'
 
     // If options exist, loop through options and create new option class
@@ -67,6 +65,8 @@ export default class Store {
   // Main data set, never null
   private data: (Option | Optgroup)[] = []
   private selectedOrder: string[] = []
+  /** Baseline option list — restored when search is cleared (API results are temporary). */
+  private catalog: (Option | Optgroup)[] | null = null
 
   constructor(
     type: 'single' | 'multiple',
@@ -74,6 +74,7 @@ export default class Store {
   ) {
     this.selectType = type
     this.setData(data)
+    this.snapshotCatalog()
   }
 
   // Validate DataArrayPartial
@@ -154,6 +155,71 @@ export default class Store {
     return dataFinal
   }
 
+  /** Snapshot the current data as the catalog baseline (not called for API search results). */
+  public snapshotCatalog(): void {
+    this.catalog = this.cloneData(this.data)
+  }
+
+  /** Catalog baseline used when clearing search. */
+  public getCatalogData(): (Option | Optgroup)[] {
+    return this.cloneData(this.catalog ?? this.data)
+  }
+
+  private cloneData(data: (Option | Optgroup)[]): (Option | Optgroup)[] {
+    return data.map((item) => {
+      if (item instanceof Optgroup) {
+        return new Optgroup({
+          id: item.id,
+          label: item.label,
+          selectAll: item.selectAll,
+          closable: item.closable,
+          options: item.options.map((option) =>
+            new Option(option instanceof Option ? { ...option } : option)
+          )
+        })
+      }
+
+      return new Option({ ...(item as Option) })
+    })
+  }
+
+  private optionMatchesSelected(
+    candidate: Option,
+    selected: Option
+  ): boolean {
+    if (candidate.id === selected.id) {
+      return true
+    }
+
+    return (
+      selected.value !== '' &&
+      candidate.value !== '' &&
+      candidate.value === selected.value
+    )
+  }
+
+  private findOptionInData(
+    data: (Option | Optgroup)[],
+    selected: Option
+  ): Option | null {
+    for (const item of data) {
+      if (item instanceof Option) {
+        if (this.optionMatchesSelected(item, selected)) {
+          return item
+        }
+        continue
+      }
+
+      for (const option of item.options as Option[]) {
+        if (this.optionMatchesSelected(option, selected)) {
+          return option
+        }
+      }
+    }
+
+    return null
+  }
+
   public setData(
     data: (Partial<Option> | Partial<Optgroup>)[],
     preserveSelected: boolean = false
@@ -168,56 +234,44 @@ export default class Store {
       selectedOptionsBeforeUpdate = this.getSelectedOptions()
 
       // Check which selected options are missing from new data
-      const missingSelected: (Option | Optgroup)[] = []
+      const missingSelected: Option[] = []
       selectedOptionsBeforeUpdate.forEach((selectedOption) => {
-        let found = false
-
-        // Check if this selected option exists in new data
-        for (const newItem of newData) {
-          if (newItem instanceof Option && newItem.id === selectedOption.id) {
-            found = true
-            break
-          }
-          if (newItem instanceof Optgroup) {
-            for (const opt of newItem.options) {
-              if (opt.id === selectedOption.id) {
-                found = true
-                break
-              }
-            }
-          }
-        }
-
-        if (!found) {
+        if (!this.findOptionInData(newData, selectedOption)) {
           missingSelected.push(selectedOption)
         }
       })
 
       // Add missing selected options to the beginning of the data
       this.data = [...missingSelected, ...newData]
+
+      const allowEmptySelection =
+        this.selectType === 'single' &&
+        selectedOptionsBeforeUpdate.length === 0
+      const selectedIds = selectedOptionsBeforeUpdate.map((selected) => {
+        const match = this.findOptionInData(this.data, selected)
+        return match ? match.id : selected.id
+      })
+
+      this.setSelectedBy('id', selectedIds, allowEmptySelection)
     } else {
       this.data = newData
     }
 
     // Run this.data through setSelected by value
     // to set the selected property and clean any wrong selected
-    if (this.selectType === 'single') {
-      // When search returns new data and user had nothing selected, don't auto-select first option
-      const allowEmptySelection =
-        preserveSelected && selectedOptionsBeforeUpdate.length === 0
-      this.setSelectedBy('id', this.getSelected(), allowEmptySelection)
+    if (!preserveSelected && this.selectType === 'single') {
+      this.setSelectedBy('id', this.getSelected(), false)
     }
   }
 
-  // Get data will return all the data
-  public getData(): Option[] | Optgroup[] {
-    return this.filter(null, true) as Option[] | Optgroup[]
+  // Get data will return all the data (cloned by default for public API safety)
+  public getData(clone = true): Option[] | Optgroup[] {
+    return this.filter(null, true, clone) as Option[] | Optgroup[]
   }
 
-  // Get data options will return the data as a
-  // flat array of just options
-  public getDataOptions(): Option[] {
-    return this.filter(null, false) as Option[]
+  // Get data options will return the data as a flat array of just options
+  public getDataOptions(clone = true): Option[] {
+    return this.filter(null, false, clone) as Option[]
   }
 
   public addOption(option: Partial<Option>, addToStart: boolean = false) {
@@ -320,9 +374,21 @@ export default class Store {
   }
 
   public getSelectedOptions(): Option[] {
-    return this.filter((opt: Option) => {
-      return opt.selected
-    }, false) as Option[]
+    const selected: Option[] = []
+
+    for (const dataObj of this.data) {
+      if (dataObj instanceof Optgroup) {
+        for (const option of dataObj.options as Option[]) {
+          if (option.selected) {
+            selected.push(option)
+          }
+        }
+      } else if (dataObj.selected) {
+        selected.push(dataObj)
+      }
+    }
+
+    return selected
   }
 
   public getOptgroupByID(id: string): Optgroup | null {
@@ -338,11 +404,19 @@ export default class Store {
   }
 
   public getOptionByID(id: string): Option | null {
-    let options = this.filter((opt: Option) => {
-      return opt.id === id
-    }, false) as Option[]
+    for (const dataObj of this.data) {
+      if (dataObj instanceof Optgroup) {
+        for (const option of dataObj.options as Option[]) {
+          if (option.id === id) {
+            return option
+          }
+        }
+      } else if (dataObj.id === id) {
+        return dataObj
+      }
+    }
 
-    return options.length ? options[0] : null
+    return null
   }
 
   public getSelectType(): string {
@@ -374,20 +448,36 @@ export default class Store {
 
     // If search is empty, return all data
     if (search === '') {
-      return this.getData()
+      return this.getData(false)
     }
 
-    // Run filter with search function
+    // Run filter with search function (read-only view for render)
     return this.filter((opt: Option): boolean => {
       return searchFilter(opt, search)
-    }, true)
+    }, true, false)
+  }
+
+  private createOptgroupView(
+    source: Optgroup,
+    options: Option[]
+  ): Optgroup {
+    const view = new Optgroup({
+      id: source.id,
+      label: source.label,
+      selectAll: source.selectAll,
+      closable: source.closable,
+      options: []
+    })
+    view.options = options
+    return view
   }
 
   // Filter takes in a function that will be used to filter the data
   // This will also keep optgroups of sub options meet the filter requirements
   public filter(
     filter: { (opt: Option): boolean } | null,
-    includeOptgroup: boolean
+    includeOptgroup: boolean,
+    clone = true
   ): (Option | Optgroup)[] {
     const dataSearch: (Option | Optgroup)[] = []
     this.data.forEach((dataObj: Option | Optgroup) => {
@@ -400,9 +490,9 @@ export default class Store {
             // If you dont want to include optgroups
             // just push to the dataSearch array
             if (!includeOptgroup) {
-              dataSearch.push(new Option(option))
+              dataSearch.push(clone ? new Option(option) : option)
             } else {
-              optOptions.push(new Option(option))
+              optOptions.push(clone ? new Option(option) : option)
             }
           }
         })
@@ -410,19 +500,20 @@ export default class Store {
         // If we pushed any options to the optOptions array
         // push the optgroup to the dataSearch array
         if (optOptions.length > 0) {
-          // Create new optgroup with the new options
-          let optgroup = new Optgroup(dataObj)
-          optgroup.options = optOptions
-
-          // Push optgroup to dataSearch
-          dataSearch.push(optgroup)
+          if (clone) {
+            let optgroup = new Optgroup(dataObj)
+            optgroup.options = optOptions
+            dataSearch.push(optgroup)
+          } else {
+            dataSearch.push(this.createOptgroupView(dataObj, optOptions))
+          }
         }
       }
 
       // Option
       if (dataObj instanceof Option) {
         if (!filter || filter(dataObj)) {
-          dataSearch.push(new Option(dataObj))
+          dataSearch.push(clone ? new Option(dataObj) : dataObj)
         }
       }
     })

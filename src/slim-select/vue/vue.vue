@@ -1,5 +1,14 @@
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+/**
+ * Vue wrapper around core SlimSelect.
+ *
+ * Data flow:
+ *   Parent v-model  ←→  this component  ←→  SlimSelect instance
+ *
+ * Options always come from the required `data` prop (not slot children).
+ * Selection is driven by `modelValue`; user changes flow back via afterChange.
+ */
+import { defineComponent, PropType, toRaw } from 'vue'
 import SlimSelect, {
   Config,
   Events,
@@ -7,10 +16,12 @@ import SlimSelect, {
   Optgroup,
   Settings
 } from '../index'
+import { dataStructureEqual } from '../helpers'
 
 export default defineComponent({
   name: 'SlimSelect',
   props: {
+    // v-model: string for single, string[] for multiple, undefined = uncontrolled
     modelValue: {
       type: [String, Array, undefined] as PropType<
         string | string[] | undefined
@@ -20,12 +31,15 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    // Required — same shape as SlimSelect Config.data (Option | Optgroup[])
     data: {
-      type: Array as PropType<(Partial<Option> | Partial<Optgroup>)[]>
+      type: Array as PropType<(Partial<Option> | Partial<Optgroup>)[]>,
+      required: true
     },
     settings: {
       type: Object as PropType<Partial<Settings>>
     },
+    // User callbacks; afterChange is wrapped so we can emit v-model updates
     events: {
       type: Object as PropType<Events>,
       default: () => {
@@ -36,34 +50,22 @@ export default defineComponent({
   emits: ['update:modelValue'],
   data() {
     return {
-      slim: null as SlimSelect | null
+      slim: null as SlimSelect | null,
+      // Last :data prop applied to SlimSelect — skips setData when parents recreate arrays
+      lastAppliedData: null as (Partial<Option> | Partial<Optgroup>)[] | null
     }
   },
   mounted() {
-    // Warning: If both slot and data are provided, data takes precedence
-    const hasSlotContent =
-      this.$slots.default && this.$slots.default().length > 0
-    if (hasSlotContent && this.data) {
-      console.warn(
-        '[SlimSelect Vue] Both slot content and data prop are provided. Data prop will take precedence and slot content will be ignored.'
-      )
-    }
-
     let config = {
-      select: this.$refs.slim
+      select: this.$refs.slim,
+      data: this.data
     } as Config
 
-    // If data is passed in, use it
-    if (this.data) {
-      config.data = this.data
-    }
-
-    // If settings are passed in, use it
     if (this.settings) {
       config.settings = this.settings
     }
 
-    // Create a copy of events to avoid mutating the prop
+    // Wrap afterChange: emit v-model first, then call the user's handler
     const ogAfterChange = this.events?.afterChange
     config.events = {
       ...this.events,
@@ -72,27 +74,10 @@ export default defineComponent({
       }
     }
 
-    // Initialize SlimSelect
     this.slim = new SlimSelect(config)
-
-    // Sync initial modelValue to SlimSelect
+    this.lastAppliedData = structuredClone(toRaw(this.data))
+    // Push initial modelValue down without firing afterChange (no parent emit loop)
     this.syncModelValueToSlimSelect(false)
-  },
-  updated() {
-    // After DOM updates (like slot content changes), sync selection from modelValue
-    // This ensures :selected attribute isn't needed on slot options
-    if (this.slim && !this.data) {
-      const currentSelected = this.slim.getSelected()
-      const modelValues = Array.isArray(this.value) ? this.value : [this.value]
-      const needsSync =
-        JSON.stringify(currentSelected.sort()) !==
-        JSON.stringify(modelValues.sort())
-
-      if (needsSync) {
-        // Use the same sync method to handle invalid values properly
-        this.syncModelValueToSlimSelect(false)
-      }
-    }
   },
   beforeUnmount() {
     if (this.slim) {
@@ -100,23 +85,33 @@ export default defineComponent({
     }
   },
   watch: {
+    // Parent changed v-model — sync selection into SlimSelect
     modelValue: {
       handler: function (newVal: string | string[] | undefined) {
         if (!this.slim) return
-        // Sync modelValue to SlimSelect (don't trigger afterChange when programmatically updating from parent)
         this.syncModelValueToSlimSelect(false)
       }
     },
+    // Parent changed options — deep watch catches in-place edits; skip when structure unchanged.
+    // After setData, re-apply modelValue so selection is not lost on structure replace.
     data: {
       handler: function (newData) {
-        if (this.slim) {
-          this.slim.setData(newData)
+        if (!this.slim) return
+        if (
+          this.lastAppliedData !== null &&
+          dataStructureEqual(this.lastAppliedData, toRaw(newData))
+        ) {
+          return
         }
+        this.slim.setData(newData)
+        this.lastAppliedData = structuredClone(toRaw(newData))
+        this.syncModelValueToSlimSelect(false)
       },
       deep: true
     }
   },
   computed: {
+    // Normalized v-model getter/setter (see getCleanValue)
     value: {
       get(): string | string[] {
         return this.getCleanValue(this.$props.modelValue)
@@ -127,10 +122,17 @@ export default defineComponent({
     }
   },
   methods: {
-    // This allows via a ref to call the SlimSelect methods
+    /** Escape hatch for imperative API access (open, close, setData, etc.) */
     getSlimSelect() {
       return this.slim
     },
+    /**
+     * Called when the user changes selection in the UI.
+     * Converts Option[] to v-model shape and emits only when the value actually changed.
+     *
+     * Guards against emitting when v-model holds invalid values (not in options):
+     * we keep the parent's invalid value unless the user picks a real option.
+     */
     handleAfterChange(
       newVal: Option[],
       ogAfterChange?: (newVal: Option[]) => void
@@ -143,86 +145,82 @@ export default defineComponent({
           ? newVal[0].value
           : ''
 
-      // Check if the current v-model value exists in options
-      // If it doesn't exist, don't update v-model (preserve invalid value like regular HTML select)
       const currentValue = this.getCleanValue(this.$props.modelValue)
-      const options = this.slim.store.getDataOptions()
+      const options = this.slim.store.getDataOptions(false)
       const currentValueExists = Array.isArray(currentValue)
         ? currentValue.length > 0 &&
           currentValue.every((val) => options.some((opt) => opt.value === val))
         : currentValue !== '' &&
           options.some((opt) => opt.value === currentValue)
 
-      // Check if the new value is valid (exists in options)
       const newValueIsValid = Array.isArray(value)
         ? value.length > 0 &&
           value.every((val) => options.some((opt) => opt.value === val))
         : value !== '' && options.some((opt) => opt.value === value)
 
-      // Check if value actually changed (properly compare arrays)
       const valueChanged =
         Array.isArray(value) && Array.isArray(this.value)
           ? JSON.stringify(value.sort()) !== JSON.stringify(this.value.sort())
           : this.value !== value
 
-      // Only update v-model if:
-      // 1. The value actually changed, AND
-      // 2. Either the current v-model value exists in options, OR we're setting to a valid non-empty value
-      // This prevents clearing invalid v-model values when we show placeholder
       if (valueChanged && (currentValueExists || newValueIsValid)) {
         this.value = value
       }
 
-      // Call the original afterChange callback if it exists
       if (ogAfterChange) {
         ogAfterChange(newVal)
       }
     },
+    /**
+     * Normalize modelValue to match single vs multiple mode.
+     * Vue may bind a string to a multiple select or an array to single — we coerce.
+     */
     getCleanValue(val: string | string[] | undefined): string | string[] {
       const multi = this.$props.multiple
 
-      // If its multiple and the modelValue is a string, return an array with the string
       if (typeof val === 'string') {
         return multi ? [val] : val
       }
 
-      // If its not multiple and the modelValue is an array, return the first item
       if (Array.isArray(val)) {
         return multi ? val : val[0]
       }
 
       return multi ? [] : ''
     },
+    /**
+     * Push modelValue into SlimSelect (parent → child direction).
+     *
+     * @param runAfterChange - pass false when syncing from props/watchers so we
+     *   don't re-emit update:modelValue and create a feedback loop.
+     *
+     * For single select with a value not in options (or empty string), injects a
+     * placeholder option so the UI shows blank instead of defaulting to the first item.
+     */
     syncModelValueToSlimSelect(runAfterChange: boolean = false): void {
       if (!this.slim) return
 
-      // Only sync if modelValue is explicitly set (not undefined)
-      // This prevents adding placeholders when modelValue is not provided
+      // undefined modelValue = parent hasn't bound v-model; leave SlimSelect as-is
       if (this.$props.modelValue === undefined) {
         return
       }
 
       const cleanValue = this.getCleanValue(this.$props.modelValue)
-      const data = this.slim.getData()
-      // Extract options from data (flatten optgroups if any)
-      const options = data.flatMap((item: Option | Optgroup) =>
+      const storeData = this.slim.getData()
+      const options = storeData.flatMap((item: Option | Optgroup) =>
         'label' in item ? item.options : [item]
       ) as Option[]
 
-      // Check if the value exists in options
       const valueExists = Array.isArray(cleanValue)
         ? cleanValue.length > 0 &&
           cleanValue.every((val) => options.some((opt) => opt.value === val))
         : cleanValue !== '' && options.some((opt) => opt.value === cleanValue)
 
-      // If value doesn't exist in options and it's not empty, add a placeholder option
       if (!valueExists) {
-        // If its not multiple, add a placeholder option
+        // Invalid or empty single value — ensure a placeholder row exists for display
         if (!Array.isArray(cleanValue)) {
-          // For single select, check if placeholder already exists
           const hasPlaceholder = options.some((opt) => opt.placeholder)
           if (!hasPlaceholder) {
-            // Get current data and prepend placeholder option
             const currentData = this.slim.getData()
             const placeholderOption: Partial<Option> = {
               value: '',
@@ -234,7 +232,6 @@ export default defineComponent({
         }
       }
 
-      // Set the selected value (will select placeholder if it was just added)
       this.slim.setSelected(cleanValue, runAfterChange)
     }
   }
@@ -242,7 +239,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <select :multiple="multiple" ref="slim">
-    <slot />
-  </select>
+  <!-- Empty native select — SlimSelect replaces it on mount; options come from :data -->
+  <select :multiple="multiple" ref="slim"></select>
 </template>

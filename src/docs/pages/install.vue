@@ -82,10 +82,10 @@ export default defineComponent({
   },
   methods: {
     downloadJs() {
-      download(`https://unpkg.com/slim-select@latest/dist/slimselect.js`)
+      download(this.cdnProviders.jsdelivr.jsUrl)
     },
     downloadCss() {
-      download(`https://unpkg.com/slim-select@latest/dist/slimselect.css`)
+      download(this.cdnProviders.jsdelivr.cssUrl)
     },
     setActiveCdn(provider: string) {
       this.activeCdn = provider as CdnProvider
@@ -109,7 +109,7 @@ export default defineComponent({
   #cdn {
     .cdn-providers {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.75rem), 1fr));
       gap: var(--spacing-half);
     }
 
@@ -260,10 +260,16 @@ export default defineComponent({
 
       .codepen-embed {
         width: 100%;
-        min-height: 420px;
+        max-width: 100%;
+        min-height: 320px;
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
         background: var(--color-white);
+        box-sizing: border-box;
+
+        @media (max-width: 768px) {
+          min-height: 280px;
+        }
       }
     }
   }
@@ -371,8 +377,10 @@ export default defineComponent({
       <h2 class="header">Download</h2>
       <p>Download the latest minified umd version of slim select</p>
       <p>
-        See full list of available downloadable options.
-        <a target="_blank" href="https://cdnjs.com/libraries/slim-select">cdnjs.com/libraries/slim-select</a>
+        Files are served from
+        <a target="_blank" href="https://www.jsdelivr.com/package/npm/slim-select" rel="noopener noreferrer"
+          >jsDelivr</a
+        >. Browse the package for other builds and versions.
       </p>
       <div class="rows download-btns">
         <div class="btn" @click="downloadJs()">Download js</div>

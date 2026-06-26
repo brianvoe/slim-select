@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Slim Select E2E</title>
+    <link rel="stylesheet" href="/dist/slimselect.css" />
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 24px;
+        margin: 0;
+      }
+      section {
+        margin-bottom: 32px;
+      }
+      section h2 {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 8px;
+      }
+      #outside-click-target {
+        padding: 12px;
+        border: 1px dashed #ccc;
+        margin-top: 16px;
+      }
+      .spacer {
+        height: 120vh;
+      }
+    </style>
+  </head>
+  <body>
+    <section data-e2e="basic">
+      <h2>Basic single select</h2>
+      <select id="basic">
+        <option value="one">One</option>
+        <option value="two">Two</option>
+        <option value="three">Three</option>
+      </select>
+    </section>
+
+    <section data-e2e="native-sync">
+      <h2>Native mutation sync</h2>
+      <select id="native-sync"></select>
+    </section>
+
+    <section data-e2e="multi">
+      <h2>Multi select</h2>
+      <select id="multi" multiple>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="yellow">Yellow</option>
+      </select>
+    </section>
+
+    <section data-e2e="deselect">
+      <h2>Allow deselect</h2>
+      <select id="deselect">
+        <option value="alpha">Alpha</option>
+        <option value="beta">Beta</option>
+      </select>
+    </section>
+
+    <section data-e2e="no-search">
+      <h2>No search bar</h2>
+      <select id="no-search">
+        <option value="a">Apple</option>
+        <option value="b">Banana</option>
+        <option value="c">Cherry</option>
+      </select>
+    </section>
+
+    <section data-e2e="keep-search">
+      <h2>Keep search on close</h2>
+      <select id="keep-search">
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+        <option value="fish">Fish</option>
+      </select>
+    </section>
+
+    <section data-e2e="disabled">
+      <h2>Disabled</h2>
+      <select id="disabled">
+        <option value="x">X</option>
+        <option value="y">Y</option>
+      </select>
+    </section>
+
+    <section data-e2e="optgroups">
+      <h2>Optgroups</h2>
+      <select id="optgroups">
+        <optgroup label="Fruit">
+          <option value="apple">Apple</option>
+          <option value="pear">Pear</option>
+        </optgroup>
+        <optgroup label="Vegetable">
+          <option value="carrot">Carrot</option>
+          <option value="pea">Pea</option>
+        </optgroup>
+      </select>
+    </section>
+
+    <section data-e2e="placeholder">
+      <h2>Placeholder</h2>
+      <select id="placeholder">
+        <option data-placeholder="true"></option>
+        <option value="first">First</option>
+        <option value="second">Second</option>
+      </select>
+    </section>
+
+    <section data-e2e="label">
+      <h2>Label association</h2>
+      <label for="label-select">Pick a color</label>
+      <select id="label-select">
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+      </select>
+    </section>
+
+    <section data-e2e="open-down">
+      <h2>Force open down</h2>
+      <select id="open-down">
+        <option value="1">One</option>
+        <option value="2">Two</option>
+      </select>
+    </section>
+
+    <section data-e2e="open-up">
+      <h2>Force open up</h2>
+      <select id="open-up">
+        <option value="1">One</option>
+        <option value="2">Two</option>
+      </select>
+    </section>
+
+    <section data-e2e="search-highlight">
+      <h2>Search highlight</h2>
+      <select id="search-highlight">
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="python">Python</option>
+      </select>
+    </section>
+
+    <section data-e2e="disabled-option">
+      <h2>Disabled option</h2>
+      <select id="disabled-option">
+        <option value="open">Open</option>
+        <option value="locked" disabled>Locked</option>
+        <option value="closed">Closed</option>
+      </select>
+    </section>
+
+    <section data-e2e="keyboard">
+      <h2>Keyboard navigation</h2>
+      <select id="keyboard">
+        <option value="one">One</option>
+        <option value="two">Two</option>
+        <option value="three">Three</option>
+      </select>
+    </section>
+
+    <section data-e2e="api-search">
+      <h2>API search</h2>
+      <select id="api-search"></select>
+    </section>
+
+    <section data-e2e="api-search-multi">
+      <h2>API search hide selected</h2>
+      <select id="api-search-multi" multiple></select>
+    </section>
+
+    <section data-e2e="api-search-addable">
+      <h2>API search addable</h2>
+      <select id="api-search-addable" multiple></select>
+    </section>
+
+    <div id="outside-click-target" data-e2e="outside-target">
+      Click outside the dropdown
+    </div>
+
+    <div class="spacer" aria-hidden="true"></div>
+
+    <script type="module" src="/e2e/fixture-built.js"></script>
+  </body>
+</html>

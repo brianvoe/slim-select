@@ -1,16 +1,47 @@
 :root {
-  // Colors
+  /* ==========================================================================
+     Brand
+     ========================================================================== */
   --color-primary: #5897fb;
-  --color-secondary: #666666;
-  --color-header-bg: #ffffff;
-  --color-border: #dcdee2;
-  --color-font: #66666;
-  --color-white: #ffffff;
-  --color-alert-info: #cfe2ff;
-  --color-alert-info-border: #b6d4fe;
-  --color-ads-background: #7cadfa;
+  --color-secondary: #64748b;
+  --accent: rgba(88, 151, 251, 0.22); // hover wash on dark
+  --accent-strong: rgba(88, 151, 251, 0.35); // active wash on dark
 
-  // Status Colors
+  /* ==========================================================================
+     Dark canvas + chrome (header, dropdowns, dark cards)
+     ========================================================================== */
+  --site-gradient: linear-gradient(145deg, #0f172a 0%, #1e293b 45%, #0f3460 100%);
+  --site-glow:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(88, 151, 251, 0.35), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(99, 102, 241, 0.25), transparent 50%);
+
+  --chrome: #1e293b; // solid dark panels
+  --chrome-bar: rgba(15, 23, 42, 0.96); // sticky header
+  --chrome-deep: #0f172a; // mobile sheet / deepest dark
+  --chrome-border: rgba(255, 255, 255, 0.12);
+  --chrome-fill: rgba(255, 255, 255, 0.06); // subtle pill/button fill on dark
+  --backdrop: rgba(0, 0, 0, 0.25);
+
+  --on-dark: #ffffff;
+  --on-dark-muted: rgba(255, 255, 255, 0.72);
+
+  /* ==========================================================================
+     Light surfaces + text (content cards on the dark canvas)
+     ========================================================================== */
+  --surface: #f8fafc; // standard content card
+  --surface-raised: #ffffff; // demos / nested wells
+  --surface-border: #e2e8f0;
+  --shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+
+  --ink: #0f172a; // strong headings
+  --muted: #64748b; // secondary copy
+  --color-font: #666666; // default body copy (legacy alias)
+  --color-border: #dcdee2;
+  --color-white: #ffffff;
+
+  /* ==========================================================================
+     Status (alerts + messages)
+     ========================================================================== */
   --color-success: #10b981;
   --color-success-bg: #d1fae5;
   --color-success-text: #065f46;
@@ -23,19 +54,25 @@
   --color-info: #3b82f6;
   --color-info-bg: #dbeafe;
   --color-info-text: #1e40af;
+  --color-alert-info: #cfe2ff;
+  --color-alert-info-border: #b6d4fe;
+  --color-ads-background: #7cadfa;
 
-  // Sizes
-  --width-max: 1000px;
-  --height-header: 90px;
-  --width-nav: 200px;
-  --height-nav: 30px;
-
-  // Misc
-  --box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  --border-radius: 4px;
+  /* ==========================================================================
+     Sizes & layout
+     ========================================================================== */
+  --width-max: 1280px;
+  --width-sidebar: 232px;
+  --height-header: 64px;
+  --border-radius: 8px;
   --font-size: 14px;
+  --box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); // legacy (install / customize)
+  --z-header: 1000;
+  --z-mega: 999;
 
-  // Spacings
+  /* ==========================================================================
+     Spacing
+     ========================================================================== */
   --spacing: 24px;
   --spacing-half: 16px;
   --spacing-quarter: 8px;

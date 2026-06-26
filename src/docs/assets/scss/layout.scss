@@ -1,309 +1,256 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700');
 
+/* ==========================================================================
+   Page canvas — the dark gradient lives on <body>; <html> carries a solid
+   base so overscroll never reveals white.
+   ========================================================================== */
 html {
   height: 100%;
-  padding: 0;
   margin: 0;
-  background-color: var(--color-primary);
+  padding: 0;
+  background: var(--site-gradient);
 }
 
 body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: clip;
   font-family: 'Montserrat', sans-serif, Helvetica;
   font-size: var(--font-size);
   color: var(--color-font);
+  background:
+    var(--site-glow),
+    var(--site-gradient);
+}
+
+/* ==========================================================================
+   App shell — sticky <SiteHeader> + centered <main>.
+   Home/privacy: single column. Doc pages: sidebar + content grid.
+   ========================================================================== */
+#app {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding: 0;
-  margin: 0;
-  overflow-x: visible;
+  min-width: 0;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-x: clip;
 
-  #app {
-    display: grid;
-    grid-template-columns: var(--width-nav) 1fr;
-    grid-template-rows: calc(var(--height-header) + var(--spacing-half)) 1fr;
-    grid-template-areas:
-      'header header'
-      'nav    main';
-    width: 100%;
-    max-width: var(--width-max);
-    height: 100%;
-    padding: 0;
-    margin: 0 auto;
-    overflow-x: visible;
+  > * {
     box-sizing: border-box;
+  }
+}
 
-    @media (max-width: 700px) {
-      grid-template-columns: 1fr;
-      grid-template-rows: calc(var(--height-header) - var(--height-nav) + var(--spacing-half)) var(--height-nav) 1fr;
-      grid-template-areas:
-        'header'
-        'nav'
-        'main';
+.app-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-half);
+  width: 100%;
+  max-width: var(--width-max);
+  min-width: 0;
+  margin: 0 auto;
+  padding: var(--spacing) var(--spacing-half) var(--spacing-half);
+  box-sizing: border-box;
+  overflow-x: clip;
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-half);
+  }
+
+  // Doc pages: left "On this page" sidebar + content, footer spans both.
+  &.with-nav {
+    display: grid;
+    grid-template-columns: var(--width-sidebar) minmax(0, 1fr);
+    grid-template-areas:
+      'nav content'
+      'footer footer';
+    align-items: start;
+    column-gap: var(--spacing);
+    row-gap: var(--spacing-half);
+
+    @media (max-width: 900px) {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.app-content {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-half);
+  min-width: 0;
+  max-width: 100%;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+.app-footer {
+  grid-area: footer;
+  width: 100%;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Content cards — light panels floating on the dark canvas.
+   Shared by every docs page via the .content / .contents classes.
+   ========================================================================== */
+.contents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  min-width: 0;
+  max-width: 100%;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+.content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-half);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--spacing);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  overflow-x: clip;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-half);
+  }
+
+  > .header {
+    padding: 0 0 var(--spacing-quarter);
+    border-bottom: solid 2px var(--color-primary);
+    overflow-wrap: anywhere;
+  }
+
+  p,
+  li,
+  td,
+  th,
+  dd {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  code:not(pre code) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre {
+    max-width: 100%;
+  }
+
+  .highlight-style {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  img,
+  iframe,
+  video {
+    max-width: 100%;
+  }
+
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .ss-main {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-half);
+    width: 100%;
+    min-width: 0;
+    overflow-x: clip;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
     }
 
     > * {
-      box-sizing: border-box;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      grid-area: header;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      color: var(--color-white);
-      height: var(--height-header);
+      flex: 1 1 0;
       min-width: 0;
-      width: 100%;
-      max-width: var(--width-max);
-      margin: 0;
-      padding: 0 var(--spacing-half);
-      z-index: 100000;
-      background-color: var(--color-primary);
-      box-sizing: border-box;
-
-      @media (max-width: 700px) {
-        height: calc(var(--height-header) - var(--height-nav));
-      }
-
-      .top {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: var(--spacing-quarter) 0 0 0;
-
-        .text {
-          flex: 1 1 auto;
-          color: var(--color-font);
-
-          .logo {
-            line-height: 1;
-            font-size: 40px;
-            font-weight: 300;
-            padding: 0;
-            margin: 0;
-          }
-        }
-
-        .socials {
-          flex: 0 1 auto;
-          display: flex;
-          justify-content: flex-end;
-          gap: var(--spacing-half);
-          color: var(--color-font);
-          margin: 0 auto;
-          padding: 0 0 var(--spacing-quarter) 0;
-
-          a,
-          img {
-            height: 30px;
-          }
-        }
-      }
-
-      .bar {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        height: var(--height-nav);
-        border: solid 1.5px var(--color-white);
-        box-shadow: var(--box-shadow);
-
-        @media (max-width: 700px) {
-          display: none;
-        }
-
-        .tagline {
-          flex: 1 1 auto;
-          display: inline-flex;
-          justify-content: flex-start;
-          align-items: center;
-          line-height: 1;
-          font-size: 16px;
-          padding: var(--spacing-quarter) var(--spacing-quarter) var(--spacing-quarter) var(--spacing-half);
-          margin: 0 auto;
-        }
-
-        .drop {
-          display: flex;
-          flex: 0 1 auto;
-          border-left: solid 1.5px var(--color-white);
-          margin: auto var(--spacing-quarter) auto var(--spacing-quarter);
-          padding: 0 var(--spacing-quarter) 0 var(--spacing-half);
-
-          svg {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            flex: 0 1 auto;
-            height: 12px;
-            width: 12px;
-            margin: 0 auto;
-
-            path {
-              fill: none;
-              stroke: var(--color-white);
-              stroke-width: 18;
-              stroke-linecap: round;
-              stroke-linejoin: round;
-            }
-          }
-        }
-      }
     }
 
-    nav {
-      position: fixed;
-      grid-area: nav;
-      display: flex;
-      flex-direction: column;
-      top: calc(var(--height-header) + var(--spacing-half));
-      width: var(--width-nav);
-      min-width: 0;
-      max-width: var(--width-max);
-      max-height: calc(100vh - var(--height-header) - var(--spacing));
-      padding: 0 0 0 var(--spacing-half);
-      overflow: hidden;
-      z-index: 100000;
-      box-sizing: border-box;
-
-      @media (max-width: 700px) {
-        left: 50%;
-        transform: translateX(-50%);
-        top: calc(var(--height-header) - var(--height-nav));
-        height: auto;
-        width: 100%;
-        max-width: var(--width-max);
-        padding: 0 var(--spacing-half);
-      }
-
-      .ss-dropdown {
-        height: auto;
-        min-height: 0;
-        box-shadow: var(--box-shadow);
-        border-radius: var(--border-radius);
-
-        .ss-main {
-          flex: 0 1 auto;
-          height: var(--height-nav);
-          font-weight: bold;
-        }
-
-        .nav-content {
-          flex: 1 1 auto;
-          overflow: hidden;
-
-          @media (max-width: 700px) {
-            display: none;
-          }
-
-          .ss-content {
-            height: 100% !important;
-            max-height: calc(100vh - var(--height-header) - var(--height-nav) - 100px) !important;
-          }
-        }
-      }
-    }
-
-    main {
-      grid-area: main;
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-half);
-      padding: 0 var(--spacing-half) 0 var(--spacing);
-      overflow-x: visible;
-      overflow-y: auto;
-      box-sizing: border-box;
+    .btn {
+      flex: 0 1 auto;
       max-width: 100%;
+    }
 
-      @media (max-width: 700px) {
-        padding: 0 var(--spacing-half);
-      }
-
-      .contents {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing);
-      }
-
-      .content {
-        flex: 1 1 auto;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-half);
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-        padding: var(--spacing);
-        background-color: var(--color-white);
-        border-radius: var(--border-radius);
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
-        overflow-x: visible;
-        box-sizing: border-box;
-
-        @media screen and (max-width: 700px) {
-          box-shadow: none;
-        }
-
-        > .header {
-          padding: 0 0 var(--spacing-quarter) 0;
-          border-bottom: solid 2px var(--color-primary);
-        }
-
-        .column {
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          max-width: 100%;
-          overflow: visible;
-        }
-
-        .row {
-          display: flex;
-          flex-direction: row;
-          gap: var(--spacing-half);
-          width: 100%;
-          max-width: 100%;
-          overflow: visible;
-
-          @media screen and (max-width: 700px) {
-            flex-direction: column;
-          }
-
-          > * {
-            flex: 1 1 0;
-            min-width: 0;
-            max-width: 100%;
-          }
-
-          .btn {
-            flex: 0 1 auto;
-            max-width: none;
-            overflow: visible;
-          }
-
-          .ss-main {
-            max-width: 100%;
-            min-width: 0;
-          }
-        }
-      }
-
-      footer {
-        grid-area: footer;
-        color: var(--color-white);
-        padding: var(--spacing-quarter) 0 var(--spacing-quarter) 0;
-        line-height: 1.2;
-        font-size: calc(var(--font-size) - 2px);
-        text-align: center;
-
-        a {
-          color: var(--color-font);
-        }
-      }
+    .ss-main {
+      min-width: 0;
+      max-width: 100%;
+      width: 100%;
     }
   }
+}
+
+/* ==========================================================================
+   Footer & ad slot — footer text sits directly on the dark canvas;
+   the ad slot reuses the light card treatment.
+   ========================================================================== */
+footer {
+  padding: var(--spacing-half) 0 var(--spacing);
+  font-size: calc(var(--font-size) - 2px);
+  line-height: 1.5;
+  text-align: center;
+  color: var(--on-dark-muted);
+
+  a {
+    color: var(--on-dark);
+  }
+}
+
+.ad-slot {
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--spacing-half);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  overflow-x: clip;
 }

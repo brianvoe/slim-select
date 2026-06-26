@@ -1,9 +1,7 @@
-import { forwardRef as e, useEffect as t, useImperativeHandle as n, useRef as r } from "react";
-//#region \0rolldown/runtime.js
-var i = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), a = /* @__PURE__ */ ((e) => typeof require < "u" ? require : typeof Proxy < "u" ? new Proxy(e, { get: (e, t) => (typeof require < "u" ? require : e)[t] }) : e)(function(e) {
-	if (typeof require < "u") return require.apply(this, arguments);
-	throw Error("Calling `require` for \"" + e + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
-}), o = class {
+import { forwardRef as e, useEffect as t, useImperativeHandle as n, useRef as r, useState as i } from "react";
+import { jsx as a } from "react/jsx-runtime";
+//#region src/slim-select/classes.ts
+var o = class {
 	main;
 	placeholder;
 	values;
@@ -41,6 +39,11 @@ var i = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 	option;
 	optionDelete;
 	highlighted;
+	modalOverlay;
+	modalDialog;
+	modalTitle;
+	modalClose;
+	modalContent;
 	mainOpen;
 	close;
 	selected;
@@ -50,18 +53,132 @@ var i = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t
 	constructor(e) {
 		e ||= {};
 		let t = (e = "", t = "") => `${e} ${t}`.trim();
-		this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.multiString = t("ss-multi-string", e.multiString), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.status = t("ss-status", e.status), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
+		this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.multiString = t("ss-multi-string", e.multiString), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.status = t("ss-status", e.status), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.modalOverlay = t("ss-modal-overlay", e.modalOverlay), this.modalDialog = t("ss-modal-dialog", e.modalDialog), this.modalTitle = t("ss-modal-title", e.modalTitle), this.modalClose = t("ss-modal-close", e.modalClose), this.modalContent = t("ss-modal-content", e.modalContent), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
 	}
 	getFirst(e) {
 		return this[e].split(" ")[0];
 	}
+}, s = 200, c = ["transform", "opacity"];
+function l(e, t = s) {
+	let n = e.trim();
+	if (!n) return t;
+	if (n.endsWith("ms")) {
+		let e = parseFloat(n);
+		return Number.isNaN(e) ? t : e;
+	}
+	if (n.endsWith("s")) {
+		let e = parseFloat(n);
+		return Number.isNaN(e) ? t : e * 1e3;
+	}
+	let r = parseFloat(n);
+	return Number.isNaN(r) ? t : r;
+}
+function u(e, t = s) {
+	return l(getComputedStyle(e).getPropertyValue("--ss-animation-timing").trim(), t);
+}
+function d(e, t, n = s) {
+	let r = u(e, n) + 50;
+	return t === void 0 ? r : Math.max(r, t);
+}
+function f() {
+	return typeof window > "u" || typeof window.matchMedia != "function" ? !1 : window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+function p(e) {
+	return e === void 0 ? null : new Set(Array.isArray(e) ? e : [e]);
+}
+function m(e, t, n = s, r) {
+	if (f() || r?.aborted) return Promise.resolve();
+	let i = p(t);
+	return new Promise((t) => {
+		let a = null, o = !1, s = () => {
+			o || (o = !0, e.removeEventListener("transitionend", l), r?.removeEventListener("abort", c), a && clearTimeout(a), t());
+		}, c = () => s(), l = (t) => {
+			t.target === e && (i && (!i.has(t.propertyName) || (i.delete(t.propertyName), i.size > 0)) || s());
+		};
+		r?.addEventListener("abort", c, { once: !0 }), e.addEventListener("transitionend", l), a = setTimeout(s, n);
+	});
+}
+function h(e, t, n = s, r) {
+	return f() || r?.aborted ? Promise.resolve() : new Promise((i) => {
+		let a = null, o = !1, s = () => {
+			o || (o = !0, e.removeEventListener("animationend", l), r?.removeEventListener("abort", c), a && clearTimeout(a), i());
+		}, c = () => s(), l = (n) => {
+			n.target === e && (t && n.animationName !== t || s());
+		};
+		r?.addEventListener("abort", c, { once: !0 }), e.addEventListener("animationend", l), a = setTimeout(s, n);
+	});
+}
+//#endregion
+//#region src/slim-select/settings.ts
+var g = class {
+	id = "";
+	style = "";
+	class = [];
+	isMultiple = !1;
+	isOpen = !1;
+	isFullOpen = !1;
+	disabled;
+	alwaysOpen;
+	showSearch;
+	focusSearch;
+	keepSearch;
+	ariaLabel;
+	searchPlaceholder;
+	searchText;
+	searchingText;
+	resultsText;
+	deselectText;
+	removeText;
+	searchHighlight;
+	closeOnSelect;
+	contentLocation;
+	contentPosition;
+	contentWidth;
+	openPosition;
+	placeholderText;
+	allowDeselect;
+	hideSelected;
+	multiString;
+	keepOrder;
+	showOptionTooltips;
+	minSelected;
+	maxSelected;
+	timeoutDelay;
+	maxValuesShown;
+	maxValuesMessage;
+	addableText;
+	modal;
+	modalTitle;
+	constructor(e) {
+		e ||= {}, this.id = "ss-" + b(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.alwaysOpen = e.alwaysOpen === void 0 ? !1 : e.alwaysOpen, this.showSearch = e.showSearch === void 0 ? !0 : e.showSearch, this.focusSearch = e.focusSearch === void 0 ? !0 : e.focusSearch, this.keepSearch = e.keepSearch === void 0 ? !1 : e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight === void 0 ? !1 : e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 ? !0 : e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect === void 0 ? !1 : e.allowDeselect, this.hideSelected = e.hideSelected === void 0 ? !1 : e.hideSelected, this.multiString = e.multiString === void 0 ? !1 : e.multiString, this.keepOrder = e.keepOrder === void 0 ? !1 : e.keepOrder, this.showOptionTooltips = e.showOptionTooltips === void 0 ? !1 : e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
+	}
 };
 //#endregion
 //#region src/slim-select/helpers.ts
-function s() {
+function _(e) {
+	if (!e) return {};
+	let t = {};
+	for (let n of Object.keys(e)) {
+		let r = e[n];
+		r !== void 0 && (t[n] = r);
+	}
+	return t;
+}
+function v(e) {
+	let t = e.cloneNode(!0);
+	return t.querySelectorAll("select, option, optgroup, textarea, input, button").forEach((e) => e.remove()), t.textContent?.replace(/\s+/g, " ").trim() || "";
+}
+function y(e) {
+	if (e.labels && e.labels.length > 0) {
+		let t = Array.from(e.labels).map(v).filter(Boolean);
+		if (t.length > 0) return [...new Set(t)].join(" ");
+	}
+	return e.getAttribute("aria-label")?.trim() || "";
+}
+function b() {
 	return Math.random().toString(36).substring(2, 10);
 }
-function c(e, t) {
+function x(e, t) {
 	function n(e, n) {
 		return n && e && e.classList && e.classList.contains(n) || n && e && e.dataset && e.dataset.id && e.dataset.id === t ? e : null;
 	}
@@ -70,7 +187,7 @@ function c(e, t) {
 	}
 	return n(e, t) || r(e, t);
 }
-function l(e, t = 50, n = !1) {
+function S(e, t = 50, n = !1) {
 	let r;
 	return function(...i) {
 		let a = self, o = () => {
@@ -79,16 +196,180 @@ function l(e, t = 50, n = !1) {
 		clearTimeout(r), r = setTimeout(o, t), s && e.apply(a, i);
 	};
 }
-function u(e, t) {
-	return JSON.stringify(e) === JSON.stringify(t);
+function C(e, t) {
+	if (e.length !== t.length) return !1;
+	let n = [...e].sort(), r = [...t].sort();
+	return n.every((e, t) => e === r[t]);
 }
-function d(e) {
+var w = [
+	"id",
+	"value",
+	"text",
+	"html",
+	"defaultSelected",
+	"selected",
+	"display",
+	"disabled",
+	"placeholder",
+	"class",
+	"style",
+	"mandatory"
+];
+function T(e, t) {
+	let n = Object.keys(e), r = Object.keys(t);
+	if (n.length !== r.length) return !1;
+	for (let r of n) if (e[r] !== t[r]) return !1;
+	return !0;
+}
+function E(e, t) {
+	switch (t) {
+		case "id": return e.id || "";
+		case "value": return e.value === void 0 ? e.text || "" : e.value || "";
+		case "text": return e.text || "";
+		case "html": return e.html || "";
+		case "defaultSelected": return e.defaultSelected ?? !1;
+		case "selected": return e.selected ?? !1;
+		case "display": return e.display ?? !0;
+		case "disabled": return e.disabled ?? !1;
+		case "placeholder": return e.placeholder ?? !1;
+		case "class": return e.class || "";
+		case "style": return e.style || "";
+		case "mandatory": return e.mandatory ?? !1;
+		default: return e.data || {};
+	}
+}
+function D(e) {
+	return !!e && typeof e == "object" && "label" in e && "options" in e;
+}
+function O(e, t) {
+	for (let n of w) if (E(e, n) !== E(t, n)) return !1;
+	return T(e.data || {}, t.data || {});
+}
+function k(e, t) {
+	let n = (e) => ({
+		id: e.id || "",
+		label: e.label || "",
+		selectAll: e.selectAll ?? !1,
+		closable: e.closable || "off"
+	}), r = n(e), i = n(t);
+	if (r.id !== i.id || r.label !== i.label || r.selectAll !== i.selectAll || r.closable !== i.closable) return !1;
+	let a = e.options || [], o = t.options || [];
+	if (a.length !== o.length) return !1;
+	for (let e = 0; e < a.length; e++) if (!O(a[e], o[e])) return !1;
+	return !0;
+}
+function A(e, t) {
+	if (e === t) return !0;
+	if (e.length !== t.length) return !1;
+	for (let n = 0; n < e.length; n++) {
+		let r = e[n], i = t[n], a = D(r);
+		if (a !== D(i)) return !1;
+		if (a) {
+			if (!k(r, i)) return !1;
+			continue;
+		}
+		if (!O(r, i)) return !1;
+	}
+	return !0;
+}
+function j(e) {
 	let t = e.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (e) => "-" + e.toLowerCase());
 	return e[0] === e[0].toUpperCase() ? t.substring(1) : t;
 }
+function M(e, t = typeof window < "u" ? window.innerWidth : 768) {
+	return e === "on" ? !0 : e === "mobile" ? t < 768 : !1;
+}
 //#endregion
-//#region src/slim-select/store.ts
-var f = class {
+//#region src/slim-select/events.ts
+var N = class {
+	handlers;
+	attached = !1;
+	constructor(e) {
+		this.handlers = e;
+	}
+	attach(e) {
+		this.attached || (this.attached = !0, window.addEventListener("resize", this.resizeHandler, !1), e.listenScroll && window.addEventListener("scroll", this.scrollHandler, !1), document.addEventListener("visibilitychange", this.visibilityHandler));
+	}
+	attachDocumentClick() {
+		document.addEventListener("click", this.handlers.onDocumentClick);
+	}
+	detachDocumentClick() {
+		document.removeEventListener("click", this.handlers.onDocumentClick);
+	}
+	detach(e) {
+		this.attached && (this.attached = !1, this.detachDocumentClick(), window.removeEventListener("resize", this.resizeHandler, !1), e.listenScroll && window.removeEventListener("scroll", this.scrollHandler, !1), document.removeEventListener("visibilitychange", this.visibilityHandler));
+	}
+	resizeHandler = S(() => {
+		this.handlers.onWindowResize();
+	});
+	scrollHandler = S(() => {
+		this.handlers.onWindowScroll();
+	});
+	visibilityHandler = () => {
+		this.handlers.onVisibilityChange();
+	};
+}, P = class {
+	handlers;
+	options;
+	state = "closed";
+	pendingTimer = null;
+	waitResolvers = [];
+	generation = 0;
+	animationAbort = null;
+	constructor(e, t) {
+		this.handlers = e, this.options = t;
+	}
+	get isOpen() {
+		return this.state === "opening" || this.state === "open";
+	}
+	get isFullOpen() {
+		return this.state === "open";
+	}
+	async requestOpen() {
+		if (this.state === "opening" || this.state === "open") return;
+		this.cancelPending();
+		let e = ++this.generation;
+		if (this.handlers.beforeOpen && this.handlers.beforeOpen(), this.state = "opening", await this.waitForPhase("open", e), e !== this.generation) {
+			this.state === "opening" && (this.state = "closed");
+			return;
+		}
+		this.state = "open", this.handlers.afterOpen && this.handlers.afterOpen(), this.handlers.onOpenReady && this.handlers.onOpenReady();
+	}
+	async requestClose() {
+		if (this.state === "closed" || this.state === "closing") return;
+		this.cancelPending();
+		let e = ++this.generation;
+		this.handlers.beforeClose && this.handlers.beforeClose(), this.state = "closing", await this.waitForPhase("close", e), e === this.generation && (this.state = "closed", this.handlers.afterClose && this.handlers.afterClose(), this.handlers.onCloseReady && this.handlers.onCloseReady());
+	}
+	cancelPending() {
+		this.generation++, this.animationAbort?.abort(), this.animationAbort = null, this.pendingTimer &&= (clearTimeout(this.pendingTimer), null);
+		let e = this.waitResolvers.splice(0);
+		for (let t of e) t();
+	}
+	destroy() {
+		this.cancelPending(), this.state = "closed";
+	}
+	waitForPhase(e, t) {
+		return new Promise((t) => {
+			let n = !1, r = () => {
+				if (n) return;
+				n = !0;
+				let e = this.waitResolvers.indexOf(r);
+				e !== -1 && this.waitResolvers.splice(e, 1), t();
+			};
+			if (this.waitResolvers.push(r), this.options.waitForAnimation) {
+				let t = new AbortController();
+				this.animationAbort = t, this.options.waitForAnimation(e, t.signal).catch(() => void 0).finally(() => {
+					this.animationAbort === t && (this.animationAbort = null), r();
+				});
+			} else this.pendingTimer = setTimeout(() => {
+				this.pendingTimer = null, r();
+			}, this.options.timeoutDelay);
+		}).then(() => {
+			this.generation;
+		});
+	}
+}, F = class {
 	id;
 	value;
 	text;
@@ -103,34 +384,34 @@ var f = class {
 	data;
 	mandatory;
 	constructor(e) {
-		this.id = !e.id || e.id === "" ? s() : e.id, this.value = e.value === void 0 ? e.text || "" : e.value || "", this.text = e.text || "", this.html = e.html || "", this.defaultSelected = e.defaultSelected === void 0 ? !1 : e.defaultSelected, this.selected = e.selected === void 0 ? !1 : e.selected, this.display = e.display === void 0 ? !0 : e.display, this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.mandatory = e.mandatory === void 0 ? !1 : e.mandatory, this.placeholder = e.placeholder === void 0 ? !1 : e.placeholder, this.class = e.class || "", this.style = e.style || "", this.data = e.data || {};
+		this.id = !e.id || e.id === "" ? b() : e.id, this.value = e.value === void 0 ? e.text || "" : e.value || "", this.text = e.text || "", this.html = e.html || "", this.defaultSelected = e.defaultSelected === void 0 ? !1 : e.defaultSelected, this.selected = e.selected === void 0 ? !1 : e.selected, this.display = e.display === void 0 ? !0 : e.display, this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.mandatory = e.mandatory === void 0 ? !1 : e.mandatory, this.placeholder = e.placeholder === void 0 ? !1 : e.placeholder, this.class = e.class || "", this.style = e.style || "", this.data = _(e.data);
 	}
-}, p = class {
+}, I = class {
 	id;
 	label;
 	selectAll;
-	selectAllText;
 	closable;
 	options;
 	constructor(e) {
-		if (this.id = !e.id || e.id === "" ? s() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.closable = e.closable || "off", this.options = [], e.options) for (let t of e.options) this.options.push(new f(t));
+		if (this.id = !e.id || e.id === "" ? b() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.closable = e.closable || "off", this.options = [], e.options) for (let t of e.options) this.options.push(new F(t));
 	}
-}, m = class {
+}, L = class {
 	selectType = "single";
 	data = [];
 	selectedOrder = [];
+	catalog = null;
 	constructor(e, t) {
-		this.selectType = e, this.setData(t);
+		this.selectType = e, this.setData(t), this.snapshotCatalog();
 	}
 	validateDataArray(e) {
 		if (!Array.isArray(e)) return /* @__PURE__ */ Error("Data must be an array");
-		for (let t of e) if (t) if (t instanceof p || "label" in t) {
+		for (let t of e) if (t) if (t instanceof I || "label" in t) {
 			if (!("label" in t)) return /* @__PURE__ */ Error("Optgroup must have a label");
 			if ("options" in t && t.options) for (let e of t.options) {
 				let t = this.validateOption(e);
 				if (t) return t;
 			}
-		} else if (t instanceof f || "text" in t) {
+		} else if (t instanceof F || "text" in t) {
 			let e = this.validateOption(t);
 			if (e) return e;
 		} else return /* @__PURE__ */ Error("Data object must be a valid optgroup or option");
@@ -143,15 +424,43 @@ var f = class {
 		let t = [];
 		return e.forEach((e) => {
 			if (e) {
-				if (e instanceof p || "label" in e) {
+				if (e instanceof I || "label" in e) {
 					let n = [];
 					"options" in e && e.options && e.options.forEach((e) => {
-						n.push(new f(e));
-					}), n.length > 0 && t.push(new p(e));
+						n.push(new F(e));
+					}), n.length > 0 && t.push(new I(e));
 				}
-				(e instanceof f || "text" in e) && t.push(new f(e));
+				(e instanceof F || "text" in e) && t.push(new F(e));
 			}
 		}), t;
+	}
+	snapshotCatalog() {
+		this.catalog = this.cloneData(this.data);
+	}
+	getCatalogData() {
+		return this.cloneData(this.catalog ?? this.data);
+	}
+	cloneData(e) {
+		return e.map((e) => e instanceof I ? new I({
+			id: e.id,
+			label: e.label,
+			selectAll: e.selectAll,
+			closable: e.closable,
+			options: e.options.map((e) => new F(e instanceof F ? { ...e } : e))
+		}) : new F({ ...e }));
+	}
+	optionMatchesSelected(e, t) {
+		return e.id === t.id ? !0 : t.value !== "" && e.value !== "" && e.value === t.value;
+	}
+	findOptionInData(e, t) {
+		for (let n of e) {
+			if (n instanceof F) {
+				if (this.optionMatchesSelected(n, t)) return n;
+				continue;
+			}
+			for (let e of n.options) if (this.optionMatchesSelected(e, t)) return e;
+		}
+		return null;
 	}
 	setData(e, t = !1) {
 		let n = this.partialToFullData(e), r = [];
@@ -159,48 +468,37 @@ var f = class {
 			r = this.getSelectedOptions();
 			let e = [];
 			r.forEach((t) => {
-				let r = !1;
-				for (let e of n) {
-					if (e instanceof f && e.id === t.id) {
-						r = !0;
-						break;
-					}
-					if (e instanceof p) {
-						for (let n of e.options) if (n.id === t.id) {
-							r = !0;
-							break;
-						}
-					}
-				}
-				r || e.push(t);
+				this.findOptionInData(n, t) || e.push(t);
 			}), this.data = [...e, ...n];
+			let t = this.selectType === "single" && r.length === 0, i = r.map((e) => {
+				let t = this.findOptionInData(this.data, e);
+				return t ? t.id : e.id;
+			});
+			this.setSelectedBy("id", i, t);
 		} else this.data = n;
-		if (this.selectType === "single") {
-			let e = t && r.length === 0;
-			this.setSelectedBy("id", this.getSelected(), e);
-		}
+		!t && this.selectType === "single" && this.setSelectedBy("id", this.getSelected(), !1);
 	}
-	getData() {
-		return this.filter(null, !0);
+	getData(e = !0) {
+		return this.filter(null, !0, e);
 	}
-	getDataOptions() {
-		return this.filter(null, !1);
+	getDataOptions(e = !0) {
+		return this.filter(null, !1, e);
 	}
 	addOption(e, t = !1) {
 		if (t) {
-			let t = [new f(e)];
+			let t = [new F(e)];
 			this.setData(t.concat(this.getData()));
-		} else this.setData(this.getData().concat(new f(e)));
+		} else this.setData(this.getData().concat(new F(e)));
 	}
 	setSelectedBy(e, t, n = !1) {
 		let r = null, i = !1, a = [];
 		for (let n of this.data) {
-			if (n instanceof p) for (let o of n.options) {
+			if (n instanceof I) for (let o of n.options) {
 				r ||= o;
 				let n = o[e] || "";
 				o.selected = i ? !1 : t.includes(n), o.selected && (a.push(o), this.selectType === "single" && (i = !0));
 			}
-			n instanceof f && (r ||= n, n.selected = i ? !1 : t.includes(n[e]), n.selected && (a.push(n), this.selectType === "single" && (i = !0)));
+			n instanceof F && (r ||= n, n.selected = i ? !1 : t.includes(n[e]), n.selected && (a.push(n), this.selectType === "single" && (i = !0)));
 		}
 		this.selectType === "single" && r && !i && !n && (r.selected = !0, a.push(r));
 		let o = t.map((t) => a.find((n) => n[e] === t)?.id || "");
@@ -213,41 +511,56 @@ var f = class {
 		return this.getSelectedOptions().map((e) => e.value);
 	}
 	getSelectedOptions() {
-		return this.filter((e) => e.selected, !1);
+		let e = [];
+		for (let t of this.data) if (t instanceof I) for (let n of t.options) n.selected && e.push(n);
+		else t.selected && e.push(t);
+		return e;
 	}
 	getOptgroupByID(e) {
-		for (let t of this.data) if (t instanceof p && t.id === e) return t;
+		for (let t of this.data) if (t instanceof I && t.id === e) return t;
 		return null;
 	}
 	getOptionByID(e) {
-		let t = this.filter((t) => t.id === e, !1);
-		return t.length ? t[0] : null;
+		for (let t of this.data) if (t instanceof I) {
+			for (let n of t.options) if (n.id === e) return n;
+		} else if (t.id === e) return t;
+		return null;
 	}
 	getSelectType() {
 		return this.selectType;
 	}
 	getFirstOption() {
 		let e = null;
-		for (let t of this.data) if (t instanceof p ? e = t.options[0] : t instanceof f && (e = t), e) break;
+		for (let t of this.data) if (t instanceof I ? e = t.options[0] : t instanceof F && (e = t), e) break;
 		return e;
 	}
 	search(e, t) {
-		return e = e.trim(), e === "" ? this.getData() : this.filter((n) => t(n, e), !0);
+		return e = e.trim(), e === "" ? this.getData(!1) : this.filter((n) => t(n, e), !0, !1);
 	}
-	filter(e, t) {
-		let n = [];
-		return this.data.forEach((r) => {
-			if (r instanceof p) {
-				let i = [];
-				if (r.options.forEach((r) => {
-					(!e || e(r)) && (t ? i.push(new f(r)) : n.push(new f(r)));
-				}), i.length > 0) {
-					let e = new p(r);
-					e.options = i, n.push(e);
-				}
+	createOptgroupView(e, t) {
+		let n = new I({
+			id: e.id,
+			label: e.label,
+			selectAll: e.selectAll,
+			closable: e.closable,
+			options: []
+		});
+		return n.options = t, n;
+	}
+	filter(e, t, n = !0) {
+		let r = [];
+		return this.data.forEach((i) => {
+			if (i instanceof I) {
+				let a = [];
+				if (i.options.forEach((i) => {
+					(!e || e(i)) && (t ? a.push(n ? new F(i) : i) : r.push(n ? new F(i) : i));
+				}), a.length > 0) if (n) {
+					let e = new I(i);
+					e.options = a, r.push(e);
+				} else r.push(this.createOptgroupView(i, a));
 			}
-			r instanceof f && (!e || e(r)) && n.push(new f(r));
-		}), n;
+			i instanceof F && (!e || e(i)) && r.push(n ? new F(i) : i);
+		}), r;
 	}
 	selectedOrderOptions(e) {
 		let t = [];
@@ -264,18 +577,25 @@ var f = class {
 			}), n || t.push(e);
 		}), t;
 	}
-}, h = class {
+}, R = class {
 	settings;
 	store;
 	callbacks;
 	lastSelectedOption;
 	lastRenderedOptions;
-	closeAnimationTimeout = null;
+	optionsListIsFullData = !1;
+	lastSearchFilterTerm = "";
 	main;
 	content;
 	classes;
+	positionObserver = null;
+	positionObserverRaf = 0;
+	modalElements = null;
+	modalSessionActive = null;
+	bodyScrollLocked = !1;
+	savedBodyOverflow = "";
 	constructor(e, t, n, r) {
-		this.store = n, this.settings = e, this.classes = t, this.callbacks = r, this.lastSelectedOption = null, this.lastRenderedOptions = [], this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main);
+		this.store = n, this.settings = e, this.classes = t, this.callbacks = r, this.lastSelectedOption = null, this.lastRenderedOptions = [], this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main), this.settings.modal !== "off" && !this.settings.alwaysOpen && (this.modalElements = this.createModalElements(), document.body.appendChild(this.modalElements.overlay));
 	}
 	addClasses(e, t) {
 		if (!t || t.trim() === "") return;
@@ -294,29 +614,76 @@ var f = class {
 		this.addClasses(this.main.main, this.classes.disabled), this.main.main.setAttribute("aria-disabled", "true"), this.content.search.input.disabled = !0;
 	}
 	open() {
-		this.main.arrow.path.setAttribute("d", this.classes.arrowOpen), this.main.main.setAttribute("aria-expanded", "true"), this.closeAnimationTimeout &&= (clearTimeout(this.closeAnimationTimeout), null);
-		let e = this.settings.openPosition === "up" ? this.classes.dirAbove : this.classes.dirBelow;
-		this.addClasses(this.main.main, e), this.addClasses(this.content.main, e), this.addClasses(this.content.main, this.classes.contentOpen), this.content.search.input.removeAttribute("aria-hidden"), this.moveContent();
+		this.main.arrow.path.setAttribute("d", this.classes.arrowOpen), this.main.main.setAttribute("aria-expanded", "true");
+		let e = this.resolveModalView();
+		if (!e) {
+			let e = this.settings.openPosition === "up" ? this.classes.dirAbove : this.classes.dirBelow;
+			this.addClasses(this.main.main, e), this.addClasses(this.content.main, e);
+		}
+		this.addClasses(this.content.main, this.classes.contentOpen), this.content.search.input.removeAttribute("aria-hidden"), e ? this.showModal() : this.moveContent();
 		let t = this.store.getSelectedOptions();
 		if (t.length) {
 			let e = t[t.length - 1].id, n = this.content.list.querySelector("[data-id=\"" + e + "\"]");
 			n && this.ensureElementInView(this.content.list, n);
 		}
 	}
-	close() {
-		this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose), this.removeClasses(this.content.main, this.classes.contentOpen), this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
-		let e = this.getAnimationTiming();
-		this.closeAnimationTimeout = setTimeout(() => {
-			this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow), this.removeClasses(this.content.main, this.classes.dirAbove), this.removeClasses(this.content.main, this.classes.dirBelow), this.closeAnimationTimeout = null;
-		}, e);
+	isModalViewActive() {
+		return this.modalSessionActive === !0;
 	}
-	getAnimationTiming() {
-		let e = getComputedStyle(this.content.main).getPropertyValue("--ss-animation-timing").trim();
-		if (e) {
-			if (e.endsWith("ms")) return parseFloat(e);
-			if (e.endsWith("s")) return parseFloat(e) * 1e3;
-		}
-		return 200;
+	resolveModalView() {
+		return this.settings.alwaysOpen || this.settings.modal === "off" || !this.modalElements ? !1 : (this.modalSessionActive === null && (this.modalSessionActive = M(this.settings.modal)), this.modalSessionActive);
+	}
+	createModalElements() {
+		let e = document.createElement("div");
+		this.addClasses(e, this.classes.modalOverlay), this.addClasses(e, this.classes.hide), e.dataset.id = this.settings.id;
+		let t = document.createElement("div");
+		this.addClasses(t, this.classes.modalDialog), t.setAttribute("role", "dialog"), t.setAttribute("aria-modal", "true");
+		let n = null;
+		this.settings.modalTitle ? (n = document.createElement("div"), this.addClasses(n, this.classes.modalTitle), n.id = `${this.settings.id}-modal-title`, n.textContent = this.settings.modalTitle, t.setAttribute("aria-labelledby", n.id)) : t.setAttribute("aria-label", this.settings.ariaLabel);
+		let r = document.createElement("button");
+		r.type = "button", this.addClasses(r, this.classes.modalClose), r.setAttribute("aria-label", "Close"), r.onclick = (e) => {
+			e.stopPropagation(), this.callbacks.close();
+		};
+		let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		i.setAttribute("viewBox", "0 0 100 100");
+		let a = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		return a.setAttribute("d", this.classes.deselectPath), i.appendChild(a), r.appendChild(i), e.onclick = (t) => {
+			t.target === e && this.callbacks.close();
+		}, n && t.appendChild(n), e.appendChild(t), {
+			overlay: e,
+			dialog: t,
+			closeButton: r,
+			title: n
+		};
+	}
+	showModal() {
+		this.modalElements && (this.modalElements.dialog.appendChild(this.content.main), this.addClasses(this.content.main, this.classes.modalContent), this.content.main.appendChild(this.modalElements.closeButton), this.content.main.style.top = "", this.content.main.style.left = "", this.content.main.style.margin = "", this.content.main.style.width = "", this.removeClasses(this.modalElements.overlay, this.classes.hide), requestAnimationFrame(() => {
+			this.modalElements && this.addClasses(this.modalElements.overlay, this.classes.contentOpen);
+		}), this.lockBodyScroll());
+	}
+	lockBodyScroll() {
+		this.bodyScrollLocked ||= (this.savedBodyOverflow = document.body.style.overflow, document.body.style.overflow = "hidden", !0);
+	}
+	unlockBodyScroll() {
+		this.bodyScrollLocked && (document.body.style.overflow = this.savedBodyOverflow, this.bodyScrollLocked = !1, this.savedBodyOverflow = "");
+	}
+	restoreContentOffscreen() {
+		this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto");
+	}
+	finalizeModalClose() {
+		this.modalElements && this.content.main.parentElement === this.modalElements.dialog && (this.addClasses(this.modalElements.overlay, this.classes.hide), this.removeClasses(this.modalElements.overlay, this.classes.contentOpen), this.removeClasses(this.content.main, this.classes.modalContent), this.restoreContentOffscreen(), this.unlockBodyScroll());
+	}
+	waitForAnimation(e, t) {
+		let n = d(this.content.main, this.settings.timeoutDelay);
+		return m(this.content.main, c, n, t);
+	}
+	close() {
+		this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose);
+		let e = this.modalSessionActive === !0;
+		this.removeClasses(this.content.main, this.classes.contentOpen), e || (this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow)), e && this.modalElements && this.removeClasses(this.modalElements.overlay, this.classes.contentOpen), this.modalSessionActive = null, this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
+	}
+	clearDirectionClasses() {
+		this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow), this.removeClasses(this.content.main, this.classes.dirAbove), this.removeClasses(this.content.main, this.classes.dirBelow);
 	}
 	updateClassStyles() {
 		if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length) for (let e of this.settings.class) e.trim() !== "" && (this.main.main.classList.add(e.trim()), this.content.main.classList.add(e.trim()));
@@ -349,11 +716,17 @@ var f = class {
 		let n = document.createElement("div");
 		this.addClasses(n, this.classes.deselect), n.setAttribute("role", "button"), n.setAttribute("aria-label", this.settings.deselectText), n.setAttribute("tabindex", "0");
 		let r = this.store?.getSelectedOptions();
-		!this.settings.allowDeselect || this.settings.isMultiple && r && r.length <= 0 ? this.addClasses(n, this.classes.hide) : this.removeClasses(n, this.classes.hide), n.onclick = (e) => {
-			if (e.stopPropagation(), this.settings.disabled) return;
-			let t = !0, n = this.store.getSelectedOptions();
-			if (this.callbacks.beforeChange && (t = this.callbacks.beforeChange([], n) === !0), t) {
-				if (this.settings.isMultiple) this.callbacks.setSelected([], !1), this.updateDeselectAll();
+		!this.settings.allowDeselect || this.settings.isMultiple && r && r.length <= 0 || this.isAtMinSelected() ? this.addClasses(n, this.classes.hide) : this.removeClasses(n, this.classes.hide), n.onclick = (e) => {
+			if (e.stopPropagation(), this.settings.disabled || this.settings.isMultiple && this.isAtMinSelected()) return;
+			let t = !0, n = this.store.getSelectedOptions(), r = [], i = "";
+			if (this.settings.isMultiple) {
+				let e = this.settings.minSelected, t = this.store.getSelected();
+				if (e > 0 && t.length > e) i = this.getMinimumSelectionIds(), r = n.filter((e) => i.includes(e.id));
+				else if (e <= 0) i = [];
+				else return;
+			}
+			if (this.callbacks.beforeChange && (t = this.callbacks.beforeChange(r, n) === !0), t) {
+				if (this.settings.isMultiple) this.callbacks.setSelected(i, !1), this.updateDeselectAll();
 				else {
 					let e = this.store.getFirstOption(), t = e ? e.id : "";
 					this.callbacks.setSelected(t, !1);
@@ -388,7 +761,7 @@ var f = class {
 		e !== "click" && this.main.main.focus({ preventScroll: !0 });
 	}
 	placeholder() {
-		let e = this.store.filter((e) => e.placeholder, !1), t = this.settings.placeholderText;
+		let e = this.store.filter((e) => e.placeholder, !1, !1), t = this.settings.placeholderText;
 		e.length && (e[0].html === "" ? e[0].text !== "" && (t = e[0].text) : t = e[0].html);
 		let n = document.createElement("div");
 		return this.addClasses(n, this.classes.placeholder), n.innerHTML = t, n;
@@ -401,7 +774,7 @@ var f = class {
 		this.renderMultipleValues(), this.updateDeselectAll();
 	}
 	renderSingleValue() {
-		let e = this.store.filter((e) => e.selected && !e.placeholder, !1), t = e.length > 0 ? e[0] : null;
+		let e = this.store.filter((e) => e.selected && !e.placeholder, !1, !1), t = e.length > 0 ? e[0] : null;
 		if (!t) this.main.values.innerHTML = this.placeholder().outerHTML;
 		else {
 			let e = document.createElement("div");
@@ -410,7 +783,7 @@ var f = class {
 		!this.settings.allowDeselect || !e.length ? this.addClasses(this.main.deselect.main, this.classes.hide) : this.removeClasses(this.main.deselect.main, this.classes.hide);
 	}
 	renderMultipleValues() {
-		let e = this.main.values.childNodes, t = this.store.filter((e) => e.selected && e.display, !1);
+		let e = this.main.values.childNodes, t = this.store.filter((e) => e.selected && e.display, !1, !1);
 		if (t.length === 0) {
 			this.main.values.innerHTML = this.placeholder().outerHTML;
 			return;
@@ -439,15 +812,29 @@ var f = class {
 			let i = e[r], a = i.getAttribute("data-id");
 			a && (t.filter((e) => e.id === a, !1).length || n.push(i));
 		}
-		for (let e of n) this.addClasses(e, this.classes.valueOut), setTimeout(() => {
+		let r = d(this.content.main, this.settings.timeoutDelay);
+		for (let e of n) this.addClasses(e, this.classes.valueOut), h(e, "ss-valueOut", r).then(() => {
 			this.main.values.hasChildNodes() && this.main.values.contains(e) && this.main.values.removeChild(e);
-		}, 100);
+		});
 		e = this.main.values.childNodes;
 		for (let n = 0; n < t.length; n++) {
 			let r = !0;
 			for (let i = 0; i < e.length; i++) t[n].id === String(e[i].dataset.id) && (r = !1);
 			r && (this.settings.keepOrder || e.length === 0 ? this.main.values.appendChild(this.multipleValue(t[n])) : n === 0 ? this.main.values.insertBefore(this.multipleValue(t[n]), e[n]) : e[n - 1].insertAdjacentElement("afterend", this.multipleValue(t[n])));
 		}
+		this.updateMultipleValueDeleteVisibility();
+	}
+	isAtMinSelected() {
+		return this.settings.isMultiple && this.settings.minSelected > 0 && this.store.getSelectedOptions().length <= this.settings.minSelected;
+	}
+	getMinimumSelectionIds() {
+		let e = this.store.getSelectedOptions();
+		return this.settings.keepOrder && (e = this.store.selectedOrderOptions(e)), e.slice(0, this.settings.minSelected).map((e) => e.id);
+	}
+	updateMultipleValueDeleteVisibility() {
+		if (!this.settings.isMultiple || this.settings.multiString) return;
+		let e = !this.isAtMinSelected(), t = this.main.values.querySelectorAll("." + this.classes.getFirst("valueDelete"));
+		for (let n of t) e ? this.removeClasses(n, this.classes.hide) : this.addClasses(n, this.classes.hide);
 	}
 	multipleValue(e) {
 		let t = document.createElement("div");
@@ -455,16 +842,16 @@ var f = class {
 		let n = document.createElement("div");
 		if (this.addClasses(n, this.classes.valueText), n.textContent = e.text, t.appendChild(n), !e.mandatory) {
 			let n = document.createElement("div");
-			this.addClasses(n, this.classes.valueDelete), n.setAttribute("tabindex", "0"), n.setAttribute("role", "button"), n.setAttribute("aria-label", `${this.settings.removeText} ${e.text}`), n.onclick = (t) => {
+			this.addClasses(n, this.classes.valueDelete), n.setAttribute("tabindex", "0"), n.setAttribute("role", "button"), n.setAttribute("aria-label", `${this.settings.removeText} ${e.text}`), this.isAtMinSelected() && this.addClasses(n, this.classes.hide), n.onclick = (t) => {
 				if (t.preventDefault(), t.stopPropagation(), this.settings.disabled) return;
 				let n = !0, r = this.store.getSelectedOptions(), i = r.filter((t) => t.selected && t.id !== e.id, !0);
 				if (!(this.settings.minSelected && i.length < this.settings.minSelected) && (this.callbacks.beforeChange && (n = this.callbacks.beforeChange(i, r) === !0), n)) {
 					let e = [];
 					for (let t of i) {
-						if (t instanceof p) for (let n of t.options) n.id && e.push(n.id);
-						t instanceof f && e.push(t.id);
+						if (t instanceof I) for (let n of t.options) n.id && e.push(n.id);
+						t instanceof F && e.push(t.id);
 					}
-					this.callbacks.setSelected(e, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(i), this.updateDeselectAll();
+					this.callbacks.setSelected(e, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(i), this.updateDeselectAll(), this.updateMultipleValueDeleteVisibility();
 				}
 			};
 			let r = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -495,18 +882,39 @@ var f = class {
 		this.settings.showSearch && (this.content.status.textContent = e);
 	}
 	moveContent() {
-		if (this.settings.contentPosition === "relative") {
-			this.moveContentBelow();
-			return;
+		if (!this.isModalViewActive()) {
+			if (this.settings.contentPosition === "relative") {
+				this.moveContentBelow();
+				return;
+			}
+			if (this.settings.openPosition === "down") {
+				this.moveContentBelow();
+				return;
+			} else if (this.settings.openPosition === "up") {
+				this.moveContentAbove();
+				return;
+			}
+			this.putContent() === "up" ? this.moveContentAbove() : this.moveContentBelow();
 		}
-		if (this.settings.openPosition === "down") {
-			this.moveContentBelow();
-			return;
-		} else if (this.settings.openPosition === "up") {
-			this.moveContentAbove();
-			return;
-		}
-		this.putContent() === "up" ? this.moveContentAbove() : this.moveContentBelow();
+	}
+	startPositionTracking() {
+		this.settings.contentPosition !== "absolute" || this.isModalViewActive() || (this.stopPositionTracking(), !(typeof ResizeObserver > "u") && (this.positionObserver = new ResizeObserver(() => {
+			this.settings.isOpen && (cancelAnimationFrame(this.positionObserverRaf), this.positionObserverRaf = requestAnimationFrame(() => {
+				this.moveContent();
+			}));
+		}), this.observePositionTargets()));
+	}
+	stopPositionTracking() {
+		cancelAnimationFrame(this.positionObserverRaf), this.positionObserver?.disconnect(), this.positionObserver = null;
+	}
+	observePositionTargets() {
+		if (!this.positionObserver) return;
+		let e = /* @__PURE__ */ new Set(), t = (t) => {
+			!t || e.has(t) || (e.add(t), this.positionObserver.observe(t));
+		};
+		t(this.main.main), t(this.content.main);
+		let n = this.main.main.parentElement, r = this.settings.contentLocation;
+		for (let e = 0; n && e < 8 && (t(n), n !== r); e++) n = n.parentElement;
 	}
 	searchDiv() {
 		let e = document.createElement("div"), t = document.createElement("input"), n = document.createElement("div");
@@ -515,7 +923,7 @@ var f = class {
 			main: e,
 			input: t
 		};
-		if (this.settings.showSearch || (this.addClasses(e, this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true"), t.oninput = l((e) => {
+		if (this.settings.showSearch || (this.addClasses(e, this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true"), t.oninput = S((e) => {
 			this.callbacks.search(e.target.value);
 		}, 100), t.onkeydown = (e) => {
 			switch (e.key) {
@@ -544,14 +952,17 @@ var f = class {
 					return;
 				}
 				let n = (e) => {
-					let t = new f(e);
+					let t = new F(e);
 					if (this.callbacks.addOption(t), this.settings.isMultiple) {
 						let e = this.store.getSelected();
 						e.push(t.id), this.callbacks.setSelected(e, !0);
 					} else this.callbacks.setSelected([t.id], !0);
-					this.callbacks.search(""), this.settings.closeOnSelect && setTimeout(() => {
-						this.callbacks.close();
-					}, 100);
+					if (this.callbacks.search(""), this.settings.closeOnSelect) {
+						let e = u(this.content.main);
+						setTimeout(() => {
+							this.callbacks.close();
+						}, e);
+					}
 				}, r = this.callbacks.addable(t);
 				r === !1 || r == null || (r instanceof Promise ? r.then((e) => {
 					typeof e == "string" ? n({
@@ -619,17 +1030,18 @@ var f = class {
 		return e.id = t, e.dataset.id = t, e;
 	}
 	renderError(e) {
-		this.content.list.innerHTML = "";
+		this.optionsListIsFullData = !1, this.content.list.innerHTML = "";
 		let t = document.createElement("div");
 		this.addClasses(t, this.classes.error), t.textContent = e, this.content.list.appendChild(t);
 	}
 	renderSearching() {
-		this.content.list.innerHTML = "";
+		this.optionsListIsFullData = !1, this.content.list.innerHTML = "";
 		let e = document.createElement("div");
 		this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e), this.announce(this.settings.searchingText);
 	}
 	renderOptions(e) {
-		if (this.lastRenderedOptions = e.map((e) => e instanceof f ? [e] : e.options.map((e) => new f(e))).flat(), this.content.list.innerHTML = "", e.length === 0) {
+		if (this.lastSearchFilterTerm = "", this.lastRenderedOptions = e.map((e) => e instanceof F ? [e] : e.options.map((e) => new F(e))).flat(), this.content.list.innerHTML = "", e.length === 0) {
+			this.optionsListIsFullData = !1;
 			let e = document.createElement("div");
 			if (this.addClasses(e, this.classes.search), this.callbacks.addable) {
 				let t = this.settings.addableText.replace("{value}", this.content.search.input.value);
@@ -638,7 +1050,7 @@ var f = class {
 			this.content.list.appendChild(e);
 			return;
 		}
-		this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((e) => e.placeholder, !1).length || this.store.addOption(new f({
+		this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((e) => e.placeholder, !1, !1).length || this.store.addOption(new F({
 			text: "",
 			value: "",
 			selected: !1,
@@ -646,7 +1058,7 @@ var f = class {
 		}), !0));
 		let t = document.createDocumentFragment();
 		for (let n of e) {
-			if (n instanceof p) {
+			if (n instanceof I) {
 				let e = document.createElement("div");
 				this.addClasses(e, this.classes.optgroup);
 				let r = document.createElement("div");
@@ -657,14 +1069,10 @@ var f = class {
 				if (this.addClasses(a, this.classes.optgroupActions), r.appendChild(a), this.settings.isMultiple && n.selectAll) {
 					let e = document.createElement("div");
 					this.addClasses(e, this.classes.optgroupSelectAll);
-					let t = !0;
-					for (let e of n.options) if (!e.selected) {
-						t = !1;
-						break;
-					}
+					let t = this.isOptgroupAllSelected(n.options);
 					t && this.addClasses(e, this.classes.selected);
 					let r = document.createElement("span");
-					r.textContent = n.selectAllText, e.appendChild(r);
+					r.textContent = this.optgroupSelectAllLabel(t), e.appendChild(r);
 					let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 					i.setAttribute("viewBox", "0 0 100 100"), e.appendChild(i);
 					let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -672,18 +1080,18 @@ var f = class {
 					let s = document.createElementNS("http://www.w3.org/2000/svg", "path");
 					s.setAttribute("d", this.classes.optgroupSelectAllCheck), i.appendChild(s), e.addEventListener("click", (e) => {
 						e.preventDefault(), e.stopPropagation();
-						let r = this.store.getSelected();
-						if (t) {
-							let e = r.filter((e) => {
+						let t = this.store.getSelected();
+						if (this.isOptgroupAllSelected(n.options, new Set(t))) {
+							let e = t.filter((e) => {
 								for (let t of n.options) if (e === t.id) return !1;
 								return !0;
 							});
 							this.callbacks.setSelected(e, !0);
 							return;
 						} else {
-							let e = n.options.map((e) => e.id).filter((e) => e !== void 0), t = r.concat(e);
-							for (let e of n.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new f(e));
-							this.callbacks.setSelected(t, !0);
+							let e = n.options.map((e) => e.id).filter((e) => e !== void 0), r = t.concat(e);
+							for (let e of n.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new F(e));
+							this.callbacks.setSelected(r, !0);
 							return;
 						}
 					}), a.appendChild(e);
@@ -694,16 +1102,136 @@ var f = class {
 					let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 					i.setAttribute("viewBox", "0 0 100 100"), this.addClasses(i, this.classes.arrow), t.appendChild(i);
 					let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
-					i.appendChild(o), n.options.some((e) => e.selected) || this.content.search.input.value.trim() !== "" ? (this.addClasses(t, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "open" ? (this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "close" && (this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)), r.addEventListener("click", (t) => {
-						t.preventDefault(), t.stopPropagation(), e.classList.contains(this.classes.getFirst("close")) ? (this.removeClasses(e, this.classes.close), this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : (this.removeClasses(e, this.classes.mainOpen), this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose));
+					i.appendChild(o), n.options.some((e) => e.selected) || this.content.search.input.value.trim() !== "" ? (this.addClasses(t, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "open" ? (this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "close" && (this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)), r.addEventListener("click", (n) => {
+						n.preventDefault(), n.stopPropagation(), this.isClosableOptgroupOpen(e, t) ? (this.removeClasses(e, this.classes.mainOpen), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)) : (this.closeOtherClosableOptgroups(e), this.removeClasses(e, this.classes.close), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen));
 					}), a.appendChild(t);
 				}
 				e.appendChild(r);
-				for (let r of n.options) e.appendChild(this.option(new f(r))), t.appendChild(e);
+				for (let r of n.options) e.appendChild(this.option(new F(r))), t.appendChild(e);
 			}
-			n instanceof f && t.appendChild(this.option(n));
+			n instanceof F && t.appendChild(this.option(n));
 		}
-		this.content.list.appendChild(t), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length)));
+		this.content.list.appendChild(t), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length)));
+	}
+	canFilterOptionsInPlace() {
+		return this.optionsListIsFullData ? this.content.list.querySelector("." + this.classes.getFirst("option")) !== null : !1;
+	}
+	resetSearchFilterState() {
+		this.lastSearchFilterTerm = "";
+	}
+	filterOptionsInPlace(e, t) {
+		let n = e.trim();
+		if (n === this.lastSearchFilterTerm) return;
+		this.lastSearchFilterTerm = n;
+		let r = [], i = this.content.list.querySelectorAll("." + this.classes.getFirst("option"));
+		for (let e of i) {
+			let i = e.dataset.id;
+			if (!i) continue;
+			let a = this.store.getOptionByID(i);
+			if (!a) continue;
+			let o = a.placeholder || !a.display || a.selected && this.settings.hideSelected, s = t(a, n);
+			o || !s ? (this.addClasses(e, this.classes.hide), this.removeClasses(e, this.classes.highlighted)) : (this.removeClasses(e, this.classes.hide), this.setOptionElementContent(e, a, n), r.push(a)), a.selected ? (this.addClasses(e, this.classes.selected), e.setAttribute("aria-selected", "true")) : (this.removeClasses(e, this.classes.selected), e.setAttribute("aria-selected", "false"));
+		}
+		this.lastRenderedOptions = r, this.updateOptgroupVisibilityAfterSearch(n), r.length === 0 ? this.updateSearchResultsMessage(0, n) : (this.removeListSearchMessage(), this.announce(this.settings.resultsText.replace("{count}", String(r.length)))), this.updateOptgroupSelectAllStates();
+	}
+	setOptionsListFullData(e) {
+		let t = this.store.getDataOptions(!1), n = e.map((e) => e instanceof F ? [e] : e.options.map((e) => new F(e))).flat();
+		if (n.length !== t.length) {
+			this.optionsListIsFullData = !1;
+			return;
+		}
+		let r = new Set(t.map((e) => e.id));
+		this.optionsListIsFullData = n.every((e) => r.has(e.id));
+	}
+	isClosableOptgroupOpen(e, t) {
+		return e.classList.contains(this.classes.getFirst("close")) ? !1 : e.classList.contains(this.classes.getFirst("mainOpen")) || t.classList.contains(this.classes.getFirst("mainOpen"));
+	}
+	closeClosableOptgroup(e) {
+		let t = e.querySelector("." + this.classes.getFirst("optgroupClosable"));
+		if (!t || e.classList.contains(this.classes.getFirst("close"))) return;
+		this.removeClasses(e, this.classes.mainOpen), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.close);
+		let n = t.querySelector("path");
+		n && n.setAttribute("d", this.classes.arrowClose);
+	}
+	closeOtherClosableOptgroups(e) {
+		let t = this.content.list.querySelectorAll("." + this.classes.getFirst("optgroup"));
+		for (let n of t) n !== e && this.closeClosableOptgroup(n);
+	}
+	updateOptgroupVisibilityAfterSearch(e) {
+		let t = this.content.list.querySelectorAll("." + this.classes.getFirst("optgroup"));
+		for (let n of t) {
+			let t = n.querySelectorAll("." + this.classes.getFirst("option")), r = !1;
+			for (let e of t) if (!e.classList.contains(this.classes.getFirst("hide"))) {
+				r = !0;
+				break;
+			}
+			if (!r) {
+				this.addClasses(n, this.classes.hide);
+				continue;
+			}
+			this.removeClasses(n, this.classes.hide), e !== "" && (this.removeClasses(n, this.classes.close), this.addClasses(n, this.classes.mainOpen));
+		}
+	}
+	updateSearchResultsMessage(e, t) {
+		if (this.removeListSearchMessage(), e > 0) return;
+		let n = document.createElement("div");
+		if (this.addClasses(n, this.classes.search), this.callbacks.addable) {
+			let e = this.settings.addableText.replace("{value}", t);
+			n.innerHTML = e, this.announce(e);
+		} else n.innerHTML = this.settings.searchText, this.announce(this.settings.searchText);
+		this.content.list.appendChild(n);
+	}
+	removeListSearchMessage() {
+		this.content.list.querySelectorAll("." + this.classes.getFirst("search")).forEach((e) => e.remove());
+	}
+	setOptionElementContent(e, t, n) {
+		let r = n.trim();
+		this.settings.searchHighlight && r !== "" ? e.innerHTML = this.highlightText(t.html === "" ? t.text : t.html, r, this.classes.searchHighlighter) : t.html === "" ? e.textContent = t.text : e.innerHTML = t.html, this.settings.showOptionTooltips && e.textContent ? e.setAttribute("title", e.textContent) : e.removeAttribute("title");
+	}
+	hasRenderedOptions() {
+		return this.content.list.querySelector("." + this.classes.getFirst("option")) !== null;
+	}
+	canUpdateOptionSelectionInPlace() {
+		return this.content.search.input.value.trim() === "" ? this.hasRenderedOptions() : !1;
+	}
+	updateOptionSelection() {
+		let e = new Set(this.store.getSelected()), t = this.content.list.querySelectorAll("." + this.classes.getFirst("option")), n = null;
+		for (let r of t) {
+			let t = r.dataset.id;
+			if (!t) continue;
+			let i = this.store.getOptionByID(t);
+			if (!i) continue;
+			let a = e.has(t);
+			a ? (this.addClasses(r, this.classes.selected), r.setAttribute("aria-selected", "true"), n = r) : (this.removeClasses(r, this.classes.selected), r.setAttribute("aria-selected", "false")), this.settings.hideSelected && (a ? this.addClasses(r, this.classes.hide) : (this.removeClasses(r, this.classes.hide), i.display || this.addClasses(r, this.classes.hide)));
+		}
+		!this.settings.isMultiple && n ? this.main.main.setAttribute("aria-activedescendant", n.id) : !this.settings.isMultiple && e.size === 0 && this.main.main.removeAttribute("aria-activedescendant"), this.updateOptgroupSelectAllStates();
+	}
+	updateOptgroupSelectAllStates() {
+		if (!this.settings.isMultiple) return;
+		let e = new Set(this.store.getSelected()), t = this.content.list.querySelectorAll("." + this.classes.getFirst("optgroup"));
+		for (let n of t) {
+			let t = n.querySelector("." + this.classes.getFirst("optgroupSelectAll"));
+			if (!t) continue;
+			let r = n.querySelectorAll("." + this.classes.getFirst("option")), i = r.length > 0;
+			for (let t of r) {
+				let n = t.dataset.id;
+				if (!n || !e.has(n)) {
+					i = !1;
+					break;
+				}
+			}
+			i ? this.addClasses(t, this.classes.selected) : this.removeClasses(t, this.classes.selected);
+			let a = t.querySelector("span");
+			a && (a.textContent = this.optgroupSelectAllLabel(i));
+		}
+	}
+	optgroupSelectAllLabel(e) {
+		return e ? "Unselect All" : "Select All";
+	}
+	isOptgroupAllSelected(e, t) {
+		if (e.length === 0) return !1;
+		for (let n of e) if (!(t ? n.id && t.has(n.id) : n.selected)) return !1;
+		return !0;
 	}
 	option(e) {
 		if (e.placeholder) {
@@ -713,7 +1241,7 @@ var f = class {
 		let t = document.createElement("div");
 		return t.dataset.id = e.id, t.id = this.settings.id + "-" + e.id, this.addClasses(t, this.classes.option), t.setAttribute("role", "option"), e.class && e.class.split(" ").forEach((e) => {
 			t.classList.add(e);
-		}), e.style && (t.style.cssText = e.style), this.settings.searchHighlight && this.content.search.input.value.trim() !== "" ? t.innerHTML = this.highlightText(e.html === "" ? e.text : e.html, this.content.search.input.value, this.classes.searchHighlighter) : e.html === "" ? t.textContent = e.text : t.innerHTML = e.html, this.settings.showOptionTooltips && t.textContent && t.setAttribute("title", t.textContent), e.display || this.addClasses(t, this.classes.hide), e.disabled && this.addClasses(t, this.classes.disabled), e.selected && this.settings.hideSelected && this.addClasses(t, this.classes.hide), e.selected ? (this.addClasses(t, this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (this.removeClasses(t, this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (t) => {
+		}), e.style && (t.style.cssText = e.style), this.setOptionElementContent(t, e, this.content.search.input.value), e.display || this.addClasses(t, this.classes.hide), e.disabled && this.addClasses(t, this.classes.disabled), e.selected && this.settings.hideSelected && this.addClasses(t, this.classes.hide), e.selected ? (this.addClasses(t, this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (this.removeClasses(t, this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (t) => {
 			t.preventDefault(), t.stopPropagation();
 			let n = this.store.getSelected(), r = t.currentTarget, i = String(r.dataset.id), a = t.ctrlKey || t.metaKey;
 			if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || e.selected && e.mandatory || this.settings.isMultiple && this.settings.maxSelected <= n.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= n.length && e.selected && !a) return;
@@ -736,7 +1264,7 @@ var f = class {
 		}), t;
 	}
 	destroy() {
-		this.closeAnimationTimeout &&= (clearTimeout(this.closeAnimationTimeout), null), this.main.main.remove(), this.content.main.remove();
+		this.stopPositionTracking(), this.modalElements &&= (this.unlockBodyScroll(), this.content.main.parentElement === this.modalElements.dialog && this.restoreContentOffscreen(), this.modalElements.overlay.remove(), null), this.main.main.remove(), this.content.main.remove();
 	}
 	highlightText(e, t, n) {
 		let r = t.trim();
@@ -804,10 +1332,34 @@ var f = class {
 	}
 	updateDeselectAll() {
 		if (!this.store || !this.settings) return;
-		let e = this.store.getSelectedOptions(), t = e && e.length > 0, n = this.settings.isMultiple, r = this.settings.allowDeselect, i = this.main.deselect.main, a = this.classes.hide;
-		r && !(n && !t) ? this.removeClasses(i, a) : this.addClasses(i, a);
+		let e = this.store.getSelectedOptions(), t = e && e.length > 0, n = this.settings.isMultiple, r = this.settings.allowDeselect, i = this.isAtMinSelected(), a = this.main.deselect.main, o = this.classes.hide;
+		r && !(n && !t) && !i ? this.removeClasses(a, o) : this.addClasses(a, o);
 	}
-}, g = class {
+};
+//#endregion
+//#region src/slim-select/mutations.ts
+function z(e, t) {
+	let n = {
+		classChanged: !1,
+		disabledChanged: !1,
+		optgroupOptionChanged: !1,
+		selectionChanged: !1
+	};
+	for (let r of e) {
+		if (r.target === t && (r.attributeName === "disabled" && (n.disabledChanged = !0), r.attributeName === "class" && (n.classChanged = !0), r.type === "childList")) {
+			for (let e of Array.from(r.addedNodes)) if (e.nodeName === "OPTION" && e.value === t.value) {
+				n.selectionChanged = !0;
+				break;
+			}
+			n.optgroupOptionChanged = !0;
+		}
+		(r.target.nodeName === "OPTGROUP" || r.target.nodeName === "OPTION") && (n.optgroupOptionChanged = !0);
+	}
+	return n;
+}
+//#endregion
+//#region src/slim-select/select.ts
+var B = class {
 	select;
 	onValueChange;
 	onClassChange;
@@ -869,29 +1421,19 @@ var f = class {
 	}
 	observeCall(e) {
 		if (!this.listen) return;
-		let t = !1, n = !1, r = !1, i = !1;
-		for (let a of e) {
-			if (a.target === this.select && (a.attributeName === "disabled" && (n = !0), a.attributeName === "class" && (t = !0), a.type === "childList")) {
-				for (let e of Array.from(a.addedNodes)) if (e.nodeName === "OPTION" && e.value === this.select.value) {
-					i = !0;
-					break;
-				}
-				r = !0;
-			}
-			(a.target.nodeName === "OPTGROUP" || a.target.nodeName === "OPTION") && (r = !0);
-		}
+		let { classChanged: t, disabledChanged: n, optgroupOptionChanged: r, selectionChanged: i } = z(e, this.select), a = i;
 		if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), n && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), r && this.onOptionsChange) {
 			if (this.isUpdating) {
 				if (this.select.options.length > 0) {
 					let e = this.getData();
 					e.length > 0 && (this.pendingOptionsChange = e);
 				}
-				i && this.select.dispatchEvent(new Event("change"));
+				a && this.select.dispatchEvent(new Event("change"));
 				return;
 			}
-			this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0);
+			this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0), a = !1;
 		}
-		i && this.select.dispatchEvent(new Event("change"));
+		a && this.select.dispatchEvent(new Event("change"));
 	}
 	getData() {
 		let e = [], t = this.select.childNodes;
@@ -903,7 +1445,6 @@ var f = class {
 			id: e.id,
 			label: e.label,
 			selectAll: e.dataset ? e.dataset.selectall === "true" : !1,
-			selectAllText: e.dataset ? e.dataset.selectalltext : "Select all",
 			closable: e.dataset ? e.dataset.closable : "off",
 			options: []
 		}, n = e.childNodes;
@@ -924,7 +1465,7 @@ var f = class {
 			placeholder: e.dataset.placeholder === "true",
 			class: e.className,
 			style: e.style.cssText,
-			data: e.dataset
+			data: _(e.dataset)
 		};
 	}
 	getSelectedOptions() {
@@ -963,7 +1504,8 @@ var f = class {
 				t.selected = e.includes(t.id);
 			}
 		}
-		this.changeListen(!0);
+		let n = this.getSelectedOptions();
+		this.select.multiple || (this.select.value = n.length === 1 ? n[0].value : ""), this.changeListen(!0);
 	}
 	setSelectedByValue(e) {
 		this.changeListen(!1);
@@ -981,7 +1523,8 @@ var f = class {
 				t.selected = e.includes(t.value);
 			}
 		}
-		this.changeListen(!0);
+		let n = this.getSelectedOptions();
+		this.select.multiple || (this.select.value = n.length === 1 ? n[0].value : ""), this.changeListen(!0);
 	}
 	updateSelect(e, t, n) {
 		this.changeListen(!1), e && (this.select.dataset.id = e), t && (this.select.style.cssText = t), n && (this.select.className = "", n.forEach((e) => {
@@ -991,7 +1534,7 @@ var f = class {
 	updateOptions(e) {
 		if (!(!e || e.length === 0)) {
 			this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1), this.select.innerHTML = "";
-			for (let t of e) t instanceof p && this.select.appendChild(this.createOptgroup(t)), t instanceof f && this.select.appendChild(this.createOption(t));
+			for (let t of e) t instanceof I && this.select.appendChild(this.createOptgroup(t)), t instanceof F && this.select.appendChild(this.createOption(t));
 			if (this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
 				let e = this.pendingOptionsChange;
 				e.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(e), this.changeListen(!0)) : this.pendingOptionsChange = null;
@@ -1008,7 +1551,7 @@ var f = class {
 		return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), e.display || (t.style.display = "none"), e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((e) => {
 			t.classList.add(e);
 		}), e.data && typeof e.data == "object" && Object.keys(e.data).forEach((n) => {
-			t.setAttribute("data-" + d(n), e.data[n]);
+			t.setAttribute("data-" + j(n), e.data[n]);
 		}), t;
 	}
 	setupLabelHandlers() {
@@ -1025,7 +1568,7 @@ var f = class {
 		Array.from(new Set(e)).forEach((e) => {
 			if (e.__slimSelectLabelHandler) return;
 			let t = (e) => {
-				let t = e.target, n = c(t, this.select.dataset.id);
+				let t = e.target, n = x(t, this.select.dataset.id);
 				e.preventDefault(), !n && this.onLabelClick && this.onLabelClick();
 			};
 			e.__slimSelectLabelHandler = t, e.addEventListener("click", t, {
@@ -1053,56 +1596,118 @@ var f = class {
 	destroy() {
 		this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect &&= (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), null), this.preventNativeSelectMousedown &&= (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), null), this.preventNativeSelectFocus &&= (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), null), this.restoreAriaHiddenOnBlur &&= (this.select.removeEventListener("blur", this.restoreAriaHiddenOnBlur, { capture: !0 }), null), this.observer &&= (this.observer.disconnect(), null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
 	}
-}, _ = class {
-	id = "";
-	style = "";
-	class = [];
-	isMultiple = !1;
-	isOpen = !1;
-	isFullOpen = !1;
-	intervalMove = null;
-	disabled;
-	alwaysOpen;
-	showSearch;
-	focusSearch;
-	keepSearch;
-	ariaLabel;
-	searchPlaceholder;
-	searchText;
-	searchingText;
-	resultsText;
-	deselectText;
-	removeText;
-	searchHighlight;
-	closeOnSelect;
-	contentLocation;
-	contentPosition;
-	contentWidth;
-	openPosition;
-	placeholderText;
-	allowDeselect;
-	hideSelected;
-	multiString;
-	keepOrder;
-	showOptionTooltips;
-	minSelected;
-	maxSelected;
-	timeoutDelay;
-	maxValuesShown;
-	maxValuesMessage;
-	addableText;
-	constructor(e) {
-		e ||= {}, this.id = "ss-" + s(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.alwaysOpen = e.alwaysOpen === void 0 ? !1 : e.alwaysOpen, this.showSearch = e.showSearch === void 0 ? !0 : e.showSearch, this.focusSearch = e.focusSearch === void 0 ? !0 : e.focusSearch, this.keepSearch = e.keepSearch === void 0 ? !1 : e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight === void 0 ? !1 : e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 ? !0 : e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect === void 0 ? !1 : e.allowDeselect, this.hideSelected = e.hideSelected === void 0 ? !1 : e.hideSelected, this.multiString = e.multiString === void 0 ? !1 : e.multiString, this.keepOrder = e.keepOrder === void 0 ? !1 : e.keepOrder, this.showOptionTooltips = e.showOptionTooltips === void 0 ? !1 : e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}";
+};
+//#endregion
+//#region src/slim-select/sync.ts
+function V(e, t) {
+	return A(e.getData(!1), t);
+}
+function H(e, t) {
+	let n = Array.isArray(t) ? t : [t], r = e.getDataOptions(!1), i = [];
+	for (let e of n) {
+		if (r.find((t) => t.id == e)) {
+			i.push(e);
+			continue;
+		}
+		for (let t of r.filter((t) => t.value == e)) i.push(t.id);
 	}
-}, v = class {
+	return i;
+}
+var U = class {
+	deps;
+	queue = [];
+	flushScheduled = !1;
+	isSyncing = !1;
+	constructor(e) {
+		this.deps = e;
+	}
+	enqueue(e) {
+		if (this.queue.push(e), e.source === "native") {
+			this.flushScheduled || (this.flushScheduled = !0, queueMicrotask(() => this.flush()));
+			return;
+		}
+		this.isSyncing || this.flush();
+	}
+	flush() {
+		if (this.flushScheduled = !1, this.queue.length === 0) return;
+		let e = this.coalesceBatch(this.queue);
+		this.queue = [], this.isSyncing = !0;
+		try {
+			for (let t of e) this.applyChange(t);
+		} finally {
+			this.isSyncing = !1, this.queue.length > 0 && this.flush();
+		}
+	}
+	coalesceBatch(e) {
+		let t = e.some((e) => e.type === "structure"), n = e.some((e) => e.type === "addOption");
+		if (t || n) {
+			let t = e.filter((e) => e.type === "structure" || e.type === "addOption"), n = t[t.length - 1];
+			return n?.type === "structure" ? [n] : t;
+		}
+		let r = e.filter((e) => e.type === "selection");
+		return r.length > 0 ? [r[r.length - 1]] : e;
+	}
+	applyChange(e) {
+		switch (e.type) {
+			case "structure":
+				this.applyStructure(e.data, e.source, e.preserveSelection, e.isSearchResult);
+				break;
+			case "selection":
+				this.applySelection(e.values, e.source, e.runAfterChange !== !1);
+				break;
+			case "addOption":
+				this.applyAddOption(e.option);
+				break;
+		}
+	}
+	applyStructure(e, t, n = !1, r = !1) {
+		let { store: i, select: a, render: o, events: s } = this.deps;
+		if (V(i, e)) return;
+		let c = i.getSelected(), l = i.validateDataArray(e);
+		if (l) {
+			s.error ? s.error(l) : this.deps.onError && this.deps.onError(l);
+			return;
+		}
+		i.setData(e, n);
+		let u = i.getData(!1);
+		r || i.snapshotCatalog(), a.updateOptions(u), o.renderValues(), o.renderOptions(u), s.afterChange && !C(c, i.getSelected()) && s.afterChange(i.getSelectedOptions());
+	}
+	applySelection(e, t, n) {
+		let { store: r, select: i, render: a, events: o } = this.deps, s = r.getSelected(), c = H(r, e);
+		if (C(s, c)) return;
+		r.setSelectedBy("id", c), i.setSelectedByValue(r.getSelectedValues()), a.renderValues();
+		let l = a.content.search.input.value.trim();
+		l === "" ? a.canUpdateOptionSelectionInPlace() ? a.updateOptionSelection() : a.renderOptions(r.getData(!1)) : a.hasRenderedOptions() ? a.updateOptionSelection() : this.deps.search && this.deps.search(l), n && o.afterChange && !C(s, r.getSelected()) && o.afterChange(r.getSelectedOptions());
+	}
+	applyAddOption(e) {
+		let { store: t, select: n, render: r, events: i } = this.deps, a = t.getSelected(), o = r.content.search.input.value.trim() !== "" && !!this.deps.search, s = e.value ?? e.text ?? "", c = (e) => {
+			for (let t of e) {
+				if (t instanceof I) {
+					if (t.options.some((e) => (e.value ?? e.text) === s)) return !0;
+					continue;
+				}
+				if ((t.value ?? t.text) === s) return !0;
+			}
+			return !1;
+		};
+		if (!c(t.getData(!1))) if (o) {
+			let n = t.getCatalogData();
+			c(n) || t.setData([...n, new F(e)], !0), t.snapshotCatalog();
+		} else t.addOption(e), t.snapshotCatalog();
+		let l = t.getData(!1);
+		n.updateOptions(l), r.renderValues(), r.renderOptions(l), i.afterChange && !C(a, t.getSelected()) && i.afterChange(t.getSelectedOptions());
+	}
+}, W = class {
 	selectEl;
 	settings;
 	cssClasses;
 	select;
 	store;
 	render;
-	openTimeout = null;
-	closeTimeout = null;
+	sync;
+	lifecycle;
+	globalEvents;
+	searchGeneration = 0;
 	events = {
 		search: void 0,
 		searchFilter: (e, t) => e.text.toLowerCase().indexOf(t.toLowerCase()) !== -1,
@@ -1123,38 +1728,88 @@ var f = class {
 			e.events && e.events.error && e.events.error(/* @__PURE__ */ Error("Element isnt of type select"));
 			return;
 		}
-		this.selectEl.dataset.ssid && this.destroy(), this.settings = new _(e.settings), this.cssClasses = new o(e.cssClasses);
+		this.selectEl.dataset.ssid && this.destroy(), this.settings = new g(e.settings), this.cssClasses = new o(e.cssClasses);
 		let t = [
 			"beforeOpen",
 			"afterOpen",
 			"beforeClose",
 			"afterClose"
 		];
-		for (let n in e.events) e.events.hasOwnProperty(n) && (t.indexOf(n) === -1 ? this.events[n] = e.events[n] : this.events[n] = l(e.events[n], 100));
-		this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new g(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onValueChange = (e) => {
-			this.setSelected(e.map((e) => e.id));
-		}, this.select.onClassChange = (e) => {
+		for (let n in e.events) e.events.hasOwnProperty(n) && (t.indexOf(n) === -1 ? this.events[n] = e.events[n] : this.events[n] = S(e.events[n], 100));
+		this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new B(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onClassChange = (e) => {
 			this.settings.class = e, this.render.updateClassStyles();
 		}, this.select.onDisabledChange = (e) => {
 			e ? this.disable() : this.enable();
-		}, this.select.onOptionsChange = (e) => {
-			this.setData(e || []);
 		}, this.select.onLabelClick = () => {
 			this.settings.disabled || (this.settings.isOpen ? this.close() : this.open());
 		};
 		let n = e.data ? e.data : this.select.getData();
-		this.store = new m(this.settings.isMultiple ? "multiple" : "single", n), e.data && this.select.updateOptions(this.store.getData());
+		this.store = new L(this.settings.isMultiple ? "multiple" : "single", n), e.data && this.select.updateOptions(this.store.getData());
 		let r = {
 			open: this.open.bind(this),
 			close: this.close.bind(this),
 			addable: this.events.addable ? this.events.addable : void 0,
-			setSelected: this.setSelected.bind(this),
-			addOption: this.addOption.bind(this),
+			setSelected: (e, t) => {
+				this.sync.enqueue({
+					type: "selection",
+					values: e,
+					source: "ui",
+					runAfterChange: t
+				});
+			},
+			addOption: (e) => {
+				this.sync.enqueue({
+					type: "addOption",
+					option: e,
+					source: "ui"
+				});
+			},
 			search: this.search.bind(this),
 			beforeChange: this.events.beforeChange,
 			afterChange: this.events.afterChange
 		};
-		this.render = new h(this.settings, this.cssClasses, this.store, r), this.render.renderValues(), this.render.renderOptions(this.store.getData());
+		this.settings.modalTitle = e.settings?.modalTitle ?? y(this.selectEl), this.render = new R(this.settings, this.cssClasses, this.store, r), this.settings.timeoutDelay = d(this.render.content.main, e.settings?.timeoutDelay), this.sync = new U({
+			select: this.select,
+			store: this.store,
+			render: this.render,
+			events: this.events,
+			search: this.search.bind(this)
+		}), this.select.onValueChange = (e) => {
+			this.sync.enqueue({
+				type: "selection",
+				values: e.map((e) => e.id),
+				source: "native"
+			});
+		}, this.select.onOptionsChange = (e) => {
+			this.sync.enqueue({
+				type: "structure",
+				data: e || [],
+				source: "native"
+			});
+		}, this.lifecycle = new P({
+			beforeOpen: this.events.beforeOpen,
+			afterOpen: this.events.afterOpen,
+			beforeClose: this.events.beforeClose,
+			afterClose: () => {
+				this.render.clearDirectionClasses(), this.render.finalizeModalClose(), this.events.afterClose && this.events.afterClose();
+			},
+			onOpenReady: () => this.globalEvents.attachDocumentClick(),
+			onCloseReady: () => this.globalEvents.detachDocumentClick()
+		}, {
+			timeoutDelay: this.settings.timeoutDelay,
+			waitForAnimation: (e, t) => this.render.waitForAnimation(e, t)
+		}), this.globalEvents = new N({
+			onDocumentClick: this.documentClick.bind(this),
+			onWindowResize: () => {
+				!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
+			},
+			onWindowScroll: () => {
+				!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
+			},
+			onVisibilityChange: () => {
+				document.hidden && this.close();
+			}
+		}), this.render.renderValues(), this.render.renderOptions(this.store.getData(!1));
 		let i = this.selectEl.getAttribute("aria-label"), a = this.selectEl.getAttribute("aria-labelledby");
 		if (i) this.render.main.main.setAttribute("aria-label", i);
 		else if (a) this.render.main.main.removeAttribute("aria-label"), this.render.main.main.setAttribute("aria-labelledby", a);
@@ -1162,7 +1817,7 @@ var f = class {
 			let e = Array.from(this.selectEl.labels).map((e, t) => (e.id ||= `${this.settings.id}-label-${t}`, e.id));
 			this.render.main.main.removeAttribute("aria-label"), this.render.main.main.setAttribute("aria-labelledby", e.join(" "));
 		}
-		this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), window.addEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.addEventListener("scroll", this.windowScroll, !1), document.addEventListener("visibilitychange", this.windowVisibilityChange), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
+		this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), this.globalEvents.attach({ listenScroll: this.settings.openPosition === "auto" }), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
 	}
 	enable() {
 		this.settings.disabled = !1, this.select.enable(), this.render.enable();
@@ -1174,309 +1829,165 @@ var f = class {
 		return this.store.getData();
 	}
 	setData(e) {
-		let t = this.store.getSelected(), n = this.store.validateDataArray(e);
-		if (n) {
-			this.events.error && this.events.error(n);
-			return;
-		}
-		this.store.setData(e);
-		let r = this.store.getData();
-		this.select.updateOptions(r), this.render.renderValues(), this.render.renderOptions(r), this.events.afterChange && !u(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+		this.sync.enqueue({
+			type: "structure",
+			data: e,
+			source: "api"
+		});
 	}
 	getSelected() {
 		let e = this.store.getSelectedOptions();
 		return this.settings.keepOrder && (e = this.store.selectedOrderOptions(e)), e.map((e) => e.value);
 	}
 	setSelected(e, t = !0) {
-		let n = this.store.getSelected(), r = this.store.getDataOptions();
-		e = Array.isArray(e) ? e : [e];
-		let i = [];
-		for (let t of e) {
-			if (r.find((e) => e.id == t)) {
-				i.push(t);
-				continue;
-			}
-			for (let e of r.filter((e) => e.value == t)) i.push(e.id);
-		}
-		this.store.setSelectedBy("id", i);
-		let a = this.store.getData();
-		this.select.updateOptions(a), this.render.renderValues(), this.render.content.search.input.value === "" ? this.render.renderOptions(a) : this.search(this.render.content.search.input.value), t && this.events.afterChange && !u(n, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+		this.sync.enqueue({
+			type: "selection",
+			values: e,
+			source: "api",
+			runAfterChange: t
+		});
 	}
 	addOption(e) {
-		let t = this.store.getSelected();
-		this.store.getDataOptions().some((t) => t.value === (e.value ?? e.text)) || this.store.addOption(e);
-		let n = this.store.getData();
-		this.select.updateOptions(n), this.render.renderValues(), this.render.renderOptions(n), this.events.afterChange && !u(t, this.store.getSelected()) && this.events.afterChange(this.store.getSelectedOptions());
+		this.sync.enqueue({
+			type: "addOption",
+			option: e,
+			source: "api"
+		});
 	}
 	open() {
-		this.settings.disabled || this.settings.isOpen || (this.closeTimeout &&= (clearTimeout(this.closeTimeout), null), this.events.beforeOpen && this.events.beforeOpen(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.openTimeout = setTimeout(() => {
-			this.events.afterOpen && this.events.afterOpen(), this.settings.isOpen && (this.settings.isFullOpen = !0), document.addEventListener("click", this.documentClick);
-		}, this.settings.timeoutDelay), this.settings.contentPosition === "absolute" && (this.settings.intervalMove && clearInterval(this.settings.intervalMove), this.settings.intervalMove = setInterval(this.render.moveContent.bind(this.render), 500)));
+		if (this.settings.disabled || this.settings.isOpen) return;
+		this.lifecycle.cancelPending(), this.render.open(), this.settings.showSearch && this.settings.focusSearch && this.render.searchFocus(), this.settings.isOpen = !0, this.lifecycle.requestOpen().then(() => {
+			this.settings.isOpen && (this.settings.isFullOpen = this.lifecycle.isFullOpen, this.settings.isOpen = this.lifecycle.isOpen);
+		}), this.settings.contentPosition === "absolute" && !this.render.isModalViewActive() && this.render.startPositionTracking();
+		let e = this.render.content.search.input.value.trim();
+		e !== "" && this.search(e);
 	}
 	close(e = null) {
-		!this.settings.isOpen || this.settings.alwaysOpen || (this.openTimeout &&= (clearTimeout(this.openTimeout), null), this.events.beforeClose && this.events.beforeClose(), this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && this.search(""), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.closeTimeout = setTimeout(() => {
-			this.events.afterClose && this.events.afterClose(), document.removeEventListener("click", this.documentClick);
-		}, this.settings.timeoutDelay), this.settings.intervalMove && clearInterval(this.settings.intervalMove));
+		!this.settings.isOpen || this.settings.alwaysOpen || (this.lifecycle.cancelPending(), this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && (this.sync.flush(), this.search("")), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.lifecycle.requestClose().then(() => {
+			this.settings.isOpen || (this.settings.isOpen = this.lifecycle.isOpen, this.settings.isFullOpen = this.lifecycle.isFullOpen);
+		}), this.render.stopPositionTracking());
 	}
 	search(e) {
-		if (this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), e === "") {
-			this.render.renderOptions(this.store.getData());
+		let t = e.trim();
+		if (this.render.content.search.input.value !== t && (this.render.content.search.input.value = t), t === "") {
+			this.clearSearch();
 			return;
 		}
-		if (!this.events.search) {
-			let t = e === "" ? this.store.getData() : this.store.search(e, this.events.searchFilter);
-			this.render.renderOptions(t);
+		if (this.events.search) {
+			this.runApiSearch(t);
 			return;
 		}
+		this.runLocalSearch(t);
+	}
+	clearSearch() {
+		if (this.searchGeneration++, !this.events.search && this.render.canFilterOptionsInPlace()) {
+			this.render.filterOptionsInPlace("", this.events.searchFilter), this.render.resetSearchFilterState();
+			return;
+		}
+		this.render.resetSearchFilterState(), this.sync.enqueue({
+			type: "structure",
+			data: this.store.getCatalogData(),
+			source: "api",
+			preserveSelection: !0
+		});
+	}
+	runLocalSearch(e) {
+		if (this.render.canFilterOptionsInPlace()) {
+			this.render.filterOptionsInPlace(e, this.events.searchFilter);
+			return;
+		}
+		let t = this.store.search(e, this.events.searchFilter);
+		this.render.renderOptions(t);
+	}
+	runApiSearch(e) {
+		let t = ++this.searchGeneration;
 		this.render.renderSearching();
-		let t = this.events.search(e, this.store.getSelectedOptions());
-		if (t instanceof Promise) {
-			t.then((e) => {
-				this.store.setData(e, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData());
-			}).catch((e) => {
-				this.render.renderError(typeof e == "string" ? e : e.message);
+		let n = this.events.search(e, this.store.getSelectedOptions(), this.store.getCatalogData()), r = (n) => {
+			t === this.searchGeneration && this.render.content.search.input.value.trim() === e && this.sync.enqueue({
+				type: "structure",
+				data: n,
+				source: "api",
+				preserveSelection: !0,
+				isSearchResult: !0
+			});
+		};
+		if (n instanceof Promise) {
+			n.then(r).catch((e) => {
+				t === this.searchGeneration && this.render.renderError(typeof e == "string" ? e : e.message);
 			});
 			return;
-		} else Array.isArray(t) ? (this.store.setData(t, !0), this.select.updateOptions(this.store.getData()), this.render.renderOptions(this.store.getData())) : this.render.renderError("Search event must return a promise or an array of data");
+		}
+		if (Array.isArray(n)) {
+			r(n);
+			return;
+		}
+		this.render.renderError("Search event must return a promise or an array of data");
 	}
 	destroy() {
-		this.openTimeout &&= (clearTimeout(this.openTimeout), null), this.closeTimeout &&= (clearTimeout(this.closeTimeout), null), this.settings.intervalMove && (clearInterval(this.settings.intervalMove), this.settings.intervalMove = null), document.removeEventListener("click", this.documentClick), window.removeEventListener("resize", this.windowResize, !1), this.settings.openPosition === "auto" && window.removeEventListener("scroll", this.windowScroll, !1), document.removeEventListener("visibilitychange", this.windowVisibilityChange), this.store.setData([]), this.render.destroy(), this.select.destroy();
+		this.lifecycle.destroy(), this.render.stopPositionTracking(), this.globalEvents.detach({ listenScroll: this.settings.openPosition === "auto" }), this.store.setData([]), this.render.destroy(), this.select.destroy();
 	}
-	windowResize = l(() => {
-		!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
-	});
-	windowScroll = l(() => {
-		!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
-	});
-	documentClick = (e) => {
-		this.settings.isOpen && e.target && !c(e.target, this.settings.id) && this.close(e.type);
-	};
-	windowVisibilityChange = () => {
-		document.hidden && this.close();
-	};
-}, y = /* @__PURE__ */ i(((e) => {
-	var t = Symbol.for("react.transitional.element"), n = Symbol.for("react.fragment");
-	function r(e, n, r) {
-		var i = null;
-		if (r !== void 0 && (i = "" + r), n.key !== void 0 && (i = "" + n.key), "key" in n) for (var a in r = {}, n) a !== "key" && (r[a] = n[a]);
-		else r = n;
-		return n = r.ref, {
-			$$typeof: t,
-			type: e,
-			key: i,
-			ref: n === void 0 ? null : n,
-			props: r
-		};
+	documentClick(e) {
+		this.settings.isOpen && e.target && !x(e.target, this.settings.id) && this.close(e.type);
 	}
-	e.Fragment = n, e.jsx = r, e.jsxs = r;
-})), b = /* @__PURE__ */ i(((e) => {
-	process.env.NODE_ENV !== "production" && (function() {
-		function t(e) {
-			if (e == null) return null;
-			if (typeof e == "function") return e.$$typeof === k ? null : e.displayName || e.name || null;
-			if (typeof e == "string") return e;
-			switch (e) {
-				case v: return "Fragment";
-				case b: return "Profiler";
-				case y: return "StrictMode";
-				case w: return "Suspense";
-				case T: return "SuspenseList";
-				case O: return "Activity";
-			}
-			if (typeof e == "object") switch (typeof e.tag == "number" && console.error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."), e.$$typeof) {
-				case _: return "Portal";
-				case S: return e.displayName || "Context";
-				case x: return (e._context.displayName || "Context") + ".Consumer";
-				case C:
-					var n = e.render;
-					return e = e.displayName, e ||= (e = n.displayName || n.name || "", e === "" ? "ForwardRef" : "ForwardRef(" + e + ")"), e;
-				case E: return n = e.displayName || null, n === null ? t(e.type) || "Memo" : n;
-				case D:
-					n = e._payload, e = e._init;
-					try {
-						return t(e(n));
-					} catch {}
-			}
-			return null;
-		}
-		function n(e) {
-			return "" + e;
-		}
-		function r(e) {
-			try {
-				n(e);
-				var t = !1;
-			} catch {
-				t = !0;
-			}
-			if (t) {
-				t = console;
-				var r = t.error, i = typeof Symbol == "function" && Symbol.toStringTag && e[Symbol.toStringTag] || e.constructor.name || "Object";
-				return r.call(t, "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.", i), n(e);
-			}
-		}
-		function i(e) {
-			if (e === v) return "<>";
-			if (typeof e == "object" && e && e.$$typeof === D) return "<...>";
-			try {
-				var n = t(e);
-				return n ? "<" + n + ">" : "<...>";
-			} catch {
-				return "<...>";
-			}
-		}
-		function o() {
-			var e = A.A;
-			return e === null ? null : e.getOwner();
-		}
-		function s() {
-			return Error("react-stack-top-frame");
-		}
-		function c(e) {
-			if (j.call(e, "key")) {
-				var t = Object.getOwnPropertyDescriptor(e, "key").get;
-				if (t && t.isReactWarning) return !1;
-			}
-			return e.key !== void 0;
-		}
-		function l(e, t) {
-			function n() {
-				P || (P = !0, console.error("%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)", t));
-			}
-			n.isReactWarning = !0, Object.defineProperty(e, "key", {
-				get: n,
-				configurable: !0
-			});
-		}
-		function u() {
-			var e = t(this.type);
-			return F[e] || (F[e] = !0, console.error("Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release.")), e = this.props.ref, e === void 0 ? null : e;
-		}
-		function d(e, t, n, r, i, a) {
-			var o = n.ref;
-			return e = {
-				$$typeof: g,
-				type: e,
-				key: t,
-				props: n,
-				_owner: r
-			}, (o === void 0 ? null : o) === null ? Object.defineProperty(e, "ref", {
-				enumerable: !1,
-				value: null
-			}) : Object.defineProperty(e, "ref", {
-				enumerable: !1,
-				get: u
-			}), e._store = {}, Object.defineProperty(e._store, "validated", {
-				configurable: !1,
-				enumerable: !1,
-				writable: !0,
-				value: 0
-			}), Object.defineProperty(e, "_debugInfo", {
-				configurable: !1,
-				enumerable: !1,
-				writable: !0,
-				value: null
-			}), Object.defineProperty(e, "_debugStack", {
-				configurable: !1,
-				enumerable: !1,
-				writable: !0,
-				value: i
-			}), Object.defineProperty(e, "_debugTask", {
-				configurable: !1,
-				enumerable: !1,
-				writable: !0,
-				value: a
-			}), Object.freeze && (Object.freeze(e.props), Object.freeze(e)), e;
-		}
-		function f(e, n, i, a, s, u) {
-			var f = n.children;
-			if (f !== void 0) if (a) if (M(f)) {
-				for (a = 0; a < f.length; a++) p(f[a]);
-				Object.freeze && Object.freeze(f);
-			} else console.error("React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead.");
-			else p(f);
-			if (j.call(n, "key")) {
-				f = t(e);
-				var m = Object.keys(n).filter(function(e) {
-					return e !== "key";
-				});
-				a = 0 < m.length ? "{key: someKey, " + m.join(": ..., ") + ": ...}" : "{key: someKey}", R[f + a] || (m = 0 < m.length ? "{" + m.join(": ..., ") + ": ...}" : "{}", console.error("A props object containing a \"key\" prop is being spread into JSX:\n  let props = %s;\n  <%s {...props} />\nReact keys must be passed directly to JSX without using spread:\n  let props = %s;\n  <%s key={someKey} {...props} />", a, f, m, f), R[f + a] = !0);
-			}
-			if (f = null, i !== void 0 && (r(i), f = "" + i), c(n) && (r(n.key), f = "" + n.key), "key" in n) for (var h in i = {}, n) h !== "key" && (i[h] = n[h]);
-			else i = n;
-			return f && l(i, typeof e == "function" ? e.displayName || e.name || "Unknown" : e), d(e, f, i, o(), s, u);
-		}
-		function p(e) {
-			m(e) ? e._store && (e._store.validated = 1) : typeof e == "object" && e && e.$$typeof === D && (e._payload.status === "fulfilled" ? m(e._payload.value) && e._payload.value._store && (e._payload.value._store.validated = 1) : e._store && (e._store.validated = 1));
-		}
-		function m(e) {
-			return typeof e == "object" && !!e && e.$$typeof === g;
-		}
-		var h = a("react"), g = Symbol.for("react.transitional.element"), _ = Symbol.for("react.portal"), v = Symbol.for("react.fragment"), y = Symbol.for("react.strict_mode"), b = Symbol.for("react.profiler"), x = Symbol.for("react.consumer"), S = Symbol.for("react.context"), C = Symbol.for("react.forward_ref"), w = Symbol.for("react.suspense"), T = Symbol.for("react.suspense_list"), E = Symbol.for("react.memo"), D = Symbol.for("react.lazy"), O = Symbol.for("react.activity"), k = Symbol.for("react.client.reference"), A = h.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, j = Object.prototype.hasOwnProperty, M = Array.isArray, N = console.createTask ? console.createTask : function() {
-			return null;
-		};
-		h = { react_stack_bottom_frame: function(e) {
-			return e();
-		} };
-		var P, F = {}, I = h.react_stack_bottom_frame.bind(h, s)(), L = N(i(s)), R = {};
-		e.Fragment = v, e.jsx = function(e, t, n) {
-			var r = 1e4 > A.recentlyCreatedOwnerStacks++;
-			return f(e, t, n, !1, r ? Error("react-stack-top-frame") : I, r ? N(i(e)) : L);
-		}, e.jsxs = function(e, t, n) {
-			var r = 1e4 > A.recentlyCreatedOwnerStacks++;
-			return f(e, t, n, !0, r ? Error("react-stack-top-frame") : I, r ? N(i(e)) : L);
-		};
-	})();
-})), x = (/* @__PURE__ */ i(((e, t) => {
-	process.env.NODE_ENV === "production" ? t.exports = y() : t.exports = b();
-})))(), S = e(({ data: e, settings: i, events: a, cssClasses: o, value: s, onChange: c, children: l, multiple: u }, d) => {
-	let f = r(null), p = r(null), m = r(!0), h = r(s);
-	n(d, () => ({ slimSelect: p.current }));
-	let g = (e) => typeof e == "string" ? u ? [e] : e : Array.isArray(e) ? u ? e : e[0] : u ? [] : "", _ = (e, t = !1) => {
-		if (!p.current || e === void 0) return;
-		let n = g(e), r = p.current.getData().flatMap((e) => "label" in e ? e.options : [e]);
+}, G = e(({ data: e, settings: o, events: s, cssClasses: c, value: l, onChange: u, multiple: d }, f) => {
+	let p = r(null), m = r(null), h = r(!0), g = r(l), _ = r(null), v = r(u), y = r(s), b = r(d), x = r(l), [S, C] = i(!1);
+	t(() => {
+		v.current = u;
+	}, [u]), t(() => {
+		y.current = s;
+	}, [s]), t(() => {
+		b.current = d;
+	}, [d]), t(() => {
+		x.current = l;
+	}, [l]), n(f, () => ({ slimSelect: m.current }), [S]);
+	let w = (e) => {
+		let t = b.current;
+		return typeof e == "string" ? t ? [e] : e : Array.isArray(e) ? t ? e : e[0] : t ? [] : "";
+	}, T = (e, t = !1) => {
+		if (!m.current || e === void 0) return;
+		let n = w(e), r = m.current.getData().flatMap((e) => "label" in e ? e.options : [e]);
 		if (!(Array.isArray(n) ? n.length > 0 && n.every((e) => r.some((t) => t.value === e)) : n !== "" && r.some((e) => e.value === n)) && !Array.isArray(n) && !r.some((e) => e.placeholder)) {
-			let e = p.current.getData();
-			p.current.setData([{
+			let e = m.current.getData();
+			m.current.setData([{
 				value: "",
 				text: "",
 				placeholder: !0
 			}].concat(e));
 		}
-		p.current.setSelected(n, t);
+		m.current.setSelected(n, t);
+	}, E = (e) => {
+		if (!m.current) return;
+		let t = b.current ? e.map((e) => e.value) : e[0]?.value ?? "", n = m.current.getData().flatMap((e) => "label" in e ? e.options : [e]), r = g.current, i = r === void 0 ? !1 : Array.isArray(r) ? r.length > 0 && r.every((e) => n.some((t) => t.value === e)) : r !== "" && n.some((e) => e.value === r), a = Array.isArray(t) ? t.length > 0 && t.every((e) => n.some((t) => t.value === e)) : t !== "" && n.some((e) => e.value === t), o = Array.isArray(t) && Array.isArray(r) ? JSON.stringify(t.sort()) !== JSON.stringify(r.sort()) : r !== t;
+		v.current && o && (i || a) && (v.current(t), g.current = t), y.current?.afterChange?.(e);
 	};
 	return t(() => {
-		if (!f.current) return;
-		let t = { select: f.current };
-		e && (t.data = e), i && (t.settings = i), o && (t.cssClasses = o);
-		let n = a?.afterChange;
-		return t.events = {
-			...a,
-			afterChange: (e) => {
-				if (!p.current) return;
-				let t = u ? e.map((e) => e.value) : e[0]?.value ?? "", r = p.current.getData().flatMap((e) => "label" in e ? e.options : [e]), i = h.current, a = i === void 0 ? !1 : Array.isArray(i) ? i.length > 0 && i.every((e) => r.some((t) => t.value === e)) : i !== "" && r.some((e) => e.value === i), o = Array.isArray(t) ? t.length > 0 && t.every((e) => r.some((t) => t.value === e)) : t !== "" && r.some((e) => e.value === t), s = Array.isArray(t) && Array.isArray(i) ? JSON.stringify(t.sort()) !== JSON.stringify(i.sort()) : i !== t;
-				c && s && (a || o) && (c(t), h.current = t), n && n(e);
-			}
-		}, p.current = new v(t), s !== void 0 && _(s, !1), () => {
-			p.current &&= (p.current.destroy(), null);
+		if (!p.current) return;
+		let t = {
+			select: p.current,
+			data: e
+		};
+		return o && (t.settings = o), c && (t.cssClasses = c), t.events = {
+			...s,
+			afterChange: E
+		}, m.current = new W(t), _.current = structuredClone(e), C(!0), x.current !== void 0 && T(x.current, !1), () => {
+			C(!1), m.current &&= (m.current.destroy(), null);
 		};
 	}, []), t(() => {
-		if (m.current) {
-			m.current = !1, h.current = s;
+		if (h.current) {
+			h.current = !1, g.current = l;
 			return;
 		}
-		p.current && s !== void 0 && (h.current = s, _(s, !1));
-	}, [s]), t(() => {
-		p.current && e && !m.current && (p.current.setData(e), s !== void 0 && _(s, !1));
-	}, [e]), /* @__PURE__ */ (0, x.jsx)("select", {
-		ref: f,
-		multiple: u,
-		children: l
+		m.current && l !== void 0 && (g.current = l, T(l, !1));
+	}, [l]), t(() => {
+		!m.current || h.current || _.current !== null && A(_.current, e) || (m.current.setData(e), _.current = structuredClone(e), x.current !== void 0 && T(x.current, !1));
+	}, [e]), /* @__PURE__ */ a("select", {
+		ref: p,
+		multiple: d
 	});
 });
-S.displayName = "SlimSelect";
+G.displayName = "SlimSelect";
 //#endregion
 //#region src/slim-select/react/index.tsx
-var C = S;
+var K = G;
 //#endregion
-export { p as Optgroup, f as Option, _ as Settings, C as default };
+export { I as Optgroup, F as Option, g as Settings, K as default };

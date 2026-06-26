@@ -1,12 +1,17 @@
 import CssClasses from './classes'
-import { debounce, hasClassInTree, isEqual } from './helpers'
+import { getAnimationTimeout } from './animations'
+import GlobalEvents, { hasClassInTree } from './events'
+import { debounce, getAssociatedLabelText } from './helpers'
+import Lifecycle from './lifecycle'
 import Render from './render'
 import Select from './select'
-import Settings from './settings'
+import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Store, { Option, Optgroup } from './store'
+import SyncCoordinator from './sync'
 
 // Export classes
-export { Settings, Option, Optgroup }
+export { Settings, Option, Optgroup, MODAL_MOBILE_BREAKPOINT }
+export type { ModalSetting } from './settings'
 
 // Export interfaces from render
 export type { Main, Content, Search } from './render'
@@ -22,7 +27,8 @@ export interface Config {
 export interface Events {
   search?: (
     searchValue: string,
-    currentData: (Option | Optgroup)[]
+    selected: Option[],
+    catalog?: (Option | Optgroup)[]
   ) =>
     | Promise<(Partial<Option> | Partial<Optgroup>)[]>
     | (Partial<Option> | Partial<Optgroup>)[]
@@ -55,10 +61,11 @@ export default class SlimSelect {
   public select!: Select
   public store!: Store
   public render!: Render
-
-  // Timeout tracking for cleanup
-  private openTimeout: ReturnType<typeof setTimeout> | null = null
-  private closeTimeout: ReturnType<typeof setTimeout> | null = null
+  public sync!: SyncCoordinator
+  public lifecycle!: Lifecycle
+  private globalEvents!: GlobalEvents
+  /** Invalidates in-flight API search responses when the query changes or clears. */
+  private searchGeneration = 0
 
   // Events
   public events = {
@@ -153,11 +160,6 @@ export default class SlimSelect {
     )
     this.select.hideUI() // Hide the original select element
 
-    // Add select listeners
-    this.select.onValueChange = (options: Option[]) => {
-      // Run set selected from the values given
-      this.setSelected(options.map((option) => option.id))
-    }
     this.select.onClassChange = (classes: string[]) => {
       // Update settings with new class
       this.settings.class = classes
@@ -172,12 +174,7 @@ export default class SlimSelect {
         this.enable()
       }
     }
-    this.select.onOptionsChange = (data: (Option | Optgroup)[]) => {
-      // Process the data (including empty data for clearing all options)
-      // Empty data is safe to process here because if we were updating, the change would be queued
-      // and onOptionsChange wouldn't be called directly
-      this.setData(data || [])
-    }
+
     // Set up label click handler to toggle SlimSelect
     // This allows clicking the label to open/close, matching the main div behavior
     this.select.onLabelClick = () => {
@@ -203,22 +200,115 @@ export default class SlimSelect {
       open: this.open.bind(this),
       close: this.close.bind(this),
       addable: this.events.addable ? this.events.addable : undefined,
-      setSelected: this.setSelected.bind(this),
-      addOption: this.addOption.bind(this),
+      // UI clicks route through SyncCoordinator (batched, avoids double updates)
+      setSelected: (values: string | string[], runAfterChange: boolean) => {
+        this.sync.enqueue({
+          type: 'selection',
+          values,
+          source: 'ui',
+          runAfterChange
+        })
+      },
+      addOption: (option: Partial<Option>) => {
+        this.sync.enqueue({
+          type: 'addOption',
+          option,
+          source: 'ui'
+        })
+      },
       search: this.search.bind(this),
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange
     }
 
     // Setup render class
+    this.settings.modalTitle =
+      config.settings?.modalTitle ?? getAssociatedLabelText(this.selectEl)
+
     this.render = new Render(
       this.settings,
       this.cssClasses,
       this.store,
       renderCallbacks
     )
+
+    // Align JS timeout with --ss-animation-timing (CSS is source of truth)
+    this.settings.timeoutDelay = getAnimationTimeout(
+      this.render.content.main,
+      config.settings?.timeoutDelay
+    )
+
+    // Single coordinator batches native + API + UI updates (see sync.ts)
+    this.sync = new SyncCoordinator({
+      select: this.select,
+      store: this.store,
+      render: this.render,
+      events: this.events,
+      search: this.search.bind(this)
+    })
+
+    this.select.onValueChange = (options: Option[]) => {
+      this.sync.enqueue({
+        type: 'selection',
+        values: options.map((option) => option.id),
+        source: 'native'
+      })
+    }
+    this.select.onOptionsChange = (data: (Option | Optgroup)[]) => {
+      this.sync.enqueue({
+        type: 'structure',
+        data: data || [],
+        source: 'native'
+      })
+    }
+
+    // Open/close state machine — animation wait + outside-click attach timing
+    this.lifecycle = new Lifecycle(
+      {
+        beforeOpen: this.events.beforeOpen,
+        afterOpen: this.events.afterOpen,
+        beforeClose: this.events.beforeClose,
+        afterClose: () => {
+          this.render.clearDirectionClasses()
+          this.render.finalizeModalClose()
+          if (this.events.afterClose) {
+            this.events.afterClose()
+          }
+        },
+        onOpenReady: () => this.globalEvents.attachDocumentClick(),
+        onCloseReady: () => this.globalEvents.detachDocumentClick()
+      },
+      {
+        timeoutDelay: this.settings.timeoutDelay,
+        waitForAnimation: (phase, signal) =>
+          this.render.waitForAnimation(phase, signal)
+      }
+    )
+
+    // Resize/scroll/visibility listeners (document click via lifecycle onOpenReady)
+    this.globalEvents = new GlobalEvents({
+      onDocumentClick: this.documentClick.bind(this),
+      onWindowResize: () => {
+        if (!this.settings.isOpen && !this.settings.isFullOpen) {
+          return
+        }
+        this.render.moveContent()
+      },
+      onWindowScroll: () => {
+        if (!this.settings.isOpen && !this.settings.isFullOpen) {
+          return
+        }
+        this.render.moveContent()
+      },
+      onVisibilityChange: () => {
+        if (document.hidden) {
+          this.close()
+        }
+      }
+    })
+
     this.render.renderValues()
-    this.render.renderOptions(this.store.getData())
+    this.render.renderOptions(this.store.getData(false))
 
     // Add aria-label or aria-labelledby if exists
     const selectAriaLabel = this.selectEl.getAttribute('aria-label')
@@ -254,17 +344,9 @@ export default class SlimSelect {
       )
     }
 
-    // Add window resize listener to moveContent if window size changes
-    window.addEventListener('resize', this.windowResize, false)
-
-    // If the user wants to show the content forcibly on a specific side,
-    // there is no need to listen for scroll events
-    if (this.settings.openPosition === 'auto') {
-      window.addEventListener('scroll', this.windowScroll, false)
-    }
-
-    // Add window visibility change listener to closeContent if window is hidden
-    document.addEventListener('visibilitychange', this.windowVisibilityChange)
+    this.globalEvents.attach({
+      listenScroll: this.settings.openPosition === 'auto'
+    })
 
     // If disabled lets call it
     if (this.settings.disabled) {
@@ -304,36 +386,12 @@ export default class SlimSelect {
   }
 
   public setData(data: (Partial<Option> | Partial<Optgroup>)[]): void {
-    // Get original selected values
-    const selected = this.store.getSelected()
-
-    // Validate data
-    const err = this.store.validateDataArray(data)
-    if (err) {
-      if (this.events.error) {
-        this.events.error(err)
-      }
-      return
-    }
-
-    // Update the store
-    this.store.setData(data)
-    const dataClean = this.store.getData()
-
-    // Update original select element
-    this.select.updateOptions(dataClean)
-
-    // Update the render
-    this.render.renderValues()
-    this.render.renderOptions(dataClean)
-
-    // Trigger afterChange event, if it doesnt equal the original selected values
-    if (
-      this.events.afterChange &&
-      !isEqual(selected, this.store.getSelected())
-    ) {
-      this.events.afterChange(this.store.getSelectedOptions())
-    }
+    // Batched structure sync — rebuilds native select, store, and option list
+    this.sync.enqueue({
+      type: 'structure',
+      data,
+      source: 'api'
+    })
   }
 
   public getSelected(): string[] {
@@ -346,81 +404,21 @@ export default class SlimSelect {
 
   // Will take in a string or array of strings and set the selected by either the id or value
   public setSelected(values: string | string[], runAfterChange = true): void {
-    // Get original selected values
-    const selected = this.store.getSelected()
-    const options = this.store.getDataOptions()
-    values = Array.isArray(values) ? values : [values]
-    const ids = []
-
-    // for back-compatibility support both, set by id and set by value
-    for (const value of values) {
-      if (options.find((option) => option.id == value)) {
-        ids.push(value)
-        continue
-      }
-
-      // if option with given id is not found try to search by value
-      for (const option of options.filter((option) => option.value == value)) {
-        ids.push(option.id)
-      }
-    }
-
-    // Update the store
-    this.store.setSelectedBy('id', ids)
-    const data = this.store.getData()
-
-    // Update the select element
-    this.select.updateOptions(data)
-
-    // Update the render
-    this.render.renderValues()
-
-    // If there is a search input value lets run through the search again
-    // Otherwise we will just render the options from store data
-    if (this.render.content.search.input.value !== '') {
-      this.search(this.render.content.search.input.value)
-    } else {
-      this.render.renderOptions(data)
-    }
-
-    // Trigger afterChange event, if it doesnt equal the original selected values
-    if (
-      runAfterChange &&
-      this.events.afterChange &&
-      !isEqual(selected, this.store.getSelected())
-    ) {
-      this.events.afterChange(this.store.getSelectedOptions())
-    }
+    // Lightweight path — store + native + chips only (no full DOM rebuild)
+    this.sync.enqueue({
+      type: 'selection',
+      values,
+      source: 'api',
+      runAfterChange
+    })
   }
 
   public addOption(option: Partial<Option>): void {
-    // Get original selected values
-    const selected = this.store.getSelected()
-
-    // Add option to store if it does not already include the option
-    if (
-      !this.store
-        .getDataOptions()
-        .some((o) => o.value === (option.value ?? option.text))
-    ) {
-      this.store.addOption(option)
-    }
-    const data = this.store.getData()
-
-    // Update the select element
-    this.select.updateOptions(data)
-
-    // Update the render
-    this.render.renderValues()
-    this.render.renderOptions(data)
-
-    // Trigger afterChange event, if it doesnt equal the original selected values
-    if (
-      this.events.afterChange &&
-      !isEqual(selected, this.store.getSelected())
-    ) {
-      this.events.afterChange(this.store.getSelectedOptions())
-    }
+    this.sync.enqueue({
+      type: 'addOption',
+      option,
+      source: 'api'
+    })
   }
 
   public open(): void {
@@ -430,16 +428,8 @@ export default class SlimSelect {
       return
     }
 
-    // Clear any pending close timeout to prevent race conditions
-    if (this.closeTimeout) {
-      clearTimeout(this.closeTimeout)
-      this.closeTimeout = null
-    }
-
-    // Run beforeOpen callback
-    if (this.events.beforeOpen) {
-      this.events.beforeOpen()
-    }
+    // Cancel in-flight open/close animation wait (rapid toggle)
+    this.lifecycle.cancelPending()
 
     // Tell render to open
     this.render.open()
@@ -450,34 +440,28 @@ export default class SlimSelect {
     }
 
     this.settings.isOpen = true
-    // setTimeout is for animation completion
-    this.openTimeout = setTimeout(() => {
-      // Run afterOpen callback
-      if (this.events.afterOpen) {
-        this.events.afterOpen()
-      }
 
-      // Update settings
-      // Prevent overide if user close fast without wait full open
-      // For detail see issue https://github.com/brianvoe/slim-select/issues/397
-      if (this.settings.isOpen) {
-        this.settings.isFullOpen = true
+    // Sync isFullOpen/isOpen after CSS transition (or timeoutDelay fallback)
+    void this.lifecycle.requestOpen().then(() => {
+      // close() may have run before this async completion (e.g. closeOnSelect)
+      if (!this.settings.isOpen) {
+        return
       }
+      this.settings.isFullOpen = this.lifecycle.isFullOpen
+      this.settings.isOpen = this.lifecycle.isOpen
+    })
 
-      // Add onclick listener to document to closeContent if clicked outside
-      document.addEventListener('click', this.documentClick)
-    }, this.settings.timeoutDelay)
+    // Reposition when trigger or ancestors resize (absolute content only)
+    if (
+      this.settings.contentPosition === 'absolute' &&
+      !this.render.isModalViewActive()
+    ) {
+      this.render.startPositionTracking()
+    }
 
-    // Start an interval to check if main has moved
-    // in order to keep content close to main
-    if (this.settings.contentPosition === 'absolute') {
-      if (this.settings.intervalMove) {
-        clearInterval(this.settings.intervalMove)
-      }
-      this.settings.intervalMove = setInterval(
-        this.render.moveContent.bind(this.render),
-        500
-      )
+    const searchValue = this.render.content.search.input.value.trim()
+    if (searchValue !== '') {
+      this.search(searchValue)
     }
   }
 
@@ -488,16 +472,7 @@ export default class SlimSelect {
       return
     }
 
-    // Clear any pending open timeout to prevent race conditions
-    if (this.openTimeout) {
-      clearTimeout(this.openTimeout)
-      this.openTimeout = null
-    }
-
-    // Run beforeClose calback
-    if (this.events.beforeClose) {
-      this.events.beforeClose()
-    }
+    this.lifecycle.cancelPending()
 
     // Tell render to close
     this.render.close()
@@ -507,6 +482,7 @@ export default class SlimSelect {
       !this.settings.keepSearch &&
       this.render.content.search.input.value !== ''
     ) {
+      this.sync.flush()
       this.search('') // Clear search
     }
 
@@ -517,117 +493,126 @@ export default class SlimSelect {
     this.settings.isOpen = false
     this.settings.isFullOpen = false
 
-    // Reset the content below
-    this.closeTimeout = setTimeout(() => {
-      // Run afterClose callback
-      if (this.events.afterClose) {
-        this.events.afterClose()
+    // Sync isOpen/isFullOpen after close animation completes
+    void this.lifecycle.requestClose().then(() => {
+      // open() may have run before this async completion
+      if (this.settings.isOpen) {
+        return
       }
+      this.settings.isOpen = this.lifecycle.isOpen
+      this.settings.isFullOpen = this.lifecycle.isFullOpen
+    })
 
-      // Add onclick listener to document to closeContent if clicked outside
-      document.removeEventListener('click', this.documentClick)
-    }, this.settings.timeoutDelay)
-
-    if (this.settings.intervalMove) {
-      clearInterval(this.settings.intervalMove)
-    }
+    this.render.stopPositionTracking()
   }
 
   // Take in string value and search current options
   public search(value: string): void {
-    // If the passed in value is not the same as the search input value
-    // then lets update the search input value
-    if (this.render.content.search.input.value !== value) {
-      this.render.content.search.input.value = value
+    const searchValue = value.trim()
+
+    if (this.render.content.search.input.value !== searchValue) {
+      this.render.content.search.input.value = searchValue
     }
 
-    // If value is empty then render all options
-    if (value === '') {
-      this.render.renderOptions(this.store.getData())
+    if (searchValue === '') {
+      this.clearSearch()
       return
     }
 
-    // If no search event run regular search
-    if (!this.events.search) {
-      // If value is empty then render all options
-      const searchResults =
-        value === ''
-          ? this.store.getData()
-          : this.store.search(value, this.events.searchFilter!)
-      this.render.renderOptions(searchResults)
+    if (this.events.search) {
+      this.runApiSearch(searchValue)
       return
     }
 
-    // Search event exists so lets render the searching text
+    this.runLocalSearch(searchValue)
+  }
+
+  private clearSearch(): void {
+    this.searchGeneration++
+
+    if (!this.events.search && this.render.canFilterOptionsInPlace()) {
+      this.render.filterOptionsInPlace('', this.events.searchFilter!)
+      this.render.resetSearchFilterState()
+      return
+    }
+
+    this.render.resetSearchFilterState()
+    this.sync.enqueue({
+      type: 'structure',
+      data: this.store.getCatalogData(),
+      source: 'api',
+      preserveSelection: true
+    })
+  }
+
+  private runLocalSearch(value: string): void {
+    if (this.render.canFilterOptionsInPlace()) {
+      this.render.filterOptionsInPlace(value, this.events.searchFilter!)
+      return
+    }
+
+    const searchResults = this.store.search(value, this.events.searchFilter!)
+    this.render.renderOptions(searchResults)
+  }
+
+  private runApiSearch(value: string): void {
+    const generation = ++this.searchGeneration
     this.render.renderSearching()
 
-    // Based upon the search event deal with the response
-    const searchResp = this.events.search(
+    const searchResp = this.events.search!(
       value,
-      this.store.getSelectedOptions()
+      this.store.getSelectedOptions(),
+      this.store.getCatalogData()
     )
 
-    // If the search event returns a promise
+    const applyResults = (
+      data: (Partial<Option> | Partial<Optgroup>)[]
+    ): void => {
+      if (generation !== this.searchGeneration) {
+        return
+      }
+      if (this.render.content.search.input.value.trim() !== value) {
+        return
+      }
+
+      this.sync.enqueue({
+        type: 'structure',
+        data,
+        source: 'api',
+        preserveSelection: true,
+        isSearchResult: true
+      })
+    }
+
     if (searchResp instanceof Promise) {
-      searchResp
-        .then((data: (Partial<Option> | Partial<Optgroup>)[]) => {
-          // Update store data with search results, preserving selected options
-          this.store.setData(data, true)
-
-          // Update original select element
-          this.select.updateOptions(this.store.getData())
-
-          // Render the updated data
-          this.render.renderOptions(this.store.getData())
-        })
-        .catch((err: Error | string) => {
-          // Update the render with error
-          this.render.renderError(typeof err === 'string' ? err : err.message)
-        })
+      searchResp.then(applyResults).catch((err: Error | string) => {
+        if (generation !== this.searchGeneration) {
+          return
+        }
+        this.render.renderError(typeof err === 'string' ? err : err.message)
+      })
 
       return
-    } else if (Array.isArray(searchResp)) {
-      // Update store data with search results, preserving selected options
-      this.store.setData(searchResp, true)
-
-      // Update original select element
-      this.select.updateOptions(this.store.getData())
-
-      // Render the updated data
-      this.render.renderOptions(this.store.getData())
-    } else {
-      // Update the render with error
-      this.render.renderError(
-        'Search event must return a promise or an array of data'
-      )
     }
+
+    if (Array.isArray(searchResp)) {
+      applyResults(searchResp)
+      return
+    }
+
+    this.render.renderError(
+      'Search event must return a promise or an array of data'
+    )
   }
 
   public destroy(): void {
-    // Clear any pending timeouts
-    if (this.openTimeout) {
-      clearTimeout(this.openTimeout)
-      this.openTimeout = null
-    }
-    if (this.closeTimeout) {
-      clearTimeout(this.closeTimeout)
-      this.closeTimeout = null
-    }
-    if (this.settings.intervalMove) {
-      clearInterval(this.settings.intervalMove)
-      this.settings.intervalMove = null
-    }
+    this.lifecycle.destroy()
 
-    // Remove all event listeners
-    document.removeEventListener('click', this.documentClick)
-    window.removeEventListener('resize', this.windowResize, false)
-    if (this.settings.openPosition === 'auto') {
-      window.removeEventListener('scroll', this.windowScroll, false)
-    }
-    document.removeEventListener(
-      'visibilitychange',
-      this.windowVisibilityChange
-    )
+    this.render.stopPositionTracking()
+
+    this.globalEvents.detach({
+      listenScroll: this.settings.openPosition === 'auto'
+    })
 
     // Delete the store data
     this.store.setData([])
@@ -639,26 +624,8 @@ export default class SlimSelect {
     this.select.destroy()
   }
 
-  private windowResize: (e: Event) => void = debounce(() => {
-    if (!this.settings.isOpen && !this.settings.isFullOpen) {
-      return
-    }
-
-    this.render.moveContent()
-  })
-
-  // Event listener for window scrolling
-  private windowScroll: (e: Event) => void = debounce(() => {
-    // If the content is not open, there is no need to move it
-    if (!this.settings.isOpen && !this.settings.isFullOpen) {
-      return
-    }
-
-    this.render.moveContent()
-  })
-
   // Event listener for document click
-  private documentClick: (e: Event) => void = (e: Event) => {
+  private documentClick(e: Event): void {
     // If the content is not open, there is no need to close it
     if (!this.settings.isOpen) {
       return
@@ -670,13 +637,6 @@ export default class SlimSelect {
       !hasClassInTree(e.target as HTMLElement, this.settings.id)
     ) {
       this.close(e.type)
-    }
-  }
-
-  // Event Listener for window visibility change
-  private windowVisibilityChange: (e: Event) => void = () => {
-    if (document.hidden) {
-      this.close()
     }
   }
 }

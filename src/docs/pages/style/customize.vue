@@ -4,7 +4,7 @@ import HighlightStyle from '@/docs/components/highlight_style.vue'
 import SlimSelect from '@/slim-select'
 
 export default defineComponent({
-  name: 'Variables',
+  name: 'Customize',
   components: {
     HighlightStyle
   },
@@ -21,7 +21,7 @@ export default defineComponent({
         mainHeight: '40px',
         contentHeight: '300px',
         searchHeight: '40px',
-        optionHeight: 'auto',
+        optionHeight: '40px',
         spacingL: '9px',
         spacingM: '7px',
         spacingS: '5px',
@@ -38,11 +38,6 @@ export default defineComponent({
     // Single select
     this.singleSelect = new SlimSelect({
       select: this.$refs.singleSelect as HTMLSelectElement,
-      settings: {
-        alwaysOpen: true,
-        contentPosition: 'relative',
-        contentLocation: this.$refs.singleSelectContent as HTMLElement
-      },
       data: [
         { text: 'Single Select Example', value: 'single' },
         { text: 'Customizable Variables', value: 'custom' },
@@ -53,16 +48,10 @@ export default defineComponent({
     // Multi select
     this.multiSelect = new SlimSelect({
       select: this.$refs.multiSelect as HTMLSelectElement,
-      settings: {
-        alwaysOpen: true,
-        contentPosition: 'relative',
-        contentLocation: this.$refs.multiSelectContent as HTMLElement
-      },
-      data: [
-        { text: 'Multiple Selection', value: 'multi' },
-        { text: 'Interactive Demo', value: 'interactive' },
-        { text: 'Variable Showcase', value: 'showcase' }
-      ]
+      data: Array.from({ length: 48 }, (_, index) => ({
+        text: `Option ${index + 1}`,
+        value: `option-${index + 1}`
+      }))
     })
 
     this.updateVariables()
@@ -77,6 +66,10 @@ export default defineComponent({
   methods: {
     updateVariable(variable: string, value: string) {
       this.variables[variable as keyof typeof this.variables] = value
+      if (variable === 'mainHeight') {
+        this.variables.searchHeight = value
+        this.variables.optionHeight = value
+      }
       this.updateVariables()
     },
     handleInputChange(event: Event, variable: string) {
@@ -86,7 +79,9 @@ export default defineComponent({
       }
     },
     updateVariables() {
-      const style = document.getElementById('dynamic-variables') as HTMLStyleElement
+      const style = document.getElementById(
+        'dynamic-variables'
+      ) as HTMLStyleElement
       if (!style) return
 
       style.textContent = `
@@ -97,8 +92,8 @@ export default defineComponent({
               --ss-border-color: ${this.variables.borderColor};
               --ss-border-radius: ${this.variables.borderRadius};
               --ss-main-height: ${this.variables.mainHeight};
-              --ss-search-height: ${this.variables.searchHeight};
-              --ss-option-height: ${this.variables.optionHeight};
+              --ss-search-height: var(--ss-main-height);
+              --ss-option-height: var(--ss-main-height);
               --ss-content-height: ${this.variables.contentHeight};
               --ss-spacing-l: ${this.variables.spacingL};
               --ss-spacing-m: ${this.variables.spacingM};
@@ -106,6 +101,34 @@ export default defineComponent({
               --ss-animation-timing: ${this.variables.animationTiming};
             }
           `
+    },
+    randomSpacing(): { spacingS: string; spacingM: string; spacingL: string } {
+      const randomFrom = <T,>(array: T[]): T =>
+        array[Math.floor(Math.random() * array.length)]
+
+      // Harmonious s/m/l triples — always ordered with sensible gaps
+      const spacingTriples: [number, number, number][] = [
+        [3, 5, 7],
+        [4, 6, 8],
+        [4, 6, 9],
+        [4, 7, 9],
+        [5, 7, 9],
+        [5, 7, 10],
+        [5, 8, 10],
+        [5, 8, 12],
+        [6, 8, 10],
+        [6, 9, 12],
+        [6, 10, 14]
+      ]
+
+      const [s, m, l] = randomFrom(spacingTriples)
+      const toPx = (n: number) => `${n}px`
+
+      return {
+        spacingS: toPx(s),
+        spacingM: toPx(m),
+        spacingL: toPx(l)
+      }
     },
     randomizeVariables() {
       // Color randomizer
@@ -131,20 +154,53 @@ export default defineComponent({
       ]
 
       // Height randomizer (reasonable ranges)
-      const heights = ['25px', '30px', '35px', '40px', '45px', '50px', '55px', '60px']
-      const contentHeights = ['200px', '250px', '300px', '350px', '400px', '450px', '500px']
-
-      // Spacing randomizer
-      const spacingValues = ['3px', '4px', '5px', '6px', '7px', '8px', '9px', '10px', '12px', '15px']
+      const heights = [
+        '25px',
+        '30px',
+        '35px',
+        '40px',
+        '45px',
+        '50px',
+        '55px',
+        '60px'
+      ]
+      const contentHeights = [
+        '200px',
+        '250px',
+        '300px',
+        '350px',
+        '400px',
+        '450px',
+        '500px'
+      ]
 
       // Border radius randomizer
-      const borderRadii = ['2px', '4px', '6px', '8px', '10px', '12px', '15px', '20px']
+      const borderRadii = [
+        '2px',
+        '4px',
+        '6px',
+        '8px',
+        '10px',
+        '12px',
+        '15px',
+        '20px'
+      ]
 
       // Animation timing randomizer
-      const timings = ['0.1s', '0.15s', '0.2s', '0.25s', '0.3s', '0.4s', '0.5s', '0.6s']
+      const timings = [
+        '0.1s',
+        '0.15s',
+        '0.2s',
+        '0.25s',
+        '0.3s',
+        '0.4s',
+        '0.5s',
+        '0.6s'
+      ]
 
       // Random selection function
-      const randomFrom = (array: string[]) => array[Math.floor(Math.random() * array.length)]
+      const randomFrom = (array: string[]) =>
+        array[Math.floor(Math.random() * array.length)]
 
       // Update all variables with random values
       this.variables.primaryColor = randomFrom(colors)
@@ -154,11 +210,13 @@ export default defineComponent({
       this.variables.borderRadius = randomFrom(borderRadii)
       this.variables.mainHeight = randomFrom(heights)
       this.variables.contentHeight = randomFrom(contentHeights)
-      this.variables.searchHeight = randomFrom(heights)
-      this.variables.optionHeight = randomFrom(['auto', '25px', '30px', '35px', '40px'])
-      this.variables.spacingL = randomFrom(spacingValues)
-      this.variables.spacingM = randomFrom(spacingValues)
-      this.variables.spacingS = randomFrom(spacingValues)
+      this.variables.searchHeight = this.variables.mainHeight
+      this.variables.optionHeight = this.variables.mainHeight
+
+      const spacing = this.randomSpacing()
+      this.variables.spacingS = spacing.spacingS
+      this.variables.spacingM = spacing.spacingM
+      this.variables.spacingL = spacing.spacingL
       this.variables.animationTiming = randomFrom(timings)
 
       // Update the CSS
@@ -169,34 +227,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#variables {
-  .examples-section {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    padding: var(--spacing);
-    background: var(--color-white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+#customize {
+  .intro {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .examples-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-half);
     margin-bottom: var(--spacing);
 
-    .row {
-      display: flex;
-      gap: var(--spacing);
-      flex-wrap: wrap;
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
 
-      .single,
-      .multi {
-        flex: 1;
-        min-width: 200px;
-
-        label {
-          display: block;
-          margin-bottom: var(--spacing-half);
-          font-weight: 600;
-          color: var(--color-primary);
-        }
-      }
+    .variable-showcase {
+      width: 100%;
     }
   }
 
@@ -204,26 +252,48 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     gap: var(--spacing-half);
+    min-width: 0;
+    max-width: 100%;
 
     .controls-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: var(--spacing-half);
       margin-bottom: var(--spacing-half);
 
       h3 {
         color: var(--color-primary);
+        margin: 0;
       }
 
       .randomize-btn {
-        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        background: linear-gradient(
+          135deg,
+          var(--color-primary),
+          var(--color-secondary)
+        );
         border: none;
         transition: all 0.3s ease;
         box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        flex-shrink: 0;
+        box-sizing: border-box;
+        max-width: 100%;
 
         &:hover {
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+      }
+
+      @media (max-width: 700px) {
+        flex-direction: column;
+        align-items: stretch;
+        min-width: 0;
+
+        .randomize-btn {
+          width: 100%;
+          min-height: 44px;
         }
       }
     }
@@ -231,19 +301,27 @@ export default defineComponent({
     .control-group-section {
       h4 {
         color: var(--color-primary);
-
-        margin-bottom: var(--spacing-half);
+        margin-bottom: var(--spacing-quarter);
       }
 
       .controls-row {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: var(--spacing-half);
+
+        @media (max-width: 700px) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (max-width: 420px) {
+          grid-template-columns: minmax(0, 1fr);
+        }
 
         .control-group {
           display: flex;
           flex-direction: column;
-          gap: 2px;
+          gap: 4px;
+          min-width: 0;
 
           label {
             font-weight: 600;
@@ -257,6 +335,9 @@ export default defineComponent({
             border-radius: var(--border-radius);
             font-size: 12px;
             transition: border-color 0.3s ease;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
 
             &:focus {
               outline: none;
@@ -270,6 +351,17 @@ export default defineComponent({
               padding: 1px;
               cursor: pointer;
             }
+
+            @media (max-width: 700px) {
+              min-height: 44px;
+              padding: 10px 12px;
+              font-size: 16px;
+
+              &[type='color'] {
+                height: 44px;
+                padding: 4px;
+              }
+            }
           }
 
           .default-value {
@@ -281,9 +373,21 @@ export default defineComponent({
             border-radius: 2px;
             display: inline-block;
             width: fit-content;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+
+            @media (max-width: 700px) {
+              font-size: 11px;
+            }
           }
         }
       }
+    }
+  }
+
+  @media (max-width: 700px) {
+    .examples-row {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -294,48 +398,40 @@ export default defineComponent({
       margin: 0 0 var(--spacing-quarter) 0;
       color: var(--color-primary);
     }
+
+    .generated-css-hint {
+      margin: 0 0 var(--spacing-half);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-font);
+      opacity: 0.85;
+    }
   }
 }
 </style>
 
 <template>
-  <div id="variables" class="content">
-    <h2 class="header">CSS Variables</h2>
-    <p>
-      SlimSelect uses CSS custom properties (variables) that you can easily override to match your website's design
-      system. Use the controls below to modify variables in real-time and see the changes applied to the examples.
+  <div id="customize" class="content">
+    <h2 class="header">customize</h2>
+    <p class="intro">
+      Adjust the controls to preview your dropdown live, then copy the generated
+      css variables for your site.
     </p>
 
     <!-- Live Examples -->
-    <div class="examples-section">
-      <div class="row">
-        <div class="single">
-          <label>Single Select</label>
-          <select ref="singleSelect" class="variable-showcase">
-            <option data-placeholder="true"></option>
-          </select>
-          <div ref="singleSelectContent" class="dropdown-content-container"></div>
-        </div>
-        <div class="multi">
-          <label>Multiple Select</label>
-          <select ref="multiSelect" class="variable-showcase" multiple>
-            <option data-placeholder="true"></option>
-          </select>
-          <div ref="multiSelectContent" class="dropdown-content-container"></div>
-        </div>
-      </div>
+    <div class="examples-row">
+      <select ref="singleSelect" class="variable-showcase"></select>
+      <select ref="multiSelect" class="variable-showcase" multiple></select>
     </div>
 
     <!-- Variable Controls -->
     <div class="controls-section">
       <div class="controls-header">
-        <h3>Variable Controls</h3>
-        <button @click="randomizeVariables" class="randomize-btn">🎲 Randomize</button>
+        <h3>Controls</h3>
+        <button @click="randomizeVariables" class="randomize-btn">
+          🎲 Randomize
+        </button>
       </div>
-      <p>
-        Make changes to the variables below to see the changes applied to the examples. You can also copy the generated
-        CSS below to your own CSS file.
-      </p>
 
       <!-- Colors Group -->
       <div class="control-group-section">
@@ -421,10 +517,10 @@ export default defineComponent({
               id="searchHeight"
               type="text"
               v-model="variables.searchHeight"
-              @input="handleInputChange($event, 'searchHeight')"
+              disabled
               placeholder="30px"
             />
-            <span class="default-value">Default: 40px</span>
+            <span class="default-value">Default: var(--ss-main-height)</span>
           </div>
 
           <div class="control-group">
@@ -433,10 +529,10 @@ export default defineComponent({
               id="optionHeight"
               type="text"
               v-model="variables.optionHeight"
-              @input="handleInputChange($event, 'optionHeight')"
-              placeholder="auto"
+              disabled
+              placeholder="40px"
             />
-            <span class="default-value">Default: auto</span>
+            <span class="default-value">Default: var(--ss-main-height)</span>
           </div>
         </div>
       </div>
@@ -516,10 +612,13 @@ export default defineComponent({
 
     <!-- Generated CSS -->
     <div class="generated-css">
-      <h3>Generated CSS</h3>
+      <h3>Copy for your site</h3>
+      <p class="generated-css-hint">
+        Replace <code>#root</code> with your app's wrapper if needed.
+      </p>
       <HighlightStyle language="css">
         <pre>
-          .variable-showcase {
+          #root {
             /* Colors */
             --ss-primary-color: {{ variables.primaryColor }};
             --ss-bg-color: {{ variables.bgColor }};
@@ -529,8 +628,8 @@ export default defineComponent({
 
             /* Heights */
             --ss-main-height: {{ variables.mainHeight }};
-            --ss-search-height: {{ variables.searchHeight }};
-            --ss-option-height: {{ variables.optionHeight }};
+            --ss-search-height: var(--ss-main-height);
+            --ss-option-height: var(--ss-main-height);
             --ss-content-height: {{ variables.contentHeight }};
 
             /* Spacing */
@@ -538,8 +637,7 @@ export default defineComponent({
             --ss-spacing-m: {{ variables.spacingM }};
             --ss-spacing-s: {{ variables.spacingS }};
 
-            /* Other Properties */
-            --ss-border-radius: {{ variables.borderRadius }};
+            /* Animation */
             --ss-animation-timing: {{ variables.animationTiming }};
           }
         </pre>

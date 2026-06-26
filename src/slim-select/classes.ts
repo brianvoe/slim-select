@@ -54,6 +54,13 @@ export default class CssClasses {
   public optionDelete: string // Not a class but whatever
   public highlighted: string
 
+  // Modal
+  public modalOverlay: string
+  public modalDialog: string
+  public modalTitle: string
+  public modalClose: string
+  public modalContent: string
+
   // Misc
   public mainOpen: string
   public close: string
@@ -115,6 +122,11 @@ export default class CssClasses {
     this.option = join('ss-option', classes.option)
     this.optionDelete = classes.optionDelete || 'M10,10 L90,90 M10,90 L90,10'
     this.highlighted = join('ss-highlighted', classes.highlighted)
+    this.modalOverlay = join('ss-modal-overlay', classes.modalOverlay)
+    this.modalDialog = join('ss-modal-dialog', classes.modalDialog)
+    this.modalTitle = join('ss-modal-title', classes.modalTitle)
+    this.modalClose = join('ss-modal-close', classes.modalClose)
+    this.modalContent = join('ss-modal-content', classes.modalContent)
     this.mainOpen = join('ss-open', classes.mainOpen)
     this.close = join('ss-close', classes.close)
     this.selected = join('ss-selected', classes.selected)

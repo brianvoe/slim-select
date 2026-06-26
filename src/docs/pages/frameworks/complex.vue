@@ -2,6 +2,7 @@
 import { defineComponent, PropType } from 'vue'
 import SlimSelect from '@/slim-select/vue'
 import HighlightStyle from '../../components/highlight_style.vue'
+import { Option } from '@/slim-select'
 
 export interface FieldOption {
   value: string
@@ -30,7 +31,6 @@ export default defineComponent({
   },
   emits: ['update:modelValue'],
   computed: {
-    // Computed value for the field
     value: {
       get(): string[] {
         return this.modelValue || []
@@ -38,6 +38,12 @@ export default defineComponent({
       set(newValue: string[]) {
         this.$emit('update:modelValue', newValue)
       }
+    },
+    selectData(): Partial<Option>[] {
+      return this.fieldOptions.map((option) => ({
+        value: option.value,
+        text: option.name
+      }))
     }
   },
   methods: {
@@ -62,11 +68,12 @@ export default defineComponent({
 <template>
   <div class="complex-field">
     <h4>{{ label }}</h4>
-    <SlimSelect v-model="value" multiple :events="{ afterChange: () => handleChange() }">
-      <option v-for="option in fieldOptions" :key="option.value" :value="option.value">
-        {{ option.name }}
-      </option>
-    </SlimSelect>
+    <SlimSelect
+      v-model="value"
+      multiple
+      :data="selectData"
+      :events="{ afterChange: () => handleChange() }"
+    />
     <div style="margin-top: 8px"><strong>Selected:</strong> {{ value.join(', ') || 'None' }}</div>
   </div>
 </template>

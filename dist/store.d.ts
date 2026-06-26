@@ -29,10 +29,19 @@ export default class Store {
     private selectType;
     private data;
     private selectedOrder;
+    /** Baseline option list — restored when search is cleared (API results are temporary). */
+    private catalog;
     constructor(type: 'single' | 'multiple', data: (Partial<Option> | Partial<Optgroup>)[]);
     validateDataArray(data: (Partial<Option> | Partial<Optgroup>)[]): Error | null;
     validateOption(option: Partial<Option>): Error | null;
     partialToFullData(data: (Partial<Option> | Partial<Optgroup>)[]): (Option | Optgroup)[];
+    /** Snapshot the current data as the catalog baseline (not called for API search results). */
+    snapshotCatalog(): void;
+    /** Catalog baseline used when clearing search. */
+    getCatalogData(): (Option | Optgroup)[];
+    private cloneData;
+    private optionMatchesSelected;
+    private findOptionInData;
     setData(data: (Partial<Option> | Partial<Optgroup>)[], preserveSelected?: boolean): void;
     getData(): Option[] | Optgroup[];
     getDataOptions(): Option[];

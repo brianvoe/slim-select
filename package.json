@@ -71,10 +71,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "generate:sitemap": "node sitemap.js",
     "release": "node release.js"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
     "@testing-library/react": "^16.3.2",
     "@types/downloadjs": "^1.4.6",
     "@types/node": "^26.0.0",
@@ -94,6 +96,7 @@
     "react-dom": "^19.2.7",
     "rimraf": "^6.1.3",
     "sass": "^1.101.0",
+    "serve": "^14.2.6",
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
     "vite-plugin-dts": "^5.0.2",

@@ -1,8 +1,10 @@
 import { default as CssClasses } from './classes';
+import { default as Lifecycle } from './lifecycle';
 import { default as Render } from './render';
 import { default as Select } from './select';
 import { default as Settings } from './settings';
 import { default as Store, Option, Optgroup } from './store';
+import { default as SyncCoordinator } from './sync';
 export { Settings, Option, Optgroup };
 export type { Main, Content, Search } from './render';
 export interface Config {
@@ -13,7 +15,7 @@ export interface Config {
     events?: Events;
 }
 export interface Events {
-    search?: (searchValue: string, currentData: (Option | Optgroup)[]) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[];
+    search?: (searchValue: string, selected: Option[], catalog?: (Option | Optgroup)[]) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[];
     searchFilter?: (option: Option, search: string) => boolean;
     addable?: (value: string) => Promise<Partial<Option> | string> | Partial<Option> | string | false | null | undefined | Error;
     beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void;
@@ -31,8 +33,11 @@ export default class SlimSelect {
     select: Select;
     store: Store;
     render: Render;
-    private openTimeout;
-    private closeTimeout;
+    sync: SyncCoordinator;
+    lifecycle: Lifecycle;
+    private globalEvents;
+    /** Invalidates in-flight API search responses when the query changes or clears. */
+    private searchGeneration;
     events: Events;
     constructor(config: Config);
     enable(): void;
@@ -45,9 +50,9 @@ export default class SlimSelect {
     open(): void;
     close(eventType?: string | null): void;
     search(value: string): void;
+    private clearSearch;
+    private runLocalSearch;
+    private runApiSearch;
     destroy(): void;
-    private windowResize;
-    private windowScroll;
     private documentClick;
-    private windowVisibilityChange;
 }

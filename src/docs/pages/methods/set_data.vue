@@ -2,7 +2,63 @@
 import { defineComponent } from 'vue'
 import HighlightStyle from '../../components/highlight_style.vue'
 
-import SlimSelect from '@/slim-select'
+import SlimSelect, { Option, Optgroup } from '@/slim-select'
+
+const FIRST_NAMES = [
+  'Alex',
+  'Jordan',
+  'Taylor',
+  'Morgan',
+  'Casey',
+  'Riley',
+  'Quinn',
+  'Avery',
+  'Parker',
+  'Reese'
+]
+const LAST_NAMES = [
+  'Smith',
+  'Johnson',
+  'Williams',
+  'Brown',
+  'Jones',
+  'Garcia',
+  'Miller',
+  'Davis',
+  'Wilson',
+  'Moore'
+]
+
+function pick<T>(items: T[]): T {
+  return items[Math.floor(Math.random() * items.length)]
+}
+
+function shuffle<T>(items: T[]): T[] {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
+
+function createOptions(count: number): Partial<Option>[] {
+  const used = new Set<string>()
+
+  return Array.from({ length: count }, () => {
+    let text = ''
+    do {
+      text = `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)}`
+    } while (used.has(text))
+    used.add(text)
+
+    return {
+      text,
+      value: text.toLowerCase().replace(/\s+/g, '-'),
+      selected: Math.random() > 0.75
+    }
+  })
+}
 
 export default defineComponent({
   name: 'SetData',
@@ -12,11 +68,17 @@ export default defineComponent({
   data() {
     return {
       setDataSingle: null as SlimSelect | null,
-      setDataMultiple: null as SlimSelect | null
+      setDataMultiple: null as SlimSelect | null,
+      setDataCycle: 0
     }
   },
   mounted() {
-    // Set Data
+    const initialData = [
+      { text: 'Value 1', value: 'value1' },
+      { text: 'Value 2', value: 'value2' },
+      { text: 'Value 3', value: 'value3' }
+    ]
+
     this.setDataSingle = new SlimSelect({
       select: this.$refs.setDataSingle as HTMLSelectElement,
       events: {
@@ -33,31 +95,34 @@ export default defineComponent({
         }
       }
     })
+
+    this.setDataSingle.setData(initialData)
+    this.setDataMultiple.setData(initialData)
   },
   methods: {
-    setData() {
-      // Fetch random json array data from gofakeit
-      fetch('https://api.gofakeit.com/json', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          type: 'array',
-          rowcount: 10,
-          indent: false,
-          fields: [
-            { name: 'text', function: 'generate', params: { str: '{firstname} {lastname}' } },
-            { name: 'selected', function: 'bool' }
-          ]
-        })
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.setDataSingle!.setData(data)
-          this.setDataMultiple!.setData(data)
-        })
-        .catch((err) => console.error(err))
+    loadRandomData() {
+      const useOptgroups = this.setDataCycle % 2 === 1
+      this.setDataCycle++
+
+      let data: (Partial<Option> | Partial<Optgroup>)[]
+      if (useOptgroups) {
+        const [teamA, teamB] = shuffle(FIRST_NAMES).slice(0, 2)
+        data = [
+          {
+            label: `Team ${teamA}`,
+            options: createOptions(5)
+          },
+          {
+            label: `Team ${teamB}`,
+            options: createOptions(5)
+          }
+        ]
+      } else {
+        data = createOptions(10)
+      }
+
+      this.setDataSingle!.setData(data)
+      this.setDataMultiple!.setData(data)
     }
   }
 })
@@ -87,7 +152,7 @@ export default defineComponent({
     </div>
 
     <div class="row">
-      <div class="btn" @click="setData">Set Data</div>
+      <div class="btn" @click="loadRandomData">Set Data</div>
       <select ref="setDataSingle"></select>
       <select ref="setDataMultiple" multiple></select>
     </div>

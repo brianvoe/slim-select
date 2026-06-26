@@ -42,6 +42,10 @@ export default defineComponent({
       need to maintain their last search and results, such as when picking multiple selections in a multi-select
       dropdown.
     </p>
+    <p>
+      With <code>events.search</code> (API search), reopening the dropdown while <code>keepSearch</code> is enabled
+      re-runs the saved search query. Clearing the search field still restores the catalog baseline.
+    </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="keepSearchSingle">

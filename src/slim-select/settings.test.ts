@@ -1,7 +1,8 @@
 'use strict'
 
 import { describe, expect, test, beforeEach } from 'vitest'
-import Settings from './settings'
+import { shouldUseModalView } from './helpers'
+import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Select from './select'
 import { Option, Optgroup } from './store'
 
@@ -12,7 +13,6 @@ const defaultSettings: { [key: string]: any } = {
   isMultiple: false,
   isOpen: false,
   isFullOpen: false,
-  intervalMove: null,
   disabled: false,
   alwaysOpen: false,
   showSearch: true,
@@ -41,7 +41,8 @@ const defaultSettings: { [key: string]: any } = {
   timeoutDelay: 200,
   maxValuesShown: 20,
   maxValuesMessage: '{number} selected',
-  contentWidth: ''
+  contentWidth: '',
+  modal: 'mobile'
 }
 
 describe('Settings module', () => {
@@ -63,6 +64,28 @@ describe('Settings module', () => {
       } else {
         expect(settings[key]).toStrictEqual(defaultSettings[key])
       }
+    })
+  })
+
+  describe('shouldUseModalView', () => {
+    test('returns false for off', () => {
+      expect(shouldUseModalView('off', 320)).toBe(false)
+      expect(shouldUseModalView('off', 1024)).toBe(false)
+    })
+
+    test('returns true for on', () => {
+      expect(shouldUseModalView('on', 320)).toBe(true)
+      expect(shouldUseModalView('on', 1024)).toBe(true)
+    })
+
+    test('uses mobile breakpoint', () => {
+      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT - 1)).toBe(
+        true
+      )
+      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT)).toBe(false)
+      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT + 1)).toBe(
+        false
+      )
     })
   })
 

@@ -142,6 +142,24 @@ describe('select module', () => {
       expect(data[1].text).toBe('Two')
     })
 
+    test('get data copies option data attributes as a plain object', () => {
+      document.body.innerHTML = `<select id="test">
+        <option data-placeholder="true" data-custom="value">Select</option>
+        <option value="1" data-foo="bar">One</option>
+      </select>`
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      const data = select.getData() as Option[]
+
+      expect(data[0].data).toEqual({ placeholder: 'true', custom: 'value' })
+      expect(String(data[0].data)).not.toBe('[object DOMStringMap]')
+      expect(JSON.stringify(data[0].data)).toBe(
+        '{"placeholder":"true","custom":"value"}'
+      )
+      expect(data[1].data).toEqual({ foo: 'bar' })
+    })
+
     test('get data from select optgroups', () => {
       document.body.innerHTML = `<select id="test">
         <optgroup label="test1">

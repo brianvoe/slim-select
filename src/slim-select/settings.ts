@@ -1,5 +1,9 @@
 import { generateID } from './helpers'
 
+export type ModalSetting = 'off' | 'on' | 'mobile'
+
+export const MODAL_MOBILE_BREAKPOINT = 768
+
 export default class Settings {
   public id: string = '' // Primary ID for the select
   public style: string = '' // Style attribute from the select element
@@ -9,7 +13,6 @@ export default class Settings {
   public isMultiple: boolean = false
   public isOpen: boolean = false
   public isFullOpen: boolean = false
-  public intervalMove: ReturnType<typeof setInterval> | null = null
 
   // Fields set from constructor
   public disabled: boolean
@@ -42,6 +45,8 @@ export default class Settings {
   public maxValuesShown: number
   public maxValuesMessage: string
   public addableText: string
+  public modal: ModalSetting
+  public modalTitle: string
 
   constructor(settings?: Partial<Settings>) {
     if (!settings) {
@@ -94,9 +99,11 @@ export default class Settings {
         : false
     this.minSelected = settings.minSelected || 0
     this.maxSelected = settings.maxSelected || 1000
-    this.timeoutDelay = settings.timeoutDelay || 200
+    this.timeoutDelay = settings.timeoutDelay || 200 // Default until SlimSelect reads --ss-animation-timing
     this.maxValuesShown = settings.maxValuesShown || 20
     this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
     this.addableText = settings.addableText || 'Press "Enter" to add {value}'
+    this.modal = settings.modal || 'mobile'
+    this.modalTitle = settings.modalTitle || ''
   }
 }

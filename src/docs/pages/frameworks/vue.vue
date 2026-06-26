@@ -16,6 +16,17 @@ export default defineComponent({
       // v-model data for some selects
       simpleSingle: '2',
       simpleMultiple: ['2', '3'],
+      simpleSingleOptions: [
+        { value: 'all', text: 'All' },
+        { value: '1', text: 'Option 1' },
+        { value: '2', text: 'Option 2' },
+        { value: '3', text: 'Option 3' }
+      ],
+      basicOptions: [
+        { value: '1', text: 'Option 1' },
+        { value: '2', text: 'Option 2' },
+        { value: '3', text: 'Option 3' }
+      ],
 
       // Misc
       settings: {
@@ -61,7 +72,12 @@ export default defineComponent({
       // Empty v-model example
       ogSelected: '' as string,
       emptySelected: '' as string,
-      emptyArraySelected: [] as string[]
+      emptyArraySelected: [] as string[],
+      emptyVmodelOptions: [
+        { value: 'opt1', text: 'Option 1' },
+        { value: 'opt2', text: 'Option 2' },
+        { value: 'opt3', text: 'Option 3' }
+      ]
     }
   },
   mounted() {
@@ -145,21 +161,12 @@ export default defineComponent({
       <div>
         <!-- <div class="btn" @click="simpleSingle = '2'">Set v-model</div> -->
         <div><strong>Value</strong> {{ simpleSingle }}</div>
-        <SlimSelect v-model="simpleSingle" ref="simpleSingle">
-          <option value="all">All</option>
-          <option value="1">Option 1</option>
-          <option value="2">Option 2</option>
-          <option value="3">Option 3</option>
-        </SlimSelect>
+        <SlimSelect v-model="simpleSingle" :data="simpleSingleOptions" ref="simpleSingle" />
       </div>
 
       <div>
         <div><strong>Value</strong> {{ simpleMultiple }}</div>
-        <SlimSelect v-model="simpleMultiple" ref="simpleMultiple" multiple>
-          <option value="1">Option 1</option>
-          <option value="2">Option 2</option>
-          <option value="3">Option 3</option>
-        </SlimSelect>
+        <SlimSelect v-model="simpleMultiple" :data="basicOptions" ref="simpleMultiple" multiple />
       </div>
     </div>
 
@@ -175,7 +182,12 @@ export default defineComponent({
           data() {
             return {
               single: '2',
-              multiple: ['2', '3']
+              multiple: ['2', '3'],
+              options: [
+                { value: '1', text: 'Option 1' },
+                { value: '2', text: 'Option 2' },
+                { value: '3', text: 'Option 3' }
+              ]
             }
           }
         })
@@ -184,17 +196,9 @@ export default defineComponent({
 
     <HighlightStyle language="html">
       <pre>
-        &lt;SlimSelect v-model="single"&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect v-model="single" :data="options" /&gt;
 
-        &lt;SlimSelect v-model="multiple" multiple&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect v-model="multiple" :data="options" multiple /&gt;
       </pre>
     </HighlightStyle>
 
@@ -207,17 +211,9 @@ export default defineComponent({
     </p>
 
     <div class="row">
-      <SlimSelect :settings="settings">
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <SlimSelect :settings="settings" :data="basicOptions" />
 
-      <SlimSelect :settings="settings" multiple>
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <SlimSelect :settings="settings" :data="basicOptions" multiple />
     </div>
 
     <HighlightStyle language="javascript">
@@ -233,7 +229,12 @@ export default defineComponent({
             return {
               settings: {
                 showSearch: false,
-              }
+              },
+              options: [
+                { value: '1', text: 'Option 1' },
+                { value: '2', text: 'Option 2' },
+                { value: '3', text: 'Option 3' }
+              ]
             }
           },
         })
@@ -243,17 +244,9 @@ export default defineComponent({
 
     <HighlightStyle language="html">
       <pre>
-        &lt;SlimSelect :settings="settings"&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect :settings="settings" :data="options" /&gt;
 
-        &lt;SlimSelect :settings="settings" multiple&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect :settings="settings" :data="options" multiple /&gt;
       </pre>
     </HighlightStyle>
 
@@ -261,12 +254,9 @@ export default defineComponent({
 
     <h3>Data</h3>
     <p>
-      Data just like its passed as an array in normal SlimSelct will also be passed as an array to the component prop.
+      Pass options via the required <code>data</code> prop — the same array shape as core SlimSelect. When the array
+      changes, the select updates reactively.
     </p>
-    <div class="alert info">
-      You may pass data as a prop if you would like. But you can also have reactive options that when options change the
-      select will update as well. See Reactivity below for more info.
-    </div>
 
     <div class="row">
       <div class="btn info" @click="changeData">Change data</div>
@@ -314,17 +304,9 @@ export default defineComponent({
 
     <div v-if="afterChangeData.length"><strong>afterChange:</strong> {{ afterChangeData }}</div>
     <div class="row">
-      <SlimSelect :events="events">
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <SlimSelect :events="events" :data="basicOptions" />
 
-      <SlimSelect :events="events" multiple>
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <SlimSelect :events="events" :data="basicOptions" multiple />
     </div>
 
     <HighlightStyle language="javascript">
@@ -341,6 +323,11 @@ export default defineComponent({
               events: {
                 afterChange: this.afterChange,
               },
+              options: [
+                { value: '1', text: 'Option 1' },
+                { value: '2', text: 'Option 2' },
+                { value: '3', text: 'Option 3' }
+              ]
             }
           },
           methods: {
@@ -354,17 +341,9 @@ export default defineComponent({
 
     <HighlightStyle language="html">
       <pre>
-        &lt;SlimSelect :events="events"&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect :events="events" :data="options" /&gt;
 
-        &lt;SlimSelect :events="events" multiple&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect :events="events" :data="options" multiple /&gt;
       </pre>
     </HighlightStyle>
 
@@ -376,40 +355,24 @@ export default defineComponent({
     <h4>disabled</h4>
     <div class="row">
       <div class="btn" @click="isDisabled = !isDisabled">Toggle Disabled</div>
-      <SlimSelect :disabled="isDisabled">
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <SlimSelect :disabled="isDisabled" :data="basicOptions" />
     </div>
 
     <HighlightStyle language="html">
       <pre>
-        &lt;SlimSelect :disabled="isDisabled"&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect :disabled="isDisabled" :data="options" /&gt;
       </pre>
     </HighlightStyle>
 
     <h4>class</h4>
     <div class="row">
       <div class="btn" @click="errorClass = errorClass === '' ? 'error' : ''">Toggle Error</div>
-      <SlimSelect class="dynamicClass" :class="errorClass">
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
-      </SlimSelect>
+      <SlimSelect class="dynamicClass" :class="errorClass" :data="basicOptions" />
     </div>
 
     <HighlightStyle language="html">
       <pre>
-        &lt;SlimSelect :class="myClass"&gt;
-          &lt;option value="1"&gt;Option 1&lt;/option&gt;
-          &lt;option value="2"&gt;Option 2&lt;/option&gt;
-          &lt;option value="3"&gt;Option 3&lt;/option&gt;
-        &lt;/SlimSelect&gt;
+        &lt;SlimSelect :class="myClass" :data="options" /&gt;
       </pre>
     </HighlightStyle>
 
@@ -418,11 +381,11 @@ export default defineComponent({
     <h3>Complex Example: Custom Fields Pattern</h3>
     <p>
       This example demonstrates a real-world use case similar to a CustomFields component that manages multiple dynamic
-      form fields with computed values, reactive slot content, and bidirectional data flow.
+      form fields with computed values, reactive data, and bidirectional data flow.
     </p>
 
     <div class="alert info">
-      <strong>Pattern:</strong> Computed values → Reactive slots → v-model → afterChange callback → Update parent data
+      <strong>Pattern:</strong> Computed values → Reactive <code>data</code> prop → v-model → afterChange callback → Update parent data
     </div>
 
     <div class="row">
@@ -506,6 +469,12 @@ export default defineComponent({
           },
           emits: ['update:modelValue'],
           computed: {
+            selectData() {
+              return this.fieldOptions.map((option) => ({
+                value: option.value,
+                text: option.name
+              }))
+            },
             value: {
               get() { return this.modelValue || [] },
               set(newValue) { this.$emit('update:modelValue', newValue) }
@@ -522,18 +491,12 @@ export default defineComponent({
 
     <HighlightStyle language="html">
       <pre>
-        &lt;!-- Child template with reactive slot content --&gt;
+        &lt;!-- Child template maps fieldOptions to SlimSelect data --&gt;
         &lt;SlimSelect
           v-model="value"
           multiple
-          :events="{ afterChange: () => handleChange() }"&gt;
-          &lt;option
-            v-for="option in fieldOptions"
-            :key="option.value"
-            :value="option.value"&gt;
-            &lcub;&lcub; option.name &rcub;&rcub;
-          &lt;/option&gt;
-        &lt;/SlimSelect&gt;
+          :data="selectData"
+          :events="{ afterChange: () => handleChange() }" /&gt;
       </pre>
     </HighlightStyle>
 
@@ -544,7 +507,7 @@ export default defineComponent({
         <li>✅ <strong>v-model on child</strong> - Two-way binding between parent and child</li>
         <li>✅ <strong>Props down</strong> - fieldOptions and label passed to child</li>
         <li>✅ <strong>Events up</strong> - Child emits update:modelValue to parent</li>
-        <li>✅ <strong>Reactive slots</strong> - Child uses v-for with SlimSelect slot options</li>
+        <li>✅ <strong>Reactive data</strong> - Child maps fieldOptions to the <code>data</code> prop</li>
         <li>✅ <strong>Computed value</strong> - Child computes value getter/setter for v-model</li>
         <li>✅ <strong>afterChange callback</strong> - Custom logic in child component</li>
         <li>✅ <strong>Fully reactive</strong> - Parent data changes flow to child automatically</li>
@@ -585,19 +548,11 @@ export default defineComponent({
       </p>
       <div class="column example">
         <div><strong>Value</strong> {{ emptySelected || "'' (empty string)" }}</div>
-        <SlimSelect v-model="emptySelected">
-          <option value="opt1">Option 1</option>
-          <option value="opt2">Option 2</option>
-          <option value="opt3">Option 3</option>
-        </SlimSelect>
+        <SlimSelect v-model="emptySelected" :data="emptyVmodelOptions" />
       </div>
       <div class="column example">
         <div><strong>Value</strong> {{ emptyArraySelected }}</div>
-        <SlimSelect v-model="emptyArraySelected" multiple>
-          <option value="opt1">Option 1</option>
-          <option value="opt2">Option 2</option>
-          <option value="opt3">Option 3</option>
-        </SlimSelect>
+        <SlimSelect v-model="emptyArraySelected" :data="emptyVmodelOptions" multiple />
       </div>
 
       <div class="row">

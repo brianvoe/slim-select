@@ -1,6 +1,14 @@
 'use strict'
 
-import { describe, expect, test, vi, beforeEach } from 'vitest'
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  beforeEach,
+  afterEach,
+  type Mock
+} from 'vitest'
 import Render, { Callbacks } from './render'
 import Settings from './settings'
 import Store, { Option } from './store'
@@ -35,7 +43,7 @@ describe('render module', () => {
     ])
 
     // default settings
-    const settings = new Settings()
+    const settings = new Settings({ modal: 'off' })
     const classes = new CssClasses()
 
     openMock = vi.fn(() => {})
@@ -671,6 +679,227 @@ describe('render module', () => {
     })
   })
 
+  describe('position tracking', () => {
+    let observeMock: Mock<(target: Element) => void>
+    let disconnectMock: Mock<() => void>
+    let ResizeObserverConstructor: ReturnType<typeof vi.fn>
+
+    beforeEach(() => {
+      observeMock = vi.fn()
+      disconnectMock = vi.fn()
+
+      ResizeObserverConstructor = vi.fn(
+        class {
+          observe = observeMock
+          disconnect = disconnectMock
+          constructor(_cb: ResizeObserverCallback) {}
+        }
+      )
+
+      vi.stubGlobal('ResizeObserver', ResizeObserverConstructor)
+      render.settings.contentPosition = 'absolute'
+      render.settings.isOpen = true
+    })
+
+    afterEach(() => {
+      render.stopPositionTracking()
+      vi.unstubAllGlobals()
+    })
+
+    test('startPositionTracking observes trigger and content', () => {
+      render.startPositionTracking()
+
+      expect(ResizeObserverConstructor).toHaveBeenCalled()
+      expect(observeMock).toHaveBeenCalledWith(render.main.main)
+      expect(observeMock).toHaveBeenCalledWith(render.content.main)
+    })
+
+    test('stopPositionTracking disconnects observer', () => {
+      render.startPositionTracking()
+      render.stopPositionTracking()
+
+      expect(disconnectMock).toHaveBeenCalled()
+    })
+
+    test('does not track when content position is relative', () => {
+      render.settings.contentPosition = 'relative'
+      render.startPositionTracking()
+
+      expect(ResizeObserverConstructor).not.toHaveBeenCalled()
+    })
+
+    test('does not track when modal view is active', () => {
+      render.settings.modal = 'on'
+      ;(render as any).modalSessionActive = true
+      render.startPositionTracking()
+
+      expect(ResizeObserverConstructor).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('modal', () => {
+    test('creates modal overlay when modal is not off', () => {
+      const settings = new Settings({ modal: 'on' })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', []),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      const overlay = document.querySelector('.ss-modal-overlay')
+      expect(overlay).not.toBeNull()
+      expect(overlay?.classList.contains('ss-hide')).toBe(true)
+
+      modalRender.destroy()
+    })
+
+    test('does not create modal overlay when modal is off', () => {
+      const settings = new Settings({ modal: 'off' })
+      const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', []),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(
+        beforeCount
+      )
+      modalRender.destroy()
+    })
+
+    test('does not create modal overlay when alwaysOpen is true', () => {
+      const settings = new Settings({ modal: 'on', alwaysOpen: true })
+      const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', []),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(
+        beforeCount
+      )
+      modalRender.destroy()
+    })
+
+    test('open does not use modal when alwaysOpen is true', () => {
+      const settings = new Settings({
+        modal: 'on',
+        alwaysOpen: true,
+        contentPosition: 'relative'
+      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      modalRender.open()
+
+      expect(modalRender.isModalViewActive()).toBe(false)
+      expect(document.body.style.overflow).not.toBe('hidden')
+      modalRender.destroy()
+    })
+
+    test('open with modal on moves content into modal dialog', () => {
+      const settings = new Settings({ modal: 'on' })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      modalRender.open()
+
+      const dialog = (
+        modalRender as unknown as { modalElements: { dialog: HTMLElement } }
+      ).modalElements.dialog
+      expect(dialog.contains(modalRender.content.main)).toBe(true)
+      expect(
+        modalRender.content.main.classList.contains('ss-modal-content')
+      ).toBe(true)
+      expect(document.body.style.overflow).toBe('hidden')
+
+      modalRender.close()
+      modalRender.finalizeModalClose()
+
+      expect(document.body.style.overflow).not.toBe('hidden')
+      modalRender.destroy()
+    })
+
+    test('shows associated label text at top of modal dialog', () => {
+      const settings = new Settings({
+        modal: 'on',
+        modalTitle: 'Country'
+      })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      modalRender.open()
+
+      const title = document.querySelector('.ss-modal-title')
+      expect(title).not.toBeNull()
+      expect(title?.textContent).toBe('Country')
+
+      const dialog = (
+        modalRender as unknown as { modalElements: { dialog: HTMLElement } }
+      ).modalElements.dialog
+      expect(dialog.getAttribute('aria-labelledby')).toBe(
+        `${settings.id}-modal-title`
+      )
+
+      modalRender.close()
+      modalRender.finalizeModalClose()
+      modalRender.destroy()
+    })
+  })
+
   describe('searchDiv', () => {
     test('search is hidden when showSearch setting is false', () => {
       render.settings.showSearch = false
@@ -1233,6 +1462,244 @@ describe('render module', () => {
     })
   })
 
+  describe('closable optgroups', () => {
+    test('opening one closable optgroup closes other open closable optgroups', () => {
+      const store = new Store('multiple', [
+        {
+          label: 'Group A',
+          closable: 'close',
+          options: [
+            { text: 'A1', value: 'a1' },
+            { text: 'A2', value: 'a2' }
+          ]
+        },
+        {
+          label: 'Group B',
+          closable: 'close',
+          options: [{ text: 'B1', value: 'b1' }]
+        },
+        {
+          label: 'Group C',
+          closable: 'off',
+          options: [{ text: 'C1', value: 'c1' }]
+        }
+      ])
+
+      render.renderOptions(store.getData())
+
+      const optgroups = render.content.list.querySelectorAll(
+        '.' + render.classes.getFirst('optgroup')
+      )
+      const groupA = optgroups[0] as HTMLDivElement
+      const groupB = optgroups[1] as HTMLDivElement
+      const groupC = optgroups[2] as HTMLDivElement
+
+      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+
+      const labelA = groupA.querySelector(
+        '.' + render.classes.getFirst('optgroupLabel')
+      ) as HTMLDivElement
+      const labelB = groupB.querySelector(
+        '.' + render.classes.getFirst('optgroupLabel')
+      ) as HTMLDivElement
+
+      labelA.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(
+        groupA.classList.contains(render.classes.getFirst('mainOpen'))
+      ).toBe(true)
+      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+
+      labelB.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
+        true
+      )
+      expect(
+        groupB.classList.contains(render.classes.getFirst('mainOpen'))
+      ).toBe(true)
+      expect(groupC.classList.contains(render.classes.getFirst('close'))).toBe(
+        false
+      )
+    })
+  })
+
+  describe('optgroup select all', () => {
+    test('shows Select All when not every option is selected', () => {
+      render.settings.isMultiple = true
+      render.renderOptions(
+        render.store.partialToFullData([
+          {
+            label: 'Group',
+            selectAll: true,
+            options: [
+              { text: 'A', value: 'a', selected: true },
+              { text: 'B', value: 'b' }
+            ]
+          }
+        ])
+      )
+
+      const label = render.content.list.querySelector(
+        '.' + render.classes.getFirst('optgroupSelectAll') + ' span'
+      )
+
+      expect(label?.textContent).toBe('Select All')
+    })
+
+    test('shows Unselect All when every option is selected', () => {
+      render.settings.isMultiple = true
+      const data = render.store.partialToFullData([
+        {
+          label: 'Group',
+          selectAll: true,
+          options: [
+            { text: 'A', value: 'a', selected: true },
+            { text: 'B', value: 'b', selected: true }
+          ]
+        }
+      ])
+      render.renderOptions(data)
+
+      const label = render.content.list.querySelector(
+        '.' + render.classes.getFirst('optgroupSelectAll') + ' span'
+      )
+
+      expect(label?.textContent).toBe('Unselect All')
+    })
+
+    test('clicking Unselect All clears optgroup selections', () => {
+      const store = new Store('multiple', [
+        {
+          label: 'Group',
+          selectAll: true,
+          options: [
+            { text: 'A', value: 'a', selected: true },
+            { text: 'B', value: 'b', selected: true }
+          ]
+        }
+      ])
+      const selectAllRender = new Render(
+        new Settings({ modal: 'off' }),
+        new CssClasses(),
+        store,
+        {
+          open: openMock as () => void,
+          close: closeMock as () => void,
+          setSelected: setSelectedMock as (
+            value: string | string[],
+            runAfterChange: boolean
+          ) => void,
+          addOption: addOptionMock as (option: Option) => void,
+          search: searchMock as (search: string) => void
+        }
+      )
+      selectAllRender.settings.isMultiple = true
+      selectAllRender.renderOptions(store.getData())
+
+      const selectAll = selectAllRender.content.list.querySelector(
+        '.' + selectAllRender.classes.getFirst('optgroupSelectAll')
+      ) as HTMLDivElement
+
+      selectAll.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(setSelectedMock).toHaveBeenCalledWith([], true)
+    })
+  })
+
+  describe('filterOptionsInPlace', () => {
+    test('filters options without rebuilding the list', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+      const list = render.content.list
+      const initialChildCount = list.children.length
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(list.children.length).toBe(initialChildCount)
+      expect(render.getOptions(true, true, true)).toHaveLength(1)
+      expect(render.getOptions(true, true, true)[0].textContent).toBe('test1')
+    })
+
+    test('shows no results message when nothing matches', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+
+      render.filterOptionsInPlace('nomatch', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(render.content.list.querySelector('.ss-search')).toBeTruthy()
+      expect(render.getOptions(true, true, true)).toHaveLength(0)
+    })
+
+    test('skips work when search term is unchanged', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+      const htmlAfterFilter = render.content.list.innerHTML
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(render.content.list.innerHTML).toBe(htmlAfterFilter)
+    })
+  })
+
+  describe('updateOptionSelection', () => {
+    test('updates selected classes without rebuilding the list', () => {
+      const store = render.store
+      render.renderOptions(store.getData())
+      const list = render.content.list
+      const initialChildCount = list.children.length
+      const target = store.getDataOptions()[0]
+
+      store.setSelectedBy('id', [target.id])
+      render.updateOptionSelection()
+
+      expect(list.children.length).toBe(initialChildCount)
+      const optionEl = render.content.list.querySelector(
+        '[data-id="' + target.id + '"]'
+      ) as HTMLDivElement
+      expect(optionEl.classList.contains(render.classes.selected)).toBe(true)
+      expect(optionEl.getAttribute('aria-selected')).toBe('true')
+    })
+
+    test('hides selected options when hideSelected is enabled', () => {
+      const store = render.store
+      render.settings.hideSelected = true
+      render.renderOptions(store.getData())
+      const target = store.getDataOptions()[0]
+
+      store.setSelectedBy('id', [target.id])
+      render.updateOptionSelection()
+
+      const optionEl = render.content.list.querySelector(
+        '[data-id="' + target.id + '"]'
+      ) as HTMLDivElement
+      expect(optionEl.classList.contains(render.classes.hide)).toBe(true)
+    })
+  })
+
   describe('option', () => {
     test('add inline styles correctly', () => {
       const option = render.option(
@@ -1426,6 +1893,94 @@ describe('render module', () => {
 
       expect(addOptionMock).not.toHaveBeenCalled()
       expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('hides value delete buttons when at minSelected', () => {
+      render.settings.isMultiple = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true }
+      ])
+
+      render.renderValues()
+
+      const deleteButtons = render.main.values.querySelectorAll(
+        '.' + render.classes.getFirst('valueDelete')
+      )
+
+      expect(deleteButtons).toHaveLength(2)
+      for (const deleteButton of deleteButtons) {
+        expect(
+          (deleteButton as HTMLElement).classList.contains(
+            render.classes.getFirst('hide')
+          )
+        ).toBe(true)
+      }
+    })
+
+    test('shows value delete buttons when above minSelected', () => {
+      render.settings.isMultiple = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true },
+        { text: 'C', value: 'c', selected: true }
+      ])
+
+      render.renderValues()
+
+      const deleteButtons = render.main.values.querySelectorAll(
+        '.' + render.classes.getFirst('valueDelete')
+      )
+
+      expect(deleteButtons).toHaveLength(3)
+      for (const deleteButton of deleteButtons) {
+        expect(
+          (deleteButton as HTMLElement).classList.contains(
+            render.classes.getFirst('hide')
+          )
+        ).toBe(false)
+      }
+    })
+
+    test('deselect all respects minSelected instead of clearing everything', () => {
+      render.settings.isMultiple = true
+      render.settings.allowDeselect = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { id: 'a', text: 'A', value: 'a', selected: true },
+        { id: 'b', text: 'B', value: 'b', selected: true },
+        { id: 'c', text: 'C', value: 'c', selected: true }
+      ])
+      render.renderValues()
+
+      const deselectElement = render.main.main.querySelector(
+        '.' + render.classes.getFirst('deselect')
+      ) as HTMLDivElement
+
+      deselectElement.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true })
+      )
+
+      expect(setSelectedMock).toHaveBeenCalledWith(['a', 'b'], false)
+    })
+
+    test('hides deselect all when at minSelected', () => {
+      render.settings.isMultiple = true
+      render.settings.allowDeselect = true
+      render.settings.minSelected = 2
+      render.store = new Store('multiple', [
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true }
+      ])
+      render.renderValues()
+
+      expect(
+        render.main.deselect.main.classList.contains(
+          render.classes.getFirst('hide')
+        )
+      ).toBe(true)
     })
 
     test('click does nothing when trying to deselect a mandatory option', () => {

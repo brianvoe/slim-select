@@ -1,51 +1,59 @@
 # Slim Select
 
+**The select dropdown, reimagined.**
+
+A lightweight, dependency-free replacement for the native `<select>` — single and multi-select, search, optgroups,
+remote data, modal mode on mobile, and full theming through CSS variables. Drop it into any stack, or use the official
+Vue and React wrappers.
+
 ## [slimselectjs.com](https://slimselectjs.com)
 
-Advanced select dropdown
-
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/vitest.yml?logo=vitest&label=unit%20tests) ![Tests](https://img.shields.io/badge/tests-314%20passing-brightgreen) [![slim-select](https://snyk.io/advisor/npm-package/slim-select/badge.svg)](https://snyk.io/advisor/npm-package/slim-select)
-
-## Support
-
-[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/brianvoe)
-
-<a href="https://www.buymeacoffee.com/brianvoe" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
-
-## [Documentation and Examples](https://slimselectjs.com)
-
-See [website](https://slimselectjs.com) for the full list of [settings](https://slimselectjs.com/settings), [methods](https://slimselectjs.com/methods) and [event callbacks](https://slimselectjs.com/events)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/vitest.yml?logo=vitest&label=unit%20tests)
+![Tests](https://img.shields.io/badge/tests-523%20passing-brightgreen)
+[![slim-select](https://snyk.io/advisor/npm-package/slim-select/badge.svg)](https://snyk.io/advisor/npm-package/slim-select)
 
 ![](https://raw.githubusercontent.com/brianvoe/slim-select/master/docs/slimselect.gif)
 
+## Documentation
+
+Full docs, live demos, and copy-paste examples: **[slimselectjs.com](https://slimselectjs.com)**
+
+- [Get started](https://slimselectjs.com/get-started)
+- [Settings](https://slimselectjs.com/settings)
+- [Methods](https://slimselectjs.com/methods)
+- [Events](https://slimselectjs.com/events)
+- [Styling](https://slimselectjs.com/style)
+
 ## Features
 
-- No Dependencies
-- JS: 48kb - 10kb gzip
-- CSS: 11kb - 2kb gzip
-- Single Select
-- Multi Select
-- User Addable Options
-- Html Options
-- Settable Data
-- Callback Events
-- Label Support
-- Placeholders
-- Search
-- Disable Options
-- Light CSS
-- Light Color Scheme
-- Style and Class Inheritance
-- Clean Animations
-- Performant
-- Typescript
-- ARIA Accessibility (WCAG 2.1 Level AA compliant)
+**Select, upgraded**
 
-## Frameworks
+- Single and multi-select with tags, placeholders, and deselect
+- Search with highlighting, remote/API search, and user-addable options
+- Optgroups with select-all and closable accordion groups
+- HTML options, tooltips, min/max selection limits, and disabled options
+- Modal mode (`off` | `on` | `mobile`) — centered panel with backdrop; mobile-friendly by default
 
-- [Vue](#vue)
-- [React](#react)
+**Looks like your product**
+
+- Theme entirely with `--ss-*` CSS custom properties — no fighting class specificity
+- Import plain CSS or SCSS; inherit styles and classes from the native `<select>`
+
+**Built to ship**
+
+- Zero runtime dependencies
+- ~66KB JS (~16KB gzip) · ~12KB CSS (~2KB gzip)
+- TypeScript types included
+- WCAG 2.1 Level AA accessibility (ARIA, keyboard, screen reader support)
+- `prefers-reduced-motion` respected
+- 477 unit tests + 46 Playwright E2E tests
+
+**Framework ready**
+
+- Vanilla JS
+- [Vue 3](#vue) component with `v-model`
+- [React](#react) component with hooks and ref access
 
 ## Installation
 
@@ -53,19 +61,18 @@ See [website](https://slimselectjs.com) for the full list of [settings](https://
 npm install slim-select
 ```
 
-### or
+### CDN
 
 ```html
 <script src="https://unpkg.com/slim-select@latest/dist/slimselect.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/slim-select@latest/dist/slimselect.css" />
 ```
 
-## Simple Usage
+## Quick start
 
 ```javascript
 import SlimSelect from 'slim-select'
-import 'slim-select/styles' // optional css import method
-import 'slim-select/scss' // optional scss import method
+import 'slim-select/styles' // or: import 'slim-select/scss'
 
 new SlimSelect({
   select: '#selectElement'
@@ -78,133 +85,151 @@ new SlimSelect({
 </select>
 ```
 
+## Styling
+
+Slim Select is styled with CSS variables. Set them on a wrapper around your select (or on `:root` for a global theme):
+
+```css
+.my-form {
+  --ss-primary-color: #2563eb;
+  --ss-bg-color: #ffffff;
+  --ss-font-color: #1e293b;
+  --ss-border-color: #e2e8f0;
+  --ss-border-radius: 8px;
+  --ss-main-height: 44px;
+}
+```
+
+See the full token list and live themes on the [Style docs](https://slimselectjs.com/style).
+
 ## Data
 
-Data is an array of objects that represent both option and optgroups.
-
-See below for list of data types
+Pass an array of options and optgroups instead of (or in addition to) native `<option>` elements:
 
 ```javascript
 new SlimSelect({
   select: '#selectElement',
 
-  // Array of Option objects
-  data: [{ text: 'Value 1', value: 'value1' }],
-
-  // or
-
-  // Array of Optgroups and/or Options
-  data: [{ label: 'Optgroup Label', options: { text: 'Value 1', value: 'value1' } }]
+  data: [
+    { text: 'Value 1', value: 'value1' },
+    {
+      label: 'Group label',
+      options: [
+        { text: 'Value 2', value: 'value2' },
+        { text: 'Value 3', value: 'value3' }
+      ]
+    }
+  ]
 })
 ```
 
-## Data Types
+### Data types
 
 ```javascript
 // <optgroup>
-var optgroup = {
+const optgroup = {
   label: 'label', // Required
-  selectAll: false, // Optional - default false
-  closable: 'off', // Optional - default 'off' - 'off', 'open', 'close'
-  options: [] // Required - value is an array of options
+  selectAll: false, // Optional — default false
+  closable: 'off', // Optional — 'off' | 'open' | 'close'
+  options: [] // Required — array of options
 }
 
 // <option>
-var option = {
+const option = {
   text: 'text', // Required
-  value: 'value', // Optional - value will be set by text if not set
-  html: '<b>Html</b>', // Optional - if set, used for display purposes
-  selected: false, // Optional - default is false
-  display: true, // Optional - default is true
-  disabled: false, // Optional - default is false
-  mandatory: false, // Optional - default is false
-  placeholder: false, // Optional - default is false
-  class: '', // Optional - default is not set
-  style: '', // Optional - default is not set
-  data: {} // Optional - If you have data attributes
+  value: 'value', // Optional — defaults to text
+  html: '<b>Html</b>', // Optional — used for display when set
+  selected: false,
+  display: true,
+  disabled: false,
+  mandatory: false,
+  placeholder: false,
+  class: '',
+  style: '',
+  data: {} // Plain object for data-* attributes
 }
 ```
 
 ## Settings
 
-Settings are optional fields that customize how SlimSelect operates. All values shown are defaults.
+All fields are optional. Values shown are defaults.
 
-[Full Settings Documentation](https://slimselectjs.com/settings)
+[Full settings documentation](https://slimselectjs.com/settings)
 
 ```javascript
 new SlimSelect({
   select: '#selectElement',
 
   settings: {
-    disabled: false, // Disable the select
-    alwaysOpen: false, // Keep dropdown always open
-    showSearch: true, // Show search input
-    focusSearch: true, // Auto focus search on open
-    keepSearch: false, // Keep search input value when dropdown closes
-    ariaLabel: 'Combobox', // ARIA label for accessibility
-    searchPlaceholder: 'Search', // Search input placeholder
-    searchText: 'No Results', // Text when no results found
-    searchingText: 'Searching...', // Text while searching
-    searchHighlight: false, // Highlight search terms
-    closeOnSelect: true, // Close dropdown after selection
-    contentLocation: document.body, // Where to append dropdown
-    contentPosition: 'absolute', // CSS position: absolute, relative, fixed
-    contentWidth: '', // Content width: "500px" exact, ">500px" min-width, "<500px" max-width
-    openPosition: 'auto', // Open direction: auto, up, down
-    placeholderText: 'Select Value', // Placeholder text
-    allowDeselect: false, // Allow deselecting in single select
-    hideSelected: false, // Hide selected options in dropdown
-    keepOrder: false, // Keep user click order (not DOM order) for getSelected
-    showOptionTooltips: false, // Show tooltips on options
-    minSelected: 0, // Minimum selections (multi-select)
-    maxSelected: 1000, // Maximum selections (multi-select)
-    timeoutDelay: 200, // Delay for callbacks (ms)
-    maxValuesShown: 20, // Max values shown before message
-    maxValuesMessage: '{number} selected', // Message when max values exceeded
-    addableText: 'Press "Enter" to add {value}' // Text for addable option
+    disabled: false,
+    alwaysOpen: false,
+    showSearch: true,
+    focusSearch: true,
+    keepSearch: false,
+    ariaLabel: 'Combobox',
+    searchPlaceholder: 'Search...',
+    searchText: 'No Results',
+    searchingText: 'Searching...',
+    resultsText: '{count} results available',
+    deselectText: 'Clear',
+    removeText: 'Remove',
+    searchHighlight: false,
+    closeOnSelect: true,
+    contentLocation: document.body,
+    contentPosition: 'absolute', // 'absolute' | 'relative' | 'fixed'
+    contentWidth: '', // e.g. '500px', '>500px', '<500px'
+    openPosition: 'auto', // 'auto' | 'up' | 'down'
+    placeholderText: 'Select Value',
+    allowDeselect: false,
+    hideSelected: false,
+    multiString: false,
+    keepOrder: false,
+    showOptionTooltips: false,
+    minSelected: 0,
+    maxSelected: 1000,
+    timeoutDelay: 200,
+    maxValuesShown: 20,
+    maxValuesMessage: '{number} selected',
+    addableText: 'Press "Enter" to add {value}',
+    modal: 'mobile', // 'off' | 'on' | 'mobile'
+    modalTitle: '' // Header above the option list in modal view
   }
 })
 ```
 
 ## Events
 
-Events are function callbacks for when certain actions happen
-
-[Full Events Documentation](https://slimselectjs.com/events)
+[Full events documentation](https://slimselectjs.com/events)
 
 ```javascript
 new SlimSelect({
   select: '#selectElement',
 
   events: {
-    // Custom search function - return Promise or data array
-    search: (searchValue: string, currentData: (Option | Optgroup)[]) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[],
+    // Remote/API search — return a Promise or data array
+    // searchValue: current input text
+    // selected: currently selected Option[]
+    // catalog: baseline list restored when search clears
+    search: (
+      searchValue: string,
+      selected: Option[],
+      catalog?: (Option | Optgroup)[]
+    ) =>
+      Promise<(Partial<Option> | Partial<Optgroup>)[]> |
+      (Partial<Option> | Partial<Optgroup>)[],
 
-    // Filter function for search - return true to show option
+    // Local filter when events.search is not set
     searchFilter: (option: Option, search: string) => boolean,
 
-    // Allow user to add options - return new option or error
+    // User-added options — return the new option or an Error
     addable: (value: string) => Promise<Partial<Option> | string> | Partial<Option> | string | Error,
 
-    // Before selection changes - return false to prevent change
     beforeChange: (newVal: Option[], oldVal: Option[]) => boolean | void,
-
-    // After selection changes
     afterChange: (newVal: Option[]) => void,
-
-    // Before dropdown opens
     beforeOpen: () => void,
-
-    // After dropdown opens
     afterOpen: () => void,
-
-    // Before dropdown closes
     beforeClose: () => void,
-
-    // After dropdown closes
     afterClose: () => void,
-
-    // Error handler
     error: (err: Error) => void
   }
 })
@@ -212,39 +237,33 @@ new SlimSelect({
 
 ## Methods
 
-SlimSelect provides methods to programmatically control the select
-
-[Full Methods Documentation](https://slimselectjs.com/methods)
+[Full methods documentation](https://slimselectjs.com/methods)
 
 ```javascript
 const slim = new SlimSelect({ select: '#selectElement' })
 
-slim.enable() // Enable the select
-slim.disable() // Disable the select
-slim.getData() // Get current data array
-slim.setData(data) // Set new data array
-slim.getSelected() // Get selected values as string[]
-slim.setSelected(['value1', 'value2']) // Set selected by values
-slim.addOption(option) // Add a single option
-slim.open() // Open the dropdown
-slim.close() // Close the dropdown
-slim.search('searchValue') // Programmatically search
-slim.destroy() // Destroy the instance
+slim.enable()
+slim.disable()
+slim.getData()
+slim.setData(data)
+slim.getSelected() // string[]
+slim.setSelected(['value1', 'value2'])
+slim.addOption(option)
+slim.open()
+slim.close()
+slim.search('searchValue')
+slim.destroy()
 ```
 
 ## Vue
 
-SlimSelect has official Vue 3 component support with full reactivity.
+Official Vue 3 component with `v-model` and full TypeScript support.
 
-For more Vue examples and advanced usage, see the [Vue documentation](https://slimselectjs.com/vue).
-
-### Installation
+[Vue documentation](https://slimselectjs.com/vue)
 
 ```bash
 npm install slim-select
 ```
-
-### Usage
 
 ```vue
 <script lang="ts">
@@ -271,19 +290,17 @@ export default {
 </template>
 ```
 
+> **Note:** Pass options via the `:data` prop. Native `<option>` slot children are not supported in the Vue wrapper.
+
 ## React
 
-SlimSelect has official React component support with hooks.
+Official React component with hooks and ref access to the underlying instance.
 
-For more React examples and advanced usage, see the [documentation](https://slimselectjs.com).
-
-### Installation
+[React documentation](https://slimselectjs.com/react)
 
 ```bash
 npm install slim-select
 ```
-
-### Usage
 
 ```tsx
 import { useState } from 'react'
@@ -302,7 +319,9 @@ function MyComponent() {
 }
 ```
 
-### Advanced Usage with Ref
+> **Note:** Pass options via the `data` prop. Native `<option>` children are not supported in the React wrapper.
+
+### Ref access
 
 ```tsx
 import { useRef } from 'react'
@@ -312,16 +331,17 @@ import 'slim-select/styles'
 function MyComponent() {
   const slimRef = useRef<SlimSelectRef>(null)
 
-  const handleClick = () => {
-    // Access SlimSelect methods via ref
-    slimRef.current?.slimSelect?.open()
-  }
-
   return (
     <>
       <SlimSelect ref={slimRef} data={options} />
-      <button onClick={handleClick}>Open Dropdown</button>
+      <button onClick={() => slimRef.current?.slimSelect?.open()}>Open</button>
     </>
   )
 }
 ```
+
+## Support
+
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/brianvoe)
+
+<a href="https://www.buymeacoffee.com/brianvoe" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
