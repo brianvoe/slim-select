@@ -11,7 +11,6 @@ Vue and React wrappers.
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/brianvoe/slim-select/vitest.yml?logo=vitest&label=unit%20tests)
 ![Tests](https://img.shields.io/badge/tests-523%20passing-brightgreen)
-[![slim-select](https://snyk.io/advisor/npm-package/slim-select/badge.svg)](https://snyk.io/advisor/npm-package/slim-select)
 
 ![](https://raw.githubusercontent.com/brianvoe/slim-select/master/docs/slimselect.gif)
 
