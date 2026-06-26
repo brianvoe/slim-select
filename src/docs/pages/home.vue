@@ -364,7 +364,6 @@ export default defineComponent({
       select: this.$refs.heroModal as HTMLSelectElement,
       settings: {
         modal: 'on',
-        showSearch: false,
         placeholderText: 'Pick a language…'
       },
       data: heroLanguageOptions

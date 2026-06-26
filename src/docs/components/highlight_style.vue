@@ -121,8 +121,11 @@
 
 <style lang="scss">
   .highlight-style {
-    display: flex;
+    display: block;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
 
     // GitHub Dark Theme Colors (default)
     --gh-hljs-bg-color: #282c34;
@@ -169,12 +172,19 @@
     pre.hljs {
       min-width: 0;
       width: 100%;
+      max-width: 100%;
       padding: var(--spacing);
       margin: 0;
       border-radius: var(--border-radius);
       overflow-x: auto;
       overflow-y: hidden;
+      box-sizing: border-box;
+      -webkit-overflow-scrolling: touch;
       background-color: var(--gh-hljs-bg-color);
+
+      @media (max-width: 768px) {
+        padding: var(--spacing-half);
+      }
     }
 
     // Highlight.js syntax highlighting styles
@@ -185,8 +195,9 @@
 
     pre code.hljs {
       display: block;
-      overflow-x: auto;
-      padding: 1em;
+      box-sizing: border-box;
+      padding: 0;
+      white-space: pre;
     }
 
     code.hljs {

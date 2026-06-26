@@ -109,7 +109,7 @@ export default defineComponent({
   #cdn {
     .cdn-providers {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.75rem), 1fr));
       gap: var(--spacing-half);
     }
 
@@ -260,10 +260,16 @@ export default defineComponent({
 
       .codepen-embed {
         width: 100%;
-        min-height: 420px;
+        max-width: 100%;
+        min-height: 320px;
         border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
         background: var(--color-white);
+        box-sizing: border-box;
+
+        @media (max-width: 768px) {
+          min-height: 280px;
+        }
       }
     }
   }

@@ -64,12 +64,22 @@ export default defineComponent({
 
 <style lang="scss">
 #get-started {
+  min-width: 0;
+  max-width: 100%;
+
   .demo-block {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-quarter);
     width: 100%;
     min-width: 0;
+
+    select,
+    .ss-main {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
   }
 
   .demo-label {
@@ -84,12 +94,15 @@ export default defineComponent({
     margin: 0;
     font-size: 13px;
     color: var(--muted);
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .settings-links {
     margin: 0;
     padding-left: var(--spacing);
     line-height: 1.8;
+    overflow-wrap: anywhere;
 
     a {
       font-weight: 600;
@@ -98,20 +111,33 @@ export default defineComponent({
 
   .next-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--spacing-half);
+    width: 100%;
+    min-width: 0;
+
+    @media (min-width: 560px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (min-width: 900px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   .next-card {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
+    max-width: 100%;
     padding: var(--spacing-half);
     border: 1px solid var(--surface-border);
     border-radius: var(--border-radius);
     text-decoration: none;
     color: inherit;
     background: var(--surface-raised);
+    box-sizing: border-box;
     transition:
       border-color 0.15s ease,
       transform 0.15s ease,
@@ -128,12 +154,14 @@ export default defineComponent({
     font-size: 15px;
     font-weight: 700;
     color: var(--color-primary);
+    overflow-wrap: anywhere;
   }
 
   .next-card-desc {
     font-size: 13px;
     line-height: 1.45;
     color: var(--muted);
+    overflow-wrap: anywhere;
   }
 }
 </style>

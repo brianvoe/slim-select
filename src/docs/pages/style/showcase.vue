@@ -533,7 +533,7 @@ ${varsBlock}
 
   .showcase-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
     gap: var(--spacing);
   }
 

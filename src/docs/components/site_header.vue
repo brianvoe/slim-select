@@ -8,7 +8,8 @@ export default defineComponent({
     return {
       headerItems,
       openId: null as string | null,
-      mobileOpen: false
+      mobileOpen: false,
+      hoverCloseTimer: 0 as number
     }
   },
   computed: {
@@ -31,15 +32,31 @@ export default defineComponent({
   unmounted() {
     document.removeEventListener('keydown', this.onKeydown)
     document.removeEventListener('click', this.onDocumentClick)
+    window.clearTimeout(this.hoverCloseTimer)
     document.body.style.overflow = ''
   },
   methods: {
     closeAll() {
       this.openId = null
       this.mobileOpen = false
+      window.clearTimeout(this.hoverCloseTimer)
     },
-    toggleDropdown(item: HeaderItem) {
-      this.openId = this.openId === item.id ? null : item.id
+    openDropdown(item: HeaderItem) {
+      window.clearTimeout(this.hoverCloseTimer)
+      this.openId = item.id
+    },
+    scheduleCloseDropdown() {
+      window.clearTimeout(this.hoverCloseTimer)
+      this.hoverCloseTimer = window.setTimeout(() => {
+        this.openId = null
+      }, 140)
+    },
+    onGroupFocusOut(event: FocusEvent) {
+      const group = event.currentTarget as HTMLElement
+      const next = event.relatedTarget as Node | null
+      if (!next || !group.contains(next)) {
+        this.scheduleCloseDropdown()
+      }
     },
     onKeydown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -78,13 +95,19 @@ export default defineComponent({
           </router-link>
 
           <!-- Dropdown trigger -->
-          <div v-else class="site-nav-group">
+          <div
+            v-else
+            class="site-nav-group"
+            @mouseenter="openDropdown(item)"
+            @mouseleave="scheduleCloseDropdown"
+            @focusin="openDropdown(item)"
+            @focusout="onGroupFocusOut"
+          >
             <button
               type="button"
               class="site-nav-item"
               :class="{ active: isActive(item) }"
               :aria-expanded="openId === item.id"
-              @click.stop="toggleDropdown(item)"
             >
               {{ item.label }}
               <svg class="site-nav-chevron" viewBox="0 0 12 12" aria-hidden="true">
@@ -243,6 +266,16 @@ export default defineComponent({
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
+
+  // Bridge the gap so the pointer can reach the dropdown without closing.
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
+  }
 }
 
 .site-nav-item {
@@ -316,6 +349,23 @@ export default defineComponent({
   border: 1px solid var(--chrome-border);
   border-radius: var(--border-radius);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  animation: site-dropdown-in 0.14s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes site-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .site-dropdown-link {

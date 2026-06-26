@@ -144,7 +144,12 @@ export default defineComponent({
     }
 
     code {
-      white-space: nowrap;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
     }
   }
 }

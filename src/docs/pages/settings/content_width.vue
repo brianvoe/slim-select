@@ -75,8 +75,8 @@ export default defineComponent({
   }
 
   .demo-box {
-    flex: 1;
-    min-width: 200px;
+    flex: 1 1 12.5rem;
+    min-width: 0;
     padding: var(--spacing);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);

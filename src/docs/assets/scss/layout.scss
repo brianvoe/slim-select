@@ -33,8 +33,10 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 0;
   min-height: 100vh;
   box-sizing: border-box;
+  overflow-x: clip;
 
   > * {
     box-sizing: border-box;
@@ -48,6 +50,7 @@ body {
   gap: var(--spacing-half);
   width: 100%;
   max-width: var(--width-max);
+  min-width: 0;
   margin: 0 auto;
   padding: var(--spacing) var(--spacing-half) var(--spacing-half);
   box-sizing: border-box;
@@ -70,6 +73,7 @@ body {
 
     @media (max-width: 900px) {
       display: flex;
+      flex-direction: column;
     }
   }
 }
@@ -80,10 +84,18 @@ body {
   flex-direction: column;
   gap: var(--spacing-half);
   min-width: 0;
+  max-width: 100%;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 .app-footer {
   grid-area: footer;
+  width: 100%;
+  text-align: center;
 }
 
 /* ==========================================================================
@@ -94,6 +106,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing);
+  min-width: 0;
+  max-width: 100%;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 .content {
@@ -103,6 +122,7 @@ body {
   gap: var(--spacing-half);
   width: 100%;
   min-width: 0;
+  max-width: 100%;
   padding: var(--spacing);
   background: var(--surface);
   border: 1px solid var(--surface-border);
@@ -111,16 +131,70 @@ body {
   box-sizing: border-box;
   overflow-x: clip;
 
+  > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-half);
+  }
+
   > .header {
     padding: 0 0 var(--spacing-quarter);
     border-bottom: solid 2px var(--color-primary);
+    overflow-wrap: anywhere;
+  }
+
+  p,
+  li,
+  td,
+  th,
+  dd {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  code:not(pre code) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre {
+    max-width: 100%;
+  }
+
+  .highlight-style {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  img,
+  iframe,
+  video {
+    max-width: 100%;
+  }
+
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .ss-main {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
   }
 
   .column {
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow: visible;
+    min-width: 0;
+    overflow-x: clip;
   }
 
   .row {
@@ -128,7 +202,8 @@ body {
     flex-direction: row;
     gap: var(--spacing-half);
     width: 100%;
-    overflow: visible;
+    min-width: 0;
+    overflow-x: clip;
 
     @media (max-width: 768px) {
       flex-direction: column;
@@ -141,13 +216,13 @@ body {
 
     .btn {
       flex: 0 1 auto;
-      max-width: none;
-      overflow: visible;
+      max-width: 100%;
     }
 
     .ss-main {
       min-width: 0;
       max-width: 100%;
+      width: 100%;
     }
   }
 }
@@ -169,9 +244,13 @@ footer {
 }
 
 .ad-slot {
+  min-width: 0;
+  max-width: 100%;
   padding: var(--spacing-half);
   background: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
+  box-sizing: border-box;
+  overflow-x: clip;
 }
