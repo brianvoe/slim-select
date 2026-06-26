@@ -1,3 +1,5 @@
+export type ModalSetting = 'off' | 'on' | 'mobile';
+export declare const MODAL_MOBILE_BREAKPOINT = 768;
 export default class Settings {
     id: string;
     style: string;
@@ -35,5 +37,7 @@ export default class Settings {
     maxValuesShown: number;
     maxValuesMessage: string;
     addableText: string;
+    modal: ModalSetting;
+    modalTitle: string;
     constructor(settings?: Partial<Settings>);
 }

@@ -36,6 +36,11 @@ export default class CssClasses {
     option: string;
     optionDelete: string;
     highlighted: string;
+    modalOverlay: string;
+    modalDialog: string;
+    modalTitle: string;
+    modalClose: string;
+    modalContent: string;
     mainOpen: string;
     close: string;
     selected: string;

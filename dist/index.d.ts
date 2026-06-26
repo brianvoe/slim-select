@@ -2,10 +2,11 @@ import { default as CssClasses } from './classes';
 import { default as Lifecycle } from './lifecycle';
 import { default as Render } from './render';
 import { default as Select } from './select';
-import { default as Settings } from './settings';
+import { default as Settings, MODAL_MOBILE_BREAKPOINT } from './settings';
 import { default as Store, Option, Optgroup } from './store';
 import { default as SyncCoordinator } from './sync';
-export { Settings, Option, Optgroup };
+export { Settings, Option, Optgroup, MODAL_MOBILE_BREAKPOINT };
+export type { ModalSetting } from './settings';
 export type { Main, Content, Search } from './render';
 export interface Config {
     select: string | Element;

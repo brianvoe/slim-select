@@ -20,7 +20,6 @@ export declare class Optgroup {
     id: string;
     label: string;
     selectAll: boolean;
-    selectAllText: string;
     closable: 'off' | 'open' | 'close';
     options: Partial<Option>[];
     constructor(optgroup: Partial<Optgroup>);
@@ -43,8 +42,8 @@ export default class Store {
     private optionMatchesSelected;
     private findOptionInData;
     setData(data: (Partial<Option> | Partial<Optgroup>)[], preserveSelected?: boolean): void;
-    getData(): Option[] | Optgroup[];
-    getDataOptions(): Option[];
+    getData(clone?: boolean): Option[] | Optgroup[];
+    getDataOptions(clone?: boolean): Option[];
     addOption(option: Partial<Option>, addToStart?: boolean): void;
     setSelectedBy(selectedType: 'id' | 'value', selectedValues: string[], allowEmptySelection?: boolean): void;
     getSelected(): string[];
@@ -55,8 +54,9 @@ export default class Store {
     getSelectType(): string;
     getFirstOption(): Option | null;
     search(search: string, searchFilter: (opt: Option, search: string) => boolean): (Option | Optgroup)[];
+    private createOptgroupView;
     filter(filter: {
         (opt: Option): boolean;
-    } | null, includeOptgroup: boolean): (Option | Optgroup)[];
+    } | null, includeOptgroup: boolean, clone?: boolean): (Option | Optgroup)[];
     selectedOrderOptions(options: Option[]): Option[];
 }

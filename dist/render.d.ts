@@ -39,6 +39,12 @@ export interface Search {
         path: SVGPathElement;
     };
 }
+export interface ModalElements {
+    overlay: HTMLDivElement;
+    dialog: HTMLDivElement;
+    closeButton: HTMLButtonElement;
+    title: HTMLDivElement | null;
+}
 export default class Render {
     settings: Settings;
     store: Store;
@@ -52,12 +58,25 @@ export default class Render {
     classes: CssClasses;
     private positionObserver;
     private positionObserverRaf;
+    private modalElements;
+    private modalSessionActive;
+    private bodyScrollLocked;
+    private savedBodyOverflow;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
     addClasses(element: HTMLElement | SVGElement, classValue: string): void;
     removeClasses(element: HTMLElement | SVGElement, classValue: string): void;
     enable(): void;
     disable(): void;
     open(): void;
+    isModalViewActive(): boolean;
+    private resolveModalView;
+    private createModalElements;
+    private showModal;
+    private lockBodyScroll;
+    private unlockBodyScroll;
+    private restoreContentOffscreen;
+    /** Tear down modal shell after close animation completes. */
+    finalizeModalClose(): void;
     /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
     waitForAnimation(phase: 'open' | 'close', signal?: AbortSignal): Promise<void>;
     close(): void;
@@ -71,6 +90,9 @@ export default class Render {
     renderValues(): void;
     private renderSingleValue;
     private renderMultipleValues;
+    private isAtMinSelected;
+    private getMinimumSelectionIds;
+    private updateMultipleValueDeleteVisibility;
     multipleValue(option: Option): HTMLDivElement;
     contentDiv(): Content;
     private announce;
@@ -93,6 +115,9 @@ export default class Render {
     /** Filter visible options by search without rebuilding the list. */
     filterOptionsInPlace(search: string, searchFilter: (opt: Option, search: string) => boolean): void;
     private setOptionsListFullData;
+    private isClosableOptgroupOpen;
+    private closeClosableOptgroup;
+    private closeOtherClosableOptgroups;
     private updateOptgroupVisibilityAfterSearch;
     private updateSearchResultsMessage;
     private removeListSearchMessage;
@@ -104,6 +129,8 @@ export default class Render {
     /** Sync selected/hidden state on existing option nodes without rebuilding the list. */
     updateOptionSelection(): void;
     private updateOptgroupSelectAllStates;
+    private optgroupSelectAllLabel;
+    private isOptgroupAllSelected;
     option(option: Option): HTMLDivElement;
     destroy(): void;
     private highlightText;
