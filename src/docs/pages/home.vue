@@ -26,8 +26,7 @@ const heroMultiOptions = [
     options: [
       { value: 'vue', text: 'Vue' },
       { value: 'react', text: 'React' },
-      { value: 'svelte', text: 'Svelte' },
-      { value: 'angular', text: 'Angular' }
+      { value: 'svelte', text: 'Svelte' }
     ]
   },
   {
@@ -35,8 +34,7 @@ const heroMultiOptions = [
     options: [
       { value: 'typescript', text: 'TypeScript' },
       { value: 'vite', text: 'Vite' },
-      { value: 'sass', text: 'Sass' },
-      { value: 'tailwind', text: 'Tailwind CSS' }
+      { value: 'sass', text: 'Sass' }
     ]
   }
 ]
