@@ -17,6 +17,7 @@ import SlimSelect, {
   Settings
 } from '../index'
 import { dataStructureEqual } from '../helpers'
+import { deepToRaw } from './helpers'
 
 export default defineComponent({
   name: 'SlimSelect',
@@ -75,7 +76,7 @@ export default defineComponent({
     }
 
     this.slim = new SlimSelect(config)
-    this.lastAppliedData = structuredClone(toRaw(this.data))
+    this.lastAppliedData = structuredClone(deepToRaw(this.data))
     // Push initial modelValue down without firing afterChange (no parent emit loop)
     this.syncModelValueToSlimSelect(false)
   },
@@ -104,7 +105,7 @@ export default defineComponent({
           return
         }
         this.slim.setData(newData)
-        this.lastAppliedData = structuredClone(toRaw(newData))
+        this.lastAppliedData = structuredClone(deepToRaw(newData))
         this.syncModelValueToSlimSelect(false)
       },
       deep: true

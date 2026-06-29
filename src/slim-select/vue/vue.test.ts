@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
-import { nextTick, PropType } from 'vue'
+import { nextTick, PropType, reactive } from 'vue'
 import SlimSelect, { Option, Events } from '@/slim-select'
 import SlimSelectVue from './vue.vue'
 
@@ -556,6 +556,44 @@ describe('SlimSelect Vue Component', () => {
   })
 
   describe('Reactivity Edge Cases', () => {
+    test('mounts when data prop contains nested reactive option objects', async () => {
+      const state = reactive({
+        items: [{ value: 'MLD', text: 'MLD' }]
+      })
+
+      const TestComponent = {
+        components: { SlimSelectVue },
+        template: `
+          <SlimSelectVue
+            v-model="selected"
+            :data="options"
+          />
+        `,
+        data() {
+          return {
+            selected: 'MLD' as string
+          }
+        },
+        computed: {
+          options() {
+            return [
+              { text: 'Select unit', value: '', placeholder: true },
+              ...state.items
+            ]
+          }
+        }
+      }
+
+      const testWrapper = mount(TestComponent)
+      await nextTick()
+
+      const slimComponent = testWrapper.findComponent(SlimSelectVue)
+      const slim = (slimComponent.vm as any).slim as SlimSelect
+      expect(slim).toBeInstanceOf(SlimSelect)
+      expect(slim.getSelected()).toEqual(['MLD'])
+      testWrapper.unmount()
+    })
+
     test('reactive data with v-model syncs without selected on options', async () => {
       const TestComponent = {
         components: { SlimSelectVue },
