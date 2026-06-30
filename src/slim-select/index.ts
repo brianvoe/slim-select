@@ -622,6 +622,8 @@ export default class SlimSelect {
 
     // Show the original select element
     this.select.destroy()
+
+    delete (this.selectEl as HTMLSelectElement & { slim?: SlimSelect }).slim
   }
 
   // Event listener for document click

@@ -448,12 +448,12 @@ export default class Render {
       this.content.main.style.cssText = this.settings.style
     }
 
-    // Add classes
+    // Add classes from the native select to the main trigger only (not content —
+    // select classes often include hide/layout rules that break the dropdown panel)
     if (this.settings.class.length) {
       for (const c of this.settings.class) {
         if (c.trim() !== '') {
           this.main.main.classList.add(c.trim())
-          this.content.main.classList.add(c.trim())
         }
       }
     }
@@ -2463,6 +2463,8 @@ export default class Render {
       }
       this.modalElements.overlay.remove()
       this.modalElements = null
+    } else if (this.bodyScrollLocked) {
+      this.unlockBodyScroll()
     }
 
     // Remove main
@@ -2470,6 +2472,26 @@ export default class Render {
 
     // Remove content
     this.content.main.remove()
+
+    this.removeDetachedInstanceDom()
+  }
+
+  /** Remove any leftover main/content/modal nodes for this instance (e.g. on body). */
+  private removeDetachedInstanceDom(): void {
+    const id = this.settings.id
+    const mainClass = this.classes.getFirst('main')
+    const contentClass = this.classes.getFirst('content')
+    const modalClass = this.classes.getFirst('modalOverlay')
+
+    document.querySelectorAll<HTMLElement>(`[data-id="${id}"]`).forEach((el) => {
+      if (
+        el.classList.contains(mainClass) ||
+        el.classList.contains(contentClass) ||
+        el.classList.contains(modalClass)
+      ) {
+        el.remove()
+      }
+    })
   }
 
   private highlightText(str: string, search: any, className: string) {

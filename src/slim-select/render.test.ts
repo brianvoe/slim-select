@@ -210,9 +210,9 @@ describe('render module', () => {
       expect(render.main.main.classList.contains('test1')).toBe(true)
       expect(render.main.main.classList.contains('test2')).toBe(true)
 
-      expect(render.content.main.classList.contains('test0')).toBe(true)
-      expect(render.content.main.classList.contains('test1')).toBe(true)
-      expect(render.content.main.classList.contains('test2')).toBe(true)
+      expect(render.content.main.classList.contains('test0')).toBe(false)
+      expect(render.content.main.classList.contains('test1')).toBe(false)
+      expect(render.content.main.classList.contains('test2')).toBe(false)
     })
 
     test('if content position is relative, class is added on content', () => {
@@ -2451,6 +2451,17 @@ describe('render module', () => {
 
       expect(document.getElementById('main-id')).toBeNull()
       expect(document.getElementById('#content-id')).toBeNull()
+    })
+
+    test('removes content left on document.body', () => {
+      document.body.appendChild(render.content.main)
+      const contentId = render.content.main.dataset.id!
+
+      render.destroy()
+
+      expect(
+        document.querySelector(`.ss-content[data-id="${contentId}"]`)
+      ).toBeNull()
     })
   })
 
