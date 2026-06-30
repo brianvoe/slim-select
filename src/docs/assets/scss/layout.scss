@@ -144,6 +144,23 @@ body {
     padding: 0 0 var(--spacing-quarter);
     border-bottom: solid 2px var(--color-primary);
     overflow-wrap: anywhere;
+
+    &.section-hash-link {
+      cursor: pointer;
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  > h2.section-hash-link,
+  > h3.section-hash-link {
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-primary);
+    }
   }
 
   p,

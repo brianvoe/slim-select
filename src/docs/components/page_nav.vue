@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SlimSelect, { type Option } from '@/slim-select'
+import { scrollToId } from '@/docs/helpers'
 
 export default defineComponent({
   name: 'PageNav',
@@ -15,6 +16,9 @@ export default defineComponent({
   watch: {
     '$route.path'() {
       this.scheduleScan()
+    },
+    '$route.hash'() {
+      this.syncFromRouteHash()
     }
   },
   mounted() {
@@ -92,12 +96,14 @@ export default defineComponent({
       const unchanged =
         next.length === this.sections.length &&
         next.every((s, i) => s.id === this.sections[i]?.id)
-      if (unchanged) {
-        return
+
+      if (!unchanged) {
+        this.sections = next
+        this.$nextTick(this.buildSlim)
       }
 
-      this.sections = next
-      this.$nextTick(this.buildSlim)
+      this.bindSectionHeaderLinks(next)
+      this.syncFromRouteHash()
     },
     buildSlim() {
       this.destroySlim()
@@ -123,27 +129,52 @@ export default defineComponent({
           afterChange: (options: Option[]) => {
             const value = options[0]?.value
             if (value) {
-              this.scrollToSection(value)
+              this.navigateToSection(value)
             }
           }
         }
       })
       this.activeId = ''
       this.updateActive()
+      this.syncFromRouteHash()
     },
-    headerHeight(): number {
-      return (document.querySelector('.site-header') as HTMLElement)?.offsetHeight ?? 64
+    navigateToSection(id: string) {
+      const hash = `#${id}`
+      scrollToId(id)
+      if (this.$route.hash !== hash) {
+        this.$router.push({ ...this.$route, hash })
+      }
     },
-    scrollToSection(id: string) {
-      const el = document.getElementById(id)
-      if (!el) {
+    bindSectionHeaderLinks(sections: { id: string }[]) {
+      for (const { id } of sections) {
+        const el = document.getElementById(id)
+        if (!el) {
+          continue
+        }
+
+        const header = el.classList.contains('content')
+          ? (el.querySelector(':scope > .header') as HTMLElement | null)
+          : el
+
+        if (!header || header.dataset.hashLink === 'true') {
+          continue
+        }
+
+        header.dataset.hashLink = 'true'
+        header.classList.add('section-hash-link')
+        header.addEventListener('click', () => this.navigateToSection(id))
+      }
+    },
+    syncFromRouteHash() {
+      const id = this.$route.hash.slice(1)
+      if (!id || !this.sections.some((section) => section.id === id)) {
         return
       }
-      const offset = this.headerHeight() + 16
-      window.scroll({
-        top: el.getBoundingClientRect().top + window.scrollY - offset,
-        behavior: 'smooth'
-      })
+
+      if (this.slim && id !== this.activeId) {
+        this.activeId = id
+        this.slim.setSelected(id, false)
+      }
     },
     onScroll() {
       cancelAnimationFrame(this.rafId)
@@ -153,7 +184,9 @@ export default defineComponent({
       if (!this.sections.length || !this.slim) {
         return
       }
-      const line = this.headerHeight() + 16
+      const line =
+        ((document.querySelector('.site-header') as HTMLElement | null)
+          ?.offsetHeight ?? 64) + 16
       let current = this.sections[0].id
       for (const section of this.sections) {
         const el = document.getElementById(section.id)

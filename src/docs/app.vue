@@ -6,6 +6,7 @@ import SiteHeader from '@/docs/components/site_header.vue'
 import PageNav from '@/docs/components/page_nav.vue'
 import DonateModal from '@/docs/components/donate_modal.vue'
 import { hasSidebar } from '@/docs/nav'
+import { scrollToHashId } from '@/docs/helpers'
 import { useAppStore } from '@/docs/store'
 
 export default defineComponent({
@@ -31,24 +32,22 @@ export default defineComponent({
     this.appStore.setWidth(window.innerWidth)
     window.addEventListener('resize', this.onResize)
 
-    this.$router.isReady().then(() => {
-      this.scrollToHash()
-    })
-
-    this.$router.afterEach(() => {
-      if (this.$route.query.p) {
+    this.$router.afterEach((to, from) => {
+      if (to.query.p) {
         setTimeout(() => {
-          if (this.$route.query.p) {
+          if (to.query.p) {
             this.$router.push({
-              path: this.$route.query.p.toString(),
-              hash: this.$route.hash
+              path: to.query.p.toString(),
+              hash: to.hash
             })
           }
         }, 200)
         return
       }
 
-      setTimeout(() => this.scrollToHash(), 200)
+      // Same-page hash jumps can scroll immediately; route changes wait for content.
+      const delay = to.path === from.path ? 0 : 200
+      setTimeout(() => this.scrollToHash(), delay)
     })
   },
   unmounted() {
@@ -65,18 +64,7 @@ export default defineComponent({
         return
       }
 
-      const el = document.querySelector(hash) as HTMLElement | null
-      if (!el) {
-        return
-      }
-
-      const header = document.querySelector('.site-header') as HTMLElement | null
-      const headerHeight = header ? header.offsetHeight + 8 : 0
-
-      window.scroll({
-        top: el.offsetTop - headerHeight,
-        behavior: 'smooth'
-      })
+      scrollToHashId(hash.slice(1))
     }
   }
 })

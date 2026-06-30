@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import SlimSelect from '@/slim-select'
 import { headerItems, activeHeaderId, type HeaderItem } from '../nav'
 
 export default defineComponent({
@@ -9,7 +10,7 @@ export default defineComponent({
       headerItems,
       openId: null as string | null,
       mobileOpen: false,
-      hoverCloseTimer: 0 as number
+      navSlims: new Map<string, SlimSelect>()
     }
   },
   computed: {
@@ -28,40 +29,83 @@ export default defineComponent({
   mounted() {
     document.addEventListener('keydown', this.onKeydown)
     document.addEventListener('click', this.onDocumentClick)
+    this.$nextTick(() => this.initNavSlims())
   },
   unmounted() {
     document.removeEventListener('keydown', this.onKeydown)
     document.removeEventListener('click', this.onDocumentClick)
-    window.clearTimeout(this.hoverCloseTimer)
     document.body.style.overflow = ''
+    this.destroyNavSlims()
   },
   methods: {
     closeAll() {
       this.openId = null
       this.mobileOpen = false
-      window.clearTimeout(this.hoverCloseTimer)
     },
-    openDropdown(item: HeaderItem) {
-      window.clearTimeout(this.hoverCloseTimer)
-      this.openId = item.id
+    destroyNavSlims() {
+      this.navSlims.forEach((slim) => slim.destroy())
+      this.navSlims.clear()
     },
-    scheduleCloseDropdown() {
-      window.clearTimeout(this.hoverCloseTimer)
-      this.hoverCloseTimer = window.setTimeout(() => {
-        this.openId = null
-      }, 140)
-    },
-    onGroupFocusOut(event: FocusEvent) {
-      const group = event.currentTarget as HTMLElement
-      const next = event.relatedTarget as Node | null
-      if (!next || !group.contains(next)) {
-        this.scheduleCloseDropdown()
+    initNavSlims() {
+      this.destroyNavSlims()
+
+      const header = this.$refs.headerEl as HTMLElement | undefined
+      if (!header) {
+        return
       }
+
+      header.querySelectorAll<HTMLElement>('.site-nav-slim').forEach((group) => {
+        const id = group.dataset.navId
+        const select = group.querySelector('select')
+        const content = group.querySelector<HTMLElement>('.site-nav-slim-content')
+        if (!id || !select || !content) {
+          return
+        }
+
+        const item = headerItems.find((entry) => entry.id === id)
+        if (!item?.children) {
+          return
+        }
+
+        const slim = new SlimSelect({
+          select,
+          settings: {
+            showSearch: false,
+            alwaysOpen: true,
+            closeOnSelect: true,
+            allowDeselect: false,
+            placeholderText: item.label,
+            contentLocation: content,
+            contentPosition: 'relative',
+            contentWidth: '>180px',
+            modal: 'off'
+          },
+          data: [
+            { placeholder: true, text: item.label },
+            ...item.children.map((child) => ({
+              text: child.label,
+              value: child.path
+            }))
+          ],
+          events: {
+            afterChange: (options) => {
+              const path = options[0]?.value
+              if (!path || options[0]?.placeholder) {
+                return
+              }
+
+              slim.setSelected('', false)
+              this.$router.push(path)
+              this.closeAll()
+            }
+          }
+        })
+
+        this.navSlims.set(id, slim)
+      })
     },
-    onKeydown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        this.closeAll()
-      }
+    toggleNavMenu(id: string) {
+      this.openId = this.openId === id ? null : id
     },
     onDocumentClick(event: MouseEvent) {
       const el = this.$refs.headerEl as HTMLElement | undefined
@@ -69,8 +113,13 @@ export default defineComponent({
         this.openId = null
       }
     },
+    onKeydown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        this.closeAll()
+      }
+    },
     isActive(item: HeaderItem): boolean {
-      return this.activeId === item.id || this.openId === item.id
+      return this.activeId === item.id
     }
   }
 })
@@ -94,38 +143,32 @@ export default defineComponent({
             {{ item.label }}
           </router-link>
 
-          <!-- Dropdown trigger -->
+          <!-- SlimSelect nav menu (native button opens content panel) -->
           <div
             v-else
-            class="site-nav-group"
-            @mouseenter="openDropdown(item)"
-            @mouseleave="scheduleCloseDropdown"
-            @focusin="openDropdown(item)"
-            @focusout="onGroupFocusOut"
+            class="site-nav-group site-nav-slim"
+            :class="{ 'is-open': openId === item.id }"
+            :data-nav-id="item.id"
           >
             <button
               type="button"
               class="site-nav-item"
-              :class="{ active: isActive(item) }"
+              :class="{ active: isActive(item) || openId === item.id }"
               :aria-expanded="openId === item.id"
+              @click.stop="toggleNavMenu(item.id)"
             >
               {{ item.label }}
               <svg class="site-nav-chevron" viewBox="0 0 12 12" aria-hidden="true">
                 <path d="M2 4l4 4 4-4" />
               </svg>
             </button>
-
-            <div v-if="openId === item.id" class="site-dropdown">
-              <router-link
-                v-for="child in item.children"
-                :key="child.path"
-                class="site-dropdown-link"
-                :to="child.path"
-                @click="closeAll"
-              >
+            <select :aria-label="item.label" class="site-nav-slim-native" tabindex="-1">
+              <option value="" disabled selected hidden>{{ item.label }}</option>
+              <option v-for="child in item.children" :key="child.path" :value="child.path">
                 {{ child.label }}
-              </router-link>
-            </div>
+              </option>
+            </select>
+            <div class="site-nav-slim-content"></div>
           </div>
         </template>
       </nav>
@@ -161,12 +204,7 @@ export default defineComponent({
       <div class="site-mobile-inner">
         <router-link class="site-mobile-home" to="/" @click="closeAll">Home</router-link>
         <div v-for="item in headerItems" :key="item.id" class="site-mobile-group">
-          <router-link
-            v-if="item.path"
-            class="site-mobile-head"
-            :to="item.path"
-            @click="closeAll"
-          >
+          <router-link v-if="item.path" class="site-mobile-head" :to="item.path" @click="closeAll">
             {{ item.label }}
           </router-link>
           <template v-else>
@@ -175,6 +213,7 @@ export default defineComponent({
               v-for="child in item.children"
               :key="child.path"
               class="site-mobile-link"
+              :class="{ active: $route.path === child.path }"
               :to="child.path"
               @click="closeAll"
             >
@@ -195,6 +234,7 @@ export default defineComponent({
   width: 100%;
   background: var(--chrome-bar);
   border-bottom: 1px solid var(--chrome-border);
+  overflow: visible;
 }
 
 .site-header-inner {
@@ -266,16 +306,6 @@ export default defineComponent({
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
-
-  // Bridge the gap so the pointer can reach the dropdown without closing.
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: 10px;
-  }
 }
 
 .site-nav-item {
@@ -333,26 +363,91 @@ export default defineComponent({
   }
 }
 
-/* Compact dropdown anchored under its trigger */
-.site-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: var(--z-mega);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 100%;
-  width: max-content;
-  padding: 4px;
-  background: var(--chrome);
-  border: 1px solid var(--chrome-border);
-  border-radius: var(--border-radius);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
-  animation: site-dropdown-in 0.14s ease;
+.site-nav-slim {
+  --ss-bg-color: var(--chrome);
+  --ss-border-color: var(--chrome-border);
+  --ss-font-color: var(--on-dark-muted);
+  --ss-primary-color: var(--accent);
+  --ss-highlight-color: var(--on-dark);
+  --ss-spacing-s: 4px;
+  --ss-spacing-m: 6px;
+  --ss-spacing-l: 10px;
+  --ss-content-height: auto;
+  --ss-option-height: 20px;
 
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
+  select.site-nav-slim-native,
+  .ss-main {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-nav-slim-content {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: var(--z-mega);
+    width: max-content;
+    overflow: visible;
+  }
+
+  &.is-open .site-nav-slim-content {
+    display: block;
+  }
+
+  .ss-content {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 4px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+    overflow: visible;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .ss-list {
+    padding: 0;
+    max-height: none;
+  }
+
+  .ss-search {
+    display: none !important;
+  }
+
+  .ss-content .ss-list .ss-option {
+    min-height: var(--ss-option-height);
+    padding: 7px 10px;
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--on-dark-muted);
+    white-space: nowrap;
+    contain-intrinsic-size: auto var(--ss-option-height);
+
+    &:hover,
+    &.ss-highlighted,
+    &.ss-selected {
+      color: var(--on-dark);
+      background: var(--accent);
+      border-left-color: transparent;
+    }
   }
 }
 
@@ -365,27 +460,6 @@ export default defineComponent({
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-.site-dropdown-link {
-  padding: 7px 10px;
-  border-radius: var(--border-radius);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.2;
-  text-decoration: none;
-  color: var(--on-dark-muted);
-  white-space: nowrap;
-
-  &:hover {
-    color: var(--on-dark);
-    background: var(--accent);
-  }
-
-  &.active {
-    color: var(--on-dark);
-    background: var(--accent-strong);
   }
 }
 
@@ -410,7 +484,9 @@ export default defineComponent({
   img {
     height: 26px;
     width: auto;
-    transition: filter 0.2s ease, opacity 0.2s ease;
+    transition:
+      filter 0.2s ease,
+      opacity 0.2s ease;
   }
 
   &:hover {

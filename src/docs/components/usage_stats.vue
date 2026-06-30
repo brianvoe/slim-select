@@ -128,6 +128,9 @@ export default defineComponent({
     async loadStars() {
       try {
         const res = await fetch('https://api.github.com/repos/brianvoe/slim-select')
+        if (!res.ok) {
+          return
+        }
         const data = await res.json()
         this.setStat('stars', data?.stargazers_count)
       } catch {
@@ -137,6 +140,9 @@ export default defineComponent({
     async loadNpm() {
       try {
         const res = await fetch('https://api.npmjs.org/downloads/point/last-month/slim-select')
+        if (!res.ok) {
+          return
+        }
         const data = await res.json()
         this.setStat('npm', data?.downloads)
       } catch {
@@ -146,8 +152,11 @@ export default defineComponent({
     async loadCdn() {
       try {
         const res = await fetch(
-          'https://data.jsdelivr.com/v1/packages/npm/slim-select/stats?period=month'
+          'https://data.jsdelivr.com/v1/stats/packages/npm/slim-select?period=month'
         )
+        if (!res.ok) {
+          return
+        }
         const data = await res.json()
         this.setStat('cdn', data?.hits?.total)
       } catch {

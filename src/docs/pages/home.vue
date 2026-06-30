@@ -353,6 +353,7 @@ export default defineComponent({
       settings: {
         placeholderText: 'Stack your skills…',
         closeOnSelect: false,
+        keepOrder: true,
         modal: 'off'
       },
       data: heroMultiOptions
@@ -533,14 +534,21 @@ ${themeVarsCssLines(vars)}
         single.close()
       }, 1300)
       window.setTimeout(() => {
+        multi.setSelected([])
         multi.open()
       }, 1700)
       window.setTimeout(() => {
-        multi.setSelected(['typescript', 'vue', 'react'])
+        multi.setSelected(['typescript'])
       }, 2350)
       window.setTimeout(() => {
+        multi.setSelected(['typescript', 'vue'])
+      }, 2800)
+      window.setTimeout(() => {
+        multi.setSelected(['typescript', 'vue', 'react'])
+      }, 3250)
+      window.setTimeout(() => {
         multi.close()
-      }, 3200)
+      }, 3900)
     }
   }
 })
