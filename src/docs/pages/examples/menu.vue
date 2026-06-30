@@ -10,16 +10,6 @@ const menuItems = [
   { label: 'Integrations', value: 'integrations' }
 ]
 
-const menuSettings = {
-  showSearch: false,
-  alwaysOpen: true,
-  closeOnSelect: true,
-  allowDeselect: false,
-  contentPosition: 'relative' as const,
-  contentWidth: '>180px',
-  modal: 'off' as const
-}
-
 export default defineComponent({
   name: 'MenuExample',
   components: {
@@ -29,27 +19,22 @@ export default defineComponent({
     return {
       menuItems,
       open: false,
-      selected: '',
       slim: null as SlimSelect | null
     }
   },
   mounted() {
-    document.addEventListener('click', this.onDocumentClick)
-    document.addEventListener('keydown', this.onKeydown)
     this.$nextTick(() => this.initMenu())
   },
   unmounted() {
-    document.removeEventListener('click', this.onDocumentClick)
-    document.removeEventListener('keydown', this.onKeydown)
     this.slim?.destroy()
     this.slim = null
   },
   methods: {
     initMenu() {
-      const root = this.$refs.menuRoot as HTMLElement | undefined
-      const select = root?.querySelector('select')
-      const content = root?.querySelector<HTMLElement>('.menu-nav-slim-content')
-      if (!select || !content) {
+      const group = this.$refs.menuGroup as HTMLElement | undefined
+      const select = group?.querySelector('select')
+      const content = group?.querySelector<HTMLElement>('.menu-nav-slim-content')
+      if (!group || !select || !content) {
         return
       }
 
@@ -58,9 +43,11 @@ export default defineComponent({
       const slim = new SlimSelect({
         select,
         settings: {
-          ...menuSettings,
-          placeholderText: 'Products',
-          contentLocation: content
+          showSearch: false,
+          contentLocation: content,
+          contentPosition: 'relative',
+          contentWidth: '>180px',
+          modal: 'off'
         },
         data: [
           { placeholder: true, text: 'Products' },
@@ -70,15 +57,15 @@ export default defineComponent({
           }))
         ],
         events: {
-          afterChange: (options) => {
-            const value = options[0]?.value
-            if (!value || options[0]?.placeholder) {
-              return
-            }
-
-            slim.setSelected('', false)
-            this.selected = menuItems.find((item) => item.value === value)?.label ?? value
+          afterOpen: () => {
+            this.open = true
+          },
+          afterClose: () => {
             this.open = false
+          },
+          afterChange: (options) => {
+            console.log(options[0]?.value)
+            slim.setSelected('', false)
           }
         }
       })
@@ -86,17 +73,14 @@ export default defineComponent({
       this.slim = slim
     },
     toggleMenu() {
-      this.open = !this.open
-    },
-    onDocumentClick(event: MouseEvent) {
-      const root = this.$refs.menuRoot as HTMLElement | undefined
-      if (root && !root.contains(event.target as Node)) {
-        this.open = false
+      if (!this.slim) {
+        return
       }
-    },
-    onKeydown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        this.open = false
+
+      if (this.slim.settings.isOpen) {
+        this.slim.close()
+      } else {
+        this.slim.open()
       }
     }
   }
@@ -159,59 +143,39 @@ export default defineComponent({
     }
   }
 
-  .menu-demo-result {
-    margin: var(--spacing-half) 0 0;
-    font-size: 14px;
-    color: var(--on-dark-muted);
-
-    strong {
-      color: var(--on-dark);
-    }
-  }
-
   .menu-nav-group {
     position: relative;
     display: inline-flex;
   }
 
   .menu-nav-slim {
-    --ss-bg-color: var(--chrome);
-    --ss-border-color: var(--chrome-border);
-    --ss-font-color: var(--on-dark-muted);
-    --ss-primary-color: var(--accent);
-    --ss-highlight-color: var(--on-dark);
+    position: relative;
+
+    /* SlimSelect theme — adjust appearance via variables only */
+    --ss-bg-color: #1e293b;
+    --ss-border-color: #334155;
+    --ss-font-color: #b8c5d6;
+    --ss-primary-color: #2d4a63;
+    --ss-highlight-color: #ffffff;
+    --ss-border-radius: 4px;
     --ss-content-height: auto;
     --ss-option-height: 36px;
+    --ss-spacing-s: 4px;
+    --ss-spacing-m: 6px;
     --ss-spacing-l: 10px;
 
-    > select,
+    /* Layout — position the content div where SlimSelect mounts the panel */
     .ss-main {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      border: 0;
-      opacity: 0;
-      pointer-events: none;
+      display: none;
     }
 
     .menu-nav-slim-content {
-      display: none;
       position: absolute;
       top: calc(100% + 6px);
       left: 0;
       z-index: 20;
       width: max-content;
-      border-radius: var(--border-radius);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
     }
-  }
-
-  .menu-demo.is-open .menu-nav-slim-content {
-    display: block;
   }
 }
 </style>
@@ -220,23 +184,28 @@ export default defineComponent({
   <div id="menu" class="content">
     <h2 class="header">Navigation menu</h2>
     <p>
-      SlimSelect can power a site navigation dropdown while you keep full control of the trigger button. The select
-      provides keyboard-friendly options and routing hooks; your button toggles when the panel is visible.
+      SlimSelect can power a site navigation dropdown while you keep full control of the trigger button. Call
+      <code>open()</code> and <code>close()</code> from your button — SlimSelect handles panel visibility, outside
+      clicks, and keyboard-friendly option selection.
     </p>
     <p>
-      Style the dropdown with CSS variables on the wrapper — set <code>--ss-bg-color</code>,
-      <code>--ss-primary-color</code>, <code>--ss-option-height</code>, and related tokens once, then add a small amount
-      of structural CSS for the panel layout and trigger hiding.
+      Style the dropdown by setting SlimSelect CSS variables on <code>.menu-nav-slim</code> — colors, spacing,
+      option height, and border radius all come from the standard <code>--ss-*</code> tokens. No extra
+      <code>.ss-content</code> or <code>.ss-option</code> overrides are needed.
+    </p>
+    <p>
+      A small amount of layout CSS is still required to hide <code>.ss-main</code> and position the content mount
+      point below your custom button.
     </p>
     <p>
       If you do not need a fully custom button, you can skip most of this by styling
       <code>.ss-main</code> directly as your nav link instead of hiding it.
     </p>
 
-    <div ref="menuRoot" class="menu-demo" :class="{ 'is-open': open }">
+    <div class="menu-demo">
       <nav class="menu-demo-bar" aria-label="Demo navigation">
         <a class="menu-demo-link" href="#" @click.prevent>Home</a>
-        <div class="menu-nav-group menu-nav-slim">
+        <div ref="menuGroup" class="menu-nav-group menu-nav-slim">
           <button type="button" class="menu-demo-link menu-demo-trigger" :aria-expanded="open" @click.stop="toggleMenu">
             Products
             <svg class="menu-demo-chevron" viewBox="0 0 12 12" aria-hidden="true">
@@ -253,15 +222,11 @@ export default defineComponent({
         </div>
         <a class="menu-demo-link" href="#" @click.prevent>Pricing</a>
       </nav>
-
-      <p v-if="selected" class="menu-demo-result">
-        Navigated to <strong>{{ selected }}</strong>
-      </p>
     </div>
 
     <HighlightStyle language="html">
       <pre>
-&lt;div class="menu-nav-slim" data-open="false"&gt;
+&lt;div class="menu-nav-slim"&gt;
   &lt;button type="button" class="menu-trigger" aria-expanded="false"&gt;Products&lt;/button&gt;
   &lt;select tabindex="-1" aria-hidden="true"&gt;…&lt;/select&gt;
   &lt;div class="menu-nav-slim-content"&gt;&lt;/div&gt;
@@ -271,23 +236,16 @@ export default defineComponent({
 
     <HighlightStyle language="javascript">
       <pre>
-const menuSettings = {
-  showSearch: false,
-  alwaysOpen: true,
-  closeOnSelect: true,
-  allowDeselect: false,
-  contentPosition: 'relative',
-  contentWidth: '&gt;180px',
-  modal: 'off'
-}
-
 const group = document.querySelector('.menu-nav-slim')
+
 const slim = new SlimSelect({
   select: group.querySelector('select'),
   settings: {
-    ...menuSettings,
-    placeholderText: 'Products',
-    contentLocation: group.querySelector('.menu-nav-slim-content')
+    showSearch: false,
+    contentLocation: group.querySelector('.menu-nav-slim-content'),
+    contentPosition: 'relative',
+    contentWidth: '&gt;180px',
+    modal: 'off'
   },
   data: [
     { placeholder: true, text: 'Products' },
@@ -296,65 +254,57 @@ const slim = new SlimSelect({
   ],
   events: {
     afterChange: (options) => {
-      const value = options[0]?.value
-      if (!value || options[0]?.placeholder) return
+      console.log(options[0]?.value)
       slim.setSelected('', false)
-      window.location.href = '/app/' + value
-      group.dataset.open = 'false'
     }
   }
 })
 
 group.querySelector('.menu-trigger').addEventListener('click', (e) => {
   e.stopPropagation()
-  group.dataset.open = group.dataset.open === 'true' ? 'false' : 'true'
+  slim.settings.isOpen ? slim.close() : slim.open()
 })
       </pre>
     </HighlightStyle>
 
     <HighlightStyle language="css">
       <pre>
+/* SlimSelect theme */
 .menu-nav-slim {
-  position: relative;
   --ss-bg-color: #1e293b;
-  --ss-border-color: rgba(255, 255, 255, 0.12);
-  --ss-font-color: rgba(255, 255, 255, 0.72);
-  --ss-primary-color: rgba(88, 151, 251, 0.22);
+  --ss-border-color: #334155;
+  --ss-font-color: #b8c5d6;
+  --ss-primary-color: #2d4a63;
+  --ss-highlight-color: #ffffff;
+  --ss-border-radius: 4px;
   --ss-content-height: auto;
   --ss-option-height: 36px;
+  --ss-spacing-s: 4px;
+  --ss-spacing-m: 6px;
   --ss-spacing-l: 10px;
 }
 
-.menu-nav-slim > select,
+/* Layout — position the content div where SlimSelect mounts the panel */
+.menu-nav-slim {
+  position: relative;
+}
+
 .menu-nav-slim .ss-main {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  opacity: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .menu-nav-slim-content {
-  display: none;
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   z-index: 20;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-}
-
-.menu-nav-slim[data-open='true'] .menu-nav-slim-content {
-  display: block;
 }
       </pre>
     </HighlightStyle>
 
     <p>
       See also
-      <router-link to="/settings#alwaysOpen">alwaysOpen</router-link>,
+      <router-link to="/methods#openClose">open / close</router-link>,
       <router-link to="/settings#contentLocation">contentLocation</router-link>, and
       <router-link to="/settings#contentWidth">contentWidth</router-link> for the related settings.
     </p>

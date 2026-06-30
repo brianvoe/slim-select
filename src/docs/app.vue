@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 
 import AdSlot from '@/docs/components/adslot.vue'
-import SiteHeader from '@/docs/components/site_header.vue'
+import Header from '@/docs/components/header.vue'
 import PageNav from '@/docs/components/page_nav.vue'
 import DonateModal from '@/docs/components/donate_modal.vue'
 import { hasSidebar } from '@/docs/nav'
@@ -13,7 +13,7 @@ export default defineComponent({
   name: 'App',
   components: {
     AdSlot,
-    SiteHeader,
+    Header,
     PageNav,
     DonateModal
   },
@@ -73,7 +73,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <SiteHeader />
+  <Header />
   <main class="app-main" :class="{ 'with-nav': showSidebar }">
     <PageNav v-if="showSidebar" />
     <div class="app-content">

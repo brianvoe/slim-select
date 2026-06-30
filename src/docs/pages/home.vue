@@ -460,7 +460,7 @@ export default defineComponent({
   methods: {
     headerHeight(): number {
       return (
-        (document.querySelector('.site-header') as HTMLElement)?.offsetHeight ??
+        (document.querySelector('.app-header') as HTMLElement)?.offsetHeight ??
         64
       )
     },

@@ -185,7 +185,7 @@ export default defineComponent({
         return
       }
       const line =
-        ((document.querySelector('.site-header') as HTMLElement | null)
+        ((document.querySelector('.app-header') as HTMLElement | null)
           ?.offsetHeight ?? 64) + 16
       let current = this.sections[0].id
       for (const section of this.sections) {

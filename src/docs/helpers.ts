@@ -2,7 +2,7 @@ import type SlimSelect from '@/slim-select'
 
 /** Shared scroll offset for in-page doc section links (fixed site header). */
 export function docScrollOffset(): number {
-  const header = document.querySelector('.site-header') as HTMLElement | null
+  const header = document.querySelector('.app-header') as HTMLElement | null
   return (header?.offsetHeight ?? 64) + 16
 }
 
