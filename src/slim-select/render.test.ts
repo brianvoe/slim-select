@@ -2512,6 +2512,30 @@ describe('render module', () => {
       )
     }
 
+    function mockContentRectFromStyles(el: HTMLElement) {
+      el.getBoundingClientRect = vi.fn(() => {
+        const docLeft = parseFloat(el.style.left) || 0
+        const width = parseFloat(el.style.width) || 0
+        const left = docLeft - window.scrollX
+        return {
+          top: 0,
+          left,
+          right: left + width,
+          bottom: 0,
+          width,
+          height: 0,
+          x: left,
+          y: 0,
+          toJSON: () => {}
+        } as DOMRect
+      })
+    }
+
+    async function flushOverflowShift() {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+    }
+
     test('absolute (default): content aligns below trigger using document coords', () => {
       // Simulate trigger at viewport (100, 50) with height 40 and width 200
       mockRect(render.main.main, { top: 100, left: 50, height: 40, width: 200 })
@@ -2709,6 +2733,72 @@ describe('render module', () => {
         expect(render.content.main.style.width).toBe('200px')
         expect(render.content.main.style.minWidth).toBe('')
         expect(render.content.main.style.maxWidth).toBe('')
+      })
+    })
+
+    describe('overflow shift', () => {
+      beforeEach(() => {
+        Object.defineProperty(window, 'scrollX', { value: 0, writable: true })
+        Object.defineProperty(window, 'scrollY', { value: 0, writable: true })
+        render.settings.contentPosition = 'absolute'
+        mockContentRectFromStyles(render.content.main)
+      })
+
+      test('does not shift when dropdown fits inside viewport', async () => {
+        Object.defineProperty(window, 'innerWidth', {
+          value: 350,
+          writable: true
+        })
+        mockRect(render.main.main, {
+          top: 100,
+          left: 15,
+          height: 40,
+          width: 320
+        })
+
+        render.moveContentBelow()
+        await flushOverflowShift()
+
+        expect(render.content.main.style.left).toBe('15px')
+        expect(render.content.main.style.width).toBe('320px')
+      })
+
+      test('shifts left when dropdown genuinely overflows viewport', async () => {
+        Object.defineProperty(window, 'innerWidth', {
+          value: 350,
+          writable: true
+        })
+        mockRect(render.main.main, {
+          top: 100,
+          left: 50,
+          height: 40,
+          width: 320
+        })
+
+        render.moveContentBelow()
+        await flushOverflowShift()
+
+        // right edge 370 overflows; target right is 330 (350 - 20 padding)
+        expect(render.content.main.style.left).toBe('10px')
+      })
+
+      test('fixed position shifts left on genuine overflow', async () => {
+        Object.defineProperty(window, 'innerWidth', {
+          value: 350,
+          writable: true
+        })
+        render.settings.contentPosition = 'fixed'
+        mockRect(render.main.main, {
+          top: 100,
+          left: 50,
+          height: 40,
+          width: 320
+        })
+
+        render.moveContentBelow()
+        await flushOverflowShift()
+
+        expect(render.content.main.style.left).toBe('10px')
       })
     })
   })

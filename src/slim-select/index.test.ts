@@ -1845,6 +1845,32 @@ describe('SlimSelect Module', () => {
       expect(slim.getSelected()).toEqual(['2'])
     })
 
+    test('native select change event fires on UI selection', () => {
+      document.body.innerHTML = `
+        <select id="change-event-select">
+          <option value="1">One</option>
+          <option value="2">Two</option>
+        </select>
+      `
+
+      const selectEl = document.getElementById(
+        'change-event-select'
+      ) as HTMLSelectElement
+      const onChangeMock = vi.fn()
+      selectEl.addEventListener('change', onChangeMock)
+
+      const slim = new SlimSelect({ select: '#change-event-select' })
+
+      slim.open()
+      const option = Array.from(document.querySelectorAll('.ss-option')).find(
+        (el) => el.textContent?.trim() === 'Two'
+      )
+      option!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      expect(onChangeMock).toHaveBeenCalled()
+      expect(selectEl.value).toBe('2')
+    })
+
     test('rapid open then close does not leave isFullOpen true', async () => {
       document.body.innerHTML =
         '<select id="sync-open"><option value="1">One</option></select>'

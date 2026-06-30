@@ -2579,25 +2579,24 @@ export default class Render {
     }
 
     const padding = 20
-    const viewportRight = window.innerWidth - padding
 
     const applyOverflowShift = (): void => {
       const contentRect = this.content.main.getBoundingClientRect()
       const contentRight = contentRect.right
-      if (contentRight <= viewportRight) return
 
-      const overflow = contentRight - viewportRight
+      // Only shift when content actually extends past the viewport
+      if (contentRight <= window.innerWidth) return
+
+      // Keep a small margin from the viewport edge when correcting real overflow
+      const targetRight = window.innerWidth - padding
+      const overflow = contentRight - targetRight
       const currentLeft = parseFloat(this.content.main.style.left) || 0
+      const newLeft = currentLeft - overflow
 
       if (this.settings.contentPosition === 'fixed') {
-        const newLeft = Math.max(padding, currentLeft - overflow)
-        this.content.main.style.left = newLeft + 'px'
+        this.content.main.style.left = Math.max(0, newLeft) + 'px'
       } else {
-        const newLeft = Math.max(
-          window.scrollX + padding,
-          currentLeft - overflow
-        )
-        this.content.main.style.left = newLeft + 'px'
+        this.content.main.style.left = Math.max(window.scrollX, newLeft) + 'px'
       }
     }
 

@@ -398,6 +398,9 @@ export default class Select {
       this.select.value = selected.length === 1 ? selected[0].value : ''
     }
 
+    // Fire native change listeners while observer is paused to avoid re-entrant sync
+    this.select.dispatchEvent(new Event('change', { bubbles: true }))
+
     this.changeListen(true)
   }
 
@@ -439,6 +442,9 @@ export default class Select {
       // Sync native value for form validation / Vue v-model
       this.select.value = selected.length === 1 ? selected[0].value : ''
     }
+
+    // Fire native change listeners while observer is paused to avoid re-entrant sync
+    this.select.dispatchEvent(new Event('change', { bubbles: true }))
 
     this.changeListen(true)
   }
