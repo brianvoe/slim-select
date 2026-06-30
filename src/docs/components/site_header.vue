@@ -3,6 +3,16 @@ import { defineComponent } from 'vue'
 import SlimSelect from '@/slim-select'
 import { headerItems, activeHeaderId, type HeaderItem } from '../nav'
 
+const navMenuSettings = {
+  showSearch: false,
+  alwaysOpen: true,
+  closeOnSelect: true,
+  allowDeselect: false,
+  contentPosition: 'relative' as const,
+  contentWidth: '>180px',
+  modal: 'off' as const
+}
+
 export default defineComponent({
   name: 'SiteHeader',
   data() {
@@ -70,15 +80,9 @@ export default defineComponent({
         const slim = new SlimSelect({
           select,
           settings: {
-            showSearch: false,
-            alwaysOpen: true,
-            closeOnSelect: true,
-            allowDeselect: false,
+            ...navMenuSettings,
             placeholderText: item.label,
-            contentLocation: content,
-            contentPosition: 'relative',
-            contentWidth: '>180px',
-            modal: 'off'
+            contentLocation: content
           },
           data: [
             { placeholder: true, text: item.label },
@@ -162,7 +166,7 @@ export default defineComponent({
                 <path d="M2 4l4 4 4-4" />
               </svg>
             </button>
-            <select :aria-label="item.label" class="site-nav-slim-native" tabindex="-1">
+            <select :aria-label="item.label" tabindex="-1" aria-hidden="true">
               <option value="" disabled selected hidden>{{ item.label }}</option>
               <option v-for="child in item.children" :key="child.path" :value="child.path">
                 {{ child.label }}
@@ -369,24 +373,20 @@ export default defineComponent({
   --ss-font-color: var(--on-dark-muted);
   --ss-primary-color: var(--accent);
   --ss-highlight-color: var(--on-dark);
-  --ss-spacing-s: 4px;
-  --ss-spacing-m: 6px;
   --ss-spacing-l: 10px;
   --ss-content-height: auto;
-  --ss-option-height: 20px;
+  --ss-option-height: 36px;
 
-  select.site-nav-slim-native,
+  > select,
   .ss-main {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
     clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0 !important;
+    border: 0;
     opacity: 0;
     pointer-events: none;
   }
@@ -398,56 +398,12 @@ export default defineComponent({
     left: 0;
     z-index: var(--z-mega);
     width: max-content;
-    overflow: visible;
+    border-radius: var(--border-radius);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
   }
 
   &.is-open .site-nav-slim-content {
     display: block;
-  }
-
-  .ss-content {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    width: auto !important;
-    max-height: none !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 4px;
-    border-radius: var(--border-radius);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
-    overflow: visible;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .ss-list {
-    padding: 0;
-    max-height: none;
-  }
-
-  .ss-search {
-    display: none !important;
-  }
-
-  .ss-content .ss-list .ss-option {
-    min-height: var(--ss-option-height);
-    padding: 7px 10px;
-    border-radius: var(--border-radius);
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: var(--on-dark-muted);
-    white-space: nowrap;
-    contain-intrinsic-size: auto var(--ss-option-height);
-
-    &:hover,
-    &.ss-highlighted,
-    &.ss-selected {
-      color: var(--on-dark);
-      background: var(--accent);
-      border-left-color: transparent;
-    }
   }
 }
 

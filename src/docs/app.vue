@@ -6,7 +6,7 @@ import SiteHeader from '@/docs/components/site_header.vue'
 import PageNav from '@/docs/components/page_nav.vue'
 import DonateModal from '@/docs/components/donate_modal.vue'
 import { hasSidebar } from '@/docs/nav'
-import { scrollToHashId } from '@/docs/helpers'
+import { scrollToHashId, destroyOrphanedSlimSelects } from '@/docs/helpers'
 import { useAppStore } from '@/docs/store'
 
 export default defineComponent({
@@ -33,6 +33,8 @@ export default defineComponent({
     window.addEventListener('resize', this.onResize)
 
     this.$router.afterEach((to, from) => {
+      this.$nextTick(() => destroyOrphanedSlimSelects())
+
       if (to.query.p) {
         setTimeout(() => {
           if (to.query.p) {
