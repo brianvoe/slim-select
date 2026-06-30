@@ -1251,15 +1251,6 @@ export default class Render {
         case 'Escape':
           this.callbacks.close()
           return false
-        case ' ':
-          const highlighted = this.content.list.querySelector(
-            '.' + this.classes.getFirst('highlighted')
-          ) as HTMLDivElement
-          if (highlighted) {
-            highlighted.click()
-            return false
-          }
-          return true
         case 'Enter':
           // Check if there's a highlighted option first
           const highlightedEnter = this.content.list.querySelector(

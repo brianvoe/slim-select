@@ -1093,7 +1093,7 @@ describe('SlimSelect Module', () => {
       )
     })
 
-    test('trims leading and trailing spaces when filtering', () => {
+    test('filters with trimmed term but preserves spaces in the input', () => {
       document.body.innerHTML = `
         <select id="local-search-trim">
           <option value="1">Apple</option>
@@ -1104,12 +1104,40 @@ describe('SlimSelect Module', () => {
 
       const slim = new SlimSelect({ select: '#local-search-trim' })
       slim.open()
+      slim.render.content.search.input.value = '  app  '
       slim.search('  app  ')
 
-      expect(slim.render.content.search.input.value).toBe('app')
+      expect(slim.render.content.search.input.value).toBe('  app  ')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
       expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
         'Apple'
+      )
+    })
+
+    test('allows spaces while typing multi-word search terms', () => {
+      document.body.innerHTML = `
+        <select id="local-search-spaces">
+          <option value="1">John Smith</option>
+          <option value="2">Jane Doe</option>
+          <option value="3">John Doe</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({ select: '#local-search-spaces' })
+      slim.open()
+      slim.render.content.search.input.value = 'John '
+      slim.search('John ')
+
+      expect(slim.render.content.search.input.value).toBe('John ')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(2)
+
+      slim.render.content.search.input.value = 'John Smith'
+      slim.search('John Smith')
+
+      expect(slim.render.content.search.input.value).toBe('John Smith')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
+      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
+        'John Smith'
       )
     })
 
@@ -1155,9 +1183,10 @@ describe('SlimSelect Module', () => {
       })
 
       slim.open()
+      slim.render.content.search.input.value = '  te  '
       slim.search('  te  ')
 
-      expect(slim.render.content.search.input.value).toBe('te')
+      expect(slim.render.content.search.input.value).toBe('  te  ')
       expect(searchMock).toHaveBeenCalledWith(
         'te',
         expect.any(Array),

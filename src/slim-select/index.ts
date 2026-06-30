@@ -508,23 +508,25 @@ export default class SlimSelect {
 
   // Take in string value and search current options
   public search(value: string): void {
-    const searchValue = value.trim()
+    const trimmed = value.trim()
 
-    if (this.render.content.search.input.value !== searchValue) {
-      this.render.content.search.input.value = searchValue
-    }
-
-    if (searchValue === '') {
+    if (trimmed === '') {
+      this.render.content.search.input.value = ''
       this.clearSearch()
       return
     }
 
+    // Sync programmatic search calls, but never strip spaces from user input
+    if (this.render.content.search.input.value !== value) {
+      this.render.content.search.input.value = value
+    }
+
     if (this.events.search) {
-      this.runApiSearch(searchValue)
+      this.runApiSearch(trimmed)
       return
     }
 
-    this.runLocalSearch(searchValue)
+    this.runLocalSearch(trimmed)
   }
 
   private clearSearch(): void {
