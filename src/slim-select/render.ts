@@ -90,6 +90,7 @@ export default class Render {
 
   private positionObserver: ResizeObserver | null = null
   private positionObserverRaf = 0
+  private overflowShiftRaf = 0
 
   private modalElements: ModalElements | null = null
   private modalSessionActive: boolean | null = null
@@ -1166,6 +1167,7 @@ export default class Render {
     cancelAnimationFrame(this.positionObserverRaf)
     this.positionObserver?.disconnect()
     this.positionObserver = null
+    this.cancelOverflowShift()
   }
 
   private observePositionTargets(): void {
@@ -1184,7 +1186,8 @@ export default class Render {
     }
 
     observe(this.main.main)
-    observe(this.content.main)
+    // Do not observe content — our own overflow/position updates resize the panel
+    // and would re-enter moveContent() causing horizontal jitter at the viewport edge.
 
     let parent: HTMLElement | null = this.main.main.parentElement
     const stopAt = this.settings.contentLocation
@@ -2544,11 +2547,15 @@ export default class Render {
   }
 
   private setContentPosition(): void {
+    const containerRect = this.main.main.getBoundingClientRect()
+
     if (this.settings.contentPosition === 'relative') {
+      this.applyContentWidth(containerRect)
       return
     }
 
-    const containerRect = this.main.main.getBoundingClientRect()
+    this.cancelOverflowShift()
+
     let top: number
     let left: number
 
@@ -2563,47 +2570,102 @@ export default class Render {
     this.content.main.style.top = top + 'px'
     this.content.main.style.left = left + 'px'
 
+    this.applyContentWidth(containerRect)
+
+    const knownWidth = this.getKnownContentWidth(containerRect)
+    if (knownWidth !== null) {
+      this.content.main.style.left =
+        this.adjustLeftForOverflow(left, containerRect.left, knownWidth) + 'px'
+      return
+    }
+
+    // min/max/auto width needs one layout pass before measuring
+    this.overflowShiftRaf = requestAnimationFrame(() => {
+      this.overflowShiftRaf = 0
+      this.applyOverflowShiftFromMeasure()
+    })
+  }
+
+  private applyContentWidth(containerRect: DOMRect): void {
     const cw = this.settings.contentWidth
     this.content.main.style.width = ''
     this.content.main.style.minWidth = ''
     this.content.main.style.maxWidth = ''
 
     if (!cw) {
-      this.content.main.style.width = containerRect.width + 'px'
-    } else if (cw.startsWith('>')) {
+      if (this.settings.contentPosition !== 'relative') {
+        this.content.main.style.width = containerRect.width + 'px'
+      }
+      return
+    }
+
+    if (cw.startsWith('>')) {
       this.content.main.style.minWidth = cw.slice(1)
     } else if (cw.startsWith('<')) {
       this.content.main.style.maxWidth = cw.slice(1)
     } else {
       this.content.main.style.width = cw
     }
+  }
 
-    const padding = 20
+  private cancelOverflowShift(): void {
+    if (this.overflowShiftRaf) {
+      cancelAnimationFrame(this.overflowShiftRaf)
+      this.overflowShiftRaf = 0
+    }
+  }
 
-    const applyOverflowShift = (): void => {
-      const contentRect = this.content.main.getBoundingClientRect()
-      const contentRight = contentRect.right
-
-      // Only shift when content actually extends past the viewport
-      if (contentRight <= window.innerWidth) return
-
-      // Keep a small margin from the viewport edge when correcting real overflow
-      const targetRight = window.innerWidth - padding
-      const overflow = contentRight - targetRight
-      const currentLeft = parseFloat(this.content.main.style.left) || 0
-      const newLeft = currentLeft - overflow
-
-      if (this.settings.contentPosition === 'fixed') {
-        this.content.main.style.left = Math.max(0, newLeft) + 'px'
-      } else {
-        this.content.main.style.left = Math.max(window.scrollX, newLeft) + 'px'
-      }
+  /** Width in px when known before layout; null when width must be measured. */
+  private getKnownContentWidth(containerRect: DOMRect): number | null {
+    const cw = this.settings.contentWidth
+    if (!cw) {
+      return containerRect.width
+    }
+    if (cw.startsWith('>') || cw.startsWith('<') || cw.includes('%')) {
+      return null
     }
 
-    requestAnimationFrame(() => {
-      applyOverflowShift()
-      requestAnimationFrame(applyOverflowShift)
-    })
+    const px = parseFloat(cw)
+    return Number.isNaN(px) ? null : px
+  }
+
+  private adjustLeftForOverflow(
+    docLeft: number,
+    viewportLeft: number,
+    width: number
+  ): number {
+    const padding = 20
+    const contentRight = viewportLeft + width
+    if (contentRight <= window.innerWidth) {
+      return docLeft
+    }
+
+    const overflow = contentRight - (window.innerWidth - padding)
+    const newLeft = docLeft - overflow
+
+    if (this.settings.contentPosition === 'fixed') {
+      return Math.max(0, newLeft)
+    }
+    return Math.max(window.scrollX, newLeft)
+  }
+
+  private applyOverflowShiftFromMeasure(): void {
+    const contentRect = this.content.main.getBoundingClientRect()
+    const contentRight = contentRect.right
+    if (contentRight <= window.innerWidth) {
+      return
+    }
+
+    const padding = 20
+    const overflow = contentRight - (window.innerWidth - padding)
+    const currentLeft = parseFloat(this.content.main.style.left) || 0
+    const newLeft = currentLeft - overflow
+
+    if (this.settings.contentPosition === 'fixed') {
+      this.content.main.style.left = Math.max(0, newLeft) + 'px'
+    } else {
+      this.content.main.style.left = Math.max(window.scrollX, newLeft) + 'px'
+    }
   }
 
   public moveContentAbove(): void {

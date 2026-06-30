@@ -706,12 +706,12 @@ describe('render module', () => {
       vi.unstubAllGlobals()
     })
 
-    test('startPositionTracking observes trigger and content', () => {
+    test('startPositionTracking observes trigger and ancestors', () => {
       render.startPositionTracking()
 
       expect(ResizeObserverConstructor).toHaveBeenCalled()
       expect(observeMock).toHaveBeenCalledWith(render.main.main)
-      expect(observeMock).toHaveBeenCalledWith(render.content.main)
+      expect(observeMock).not.toHaveBeenCalledWith(render.content.main)
     })
 
     test('stopPositionTracking disconnects observer', () => {
@@ -2533,7 +2533,6 @@ describe('render module', () => {
 
     async function flushOverflowShift() {
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
     }
 
     test('absolute (default): content aligns below trigger using document coords', () => {
@@ -2734,6 +2733,16 @@ describe('render module', () => {
         expect(render.content.main.style.minWidth).toBe('')
         expect(render.content.main.style.maxWidth).toBe('')
       })
+
+      test('> prefix with relative contentPosition sets min-width only', () => {
+        render.settings.contentPosition = 'relative'
+        render.settings.contentWidth = '>180px'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.minWidth).toBe('180px')
+        expect(render.content.main.style.width).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
     })
 
     describe('overflow shift', () => {
@@ -2744,7 +2753,7 @@ describe('render module', () => {
         mockContentRectFromStyles(render.content.main)
       })
 
-      test('does not shift when dropdown fits inside viewport', async () => {
+      test('does not shift when dropdown fits inside viewport', () => {
         Object.defineProperty(window, 'innerWidth', {
           value: 350,
           writable: true
@@ -2757,13 +2766,12 @@ describe('render module', () => {
         })
 
         render.moveContentBelow()
-        await flushOverflowShift()
 
         expect(render.content.main.style.left).toBe('15px')
         expect(render.content.main.style.width).toBe('320px')
       })
 
-      test('shifts left when dropdown genuinely overflows viewport', async () => {
+      test('shifts left when dropdown genuinely overflows viewport', () => {
         Object.defineProperty(window, 'innerWidth', {
           value: 350,
           writable: true
@@ -2776,13 +2784,12 @@ describe('render module', () => {
         })
 
         render.moveContentBelow()
-        await flushOverflowShift()
 
         // right edge 370 overflows; target right is 330 (350 - 20 padding)
         expect(render.content.main.style.left).toBe('10px')
       })
 
-      test('fixed position shifts left on genuine overflow', async () => {
+      test('fixed position shifts left on genuine overflow', () => {
         Object.defineProperty(window, 'innerWidth', {
           value: 350,
           writable: true
@@ -2796,6 +2803,48 @@ describe('render module', () => {
         })
 
         render.moveContentBelow()
+
+        expect(render.content.main.style.left).toBe('10px')
+      })
+
+      test('repeated repositioning stays stable at viewport edge', () => {
+        Object.defineProperty(window, 'innerWidth', {
+          value: 350,
+          writable: true
+        })
+        mockRect(render.main.main, {
+          top: 100,
+          left: 50,
+          height: 40,
+          width: 320
+        })
+
+        render.moveContentBelow()
+        render.moveContentBelow()
+        render.moveContentBelow()
+
+        expect(render.content.main.style.left).toBe('10px')
+      })
+
+      test('min-width content applies overflow shift after layout', async () => {
+        Object.defineProperty(window, 'innerWidth', {
+          value: 350,
+          writable: true
+        })
+        render.settings.contentWidth = '>300px'
+        mockRect(render.main.main, {
+          top: 100,
+          left: 50,
+          height: 40,
+          width: 320
+        })
+
+        render.moveContentBelow()
+        mockRect(render.content.main, {
+          left: 50,
+          right: 370,
+          width: 320
+        })
         await flushOverflowShift()
 
         expect(render.content.main.style.left).toBe('10px')
