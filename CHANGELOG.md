@@ -5,6 +5,40 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.2] - 2026-06-30
+
+### Added
+
+- Documentation **Navigation menu** usage example — custom trigger button with SlimSelect dropdown panel
+  (`alwaysOpen`, `contentLocation`, CSS variables)
+- Site header **Docs** and **Frameworks** menus powered by SlimSelect
+- Docs in-page hash navigation (section links, direct URL visits, smooth scroll)
+- `destroyOrphanedSlimSelects()` helper — cleans up SlimSelect DOM left on `document.body` after SPA route changes
+
+### Changed
+
+- `contentWidth` applies when `contentPosition` is `'relative'` (e.g. inline nav menus)
+- Native `<select>` classes copy to `.ss-main` only, not `.ss-content` (avoids hide/layout classes breaking the panel)
+- Navigation menu docs and site header styled via CSS variables instead of heavy `.ss-content` overrides
+
+### Fixed
+
+- Native `<select>` `change` event fires again on UI-only selection updates
+  ([#689](https://github.com/brianvoe/slim-select/issues/689))
+- Dropdown no longer shifts horizontally at a hardcoded viewport threshold; overflow correction runs synchronously when
+  width is known, eliminating edge jitter ([#688](https://github.com/brianvoe/slim-select/issues/688))
+- Search input preserves spaces while typing so multi-word queries (e.g. first and last name) work
+  ([#690](https://github.com/brianvoe/slim-select/issues/690))
+- `destroy()` removes leftover main/content/modal nodes for the instance (including panels appended to `document.body`)
+- jsDelivr download stats fetch on the usage page (correct API endpoint)
+
+## [4.0.1] - 2026-06-29
+
+### Fixed
+
+- Vue `data` prop deep-clones nested option fields (`data`, etc.) so parent object mutations no longer leak into the
+  SlimSelect store via shared references
+
 ## [4.0.0] - 2026-06-26
 
 ### Added
