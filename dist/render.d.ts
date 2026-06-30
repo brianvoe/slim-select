@@ -58,6 +58,7 @@ export default class Render {
     classes: CssClasses;
     private positionObserver;
     private positionObserverRaf;
+    private overflowShiftRaf;
     private modalElements;
     private modalSessionActive;
     private bodyScrollLocked;
@@ -133,9 +134,17 @@ export default class Render {
     private isOptgroupAllSelected;
     option(option: Option): HTMLDivElement;
     destroy(): void;
+    /** Remove any leftover main/content/modal nodes for this instance (e.g. on body). */
+    private removeDetachedInstanceDom;
     private highlightText;
     private setContentDirection;
     private setContentPosition;
+    private applyContentWidth;
+    private cancelOverflowShift;
+    /** Width in px when known before layout; null when width must be measured. */
+    private getKnownContentWidth;
+    private adjustLeftForOverflow;
+    private applyOverflowShiftFromMeasure;
     moveContentAbove(): void;
     moveContentBelow(): void;
     ensureElementInView(container: HTMLElement, element: HTMLElement): void;

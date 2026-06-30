@@ -590,6 +590,7 @@ var N = class {
 	classes;
 	positionObserver = null;
 	positionObserverRaf = 0;
+	overflowShiftRaf = 0;
 	modalElements = null;
 	modalSessionActive = null;
 	bodyScrollLocked = !1;
@@ -686,7 +687,7 @@ var N = class {
 		this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow), this.removeClasses(this.content.main, this.classes.dirAbove), this.removeClasses(this.content.main, this.classes.dirBelow);
 	}
 	updateClassStyles() {
-		if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length) for (let e of this.settings.class) e.trim() !== "" && (this.main.main.classList.add(e.trim()), this.content.main.classList.add(e.trim()));
+		if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length) for (let e of this.settings.class) e.trim() !== "" && this.main.main.classList.add(e.trim());
 		(this.settings.contentPosition === "relative" || this.settings.contentPosition === "fixed") && this.content.main.classList.add("ss-" + this.settings.contentPosition);
 	}
 	updateAriaAttributes() {
@@ -905,14 +906,14 @@ var N = class {
 		}), this.observePositionTargets()));
 	}
 	stopPositionTracking() {
-		cancelAnimationFrame(this.positionObserverRaf), this.positionObserver?.disconnect(), this.positionObserver = null;
+		cancelAnimationFrame(this.positionObserverRaf), this.positionObserver?.disconnect(), this.positionObserver = null, this.cancelOverflowShift();
 	}
 	observePositionTargets() {
 		if (!this.positionObserver) return;
 		let e = /* @__PURE__ */ new Set(), t = (t) => {
 			!t || e.has(t) || (e.add(t), this.positionObserver.observe(t));
 		};
-		t(this.main.main), t(this.content.main);
+		t(this.main.main);
 		let n = this.main.main.parentElement, r = this.settings.contentLocation;
 		for (let e = 0; n && e < 8 && (t(n), n !== r); e++) n = n.parentElement;
 	}
@@ -931,12 +932,9 @@ var N = class {
 				case "ArrowDown": return e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
 				case "Tab": return this.callbacks.close(), !0;
 				case "Escape": return this.callbacks.close(), !1;
-				case " ":
-					let t = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
-					return t ? (t.click(), !1) : !0;
 				case "Enter":
-					let r = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
-					return r ? (r.click(), !1) : this.callbacks.addable ? (n.click(), !1) : !0;
+					let t = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
+					return t ? (t.click(), !1) : this.callbacks.addable ? (n.click(), !1) : !0;
 			}
 			return !0;
 		}, e.appendChild(t), this.callbacks.addable) {
@@ -1264,7 +1262,13 @@ var N = class {
 		}), t;
 	}
 	destroy() {
-		this.stopPositionTracking(), this.modalElements &&= (this.unlockBodyScroll(), this.content.main.parentElement === this.modalElements.dialog && this.restoreContentOffscreen(), this.modalElements.overlay.remove(), null), this.main.main.remove(), this.content.main.remove();
+		this.stopPositionTracking(), this.modalElements ? (this.unlockBodyScroll(), this.content.main.parentElement === this.modalElements.dialog && this.restoreContentOffscreen(), this.modalElements.overlay.remove(), this.modalElements = null) : this.bodyScrollLocked && this.unlockBodyScroll(), this.main.main.remove(), this.content.main.remove(), this.removeDetachedInstanceDom();
+	}
+	removeDetachedInstanceDom() {
+		let e = this.settings.id, t = this.classes.getFirst("main"), n = this.classes.getFirst("content"), r = this.classes.getFirst("modalOverlay");
+		document.querySelectorAll(`[data-id="${e}"]`).forEach((e) => {
+			(e.classList.contains(t) || e.classList.contains(n) || e.classList.contains(r)) && e.remove();
+		});
 	}
 	highlightText(e, t, n) {
 		let r = t.trim();
@@ -1295,26 +1299,52 @@ var N = class {
 		} else this.content.main.style.margin = "-1px 0px 0px 0px";
 	}
 	setContentPosition() {
-		if (this.settings.contentPosition === "relative") return;
-		let e = this.main.main.getBoundingClientRect(), t, n;
-		this.settings.contentPosition === "fixed" ? (t = e.top + e.height, n = e.left) : (t = e.top + window.scrollY + e.height, n = e.left + window.scrollX), this.content.main.style.top = t + "px", this.content.main.style.left = n + "px";
-		let r = this.settings.contentWidth;
-		this.content.main.style.width = "", this.content.main.style.minWidth = "", this.content.main.style.maxWidth = "", r ? r.startsWith(">") ? this.content.main.style.minWidth = r.slice(1) : r.startsWith("<") ? this.content.main.style.maxWidth = r.slice(1) : this.content.main.style.width = r : this.content.main.style.width = e.width + "px";
-		let i = window.innerWidth - 20, a = () => {
-			let e = this.content.main.getBoundingClientRect().right;
-			if (e <= i) return;
-			let t = e - i, n = parseFloat(this.content.main.style.left) || 0;
-			if (this.settings.contentPosition === "fixed") {
-				let e = Math.max(20, n - t);
-				this.content.main.style.left = e + "px";
-			} else {
-				let e = Math.max(window.scrollX + 20, n - t);
-				this.content.main.style.left = e + "px";
-			}
-		};
-		requestAnimationFrame(() => {
-			a(), requestAnimationFrame(a);
+		let e = this.main.main.getBoundingClientRect();
+		if (this.settings.contentPosition === "relative") {
+			this.applyContentWidth(e);
+			return;
+		}
+		this.cancelOverflowShift();
+		let t, n;
+		this.settings.contentPosition === "fixed" ? (t = e.top + e.height, n = e.left) : (t = e.top + window.scrollY + e.height, n = e.left + window.scrollX), this.content.main.style.top = t + "px", this.content.main.style.left = n + "px", this.applyContentWidth(e);
+		let r = this.getKnownContentWidth(e);
+		if (r !== null) {
+			this.content.main.style.left = this.adjustLeftForOverflow(n, e.left, r) + "px";
+			return;
+		}
+		this.overflowShiftRaf = requestAnimationFrame(() => {
+			this.overflowShiftRaf = 0, this.applyOverflowShiftFromMeasure();
 		});
+	}
+	applyContentWidth(e) {
+		let t = this.settings.contentWidth;
+		if (this.content.main.style.width = "", this.content.main.style.minWidth = "", this.content.main.style.maxWidth = "", !t) {
+			this.settings.contentPosition !== "relative" && (this.content.main.style.width = e.width + "px");
+			return;
+		}
+		t.startsWith(">") ? this.content.main.style.minWidth = t.slice(1) : t.startsWith("<") ? this.content.main.style.maxWidth = t.slice(1) : this.content.main.style.width = t;
+	}
+	cancelOverflowShift() {
+		this.overflowShiftRaf &&= (cancelAnimationFrame(this.overflowShiftRaf), 0);
+	}
+	getKnownContentWidth(e) {
+		let t = this.settings.contentWidth;
+		if (!t) return e.width;
+		if (t.startsWith(">") || t.startsWith("<") || t.includes("%")) return null;
+		let n = parseFloat(t);
+		return Number.isNaN(n) ? null : n;
+	}
+	adjustLeftForOverflow(e, t, n) {
+		let r = t + n;
+		if (r <= window.innerWidth) return e;
+		let i = e - (r - (window.innerWidth - 20));
+		return this.settings.contentPosition === "fixed" ? Math.max(0, i) : Math.max(window.scrollX, i);
+	}
+	applyOverflowShiftFromMeasure() {
+		let e = this.content.main.getBoundingClientRect().right;
+		if (e <= window.innerWidth) return;
+		let t = e - (window.innerWidth - 20), n = (parseFloat(this.content.main.style.left) || 0) - t;
+		this.settings.contentPosition === "fixed" ? this.content.main.style.left = Math.max(0, n) + "px" : this.content.main.style.left = Math.max(window.scrollX, n) + "px";
 	}
 	moveContentAbove() {
 		this.setContentDirection("above"), this.setContentPosition();
@@ -1505,7 +1535,7 @@ var B = class {
 			}
 		}
 		let n = this.getSelectedOptions();
-		this.select.multiple || (this.select.value = n.length === 1 ? n[0].value : ""), this.changeListen(!0);
+		this.select.multiple || (this.select.value = n.length === 1 ? n[0].value : ""), this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0);
 	}
 	setSelectedByValue(e) {
 		this.changeListen(!1);
@@ -1524,7 +1554,7 @@ var B = class {
 			}
 		}
 		let n = this.getSelectedOptions();
-		this.select.multiple || (this.select.value = n.length === 1 ? n[0].value : ""), this.changeListen(!0);
+		this.select.multiple || (this.select.value = n.length === 1 ? n[0].value : ""), this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0);
 	}
 	updateSelect(e, t, n) {
 		this.changeListen(!1), e && (this.select.dataset.id = e), t && (this.select.style.cssText = t), n && (this.select.className = "", n.forEach((e) => {
@@ -1869,11 +1899,11 @@ var U = class {
 	}
 	search(e) {
 		let t = e.trim();
-		if (this.render.content.search.input.value !== t && (this.render.content.search.input.value = t), t === "") {
-			this.clearSearch();
+		if (t === "") {
+			this.render.content.search.input.value = "", this.clearSearch();
 			return;
 		}
-		if (this.events.search) {
+		if (this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), this.events.search) {
 			this.runApiSearch(t);
 			return;
 		}
@@ -1924,7 +1954,7 @@ var U = class {
 		this.render.renderError("Search event must return a promise or an array of data");
 	}
 	destroy() {
-		this.lifecycle.destroy(), this.render.stopPositionTracking(), this.globalEvents.detach({ listenScroll: this.settings.openPosition === "auto" }), this.store.setData([]), this.render.destroy(), this.select.destroy();
+		this.lifecycle.destroy(), this.render.stopPositionTracking(), this.globalEvents.detach({ listenScroll: this.settings.openPosition === "auto" }), this.store.setData([]), this.render.destroy(), this.select.destroy(), delete this.selectEl.slim;
 	}
 	documentClick(e) {
 		this.settings.isOpen && e.target && !x(e.target, this.settings.id) && this.close(e.type);
