@@ -670,7 +670,7 @@ var O = class {
 		this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto");
 	}
 	finalizeModalClose() {
-		this.modalElements && this.content.main.parentElement === this.modalElements.dialog && (this.addClasses(this.modalElements.overlay, this.classes.hide), this.removeClasses(this.modalElements.overlay, this.classes.contentOpen), this.removeClasses(this.content.main, this.classes.modalContent), this.restoreContentOffscreen(), this.unlockBodyScroll());
+		this.modalElements && this.content.main.parentElement === this.modalElements.dialog && (this.addClasses(this.modalElements.overlay, this.classes.hide), this.removeClasses(this.modalElements.overlay, this.classes.contentOpen), this.removeClasses(this.content.main, this.classes.modalContent), this.modalElements.closeButton.remove(), this.restoreContentOffscreen(), this.unlockBodyScroll());
 	}
 	waitForAnimation(e, t) {
 		let r = a(this.content.main, this.settings.timeoutDelay);
