@@ -374,6 +374,7 @@ export default class Render {
     this.addClasses(this.modalElements.overlay, this.classes.hide)
     this.removeClasses(this.modalElements.overlay, this.classes.contentOpen)
     this.removeClasses(this.content.main, this.classes.modalContent)
+    this.modalElements.closeButton.remove()
     this.restoreContentOffscreen()
     this.unlockBodyScroll()
   }

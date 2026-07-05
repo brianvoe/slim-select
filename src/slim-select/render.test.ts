@@ -10,7 +10,7 @@ import {
   type Mock
 } from 'vitest'
 import Render, { Callbacks } from './render'
-import Settings from './settings'
+import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Store, { Option } from './store'
 import CssClasses from './classes'
 
@@ -860,6 +860,77 @@ describe('render module', () => {
       modalRender.finalizeModalClose()
 
       expect(document.body.style.overflow).not.toBe('hidden')
+      modalRender.destroy()
+    })
+
+    test('removes modal close button from content after close', () => {
+      const settings = new Settings({ modal: 'on' })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      modalRender.open()
+
+      const { closeButton } = (
+        modalRender as unknown as {
+          modalElements: { closeButton: HTMLButtonElement }
+        }
+      ).modalElements
+      expect(modalRender.content.main.contains(closeButton)).toBe(true)
+
+      modalRender.close()
+      modalRender.finalizeModalClose()
+
+      expect(modalRender.content.main.contains(closeButton)).toBe(false)
+      modalRender.destroy()
+    })
+
+    test('non-modal reopen after mobile modal close has no close button', () => {
+      const settings = new Settings({ modal: 'mobile' })
+      const modalRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('single', [{ text: 'One', value: '1' }]),
+        {
+          open: vi.fn(),
+          close: vi.fn(),
+          setSelected: vi.fn(),
+          addOption: vi.fn(),
+          search: vi.fn()
+        }
+      )
+
+      Object.defineProperty(window, 'innerWidth', {
+        value: MODAL_MOBILE_BREAKPOINT - 1,
+        writable: true
+      })
+
+      modalRender.open()
+      expect(modalRender.isModalViewActive()).toBe(true)
+
+      modalRender.close()
+      modalRender.finalizeModalClose()
+
+      Object.defineProperty(window, 'innerWidth', {
+        value: MODAL_MOBILE_BREAKPOINT + 1,
+        writable: true
+      })
+
+      modalRender.open()
+      expect(modalRender.isModalViewActive()).toBe(false)
+      expect(
+        modalRender.content.main.querySelector('.ss-modal-close')
+      ).toBeNull()
+
       modalRender.destroy()
     })
 
