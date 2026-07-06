@@ -1,9 +1,15 @@
 import { default as Settings } from './settings';
 import { default as Store, Optgroup, Option } from './store';
 import { default as CssClasses } from './classes';
+export type CloseSource = 'select' | 'deselect' | 'outside' | 'toggle' | 'escape' | 'tab' | 'modal' | 'api';
+export interface CloseInfo {
+    source: CloseSource;
+    option?: Option;
+    selectionChanged: boolean;
+}
 export interface Callbacks {
     open: () => void;
-    close: () => void;
+    close: (info?: CloseInfo) => void;
     addable?: (value: string) => Promise<Partial<Option> | string> | Partial<Option> | string | false | undefined | null | Error;
     setSelected: (value: string | string[], runAfterChange: boolean) => void;
     addOption: (option: Option) => void;
@@ -64,6 +70,9 @@ export default class Render {
     private bodyScrollLocked;
     private savedBodyOverflow;
     constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks);
+    private requestClose;
+    private selectionChanged;
+    private closeOnSingleSelectReclick;
     addClasses(element: HTMLElement | SVGElement, classValue: string): void;
     removeClasses(element: HTMLElement | SVGElement, classValue: string): void;
     enable(): void;

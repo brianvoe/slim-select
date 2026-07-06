@@ -334,11 +334,14 @@ var P = class {
 		}
 		this.state = "open", this.handlers.afterOpen && this.handlers.afterOpen(), this.handlers.onOpenReady && this.handlers.onOpenReady();
 	}
-	async requestClose() {
-		if (this.state === "closed" || this.state === "closing") return;
+	async requestClose(e = {
+		source: "api",
+		selectionChanged: !1
+	}) {
+		if (this.state === "closed" || this.state === "closing" || this.handlers.beforeClose && this.handlers.beforeClose(e) === !1) return !1;
 		this.cancelPending();
-		let e = ++this.generation;
-		this.handlers.beforeClose && this.handlers.beforeClose(), this.state = "closing", await this.waitForPhase("close", e), e === this.generation && (this.state = "closed", this.handlers.afterClose && this.handlers.afterClose(), this.handlers.onCloseReady && this.handlers.onCloseReady());
+		let t = ++this.generation;
+		return this.handlers.onClose && this.handlers.onClose(e), this.state = "closing", await this.waitForPhase("close", t), t === this.generation ? (this.state = "closed", this.handlers.afterClose && this.handlers.afterClose(), this.handlers.onCloseReady && this.handlers.onCloseReady(), !0) : !1;
 	}
 	cancelPending() {
 		this.generation++, this.animationAbort?.abort(), this.animationAbort = null, this.pendingTimer &&= (clearTimeout(this.pendingTimer), null);
@@ -597,6 +600,24 @@ var P = class {
 	constructor(e, t, n, r) {
 		this.store = n, this.settings = e, this.classes = t, this.callbacks = r, this.lastSelectedOption = null, this.lastRenderedOptions = [], this.main = this.mainDiv(), this.content = this.contentDiv(), this.updateClassStyles(), this.updateAriaAttributes(), this.settings.contentPosition !== "relative" && (this.content.main.style.top = "-9999px", this.content.main.style.left = "-9999px", this.content.main.style.margin = "0", this.content.main.style.width = "auto"), this.settings.contentLocation && this.settings.contentLocation.appendChild(this.content.main), this.settings.modal !== "off" && !this.settings.alwaysOpen && (this.modalElements = this.createModalElements(), document.body.appendChild(this.modalElements.overlay));
 	}
+	requestClose(e, t) {
+		this.callbacks.close({
+			source: e,
+			option: t?.option,
+			selectionChanged: t?.selectionChanged ?? !1
+		});
+	}
+	selectionChanged(e, t) {
+		if (e.length !== t.length) return !0;
+		let n = e.map((e) => e.id).sort(), r = t.map((e) => e.id).sort();
+		return n.some((e, t) => e !== r[t]);
+	}
+	closeOnSingleSelectReclick(e) {
+		this.settings.closeOnSelect && this.requestClose("select", {
+			option: e,
+			selectionChanged: !1
+		});
+	}
 	addClasses(e, t) {
 		if (!t || t.trim() === "") return;
 		let n = t.split(" ").filter((e) => e.trim() !== "");
@@ -642,13 +663,13 @@ var P = class {
 		this.settings.modalTitle ? (n = document.createElement("div"), this.addClasses(n, this.classes.modalTitle), n.id = `${this.settings.id}-modal-title`, n.textContent = this.settings.modalTitle, t.setAttribute("aria-labelledby", n.id)) : t.setAttribute("aria-label", this.settings.ariaLabel);
 		let r = document.createElement("button");
 		r.type = "button", this.addClasses(r, this.classes.modalClose), r.setAttribute("aria-label", "Close"), r.onclick = (e) => {
-			e.stopPropagation(), this.callbacks.close();
+			e.stopPropagation(), this.requestClose("modal");
 		};
 		let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		i.setAttribute("viewBox", "0 0 100 100");
 		let a = document.createElementNS("http://www.w3.org/2000/svg", "path");
 		return a.setAttribute("d", this.classes.deselectPath), i.appendChild(a), r.appendChild(i), e.onclick = (t) => {
-			t.target === e && this.callbacks.close();
+			t.target === e && this.requestClose("modal");
 		}, n && t.appendChild(n), e.appendChild(t), {
 			overlay: e,
 			dialog: t,
@@ -699,17 +720,17 @@ var P = class {
 			switch (e.key) {
 				case "ArrowUp":
 				case "ArrowDown": return this.callbacks.open(), e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
-				case "Tab": return this.callbacks.close(), !0;
+				case "Tab": return this.requestClose("tab"), !0;
 				case "Enter":
 				case " ":
 					this.callbacks.open();
 					let t = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
 					return t && t.click(), !1;
-				case "Escape": return this.callbacks.close(), !1;
+				case "Escape": return this.requestClose("escape"), !1;
 			}
 			return e.key.length === 1 && this.callbacks.open(), !0;
 		}, e.onclick = (e) => {
-			this.settings.disabled || (this.settings.isOpen ? this.callbacks.close() : this.callbacks.open());
+			this.settings.disabled || (this.settings.isOpen ? this.requestClose("toggle") : this.callbacks.open());
 		};
 		let t = document.createElement("div");
 		this.addClasses(t, this.classes.values), e.appendChild(t);
@@ -731,7 +752,7 @@ var P = class {
 					let e = this.store.getFirstOption(), t = e ? e.id : "";
 					this.callbacks.setSelected(t, !1);
 				}
-				this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(this.store.getSelectedOptions());
+				this.settings.closeOnSelect && this.requestClose("deselect", { selectionChanged: !0 }), this.callbacks.afterChange && this.callbacks.afterChange(this.store.getSelectedOptions());
 			}
 		}, n.onkeydown = (e) => {
 			(e.key === "Enter" || e.key === " ") && (e.preventDefault(), n.click());
@@ -851,7 +872,7 @@ var P = class {
 						if (t instanceof L) for (let n of t.options) n.id && e.push(n.id);
 						t instanceof I && e.push(t.id);
 					}
-					this.callbacks.setSelected(e, !1), this.settings.closeOnSelect && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(i), this.updateDeselectAll(), this.updateMultipleValueDeleteVisibility();
+					this.callbacks.setSelected(e, !1), this.settings.closeOnSelect && this.requestClose("deselect", { selectionChanged: !0 }), this.callbacks.afterChange && this.callbacks.afterChange(i), this.updateDeselectAll(), this.updateMultipleValueDeleteVisibility();
 				}
 			};
 			let r = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -929,8 +950,8 @@ var P = class {
 			switch (e.key) {
 				case "ArrowUp":
 				case "ArrowDown": return e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
-				case "Tab": return this.callbacks.close(), !0;
-				case "Escape": return this.callbacks.close(), !1;
+				case "Tab": return this.requestClose("tab"), !0;
+				case "Escape": return this.requestClose("escape"), !1;
 				case "Enter":
 					let t = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
 					return t ? (t.click(), !1) : this.callbacks.addable ? (n.click(), !1) : !0;
@@ -957,7 +978,7 @@ var P = class {
 					if (this.callbacks.search(""), this.settings.closeOnSelect) {
 						let e = d(this.content.main);
 						setTimeout(() => {
-							this.callbacks.close();
+							this.requestClose("select", { selectionChanged: !0 });
 						}, e);
 					}
 				}, r = this.callbacks.addable(t);
@@ -1240,23 +1261,35 @@ var P = class {
 			t.classList.add(e);
 		}), e.style && (t.style.cssText = e.style), this.setOptionElementContent(t, e, this.content.search.input.value), e.display || this.addClasses(t, this.classes.hide), e.disabled && this.addClasses(t, this.classes.disabled), e.selected && this.settings.hideSelected && this.addClasses(t, this.classes.hide), e.selected ? (this.addClasses(t, this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (this.removeClasses(t, this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (t) => {
 			t.preventDefault(), t.stopPropagation();
-			let n = this.store.getSelected(), r = t.currentTarget, i = String(r.dataset.id), a = t.ctrlKey || t.metaKey;
-			if (e.disabled || !this.settings.isMultiple && e.selected && !this.settings.allowDeselect || e.selected && e.mandatory || this.settings.isMultiple && this.settings.maxSelected <= n.length && !e.selected || this.settings.isMultiple && this.settings.minSelected >= n.length && e.selected && !a) return;
-			let o = !1, s = this.store.getSelectedOptions(), c = [];
+			let n = this.store.getSelected(), r = t.currentTarget, i = String(r.dataset.id), a = this.store.getOptionByID(i) ?? e, o = n.includes(i), s = t.ctrlKey || t.metaKey;
+			if (e.disabled) return;
+			if (!this.settings.isMultiple && o && !this.settings.allowDeselect) {
+				this.closeOnSingleSelectReclick(a);
+				return;
+			}
+			if (o && a.mandatory) {
+				this.closeOnSingleSelectReclick(a);
+				return;
+			}
+			if (this.settings.isMultiple && this.settings.maxSelected <= n.length && !o || this.settings.isMultiple && this.settings.minSelected >= n.length && o && !s) return;
+			let c = !1, l = this.store.getSelectedOptions(), u = [];
 			if (this.settings.isMultiple) {
-				let n = s.some((e) => e.id === i);
+				let n = l.some((e) => e.id === i);
 				if (t.shiftKey && this.lastSelectedOption) {
 					let t = this.lastRenderedOptions, n = t.findIndex((e) => e.id === this.lastSelectedOption.id), r = t.findIndex((t) => t.id === e.id);
 					if (n >= 0 && r >= 0) {
-						let e = Math.min(n, r), i = Math.max(n, r), a = t.slice(e, i + 1).filter((e) => !s.find((t) => t.id === e.id));
-						c = s.length + a.length <= this.settings.maxSelected ? s.concat(a) : s;
-					} else c = s;
-				} else c = n ? s.filter((e) => e.id !== i) : s.concat(e), this.lastSelectedOption = e;
+						let e = Math.min(n, r), i = Math.max(n, r), a = t.slice(e, i + 1).filter((e) => !l.find((t) => t.id === e.id));
+						u = l.length + a.length <= this.settings.maxSelected ? l.concat(a) : l;
+					} else u = l;
+				} else u = n ? l.filter((e) => e.id !== i) : l.concat(a), this.lastSelectedOption = a;
 			}
-			if (this.settings.isMultiple || (c = e.selected ? [] : [e]), this.callbacks.beforeChange || (o = !0), this.callbacks.beforeChange && (o = this.callbacks.beforeChange(c, s) !== !1), o) {
-				this.store.getOptionByID(i) || this.callbacks.addOption(e), this.callbacks.setSelected(c.map((e) => e.id), !1);
+			if (this.settings.isMultiple || (u = o ? [] : [a]), this.callbacks.beforeChange || (c = !0), this.callbacks.beforeChange && (c = this.callbacks.beforeChange(u, l) !== !1), c) {
+				this.store.getOptionByID(i) || this.callbacks.addOption(e), this.callbacks.setSelected(u.map((e) => e.id), !1);
 				let n = t.ctrlKey || t.metaKey || t.shiftKey;
-				this.settings.closeOnSelect && !(this.settings.isMultiple && n) && this.callbacks.close(), this.callbacks.afterChange && this.callbacks.afterChange(c);
+				this.settings.closeOnSelect && !(this.settings.isMultiple && n) && this.requestClose("select", {
+					option: a,
+					selectionChanged: this.selectionChanged(l, u)
+				}), this.callbacks.afterChange && this.callbacks.afterChange(u);
 			}
 		}), t;
 	}
@@ -1761,7 +1794,6 @@ var W = class {
 		let t = [
 			"beforeOpen",
 			"afterOpen",
-			"beforeClose",
 			"afterClose"
 		];
 		for (let n in e.events) e.events.hasOwnProperty(n) && (t.indexOf(n) === -1 ? this.events[n] = e.events[n] : this.events[n] = C(e.events[n], 100));
@@ -1770,7 +1802,10 @@ var W = class {
 		}, this.select.onDisabledChange = (e) => {
 			e ? this.disable() : this.enable();
 		}, this.select.onLabelClick = () => {
-			this.settings.disabled || (this.settings.isOpen ? this.close() : this.open());
+			this.settings.disabled || (this.settings.isOpen ? this.close({
+				source: "toggle",
+				selectionChanged: !1
+			}) : this.open());
 		};
 		let n = e.data ? e.data : this.select.getData();
 		this.store = new R(this.settings.isMultiple ? "multiple" : "single", n), e.data && this.select.updateOptions(this.store.getData());
@@ -1818,7 +1853,8 @@ var W = class {
 		}, this.lifecycle = new F({
 			beforeOpen: this.events.beforeOpen,
 			afterOpen: this.events.afterOpen,
-			beforeClose: this.events.beforeClose,
+			beforeClose: (e) => this.events.beforeClose?.(e),
+			onClose: (e) => this.applyClose(e),
 			afterClose: () => {
 				this.render.clearDirectionClasses(), this.render.finalizeModalClose(), this.events.afterClose && this.events.afterClose();
 			},
@@ -1836,7 +1872,10 @@ var W = class {
 				!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
 			},
 			onVisibilityChange: () => {
-				document.hidden && this.close();
+				document.hidden && this.close({
+					source: "api",
+					selectionChanged: !1
+				});
 			}
 		}), this.render.renderValues(), this.render.renderOptions(this.store.getData(!1));
 		let i = this.selectEl.getAttribute("aria-label"), a = this.selectEl.getAttribute("aria-labelledby");
@@ -1891,10 +1930,18 @@ var W = class {
 		let e = this.render.content.search.input.value.trim();
 		e !== "" && this.search(e);
 	}
-	close(e = null) {
-		!this.settings.isOpen || this.settings.alwaysOpen || (this.lifecycle.cancelPending(), this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && (this.sync.flush(), this.search("")), this.render.mainFocus(e), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.lifecycle.requestClose().then(() => {
-			this.settings.isOpen || (this.settings.isOpen = this.lifecycle.isOpen, this.settings.isFullOpen = this.lifecycle.isFullOpen);
-		}), this.render.stopPositionTracking());
+	close(e = {
+		source: "api",
+		selectionChanged: !1
+	}) {
+		!this.settings.isOpen || this.settings.alwaysOpen || this.lifecycle.requestClose(e).then((e) => {
+			e && (this.settings.isOpen || (this.settings.isOpen = this.lifecycle.isOpen, this.settings.isFullOpen = this.lifecycle.isFullOpen));
+		});
+	}
+	applyClose(e) {
+		this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && (this.sync.flush(), this.search(""));
+		let t = e.source === "outside" || e.source === "toggle";
+		this.render.mainFocus(t ? "click" : null), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.render.stopPositionTracking();
 	}
 	search(e) {
 		let t = e.trim();
@@ -1956,7 +2003,10 @@ var W = class {
 		this.lifecycle.destroy(), this.render.stopPositionTracking(), this.globalEvents.detach({ listenScroll: this.settings.openPosition === "auto" }), this.store.setData([]), this.render.destroy(), this.select.destroy(), delete this.selectEl.slim;
 	}
 	documentClick(e) {
-		this.settings.isOpen && e.target && !S(e.target, this.settings.id) && this.close(e.type);
+		this.settings.isOpen && e.target && !S(e.target, this.settings.id) && this.close({
+			source: "outside",
+			selectionChanged: !1
+		});
 	}
 };
 //#endregion

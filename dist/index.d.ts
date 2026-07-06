@@ -1,13 +1,13 @@
 import { default as CssClasses } from './classes';
 import { default as Lifecycle } from './lifecycle';
-import { default as Render } from './render';
+import { default as Render, CloseInfo } from './render';
 import { default as Select } from './select';
 import { default as Settings, MODAL_MOBILE_BREAKPOINT } from './settings';
 import { default as Store, Option, Optgroup } from './store';
 import { default as SyncCoordinator } from './sync';
 export { Settings, Option, Optgroup, MODAL_MOBILE_BREAKPOINT };
 export type { ModalSetting } from './settings';
-export type { Main, Content, Search } from './render';
+export type { Main, Content, Search, CloseInfo, CloseSource } from './render';
 export interface Config {
     select: string | Element;
     data?: (Partial<Option> | Partial<Optgroup>)[];
@@ -23,7 +23,7 @@ export interface Events {
     afterChange?: (newVal: Option[]) => void;
     beforeOpen?: () => void;
     afterOpen?: () => void;
-    beforeClose?: () => void;
+    beforeClose?: (info: CloseInfo) => boolean | void;
     afterClose?: () => void;
     error?: (err: Error) => void;
 }
@@ -49,7 +49,9 @@ export default class SlimSelect {
     setSelected(values: string | string[], runAfterChange?: boolean): void;
     addOption(option: Partial<Option>): void;
     open(): void;
-    close(eventType?: string | null): void;
+    close(info?: CloseInfo): void;
+    /** Sync close — invoked by lifecycle after beforeClose approves. */
+    private applyClose;
     search(value: string): void;
     private clearSearch;
     private runLocalSearch;

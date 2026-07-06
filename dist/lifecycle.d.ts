@@ -1,21 +1,12 @@
-/**
- * Open/close state machine for SlimSelect.
- *
- * Replaces scattered openTimeout/closeTimeout in index.ts with a single flow:
- *   closed → opening → open → closing → closed
- *
- * Maps to settings consumers expect:
- *   - isOpen: true during opening + open
- *   - isFullOpen: true only in open state (after animation / afterOpen)
- *
- * Lifecycle waits for render.waitForAnimation() before firing afterOpen/afterClose.
- * When no animation waiter is provided, falls back to settings.timeoutDelay.
- */
+import { CloseInfo } from './render';
 export type LifecycleState = 'closed' | 'opening' | 'open' | 'closing';
 export interface LifecycleHandlers {
     beforeOpen?: () => void;
     afterOpen?: () => void;
-    beforeClose?: () => void;
+    /** Return false to cancel close before any DOM changes. */
+    beforeClose?: (info: CloseInfo) => boolean | void;
+    /** Sync close work — render, focus, settings. Runs after beforeClose approves. */
+    onClose?: (info: CloseInfo) => void;
     afterClose?: () => void;
     /** Fires when fully open — used to attach document click-outside listener. */
     onOpenReady?: () => void;
@@ -41,7 +32,7 @@ export default class Lifecycle {
     get isOpen(): boolean;
     get isFullOpen(): boolean;
     requestOpen(): Promise<void>;
-    requestClose(): Promise<void>;
+    requestClose(info?: CloseInfo): Promise<boolean>;
     /** Cancel timers and resolve waiting phases — called when open/close race each other. */
     cancelPending(): void;
     destroy(): void;
