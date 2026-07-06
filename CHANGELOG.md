@@ -5,6 +5,32 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.4] - 2026-07-06
+
+### Added
+
+- `beforeClose` now receives a `CloseInfo` object (`source`, `selectionChanged`, and optional `option`) describing why
+  the dropdown is closing
+- `beforeClose` can return `false` to cancel a close (same pattern as `beforeChange`)
+- Exported `CloseInfo` and `CloseSource` types from the main package entry
+
+### Changed
+
+- `beforeClose` runs before any close DOM changes (previously fired after the panel had already started closing)
+- Single-select re-clicking the already selected option closes the dropdown when `closeOnSelect` is true (native
+  `<select>` behavior) ([#692](https://github.com/brianvoe/slim-select/issues/692))
+
+## [4.0.3] - 2026-07-05
+
+### Fixed
+
+- Modal close button no longer persists in the dropdown after closing modal view — reopening in non-modal mode no longer
+  leaves a stray close button in the options list ([#691](https://github.com/brianvoe/slim-select/issues/691))
+
+### Changed
+
+- Documentation site header refactor and navigation menu example updates
+
 ## [4.0.2] - 2026-06-30
 
 ### Added

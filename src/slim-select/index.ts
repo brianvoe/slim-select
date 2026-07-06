@@ -3,7 +3,7 @@ import { getAnimationTimeout } from './animations'
 import GlobalEvents, { hasClassInTree } from './events'
 import { debounce, getAssociatedLabelText } from './helpers'
 import Lifecycle from './lifecycle'
-import Render from './render'
+import Render, { CloseInfo } from './render'
 import Select from './select'
 import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Store, { Option, Optgroup } from './store'
@@ -14,7 +14,7 @@ export { Settings, Option, Optgroup, MODAL_MOBILE_BREAKPOINT }
 export type { ModalSetting } from './settings'
 
 // Export interfaces from render
-export type { Main, Content, Search } from './render'
+export type { Main, Content, Search, CloseInfo, CloseSource } from './render'
 
 export interface Config {
   select: string | Element
@@ -47,7 +47,7 @@ export interface Events {
   afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void
   afterOpen?: () => void
-  beforeClose?: () => void
+  beforeClose?: (info: CloseInfo) => boolean | void
   afterClose?: () => void
   error?: (err: Error) => void
 }
@@ -114,12 +114,7 @@ export default class SlimSelect {
     this.cssClasses = new CssClasses(config.cssClasses)
 
     // Set events
-    const debounceEvents = [
-      'beforeOpen',
-      'afterOpen',
-      'beforeClose',
-      'afterClose'
-    ]
+    const debounceEvents = ['beforeOpen', 'afterOpen', 'afterClose']
     for (const key in config.events) {
       // Check if key exists in events
       if (!config.events.hasOwnProperty(key)) {
@@ -179,7 +174,9 @@ export default class SlimSelect {
     // This allows clicking the label to open/close, matching the main div behavior
     this.select.onLabelClick = () => {
       if (!this.settings.disabled) {
-        this.settings.isOpen ? this.close() : this.open()
+        this.settings.isOpen
+          ? this.close({ source: 'toggle', selectionChanged: false })
+          : this.open()
       }
     }
 
@@ -267,7 +264,8 @@ export default class SlimSelect {
       {
         beforeOpen: this.events.beforeOpen,
         afterOpen: this.events.afterOpen,
-        beforeClose: this.events.beforeClose,
+        beforeClose: (info) => this.events.beforeClose?.(info),
+        onClose: (info) => this.applyClose(info),
         afterClose: () => {
           this.render.clearDirectionClasses()
           this.render.finalizeModalClose()
@@ -302,7 +300,7 @@ export default class SlimSelect {
       },
       onVisibilityChange: () => {
         if (document.hidden) {
-          this.close()
+          this.close({ source: 'api', selectionChanged: false })
         }
       }
     })
@@ -465,15 +463,32 @@ export default class SlimSelect {
     }
   }
 
-  public close(eventType: string | null = null): void {
+  public close(
+    info: CloseInfo = { source: 'api', selectionChanged: false }
+  ): void {
     // Dont do anything if the content is already closed
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
       return
     }
 
-    this.lifecycle.cancelPending()
+    void this.lifecycle.requestClose(info).then((closed) => {
+      if (!closed) {
+        return
+      }
 
+      // open() may have run before this async completion
+      if (this.settings.isOpen) {
+        return
+      }
+
+      this.settings.isOpen = this.lifecycle.isOpen
+      this.settings.isFullOpen = this.lifecycle.isFullOpen
+    })
+  }
+
+  /** Sync close — invoked by lifecycle after beforeClose approves. */
+  private applyClose(info: CloseInfo): void {
     // Tell render to close
     this.render.close()
 
@@ -487,21 +502,13 @@ export default class SlimSelect {
     }
 
     // If we arent tabbing focus back on the main element
-    this.render.mainFocus(eventType)
+    const skipRefocus =
+      info.source === 'outside' || info.source === 'toggle'
+    this.render.mainFocus(skipRefocus ? 'click' : null)
 
     // Update settings
     this.settings.isOpen = false
     this.settings.isFullOpen = false
-
-    // Sync isOpen/isFullOpen after close animation completes
-    void this.lifecycle.requestClose().then(() => {
-      // open() may have run before this async completion
-      if (this.settings.isOpen) {
-        return
-      }
-      this.settings.isOpen = this.lifecycle.isOpen
-      this.settings.isFullOpen = this.lifecycle.isFullOpen
-    })
 
     this.render.stopPositionTracking()
   }
@@ -640,7 +647,7 @@ export default class SlimSelect {
       e.target &&
       !hasClassInTree(e.target as HTMLElement, this.settings.id)
     ) {
-      this.close(e.type)
+      this.close({ source: 'outside', selectionChanged: false })
     }
   }
 }

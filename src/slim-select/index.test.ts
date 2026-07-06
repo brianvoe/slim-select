@@ -1919,6 +1919,81 @@ describe('SlimSelect Module', () => {
       await new Promise((r) => setTimeout(r, 150))
       expect(slim.settings.isFullOpen).toBe(false)
     })
+
+    test('beforeClose return false prevents close', () => {
+      document.body.innerHTML =
+        '<select id="before-close-veto"><option value="1">One</option><option value="2" selected>Two</option></select>'
+
+      const beforeCloseMock = vi.fn(() => false)
+      const slim = new SlimSelect({
+        select: '#before-close-veto',
+        events: {
+          beforeClose: beforeCloseMock
+        }
+      })
+
+      slim.open()
+      expect(slim.settings.isOpen).toBe(true)
+
+      slim.close()
+      expect(beforeCloseMock).toHaveBeenCalledWith({
+        source: 'api',
+        selectionChanged: false
+      })
+      expect(slim.settings.isOpen).toBe(true)
+    })
+
+    test('beforeClose receives context when re-clicking selected option', () => {
+      document.body.innerHTML =
+        '<select id="before-close-reclick"><option value="1">One</option><option value="2" selected>Two</option></select>'
+
+      const beforeCloseMock = vi.fn()
+      const slim = new SlimSelect({
+        select: '#before-close-reclick',
+        events: {
+          beforeClose: beforeCloseMock
+        }
+      })
+
+      slim.open()
+      const selectedOption = Array.from(
+        document.querySelectorAll('.ss-option.ss-selected')
+      )[0]
+      selectedOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      expect(beforeCloseMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          source: 'select',
+          selectionChanged: false,
+          option: expect.objectContaining({ value: '2' })
+        })
+      )
+      expect(slim.settings.isOpen).toBe(false)
+    })
+
+    test('beforeClose can veto close on re-clicking selected option', () => {
+      document.body.innerHTML =
+        '<select id="before-close-reclick-veto"><option value="1">One</option><option value="2" selected>Two</option></select>'
+
+      const slim = new SlimSelect({
+        select: '#before-close-reclick-veto',
+        events: {
+          beforeClose: (info) => {
+            if (info.source === 'select' && !info.selectionChanged) {
+              return false
+            }
+          }
+        }
+      })
+
+      slim.open()
+      const selectedOption = Array.from(
+        document.querySelectorAll('.ss-option.ss-selected')
+      )[0]
+      selectedOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      expect(slim.settings.isOpen).toBe(true)
+    })
   })
 
   describe('cssClasses with space-separated strings', () => {

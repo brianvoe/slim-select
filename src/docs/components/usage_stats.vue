@@ -34,7 +34,7 @@ export default defineComponent({
       },
       {
         id: 'deps',
-        label: 'Runtime dependencies',
+        label: 'Dependencies',
         value: 0,
         fallback: 0,
         static: true,
@@ -69,9 +69,7 @@ export default defineComponent({
     this.observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
-          const instant = window.matchMedia?.(
-            '(prefers-reduced-motion: reduce)'
-          ).matches
+          const instant = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
           this.start(instant)
           this.observer?.disconnect()
           this.observer = null
@@ -151,9 +149,7 @@ export default defineComponent({
     },
     async loadCdn() {
       try {
-        const res = await fetch(
-          'https://data.jsdelivr.com/v1/stats/packages/npm/slim-select?period=month'
-        )
+        const res = await fetch('https://data.jsdelivr.com/v1/stats/packages/npm/slim-select?period=month')
         if (!res.ok) {
           return
         }
@@ -202,9 +198,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <p class="usage-foot">
-      Join thousands of developers shipping better dropdowns with SlimSelect.
-    </p>
+    <p class="usage-foot">Join thousands of developers shipping better dropdowns with SlimSelect.</p>
   </section>
 </template>
 

@@ -10,14 +10,21 @@
  *
  * Lifecycle waits for render.waitForAnimation() before firing afterOpen/afterClose.
  * When no animation waiter is provided, falls back to settings.timeoutDelay.
+ *
+ * Close flow: beforeClose (veto) → onClose (sync DOM/settings) → animation → afterClose
  */
+
+import type { CloseInfo } from './render'
 
 export type LifecycleState = 'closed' | 'opening' | 'open' | 'closing'
 
 export interface LifecycleHandlers {
   beforeOpen?: () => void
   afterOpen?: () => void
-  beforeClose?: () => void
+  /** Return false to cancel close before any DOM changes. */
+  beforeClose?: (info: CloseInfo) => boolean | void
+  /** Sync close work — render, focus, settings. Runs after beforeClose approves. */
+  onClose?: (info: CloseInfo) => void
   afterClose?: () => void
   /** Fires when fully open — used to attach document click-outside listener. */
   onOpenReady?: () => void
@@ -90,23 +97,29 @@ export default class Lifecycle {
     }
   }
 
-  public async requestClose(): Promise<void> {
+  public async requestClose(
+    info: CloseInfo = { source: 'api', selectionChanged: false }
+  ): Promise<boolean> {
     if (this.state === 'closed' || this.state === 'closing') {
-      return
+      return false
+    }
+
+    if (this.handlers.beforeClose && this.handlers.beforeClose(info) === false) {
+      return false
     }
 
     this.cancelPending()
     const gen = ++this.generation
 
-    if (this.handlers.beforeClose) {
-      this.handlers.beforeClose()
+    if (this.handlers.onClose) {
+      this.handlers.onClose(info)
     }
 
     this.state = 'closing'
     await this.waitForPhase('close', gen)
 
     if (gen !== this.generation) {
-      return
+      return false
     }
 
     this.state = 'closed'
@@ -118,6 +131,8 @@ export default class Lifecycle {
     if (this.handlers.onCloseReady) {
       this.handlers.onCloseReady()
     }
+
+    return true
   }
 
   /** Cancel timers and resolve waiting phases — called when open/close race each other. */

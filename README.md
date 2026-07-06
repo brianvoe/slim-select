@@ -41,7 +41,7 @@ Full docs, live demos, and copy-paste examples: **[slimselectjs.com](https://sli
 
 **Built to ship**
 
-- Zero runtime dependencies
+- Zero dependencies
 - ~66KB JS (~16KB gzip) · ~12KB CSS (~2KB gzip)
 - TypeScript types included
 - WCAG 2.1 Level AA accessibility (ARIA, keyboard, screen reader support)
@@ -227,7 +227,11 @@ new SlimSelect({
     afterChange: (newVal: Option[]) => void,
     beforeOpen: () => void,
     afterOpen: () => void,
-    beforeClose: () => void,
+    // Return false to cancel close. info.source is why close was requested
+    // ('select' | 'deselect' | 'outside' | 'toggle' | 'escape' | 'tab' | 'modal' | 'api').
+    // info.selectionChanged is true when the selection is changing in this action.
+    // info.option is the clicked option when source is 'select' (undefined otherwise).
+    beforeClose: (info: CloseInfo) => boolean | void,
     afterClose: () => void,
     error: (err: Error) => void
   }

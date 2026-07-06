@@ -10,9 +10,25 @@ import Settings from './settings'
 import Store, { Optgroup, Option } from './store'
 import CssClasses from './classes'
 
+export type CloseSource =
+  | 'select'
+  | 'deselect'
+  | 'outside'
+  | 'toggle'
+  | 'escape'
+  | 'tab'
+  | 'modal'
+  | 'api'
+
+export interface CloseInfo {
+  source: CloseSource
+  option?: Option
+  selectionChanged: boolean
+}
+
 export interface Callbacks {
   open: () => void
-  close: () => void
+  close: (info?: CloseInfo) => void
   addable?: (
     value: string
   ) =>
@@ -141,6 +157,37 @@ export default class Render {
 
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
+  private requestClose(
+    source: CloseSource,
+    options?: { option?: Option; selectionChanged?: boolean }
+  ): void {
+    this.callbacks.close({
+      source,
+      option: options?.option,
+      selectionChanged: options?.selectionChanged ?? false
+    })
+  }
+
+  private selectionChanged(before: Option[], after: Option[]): boolean {
+    if (before.length !== after.length) {
+      return true
+    }
+
+    const beforeIds = before.map((o) => o.id).sort()
+    const afterIds = after.map((o) => o.id).sort()
+
+    return beforeIds.some((id, index) => id !== afterIds[index])
+  }
+
+  private closeOnSingleSelectReclick(storeOption: Option): void {
+    if (this.settings.closeOnSelect) {
+      this.requestClose('select', {
+        option: storeOption,
+        selectionChanged: false
+      })
+    }
+  }
+
   public addClasses(
     element: HTMLElement | SVGElement,
     classValue: string
@@ -274,7 +321,7 @@ export default class Render {
     closeButton.setAttribute('aria-label', 'Close')
     closeButton.onclick = (e: Event) => {
       e.stopPropagation()
-      this.callbacks.close()
+      this.requestClose('modal')
     }
 
     const closeSvg = document.createElementNS(
@@ -292,7 +339,7 @@ export default class Render {
 
     overlay.onclick = (e: Event) => {
       if (e.target === overlay) {
-        this.callbacks.close()
+        this.requestClose('modal')
       }
     }
 
@@ -519,7 +566,7 @@ export default class Render {
           e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
-          this.callbacks.close()
+          this.requestClose('tab')
           return true // Continue doing normal tabbing
         case 'Enter':
         case ' ':
@@ -532,7 +579,7 @@ export default class Render {
           }
           return false
         case 'Escape':
-          this.callbacks.close()
+          this.requestClose('escape')
           return false
       }
 
@@ -551,7 +598,9 @@ export default class Render {
         return
       }
 
-      this.settings.isOpen ? this.callbacks.close() : this.callbacks.open()
+      this.settings.isOpen
+        ? this.requestClose('toggle')
+        : this.callbacks.open()
     }
 
     // Add values
@@ -632,7 +681,7 @@ export default class Render {
 
         // Check if we need to close the dropdown
         if (this.settings.closeOnSelect) {
-          this.callbacks.close()
+          this.requestClose('deselect', { selectionChanged: true })
         }
 
         // Run afterChange callback
@@ -1034,7 +1083,7 @@ export default class Render {
 
           // Check if we need to close the dropdown
           if (this.settings.closeOnSelect) {
-            this.callbacks.close()
+            this.requestClose('deselect', { selectionChanged: true })
           }
 
           // Run afterChange callback
@@ -1247,10 +1296,10 @@ export default class Render {
           // When tabbing close the dropdown
           // which will also focus on main div
           // and then continuing normal tabbing
-          this.callbacks.close()
+          this.requestClose('tab')
           return true // Continue doing normal tabbing
         case 'Escape':
-          this.callbacks.close()
+          this.requestClose('escape')
           return false
         case 'Enter':
           // Check if there's a highlighted option first
@@ -1332,7 +1381,7 @@ export default class Render {
           if (this.settings.closeOnSelect) {
             const animationDuration = getAnimationDuration(this.content.main)
             setTimeout(() => {
-              this.callbacks.close()
+              this.requestClose('select', { selectionChanged: true })
             }, animationDuration)
           }
         }
@@ -2281,6 +2330,8 @@ export default class Render {
       const selectedOptions = this.store.getSelected()
       const element = e.currentTarget as HTMLDivElement
       const elementID = String(element.dataset.id)
+      const storeOption = this.store.getOptionByID(elementID) ?? option
+      const isCurrentlySelected = selectedOptions.includes(elementID)
       const isCmd = e.ctrlKey || e.metaKey // Cmd (Mac) or Ctrl (Windows/Linux)
 
       // If the option is disabled, do nothing
@@ -2292,14 +2343,16 @@ export default class Render {
       // In multi-select, you can always toggle options on/off
       if (
         !this.settings.isMultiple &&
-        option.selected &&
+        isCurrentlySelected &&
         !this.settings.allowDeselect
       ) {
+        this.closeOnSingleSelectReclick(storeOption)
         return
       }
 
       // Prevent deselection of mandatory options
-      if (option.selected && option.mandatory) {
+      if (isCurrentlySelected && storeOption.mandatory) {
+        this.closeOnSingleSelectReclick(storeOption)
         return
       }
 
@@ -2308,10 +2361,10 @@ export default class Render {
       if (
         (this.settings.isMultiple &&
           this.settings.maxSelected <= selectedOptions.length &&
-          !option.selected) ||
+          !isCurrentlySelected) ||
         (this.settings.isMultiple &&
           this.settings.minSelected >= selectedOptions.length &&
-          option.selected &&
+          isCurrentlySelected &&
           !isCmd)
       ) {
         return
@@ -2369,9 +2422,9 @@ export default class Render {
             after = before.filter((o: Option) => o.id !== elementID)
           } else {
             // Add this option to selection
-            after = before.concat(option)
+            after = before.concat(storeOption)
           }
-          this.lastSelectedOption = option
+          this.lastSelectedOption = storeOption
         }
         // Regular Click: Toggle this option (add/remove), will close dropdown
         else {
@@ -2380,20 +2433,20 @@ export default class Render {
             after = before.filter((o: Option) => o.id !== elementID)
           } else {
             // Add this option to selection
-            after = before.concat(option)
+            after = before.concat(storeOption)
           }
-          this.lastSelectedOption = option
+          this.lastSelectedOption = storeOption
         }
       }
 
       // If single
       if (!this.settings.isMultiple) {
-        if (option.selected) {
+        if (isCurrentlySelected) {
           // If selected after would remove
           after = []
         } else {
           // If not selected after would add
-          after = [option]
+          after = [storeOption]
         }
       }
 
@@ -2432,7 +2485,10 @@ export default class Render {
           !(this.settings.isMultiple && isModifierKey)
 
         if (shouldClose) {
-          this.callbacks.close()
+          this.requestClose('select', {
+            option: storeOption,
+            selectionChanged: this.selectionChanged(before, after)
+          })
         }
 
         // callback that the value has changed

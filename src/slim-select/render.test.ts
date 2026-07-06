@@ -9,7 +9,7 @@ import {
   afterEach,
   type Mock
 } from 'vitest'
-import Render, { Callbacks } from './render'
+import Render, { Callbacks, CloseInfo } from './render'
 import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Store, { Option } from './store'
 import CssClasses from './classes'
@@ -58,7 +58,7 @@ describe('render module', () => {
     // default callbacks
     const callbacks: Callbacks = {
       open: openMock as () => void,
-      close: closeMock as () => void,
+      close: closeMock as (info?: CloseInfo) => void,
       setSelected: setSelectedMock as (
         value: string | string[],
         runAfterChange: boolean
@@ -1667,7 +1667,7 @@ describe('render module', () => {
         store,
         {
           open: openMock as () => void,
-          close: closeMock as () => void,
+          close: closeMock as (info?: CloseInfo) => void,
           setSelected: setSelectedMock as (
             value: string | string[],
             runAfterChange: boolean
@@ -1953,17 +1953,80 @@ describe('render module', () => {
       render.settings.isMultiple = true
       render.settings.allowDeselect = true
       render.settings.minSelected = 1
+      render.store = new Store('multiple', [
+        { text: 'opt 1', value: 'opt1', selected: true }
+      ])
 
-      const option = render.option(
-        new Option({
-          text: 'opt 1',
-          selected: true
-        })
-      )
-      option.dispatchEvent(new MouseEvent('click'))
+      render.renderOptions(render.store.getDataOptions())
+      const opts = render.getOptions(false, false, true)
+
+      opts[0].dispatchEvent(new MouseEvent('click'))
 
       expect(addOptionMock).not.toHaveBeenCalled()
       expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('single-select re-click on selected option closes when closeOnSelect is true', () => {
+      const store = new Store('single', [
+        { text: 'test0', value: 'test0' },
+        { text: 'test1', value: 'test1' }
+      ])
+      render.store = store
+      render.callbacks.setSelected = (value) => {
+        store.setSelectedBy('id', typeof value === 'string' ? [value] : value)
+        render.updateOptionSelection()
+      }
+
+      render.renderOptions(store.getDataOptions())
+      const opts = render.getOptions(false, false, true)
+
+      // Select an option, then re-click it after the store reflects the selection
+      opts[0].dispatchEvent(new MouseEvent('click'))
+      closeMock.mockClear()
+
+      opts[0].dispatchEvent(new MouseEvent('click'))
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+      expect(closeMock).toHaveBeenCalledWith({
+        source: 'select',
+        option: expect.objectContaining({ value: 'test0' }),
+        selectionChanged: false
+      })
+    })
+
+    test('single-select re-click on mandatory selected option closes when closeOnSelect is true', () => {
+      render.store = new Store('single', [
+        {
+          text: 'Required',
+          value: 'required',
+          selected: true,
+          mandatory: true
+        },
+        { text: 'Other', value: 'other' }
+      ])
+
+      render.renderOptions(render.store.getDataOptions())
+      const opts = render.getOptions(false, false, true)
+
+      opts[0].dispatchEvent(new MouseEvent('click'))
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+      expect(closeMock).toHaveBeenCalledWith({
+        source: 'select',
+        option: expect.objectContaining({ value: 'required' }),
+        selectionChanged: false
+      })
+    })
+
+    test('single-select re-click on selected option does not close when closeOnSelect is false', () => {
+      render.settings.closeOnSelect = false
+      render.renderOptions(render.store.getDataOptions())
+      const opts = render.getOptions(false, false, true)
+
+      opts[2].dispatchEvent(new MouseEvent('click'))
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+      expect(closeMock).not.toHaveBeenCalled()
     })
 
     test('hides value delete buttons when at minSelected', () => {
@@ -2054,18 +2117,29 @@ describe('render module', () => {
       ).toBe(true)
     })
 
-    test('click does nothing when trying to deselect a mandatory option', () => {
-      const option = render.option(
-        new Option({
+    test('click on mandatory selected option closes without deselecting', () => {
+      render.store = new Store('single', [
+        {
           text: 'mandatory option',
+          value: 'mandatory option',
           selected: true,
           mandatory: true
-        })
-      )
-      option.dispatchEvent(new MouseEvent('click'))
+        },
+        { text: 'other', value: 'other' }
+      ])
+
+      render.renderOptions(render.store.getDataOptions())
+      const opts = render.getOptions(false, false, true)
+
+      opts[0].dispatchEvent(new MouseEvent('click'))
 
       expect(addOptionMock).not.toHaveBeenCalled()
       expect(setSelectedMock).not.toHaveBeenCalled()
+      expect(closeMock).toHaveBeenCalledWith({
+        source: 'select',
+        option: expect.objectContaining({ value: 'mandatory option' }),
+        selectionChanged: false
+      })
     })
 
     test('click removes option', () => {
