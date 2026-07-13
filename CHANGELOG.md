@@ -5,7 +5,7 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [4.0.5]
 
 ### Fixed
 
@@ -45,8 +45,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- Documentation **Navigation menu** usage example — custom trigger button with SlimSelect dropdown panel
-  (`alwaysOpen`, `contentLocation`, CSS variables)
+- Documentation **Navigation menu** usage example — custom trigger button with SlimSelect dropdown panel (`alwaysOpen`,
+  `contentLocation`, CSS variables)
 - Site header **Docs** and **Frameworks** menus powered by SlimSelect
 - Docs in-page hash navigation (section links, direct URL visits, smooth scroll)
 - `destroyOrphanedSlimSelects()` helper — cleans up SlimSelect DOM left on `document.body` after SPA route changes
