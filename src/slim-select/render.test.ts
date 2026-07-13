@@ -210,9 +210,9 @@ describe('render module', () => {
       expect(render.main.main.classList.contains('test1')).toBe(true)
       expect(render.main.main.classList.contains('test2')).toBe(true)
 
-      expect(render.content.main.classList.contains('test0')).toBe(false)
-      expect(render.content.main.classList.contains('test1')).toBe(false)
-      expect(render.content.main.classList.contains('test2')).toBe(false)
+      expect(render.content.main.classList.contains('test0')).toBe(true)
+      expect(render.content.main.classList.contains('test1')).toBe(true)
+      expect(render.content.main.classList.contains('test2')).toBe(true)
     })
 
     test('if content position is relative, class is added on content', () => {

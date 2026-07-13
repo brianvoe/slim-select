@@ -496,12 +496,12 @@ export default class Render {
       this.content.main.style.cssText = this.settings.style
     }
 
-    // Add classes from the native select to the main trigger only (not content —
-    // select classes often include hide/layout rules that break the dropdown panel)
+    // Add classes from the native select to both main and content
     if (this.settings.class.length) {
       for (const c of this.settings.class) {
         if (c.trim() !== '') {
           this.main.main.classList.add(c.trim())
+          this.content.main.classList.add(c.trim())
         }
       }
     }

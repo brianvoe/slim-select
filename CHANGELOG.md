@@ -5,6 +5,16 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Native `<select>` CSS classes are copied to both `.ss-main` and `.ss-content` again
+  ([#694](https://github.com/brianvoe/slim-select/issues/694)). 4.0.2 limited inheritance to `.ss-main` only to protect
+  the dropdown from hide/layout utility classes; that was a breaking styling change and is reverted. Prefer hiding the
+  native select with SlimSelect (do not put `hidden` / `d-none` / similar utilities on the `<select>` if those rules
+  would also apply to the open panel).
+
 ## [4.0.4] - 2026-07-06
 
 ### Added
@@ -44,7 +54,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - `contentWidth` applies when `contentPosition` is `'relative'` (e.g. inline nav menus)
-- Native `<select>` classes copy to `.ss-main` only, not `.ss-content` (avoids hide/layout classes breaking the panel)
 - Navigation menu docs and site header styled via CSS variables instead of heavy `.ss-content` overrides
 
 ### Fixed
