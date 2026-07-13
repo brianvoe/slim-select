@@ -150,7 +150,7 @@ var g = class {
 	modal;
 	modalTitle;
 	constructor(e) {
-		e ||= {}, this.id = "ss-" + b(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.alwaysOpen = e.alwaysOpen === void 0 ? !1 : e.alwaysOpen, this.showSearch = e.showSearch === void 0 ? !0 : e.showSearch, this.focusSearch = e.focusSearch === void 0 ? !0 : e.focusSearch, this.keepSearch = e.keepSearch === void 0 ? !1 : e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight === void 0 ? !1 : e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 ? !0 : e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect === void 0 ? !1 : e.allowDeselect, this.hideSelected = e.hideSelected === void 0 ? !1 : e.hideSelected, this.multiString = e.multiString === void 0 ? !1 : e.multiString, this.keepOrder = e.keepOrder === void 0 ? !1 : e.keepOrder, this.showOptionTooltips = e.showOptionTooltips === void 0 ? !1 : e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
+		e ||= {}, this.id = "ss-" + b(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 && e.disabled, this.alwaysOpen = e.alwaysOpen !== void 0 && e.alwaysOpen, this.showSearch = e.showSearch === void 0 || e.showSearch, this.focusSearch = e.focusSearch === void 0 || e.focusSearch, this.keepSearch = e.keepSearch !== void 0 && e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight !== void 0 && e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 || e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect !== void 0 && e.allowDeselect, this.hideSelected = e.hideSelected !== void 0 && e.hideSelected, this.multiString = e.multiString !== void 0 && e.multiString, this.keepOrder = e.keepOrder !== void 0 && e.keepOrder, this.showOptionTooltips = e.showOptionTooltips !== void 0 && e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
 	}
 };
 //#endregion
@@ -277,7 +277,7 @@ function j(e) {
 	return e[0] === e[0].toUpperCase() ? t.substring(1) : t;
 }
 function M(e, t = typeof window < "u" ? window.innerWidth : 768) {
-	return e === "on" ? !0 : e === "mobile" ? t < 768 : !1;
+	return e === "on" || e === "mobile" && t < 768;
 }
 //#endregion
 //#region src/slim-select/events.ts
@@ -387,7 +387,7 @@ var N = class {
 	data;
 	mandatory;
 	constructor(e) {
-		this.id = !e.id || e.id === "" ? b() : e.id, this.value = e.value === void 0 ? e.text || "" : e.value || "", this.text = e.text || "", this.html = e.html || "", this.defaultSelected = e.defaultSelected === void 0 ? !1 : e.defaultSelected, this.selected = e.selected === void 0 ? !1 : e.selected, this.display = e.display === void 0 ? !0 : e.display, this.disabled = e.disabled === void 0 ? !1 : e.disabled, this.mandatory = e.mandatory === void 0 ? !1 : e.mandatory, this.placeholder = e.placeholder === void 0 ? !1 : e.placeholder, this.class = e.class || "", this.style = e.style || "", this.data = _(e.data);
+		this.id = !e.id || e.id === "" ? b() : e.id, this.value = e.value === void 0 ? e.text || "" : e.value || "", this.text = e.text || "", this.html = e.html || "", this.defaultSelected = e.defaultSelected !== void 0 && e.defaultSelected, this.selected = e.selected !== void 0 && e.selected, this.display = e.display === void 0 || e.display, this.disabled = e.disabled !== void 0 && e.disabled, this.mandatory = e.mandatory !== void 0 && e.mandatory, this.placeholder = e.placeholder !== void 0 && e.placeholder, this.class = e.class || "", this.style = e.style || "", this.data = _(e.data);
 	}
 }, I = class {
 	id;
@@ -396,7 +396,7 @@ var N = class {
 	closable;
 	options;
 	constructor(e) {
-		if (this.id = !e.id || e.id === "" ? b() : e.id, this.label = e.label || "", this.selectAll = e.selectAll === void 0 ? !1 : e.selectAll, this.closable = e.closable || "off", this.options = [], e.options) for (let t of e.options) this.options.push(new F(t));
+		if (this.id = !e.id || e.id === "" ? b() : e.id, this.label = e.label || "", this.selectAll = e.selectAll !== void 0 && e.selectAll, this.closable = e.closable || "off", this.options = [], e.options) for (let t of e.options) this.options.push(new F(t));
 	}
 }, L = class {
 	selectType = "single";
@@ -453,7 +453,7 @@ var N = class {
 		}) : new F({ ...e }));
 	}
 	optionMatchesSelected(e, t) {
-		return e.id === t.id ? !0 : t.value !== "" && e.value !== "" && e.value === t.value;
+		return e.id === t.id || t.value !== "" && e.value !== "" && e.value === t.value;
 	}
 	findOptionInData(e, t) {
 		for (let n of e) {
@@ -499,9 +499,9 @@ var N = class {
 			if (n instanceof I) for (let o of n.options) {
 				r ||= o;
 				let n = o[e] || "";
-				o.selected = i ? !1 : t.includes(n), o.selected && (a.push(o), this.selectType === "single" && (i = !0));
+				o.selected = !i && t.includes(n), o.selected && (a.push(o), this.selectType === "single" && (i = !0));
 			}
-			n instanceof F && (r ||= n, n.selected = i ? !1 : t.includes(n[e]), n.selected && (a.push(n), this.selectType === "single" && (i = !0)));
+			n instanceof F && (r ||= n, n.selected = !i && t.includes(n[e]), n.selected && (a.push(n), this.selectType === "single" && (i = !0)));
 		}
 		this.selectType === "single" && r && !i && !n && (r.selected = !0, a.push(r));
 		let o = t.map((t) => a.find((n) => n[e] === t)?.id || "");
@@ -708,7 +708,7 @@ var N = class {
 		this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow), this.removeClasses(this.content.main, this.classes.dirAbove), this.removeClasses(this.content.main, this.classes.dirBelow);
 	}
 	updateClassStyles() {
-		if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length) for (let e of this.settings.class) e.trim() !== "" && this.main.main.classList.add(e.trim());
+		if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length) for (let e of this.settings.class) e.trim() !== "" && (this.main.main.classList.add(e.trim()), this.content.main.classList.add(e.trim()));
 		(this.settings.contentPosition === "relative" || this.settings.contentPosition === "fixed") && this.content.main.classList.add("ss-" + this.settings.contentPosition);
 	}
 	updateAriaAttributes() {
@@ -1211,7 +1211,7 @@ var N = class {
 		return this.content.list.querySelector("." + this.classes.getFirst("option")) !== null;
 	}
 	canUpdateOptionSelectionInPlace() {
-		return this.content.search.input.value.trim() === "" ? this.hasRenderedOptions() : !1;
+		return this.content.search.input.value.trim() === "" && this.hasRenderedOptions();
 	}
 	updateOptionSelection() {
 		let e = new Set(this.store.getSelected()), t = this.content.list.querySelectorAll("." + this.classes.getFirst("option")), n = null;
