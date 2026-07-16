@@ -1723,7 +1723,7 @@ var R = class {
 	}
 	applyStructure(e, t, n = !1, r = !1) {
 		let { store: i, select: a, render: o, events: s } = this.deps;
-		if (I(i, e)) return;
+		if (!r && I(i, e)) return;
 		let c = i.getSelected(), l = i.validateDataArray(e);
 		if (l) {
 			s.error ? s.error(l) : this.deps.onError && this.deps.onError(l);
