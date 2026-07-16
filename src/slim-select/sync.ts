@@ -210,7 +210,9 @@ export default class SyncCoordinator {
   ): void {
     const { store, select, render, events } = this.deps
 
-    if (shouldSkipStructureUpdate(store, data)) {
+    // API search always shows "Searching..." first — even when results match the
+    // current store, we must re-render so that placeholder is cleared (#695).
+    if (!isSearchResult && shouldSkipStructureUpdate(store, data)) {
       return
     }
 

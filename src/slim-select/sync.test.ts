@@ -183,4 +183,35 @@ describe('SyncCoordinator', () => {
     expect(updateOptionsSpy).toHaveBeenCalledTimes(1)
     expect(setSelectedByValueSpy).not.toHaveBeenCalled()
   })
+
+  test('search results re-render even when data matches store (#695)', () => {
+    const { coordinator, store, render } = createCoordinator()
+    const data = store.getData()
+    const renderOptionsSpy = vi.spyOn(render, 'renderOptions')
+
+    coordinator.enqueue({
+      type: 'structure',
+      data,
+      source: 'api',
+      isSearchResult: true
+    })
+    coordinator.flush()
+
+    expect(renderOptionsSpy).toHaveBeenCalled()
+  })
+
+  test('non-search structure still skips when data unchanged', () => {
+    const { coordinator, store, render } = createCoordinator()
+    const data = store.getData()
+    const renderOptionsSpy = vi.spyOn(render, 'renderOptions')
+
+    coordinator.enqueue({
+      type: 'structure',
+      data,
+      source: 'api'
+    })
+    coordinator.flush()
+
+    expect(renderOptionsSpy).not.toHaveBeenCalled()
+  })
 })

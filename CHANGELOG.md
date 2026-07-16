@@ -5,6 +5,13 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.6]
+
+### Fixed
+
+- API `events.search` no longer stays stuck on `Searching...` when results match the current option list
+  ([#695](https://github.com/brianvoe/slim-select/issues/695))
+
 ## [4.0.5]
 
 ### Fixed

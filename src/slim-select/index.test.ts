@@ -1020,6 +1020,43 @@ describe('SlimSelect Module', () => {
       expect(slim.getSelected()).toContain('null')
     })
 
+    test('issue #695: API search that returns full catalog clears Searching...', () => {
+      document.body.innerHTML = `
+        <select multiple id="searchFullCatalog">
+          <option>Option 1</option>
+          <option>Option 2</option>
+          <option>Option 3</option>
+        </select>
+      `
+
+      const slimFull = new SlimSelect({
+        select: '#searchFullCatalog',
+        settings: {
+          hideSelected: true,
+          closeOnSelect: false
+        },
+        events: {
+          search: (searchValue, _selected, catalog) => {
+            const normalize = (str: string) =>
+              str.toLowerCase().replace(/\s/g, '')
+            return (catalog || []).filter(
+              (option) =>
+                'text' in option &&
+                normalize(option.text).includes(normalize(searchValue))
+            )
+          }
+        }
+      })
+
+      slimFull.open()
+      slimFull.search('Opt')
+
+      expect(document.querySelector('.ss-searching')).toBeNull()
+      expect(document.querySelectorAll('.ss-option').length).toBe(3)
+
+      slimFull.destroy()
+    })
+
     test('addable during API search adds option to catalog baseline', async () => {
       const emptySearch = vi.fn().mockReturnValue([])
 
