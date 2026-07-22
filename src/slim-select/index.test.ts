@@ -628,6 +628,7 @@ describe('SlimSelect Module', () => {
 
     test('should handle multiple selections from search results', () => {
       slim.destroy()
+      document.body.innerHTML = '<select id="searchTest" multiple></select>'
       slim = new SlimSelect({
         select: '#searchTest',
         data: [
@@ -635,26 +636,46 @@ describe('SlimSelect Module', () => {
           { value: 'b', text: 'B' }
         ],
         settings: {
-          isMultiple: true,
-          keepSearch: true
+          closeOnSelect: false
         },
         events: {
           search: searchMock
         }
       })
 
+      const selectEl = document.getElementById('searchTest') as HTMLSelectElement
       slim.open()
       slim.search('te')
 
+      // Search hits must not rewrite the native select
+      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual(['a', 'b'])
+
       const options = document.querySelectorAll('.ss-option')
-      options[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
-      options[1].dispatchEvent(new MouseEvent('click', { metaKey: true }))
+      options[0].dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      options[1].dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      expect(slim.getSelected()).toEqual(['null', 'eins'])
+      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual([
+        'null',
+        'eins'
+      ])
+
+      // Further search must keep selected on native, without writing the new page
+      slim.search('ei')
+      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual([
+        'null',
+        'eins'
+      ])
+      expect(slim.getSelected()).toEqual(['null', 'eins'])
 
       slim.close()
       slim.open()
 
-      const reopenedOptions = document.querySelectorAll('.ss-option')
-      expect(reopenedOptions.length).toBeGreaterThanOrEqual(11)
+      const nativeValues = Array.from(selectEl.options).map((o) => o.value)
+      expect(nativeValues).toEqual(
+        expect.arrayContaining(['null', 'eins', 'a', 'b'])
+      )
+      expect(slim.getSelected()).toEqual(['null', 'eins'])
     })
 
     test('should handle new search after reopening', () => {
@@ -796,6 +817,99 @@ describe('SlimSelect Module', () => {
         document.querySelectorAll('.ss-option')
       ).filter((el) => el.textContent?.trim() === 'Null')
       expect(nullLabels.length).toBe(1)
+      expect(slim.getSelected()).toEqual(['null'])
+    })
+
+    test('issue #696: API search keystrokes do not fire native change when selection is unchanged', () => {
+      const selectEl = document.getElementById('searchTest') as HTMLSelectElement
+      const onChangeMock = vi.fn()
+      selectEl.addEventListener('change', onChangeMock)
+
+      slim.setSelected('a')
+      onChangeMock.mockClear()
+
+      slim.open()
+      slim.search('Op')
+      slim.search('Opt')
+      slim.search('Opti')
+      slim.search('Optio')
+      slim.search('Option')
+
+      expect(onChangeMock).not.toHaveBeenCalled()
+      expect(slim.getSelected()).toEqual(['a'])
+    })
+
+    test('API search does not write result page into native select', () => {
+      const selectEl = document.getElementById('searchTest') as HTMLSelectElement
+      slim.setSelected('a')
+      const before = Array.from(selectEl.options).map((o) => o.value)
+
+      slim.open()
+      slim.search('te')
+
+      const after = Array.from(selectEl.options).map((o) => o.value)
+      expect(after).toEqual(before)
+      expect(after).toEqual(['a', 'b'])
+      expect(after).not.toContain('null')
+      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(11)
+    })
+
+    test('selecting API search result adds only that option to native select and fires change', () => {
+      const selectEl = document.getElementById('searchTest') as HTMLSelectElement
+      const onChangeMock = vi.fn()
+      selectEl.addEventListener('change', onChangeMock)
+
+      slim.destroy()
+      slim = new SlimSelect({
+        select: '#searchTest',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        settings: {
+          closeOnSelect: false
+        },
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+      onChangeMock.mockClear()
+
+      const nullOption = Array.from(
+        document.querySelectorAll('.ss-option')
+      ).find((el) => el.textContent?.trim() === 'Null')
+      expect(nullOption).toBeTruthy()
+      nullOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+      expect(slim.getSelected()).toEqual(['null'])
+      expect(onChangeMock).toHaveBeenCalledTimes(1)
+      // While search is open, native select is form truth only (selected options)
+      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual(['null'])
+      expect(selectEl.value).toBe('null')
+    })
+
+    test('API search select then clear restores catalog and keeps selected remote option', () => {
+      const selectEl = document.getElementById('searchTest') as HTMLSelectElement
+
+      slim.open()
+      slim.search('te')
+
+      const nullOption = Array.from(
+        document.querySelectorAll('.ss-option')
+      ).find((el) => el.textContent?.trim() === 'Null')
+      nullOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      expect(slim.getSelected()).toEqual(['null'])
+
+      slim.close()
+      slim.open()
+
+      const nativeValues = Array.from(selectEl.options).map((o) => o.value)
+      expect(nativeValues).toContain('null')
+      expect(nativeValues).toContain('a')
+      expect(nativeValues).toContain('b')
       expect(slim.getSelected()).toEqual(['null'])
     })
 

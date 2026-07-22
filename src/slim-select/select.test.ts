@@ -329,6 +329,57 @@ describe('select module', () => {
     )
   })
 
+  test('updateOptions does not dispatch change when selection is unchanged', () => {
+    document.body.innerHTML = '<select id="test"></select>'
+
+    const selectElement = document.getElementById('test') as HTMLSelectElement
+    const select = new Select(selectElement)
+    const store = new Store('single', [
+      { id: '1', value: '1', text: 'One', selected: true },
+      { id: '2', value: '2', text: 'Two', selected: false }
+    ])
+    select.updateOptions(store.getData())
+
+    const onChangeMock = vi.fn()
+    selectElement.addEventListener('change', onChangeMock)
+
+    // Same selection, filtered option list (API search style rebuild)
+    const filtered = new Store('single', [
+      { id: '1', value: '1', text: 'One', selected: true },
+      { id: '3', value: '3', text: 'Three', selected: false }
+    ])
+    select.updateOptions(filtered.getData())
+
+    expect(onChangeMock).not.toHaveBeenCalled()
+    expect(select.getSelectedValues()).toEqual(['1'])
+  })
+
+  test('updateOptions dispatches change when selection changes', () => {
+    document.body.innerHTML = '<select id="test"></select>'
+
+    const selectElement = document.getElementById('test') as HTMLSelectElement
+    const select = new Select(selectElement)
+    select.updateOptions(
+      new Store('single', [
+        { id: '1', value: '1', text: 'One', selected: true },
+        { id: '2', value: '2', text: 'Two', selected: false }
+      ]).getData()
+    )
+
+    const onChangeMock = vi.fn()
+    selectElement.addEventListener('change', onChangeMock)
+
+    select.updateOptions(
+      new Store('single', [
+        { id: '1', value: '1', text: 'One', selected: false },
+        { id: '2', value: '2', text: 'Two', selected: true }
+      ]).getData()
+    )
+
+    expect(onChangeMock).toHaveBeenCalledTimes(1)
+    expect(select.getSelectedValues()).toEqual(['2'])
+  })
+
   describe('onValueChange', () => {
     let select: Select
     let selectElement: HTMLSelectElement

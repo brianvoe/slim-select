@@ -185,9 +185,10 @@ describe('SyncCoordinator', () => {
   })
 
   test('search results re-render even when data matches store (#695)', () => {
-    const { coordinator, store, render } = createCoordinator()
+    const { coordinator, store, render, select } = createCoordinator()
     const data = store.getData()
     const renderOptionsSpy = vi.spyOn(render, 'renderOptions')
+    const updateOptionsSpy = vi.spyOn(select, 'updateOptions')
 
     coordinator.enqueue({
       type: 'structure',
@@ -198,6 +199,32 @@ describe('SyncCoordinator', () => {
     coordinator.flush()
 
     expect(renderOptionsSpy).toHaveBeenCalled()
+    expect(updateOptionsSpy).not.toHaveBeenCalled()
+  })
+
+  test('selection of missing native option rebuilds from selected options only', () => {
+    const { coordinator, select, store, selectEl } = createCoordinator()
+    // Simulate API search store page that is not on the native select
+    store.setData(
+      [
+        { text: 'Remote', value: 'remote', id: 'id-remote' },
+        { text: 'Other', value: 'other', id: 'id-other' }
+      ],
+      true
+    )
+    const remote = store.getDataOptions().find((o) => o.value === 'remote')!
+    const updateOptionsSpy = vi.spyOn(select, 'updateOptions')
+
+    coordinator.enqueue({
+      type: 'selection',
+      values: remote.id,
+      source: 'ui'
+    })
+    coordinator.flush()
+
+    expect(updateOptionsSpy).toHaveBeenCalled()
+    expect(Array.from(selectEl.options).map((o) => o.value)).toEqual(['remote'])
+    expect(selectEl.value).toBe('remote')
   })
 
   test('non-search structure still skips when data unchanged', () => {

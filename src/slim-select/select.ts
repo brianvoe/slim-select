@@ -1,4 +1,9 @@
-import { copyOptionData, kebabCase, hasClassInTree } from './helpers'
+import {
+  copyOptionData,
+  kebabCase,
+  hasClassInTree,
+  selectedIdsEqual
+} from './helpers'
 import { classifyMutations } from './mutations'
 import { Optgroup, Option } from './store'
 
@@ -364,6 +369,18 @@ export default class Select {
     return this.getSelectedOptions().map((option) => option.value)
   }
 
+  /** True when every value has a matching native <option> (empty list is vacuously true). */
+  public hasOptionValues(values: string[]): boolean {
+    if (values.length === 0) {
+      return true
+    }
+
+    const nativeValues = new Set(
+      Array.from(this.select.options).map((option) => option.value)
+    )
+    return values.every((value) => nativeValues.has(value))
+  }
+
   public setSelected(ids: string[]): void {
     // Stop listening to changes
     this.changeListen(false)
@@ -491,6 +508,9 @@ export default class Select {
     // Stop listening to changes
     this.changeListen(false)
 
+    // Option-list rebuilds (e.g. API search) must not fire change unless selection changes
+    const selectedBefore = this.getSelectedValues()
+
     // Clear out select
     this.select.innerHTML = ''
 
@@ -504,8 +524,10 @@ export default class Select {
       }
     }
 
-    // Trigger change event on original select
-    this.select.dispatchEvent(new Event('change', { bubbles: true }))
+    // Only fire native change when the selected value(s) actually changed (#696)
+    if (!selectedIdsEqual(selectedBefore, this.getSelectedValues())) {
+      this.select.dispatchEvent(new Event('change', { bubbles: true }))
+    }
 
     // Start listening to changes
     this.changeListen(true)

@@ -200,7 +200,8 @@ export default class SyncCoordinator {
 
   /**
    * Full sync: store → native <select> rebuild → render values + options.
-   * Used when the option list itself changes (setData, native DOM edits, search results).
+   * Used when the option list itself changes (setData, native DOM edits).
+   * API search results update store + UI only — native select stays form/selection state.
    */
   private applyStructure(
     data: (Partial<Option> | Partial<Optgroup>)[],
@@ -211,7 +212,8 @@ export default class SyncCoordinator {
     const { store, select, render, events } = this.deps
 
     // API search always shows "Searching..." first — even when results match the
-    // current store, we must re-render so that placeholder is cleared (#695).
+    // current store, we must re-render the UI so that placeholder is cleared (#695).
+    // Search hits stay out of the native <select> (form options update on selection).
     if (!isSearchResult && shouldSkipStructureUpdate(store, data)) {
       return
     }
@@ -235,7 +237,11 @@ export default class SyncCoordinator {
       store.snapshotCatalog()
     }
 
-    select.updateOptions(dataClean)
+    // Ephemeral API search pages must not rewrite the native <select>
+    if (!isSearchResult) {
+      select.updateOptions(dataClean)
+    }
+
     render.renderValues()
     render.renderOptions(dataClean)
 
@@ -245,8 +251,42 @@ export default class SyncCoordinator {
   }
 
   /**
+   * Sync native <select> to current selection (form truth).
+   * When selected options are missing from the native DOM (e.g. picked from API
+   * search results), rebuild from selected options only — never from search hits.
+   */
+  private syncNativeSelection(): void {
+    const { store, select } = this.deps
+    const selectedOptions = store.getSelectedOptions()
+    const selectedValues = store.getSelectedValues()
+
+    if (!select.hasOptionValues(selectedValues)) {
+      if (selectedOptions.length > 0) {
+        select.updateOptions(selectedOptions)
+        return
+      }
+
+      // Empty selection with no matching native options: prefer catalog placeholder
+      const placeholder = store
+        .getCatalogData()
+        .find(
+          (item): item is Option =>
+            item instanceof Option && item.placeholder === true
+        )
+      if (placeholder) {
+        select.updateOptions([new Option({ ...placeholder, selected: true })])
+        return
+      }
+    }
+
+    // Use values on the native DOM — HTML option ids may be empty while store uses generated ids
+    select.setSelectedByValue(selectedValues)
+  }
+
+  /**
    * Lightweight selection sync: flip option.selected on native DOM only.
-   * Avoids select.updateOptions() (innerHTML rebuild) for selection-only changes.
+   * Avoids select.updateOptions() (innerHTML rebuild) for selection-only changes
+   * when the options already exist on the native select.
    */
   private applySelection(
     values: string | string[],
@@ -263,9 +303,7 @@ export default class SyncCoordinator {
     }
 
     store.setSelectedBy('id', ids)
-
-    // Use values on the native DOM — HTML option ids may be empty while store uses generated ids
-    select.setSelectedByValue(store.getSelectedValues())
+    this.syncNativeSelection()
     render.renderValues()
 
     const searchValue = render.content.search.input.value.trim()
@@ -331,7 +369,17 @@ export default class SyncCoordinator {
     }
 
     const data = store.getData(false)
-    select.updateOptions(data)
+
+    // During API search, native select is form truth (selected options), not search hits
+    if (isApiSearchOverlay) {
+      const selectedOptions = store.getSelectedOptions()
+      if (selectedOptions.length > 0) {
+        select.updateOptions(selectedOptions)
+      }
+    } else {
+      select.updateOptions(data)
+    }
+
     render.renderValues()
     render.renderOptions(data)
 
