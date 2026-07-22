@@ -27,6 +27,8 @@ export default class Select {
     getDataFromOption(option: HTMLOptionElement): Option;
     getSelectedOptions(): Option[];
     getSelectedValues(): string[];
+    /** True when every value has a matching native <option> (empty list is vacuously true). */
+    hasOptionValues(values: string[]): boolean;
     setSelected(ids: string[]): void;
     setSelectedByValue(values: string[]): void;
     updateSelect(id?: string, style?: string, classes?: string[]): void;

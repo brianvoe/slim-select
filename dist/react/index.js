@@ -1551,6 +1551,11 @@ var B = class {
 	getSelectedValues() {
 		return this.getSelectedOptions().map((e) => e.value);
 	}
+	hasOptionValues(e) {
+		if (e.length === 0) return !0;
+		let t = new Set(Array.from(this.select.options).map((e) => e.value));
+		return e.every((e) => t.has(e));
+	}
 	setSelected(e) {
 		this.changeListen(!1);
 		let t = this.select.childNodes;
@@ -1595,13 +1600,14 @@ var B = class {
 		})), this.changeListen(!0);
 	}
 	updateOptions(e) {
-		if (!(!e || e.length === 0)) {
-			this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1), this.select.innerHTML = "";
-			for (let t of e) t instanceof I && this.select.appendChild(this.createOptgroup(t)), t instanceof F && this.select.appendChild(this.createOption(t));
-			if (this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
-				let e = this.pendingOptionsChange;
-				e.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(e), this.changeListen(!0)) : this.pendingOptionsChange = null;
-			}
+		if (!e || e.length === 0) return;
+		this.isUpdating = !0, this.pendingOptionsChange = null, this.changeListen(!1);
+		let t = this.getSelectedValues();
+		this.select.innerHTML = "";
+		for (let t of e) t instanceof I && this.select.appendChild(this.createOptgroup(t)), t instanceof F && this.select.appendChild(this.createOption(t));
+		if (C(t, this.getSelectedValues()) || this.select.dispatchEvent(new Event("change", { bubbles: !0 })), this.changeListen(!0), this.isUpdating = !1, this.pendingOptionsChange !== null) {
+			let e = this.pendingOptionsChange;
+			e.length > 0 && this.onOptionsChange ? (this.pendingOptionsChange = null, this.changeListen(!1), this.onOptionsChange(e), this.changeListen(!0)) : this.pendingOptionsChange = null;
 		}
 	}
 	createOptgroup(e) {
@@ -1733,12 +1739,30 @@ var U = class {
 		}
 		i.setData(e, n);
 		let u = i.getData(!1);
-		r || i.snapshotCatalog(), a.updateOptions(u), o.renderValues(), o.renderOptions(u), s.afterChange && !C(c, i.getSelected()) && s.afterChange(i.getSelectedOptions());
+		r || i.snapshotCatalog(), r || a.updateOptions(u), o.renderValues(), o.renderOptions(u), s.afterChange && !C(c, i.getSelected()) && s.afterChange(i.getSelectedOptions());
+	}
+	syncNativeSelection() {
+		let { store: e, select: t } = this.deps, n = e.getSelectedOptions(), r = e.getSelectedValues();
+		if (!t.hasOptionValues(r)) {
+			if (n.length > 0) {
+				t.updateOptions(n);
+				return;
+			}
+			let r = e.getCatalogData().find((e) => e instanceof F && e.placeholder === !0);
+			if (r) {
+				t.updateOptions([new F({
+					...r,
+					selected: !0
+				})]);
+				return;
+			}
+		}
+		t.setSelectedByValue(r);
 	}
 	applySelection(e, t, n) {
 		let { store: r, select: i, render: a, events: o } = this.deps, s = r.getSelected(), c = H(r, e);
 		if (C(s, c)) return;
-		r.setSelectedBy("id", c), i.setSelectedByValue(r.getSelectedValues()), a.renderValues();
+		r.setSelectedBy("id", c), this.syncNativeSelection(), a.renderValues();
 		let l = a.content.search.input.value.trim();
 		l === "" ? a.canUpdateOptionSelectionInPlace() ? a.updateOptionSelection() : a.renderOptions(r.getData(!1)) : a.hasRenderedOptions() ? a.updateOptionSelection() : this.deps.search && this.deps.search(l), n && o.afterChange && !C(s, r.getSelected()) && o.afterChange(r.getSelectedOptions());
 	}
@@ -1758,7 +1782,11 @@ var U = class {
 			c(n) || t.setData([...n, new F(e)], !0), t.snapshotCatalog();
 		} else t.addOption(e), t.snapshotCatalog();
 		let l = t.getData(!1);
-		n.updateOptions(l), r.renderValues(), r.renderOptions(l), i.afterChange && !C(a, t.getSelected()) && i.afterChange(t.getSelectedOptions());
+		if (o) {
+			let e = t.getSelectedOptions();
+			e.length > 0 && n.updateOptions(e);
+		} else n.updateOptions(l);
+		r.renderValues(), r.renderOptions(l), i.afterChange && !C(a, t.getSelected()) && i.afterChange(t.getSelectedOptions());
 	}
 }, W = class {
 	selectEl;

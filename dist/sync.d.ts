@@ -65,12 +65,20 @@ export default class SyncCoordinator {
     private applyChange;
     /**
      * Full sync: store → native <select> rebuild → render values + options.
-     * Used when the option list itself changes (setData, native DOM edits, search results).
+     * Used when the option list itself changes (setData, native DOM edits).
+     * API search results update store + UI only — native select stays form/selection state.
      */
     private applyStructure;
     /**
+     * Sync native <select> to current selection (form truth).
+     * When selected options are missing from the native DOM (e.g. picked from API
+     * search results), rebuild from selected options only — never from search hits.
+     */
+    private syncNativeSelection;
+    /**
      * Lightweight selection sync: flip option.selected on native DOM only.
-     * Avoids select.updateOptions() (innerHTML rebuild) for selection-only changes.
+     * Avoids select.updateOptions() (innerHTML rebuild) for selection-only changes
+     * when the options already exist on the native select.
      */
     private applySelection;
     /** Append a single option then full-sync native + render (same as legacy addOption). */
