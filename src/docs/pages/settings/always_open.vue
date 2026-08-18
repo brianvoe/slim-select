@@ -44,6 +44,10 @@ export default defineComponent({
       configuration panels, or any interface where the dropdown should behave more like a persistent selection list
       rather than a traditional dropdown.
     </p>
+    <p>
+      For a multi-select with selected values in one row and the search field in another, see
+      <router-link to="/usage#separateValues">Separate values</router-link>.
+    </p>
 
     <div class="row">
       <div style="height: auto">

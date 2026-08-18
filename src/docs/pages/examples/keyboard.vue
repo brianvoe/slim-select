@@ -60,7 +60,7 @@ export default defineComponent({
 
 <template>
   <div id="keyboard" class="content">
-    <h2 class="header">Keyboard: multi-select values</h2>
+    <h2 class="header">Keyboard values</h2>
     <p>
       With the dropdown open, focus stays in the search field so you can keep adding matches. When the search box is
       empty, <kbd>Left</kbd> and <kbd>Right</kbd> move a highlight across the selected values. <kbd>Backspace</kbd> or
