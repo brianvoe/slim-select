@@ -340,7 +340,7 @@ var O = class {
 		if (this.state === "closed" || this.state === "closing" || this.handlers.beforeClose && this.handlers.beforeClose(e) === !1) return !1;
 		this.cancelPending();
 		let t = ++this.generation;
-		return this.handlers.onClose && this.handlers.onClose(e), this.state = "closing", await this.waitForPhase("close", t), t === this.generation ? (this.state = "closed", this.handlers.afterClose && this.handlers.afterClose(), this.handlers.onCloseReady && this.handlers.onCloseReady(), !0) : !1;
+		return this.handlers.onClose && this.handlers.onClose(e), this.state = "closing", await this.waitForPhase("close", t), t === this.generation && (this.state = "closed", this.handlers.afterClose && this.handlers.afterClose(), this.handlers.onCloseReady && this.handlers.onCloseReady(), !0);
 	}
 	cancelPending() {
 		this.generation++, this.animationAbort?.abort(), this.animationAbort = null, this.pendingTimer &&= (clearTimeout(this.pendingTimer), null);
@@ -406,16 +406,18 @@ var O = class {
 	}
 	validateDataArray(e) {
 		if (!Array.isArray(e)) return /* @__PURE__ */ Error("Data must be an array");
-		for (let t of e) if (t) if (t instanceof j || "label" in t) {
-			if (!("label" in t)) return /* @__PURE__ */ Error("Optgroup must have a label");
-			if ("options" in t && t.options) for (let e of t.options) {
-				let t = this.validateOption(e);
-				if (t) return t;
-			}
-		} else if (t instanceof A || "text" in t) {
-			let e = this.validateOption(t);
-			if (e) return e;
-		} else return /* @__PURE__ */ Error("Data object must be a valid optgroup or option");
+		for (let t of e) if (t) {
+			if (t instanceof j || "label" in t) {
+				if (!("label" in t)) return /* @__PURE__ */ Error("Optgroup must have a label");
+				if ("options" in t && t.options) for (let e of t.options) {
+					let t = this.validateOption(e);
+					if (t) return t;
+				}
+			} else if (t instanceof A || "text" in t) {
+				let e = this.validateOption(t);
+				if (e) return e;
+			} else return /* @__PURE__ */ Error("Data object must be a valid optgroup or option");
+		}
 		return null;
 	}
 	validateOption(e) {
@@ -555,10 +557,12 @@ var O = class {
 				let a = [];
 				if (i.options.forEach((i) => {
 					(!e || e(i)) && (t ? a.push(n ? new A(i) : i) : r.push(n ? new A(i) : i));
-				}), a.length > 0) if (n) {
-					let e = new j(i);
-					e.options = a, r.push(e);
-				} else r.push(this.createOptgroupView(i, a));
+				}), a.length > 0) {
+					if (n) {
+						let e = new j(i);
+						e.options = a, r.push(e);
+					} else r.push(this.createOptgroupView(i, a));
+				}
 			}
 			i instanceof A && (!e || e(i)) && r.push(n ? new A(i) : i);
 		}), r;
@@ -807,7 +811,8 @@ var O = class {
 		if (t.length === 0) {
 			this.main.values.innerHTML = this.placeholder().outerHTML;
 			return;
-		} else {
+		}
+		{
 			let e = this.main.values.querySelector("." + this.classes.getFirst("placeholder"));
 			e && e.remove();
 		}
@@ -822,7 +827,8 @@ var O = class {
 			let e = document.createElement("div");
 			this.addClasses(e, this.classes.max), e.textContent = this.settings.maxValuesMessage.replace("{number}", t.length.toString()), this.main.values.innerHTML = e.outerHTML;
 			return;
-		} else {
+		}
+		{
 			let e = this.main.values.querySelector("." + this.classes.getFirst("max"));
 			e && e.remove();
 		}
@@ -871,7 +877,7 @@ var O = class {
 		let t = this.getValueChips();
 		if (t.length === 0) return !1;
 		let n = this.getHighlightedValueChip(), r = n ? t.indexOf(n) : -1;
-		return e === "left" ? (r === -1 ? this.highlightValueChip(t[t.length - 1]) : r > 0 && this.highlightValueChip(t[r - 1]), !0) : r === -1 ? !1 : (r < t.length - 1 ? this.highlightValueChip(t[r + 1]) : this.clearValueChipHighlight(), !0);
+		return e === "left" ? (r === -1 ? this.highlightValueChip(t[t.length - 1]) : r > 0 && this.highlightValueChip(t[r - 1]), !0) : r !== -1 && (r < t.length - 1 ? this.highlightValueChip(t[r + 1]) : this.clearValueChipHighlight(), !0);
 	}
 	deleteValueChip(e = !1) {
 		let t = this.getValueChips();
@@ -942,7 +948,8 @@ var O = class {
 			if (this.settings.openPosition === "down") {
 				this.moveContentBelow();
 				return;
-			} else if (this.settings.openPosition === "up") {
+			}
+			if (this.settings.openPosition === "up") {
 				this.moveContentAbove();
 				return;
 			}
@@ -986,14 +993,14 @@ var O = class {
 				case "ArrowUp":
 				case "ArrowDown": return this.clearValueChipHighlight(), e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
 				case "ArrowLeft":
-				case "ArrowRight": return t.value === "" && this.navigateValueChips(e.key === "ArrowLeft" ? "left" : "right") ? (e.preventDefault(), !1) : !0;
-				case "Backspace": return t.value === "" && this.deleteValueChip() ? (e.preventDefault(), !1) : !0;
-				case "Delete": return t.value !== "" || !this.getHighlightedValueChip() ? !0 : this.deleteValueChip(!0) ? (e.preventDefault(), !1) : !0;
+				case "ArrowRight": return t.value !== "" || !this.navigateValueChips(e.key === "ArrowLeft" ? "left" : "right") || (e.preventDefault(), !1);
+				case "Backspace": return t.value !== "" || !this.deleteValueChip() || (e.preventDefault(), !1);
+				case "Delete": return t.value !== "" || !this.getHighlightedValueChip() || !this.deleteValueChip(!0) || (e.preventDefault(), !1);
 				case "Tab": return this.requestClose("tab"), !0;
 				case "Escape": return this.requestClose("escape"), !1;
 				case "Enter":
 					let r = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
-					return r ? (r.click(), !1) : this.callbacks.addable ? (n.click(), !1) : !0;
+					return r ? (r.click(), !1) : !this.callbacks.addable || (n.click(), !1);
 			}
 			return e.key.length === 1 && this.clearValueChipHighlight(), !0;
 		}, e.appendChild(t), this.callbacks.addable) {
@@ -1021,7 +1028,7 @@ var O = class {
 						}, e);
 					}
 				}, r = this.callbacks.addable(t);
-				r === !1 || r == null || (r instanceof Promise ? r.then((e) => {
+				r !== !1 && r != null && (r instanceof Promise ? r.then((e) => {
 					typeof e == "string" ? n({
 						text: e,
 						value: e
@@ -1145,7 +1152,8 @@ var O = class {
 							});
 							this.callbacks.setSelected(e, !0);
 							return;
-						} else {
+						}
+						{
 							let e = n.options.map((e) => e.id).filter((e) => e !== void 0), r = t.concat(e);
 							for (let e of n.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new A(e));
 							this.callbacks.setSelected(r, !0);
@@ -1762,9 +1770,7 @@ var R = class {
 			case "selection":
 				this.applySelection(e.values, e.source, e.runAfterChange !== !1);
 				break;
-			case "addOption":
-				this.applyAddOption(e.option);
-				break;
+			case "addOption": this.applyAddOption(e.option);
 		}
 	}
 	applyStructure(e, t, n = !1, r = !1) {
@@ -1815,10 +1821,12 @@ var R = class {
 			}
 			return !1;
 		};
-		if (!c(t.getData(!1))) if (o) {
-			let n = t.getCatalogData();
-			c(n) || t.setData([...n, new A(e)], !0), t.snapshotCatalog();
-		} else t.addOption(e), t.snapshotCatalog();
+		if (!c(t.getData(!1))) {
+			if (o) {
+				let n = t.getCatalogData();
+				c(n) || t.setData([...n, new A(e)], !0), t.snapshotCatalog();
+			} else t.addOption(e), t.snapshotCatalog();
+		}
 		let l = t.getData(!1);
 		if (o) {
 			let e = t.getSelectedOptions();

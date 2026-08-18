@@ -6,7 +6,7 @@ export default defineConfig({
   publicDir: false,
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(import.meta.dirname, 'src')
     }
   },
   build: {
@@ -14,11 +14,11 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: false, // package.json rimraf ./dist/*
     lib: {
-      entry: path.resolve(__dirname, 'src/slim-select/index.ts'),
+      entry: path.resolve(import.meta.dirname, 'src/slim-select/index.ts'),
       formats: ['es', 'cjs'],
       fileName: (format) => (format === 'es' ? 'slimselect.es.js' : 'slimselect.cjs.js')
     },
-    outDir: path.resolve(__dirname, 'dist'),
+    outDir: path.resolve(import.meta.dirname, 'dist'),
     rollupOptions: {
       output: {
         exports: 'named',
@@ -32,9 +32,9 @@ export default defineConfig({
   plugins: [
     dts({
       rollupTypes: true,
-      outDir: path.resolve(__dirname, 'dist'),
-      entryRoot: path.resolve(__dirname, 'src/slim-select'),
-      exclude: [path.resolve(__dirname, 'src/slim-select/**/*.test.ts')]
+      outDir: path.resolve(import.meta.dirname, 'dist'),
+      entryRoot: path.resolve(import.meta.dirname, 'src/slim-select'),
+      exclude: [path.resolve(import.meta.dirname, 'src/slim-select/**/*.test.ts')]
     })
   ]
 })

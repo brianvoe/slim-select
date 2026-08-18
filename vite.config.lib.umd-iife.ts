@@ -5,7 +5,7 @@ export default defineConfig({
   publicDir: false,
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(import.meta.dirname, 'src')
     }
   },
   build: {
@@ -13,12 +13,12 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: false, // package.json rimraf ./dist/*
     lib: {
-      entry: path.resolve(__dirname, 'src/slim-select/index.umd.ts'),
+      entry: path.resolve(import.meta.dirname, 'src/slim-select/index.umd.ts'),
       name: 'SlimSelect',
       formats: ['umd', 'iife'],
       fileName: (format) => (format === 'iife' ? 'slimselect.iife.js' : 'slimselect.js')
     },
-    outDir: path.resolve(__dirname, 'dist'),
+    outDir: path.resolve(import.meta.dirname, 'dist'),
     rollupOptions: {
       output: {
         exports: 'default',
