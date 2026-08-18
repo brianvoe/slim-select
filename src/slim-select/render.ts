@@ -10,15 +10,7 @@ import Settings from './settings'
 import Store, { Optgroup, Option } from './store'
 import CssClasses from './classes'
 
-export type CloseSource =
-  | 'select'
-  | 'deselect'
-  | 'outside'
-  | 'toggle'
-  | 'escape'
-  | 'tab'
-  | 'modal'
-  | 'api'
+export type CloseSource = 'select' | 'deselect' | 'outside' | 'toggle' | 'escape' | 'tab' | 'modal' | 'api'
 
 export interface CloseInfo {
   source: CloseSource
@@ -31,14 +23,7 @@ export interface Callbacks {
   close: (info?: CloseInfo) => void
   addable?: (
     value: string
-  ) =>
-    | Promise<Partial<Option> | string>
-    | Partial<Option>
-    | string
-    | false
-    | undefined
-    | null
-    | Error
+  ) => Promise<Partial<Option> | string> | Partial<Option> | string | false | undefined | null | Error
   setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
@@ -113,12 +98,7 @@ export default class Render {
   private bodyScrollLocked = false
   private savedBodyOverflow = ''
 
-  constructor(
-    settings: Required<Settings>,
-    classes: Required<CssClasses>,
-    store: Store,
-    callbacks: Callbacks
-  ) {
+  constructor(settings: Required<Settings>, classes: Required<CssClasses>, store: Store, callbacks: Callbacks) {
     this.store = store
     this.settings = settings
     this.classes = classes
@@ -157,10 +137,7 @@ export default class Render {
 
   // Helper method to add classes that may contain spaces
   // Splits by spaces and adds each class individually to avoid DOMException
-  private requestClose(
-    source: CloseSource,
-    options?: { option?: Option; selectionChanged?: boolean }
-  ): void {
+  private requestClose(source: CloseSource, options?: { option?: Option; selectionChanged?: boolean }): void {
     this.callbacks.close({
       source,
       option: options?.option,
@@ -188,10 +165,7 @@ export default class Render {
     }
   }
 
-  public addClasses(
-    element: HTMLElement | SVGElement,
-    classValue: string
-  ): void {
+  public addClasses(element: HTMLElement | SVGElement, classValue: string): void {
     if (!classValue || classValue.trim() === '') {
       return
     }
@@ -202,10 +176,7 @@ export default class Render {
   }
 
   // Helper method to remove classes that may contain spaces
-  public removeClasses(
-    element: HTMLElement | SVGElement,
-    classValue: string
-  ): void {
+  public removeClasses(element: HTMLElement | SVGElement, classValue: string): void {
     if (!classValue || classValue.trim() === '') {
       return
     }
@@ -264,9 +235,7 @@ export default class Render {
     const selectedOptions = this.store.getSelectedOptions()
     if (selectedOptions.length) {
       const selectedId = selectedOptions[selectedOptions.length - 1].id
-      const selectedOption = this.content.list.querySelector(
-        '[data-id="' + selectedId + '"]'
-      ) as HTMLElement
+      const selectedOption = this.content.list.querySelector('[data-id="' + selectedId + '"]') as HTMLElement
       if (selectedOption) {
         this.ensureElementInView(this.content.list, selectedOption)
       }
@@ -278,11 +247,7 @@ export default class Render {
   }
 
   private resolveModalView(): boolean {
-    if (
-      this.settings.alwaysOpen ||
-      this.settings.modal === 'off' ||
-      !this.modalElements
-    ) {
+    if (this.settings.alwaysOpen || this.settings.modal === 'off' || !this.modalElements) {
       return false
     }
 
@@ -324,15 +289,9 @@ export default class Render {
       this.requestClose('modal')
     }
 
-    const closeSvg = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'svg'
-    )
+    const closeSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     closeSvg.setAttribute('viewBox', '0 0 100 100')
-    const closePath = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'path'
-    )
+    const closePath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     closePath.setAttribute('d', this.classes.deselectPath)
     closeSvg.appendChild(closePath)
     closeButton.appendChild(closeSvg)
@@ -427,20 +386,9 @@ export default class Render {
   }
 
   /** Used by Lifecycle — wait for .ss-content CSS transition before afterOpen/afterClose. */
-  public waitForAnimation(
-    phase: 'open' | 'close',
-    signal?: AbortSignal
-  ): Promise<void> {
-    const timeout = getAnimationTimeout(
-      this.content.main,
-      this.settings.timeoutDelay
-    )
-    return waitForTransitionEnd(
-      this.content.main,
-      CONTENT_PANEL_TRANSITION_PROPERTIES,
-      timeout,
-      signal
-    )
+  public waitForAnimation(phase: 'open' | 'close', signal?: AbortSignal): Promise<void> {
+    const timeout = getAnimationTimeout(this.content.main, this.settings.timeoutDelay)
+    return waitForTransitionEnd(this.content.main, CONTENT_PANEL_TRANSITION_PROPERTIES, timeout, signal)
   }
 
   public close(): void {
@@ -469,6 +417,7 @@ export default class Render {
 
     // Clear active descendant when closed
     this.main.main.removeAttribute('aria-activedescendant')
+    this.clearValueChipHighlight()
   }
 
   /** Remove open-direction classes after close animation (lifecycle afterClose). */
@@ -508,10 +457,7 @@ export default class Render {
 
     // Misc classes
     // Add content position class
-    if (
-      this.settings.contentPosition === 'relative' ||
-      this.settings.contentPosition === 'fixed'
-    ) {
+    if (this.settings.contentPosition === 'relative' || this.settings.contentPosition === 'fixed') {
       this.content.main.classList.add('ss-' + this.settings.contentPosition)
     }
   }
@@ -526,10 +472,7 @@ export default class Render {
     this.main.main.setAttribute('aria-expanded', 'false')
 
     this.content.list.setAttribute('role', 'listbox')
-    this.content.list.setAttribute(
-      'aria-label',
-      this.settings.ariaLabel + ' listbox'
-    )
+    this.content.list.setAttribute('aria-label', this.settings.ariaLabel + ' listbox')
 
     // Add aria-multiselectable for multiple selects
     if (this.settings.isMultiple) {
@@ -598,9 +541,7 @@ export default class Render {
         return
       }
 
-      this.settings.isOpen
-        ? this.requestClose('toggle')
-        : this.callbacks.open()
+      this.settings.isOpen ? this.requestClose('toggle') : this.callbacks.open()
     }
 
     // Add values
@@ -619,9 +560,7 @@ export default class Render {
     const selectedOptions = this.store?.getSelectedOptions()
     if (
       !this.settings.allowDeselect ||
-      (this.settings.isMultiple &&
-        selectedOptions &&
-        selectedOptions.length <= 0) ||
+      (this.settings.isMultiple && selectedOptions && selectedOptions.length <= 0) ||
       this.isAtMinSelected()
     ) {
       this.addClasses(deselect, this.classes.hide)
@@ -699,15 +638,9 @@ export default class Render {
     }
 
     // Add deselect svg
-    const deselectSvg = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'svg'
-    )
+    const deselectSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     deselectSvg.setAttribute('viewBox', '0 0 100 100')
-    const deselectPath = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'path'
-    )
+    const deselectPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     deselectPath.setAttribute('d', this.classes.deselectPath)
     deselectSvg.appendChild(deselectPath)
     deselect.appendChild(deselectSvg)
@@ -717,10 +650,7 @@ export default class Render {
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     this.addClasses(arrow, this.classes.arrow)
     arrow.setAttribute('viewBox', '0 0 100 100')
-    const arrowPath = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'path'
-    )
+    const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
     arrowPath.setAttribute('d', this.classes.arrowClose)
     if (this.settings.alwaysOpen) {
       this.addClasses(arrow, this.classes.hide)
@@ -755,11 +685,7 @@ export default class Render {
 
   public placeholder(): HTMLDivElement {
     // Figure out if there is a placeholder option
-    const placeholderOption = this.store.filter(
-      (o) => o.placeholder,
-      false,
-      false
-    ) as Option[]
+    const placeholderOption = this.store.filter((o) => o.placeholder, false, false) as Option[]
 
     // If there is a placeholder option use that
     // If placeholder has an html value, use that
@@ -796,9 +722,13 @@ export default class Render {
   }
 
   private renderSingleValue(): void {
-    const selected = this.store.filter((o: Option): boolean => {
-      return o.selected && !o.placeholder
-    }, false, false) as Option[]
+    const selected = this.store.filter(
+      (o: Option): boolean => {
+        return o.selected && !o.placeholder
+      },
+      false,
+      false
+    ) as Option[]
     const selectedSingle = selected.length > 0 ? selected[0] : null
 
     // If nothing is seleected use settings placeholder text
@@ -829,10 +759,14 @@ export default class Render {
   private renderMultipleValues(): void {
     // Get various pieces of data
     let currentNodes = this.main.values.childNodes as NodeListOf<HTMLDivElement>
-    let selectedOptions = this.store.filter((opt: Option) => {
-      // Only grab options that are selected and display is true
-      return opt.selected && opt.display
-    }, false, false) as Option[]
+    let selectedOptions = this.store.filter(
+      (opt: Option) => {
+        // Only grab options that are selected and display is true
+        return opt.selected && opt.display
+      },
+      false,
+      false
+    ) as Option[]
 
     // If selectedOptions is empty set placeholder
     if (selectedOptions.length === 0) {
@@ -840,9 +774,7 @@ export default class Render {
       return
     } else {
       // If there is a placeholder, remove it
-      const placeholder = this.main.values.querySelector(
-        '.' + this.classes.getFirst('placeholder')
-      )
+      const placeholder = this.main.values.querySelector('.' + this.classes.getFirst('placeholder'))
       if (placeholder) {
         placeholder.remove()
       }
@@ -859,9 +791,7 @@ export default class Render {
 
       const commaValue = document.createElement('div')
       this.addClasses(commaValue, this.classes.multiString)
-      commaValue.textContent = commaOptions
-        .map((o: Option) => o.text)
-        .join(', ')
+      commaValue.textContent = commaOptions.map((o: Option) => o.text).join(', ')
 
       if (this.settings.showOptionTooltips) {
         commaValue.setAttribute('title', commaValue.textContent)
@@ -876,19 +806,14 @@ export default class Render {
       // Creating the element that shows the number of selected items
       const singleValue = document.createElement('div')
       this.addClasses(singleValue, this.classes.max)
-      singleValue.textContent = this.settings.maxValuesMessage.replace(
-        '{number}',
-        selectedOptions.length.toString()
-      )
+      singleValue.textContent = this.settings.maxValuesMessage.replace('{number}', selectedOptions.length.toString())
 
       // If there is a selected value, set a single div
       this.main.values.innerHTML = singleValue.outerHTML
       return
     } else {
       // If there is a message, remove it
-      const maxValuesMessage = this.main.values.querySelector(
-        '.' + this.classes.getFirst('max')
-      )
+      const maxValuesMessage = this.main.values.querySelector('.' + this.classes.getFirst('max'))
       if (maxValuesMessage) {
         maxValuesMessage.remove()
       }
@@ -917,10 +842,7 @@ export default class Render {
       }
     }
 
-    const animationDuration = getAnimationTimeout(
-      this.content.main,
-      this.settings.timeoutDelay
-    )
+    const animationDuration = getAnimationTimeout(this.content.main, this.settings.timeoutDelay)
 
     // Loop through and remove
     for (const n of removeNodes) {
@@ -952,15 +874,9 @@ export default class Render {
           if (currentNodes.length === 0) {
             this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
           } else if (d === 0) {
-            this.main.values.insertBefore(
-              this.multipleValue(selectedOptions[d]),
-              currentNodes[d]
-            )
+            this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
           } else {
-            currentNodes[d - 1].insertAdjacentElement(
-              'afterend',
-              this.multipleValue(selectedOptions[d])
-            )
+            currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
           }
         }
       }
@@ -983,9 +899,113 @@ export default class Render {
       selected = this.store.selectedOrderOptions(selected)
     }
 
-    return selected
-      .slice(0, this.settings.minSelected)
-      .map((option) => option.id)
+    return selected.slice(0, this.settings.minSelected).map((option) => option.id)
+  }
+
+  private getValueChips(): HTMLDivElement[] {
+    if (!this.settings.isMultiple || this.settings.multiString) {
+      return []
+    }
+
+    const chips = Array.from(
+      this.main.values.querySelectorAll('.' + this.classes.getFirst('value'))
+    ) as HTMLDivElement[]
+
+    return chips.filter((chip) => {
+      if (chip.classList.contains(this.classes.getFirst('valueOut'))) {
+        return false
+      }
+
+      const deleteButton = chip.querySelector('.' + this.classes.getFirst('valueDelete')) as HTMLElement | null
+
+      return !!deleteButton && !deleteButton.classList.contains(this.classes.getFirst('hide'))
+    })
+  }
+
+  private getHighlightedValueChip(): HTMLDivElement | null {
+    return this.getValueChips().find((chip) => chip.classList.contains(this.classes.getFirst('highlighted'))) ?? null
+  }
+
+  private clearValueChipHighlight(): void {
+    for (const chip of Array.from(
+      this.main.values.querySelectorAll('.' + this.classes.getFirst('value'))
+    ) as HTMLDivElement[]) {
+      this.removeClasses(chip, this.classes.highlighted)
+    }
+  }
+
+  private highlightValueChip(chip: HTMLDivElement | null): void {
+    this.clearValueChipHighlight()
+    if (chip) {
+      this.addClasses(chip, this.classes.highlighted)
+    }
+  }
+
+  /** Returns true when Left/Right were used to move among selected value chips. */
+  private navigateValueChips(dir: 'left' | 'right'): boolean {
+    const chips = this.getValueChips()
+    if (chips.length === 0) {
+      return false
+    }
+
+    const current = this.getHighlightedValueChip()
+    const index = current ? chips.indexOf(current) : -1
+
+    if (dir === 'left') {
+      if (index === -1) {
+        this.highlightValueChip(chips[chips.length - 1])
+      } else if (index > 0) {
+        this.highlightValueChip(chips[index - 1])
+      }
+      return true
+    }
+
+    if (index === -1) {
+      return false
+    }
+
+    if (index < chips.length - 1) {
+      this.highlightValueChip(chips[index + 1])
+    } else {
+      this.clearValueChipHighlight()
+    }
+
+    return true
+  }
+
+  /**
+   * Remove the highlighted chip, or the last chip when none is highlighted.
+   * Returns true when a delete was triggered.
+   */
+  private deleteValueChip(onlyHighlighted = false): boolean {
+    const chips = this.getValueChips()
+    if (chips.length === 0) {
+      return false
+    }
+
+    const current = this.getHighlightedValueChip()
+    if (onlyHighlighted && !current) {
+      return false
+    }
+
+    const target = current ?? chips[chips.length - 1]
+    const deleteButton = target.querySelector('.' + this.classes.getFirst('valueDelete')) as HTMLElement | null
+    if (!deleteButton) {
+      return false
+    }
+
+    const index = chips.indexOf(target)
+    const next = current ? (chips[index - 1] ?? chips[index + 1] ?? null) : null
+
+    deleteButton.click()
+
+    if (next && next !== target && this.main.values.contains(next)) {
+      this.highlightValueChip(next)
+    } else {
+      this.clearValueChipHighlight()
+    }
+
+    return true
   }
 
   private updateMultipleValueDeleteVisibility(): void {
@@ -994,9 +1014,7 @@ export default class Render {
     }
 
     const canRemove = !this.isAtMinSelected()
-    const deleteButtons = this.main.values.querySelectorAll(
-      '.' + this.classes.getFirst('valueDelete')
-    )
+    const deleteButtons = this.main.values.querySelectorAll('.' + this.classes.getFirst('valueDelete'))
 
     for (const deleteButton of deleteButtons) {
       if (canRemove) {
@@ -1024,10 +1042,7 @@ export default class Render {
       this.addClasses(deleteDiv, this.classes.valueDelete)
       deleteDiv.setAttribute('tabindex', '0') // Make the div focusable for tab navigation
       deleteDiv.setAttribute('role', 'button')
-      deleteDiv.setAttribute(
-        'aria-label',
-        `${this.settings.removeText} ${option.text}`
-      )
+      deleteDiv.setAttribute('aria-label', `${this.settings.removeText} ${option.text}`)
 
       if (this.isAtMinSelected()) {
         this.addClasses(deleteDiv, this.classes.hide)
@@ -1051,10 +1066,7 @@ export default class Render {
         }, true)
 
         // Check if minSelected is set and if after length so, return
-        if (
-          this.settings.minSelected &&
-          after.length < this.settings.minSelected
-        ) {
+        if (this.settings.minSelected && after.length < this.settings.minSelected) {
           return
         }
 
@@ -1097,15 +1109,9 @@ export default class Render {
       }
 
       // Add delete svg
-      const deleteSvg = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'svg'
-      )
+      const deleteSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       deleteSvg.setAttribute('viewBox', '0 0 100 100')
-      const deletePath = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'path'
-      )
+      const deletePath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       deletePath.setAttribute('d', this.classes.optionDelete)
       deleteSvg.appendChild(deletePath)
       deleteDiv.appendChild(deleteSvg)
@@ -1280,9 +1286,16 @@ export default class Render {
     // Hide from screen readers by default (shown when opened)
     input.setAttribute('aria-hidden', 'true')
 
-    input.oninput = debounce((e: Event) => {
-      this.callbacks.search((e.target as HTMLInputElement).value)
+    const debouncedSearch = debounce(() => {
+      this.callbacks.search(input.value)
     }, 100)
+
+    input.oninput = (e: Event) => {
+      if ((e.target as HTMLInputElement).value !== '') {
+        this.clearValueChipHighlight()
+      }
+      debouncedSearch()
+    }
 
     // Deal with keyboard events on search input field
     input.onkeydown = (e: KeyboardEvent): boolean => {
@@ -1290,8 +1303,38 @@ export default class Render {
       switch (e.key) {
         case 'ArrowUp':
         case 'ArrowDown':
+          this.clearValueChipHighlight()
           e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          // Caret movement wins while the search field has text
+          if (input.value !== '') {
+            return true
+          }
+          if (this.navigateValueChips(e.key === 'ArrowLeft' ? 'left' : 'right')) {
+            e.preventDefault()
+            return false
+          }
+          return true
+        case 'Backspace':
+          if (input.value !== '') {
+            return true
+          }
+          if (this.deleteValueChip()) {
+            e.preventDefault()
+            return false
+          }
+          return true
+        case 'Delete':
+          if (input.value !== '' || !this.getHighlightedValueChip()) {
+            return true
+          }
+          if (this.deleteValueChip(true)) {
+            e.preventDefault()
+            return false
+          }
+          return true
         case 'Tab':
           // When tabbing close the dropdown
           // which will also focus on main div
@@ -1318,6 +1361,10 @@ export default class Render {
           return true
       }
 
+      if (e.key.length === 1) {
+        this.clearValueChipHighlight()
+      }
+
       return true // Allow normal typing
     }
 
@@ -1331,10 +1378,7 @@ export default class Render {
       // Add svg icon
       const plus = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       plus.setAttribute('viewBox', '0 0 100 100')
-      const plusPath = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'path'
-      )
+      const plusPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       plusPath.setAttribute('d', this.classes.addablePath)
       plus.appendChild(plusPath)
       addable.appendChild(plus)
@@ -1390,11 +1434,7 @@ export default class Render {
         const addableValue = this.callbacks.addable(inputValue)
 
         // If addableValue is false, undefined or null, do nothing
-        if (
-          addableValue === false ||
-          addableValue === undefined ||
-          addableValue === null
-        ) {
+        if (addableValue === false || addableValue === undefined || addableValue === null) {
           return
         }
 
@@ -1442,11 +1482,7 @@ export default class Render {
     this.content.search.input.focus({ preventScroll: true })
   }
 
-  public getOptions(
-    notPlaceholder = false,
-    notDisabled = false,
-    notHidden = false
-  ): HTMLDivElement[] {
+  public getOptions(notPlaceholder = false, notDisabled = false, notHidden = false): HTMLDivElement[] {
     // Put together query string
     let query = '.' + this.classes.getFirst('option')
     if (notPlaceholder) {
@@ -1475,9 +1511,7 @@ export default class Render {
     // If length is 1, highlight it
     if (options.length === 1) {
       // Check if option doesnt already have highlighted class
-      if (
-        !options[0].classList.contains(this.classes.getFirst('highlighted'))
-      ) {
+      if (!options[0].classList.contains(this.classes.getFirst('highlighted'))) {
         this.addClasses(options[0], this.classes.highlighted)
         return
       }
@@ -1511,13 +1545,8 @@ export default class Render {
 
         // If previous option has parent classes ss-optgroup with ss-open then click it
         const prevParent = prevOption.parentElement
-        if (
-          prevParent &&
-          prevParent.classList.contains(this.classes.getFirst('mainOpen'))
-        ) {
-          const optgroupLabel = prevParent.querySelector(
-            '.' + this.classes.getFirst('optgroupLabel')
-          ) as HTMLDivElement
+        if (prevParent && prevParent.classList.contains(this.classes.getFirst('mainOpen'))) {
+          const optgroupLabel = prevParent.querySelector('.' + this.classes.getFirst('optgroupLabel')) as HTMLDivElement
           if (optgroupLabel) {
             optgroupLabel.click()
           }
@@ -1525,15 +1554,7 @@ export default class Render {
 
         // Highlight the next one
         let selectOption =
-          options[
-            dir === 'down'
-              ? i + 1 < options.length
-                ? i + 1
-                : 0
-              : i - 1 >= 0
-                ? i - 1
-                : options.length - 1
-          ]
+          options[dir === 'down' ? (i + 1 < options.length ? i + 1 : 0) : i - 1 >= 0 ? i - 1 : options.length - 1]
         this.addClasses(selectOption, this.classes.highlighted)
         this.ensureElementInView(this.content.list, selectOption)
 
@@ -1544,10 +1565,7 @@ export default class Render {
 
         // If selected option has parent classes ss-optgroup with ss-close then click it
         const selectParent = selectOption.parentElement
-        if (
-          selectParent &&
-          selectParent.classList.contains(this.classes.getFirst('close'))
-        ) {
+        if (selectParent && selectParent.classList.contains(this.classes.getFirst('close'))) {
           const optgroupLabel = selectParent.querySelector(
             '.' + this.classes.getFirst('optgroupLabel')
           ) as HTMLDivElement
@@ -1614,9 +1632,7 @@ export default class Render {
   public renderOptions(data: (Option | Optgroup)[]): void {
     this.lastSearchFilterTerm = ''
     this.lastRenderedOptions = data
-      .map((o) =>
-        o instanceof Option ? [o] : o.options.map((po) => new Option(po))
-      )
+      .map((o) => (o instanceof Option ? [o] : o.options.map((po) => new Option(po))))
       .flat()
 
     // Clear out innerHtml
@@ -1630,10 +1646,7 @@ export default class Render {
 
       //
       if (this.callbacks.addable) {
-        const addableMessage = this.settings.addableText.replace(
-          '{value}',
-          this.content.search.input.value
-        )
+        const addableMessage = this.settings.addableText.replace('{value}', this.content.search.input.value)
         noResults.innerHTML = addableMessage
         this.announce(addableMessage)
       } else {
@@ -1647,11 +1660,7 @@ export default class Render {
     // If settings has allowDeselect and isSingle, add empty placeholder in the event they want to deselect
     if (this.settings.allowDeselect && !this.settings.isMultiple) {
       // Check if store options have a placeholder
-      const placeholderOption = this.store.filter(
-        (o) => o.placeholder,
-        false,
-        false
-      ) as Option[]
+      const placeholderOption = this.store.filter((o) => o.placeholder, false, false) as Option[]
       if (!placeholderOption.length) {
         this.store.addOption(
           new Option({
@@ -1710,26 +1719,17 @@ export default class Render {
           selectAll.appendChild(selectAllLabel)
 
           // Create new svg for checkbox
-          const selectAllSvg = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'svg'
-          )
+          const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           selectAllSvg.setAttribute('viewBox', '0 0 100 100')
           selectAll.appendChild(selectAllSvg)
 
           // Create new path for box
-          const selectAllBox = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'path'
-          )
+          const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path')
           selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox)
           selectAllSvg.appendChild(selectAllBox)
 
           // Create new path for check
-          const selectAllCheck = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'path'
-          )
+          const selectAllCheck = document.createElementNS('http://www.w3.org/2000/svg', 'path')
           selectAllCheck.setAttribute('d', this.classes.optgroupSelectAllCheck)
           selectAllSvg.appendChild(selectAllCheck)
 
@@ -1740,10 +1740,7 @@ export default class Render {
 
             // Get the store current selected values
             const currentSelected = this.store.getSelected()
-            const allSelectedNow = this.isOptgroupAllSelected(
-              d.options as Option[],
-              new Set(currentSelected)
-            )
+            const allSelectedNow = this.isOptgroupAllSelected(d.options as Option[], new Set(currentSelected))
 
             // If all selected, remove all options from selected
             if (allSelectedNow) {
@@ -1762,9 +1759,7 @@ export default class Render {
               return
             } else {
               // Put together new list with all options in this optgroup
-              let optionIds = d.options
-                .map((o) => o.id)
-                .filter((id) => id !== undefined)
+              let optionIds = d.options.map((o) => o.id).filter((id) => id !== undefined)
               const newSelected = currentSelected.concat(optionIds)
 
               // Loop through options and if they don't exist in the store
@@ -1791,26 +1786,17 @@ export default class Render {
           this.addClasses(optgroupClosable, this.classes.optgroupClosable)
 
           // Create svg arrow
-          const optgroupClosableSvg = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'svg'
-          )
+          const optgroupClosableSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
           optgroupClosableSvg.setAttribute('viewBox', '0 0 100 100')
           this.addClasses(optgroupClosableSvg, this.classes.arrow)
           optgroupClosable.appendChild(optgroupClosableSvg)
 
           // Create new path for arrow
-          const optgroupClosableArrow = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'path'
-          )
+          const optgroupClosableArrow = document.createElementNS('http://www.w3.org/2000/svg', 'path')
           optgroupClosableSvg.appendChild(optgroupClosableArrow)
 
           // If any options are selected or someone is searching, set optgroup to open
-          if (
-            d.options.some((o) => o.selected) ||
-            this.content.search.input.value.trim() !== ''
-          ) {
+          if (d.options.some((o) => o.selected) || this.content.search.input.value.trim() !== '') {
             this.addClasses(optgroupClosable, this.classes.mainOpen)
             optgroupClosableArrow.setAttribute('d', this.classes.arrowOpen)
           } else if (d.closable === 'open') {
@@ -1826,10 +1812,7 @@ export default class Render {
             e.preventDefault()
             e.stopPropagation()
 
-            const isOpen = this.isClosableOptgroupOpen(
-              optgroupEl,
-              optgroupClosable
-            )
+            const isOpen = this.isClosableOptgroupOpen(optgroupEl, optgroupClosable)
 
             if (!isOpen) {
               this.closeOtherClosableOptgroups(optgroupEl)
@@ -1868,12 +1851,7 @@ export default class Render {
     // Append fragment to list
     this.content.list.appendChild(fragment)
     this.setOptionsListFullData(data)
-    this.announce(
-      this.settings.resultsText.replace(
-        '{count}',
-        String(this.lastRenderedOptions.length)
-      )
-    )
+    this.announce(this.settings.resultsText.replace('{count}', String(this.lastRenderedOptions.length)))
   }
 
   /** True when the list DOM contains every store option (local search can show/hide in place). */
@@ -1882,11 +1860,7 @@ export default class Render {
       return false
     }
 
-    return (
-      this.content.list.querySelector(
-        '.' + this.classes.getFirst('option')
-      ) !== null
-    )
+    return this.content.list.querySelector('.' + this.classes.getFirst('option')) !== null
   }
 
   public resetSearchFilterState(): void {
@@ -1894,10 +1868,7 @@ export default class Render {
   }
 
   /** Filter visible options by search without rebuilding the list. */
-  public filterOptionsInPlace(
-    search: string,
-    searchFilter: (opt: Option, search: string) => boolean
-  ): void {
+  public filterOptionsInPlace(search: string, searchFilter: (opt: Option, search: string) => boolean): void {
     const searchTrim = search.trim()
     if (searchTrim === this.lastSearchFilterTerm) {
       return
@@ -1921,9 +1892,7 @@ export default class Render {
       }
 
       const isPermanentlyHidden =
-        storeOption.placeholder ||
-        !storeOption.display ||
-        (storeOption.selected && this.settings.hideSelected)
+        storeOption.placeholder || !storeOption.display || (storeOption.selected && this.settings.hideSelected)
 
       const matchesSearch = searchFilter(storeOption, searchTrim)
 
@@ -1952,12 +1921,7 @@ export default class Render {
       this.updateSearchResultsMessage(0, searchTrim)
     } else {
       this.removeListSearchMessage()
-      this.announce(
-        this.settings.resultsText.replace(
-          '{count}',
-          String(visibleOptions.length)
-        )
-      )
+      this.announce(this.settings.resultsText.replace('{count}', String(visibleOptions.length)))
     }
 
     this.updateOptgroupSelectAllStates()
@@ -1965,11 +1929,7 @@ export default class Render {
 
   private setOptionsListFullData(data: (Option | Optgroup)[]): void {
     const storeOptions = this.store.getDataOptions(false)
-    const renderedOptions = data
-      .map((o) =>
-        o instanceof Option ? [o] : o.options.map((po) => new Option(po))
-      )
-      .flat()
+    const renderedOptions = data.map((o) => (o instanceof Option ? [o] : o.options.map((po) => new Option(po)))).flat()
 
     if (renderedOptions.length !== storeOptions.length) {
       this.optionsListIsFullData = false
@@ -1977,15 +1937,10 @@ export default class Render {
     }
 
     const storeIds = new Set(storeOptions.map((o) => o.id))
-    this.optionsListIsFullData = renderedOptions.every((o) =>
-      storeIds.has(o.id)
-    )
+    this.optionsListIsFullData = renderedOptions.every((o) => storeIds.has(o.id))
   }
 
-  private isClosableOptgroupOpen(
-    optgroupEl: HTMLElement,
-    optgroupClosable: HTMLElement
-  ): boolean {
+  private isClosableOptgroupOpen(optgroupEl: HTMLElement, optgroupClosable: HTMLElement): boolean {
     if (optgroupEl.classList.contains(this.classes.getFirst('close'))) {
       return false
     }
@@ -1997,9 +1952,7 @@ export default class Render {
   }
 
   private closeClosableOptgroup(optgroupEl: HTMLElement): void {
-    const closable = optgroupEl.querySelector(
-      '.' + this.classes.getFirst('optgroupClosable')
-    ) as HTMLElement | null
+    const closable = optgroupEl.querySelector('.' + this.classes.getFirst('optgroupClosable')) as HTMLElement | null
     if (!closable) {
       return
     }
@@ -2019,9 +1972,7 @@ export default class Render {
   }
 
   private closeOtherClosableOptgroups(exceptOptgroupEl: HTMLElement): void {
-    const optgroups = this.content.list.querySelectorAll(
-      '.' + this.classes.getFirst('optgroup')
-    )
+    const optgroups = this.content.list.querySelectorAll('.' + this.classes.getFirst('optgroup'))
 
     for (const optgroupEl of optgroups) {
       if (optgroupEl === exceptOptgroupEl) {
@@ -2033,14 +1984,10 @@ export default class Render {
   }
 
   private updateOptgroupVisibilityAfterSearch(searchTrim: string): void {
-    const optgroups = this.content.list.querySelectorAll(
-      '.' + this.classes.getFirst('optgroup')
-    )
+    const optgroups = this.content.list.querySelectorAll('.' + this.classes.getFirst('optgroup'))
 
     for (const optgroupEl of optgroups) {
-      const optionEls = optgroupEl.querySelectorAll(
-        '.' + this.classes.getFirst('option')
-      ) as NodeListOf<HTMLDivElement>
+      const optionEls = optgroupEl.querySelectorAll('.' + this.classes.getFirst('option')) as NodeListOf<HTMLDivElement>
 
       let hasVisibleOption = false
       for (const optionEl of optionEls) {
@@ -2064,10 +2011,7 @@ export default class Render {
     }
   }
 
-  private updateSearchResultsMessage(
-    visibleCount: number,
-    searchTrim: string
-  ): void {
+  private updateSearchResultsMessage(visibleCount: number, searchTrim: string): void {
     this.removeListSearchMessage()
 
     if (visibleCount > 0) {
@@ -2078,10 +2022,7 @@ export default class Render {
     this.addClasses(noResults, this.classes.search)
 
     if (this.callbacks.addable) {
-      const addableMessage = this.settings.addableText.replace(
-        '{value}',
-        searchTrim
-      )
+      const addableMessage = this.settings.addableText.replace('{value}', searchTrim)
       noResults.innerHTML = addableMessage
       this.announce(addableMessage)
     } else {
@@ -2093,17 +2034,11 @@ export default class Render {
   }
 
   private removeListSearchMessage(): void {
-    const messages = this.content.list.querySelectorAll(
-      '.' + this.classes.getFirst('search')
-    )
+    const messages = this.content.list.querySelectorAll('.' + this.classes.getFirst('search'))
     messages.forEach((message) => message.remove())
   }
 
-  private setOptionElementContent(
-    optionEl: HTMLDivElement,
-    option: Option,
-    search: string
-  ): void {
+  private setOptionElementContent(optionEl: HTMLDivElement, option: Option, search: string): void {
     const searchTrim = search.trim()
     if (this.settings.searchHighlight && searchTrim !== '') {
       optionEl.innerHTML = this.highlightText(
@@ -2126,11 +2061,7 @@ export default class Render {
 
   /** True when option nodes exist in the list (selection can sync without re-searching). */
   public hasRenderedOptions(): boolean {
-    return (
-      this.content.list.querySelector(
-        '.' + this.classes.getFirst('option')
-      ) !== null
-    )
+    return this.content.list.querySelector('.' + this.classes.getFirst('option')) !== null
   }
 
   /** True when the open list already has options and search is not filtering. */
@@ -2200,9 +2131,7 @@ export default class Render {
     }
 
     const selectedIds = new Set(this.store.getSelected())
-    const optgroups = this.content.list.querySelectorAll(
-      '.' + this.classes.getFirst('optgroup')
-    )
+    const optgroups = this.content.list.querySelectorAll('.' + this.classes.getFirst('optgroup'))
 
     for (const optgroupEl of optgroups) {
       const selectAll = optgroupEl.querySelector(
@@ -2213,9 +2142,7 @@ export default class Render {
         continue
       }
 
-      const optionEls = optgroupEl.querySelectorAll(
-        '.' + this.classes.getFirst('option')
-      ) as NodeListOf<HTMLDivElement>
+      const optionEls = optgroupEl.querySelectorAll('.' + this.classes.getFirst('option')) as NodeListOf<HTMLDivElement>
 
       let allSelected = optionEls.length > 0
       for (const optionEl of optionEls) {
@@ -2243,18 +2170,13 @@ export default class Render {
     return allSelected ? 'Unselect All' : 'Select All'
   }
 
-  private isOptgroupAllSelected(
-    options: Option[],
-    selectedIds?: Set<string>
-  ): boolean {
+  private isOptgroupAllSelected(options: Option[], selectedIds?: Set<string>): boolean {
     if (options.length === 0) {
       return false
     }
 
     for (const option of options) {
-      const isSelected = selectedIds
-        ? Boolean(option.id && selectedIds.has(option.id))
-        : option.selected
+      const isSelected = selectedIds ? Boolean(option.id && selectedIds.has(option.id)) : option.selected
 
       if (!isSelected) {
         return false
@@ -2290,11 +2212,7 @@ export default class Render {
     }
 
     // Set option content
-    this.setOptionElementContent(
-      optionEl,
-      option,
-      this.content.search.input.value
-    )
+    this.setOptionElementContent(optionEl, option, this.content.search.input.value)
 
     // If option is disabled
     if (!option.display) {
@@ -2341,11 +2259,7 @@ export default class Render {
 
       // allowDeselect only applies to single-select mode
       // In multi-select, you can always toggle options on/off
-      if (
-        !this.settings.isMultiple &&
-        isCurrentlySelected &&
-        !this.settings.allowDeselect
-      ) {
+      if (!this.settings.isMultiple && isCurrentlySelected && !this.settings.allowDeselect) {
         this.closeOnSingleSelectReclick(storeOption)
         return
       }
@@ -2359,9 +2273,7 @@ export default class Render {
       // Check limit and do nothing if limit is reached and the option is not selected
       // Also check reverse for min limit and is selected (allow Cmd to bypass minSelected)
       if (
-        (this.settings.isMultiple &&
-          this.settings.maxSelected <= selectedOptions.length &&
-          !isCurrentlySelected) ||
+        (this.settings.isMultiple && this.settings.maxSelected <= selectedOptions.length && !isCurrentlySelected) ||
         (this.settings.isMultiple &&
           this.settings.minSelected >= selectedOptions.length &&
           isCurrentlySelected &&
@@ -2377,20 +2289,14 @@ export default class Render {
 
       // If multiple - mimic native browser multi-select behavior
       if (this.settings.isMultiple) {
-        const isCurrentlySelected = before.some(
-          (o: Option) => o.id === elementID
-        )
+        const isCurrentlySelected = before.some((o: Option) => o.id === elementID)
         const isShift = e.shiftKey
 
         // Shift+Click: Select range from last clicked to current
         if (isShift && this.lastSelectedOption) {
           const options = this.lastRenderedOptions
-          const lastIndex = options.findIndex(
-            (o: Option) => o.id === this.lastSelectedOption!.id
-          )
-          const currentIndex = options.findIndex(
-            (o: Option) => o.id === option.id
-          )
+          const lastIndex = options.findIndex((o: Option) => o.id === this.lastSelectedOption!.id)
+          const currentIndex = options.findIndex((o: Option) => o.id === option.id)
 
           if (lastIndex >= 0 && currentIndex >= 0) {
             const startIndex = Math.min(lastIndex, currentIndex)
@@ -2398,13 +2304,8 @@ export default class Render {
             const rangeOptions = options.slice(startIndex, endIndex + 1)
 
             // Check if range would exceed maxSelected
-            const newSelections = rangeOptions.filter(
-              (opt) => !before.find((b) => b.id === opt.id)
-            )
-            if (
-              before.length + newSelections.length <=
-              this.settings.maxSelected
-            ) {
+            const newSelections = rangeOptions.filter((opt) => !before.find((b) => b.id === opt.id))
+            if (before.length + newSelections.length <= this.settings.maxSelected) {
               // Add range to existing selections
               after = before.concat(newSelections)
             } else {
@@ -2480,9 +2381,7 @@ export default class Render {
         // Close dropdown unless using modifier keys in multi-select
         // (mimics native multi-select behavior where you can keep selecting)
         const isModifierKey = e.ctrlKey || e.metaKey || e.shiftKey // Cmd/Ctrl or Shift
-        const shouldClose =
-          this.settings.closeOnSelect &&
-          !(this.settings.isMultiple && isModifierKey)
+        const shouldClose = this.settings.closeOnSelect && !(this.settings.isMultiple && isModifierKey)
 
         if (shouldClose) {
           this.requestClose('select', {
@@ -2584,9 +2483,7 @@ export default class Render {
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         // Recursively process child nodes
-        Array.from(node.childNodes).forEach((child) =>
-          highlightTextNodes(child)
-        )
+        Array.from(node.childNodes).forEach((child) => highlightTextNodes(child))
       }
     }
 
@@ -2609,8 +2506,7 @@ export default class Render {
     if (isAbove) {
       const mainHeight = this.main.main.offsetHeight
       const contentHeight = this.content.main.offsetHeight
-      this.content.main.style.margin =
-        '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
+      this.content.main.style.margin = '-' + (mainHeight + contentHeight - 1) + 'px 0px 0px 0px'
     } else {
       this.content.main.style.margin = '-1px 0px 0px 0px'
     }
@@ -2644,8 +2540,7 @@ export default class Render {
 
     const knownWidth = this.getKnownContentWidth(containerRect)
     if (knownWidth !== null) {
-      this.content.main.style.left =
-        this.adjustLeftForOverflow(left, containerRect.left, knownWidth) + 'px'
+      this.content.main.style.left = this.adjustLeftForOverflow(left, containerRect.left, knownWidth) + 'px'
       return
     }
 
@@ -2699,11 +2594,7 @@ export default class Render {
     return Number.isNaN(px) ? null : px
   }
 
-  private adjustLeftForOverflow(
-    docLeft: number,
-    viewportLeft: number,
-    width: number
-  ): number {
+  private adjustLeftForOverflow(docLeft: number, viewportLeft: number, width: number): number {
     const padding = 20
     const contentRight = viewportLeft + width
     if (contentRight <= window.innerWidth) {
@@ -2748,10 +2639,7 @@ export default class Render {
     this.setContentPosition()
   }
 
-  public ensureElementInView(
-    container: HTMLElement,
-    element: HTMLElement
-  ): void {
+  public ensureElementInView(container: HTMLElement, element: HTMLElement): void {
     const cTop = container.scrollTop + container.offsetTop
     const cBottom = cTop + container.clientHeight
     const eTop = element.offsetTop
@@ -2794,11 +2682,7 @@ export default class Render {
     const deselectButton = this.main.deselect.main
     const hideClass = this.classes.hide
 
-    if (
-      allowDeselect &&
-      !(isMultiple && !hasSelectedItems) &&
-      !atMinSelected
-    ) {
+    if (allowDeselect && !(isMultiple && !hasSelectedItems) && !atMinSelected) {
       this.removeClasses(deselectButton, hideClass)
     } else {
       this.addClasses(deselectButton, hideClass)

@@ -150,8 +150,7 @@
       width: 100%;
       max-width: 100%;
       margin: 0;
-      padding: 0 var(--ss-spacing-m) 0
-        calc(var(--ss-spacing-l) - var(--ss-spacing-s));
+      padding: 0 var(--ss-spacing-m) 0 calc(var(--ss-spacing-l) - var(--ss-spacing-s));
       line-height: 1.2;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -199,6 +198,13 @@
         animation-name: ss-valueOut;
         animation-duration: var(--ss-animation-timing);
         animation-timing-function: ease-out;
+      }
+
+      // Keyboard highlight while search is focused (Left/Right on empty input)
+      &.ss-highlighted {
+        box-shadow: inset 0 0 0 2px var(--ss-bg-color);
+        outline: 2px solid var(--ss-font-color);
+        outline-offset: -2px;
       }
 
       .ss-value-text {

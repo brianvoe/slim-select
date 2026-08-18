@@ -1,14 +1,6 @@
 'use strict'
 
-import {
-  describe,
-  expect,
-  test,
-  vi,
-  beforeEach,
-  afterEach,
-  type Mock
-} from 'vitest'
+import { describe, expect, test, vi, beforeEach, afterEach, type Mock } from 'vitest'
 import Render, { Callbacks, CloseInfo } from './render'
 import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Store, { Option } from './store'
@@ -59,17 +51,11 @@ describe('render module', () => {
     const callbacks: Callbacks = {
       open: openMock as () => void,
       close: closeMock as (info?: CloseInfo) => void,
-      setSelected: setSelectedMock as (
-        value: string | string[],
-        runAfterChange: boolean
-      ) => void,
+      setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
       addOption: addOptionMock as (option: Option) => void,
       search: searchMock as (search: string) => void,
       afterChange: afterChangeMock as (newVal: Option[]) => void,
-      beforeChange: beforeChangeMock as (
-        newVal: Option[],
-        oldVal: Option[]
-      ) => boolean | void
+      beforeChange: beforeChangeMock as (newVal: Option[], oldVal: Option[]) => boolean | void
     }
 
     render = new Render(settings, classes, store, callbacks)
@@ -114,9 +100,7 @@ describe('render module', () => {
       render.content.search.input.disabled = true
 
       render.enable()
-      expect(render.main.main.classList.contains(render.classes.disabled)).toBe(
-        false
-      )
+      expect(render.main.main.classList.contains(render.classes.disabled)).toBe(false)
       expect(render.content.search.input.disabled).toBe(false)
     })
   })
@@ -124,9 +108,7 @@ describe('render module', () => {
   describe('disable', () => {
     test('disable adds disabled class to main and disables search input', () => {
       render.disable()
-      expect(render.main.main.classList.contains(render.classes.disabled)).toBe(
-        true
-      )
+      expect(render.main.main.classList.contains(render.classes.disabled)).toBe(true)
       expect(render.content.search.input.disabled).toBe(true)
     })
   })
@@ -135,13 +117,9 @@ describe('render module', () => {
     test('open sets the correct attributes and CSS classes', () => {
       render.open()
 
-      expect(render.main.arrow.path.getAttribute('d')).toBe(
-        render.classes.arrowOpen
-      )
+      expect(render.main.arrow.path.getAttribute('d')).toBe(render.classes.arrowOpen)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('true')
-      expect(
-        render.content.main.classList.contains(render.classes.contentOpen)
-      ).toBe(true)
+      expect(render.content.main.classList.contains(render.classes.contentOpen)).toBe(true)
       // Direction class should be set on both main and content (dirAbove or dirBelow)
       const mainHasDirection =
         render.main.main.classList.contains(render.classes.dirAbove) ||
@@ -159,13 +137,9 @@ describe('render module', () => {
       render.open()
       render.close()
 
-      expect(render.main.arrow.path.getAttribute('d')).toBe(
-        render.classes.arrowClose
-      )
+      expect(render.main.arrow.path.getAttribute('d')).toBe(render.classes.arrowClose)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
-      expect(
-        render.content.main.classList.contains(render.classes.contentOpen)
-      ).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.contentOpen)).toBe(false)
       // Direction class should persist after close
       const hasDirection =
         render.content.main.classList.contains(render.classes.dirAbove) ||
@@ -230,14 +204,10 @@ describe('render module', () => {
 
       expect(render.main.main.role).toBe('combobox')
       expect(render.main.main.getAttribute('aria-haspopup')).toBe('listbox')
-      expect(render.main.main.getAttribute('aria-controls')).toBe(
-        render.content.list.id
-      )
+      expect(render.main.main.getAttribute('aria-controls')).toBe(render.content.list.id)
       expect(render.main.main.getAttribute('aria-expanded')).toBe('false')
       expect(render.content.list.getAttribute('role')).toBe('listbox')
-      expect(render.content.list.getAttribute('aria-label')).toContain(
-        'listbox'
-      )
+      expect(render.content.list.getAttribute('aria-label')).toContain('listbox')
     })
   })
 
@@ -250,21 +220,13 @@ describe('render module', () => {
       expect(main.tabIndex).toBe(0)
       expect(main.children).toHaveLength(3)
       expect(main.children.item(0)?.className).toBe(render.classes.values)
-      expect(
-        main.children.item(1)?.classList.contains(render.classes.deselect)
-      ).toBe(true)
-      expect(
-        main.children.item(1)?.classList.contains(render.classes.hide)
-      ).toBe(true)
+      expect(main.children.item(1)?.classList.contains(render.classes.deselect)).toBe(true)
+      expect(main.children.item(1)?.classList.contains(render.classes.hide)).toBe(true)
       expect(main.children.item(1)?.children).toHaveLength(1)
       expect(main.children.item(1)?.children).toHaveLength(1)
       expect(main.children.item(1)?.children.item(0)).toBeInstanceOf(SVGElement)
-      expect(
-        main.children.item(2)?.classList.contains(render.classes.arrow)
-      ).toBe(true)
-      expect(
-        main.children.item(2)?.classList.contains(render.classes.hide)
-      ).toBe(false)
+      expect(main.children.item(2)?.classList.contains(render.classes.arrow)).toBe(true)
+      expect(main.children.item(2)?.classList.contains(render.classes.hide)).toBe(false)
       expect(main.children.item(2)?.children.item(0)).toBeInstanceOf(SVGElement)
     })
 
@@ -272,12 +234,8 @@ describe('render module', () => {
       render.settings.alwaysOpen = true
       const main = render.mainDiv().main
 
-      expect(
-        main.children.item(2)?.classList.contains(render.classes.arrow)
-      ).toBe(true)
-      expect(
-        main.children.item(2)?.classList.contains(render.classes.hide)
-      ).toBe(true)
+      expect(main.children.item(2)?.classList.contains(render.classes.arrow)).toBe(true)
+      expect(main.children.item(2)?.classList.contains(render.classes.hide)).toBe(true)
       expect(main.children.item(2)?.children.item(0)).toBeInstanceOf(SVGElement)
     })
 
@@ -286,36 +244,26 @@ describe('render module', () => {
 
       render.highlight = highlightMock
 
-      render.main.main.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'ArrowUp' })
-      )
+      render.main.main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
       expect(openMock).toHaveBeenCalled()
       expect(highlightMock).toHaveBeenCalledTimes(1)
       expect(highlightMock.mock.calls[0]).toStrictEqual(['up'])
 
-      render.main.main.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'ArrowDown' })
-      )
+      render.main.main.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }))
       expect(openMock).toHaveBeenCalledTimes(2)
       expect(highlightMock).toHaveBeenCalledTimes(2)
       expect(highlightMock.mock.calls[1]).toStrictEqual(['down'])
     })
 
     test('tab and escape key event on main element triggers close callback', () => {
-      render.main.main.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Tab' })
-      )
+      render.main.main.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }))
       expect(closeMock).toHaveBeenCalled()
-      render.main.main.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Escape' })
-      )
+      render.main.main.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
       expect(closeMock).toHaveBeenCalledTimes(2)
     })
 
     test('enter and space key event on main element triggers open callback', () => {
-      render.main.main.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter' })
-      )
+      render.main.main.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
       expect(openMock).toHaveBeenCalled()
       render.main.main.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }))
       expect(openMock).toHaveBeenCalledTimes(2)
@@ -393,9 +341,7 @@ describe('render module', () => {
     let focusMock: (options?: FocusOptions | undefined) => void
 
     beforeEach(() => {
-      focusMock = vi.fn(() => {}) as (
-        options?: FocusOptions | undefined
-      ) => void
+      focusMock = vi.fn(() => {}) as (options?: FocusOptions | undefined) => void
       render.main.main.focus = focusMock
     })
 
@@ -469,9 +415,7 @@ describe('render module', () => {
       render.renderValues()
 
       expect(render.main.values.children).toHaveLength(1)
-      expect(render.main.values.children.item(0)?.innerHTML).toBe(
-        '<span>opt1</span>'
-      )
+      expect(render.main.values.children.item(0)?.innerHTML).toBe('<span>opt1</span>')
     })
 
     test('multiple select renders all selected values', () => {
@@ -497,13 +441,9 @@ describe('render module', () => {
 
       expect(render.main.values.children).toHaveLength(2)
       expect(render.main.values.children.item(0)).toBeInstanceOf(HTMLDivElement)
-      expect(
-        (render.main.values.children.item(0) as HTMLDivElement).textContent
-      ).toBe('opt0')
+      expect((render.main.values.children.item(0) as HTMLDivElement).textContent).toBe('opt0')
       expect(render.main.values.children.item(1)).toBeInstanceOf(HTMLDivElement)
-      expect(
-        (render.main.values.children.item(1) as HTMLDivElement).textContent
-      ).toBe('opt1')
+      expect((render.main.values.children.item(1) as HTMLDivElement).textContent).toBe('opt1')
     })
 
     test('multiple select renders counter element when maxValuesShown is set', () => {
@@ -570,9 +510,7 @@ describe('render module', () => {
       expect(commaEl.classList.contains('ss-multi-string')).toBe(true)
       expect(commaEl.textContent).toBe('opt0, opt1, opt2')
       // There should be no delete buttons rendered
-      expect(
-        render.main.values.querySelectorAll('.ss-value-delete')
-      ).toHaveLength(0)
+      expect(render.main.values.querySelectorAll('.ss-value-delete')).toHaveLength(0)
     })
 
     test('multiString ignores maxValuesShown and shows all selected as text', () => {
@@ -604,11 +542,7 @@ describe('render module', () => {
       render.renderValues()
 
       expect(render.main.values.children).toHaveLength(1)
-      expect(
-        render.main.values.children
-          .item(0)
-          ?.classList.contains('ss-placeholder')
-      ).toBe(true)
+      expect(render.main.values.children.item(0)?.classList.contains('ss-placeholder')).toBe(true)
     })
 
     test('remove old options from values', () => {
@@ -620,9 +554,7 @@ describe('render module', () => {
       render.renderValues()
 
       expect(render.main.values.children).toHaveLength(1)
-      expect(render.main.values.children.item(0)?.innerHTML).toBe(
-        '<span>test1</span>'
-      )
+      expect(render.main.values.children.item(0)?.innerHTML).toBe('<span>test1</span>')
     })
   })
 
@@ -740,18 +672,13 @@ describe('render module', () => {
   describe('modal', () => {
     test('creates modal overlay when modal is not off', () => {
       const settings = new Settings({ modal: 'on' })
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', []),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
       const overlay = document.querySelector('.ss-modal-overlay')
       expect(overlay).not.toBeNull()
@@ -763,44 +690,30 @@ describe('render module', () => {
     test('does not create modal overlay when modal is off', () => {
       const settings = new Settings({ modal: 'off' })
       const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', []),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
-      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(
-        beforeCount
-      )
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
       modalRender.destroy()
     })
 
     test('does not create modal overlay when alwaysOpen is true', () => {
       const settings = new Settings({ modal: 'on', alwaysOpen: true })
       const beforeCount = document.querySelectorAll('.ss-modal-overlay').length
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', []),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', []), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
-      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(
-        beforeCount
-      )
+      expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
       modalRender.destroy()
     })
 
@@ -810,18 +723,13 @@ describe('render module', () => {
         alwaysOpen: true,
         contentPosition: 'relative'
       })
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', [{ text: 'One', value: '1' }]),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [{ text: 'One', value: '1' }]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
       modalRender.open()
 
@@ -832,28 +740,19 @@ describe('render module', () => {
 
     test('open with modal on moves content into modal dialog', () => {
       const settings = new Settings({ modal: 'on' })
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', [{ text: 'One', value: '1' }]),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [{ text: 'One', value: '1' }]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
       modalRender.open()
 
-      const dialog = (
-        modalRender as unknown as { modalElements: { dialog: HTMLElement } }
-      ).modalElements.dialog
+      const dialog = (modalRender as unknown as { modalElements: { dialog: HTMLElement } }).modalElements.dialog
       expect(dialog.contains(modalRender.content.main)).toBe(true)
-      expect(
-        modalRender.content.main.classList.contains('ss-modal-content')
-      ).toBe(true)
+      expect(modalRender.content.main.classList.contains('ss-modal-content')).toBe(true)
       expect(document.body.style.overflow).toBe('hidden')
 
       modalRender.close()
@@ -865,18 +764,13 @@ describe('render module', () => {
 
     test('removes modal close button from content after close', () => {
       const settings = new Settings({ modal: 'on' })
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', [{ text: 'One', value: '1' }]),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [{ text: 'One', value: '1' }]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
       modalRender.open()
 
@@ -896,18 +790,13 @@ describe('render module', () => {
 
     test('non-modal reopen after mobile modal close has no close button', () => {
       const settings = new Settings({ modal: 'mobile' })
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', [{ text: 'One', value: '1' }]),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [{ text: 'One', value: '1' }]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
       Object.defineProperty(window, 'innerWidth', {
         value: MODAL_MOBILE_BREAKPOINT - 1,
@@ -927,9 +816,7 @@ describe('render module', () => {
 
       modalRender.open()
       expect(modalRender.isModalViewActive()).toBe(false)
-      expect(
-        modalRender.content.main.querySelector('.ss-modal-close')
-      ).toBeNull()
+      expect(modalRender.content.main.querySelector('.ss-modal-close')).toBeNull()
 
       modalRender.destroy()
     })
@@ -939,18 +826,13 @@ describe('render module', () => {
         modal: 'on',
         modalTitle: 'Country'
       })
-      const modalRender = new Render(
-        settings,
-        new CssClasses(),
-        new Store('single', [{ text: 'One', value: '1' }]),
-        {
-          open: vi.fn(),
-          close: vi.fn(),
-          setSelected: vi.fn(),
-          addOption: vi.fn(),
-          search: vi.fn()
-        }
-      )
+      const modalRender = new Render(settings, new CssClasses(), new Store('single', [{ text: 'One', value: '1' }]), {
+        open: vi.fn(),
+        close: vi.fn(),
+        setSelected: vi.fn(),
+        addOption: vi.fn(),
+        search: vi.fn()
+      })
 
       modalRender.open()
 
@@ -958,12 +840,8 @@ describe('render module', () => {
       expect(title).not.toBeNull()
       expect(title?.textContent).toBe('Country')
 
-      const dialog = (
-        modalRender as unknown as { modalElements: { dialog: HTMLElement } }
-      ).modalElements.dialog
-      expect(dialog.getAttribute('aria-labelledby')).toBe(
-        `${settings.id}-modal-title`
-      )
+      const dialog = (modalRender as unknown as { modalElements: { dialog: HTMLElement } }).modalElements.dialog
+      expect(dialog.getAttribute('aria-labelledby')).toBe(`${settings.id}-modal-title`)
 
       modalRender.close()
       modalRender.finalizeModalClose()
@@ -997,15 +875,11 @@ describe('render module', () => {
 
       render.highlight = highlightMock
 
-      search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'ArrowUp' })
-      )
+      search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }))
       expect(highlightMock).toHaveBeenCalledTimes(1)
       expect(highlightMock.mock.calls[0]).toStrictEqual(['up'])
 
-      search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'ArrowDown' })
-      )
+      search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }))
       expect(highlightMock).toHaveBeenCalledTimes(2)
       expect(highlightMock.mock.calls[1]).toStrictEqual(['down'])
     })
@@ -1022,9 +896,7 @@ describe('render module', () => {
       // separate test in case we want to also test the event someday
       const search = render.searchDiv()
 
-      search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Escape' })
-      )
+      search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
 
       expect(closeMock).toHaveBeenCalled()
     })
@@ -1056,9 +928,7 @@ describe('render module', () => {
       // recreate search because we have added the addable callback
       render.content.search = render.searchDiv()
 
-      render.content.search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter' })
-      )
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
       expect(addableMock).not.toHaveBeenCalled()
     })
 
@@ -1075,9 +945,7 @@ describe('render module', () => {
 
       render.content.search.input.value = 'Search'
 
-      render.content.search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter' })
-      )
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
       expect(addableMock).toHaveBeenCalledTimes(1)
       expect(addableMock.mock.calls[0]).toStrictEqual(['Search'])
     })
@@ -1103,15 +971,11 @@ describe('render module', () => {
       render.highlight('down')
 
       // Verify an option is highlighted
-      const highlighted = render.content.list.querySelector(
-        '.' + render.classes.highlighted
-      )
+      const highlighted = render.content.list.querySelector('.' + render.classes.highlighted)
       expect(highlighted).toBeTruthy()
 
       // Press Enter - should select highlighted option, NOT call addable
-      render.content.search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter' })
-      )
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
 
       // Addable should NOT have been called because an option was highlighted
       expect(addableMock).not.toHaveBeenCalled()
@@ -1137,13 +1001,164 @@ describe('render module', () => {
       // Do NOT highlight any option (user just types and presses Enter)
 
       // Press Enter - should call addable since no option is highlighted
-      render.content.search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter' })
-      )
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
 
       // Addable SHOULD have been called
       expect(addableMock).toHaveBeenCalledTimes(1)
       expect(addableMock.mock.calls[0]).toStrictEqual(['NewItem'])
+    })
+  })
+
+  describe('value chip keyboard navigation', () => {
+    const highlightedClass = () => render.classes.getFirst('highlighted')
+
+    const chips = () =>
+      Array.from(render.main.values.querySelectorAll('.' + render.classes.getFirst('value'))) as HTMLDivElement[]
+
+    const highlightedChips = () => chips().filter((chip) => chip.classList.contains(highlightedClass()))
+
+    const press = (key: string) => {
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key, cancelable: true }))
+    }
+
+    beforeEach(() => {
+      render.settings.isMultiple = true
+      render.store = new Store('multiple', [
+        { id: 'a', text: 'A', value: 'a', selected: true },
+        { id: 'b', text: 'B', value: 'b', selected: true },
+        { id: 'c', text: 'C', value: 'c', selected: true }
+      ])
+      render.renderValues()
+    })
+
+    test('ArrowLeft on empty search highlights the last selected value', () => {
+      press('ArrowLeft')
+
+      expect(highlightedChips()).toHaveLength(1)
+      expect(highlightedChips()[0].dataset.id).toBe('c')
+    })
+
+    test('ArrowLeft moves highlight to the previous selected value', () => {
+      press('ArrowLeft')
+      press('ArrowLeft')
+
+      expect(highlightedChips()).toHaveLength(1)
+      expect(highlightedChips()[0].dataset.id).toBe('b')
+    })
+
+    test('ArrowLeft stays on the first selected value', () => {
+      press('ArrowLeft')
+      press('ArrowLeft')
+      press('ArrowLeft')
+      press('ArrowLeft')
+
+      expect(highlightedChips()).toHaveLength(1)
+      expect(highlightedChips()[0].dataset.id).toBe('a')
+    })
+
+    test('ArrowRight from the last value clears the highlight', () => {
+      press('ArrowLeft')
+      press('ArrowRight')
+
+      expect(highlightedChips()).toHaveLength(0)
+    })
+
+    test('ArrowRight does nothing when no value is highlighted', () => {
+      press('ArrowRight')
+
+      expect(highlightedChips()).toHaveLength(0)
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('ArrowLeft and ArrowRight keep caret movement when search has text', () => {
+      render.content.search.input.value = 'a'
+
+      press('ArrowLeft')
+      press('ArrowRight')
+
+      expect(highlightedChips()).toHaveLength(0)
+    })
+
+    test('ArrowDown clears value highlight and highlights a list option', () => {
+      render.renderOptions(render.store.getDataOptions())
+      press('ArrowLeft')
+      expect(highlightedChips()).toHaveLength(1)
+
+      press('ArrowDown')
+
+      expect(highlightedChips()).toHaveLength(0)
+      expect(render.content.list.querySelector('.' + highlightedClass())).toBeTruthy()
+    })
+
+    test('typing clears value highlight', () => {
+      press('ArrowLeft')
+      expect(highlightedChips()).toHaveLength(1)
+
+      press('x')
+
+      expect(highlightedChips()).toHaveLength(0)
+    })
+
+    test('Backspace without highlight deletes the last selected value', () => {
+      press('Backspace')
+
+      expect(setSelectedMock).toHaveBeenCalledTimes(1)
+      expect(setSelectedMock.mock.calls[0][0]).toEqual(['a', 'b'])
+    })
+
+    test('Backspace deletes the highlighted value', () => {
+      press('ArrowLeft')
+      press('ArrowLeft')
+      press('Backspace')
+
+      expect(setSelectedMock).toHaveBeenCalledTimes(1)
+      expect(setSelectedMock.mock.calls[0][0]).toEqual(['a', 'c'])
+    })
+
+    test('Delete only removes a value when one is highlighted', () => {
+      press('Delete')
+      expect(setSelectedMock).not.toHaveBeenCalled()
+
+      press('ArrowLeft')
+      press('Delete')
+
+      expect(setSelectedMock).toHaveBeenCalledTimes(1)
+      expect(setSelectedMock.mock.calls[0][0]).toEqual(['a', 'b'])
+    })
+
+    test('Backspace does nothing when search has text', () => {
+      render.content.search.input.value = 'a'
+      press('Backspace')
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('skips multiString values that are not individual chips', () => {
+      render.settings.multiString = true
+      render.renderValues()
+
+      press('ArrowLeft')
+      press('Backspace')
+
+      expect(highlightedChips()).toHaveLength(0)
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('skips mandatory selected values', () => {
+      render.store = new Store('multiple', [
+        { id: 'a', text: 'A', value: 'a', selected: true, mandatory: true },
+        { id: 'b', text: 'B', value: 'b', selected: true },
+        { id: 'c', text: 'C', value: 'c', selected: true }
+      ])
+      render.main.values.innerHTML = ''
+      render.renderValues()
+
+      press('ArrowLeft')
+      press('ArrowLeft')
+      press('ArrowLeft')
+
+      expect(highlightedChips()).toHaveLength(1)
+      expect(highlightedChips()[0].dataset.id).toBe('b')
     })
   })
 
@@ -1265,9 +1280,7 @@ describe('render module', () => {
 
       render.highlight('up')
 
-      expect(
-        render.getOptions()[0].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[0].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('select first option with down when no option is highlighted or selected', () => {
@@ -1287,9 +1300,7 @@ describe('render module', () => {
 
       render.highlight('down')
 
-      expect(
-        render.getOptions()[0].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[0].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('select last option with up when no option is highlighted or selected', () => {
@@ -1309,9 +1320,7 @@ describe('render module', () => {
 
       render.highlight('up')
 
-      expect(
-        render.getOptions()[2].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[2].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('highlight next option on down after highlighted option', () => {
@@ -1332,9 +1341,7 @@ describe('render module', () => {
 
       render.highlight('down')
 
-      expect(
-        render.getOptions()[1].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[1].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('highlight previous option on up before highlighted option', () => {
@@ -1355,9 +1362,7 @@ describe('render module', () => {
 
       render.highlight('up')
 
-      expect(
-        render.getOptions()[1].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[1].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('highlight next option on down after selected option when no options is highlighted', () => {
@@ -1378,9 +1383,7 @@ describe('render module', () => {
 
       render.highlight('down')
 
-      expect(
-        render.getOptions()[1].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[1].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('skip to last option when using up at the first option', () => {
@@ -1401,9 +1404,7 @@ describe('render module', () => {
 
       render.highlight('up')
 
-      expect(
-        render.getOptions()[2].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[2].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('highlight next option within opt group on down', () => {
@@ -1429,9 +1430,7 @@ describe('render module', () => {
 
       render.highlight('down')
 
-      expect(
-        render.getOptions()[1].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[1].classList.contains(render.classes.highlighted)).toBe(true)
     })
 
     test('highlight previous option within opt group on up', () => {
@@ -1457,9 +1456,7 @@ describe('render module', () => {
 
       render.highlight('up')
 
-      expect(
-        render.getOptions()[0].classList.contains(render.classes.highlighted)
-      ).toBe(true)
+      expect(render.getOptions()[0].classList.contains(render.classes.highlighted)).toBe(true)
     })
   })
 
@@ -1478,15 +1475,9 @@ describe('render module', () => {
       render.renderError('test error')
 
       expect(render.content.list.children).toHaveLength(1)
-      expect(render.content.list.children.item(0)).toBeInstanceOf(
-        HTMLDivElement
-      )
-      expect(render.content.list.children.item(0)?.className).toBe(
-        render.classes.error
-      )
-      expect(render.content.list.children.item(0)?.textContent).toBe(
-        'test error'
-      )
+      expect(render.content.list.children.item(0)).toBeInstanceOf(HTMLDivElement)
+      expect(render.content.list.children.item(0)?.className).toBe(render.classes.error)
+      expect(render.content.list.children.item(0)?.textContent).toBe('test error')
     })
 
     test('list is reset on new error', () => {
@@ -1509,12 +1500,8 @@ describe('render module', () => {
       render.renderSearching()
 
       expect(render.content.list.children).toHaveLength(1)
-      expect(render.content.list.children.item(0)).toBeInstanceOf(
-        HTMLDivElement
-      )
-      expect(render.content.list.children.item(0)?.className).toBe(
-        render.classes.searching
-      )
+      expect(render.content.list.children.item(0)).toBeInstanceOf(HTMLDivElement)
+      expect(render.content.list.children.item(0)?.className).toBe(render.classes.searching)
       expect(render.content.list.children.item(0)?.textContent).toBe('search')
       expect(render.content.status.textContent).toBe('search')
     })
@@ -1558,51 +1545,27 @@ describe('render module', () => {
 
       render.renderOptions(store.getData())
 
-      const optgroups = render.content.list.querySelectorAll(
-        '.' + render.classes.getFirst('optgroup')
-      )
+      const optgroups = render.content.list.querySelectorAll('.' + render.classes.getFirst('optgroup'))
       const groupA = optgroups[0] as HTMLDivElement
       const groupB = optgroups[1] as HTMLDivElement
       const groupC = optgroups[2] as HTMLDivElement
 
-      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
-        true
-      )
-      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
-        true
-      )
+      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(true)
+      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(true)
 
-      const labelA = groupA.querySelector(
-        '.' + render.classes.getFirst('optgroupLabel')
-      ) as HTMLDivElement
-      const labelB = groupB.querySelector(
-        '.' + render.classes.getFirst('optgroupLabel')
-      ) as HTMLDivElement
+      const labelA = groupA.querySelector('.' + render.classes.getFirst('optgroupLabel')) as HTMLDivElement
+      const labelB = groupB.querySelector('.' + render.classes.getFirst('optgroupLabel')) as HTMLDivElement
 
-      labelA.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      labelA.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
-      expect(
-        groupA.classList.contains(render.classes.getFirst('mainOpen'))
-      ).toBe(true)
-      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(
-        true
-      )
+      expect(groupA.classList.contains(render.classes.getFirst('mainOpen'))).toBe(true)
+      expect(groupB.classList.contains(render.classes.getFirst('close'))).toBe(true)
 
-      labelB.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      labelB.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
-      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(
-        true
-      )
-      expect(
-        groupB.classList.contains(render.classes.getFirst('mainOpen'))
-      ).toBe(true)
-      expect(groupC.classList.contains(render.classes.getFirst('close'))).toBe(
-        false
-      )
+      expect(groupA.classList.contains(render.classes.getFirst('close'))).toBe(true)
+      expect(groupB.classList.contains(render.classes.getFirst('mainOpen'))).toBe(true)
+      expect(groupC.classList.contains(render.classes.getFirst('close'))).toBe(false)
     })
   })
 
@@ -1622,9 +1585,7 @@ describe('render module', () => {
         ])
       )
 
-      const label = render.content.list.querySelector(
-        '.' + render.classes.getFirst('optgroupSelectAll') + ' span'
-      )
+      const label = render.content.list.querySelector('.' + render.classes.getFirst('optgroupSelectAll') + ' span')
 
       expect(label?.textContent).toBe('Select All')
     })
@@ -1643,9 +1604,7 @@ describe('render module', () => {
       ])
       render.renderOptions(data)
 
-      const label = render.content.list.querySelector(
-        '.' + render.classes.getFirst('optgroupSelectAll') + ' span'
-      )
+      const label = render.content.list.querySelector('.' + render.classes.getFirst('optgroupSelectAll') + ' span')
 
       expect(label?.textContent).toBe('Unselect All')
     })
@@ -1661,21 +1620,13 @@ describe('render module', () => {
           ]
         }
       ])
-      const selectAllRender = new Render(
-        new Settings({ modal: 'off' }),
-        new CssClasses(),
-        store,
-        {
-          open: openMock as () => void,
-          close: closeMock as (info?: CloseInfo) => void,
-          setSelected: setSelectedMock as (
-            value: string | string[],
-            runAfterChange: boolean
-          ) => void,
-          addOption: addOptionMock as (option: Option) => void,
-          search: searchMock as (search: string) => void
-        }
-      )
+      const selectAllRender = new Render(new Settings({ modal: 'off' }), new CssClasses(), store, {
+        open: openMock as () => void,
+        close: closeMock as (info?: CloseInfo) => void,
+        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+        addOption: addOptionMock as (option: Option) => void,
+        search: searchMock as (search: string) => void
+      })
       selectAllRender.settings.isMultiple = true
       selectAllRender.renderOptions(store.getData())
 
@@ -1683,9 +1634,7 @@ describe('render module', () => {
         '.' + selectAllRender.classes.getFirst('optgroupSelectAll')
       ) as HTMLDivElement
 
-      selectAll.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       expect(setSelectedMock).toHaveBeenCalledWith([], true)
     })
@@ -1748,9 +1697,7 @@ describe('render module', () => {
       render.updateOptionSelection()
 
       expect(list.children.length).toBe(initialChildCount)
-      const optionEl = render.content.list.querySelector(
-        '[data-id="' + target.id + '"]'
-      ) as HTMLDivElement
+      const optionEl = render.content.list.querySelector('[data-id="' + target.id + '"]') as HTMLDivElement
       expect(optionEl.classList.contains(render.classes.selected)).toBe(true)
       expect(optionEl.getAttribute('aria-selected')).toBe('true')
     })
@@ -1764,9 +1711,7 @@ describe('render module', () => {
       store.setSelectedBy('id', [target.id])
       render.updateOptionSelection()
 
-      const optionEl = render.content.list.querySelector(
-        '[data-id="' + target.id + '"]'
-      ) as HTMLDivElement
+      const optionEl = render.content.list.querySelector('[data-id="' + target.id + '"]') as HTMLDivElement
       expect(optionEl.classList.contains(render.classes.hide)).toBe(true)
     })
   })
@@ -1872,24 +1817,7 @@ describe('render module', () => {
       render.settings.searchHighlight = true
 
       // Test various special regex characters
-      const specialChars = [
-        '<',
-        '>',
-        '.',
-        '*',
-        '+',
-        '?',
-        '^',
-        '$',
-        '{',
-        '}',
-        '(',
-        ')',
-        '|',
-        '[',
-        ']',
-        '\\'
-      ]
+      const specialChars = ['<', '>', '.', '*', '+', '?', '^', '$', '{', '}', '(', ')', '|', '[', ']', '\\']
 
       specialChars.forEach((char) => {
         render.content.search.input.value = char
@@ -1953,9 +1881,7 @@ describe('render module', () => {
       render.settings.isMultiple = true
       render.settings.allowDeselect = true
       render.settings.minSelected = 1
-      render.store = new Store('multiple', [
-        { text: 'opt 1', value: 'opt1', selected: true }
-      ])
+      render.store = new Store('multiple', [{ text: 'opt 1', value: 'opt1', selected: true }])
 
       render.renderOptions(render.store.getDataOptions())
       const opts = render.getOptions(false, false, true)
@@ -2039,17 +1965,11 @@ describe('render module', () => {
 
       render.renderValues()
 
-      const deleteButtons = render.main.values.querySelectorAll(
-        '.' + render.classes.getFirst('valueDelete')
-      )
+      const deleteButtons = render.main.values.querySelectorAll('.' + render.classes.getFirst('valueDelete'))
 
       expect(deleteButtons).toHaveLength(2)
       for (const deleteButton of deleteButtons) {
-        expect(
-          (deleteButton as HTMLElement).classList.contains(
-            render.classes.getFirst('hide')
-          )
-        ).toBe(true)
+        expect((deleteButton as HTMLElement).classList.contains(render.classes.getFirst('hide'))).toBe(true)
       }
     })
 
@@ -2064,17 +1984,11 @@ describe('render module', () => {
 
       render.renderValues()
 
-      const deleteButtons = render.main.values.querySelectorAll(
-        '.' + render.classes.getFirst('valueDelete')
-      )
+      const deleteButtons = render.main.values.querySelectorAll('.' + render.classes.getFirst('valueDelete'))
 
       expect(deleteButtons).toHaveLength(3)
       for (const deleteButton of deleteButtons) {
-        expect(
-          (deleteButton as HTMLElement).classList.contains(
-            render.classes.getFirst('hide')
-          )
-        ).toBe(false)
+        expect((deleteButton as HTMLElement).classList.contains(render.classes.getFirst('hide'))).toBe(false)
       }
     })
 
@@ -2093,9 +2007,7 @@ describe('render module', () => {
         '.' + render.classes.getFirst('deselect')
       ) as HTMLDivElement
 
-      deselectElement.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      deselectElement.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       expect(setSelectedMock).toHaveBeenCalledWith(['a', 'b'], false)
     })
@@ -2110,11 +2022,7 @@ describe('render module', () => {
       ])
       render.renderValues()
 
-      expect(
-        render.main.deselect.main.classList.contains(
-          render.classes.getFirst('hide')
-        )
-      ).toBe(true)
+      expect(render.main.deselect.main.classList.contains(render.classes.getFirst('hide'))).toBe(true)
     })
 
     test('click on mandatory selected option closes without deselecting', () => {
@@ -2204,9 +2112,7 @@ describe('render module', () => {
 
         // Click first option - adds it
         opts[0].dispatchEvent(new MouseEvent('click'))
-        expect(afterChangeMock).toHaveBeenCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
         // Click third option - adds it (first option still selected)
         opts[2].dispatchEvent(new MouseEvent('click'))
@@ -2217,9 +2123,7 @@ describe('render module', () => {
 
         // Click first option again - removes it
         opts[0].dispatchEvent(new MouseEvent('click'))
-        expect(afterChangeMock).toHaveBeenCalledWith([
-          expect.objectContaining({ value: 'test3' })
-        ])
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test3' })])
       })
 
       test('closes dropdown on regular click when closeOnSelect is true', () => {
@@ -2247,9 +2151,7 @@ describe('render module', () => {
         // Click on already selected option - should deselect it and close
         opts[0].dispatchEvent(new MouseEvent('click'))
 
-        expect(afterChangeMock).toHaveBeenLastCalledWith([
-          expect.objectContaining({ value: 'test2' })
-        ])
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test2' })])
         expect(closeMock).toHaveBeenCalledTimes(1)
       })
 
@@ -2283,9 +2185,7 @@ describe('render module', () => {
 
         // Cmd+Click first option
         opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
-        expect(afterChangeMock).toHaveBeenCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
         // Cmd+Click third option - both should be selected
         opts[2].dispatchEvent(new MouseEvent('click', { metaKey: true }))
@@ -2301,9 +2201,7 @@ describe('render module', () => {
 
         // Ctrl+Click first option
         opts[0].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
-        expect(afterChangeMock).toHaveBeenCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
         // Ctrl+Click third option - both should be selected
         opts[2].dispatchEvent(new MouseEvent('click', { ctrlKey: true }))
@@ -2355,9 +2253,7 @@ describe('render module', () => {
 
         // Click to select
         opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
-        expect(afterChangeMock).toHaveBeenLastCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test1' })])
 
         // Click again to deselect
         opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
@@ -2365,9 +2261,7 @@ describe('render module', () => {
 
         // Click once more to select again
         opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
-        expect(afterChangeMock).toHaveBeenLastCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test1' })])
       })
 
       test('Cmd/Ctrl+Click works even when allowDeselect is false', () => {
@@ -2382,9 +2276,7 @@ describe('render module', () => {
         // Should be able to deselect with Cmd/Ctrl even though allowDeselect is false
         opts[0].dispatchEvent(new MouseEvent('click', { metaKey: true }))
 
-        expect(afterChangeMock).toHaveBeenLastCalledWith([
-          expect.objectContaining({ value: 'test2' })
-        ])
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test2' })])
       })
 
       test('does NOT close dropdown on Cmd+Click', () => {
@@ -2411,9 +2303,7 @@ describe('render module', () => {
 
         // Click first option
         opts[0].dispatchEvent(new MouseEvent('click'))
-        expect(afterChangeMock).toHaveBeenCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'test1' })])
 
         // Shift+Click third option - should select test1, test2, test3
         opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
@@ -2452,9 +2342,7 @@ describe('render module', () => {
         opts[3].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
 
         // Should keep only the original selection
-        expect(afterChangeMock).toHaveBeenLastCalledWith([
-          expect.objectContaining({ value: 'test1' })
-        ])
+        expect(afterChangeMock).toHaveBeenLastCalledWith([expect.objectContaining({ value: 'test1' })])
       })
 
       test('does NOT close dropdown on Shift+Click', () => {
@@ -2507,9 +2395,7 @@ describe('render module', () => {
 
         // Click first option
         opts[0].dispatchEvent(new MouseEvent('click'))
-        expect(afterChangeMock).toHaveBeenCalledWith([
-          expect.objectContaining({ value: 'A0' })
-        ])
+        expect(afterChangeMock).toHaveBeenCalledWith([expect.objectContaining({ value: 'A0' })])
 
         // Shift+Click third option - should select A0, B0, C0 and should not select A1
         opts[2].dispatchEvent(new MouseEvent('click', { shiftKey: true }))
@@ -2604,9 +2490,7 @@ describe('render module', () => {
 
       render.destroy()
 
-      expect(
-        document.querySelector(`.ss-content[data-id="${contentId}"]`)
-      ).toBeNull()
+      expect(document.querySelector(`.ss-content[data-id="${contentId}"]`)).toBeNull()
     })
   })
 
@@ -2614,18 +2498,10 @@ describe('render module', () => {
     test('correct classes are set', () => {
       render.moveContentAbove()
 
-      expect(render.main.main.classList.contains(render.classes.dirAbove)).toBe(
-        true
-      )
-      expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(
-        false
-      )
-      expect(
-        render.content.main.classList.contains(render.classes.dirAbove)
-      ).toBe(true)
-      expect(
-        render.content.main.classList.contains(render.classes.dirBelow)
-      ).toBe(false)
+      expect(render.main.main.classList.contains(render.classes.dirAbove)).toBe(true)
+      expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.dirAbove)).toBe(true)
+      expect(render.content.main.classList.contains(render.classes.dirBelow)).toBe(false)
     })
   })
 
@@ -2633,18 +2509,10 @@ describe('render module', () => {
     test('correct classes are set', () => {
       render.moveContentBelow()
 
-      expect(render.main.main.classList.contains(render.classes.dirAbove)).toBe(
-        false
-      )
-      expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(
-        true
-      )
-      expect(
-        render.content.main.classList.contains(render.classes.dirAbove)
-      ).toBe(false)
-      expect(
-        render.content.main.classList.contains(render.classes.dirBelow)
-      ).toBe(true)
+      expect(render.main.main.classList.contains(render.classes.dirAbove)).toBe(false)
+      expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(true)
+      expect(render.content.main.classList.contains(render.classes.dirAbove)).toBe(false)
+      expect(render.content.main.classList.contains(render.classes.dirBelow)).toBe(true)
     })
   })
 

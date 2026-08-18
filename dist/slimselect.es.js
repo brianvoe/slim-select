@@ -700,7 +700,7 @@ var O = class {
 	close() {
 		this.main.main.setAttribute("aria-expanded", "false"), this.main.arrow.path.setAttribute("d", this.classes.arrowClose);
 		let e = this.modalSessionActive === !0;
-		this.removeClasses(this.content.main, this.classes.contentOpen), e || (this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow)), e && this.modalElements && this.removeClasses(this.modalElements.overlay, this.classes.contentOpen), this.modalSessionActive = null, this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant");
+		this.removeClasses(this.content.main, this.classes.contentOpen), e || (this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow)), e && this.modalElements && this.removeClasses(this.modalElements.overlay, this.classes.contentOpen), this.modalSessionActive = null, this.content.search.input.setAttribute("aria-hidden", "true"), this.main.main.removeAttribute("aria-activedescendant"), this.clearValueChipHighlight();
 	}
 	clearDirectionClasses() {
 		this.removeClasses(this.main.main, this.classes.dirAbove), this.removeClasses(this.main.main, this.classes.dirBelow), this.removeClasses(this.content.main, this.classes.dirAbove), this.removeClasses(this.content.main, this.classes.dirBelow);
@@ -851,6 +851,38 @@ var O = class {
 		let e = this.store.getSelectedOptions();
 		return this.settings.keepOrder && (e = this.store.selectedOrderOptions(e)), e.slice(0, this.settings.minSelected).map((e) => e.id);
 	}
+	getValueChips() {
+		return !this.settings.isMultiple || this.settings.multiString ? [] : Array.from(this.main.values.querySelectorAll("." + this.classes.getFirst("value"))).filter((e) => {
+			if (e.classList.contains(this.classes.getFirst("valueOut"))) return !1;
+			let t = e.querySelector("." + this.classes.getFirst("valueDelete"));
+			return !!t && !t.classList.contains(this.classes.getFirst("hide"));
+		});
+	}
+	getHighlightedValueChip() {
+		return this.getValueChips().find((e) => e.classList.contains(this.classes.getFirst("highlighted"))) ?? null;
+	}
+	clearValueChipHighlight() {
+		for (let e of Array.from(this.main.values.querySelectorAll("." + this.classes.getFirst("value")))) this.removeClasses(e, this.classes.highlighted);
+	}
+	highlightValueChip(e) {
+		this.clearValueChipHighlight(), e && this.addClasses(e, this.classes.highlighted);
+	}
+	navigateValueChips(e) {
+		let t = this.getValueChips();
+		if (t.length === 0) return !1;
+		let n = this.getHighlightedValueChip(), r = n ? t.indexOf(n) : -1;
+		return e === "left" ? (r === -1 ? this.highlightValueChip(t[t.length - 1]) : r > 0 && this.highlightValueChip(t[r - 1]), !0) : r === -1 ? !1 : (r < t.length - 1 ? this.highlightValueChip(t[r + 1]) : this.clearValueChipHighlight(), !0);
+	}
+	deleteValueChip(e = !1) {
+		let t = this.getValueChips();
+		if (t.length === 0) return !1;
+		let n = this.getHighlightedValueChip();
+		if (e && !n) return !1;
+		let r = n ?? t[t.length - 1], i = r.querySelector("." + this.classes.getFirst("valueDelete"));
+		if (!i) return !1;
+		let a = t.indexOf(r), o = n ? t[a - 1] ?? t[a + 1] ?? null : null;
+		return i.click(), o && o !== r && this.main.values.contains(o) ? this.highlightValueChip(o) : this.clearValueChipHighlight(), !0;
+	}
 	updateMultipleValueDeleteVisibility() {
 		if (!this.settings.isMultiple || this.settings.multiString) return;
 		let e = !this.isAtMinSelected(), t = this.main.values.querySelectorAll("." + this.classes.getFirst("valueDelete"));
@@ -943,19 +975,27 @@ var O = class {
 			main: e,
 			input: t
 		};
-		if (this.settings.showSearch || (this.addClasses(e, this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true"), t.oninput = _((e) => {
-			this.callbacks.search(e.target.value);
-		}, 100), t.onkeydown = (e) => {
+		this.settings.showSearch || (this.addClasses(e, this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true");
+		let a = _(() => {
+			this.callbacks.search(t.value);
+		}, 100);
+		if (t.oninput = (e) => {
+			e.target.value !== "" && this.clearValueChipHighlight(), a();
+		}, t.onkeydown = (e) => {
 			switch (e.key) {
 				case "ArrowUp":
-				case "ArrowDown": return e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
+				case "ArrowDown": return this.clearValueChipHighlight(), e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
+				case "ArrowLeft":
+				case "ArrowRight": return t.value === "" && this.navigateValueChips(e.key === "ArrowLeft" ? "left" : "right") ? (e.preventDefault(), !1) : !0;
+				case "Backspace": return t.value === "" && this.deleteValueChip() ? (e.preventDefault(), !1) : !0;
+				case "Delete": return t.value !== "" || !this.getHighlightedValueChip() ? !0 : this.deleteValueChip(!0) ? (e.preventDefault(), !1) : !0;
 				case "Tab": return this.requestClose("tab"), !0;
 				case "Escape": return this.requestClose("escape"), !1;
 				case "Enter":
-					let t = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
-					return t ? (t.click(), !1) : this.callbacks.addable ? (n.click(), !1) : !0;
+					let r = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
+					return r ? (r.click(), !1) : this.callbacks.addable ? (n.click(), !1) : !0;
 			}
-			return !0;
+			return e.key.length === 1 && this.clearValueChipHighlight(), !0;
 		}, e.appendChild(t), this.callbacks.addable) {
 			this.addClasses(n, this.classes.addable);
 			let t = document.createElementNS("http://www.w3.org/2000/svg", "svg");

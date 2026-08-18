@@ -7,12 +7,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [4.0.7]
 
+### Added
+
+- Multi-select: with search focused and empty, Left/Right highlight selected values and Backspace/Delete removes them
+  ([#705](https://github.com/brianvoe/slim-select/issues/705))
+
 ### Fixed
 
 - Native `<select>` `change` no longer fires on every keystroke during API `events.search` when the selection is
   unchanged ([#696](https://github.com/brianvoe/slim-select/issues/696))
-- API `events.search` no longer writes result pages into the native `<select>`; search hits stay in the dropdown UI
-  and native options update on selection or catalog restore
+- API `events.search` no longer writes result pages into the native `<select>`; search hits stay in the dropdown UI and
+  native options update on selection or catalog restore
 
 ## [4.0.6]
 

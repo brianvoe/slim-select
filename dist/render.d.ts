@@ -102,6 +102,17 @@ export default class Render {
     private renderMultipleValues;
     private isAtMinSelected;
     private getMinimumSelectionIds;
+    private getValueChips;
+    private getHighlightedValueChip;
+    private clearValueChipHighlight;
+    private highlightValueChip;
+    /** Returns true when Left/Right were used to move among selected value chips. */
+    private navigateValueChips;
+    /**
+     * Remove the highlighted chip, or the last chip when none is highlighted.
+     * Returns true when a delete was triggered.
+     */
+    private deleteValueChip;
     private updateMultipleValueDeleteVisibility;
     multipleValue(option: Option): HTMLDivElement;
     contentDiv(): Content;

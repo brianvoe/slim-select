@@ -8,6 +8,7 @@ import FormReset from './form_reset.vue'
 import Required from './required.vue'
 import TextOverflow from './text_overflow.vue'
 import Label from './label.vue'
+import Keyboard from './keyboard.vue'
 import MenuExample from './menu.vue'
 
 export default defineComponent({
@@ -18,6 +19,7 @@ export default defineComponent({
     Required,
     TextOverflow,
     Label,
+    Keyboard,
     MenuExample
   }
 })
@@ -26,12 +28,13 @@ export default defineComponent({
 <template>
   <div id="usage" class="contents">
     <MenuExample />
-    <AdSlot ad-slot="1270131515" />
     <Label />
+    <AdSlot ad-slot="1270131515" />
+    <Keyboard />
     <FormReset />
     <AdSlot ad-slot="1270131515" />
     <Required />
-    <AdSlot ad-slot="1270131515" />
     <TextOverflow />
+    <AdSlot ad-slot="1270131515" />
   </div>
 </template>

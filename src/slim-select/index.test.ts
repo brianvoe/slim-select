@@ -6,8 +6,7 @@ import SlimSelect from '@/slim-select'
 /** Destroy every SlimSelect still attached to a select in the document. */
 function destroyAllSlimSelects(): void {
   document.querySelectorAll('select').forEach((selectEl) => {
-    const instance = (selectEl as HTMLSelectElement & { slim?: SlimSelect })
-      .slim
+    const instance = (selectEl as HTMLSelectElement & { slim?: SlimSelect }).slim
     if (!instance) {
       return
     }
@@ -51,9 +50,7 @@ describe('SlimSelect Module', () => {
       expect(slim.store).toBeUndefined()
       expect(slim.render).toBeUndefined()
       expect(errorMock).toHaveBeenCalled()
-      expect(errorMock.mock.calls[0][0].message).toBe(
-        'Could not find select element'
-      )
+      expect(errorMock.mock.calls[0][0].message).toBe('Could not find select element')
     })
 
     test('invalid element throws error', () => {
@@ -69,9 +66,7 @@ describe('SlimSelect Module', () => {
       expect(slim.store).toBeUndefined()
       expect(slim.render).toBeUndefined()
       expect(errorMock).toHaveBeenCalled()
-      expect(errorMock.mock.calls[0][0].message).toBe(
-        'Element isnt of type select'
-      )
+      expect(errorMock.mock.calls[0][0].message).toBe('Element isnt of type select')
     })
 
     test('valid minimal constructor with query string', () => {
@@ -176,9 +171,7 @@ describe('SlimSelect Module', () => {
     let slimSelect = new SlimSelect(config)
     expect(slimSelect.store.getSelectType()).toEqual('multiple')
     expect(slimSelect.getSelected()).toHaveLength(0)
-    expect(slimSelect.render.main.deselect.main.classList).toContain(
-      slimSelect.render.classes.hide
-    )
+    expect(slimSelect.render.main.deselect.main.classList).toContain(slimSelect.render.classes.hide)
   })
   test('multiple - render deselect all option with selected options', () => {
     document.body.innerHTML = `<select id="test" multiple>
@@ -218,9 +211,7 @@ describe('SlimSelect Module', () => {
     let slimSelect = new SlimSelect(config)
     expect(slimSelect.store.getSelectType()).toEqual('multiple')
     expect(slimSelect.getSelected()).toHaveLength(2)
-    expect(slimSelect.render.main.deselect.main.classList).not.toContain(
-      slimSelect.render.classes.hide
-    )
+    expect(slimSelect.render.main.deselect.main.classList).not.toContain(slimSelect.render.classes.hide)
   })
 
   describe('required attribute support', () => {
@@ -390,9 +381,7 @@ describe('SlimSelect Module', () => {
       // Find and click on a selected option to deselect it
       const options = document.querySelectorAll('[role="option"]')
       const selectedOption = Array.from(options).find(
-        (opt) =>
-          opt.getAttribute('aria-selected') === 'true' &&
-          opt.textContent?.includes('Option 1')
+        (opt) => opt.getAttribute('aria-selected') === 'true' && opt.textContent?.includes('Option 1')
       ) as HTMLElement
 
       expect(selectedOption).toBeTruthy()
@@ -442,35 +431,31 @@ describe('SlimSelect Module', () => {
 
   describe('Search State Regression Tests', () => {
     let slim: SlimSelect
-    let searchMock: Mock<
-      (searchValue: string, selected: any[], catalog?: any[]) => any[]
-    >
+    let searchMock: Mock<(searchValue: string, selected: any[], catalog?: any[]) => any[]>
 
     beforeEach(() => {
       destroyAllSlimSelects()
       document.body.innerHTML = '<select id="searchTest"></select>'
 
-      searchMock = vi.fn(
-        (searchValue: string, selected: any[], catalog?: any[]) => {
-          // Mock search results based on search value
-          if (searchValue.length >= 2) {
-            return [
-              { value: 'null', text: 'Null' },
-              { value: 'eins', text: 'Eins' },
-              { value: 'zwei', text: 'Zwei' },
-              { value: 'drei', text: 'Drei' },
-              { value: 'vier', text: 'Vier' },
-              { value: 'funf', text: 'Fünf' },
-              { value: 'sechs', text: 'Sechs' },
-              { value: 'sieben', text: 'Sieben' },
-              { value: 'acht', text: 'Acht' },
-              { value: 'neun', text: 'Neun' },
-              { value: 'zehn', text: 'Zehn' }
-            ]
-          }
-          return []
+      searchMock = vi.fn((searchValue: string, selected: any[], catalog?: any[]) => {
+        // Mock search results based on search value
+        if (searchValue.length >= 2) {
+          return [
+            { value: 'null', text: 'Null' },
+            { value: 'eins', text: 'Eins' },
+            { value: 'zwei', text: 'Zwei' },
+            { value: 'drei', text: 'Drei' },
+            { value: 'vier', text: 'Vier' },
+            { value: 'funf', text: 'Fünf' },
+            { value: 'sechs', text: 'Sechs' },
+            { value: 'sieben', text: 'Sieben' },
+            { value: 'acht', text: 'Acht' },
+            { value: 'neun', text: 'Neun' },
+            { value: 'zehn', text: 'Zehn' }
+          ]
         }
-      )
+        return []
+      })
 
       slim = new SlimSelect({
         select: '#searchTest',
@@ -519,18 +504,14 @@ describe('SlimSelect Module', () => {
 
       slim.open()
       slim.search('te')
-      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(
-        11
-      )
+      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(11)
 
       slim.close()
       expect(slim.render.content.search.input.value).toBe('te')
 
       slim.open()
       expect(searchMock).toHaveBeenCalledTimes(2)
-      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(
-        11
-      )
+      expect(document.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(11)
     })
 
     test('should clear search input when closing dropdown', async () => {
@@ -655,26 +636,18 @@ describe('SlimSelect Module', () => {
       options[1].dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
       expect(slim.getSelected()).toEqual(['null', 'eins'])
-      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual([
-        'null',
-        'eins'
-      ])
+      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual(['null', 'eins'])
 
       // Further search must keep selected on native, without writing the new page
       slim.search('ei')
-      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual([
-        'null',
-        'eins'
-      ])
+      expect(Array.from(selectEl.options).map((o) => o.value)).toEqual(['null', 'eins'])
       expect(slim.getSelected()).toEqual(['null', 'eins'])
 
       slim.close()
       slim.open()
 
       const nativeValues = Array.from(selectEl.options).map((o) => o.value)
-      expect(nativeValues).toEqual(
-        expect.arrayContaining(['null', 'eins', 'a', 'b'])
-      )
+      expect(nativeValues).toEqual(expect.arrayContaining(['null', 'eins', 'a', 'b']))
       expect(slim.getSelected()).toEqual(['null', 'eins'])
     })
 
@@ -754,9 +727,7 @@ describe('SlimSelect Module', () => {
       expect(options.length).toBeGreaterThanOrEqual(2)
 
       // Find the async results in the options
-      const asyncOptions = Array.from(options).filter((option) =>
-        option.textContent?.includes('Async Result')
-      )
+      const asyncOptions = Array.from(options).filter((option) => option.textContent?.includes('Async Result'))
       expect(asyncOptions).toHaveLength(2)
       expect(asyncOptions[0].textContent).toBe('Async Result 1')
       expect(asyncOptions[1].textContent).toBe('Async Result 2')
@@ -790,9 +761,7 @@ describe('SlimSelect Module', () => {
       const options = document.querySelectorAll('.ss-option')
       expect(options.length).toBeGreaterThanOrEqual(2)
 
-      const firstOption = Array.from(options).find(
-        (el) => el.textContent?.trim() === 'First Result'
-      )
+      const firstOption = Array.from(options).find((el) => el.textContent?.trim() === 'First Result')
       expect(firstOption).toBeTruthy()
       expect(firstOption?.getAttribute('aria-selected')).toBe('false')
 
@@ -804,18 +773,18 @@ describe('SlimSelect Module', () => {
       slim.open()
       slim.search('te')
 
-      const nullOption = Array.from(
-        document.querySelectorAll('.ss-option')
-      ).find((el) => el.textContent?.trim() === 'Null')
+      const nullOption = Array.from(document.querySelectorAll('.ss-option')).find(
+        (el) => el.textContent?.trim() === 'Null'
+      )
       expect(nullOption).toBeTruthy()
       nullOption!.dispatchEvent(new MouseEvent('click'))
       expect(slim.getSelected()).toEqual(['null'])
 
       slim.search('ei')
 
-      const nullLabels = Array.from(
-        document.querySelectorAll('.ss-option')
-      ).filter((el) => el.textContent?.trim() === 'Null')
+      const nullLabels = Array.from(document.querySelectorAll('.ss-option')).filter(
+        (el) => el.textContent?.trim() === 'Null'
+      )
       expect(nullLabels.length).toBe(1)
       expect(slim.getSelected()).toEqual(['null'])
     })
@@ -878,9 +847,9 @@ describe('SlimSelect Module', () => {
       slim.search('te')
       onChangeMock.mockClear()
 
-      const nullOption = Array.from(
-        document.querySelectorAll('.ss-option')
-      ).find((el) => el.textContent?.trim() === 'Null')
+      const nullOption = Array.from(document.querySelectorAll('.ss-option')).find(
+        (el) => el.textContent?.trim() === 'Null'
+      )
       expect(nullOption).toBeTruthy()
       nullOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
@@ -897,9 +866,9 @@ describe('SlimSelect Module', () => {
       slim.open()
       slim.search('te')
 
-      const nullOption = Array.from(
-        document.querySelectorAll('.ss-option')
-      ).find((el) => el.textContent?.trim() === 'Null')
+      const nullOption = Array.from(document.querySelectorAll('.ss-option')).find(
+        (el) => el.textContent?.trim() === 'Null'
+      )
       nullOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       expect(slim.getSelected()).toEqual(['null'])
 
@@ -919,9 +888,7 @@ describe('SlimSelect Module', () => {
       slim.search('te')
 
       const [, selected, catalog] = searchMock.mock.calls[0]
-      expect(selected).toEqual(
-        expect.arrayContaining([expect.objectContaining({ value: 'a', text: 'A' })])
-      )
+      expect(selected).toEqual(expect.arrayContaining([expect.objectContaining({ value: 'a', text: 'A' })]))
       expect(catalog).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ value: 'a', text: 'A' }),
@@ -1001,9 +968,7 @@ describe('SlimSelect Module', () => {
       slim.open()
       slim.search('bad')
       await new Promise((resolve) => setTimeout(resolve, 50))
-      expect(document.querySelector('.ss-error')?.textContent).toBe(
-        'Temporary failure'
-      )
+      expect(document.querySelector('.ss-error')?.textContent).toBe('Temporary failure')
 
       slim.search('good')
       await new Promise((resolve) => setTimeout(resolve, 50))
@@ -1017,11 +982,9 @@ describe('SlimSelect Module', () => {
 
     test('ignores stale API search response when query changes', async () => {
       let resolveSlow: (value: { value: string; text: string }[]) => void
-      const slowPromise = new Promise<{ value: string; text: string }[]>(
-        (resolve) => {
-          resolveSlow = resolve
-        }
-      )
+      const slowPromise = new Promise<{ value: string; text: string }[]>((resolve) => {
+        resolveSlow = resolve
+      })
 
       const raceSearch = vi
         .fn()
@@ -1047,20 +1010,16 @@ describe('SlimSelect Module', () => {
       resolveSlow!([{ value: 'slow', text: 'Slow Result' }])
       await new Promise((resolve) => setTimeout(resolve, 50))
 
-      const labels = Array.from(document.querySelectorAll('.ss-option')).map(
-        (el) => el.textContent?.trim()
-      )
+      const labels = Array.from(document.querySelectorAll('.ss-option')).map((el) => el.textContent?.trim())
       expect(labels).toContain('Fast Result')
       expect(labels).not.toContain('Slow Result')
     })
 
     test('ignores stale API search error when query changes', async () => {
       let rejectSlow: (reason: string) => void
-      const slowPromise = new Promise<{ value: string; text: string }[]>(
-        (_resolve, reject) => {
-          rejectSlow = reject
-        }
-      )
+      const slowPromise = new Promise<{ value: string; text: string }[]>((_resolve, reject) => {
+        rejectSlow = reject
+      })
 
       const raceSearch = vi
         .fn()
@@ -1089,9 +1048,7 @@ describe('SlimSelect Module', () => {
 
       expect(document.querySelector('.ss-error')).toBeFalsy()
       expect(
-        Array.from(document.querySelectorAll('.ss-option')).some(
-          (el) => el.textContent?.trim() === 'Fast Result'
-        )
+        Array.from(document.querySelectorAll('.ss-option')).some((el) => el.textContent?.trim() === 'Fast Result')
       ).toBe(true)
     })
 
@@ -1116,21 +1073,17 @@ describe('SlimSelect Module', () => {
       slim.open()
       slim.search('te')
 
-      const nullOption = Array.from(
-        document.querySelectorAll('.ss-option')
-      ).find((el) => el.textContent?.trim() === 'Null')
-      expect(nullOption).toBeTruthy()
-      nullOption!.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, metaKey: true })
+      const nullOption = Array.from(document.querySelectorAll('.ss-option')).find(
+        (el) => el.textContent?.trim() === 'Null'
       )
+      expect(nullOption).toBeTruthy()
+      nullOption!.dispatchEvent(new MouseEvent('click', { bubbles: true, metaKey: true }))
       expect(slim.getSelected()).toContain('null')
 
       slim.search('te')
 
       const visibleOptions = slim.render.getOptions(true, true, true)
-      expect(
-        visibleOptions.some((el) => el.textContent?.trim() === 'Null')
-      ).toBe(false)
+      expect(visibleOptions.some((el) => el.textContent?.trim() === 'Null')).toBe(false)
       expect(slim.getSelected()).toContain('null')
     })
 
@@ -1151,12 +1104,9 @@ describe('SlimSelect Module', () => {
         },
         events: {
           search: (searchValue, _selected, catalog) => {
-            const normalize = (str: string) =>
-              str.toLowerCase().replace(/\s/g, '')
+            const normalize = (str: string) => str.toLowerCase().replace(/\s/g, '')
             return (catalog || []).filter(
-              (option) =>
-                'text' in option &&
-                normalize(option.text).includes(normalize(searchValue))
+              (option) => 'text' in option && normalize(option.text).includes(normalize(searchValue))
             )
           }
         }
@@ -1193,28 +1143,20 @@ describe('SlimSelect Module', () => {
 
       slim.open()
       slim.search('new')
-      expect(
-        slim.render.content.list.querySelectorAll('.ss-option')
-      ).toHaveLength(0)
+      expect(slim.render.content.list.querySelectorAll('.ss-option')).toHaveLength(0)
 
       slim.render.content.search.input.value = 'Custom'
-      slim.render.content.search.input.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
-      )
+      slim.render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
 
       await new Promise((resolve) => setTimeout(resolve, 50))
 
       expect(slim.getSelected()).toEqual(['custom'])
-      const values = slim.store
-        .getDataOptions()
-        .map((option) => option.value)
+      const values = slim.store.getDataOptions().map((option) => option.value)
       expect(values).toContain('a')
       expect(values).toContain('b')
       expect(values).toContain('custom')
       expect(slim.render.content.search.input.value).toBe('')
-      expect(
-        slim.render.content.list.querySelectorAll('.ss-option')
-      ).toHaveLength(3)
+      expect(slim.render.content.list.querySelectorAll('.ss-option')).toHaveLength(3)
     })
   })
 
@@ -1239,9 +1181,7 @@ describe('SlimSelect Module', () => {
       expect(renderOptionsSpy).not.toHaveBeenCalled()
       expect(list.children.length).toBe(initialChildCount)
       expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
-      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
-        'Apple'
-      )
+      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe('Apple')
     })
 
     test('filters with trimmed term but preserves spaces in the input', () => {
@@ -1260,9 +1200,7 @@ describe('SlimSelect Module', () => {
 
       expect(slim.render.content.search.input.value).toBe('  app  ')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
-      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
-        'Apple'
-      )
+      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe('Apple')
     })
 
     test('allows spaces while typing multi-word search terms', () => {
@@ -1287,9 +1225,7 @@ describe('SlimSelect Module', () => {
 
       expect(slim.render.content.search.input.value).toBe('John Smith')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(1)
-      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe(
-        'John Smith'
-      )
+      expect(slim.render.getOptions(true, true, true)[0].textContent).toBe('John Smith')
     })
 
     test('whitespace-only input clears search and restores all options', () => {
@@ -1318,9 +1254,7 @@ describe('SlimSelect Module', () => {
       destroyAllSlimSelects()
       document.body.innerHTML = '<select id="searchTrim"></select>'
 
-      const searchMock = vi.fn().mockReturnValue([
-        { value: 'x', text: 'X' }
-      ])
+      const searchMock = vi.fn().mockReturnValue([{ value: 'x', text: 'X' }])
 
       const slim = new SlimSelect({
         select: '#searchTrim',
@@ -1338,20 +1272,14 @@ describe('SlimSelect Module', () => {
       slim.search('  te  ')
 
       expect(slim.render.content.search.input.value).toBe('  te  ')
-      expect(searchMock).toHaveBeenCalledWith(
-        'te',
-        expect.any(Array),
-        expect.any(Array)
-      )
+      expect(searchMock).toHaveBeenCalledWith('te', expect.any(Array), expect.any(Array))
     })
 
     test('whitespace-only input clears API search without calling search callback', () => {
       destroyAllSlimSelects()
       document.body.innerHTML = '<select id="searchWhitespace"></select>'
 
-      const searchMock = vi.fn().mockReturnValue([
-        { value: 'x', text: 'X' }
-      ])
+      const searchMock = vi.fn().mockReturnValue([{ value: 'x', text: 'X' }])
 
       const slim = new SlimSelect({
         select: '#searchWhitespace',
@@ -1366,18 +1294,14 @@ describe('SlimSelect Module', () => {
 
       slim.open()
       slim.search('te')
-      expect(
-        slim.render.content.list.querySelectorAll('.ss-option').length
-      ).toBeGreaterThanOrEqual(1)
+      expect(slim.render.content.list.querySelectorAll('.ss-option').length).toBeGreaterThanOrEqual(1)
 
       searchMock.mockClear()
       slim.search('   ')
 
       expect(searchMock).not.toHaveBeenCalled()
       expect(slim.render.content.search.input.value).toBe('')
-      expect(
-        slim.render.content.list.querySelectorAll('.ss-option')
-      ).toHaveLength(2)
+      expect(slim.render.content.list.querySelectorAll('.ss-option')).toHaveLength(2)
     })
   })
 
@@ -1400,12 +1324,8 @@ describe('SlimSelect Module', () => {
       expect(slim.settings.isOpen).toBe(false)
 
       // Click the label
-      const label = document.querySelector(
-        'label[for="label-test-select"]'
-      ) as HTMLLabelElement
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      const label = document.querySelector('label[for="label-test-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       // Wait for setTimeout in label handler
       await new Promise((r) => setTimeout(r, 10))
@@ -1434,9 +1354,7 @@ describe('SlimSelect Module', () => {
 
       // Click the label
       const label = document.querySelector('label') as HTMLLabelElement
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       // Wait for setTimeout in label handler
       await new Promise((r) => setTimeout(r, 10))
@@ -1464,12 +1382,8 @@ describe('SlimSelect Module', () => {
       expect(slim.settings.isOpen).toBe(false)
 
       // Click the label
-      const label = document.querySelector(
-        'label[for="disabled-label-select"]'
-      ) as HTMLLabelElement
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      const label = document.querySelector('label[for="disabled-label-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       // Wait for setTimeout in label handler
       await new Promise((r) => setTimeout(r, 10))
@@ -1490,12 +1404,9 @@ describe('SlimSelect Module', () => {
       // but we're selecting the select without an id. This test verifies that SlimSelect
       // assigns an id. The actual id will be generated, so the label won't match.
       // Let's test the id assignment instead.
-      document.body.innerHTML =
-        '<select><option value="usa">United States</option></select>'
+      document.body.innerHTML = '<select><option value="usa">United States</option></select>'
 
-      const selectElement = document.querySelector(
-        'select'
-      ) as HTMLSelectElement
+      const selectElement = document.querySelector('select') as HTMLSelectElement
       const slim = new SlimSelect({
         select: selectElement
       })
@@ -1518,9 +1429,7 @@ describe('SlimSelect Module', () => {
       })
 
       // Verify label handler works
-      const label = document.querySelector(
-        'label[for="cleanup-test-select"]'
-      ) as HTMLLabelElement
+      const label = document.querySelector('label[for="cleanup-test-select"]') as HTMLLabelElement
       label.dispatchEvent(new MouseEvent('click', { bubbles: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(slim.settings.isOpen).toBe(true)
@@ -1560,21 +1469,15 @@ describe('SlimSelect Module', () => {
 
       // Click the label to open
       const label = document.querySelector('label') as HTMLLabelElement
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 300)) // after animation
       expect(slim.settings.isOpen).toBe(true)
 
       // Now click the main div to close
-      const mainDiv = document.querySelector(
-        `.ss-main[data-id="${slim.settings.id}"]`
-      ) as HTMLElement
+      const mainDiv = document.querySelector(`.ss-main[data-id="${slim.settings.id}"]`) as HTMLElement
       expect(mainDiv).toBeTruthy()
 
-      mainDiv.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 300)) // after animation
 
       // SlimSelect should be closed
@@ -1610,9 +1513,7 @@ describe('SlimSelect Module', () => {
       ) as HTMLElement
       expect(deselectButton).toBeTruthy()
 
-      deselectButton.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      deselectButton.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
 
       // Should be deselected (returns array with empty string for single select)
@@ -1638,26 +1539,18 @@ describe('SlimSelect Module', () => {
       expect(slim.settings.isOpen).toBe(false)
 
       // Click main div to open
-      const mainDiv = document.querySelector(
-        `.ss-main[data-id="${slim.settings.id}"]`
-      ) as HTMLElement
-      mainDiv.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      const mainDiv = document.querySelector(`.ss-main[data-id="${slim.settings.id}"]`) as HTMLElement
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(slim.settings.isOpen).toBe(true)
 
       // Click main div again to close
-      mainDiv.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(slim.settings.isOpen).toBe(false)
 
       // Click main div again to open
-      mainDiv.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      mainDiv.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(slim.settings.isOpen).toBe(true)
     })
@@ -1693,31 +1586,21 @@ describe('SlimSelect Module', () => {
       expect(slim2.settings.isOpen).toBe(false)
 
       // Click first label to open first select
-      const label1 = document.querySelector(
-        'label:first-of-type'
-      ) as HTMLLabelElement
-      label1.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      const label1 = document.querySelector('label:first-of-type') as HTMLLabelElement
+      label1.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 300))
       expect(slim1.settings.isOpen).toBe(true)
       expect(slim2.settings.isOpen).toBe(false)
 
       // Click second label - should close first and open second
-      const label2 = document.querySelector(
-        'label:last-of-type'
-      ) as HTMLLabelElement
-      label2.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      const label2 = document.querySelector('label:last-of-type') as HTMLLabelElement
+      label2.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 300))
       expect(slim1.settings.isOpen).toBe(false)
       expect(slim2.settings.isOpen).toBe(true)
 
       // Click first label again - should close second and open first
-      label1.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      label1.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 300))
       expect(slim1.settings.isOpen).toBe(true)
       expect(slim2.settings.isOpen).toBe(false)
@@ -1729,9 +1612,7 @@ describe('SlimSelect Module', () => {
       // Reproduce the issue: empty select, init SlimSelect, add options, set value
       document.body.innerHTML = '<select id="test-select"></select>'
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const slim = new SlimSelect({
         select: selectElement
       })
@@ -1765,9 +1646,7 @@ describe('SlimSelect Module', () => {
       // Test multiple rapid mutations to ensure queue mechanism works correctly
       document.body.innerHTML = '<select id="test-select"></select>'
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const slim = new SlimSelect({
         select: selectElement
       })
@@ -1832,9 +1711,7 @@ describe('SlimSelect Module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const slim = new SlimSelect({
         select: selectElement
       })
@@ -1892,9 +1769,7 @@ describe('SlimSelect Module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const slim = new SlimSelect({
         select: selectElement
       })
@@ -1938,9 +1813,7 @@ describe('SlimSelect Module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const slim = new SlimSelect({
         select: selectElement
       })
@@ -1985,9 +1858,7 @@ describe('SlimSelect Module', () => {
     test('native option add with selection triggers single updateOptions', async () => {
       document.body.innerHTML = '<select id="sync-native"></select>'
 
-      const selectElement = document.getElementById(
-        'sync-native'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('sync-native') as HTMLSelectElement
       const slim = new SlimSelect({ select: selectElement })
       const updateOptionsSpy = vi.spyOn(slim.select, 'updateOptions')
 
@@ -2033,18 +1904,14 @@ describe('SlimSelect Module', () => {
         </select>
       `
 
-      const selectEl = document.getElementById(
-        'change-event-select'
-      ) as HTMLSelectElement
+      const selectEl = document.getElementById('change-event-select') as HTMLSelectElement
       const onChangeMock = vi.fn()
       selectEl.addEventListener('change', onChangeMock)
 
       const slim = new SlimSelect({ select: '#change-event-select' })
 
       slim.open()
-      const option = Array.from(document.querySelectorAll('.ss-option')).find(
-        (el) => el.textContent?.trim() === 'Two'
-      )
+      const option = Array.from(document.querySelectorAll('.ss-option')).find((el) => el.textContent?.trim() === 'Two')
       option!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
       expect(onChangeMock).toHaveBeenCalled()
@@ -2052,8 +1919,7 @@ describe('SlimSelect Module', () => {
     })
 
     test('rapid open then close does not leave isFullOpen true', async () => {
-      document.body.innerHTML =
-        '<select id="sync-open"><option value="1">One</option></select>'
+      document.body.innerHTML = '<select id="sync-open"><option value="1">One</option></select>'
 
       const slim = new SlimSelect({
         select: '#sync-open',
@@ -2107,9 +1973,7 @@ describe('SlimSelect Module', () => {
       })
 
       slim.open()
-      const selectedOption = Array.from(
-        document.querySelectorAll('.ss-option.ss-selected')
-      )[0]
+      const selectedOption = Array.from(document.querySelectorAll('.ss-option.ss-selected'))[0]
       selectedOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
       expect(beforeCloseMock).toHaveBeenCalledWith(
@@ -2138,9 +2002,7 @@ describe('SlimSelect Module', () => {
       })
 
       slim.open()
-      const selectedOption = Array.from(
-        document.querySelectorAll('.ss-option.ss-selected')
-      )[0]
+      const selectedOption = Array.from(document.querySelectorAll('.ss-option.ss-selected'))[0]
       selectedOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
       expect(slim.settings.isOpen).toBe(true)
@@ -2149,8 +2011,7 @@ describe('SlimSelect Module', () => {
 
   describe('cssClasses with space-separated strings', () => {
     test('space-separated cssClasses are applied as individual classes', () => {
-      document.body.innerHTML =
-        '<select id="test"><option>Test</option></select>'
+      document.body.innerHTML = '<select id="test"><option>Test</option></select>'
 
       const slim = new SlimSelect({
         select: '#test',
@@ -2162,6 +2023,70 @@ describe('SlimSelect Module', () => {
       expect(slim.render.main.main.classList.contains('ss-main')).toBe(true)
       expect(slim.render.main.main.classList.contains('class1')).toBe(true)
       expect(slim.render.main.main.classList.contains('class2')).toBe(true)
+    })
+  })
+
+  describe('multi-select value chip keyboard', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <select id="test" multiple>
+          <option value="red" selected>Red</option>
+          <option value="green" selected>Green</option>
+          <option value="blue" selected>Blue</option>
+          <option value="yellow">Yellow</option>
+        </select>
+      `
+
+      slim = new SlimSelect({
+        select: '#test',
+        settings: {
+          closeOnSelect: false
+        }
+      })
+    })
+
+    const searchInput = () => slim.render.content.search.input
+
+    const press = (key: string) => {
+      searchInput().dispatchEvent(new KeyboardEvent('keydown', { key, cancelable: true }))
+    }
+
+    const highlightedChipText = () => {
+      const chip = document.querySelector('.ss-value.ss-highlighted')
+      return chip?.querySelector('.ss-value-text')?.textContent ?? null
+    }
+
+    test('ArrowLeft on empty search highlights the last selected value', () => {
+      slim.open()
+      press('ArrowLeft')
+
+      expect(highlightedChipText()).toBe('Blue')
+    })
+
+    test('Backspace removes the highlighted selected value', () => {
+      slim.open()
+      press('ArrowLeft')
+      press('Backspace')
+
+      expect(slim.getSelected()).toEqual(['red', 'green'])
+      expect(highlightedChipText()).toBe('Green')
+    })
+
+    test('Backspace with no highlight removes the last selected value', () => {
+      slim.open()
+      press('Backspace')
+
+      expect(slim.getSelected()).toEqual(['red', 'green'])
+      expect(highlightedChipText()).toBeNull()
+    })
+
+    test('does not steal Left/Right while the search field has text', () => {
+      slim.open()
+      searchInput().value = 'ye'
+      press('ArrowLeft')
+
+      expect(highlightedChipText()).toBeNull()
+      expect(slim.getSelected()).toEqual(['red', 'green', 'blue'])
     })
   })
 })
