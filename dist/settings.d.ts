@@ -37,6 +37,9 @@ export default class Settings {
     maxValuesShown: number;
     maxValuesMessage: string;
     addableText: string;
+    selectAll: boolean;
+    selectAllText: string;
+    unselectAllText: string;
     modal: ModalSetting;
     modalTitle: string;
     constructor(settings?: Partial<Settings>);

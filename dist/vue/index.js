@@ -52,7 +52,7 @@ var s = class {
 	constructor(e) {
 		e ||= {};
 		let t = (e = "", t = "") => `${e} ${t}`.trim();
-		this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.multiString = t("ss-multi-string", e.multiString), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.status = t("ss-status", e.status), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M60,10 L10,10 L10,90 L90,90 L90,50", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M30,45 L50,70 L90,10", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.modalOverlay = t("ss-modal-overlay", e.modalOverlay), this.modalDialog = t("ss-modal-dialog", e.modalDialog), this.modalTitle = t("ss-modal-title", e.modalTitle), this.modalClose = t("ss-modal-close", e.modalClose), this.modalContent = t("ss-modal-content", e.modalContent), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
+		this.main = t("ss-main", e.main), this.placeholder = t("ss-placeholder", e.placeholder), this.values = t("ss-values", e.values), this.single = t("ss-single", e.single), this.multiString = t("ss-multi-string", e.multiString), this.max = t("ss-max", e.max), this.value = t("ss-value", e.value), this.valueText = t("ss-value-text", e.valueText), this.valueDelete = t("ss-value-delete", e.valueDelete), this.valueOut = t("ss-value-out", e.valueOut), this.deselect = t("ss-deselect", e.deselect), this.deselectPath = e.deselectPath || "M10,10 L90,90 M10,90 L90,10", this.arrow = t("ss-arrow", e.arrow), this.arrowClose = e.arrowClose || "M10,30 L50,70 L90,30", this.arrowOpen = e.arrowOpen || "M10,70 L50,30 L90,70", this.content = t("ss-content", e.content), this.contentOpen = t("ss-open", e.contentOpen), this.dirAbove = t("ss-dir-above", e.dirAbove), this.dirBelow = t("ss-dir-below", e.dirBelow), this.search = t("ss-search", e.search), this.searchHighlighter = t("ss-search-highlight", e.searchHighlighter), this.searching = t("ss-searching", e.searching), this.status = t("ss-status", e.status), this.addable = t("ss-addable", e.addable), this.addablePath = e.addablePath || "M50,10 L50,90 M10,50 L90,50", this.list = t("ss-list", e.list), this.optgroup = t("ss-optgroup", e.optgroup), this.optgroupLabel = t("ss-optgroup-label", e.optgroupLabel), this.optgroupLabelText = t("ss-optgroup-label-text", e.optgroupLabelText), this.optgroupActions = t("ss-optgroup-actions", e.optgroupActions), this.optgroupSelectAll = t("ss-selectall", e.optgroupSelectAll), this.optgroupSelectAllBox = e.optgroupSelectAllBox || "M15,15 L85,15 L85,85 L15,85 Z", this.optgroupSelectAllCheck = e.optgroupSelectAllCheck || "M25,50 L42,68 L75,32", this.optgroupClosable = t("ss-closable", e.optgroupClosable), this.option = t("ss-option", e.option), this.optionDelete = e.optionDelete || "M10,10 L90,90 M10,90 L90,10", this.highlighted = t("ss-highlighted", e.highlighted), this.modalOverlay = t("ss-modal-overlay", e.modalOverlay), this.modalDialog = t("ss-modal-dialog", e.modalDialog), this.modalTitle = t("ss-modal-title", e.modalTitle), this.modalClose = t("ss-modal-close", e.modalClose), this.modalContent = t("ss-modal-content", e.modalContent), this.mainOpen = t("ss-open", e.mainOpen), this.close = t("ss-close", e.close), this.selected = t("ss-selected", e.selected), this.error = t("ss-error", e.error), this.disabled = t("ss-disabled", e.disabled), this.hide = t("ss-hide", e.hide);
 	}
 	getFirst(e) {
 		return this[e].split(" ")[0];
@@ -146,10 +146,13 @@ var _ = class {
 	maxValuesShown;
 	maxValuesMessage;
 	addableText;
+	selectAll;
+	selectAllText;
+	unselectAllText;
 	modal;
 	modalTitle;
 	constructor(e) {
-		e ||= {}, this.id = "ss-" + x(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 && e.disabled, this.alwaysOpen = e.alwaysOpen !== void 0 && e.alwaysOpen, this.showSearch = e.showSearch === void 0 || e.showSearch, this.focusSearch = e.focusSearch === void 0 || e.focusSearch, this.keepSearch = e.keepSearch !== void 0 && e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight !== void 0 && e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 || e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect !== void 0 && e.allowDeselect, this.hideSelected = e.hideSelected !== void 0 && e.hideSelected, this.multiString = e.multiString !== void 0 && e.multiString, this.keepOrder = e.keepOrder !== void 0 && e.keepOrder, this.showOptionTooltips = e.showOptionTooltips !== void 0 && e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
+		e ||= {}, this.id = "ss-" + x(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 && e.disabled, this.alwaysOpen = e.alwaysOpen !== void 0 && e.alwaysOpen, this.showSearch = e.showSearch === void 0 || e.showSearch, this.focusSearch = e.focusSearch === void 0 || e.focusSearch, this.keepSearch = e.keepSearch !== void 0 && e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight !== void 0 && e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 || e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect !== void 0 && e.allowDeselect, this.hideSelected = e.hideSelected !== void 0 && e.hideSelected, this.multiString = e.multiString !== void 0 && e.multiString, this.keepOrder = e.keepOrder !== void 0 && e.keepOrder, this.showOptionTooltips = e.showOptionTooltips !== void 0 && e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.selectAll = e.selectAll !== void 0 && e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.unselectAllText = e.unselectAllText || "Unselect All", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
 	}
 };
 //#endregion
@@ -982,13 +985,13 @@ var P = class {
 		let r = {
 			main: e,
 			input: t
-		};
-		this.settings.showSearch || (this.addClasses(e, this.classes.hide), t.readOnly = !0), t.type = "search", t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true");
-		let i = C(() => {
+		}, i = this.settings.selectAll && this.settings.isMultiple;
+		this.settings.showSearch || (t.readOnly = !0, i ? this.addClasses(t, this.classes.hide) : this.addClasses(e, this.classes.hide)), t.type = "search", t.id = `${this.settings.id}-search`, t.placeholder = this.settings.searchPlaceholder, t.tabIndex = -1, t.setAttribute("aria-label", this.settings.searchPlaceholder), t.setAttribute("aria-autocomplete", "list"), t.setAttribute("autocapitalize", "off"), t.setAttribute("autocomplete", "off"), t.setAttribute("autocorrect", "off"), t.setAttribute("aria-hidden", "true");
+		let a = C(() => {
 			this.callbacks.search(t.value);
 		}, 100);
 		if (t.oninput = (e) => {
-			e.target.value !== "" && this.clearValueChipHighlight(), i();
+			e.target.value !== "" && this.clearValueChipHighlight(), a();
 		}, t.onkeydown = (e) => {
 			switch (e.key) {
 				case "ArrowUp":
@@ -1004,7 +1007,11 @@ var P = class {
 					return r ? (r.click(), !1) : !this.callbacks.addable || (n.click(), !1);
 			}
 			return e.key.length === 1 && this.clearValueChipHighlight(), !0;
-		}, e.appendChild(t), this.callbacks.addable) {
+		}, e.appendChild(t), i) {
+			let t = this.createSelectAllControl(() => this.toggleGlobalSelectAll());
+			e.appendChild(t), r.selectAll = t;
+		}
+		if (this.callbacks.addable) {
 			this.addClasses(n, this.classes.addable);
 			let t = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 			t.setAttribute("viewBox", "0 0 100 100");
@@ -1132,35 +1139,24 @@ var P = class {
 				this.addClasses(i, this.classes.optgroupLabelText), i.textContent = n.label, r.appendChild(i);
 				let a = document.createElement("div");
 				if (this.addClasses(a, this.classes.optgroupActions), r.appendChild(a), this.settings.isMultiple && n.selectAll) {
-					let e = document.createElement("div");
-					this.addClasses(e, this.classes.optgroupSelectAll);
-					let t = this.isOptgroupAllSelected(n.options);
-					t && this.addClasses(e, this.classes.selected);
-					let r = document.createElement("span");
-					r.textContent = this.optgroupSelectAllLabel(t), e.appendChild(r);
-					let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-					i.setAttribute("viewBox", "0 0 100 100"), e.appendChild(i);
-					let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
-					o.setAttribute("d", this.classes.optgroupSelectAllBox), i.appendChild(o);
-					let s = document.createElementNS("http://www.w3.org/2000/svg", "path");
-					s.setAttribute("d", this.classes.optgroupSelectAllCheck), i.appendChild(s), e.addEventListener("click", (e) => {
-						e.preventDefault(), e.stopPropagation();
-						let t = this.store.getSelected();
-						if (this.isOptgroupAllSelected(n.options, new Set(t))) {
-							let e = t.filter((e) => {
+					let e = this.createSelectAllControl(() => {
+						let e = this.store.getSelected();
+						if (this.isOptgroupAllSelected(n.options, new Set(e))) {
+							let t = e.filter((e) => {
 								for (let t of n.options) if (e === t.id) return !1;
 								return !0;
 							});
-							this.callbacks.setSelected(e, !0);
+							this.callbacks.setSelected(t, !0);
 							return;
 						}
 						{
-							let e = n.options.map((e) => e.id).filter((e) => e !== void 0), r = t.concat(e);
+							let t = n.options.map((e) => e.id).filter((e) => e !== void 0), r = e.concat(t);
 							for (let e of n.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new I(e));
 							this.callbacks.setSelected(r, !0);
 							return;
 						}
-					}), a.appendChild(e);
+					}, this.isOptgroupAllSelected(n.options));
+					a.appendChild(e);
 				}
 				if (n.closable !== "off") {
 					let t = document.createElement("div");
@@ -1177,7 +1173,7 @@ var P = class {
 			}
 			n instanceof I && t.appendChild(this.option(n));
 		}
-		this.content.list.appendChild(t), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length)));
+		this.content.list.appendChild(t), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length))), this.updateGlobalSelectAllState();
 	}
 	canFilterOptionsInPlace() {
 		return this.optionsListIsFullData ? this.content.list.querySelector("." + this.classes.getFirst("option")) !== null : !1;
@@ -1198,7 +1194,7 @@ var P = class {
 			let o = a.placeholder || !a.display || a.selected && this.settings.hideSelected, s = t(a, n);
 			o || !s ? (this.addClasses(e, this.classes.hide), this.removeClasses(e, this.classes.highlighted)) : (this.removeClasses(e, this.classes.hide), this.setOptionElementContent(e, a, n), r.push(a)), a.selected ? (this.addClasses(e, this.classes.selected), e.setAttribute("aria-selected", "true")) : (this.removeClasses(e, this.classes.selected), e.setAttribute("aria-selected", "false"));
 		}
-		this.lastRenderedOptions = r, this.updateOptgroupVisibilityAfterSearch(n), r.length === 0 ? this.updateSearchResultsMessage(0, n) : (this.removeListSearchMessage(), this.announce(this.settings.resultsText.replace("{count}", String(r.length)))), this.updateOptgroupSelectAllStates();
+		this.lastRenderedOptions = r, this.updateOptgroupVisibilityAfterSearch(n), r.length === 0 ? this.updateSearchResultsMessage(0, n) : (this.removeListSearchMessage(), this.announce(this.settings.resultsText.replace("{count}", String(r.length)))), this.updateOptgroupSelectAllStates(), this.updateGlobalSelectAllState();
 	}
 	setOptionsListFullData(e) {
 		let t = this.store.getDataOptions(!1), n = e.map((e) => e instanceof I ? [e] : e.options.map((e) => new I(e))).flat();
@@ -1270,7 +1266,48 @@ var P = class {
 			let a = e.has(t);
 			a ? (this.addClasses(r, this.classes.selected), r.setAttribute("aria-selected", "true"), n = r) : (this.removeClasses(r, this.classes.selected), r.setAttribute("aria-selected", "false")), this.settings.hideSelected && (a ? this.addClasses(r, this.classes.hide) : (this.removeClasses(r, this.classes.hide), i.display || this.addClasses(r, this.classes.hide)));
 		}
-		!this.settings.isMultiple && n ? this.main.main.setAttribute("aria-activedescendant", n.id) : !this.settings.isMultiple && e.size === 0 && this.main.main.removeAttribute("aria-activedescendant"), this.updateOptgroupSelectAllStates();
+		!this.settings.isMultiple && n ? this.main.main.setAttribute("aria-activedescendant", n.id) : !this.settings.isMultiple && e.size === 0 && this.main.main.removeAttribute("aria-activedescendant"), this.updateOptgroupSelectAllStates(), this.updateGlobalSelectAllState();
+	}
+	createSelectAllControl(e, t = !1) {
+		let n = document.createElement("div");
+		this.addClasses(n, this.classes.optgroupSelectAll), n.setAttribute("role", "checkbox"), n.setAttribute("aria-checked", t ? "true" : "false"), n.setAttribute("aria-label", this.selectAllLabel(t)), n.tabIndex = -1, t && this.addClasses(n, this.classes.selected);
+		let r = document.createElement("span");
+		r.textContent = this.selectAllLabel(t), n.appendChild(r);
+		let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		i.setAttribute("viewBox", "0 0 100 100"), i.setAttribute("aria-hidden", "true"), n.appendChild(i);
+		let a = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		a.setAttribute("d", this.classes.optgroupSelectAllBox), i.appendChild(a);
+		let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		return o.setAttribute("d", this.classes.optgroupSelectAllCheck), i.appendChild(o), n.addEventListener("click", (t) => {
+			t.preventDefault(), t.stopPropagation(), e();
+		}), n;
+	}
+	getSelectableOptions() {
+		return this.store.getDataOptions(!1).filter((e) => !e.disabled && !e.placeholder && e.display);
+	}
+	isGlobalAllSelected(e) {
+		let t = this.getSelectableOptions();
+		if (t.length === 0) return !1;
+		let n = e || new Set(this.store.getSelected());
+		for (let e of t) if (!n.has(e.id)) return !1;
+		return !0;
+	}
+	toggleGlobalSelectAll() {
+		let e = this.getSelectableOptions(), t = new Set(this.store.getSelected());
+		if (this.isGlobalAllSelected(t)) {
+			let t = new Set(e.map((e) => e.id)), n = this.store.getSelected().filter((e) => !t.has(e));
+			this.callbacks.setSelected(n, !0);
+			return;
+		}
+		this.callbacks.setSelected(e.map((e) => e.id), !0);
+	}
+	updateGlobalSelectAllState() {
+		let e = this.content.search.selectAll;
+		if (!e || !this.settings.isMultiple || !this.settings.selectAll) return;
+		let t = this.isGlobalAllSelected();
+		t ? this.addClasses(e, this.classes.selected) : this.removeClasses(e, this.classes.selected), e.setAttribute("aria-checked", t ? "true" : "false"), e.setAttribute("aria-label", this.selectAllLabel(t));
+		let n = e.querySelector("span");
+		n && (n.textContent = this.selectAllLabel(t));
 	}
 	updateOptgroupSelectAllStates() {
 		if (!this.settings.isMultiple) return;
@@ -1286,13 +1323,13 @@ var P = class {
 					break;
 				}
 			}
-			i ? this.addClasses(t, this.classes.selected) : this.removeClasses(t, this.classes.selected);
+			i ? this.addClasses(t, this.classes.selected) : this.removeClasses(t, this.classes.selected), t.setAttribute("aria-checked", i ? "true" : "false"), t.setAttribute("aria-label", this.selectAllLabel(i));
 			let a = t.querySelector("span");
-			a && (a.textContent = this.optgroupSelectAllLabel(i));
+			a && (a.textContent = this.selectAllLabel(i));
 		}
 	}
-	optgroupSelectAllLabel(e) {
-		return e ? "Unselect All" : "Select All";
+	selectAllLabel(e) {
+		return e ? this.settings.unselectAllText : this.settings.selectAllText;
 	}
 	isOptgroupAllSelected(e, t) {
 		if (e.length === 0) return !1;
@@ -1866,7 +1903,7 @@ var W = class {
 			e.events && e.events.error && e.events.error(/* @__PURE__ */ Error("Element isnt of type select"));
 			return;
 		}
-		this.selectEl.dataset.ssid && this.destroy(), this.settings = new _(e.settings), this.cssClasses = new s(e.cssClasses);
+		this.selectEl.dataset.ssid && this.destroy(), this.settings = new _(e.settings), e.settings?.selectAll === void 0 && this.selectEl.dataset.selectall === "true" && (this.settings.selectAll = !0), this.cssClasses = new s(e.cssClasses);
 		let t = [
 			"beforeOpen",
 			"afterOpen",

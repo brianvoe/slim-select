@@ -39,6 +39,7 @@ export interface Content {
 export interface Search {
     main: HTMLDivElement;
     input: HTMLInputElement;
+    selectAll?: HTMLDivElement;
     addable?: {
         main: HTMLDivElement;
         svg: SVGSVGElement;
@@ -149,8 +150,13 @@ export default class Render {
     canUpdateOptionSelectionInPlace(): boolean;
     /** Sync selected/hidden state on existing option nodes without rebuilding the list. */
     updateOptionSelection(): void;
+    private createSelectAllControl;
+    private getSelectableOptions;
+    private isGlobalAllSelected;
+    private toggleGlobalSelectAll;
+    private updateGlobalSelectAllState;
     private updateOptgroupSelectAllStates;
-    private optgroupSelectAllLabel;
+    private selectAllLabel;
     private isOptgroupAllSelected;
     option(option: Option): HTMLDivElement;
     destroy(): void;
