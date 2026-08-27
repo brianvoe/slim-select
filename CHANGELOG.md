@@ -5,6 +5,20 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0]
+
+### Added
+
+- Global multi-select `settings.selectAll` — places a Select All checkbox in the search row; also enabled with
+  `data-selectall="true"` on the `<select>` ([#707](https://github.com/brianvoe/slim-select/issues/707))
+- `selectAllText` and `unselectAllText` settings to customize Select All / Unselect All labels (global and optgroup)
+- Global Select All stays in the search row when `showSearch` is `false`
+
+### Changed
+
+- Select All checkbox restyled with shared CSS variables (`--ss-primary-color`, `--ss-border-color`) and the existing
+  `ss-valueIn` animation for a consistent look across search and optgroup controls
+
 ## [4.1.0]
 
 ### Added
