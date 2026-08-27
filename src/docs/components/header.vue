@@ -294,6 +294,15 @@ export default defineComponent({
       display: none;
     }
 
+    // SlimSelect hover/selected defaults to --ss-bg-color (dark); keep text light
+    .ss-option {
+      &:hover:not(.ss-disabled),
+      &.ss-highlighted,
+      &:not(.ss-disabled).ss-selected {
+        color: var(--on-dark);
+      }
+    }
+
     .nav-slim-content {
       position: absolute;
       top: calc(100% + 6px);
