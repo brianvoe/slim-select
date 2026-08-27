@@ -850,12 +850,58 @@ describe('render module', () => {
   })
 
   describe('searchDiv', () => {
+    test('search input has a unique id for autofill heuristics', () => {
+      const search = render.searchDiv()
+
+      expect(search.input.id).toBe(`${render.settings.id}-search`)
+    })
+
     test('search is hidden when showSearch setting is false', () => {
       render.settings.showSearch = false
 
       const search = render.searchDiv()
 
       expect(search.main.classList.contains(render.classes.hide)).toBe(true)
+    })
+
+    test('global select all shows in ss-search when showSearch is true', () => {
+      const settings = new Settings({ selectAll: true, showSearch: true, modal: 'off' })
+      settings.isMultiple = true
+      const selectAllRender = new Render(settings, new CssClasses(), new Store('multiple', [{ text: 'A', value: 'a' }]), {
+        open: openMock as () => void,
+        close: closeMock as (info?: CloseInfo) => void,
+        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+        addOption: addOptionMock as (option: Option) => void,
+        search: searchMock as (search: string) => void
+      })
+
+      const search = selectAllRender.content.search
+      expect(search.main.classList.contains(selectAllRender.classes.getFirst('search'))).toBe(true)
+      expect(search.main.classList.contains(selectAllRender.classes.hide)).toBe(false)
+      expect(search.selectAll).toBeTruthy()
+      expect(search.main.contains(search.selectAll as Node)).toBe(true)
+      expect(search.selectAll?.classList.contains(selectAllRender.classes.getFirst('optgroupSelectAll'))).toBe(true)
+      expect(search.input.classList.contains(selectAllRender.classes.hide)).toBe(false)
+    })
+
+    test('global select all shows in ss-search when showSearch is false', () => {
+      const settings = new Settings({ selectAll: true, showSearch: false, modal: 'off' })
+      settings.isMultiple = true
+      const selectAllRender = new Render(settings, new CssClasses(), new Store('multiple', [{ text: 'A', value: 'a' }]), {
+        open: openMock as () => void,
+        close: closeMock as (info?: CloseInfo) => void,
+        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+        addOption: addOptionMock as (option: Option) => void,
+        search: searchMock as (search: string) => void
+      })
+
+      const search = selectAllRender.content.search
+      expect(search.main.classList.contains(selectAllRender.classes.getFirst('search'))).toBe(true)
+      expect(search.main.classList.contains(selectAllRender.classes.hide)).toBe(false)
+      expect(search.selectAll).toBeTruthy()
+      expect(search.main.contains(search.selectAll as Node)).toBe(true)
+      expect(search.input.classList.contains(selectAllRender.classes.hide)).toBe(true)
+      expect(search.input.readOnly).toBe(true)
     })
 
     test('input is debounced', async () => {
@@ -1633,6 +1679,54 @@ describe('render module', () => {
       const selectAll = selectAllRender.content.list.querySelector(
         '.' + selectAllRender.classes.getFirst('optgroupSelectAll')
       ) as HTMLDivElement
+
+      selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      expect(setSelectedMock).toHaveBeenCalledWith([], true)
+    })
+  })
+
+  describe('global select all', () => {
+    const createGlobalSelectAllRender = (options: Partial<Option>[], settingsOverrides: Partial<Settings> = {}) => {
+      const settings = new Settings({ selectAll: true, modal: 'off', ...settingsOverrides })
+      settings.isMultiple = true
+      const store = new Store('multiple', options)
+      return new Render(settings, new CssClasses(), store, {
+        open: openMock as () => void,
+        close: closeMock as (info?: CloseInfo) => void,
+        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+        addOption: addOptionMock as (option: Option) => void,
+        search: searchMock as (search: string) => void
+      })
+    }
+
+    test('clicking Select All selects every selectable option', () => {
+      const selectAllRender = createGlobalSelectAllRender([
+        { text: 'A', value: 'a' },
+        { text: 'B', value: 'b' },
+        { text: 'C', value: 'c', disabled: true }
+      ])
+      selectAllRender.renderOptions(selectAllRender.store.getData())
+
+      const selectAll = selectAllRender.content.search.selectAll as HTMLDivElement
+      selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      const selectedIds = setSelectedMock.mock.calls[0][0] as string[]
+      expect(selectedIds).toHaveLength(2)
+      expect(selectAllRender.store.getOptionByID(selectedIds[0])?.value).toBe('a')
+      expect(selectAllRender.store.getOptionByID(selectedIds[1])?.value).toBe('b')
+    })
+
+    test('clicking Unselect All clears selectable options', () => {
+      const selectAllRender = createGlobalSelectAllRender([
+        { text: 'A', value: 'a', selected: true },
+        { text: 'B', value: 'b', selected: true }
+      ])
+      selectAllRender.renderOptions(selectAllRender.store.getData())
+
+      const selectAll = selectAllRender.content.search.selectAll as HTMLDivElement
+      expect(selectAll.classList.contains(selectAllRender.classes.getFirst('selected'))).toBe(true)
+      expect(selectAll.querySelector('span')?.textContent).toBe('Unselect All')
 
       selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 

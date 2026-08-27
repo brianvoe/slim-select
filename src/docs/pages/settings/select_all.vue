@@ -11,7 +11,24 @@ export default defineComponent({
   },
   mounted() {
     new SlimSelect({
-      select: this.$refs.selectAll as HTMLSelectElement
+      select: this.$refs.selectAllGlobal as HTMLSelectElement,
+      settings: {
+        selectAll: true
+      }
+    })
+
+    new SlimSelect({
+      select: this.$refs.selectAllNoSearch as HTMLSelectElement,
+      settings: {
+        selectAll: true,
+        showSearch: false,
+        selectAllText: 'Everything',
+        unselectAllText: 'Nothing'
+      }
+    })
+
+    new SlimSelect({
+      select: this.$refs.selectAllOptgroup as HTMLSelectElement
     })
   }
 })
@@ -21,35 +38,96 @@ export default defineComponent({
   <div id="selectAll" class="content">
     <h2 class="header">selectAll</h2>
     <p>
-      The selectAll setting adds a convenient "select all" option to optgroups, allowing users to quickly select all
-      options within a specific group with a single click. This is particularly useful for multi-select dropdowns with
-      categorized options.
+      The <code>selectAll</code> setting adds a convenient "Select All" control for multi-select dropdowns. Enable it
+      globally in settings (or with <code>data-selectall="true"</code> on the <code>&lt;select&gt;</code>) to place a
+      checkbox next to the search input, or per optgroup to select everything in that group.
     </p>
     <p>
-      When enabled, a select all option appears at the top of the optgroup. It shows
-      <strong>Select All</strong> until every option in the group is selected, then switches to
-      <strong>Unselect All</strong> to clear the group in one click.
+      The control shows <strong>Select All</strong> until every selectable option is selected, then switches to
+      <strong>Unselect All</strong>. Customize the labels with <code>selectAllText</code> and
+      <code>unselectAllText</code>.
     </p>
     <div class="alert info">
-      You can set <code>selectAll</code> by data or with the <code>data-selectall</code> attribute on an
-      <code>&lt;optgroup&gt;</code> element.
+      Global select all stays in the search row even when <code>showSearch</code> is <code>false</code>, so the control
+      remains available without growing the dropdown height.
     </div>
 
-    <select ref="selectAll" multiple>
-      <optgroup label="Label 1" data-selectall="true">
+    <h3>Global (settings)</h3>
+    <div class="row" style="padding: 0 0 var(--spacing-quarter) 0">
+      <select ref="selectAllGlobal" multiple>
         <option value="value1">Value 1</option>
         <option value="value2">Value 2</option>
         <option value="value3">Value 3</option>
-      </optgroup>
-      <optgroup label="Label 2">
         <option value="value4">Value 4</option>
-        <option value="value5">Value 5</option>
-        <option value="value6">Value 6</option>
-      </optgroup>
-    </select>
-    <br />
+      </select>
+    </div>
 
-    <h3>Via data</h3>
+    <HighlightStyle language="javascript">
+      <pre>
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            selectAll: true,
+            
+            // Optional
+            // selectAllText: 'Select All',
+            // unselectAllText: 'Unselect All',
+          },
+        })
+      </pre>
+    </HighlightStyle>
+    <HighlightStyle language="html">
+      <pre>
+        &lt;select multiple data-selectall="true"&gt;
+          &lt;option value="value1"&gt;Value 1&lt;/option&gt;
+          &lt;option value="value2"&gt;Value 2&lt;/option&gt;
+          &lt;option value="value3"&gt;Value 3&lt;/option&gt;
+        &lt;/select&gt;
+      </pre>
+    </HighlightStyle>
+
+    <h3>With showSearch false</h3>
+    <div class="row" style="padding: 0 0 var(--spacing-quarter) 0">
+      <select ref="selectAllNoSearch" multiple>
+        <option value="value1">Value 1</option>
+        <option value="value2">Value 2</option>
+        <option value="value3">Value 3</option>
+        <option value="value4">Value 4</option>
+      </select>
+    </div>
+
+    <HighlightStyle language="javascript">
+      <pre>
+        new SlimSelect({
+          select: '#selectElement',
+          settings: {
+            selectAll: true,
+            showSearch: false,
+          },
+        })
+      </pre>
+    </HighlightStyle>
+
+    <h3>Per optgroup</h3>
+    <p>
+      Set <code>selectAll</code> on data or use the <code>data-selectall</code> attribute on an
+      <code>&lt;optgroup&gt;</code> element.
+    </p>
+    <div class="row" style="padding: 0 0 var(--spacing-quarter) 0">
+      <select ref="selectAllOptgroup" multiple>
+        <optgroup label="Label 1" data-selectall="true">
+          <option value="value1">Value 1</option>
+          <option value="value2">Value 2</option>
+          <option value="value3">Value 3</option>
+        </optgroup>
+        <optgroup label="Label 2">
+          <option value="value4">Value 4</option>
+          <option value="value5">Value 5</option>
+          <option value="value6">Value 6</option>
+        </optgroup>
+      </select>
+    </div>
+
     <HighlightStyle language="javascript">
       <pre>
         new SlimSelect({
@@ -77,12 +155,10 @@ export default defineComponent({
         })
       </pre>
     </HighlightStyle>
-    <br />
 
-    <h3>Via html</h3>
     <HighlightStyle language="html">
       <pre>
-        &lt;select ref="selectAll" multiple&gt;
+        &lt;select multiple&gt;
           &lt;optgroup label="Label 1" data-selectall="true"&gt;
             &lt;option value="value1"&gt;Value 1&lt;/option&gt;
             &lt;option value="value2"&gt;Value 2&lt;/option&gt;

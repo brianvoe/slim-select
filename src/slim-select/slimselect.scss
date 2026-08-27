@@ -424,6 +424,87 @@
         }
       }
     }
+
+    .ss-selectall {
+      margin-left: auto;
+    }
+  }
+
+  // Shared select-all checkbox (search row + optgroup actions)
+  .ss-selectall {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: var(--ss-spacing-s);
+    transition: opacity var(--ss-animation-timing);
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    span {
+      flex: 0 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: calc(100% * 0.65);
+      color: var(--ss-font-color);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    svg {
+      flex: 0 0 auto;
+      width: 15px;
+      height: 15px;
+      border-radius: calc(var(--ss-border-radius) * 0.5);
+
+      path {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition:
+          fill var(--ss-animation-timing),
+          stroke var(--ss-animation-timing);
+      }
+
+      // Checkbox box
+      path:first-child {
+        fill: var(--ss-bg-color);
+        stroke: var(--ss-border-color);
+        stroke-width: 8;
+      }
+
+      // Check mark — hidden until selected
+      path:last-child {
+        fill: none;
+        stroke: transparent;
+        stroke-width: 10;
+      }
+    }
+
+    &.ss-selected {
+      svg {
+        animation-name: ss-valueIn;
+        animation-duration: var(--ss-animation-timing);
+        animation-timing-function: ease-out;
+
+        @media (prefers-reduced-motion: reduce) {
+          animation: none;
+        }
+
+        path:first-child {
+          fill: var(--ss-primary-color);
+          stroke: var(--ss-primary-color);
+        }
+
+        path:last-child {
+          stroke: var(--ss-bg-color);
+        }
+      }
+    }
   }
 
   &.ss-dir-above .ss-search {
@@ -515,55 +596,6 @@
           align-items: center;
           justify-content: center;
           gap: var(--ss-spacing-m);
-
-          .ss-selectall {
-            flex: 0 0 auto;
-            display: flex;
-            flex-direction: row;
-            cursor: pointer;
-
-            &:hover {
-              opacity: 0.5;
-            }
-
-            &.ss-selected {
-              svg {
-                path {
-                  stroke: var(--ss-error-color);
-                }
-              }
-            }
-
-            span {
-              flex: 0 1 auto;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: calc(100% * 0.6);
-              text-align: center;
-              padding: 0 var(--ss-spacing-s) 0 0;
-            }
-
-            svg {
-              flex: 0 1 auto;
-              width: 13px;
-              height: 13px;
-
-              path {
-                fill: none;
-                stroke: var(--ss-success-color);
-                stroke-linecap: round;
-                stroke-linejoin: round;
-              }
-
-              &:first-child {
-                stroke-width: 5;
-              }
-              &:last-child {
-                stroke-width: 11;
-              }
-            }
-          }
 
           .ss-closable {
             flex: 0 1 auto;

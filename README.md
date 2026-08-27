@@ -190,6 +190,9 @@ new SlimSelect({
     maxValuesShown: 20,
     maxValuesMessage: '{number} selected',
     addableText: 'Press "Enter" to add {value}',
+    selectAll: false, // Multi-select: checkbox next to search
+    selectAllText: 'Select All',
+    unselectAllText: 'Unselect All',
     modal: 'mobile', // 'off' | 'on' | 'mobile'
     modalTitle: '' // Header above the option list in modal view
   }

@@ -55,6 +55,7 @@ export interface Content {
 export interface Search {
   main: HTMLDivElement
   input: HTMLInputElement
+  selectAll?: HTMLDivElement
   addable?: {
     main: HTMLDivElement
     svg: SVGSVGElement
@@ -1269,13 +1270,21 @@ export default class Render {
       input
     }
 
+    const showGlobalSelectAll = this.settings.selectAll && this.settings.isMultiple
+
     // We still want the search to be tabable but not shown
     if (!this.settings.showSearch) {
-      this.addClasses(main, this.classes.hide)
       input.readOnly = true
+      // Keep the search row visible when global select all needs a place to live
+      if (showGlobalSelectAll) {
+        this.addClasses(input, this.classes.hide)
+      } else {
+        this.addClasses(main, this.classes.hide)
+      }
     }
 
     input.type = 'search'
+    input.id = `${this.settings.id}-search`
     input.placeholder = this.settings.searchPlaceholder
     input.tabIndex = -1
     input.setAttribute('aria-label', this.settings.searchPlaceholder)
@@ -1369,6 +1378,13 @@ export default class Render {
     }
 
     main.appendChild(input)
+
+    // Global select all sits next to the search input for a condensed height
+    if (showGlobalSelectAll) {
+      const selectAll = this.createSelectAllControl(() => this.toggleGlobalSelectAll())
+      main.appendChild(selectAll)
+      searchReturn.selectAll = selectAll
+    }
 
     // If addable is enabled, add the addable div
     if (this.callbacks.addable) {
@@ -1701,43 +1717,8 @@ export default class Render {
 
         // If selectByGroup is true and isMultiple then add click event to label
         if (this.settings.isMultiple && d.selectAll) {
-          // Create new div to hold a checkbox svg
-          const selectAll = document.createElement('div')
-          this.addClasses(selectAll, this.classes.optgroupSelectAll)
-
-          // Check options and if all are selected, if so add class selected
-          const allSelected = this.isOptgroupAllSelected(d.options as Option[])
-
-          // Add class if all selected
-          if (allSelected) {
-            this.addClasses(selectAll, this.classes.selected)
-          }
-
-          // Add select all text span
-          const selectAllLabel = document.createElement('span')
-          selectAllLabel.textContent = this.optgroupSelectAllLabel(allSelected)
-          selectAll.appendChild(selectAllLabel)
-
-          // Create new svg for checkbox
-          const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-          selectAllSvg.setAttribute('viewBox', '0 0 100 100')
-          selectAll.appendChild(selectAllSvg)
-
-          // Create new path for box
-          const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-          selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox)
-          selectAllSvg.appendChild(selectAllBox)
-
-          // Create new path for check
-          const selectAllCheck = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-          selectAllCheck.setAttribute('d', this.classes.optgroupSelectAllCheck)
-          selectAllSvg.appendChild(selectAllCheck)
-
-          // Add click event listener to select all
-          selectAll.addEventListener('click', (e: MouseEvent) => {
-            e.preventDefault()
-            e.stopPropagation()
-
+          // Create select all control with shared checkbox markup
+          const selectAll = this.createSelectAllControl(() => {
             // Get the store current selected values
             const currentSelected = this.store.getSelected()
             const allSelectedNow = this.isOptgroupAllSelected(d.options as Option[], new Set(currentSelected))
@@ -1773,7 +1754,7 @@ export default class Render {
               this.callbacks.setSelected(newSelected, true)
               return
             }
-          })
+          }, this.isOptgroupAllSelected(d.options as Option[]))
 
           // Append select all to label
           optgroupActions.appendChild(selectAll)
@@ -1852,6 +1833,7 @@ export default class Render {
     this.content.list.appendChild(fragment)
     this.setOptionsListFullData(data)
     this.announce(this.settings.resultsText.replace('{count}', String(this.lastRenderedOptions.length)))
+    this.updateGlobalSelectAllState()
   }
 
   /** True when the list DOM contains every store option (local search can show/hide in place). */
@@ -1925,6 +1907,7 @@ export default class Render {
     }
 
     this.updateOptgroupSelectAllStates()
+    this.updateGlobalSelectAllState()
   }
 
   private setOptionsListFullData(data: (Option | Optgroup)[]): void {
@@ -2123,6 +2106,106 @@ export default class Render {
     }
 
     this.updateOptgroupSelectAllStates()
+    this.updateGlobalSelectAllState()
+  }
+
+  private createSelectAllControl(onClick: () => void, allSelected = false): HTMLDivElement {
+    const selectAll = document.createElement('div')
+    this.addClasses(selectAll, this.classes.optgroupSelectAll)
+    selectAll.setAttribute('role', 'checkbox')
+    selectAll.setAttribute('aria-checked', allSelected ? 'true' : 'false')
+    selectAll.setAttribute('aria-label', this.selectAllLabel(allSelected))
+    selectAll.tabIndex = -1
+
+    if (allSelected) {
+      this.addClasses(selectAll, this.classes.selected)
+    }
+
+    const selectAllLabel = document.createElement('span')
+    selectAllLabel.textContent = this.selectAllLabel(allSelected)
+    selectAll.appendChild(selectAllLabel)
+
+    const selectAllSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    selectAllSvg.setAttribute('viewBox', '0 0 100 100')
+    selectAllSvg.setAttribute('aria-hidden', 'true')
+    selectAll.appendChild(selectAllSvg)
+
+    const selectAllBox = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    selectAllBox.setAttribute('d', this.classes.optgroupSelectAllBox)
+    selectAllSvg.appendChild(selectAllBox)
+
+    const selectAllCheck = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    selectAllCheck.setAttribute('d', this.classes.optgroupSelectAllCheck)
+    selectAllSvg.appendChild(selectAllCheck)
+
+    selectAll.addEventListener('click', (e: MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      onClick()
+    })
+
+    return selectAll
+  }
+
+  private getSelectableOptions(): Option[] {
+    return this.store.getDataOptions(false).filter((option) => {
+      return !option.disabled && !option.placeholder && option.display
+    })
+  }
+
+  private isGlobalAllSelected(selectedIds?: Set<string>): boolean {
+    const options = this.getSelectableOptions()
+    if (options.length === 0) {
+      return false
+    }
+
+    const selected = selectedIds || new Set(this.store.getSelected())
+    for (const option of options) {
+      if (!selected.has(option.id)) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  private toggleGlobalSelectAll(): void {
+    const selectable = this.getSelectableOptions()
+    const selectedIds = new Set(this.store.getSelected())
+
+    if (this.isGlobalAllSelected(selectedIds)) {
+      const selectableIds = new Set(selectable.map((option) => option.id))
+      const newSelected = this.store.getSelected().filter((id) => !selectableIds.has(id))
+      this.callbacks.setSelected(newSelected, true)
+      return
+    }
+
+    this.callbacks.setSelected(
+      selectable.map((option) => option.id),
+      true
+    )
+  }
+
+  private updateGlobalSelectAllState(): void {
+    const selectAll = this.content.search.selectAll
+    if (!selectAll || !this.settings.isMultiple || !this.settings.selectAll) {
+      return
+    }
+
+    const allSelected = this.isGlobalAllSelected()
+    if (allSelected) {
+      this.addClasses(selectAll, this.classes.selected)
+    } else {
+      this.removeClasses(selectAll, this.classes.selected)
+    }
+
+    selectAll.setAttribute('aria-checked', allSelected ? 'true' : 'false')
+    selectAll.setAttribute('aria-label', this.selectAllLabel(allSelected))
+
+    const selectAllLabel = selectAll.querySelector('span')
+    if (selectAllLabel) {
+      selectAllLabel.textContent = this.selectAllLabel(allSelected)
+    }
   }
 
   private updateOptgroupSelectAllStates(): void {
@@ -2159,15 +2242,18 @@ export default class Render {
         this.removeClasses(selectAll, this.classes.selected)
       }
 
+      selectAll.setAttribute('aria-checked', allSelected ? 'true' : 'false')
+      selectAll.setAttribute('aria-label', this.selectAllLabel(allSelected))
+
       const selectAllLabel = selectAll.querySelector('span')
       if (selectAllLabel) {
-        selectAllLabel.textContent = this.optgroupSelectAllLabel(allSelected)
+        selectAllLabel.textContent = this.selectAllLabel(allSelected)
       }
     }
   }
 
-  private optgroupSelectAllLabel(allSelected: boolean): string {
-    return allSelected ? 'Unselect All' : 'Select All'
+  private selectAllLabel(allSelected: boolean): string {
+    return allSelected ? this.settings.unselectAllText : this.settings.selectAllText
   }
 
   private isOptgroupAllSelected(options: Option[], selectedIds?: Set<string>): boolean {

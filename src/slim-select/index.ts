@@ -110,6 +110,14 @@ export default class SlimSelect {
     // Set settings
     this.settings = new Settings(config.settings)
 
+    // Allow data-selectall on the <select> when settings.selectAll is unset
+    if (
+      config.settings?.selectAll === undefined &&
+      this.selectEl.dataset.selectall === 'true'
+    ) {
+      this.settings.selectAll = true
+    }
+
     // Set CSS classes
     this.cssClasses = new CssClasses(config.cssClasses)
 

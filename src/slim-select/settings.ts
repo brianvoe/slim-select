@@ -45,6 +45,9 @@ export default class Settings {
   public maxValuesShown: number
   public maxValuesMessage: string
   public addableText: string
+  public selectAll: boolean
+  public selectAllText: string
+  public unselectAllText: string
   public modal: ModalSetting
   public modalTitle: string
 
@@ -103,6 +106,9 @@ export default class Settings {
     this.maxValuesShown = settings.maxValuesShown || 20
     this.maxValuesMessage = settings.maxValuesMessage || '{number} selected'
     this.addableText = settings.addableText || 'Press "Enter" to add {value}'
+    this.selectAll = settings.selectAll !== undefined ? settings.selectAll : false
+    this.selectAllText = settings.selectAllText || 'Select All'
+    this.unselectAllText = settings.unselectAllText || 'Unselect All'
     this.modal = settings.modal || 'mobile'
     this.modalTitle = settings.modalTitle || ''
   }

@@ -101,6 +101,17 @@ describe('SlimSelect Module', () => {
 
       expect(slim.settings.disabled).toBe(true)
     })
+
+    test('data-selectall on select enables global selectAll', () => {
+      document.body.innerHTML = '<select id="test" multiple data-selectall="true"></select>'
+
+      const slim = new SlimSelect({
+        select: document.getElementById('test') as Element
+      })
+
+      expect(slim.settings.selectAll).toBe(true)
+      expect(slim.render.content.search.selectAll).toBeTruthy()
+    })
   })
 
   test('enable', () => {

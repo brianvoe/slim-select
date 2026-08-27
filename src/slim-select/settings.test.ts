@@ -42,6 +42,9 @@ const defaultSettings: { [key: string]: any } = {
   maxValuesShown: 20,
   maxValuesMessage: '{number} selected',
   contentWidth: '',
+  selectAll: false,
+  selectAllText: 'Select All',
+  unselectAllText: 'Unselect All',
   modal: 'mobile'
 }
 

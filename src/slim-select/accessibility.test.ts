@@ -155,6 +155,9 @@ describe('SlimSelect Accessibility', () => {
       const searchInput = document.querySelector('input[type="search"]')
       expect(searchInput).toBeTruthy()
 
+      // Unique id helps browsers with autofill heuristics
+      expect(searchInput?.id).toBe(`${slim.settings.id}-search`)
+
       // Should have autocomplete
       expect(searchInput?.getAttribute('aria-autocomplete')).toBe('list')
 

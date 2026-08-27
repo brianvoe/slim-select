@@ -115,9 +115,9 @@ export default class CssClasses {
     this.optgroupActions = join('ss-optgroup-actions', classes.optgroupActions)
     this.optgroupSelectAll = join('ss-selectall', classes.optgroupSelectAll)
     this.optgroupSelectAllBox =
-      classes.optgroupSelectAllBox || 'M60,10 L10,10 L10,90 L90,90 L90,50'
+      classes.optgroupSelectAllBox || 'M15,15 L85,15 L85,85 L15,85 Z'
     this.optgroupSelectAllCheck =
-      classes.optgroupSelectAllCheck || 'M30,45 L50,70 L90,10'
+      classes.optgroupSelectAllCheck || 'M25,50 L42,68 L75,32'
     this.optgroupClosable = join('ss-closable', classes.optgroupClosable)
     this.option = join('ss-option', classes.option)
     this.optionDelete = classes.optionDelete || 'M10,10 L90,90 M10,90 L90,10'
