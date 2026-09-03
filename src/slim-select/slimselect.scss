@@ -329,6 +329,8 @@
   &.ss-relative {
     position: relative;
     height: 100%;
+    // In-flow panels (alwaysOpen / contentLocation) must not overlay sticky headers
+    z-index: auto;
   }
 
   &.ss-fixed {

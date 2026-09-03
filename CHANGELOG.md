@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - Toggling native `<option hidden>` off after hiding now shows the option again ([#709](https://github.com/brianvoe/slim-select/issues/709))
+- Relative dropdown panels (`contentPosition: 'relative'`, including `alwaysOpen`) no longer overlay sticky page headers
 
 ## [4.2.1]
 
