@@ -316,6 +316,10 @@ export default class Select {
 
   // From passed in option pull pieces of usable information
   public getDataFromOption(option: HTMLOptionElement): Option {
+    // The hidden attribute is not guaranteed to set inline style.display.
+    // SlimSelect uses `display` to decide which options to show in the UI.
+    const isHidden = option.hidden || option.hasAttribute('hidden')
+
     return {
       id: option.id,
       value: option.value,
@@ -323,7 +327,7 @@ export default class Select {
       html: option.dataset && option.dataset.html ? option.dataset.html : '',
       defaultSelected: option.defaultSelected,
       selected: option.selected,
-      display: option.style.display !== 'none',
+      display: option.style.display !== 'none' && !isHidden,
       disabled: option.disabled,
       mandatory: option.dataset ? option.dataset.mandatory === 'true' : false,
       placeholder: option.dataset.placeholder === 'true',
@@ -585,6 +589,9 @@ export default class Select {
     }
     if (!info.display) {
       optionEl.style.display = 'none'
+      optionEl.hidden = true
+    } else {
+      optionEl.hidden = false
     }
     if (info.placeholder) {
       optionEl.setAttribute('data-placeholder', 'true')

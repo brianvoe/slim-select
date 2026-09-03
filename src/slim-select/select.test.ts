@@ -160,6 +160,23 @@ describe('select module', () => {
       expect(data[1].data).toEqual({ foo: 'bar' })
     })
 
+    test('option hidden attribute sets display false', () => {
+      document.body.innerHTML = `<select id="test">
+        <option id="hidden" value="1" hidden>Hidden</option>
+        <option id="visible" value="2">Visible</option>
+      </select>`
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      const data = select.getData() as Option[]
+
+      expect(data).toHaveLength(2)
+      expect(data[0].id).toBe('hidden')
+      expect(data[0].display).toBe(false)
+      expect(data[1].id).toBe('visible')
+      expect(data[1].display).toBe(true)
+    })
+
     test('get data from select optgroups', () => {
       document.body.innerHTML = `<select id="test">
         <optgroup label="test1">
@@ -327,6 +344,27 @@ describe('select module', () => {
     expect(selectElement.outerHTML).toBe(
       '<select id="test"><option id="1" value="1">One</option><option id="2" value="2">Two</option></select>'
     )
+  })
+
+  test('updateOptions preserves native hidden attribute', () => {
+    document.body.innerHTML = '<select id="test"></select>'
+
+    const selectElement = document.getElementById('test') as HTMLSelectElement
+    const select = new Select(selectElement)
+
+    const store = new Store('multiple', [
+      { id: '1', value: '1', text: 'One', selected: false, display: false },
+      { id: '2', value: '2', text: 'Two', selected: false }
+    ])
+
+    select.updateOptions(store.getData())
+
+    const hiddenOption = selectElement.querySelector(
+      'option[id="1"]'
+    ) as HTMLOptionElement
+    expect(hiddenOption).toBeTruthy()
+    expect(hiddenOption.hidden).toBe(true)
+    expect(hiddenOption.style.display).toBe('none')
   })
 
   test('updateOptions does not dispatch change when selection is unchanged', () => {
