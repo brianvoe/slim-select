@@ -1569,7 +1569,7 @@ var V = class {
 	observeCall(e) {
 		if (!this.listen) return;
 		let { classChanged: t, disabledChanged: n, optgroupOptionChanged: r, selectionChanged: i } = B(e, this.select), a = i;
-		if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), n && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), r && this.onOptionsChange) {
+		if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), n && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), r && this.clearLeftoverHiddenDisplay(e), r && this.onOptionsChange) {
 			if (this.isUpdating) {
 				if (this.select.options.length > 0) {
 					let e = this.getData();
@@ -1597,6 +1597,13 @@ var V = class {
 		}, n = e.childNodes;
 		for (let e of n) e.nodeName === "OPTION" && t.options.push(this.getDataFromOption(e));
 		return t;
+	}
+	clearLeftoverHiddenDisplay(e) {
+		for (let t of e) {
+			if (t.target.nodeName !== "OPTION" || t.attributeName !== "hidden") continue;
+			let e = t.target;
+			!e.hidden && e.style.display === "none" && (e.style.display = "");
+		}
 	}
 	getDataFromOption(e) {
 		let t = e.hidden || e.hasAttribute("hidden");
@@ -1702,7 +1709,7 @@ var V = class {
 	}
 	createOption(e) {
 		let t = document.createElement("option");
-		return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), e.display ? t.hidden = !1 : (t.style.display = "none", t.hidden = !0), e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((e) => {
+		return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), t.hidden = !e.display, e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((e) => {
 			t.classList.add(e);
 		}), e.data && typeof e.data == "object" && Object.keys(e.data).forEach((n) => {
 			t.setAttribute("data-" + M(n), e.data[n]);

@@ -24,6 +24,11 @@ export default class Select {
     private observeCall;
     getData(): (Option | Optgroup)[];
     getDataFromOptgroup(optgroup: HTMLOptGroupElement): Optgroup;
+    /**
+     * Clearing `hidden` must also drop leftover `style.display = none` from
+     * earlier rebuilds, or getDataFromOption still treats the option as hidden.
+     */
+    private clearLeftoverHiddenDisplay;
     getDataFromOption(option: HTMLOptionElement): Option;
     getSelectedOptions(): Option[];
     getSelectedValues(): string[];
