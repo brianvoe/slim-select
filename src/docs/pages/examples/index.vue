@@ -11,6 +11,7 @@ import Label from './label.vue'
 import Keyboard from './keyboard.vue'
 import SeparateValues from './separate_values.vue'
 import MenuExample from './menu.vue'
+import NativeChanges from './native_changes.vue'
 
 export default defineComponent({
   name: 'Usage',
@@ -22,7 +23,8 @@ export default defineComponent({
     Label,
     Keyboard,
     SeparateValues,
-    MenuExample
+    MenuExample,
+    NativeChanges
   }
 })
 </script>
@@ -34,6 +36,8 @@ export default defineComponent({
     <AdSlot ad-slot="1270131515" />
     <Keyboard />
     <SeparateValues />
+    <AdSlot ad-slot="1270131515" />
+    <NativeChanges />
     <FormReset />
     <AdSlot ad-slot="1270131515" />
     <Required />

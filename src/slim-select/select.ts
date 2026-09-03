@@ -1,9 +1,4 @@
-import {
-  copyOptionData,
-  kebabCase,
-  hasClassInTree,
-  selectedIdsEqual
-} from './helpers'
+import { copyOptionData, kebabCase, hasClassInTree, selectedIdsEqual } from './helpers'
 import { classifyMutations } from './mutations'
 import { Optgroup, Option } from './store'
 
@@ -118,11 +113,7 @@ export default class Select {
         capture: true,
         passive: false
       })
-      this.select.addEventListener(
-        'mousedown',
-        this.preventNativeSelectMousedown,
-        { capture: true, passive: false }
-      )
+      this.select.addEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true, passive: false })
       this.select.addEventListener('focus', this.preventNativeSelectFocus, {
         capture: true,
         passive: false
@@ -157,11 +148,7 @@ export default class Select {
       this.preventNativeSelect = null
     }
     if (this.preventNativeSelectMousedown) {
-      this.select.removeEventListener(
-        'mousedown',
-        this.preventNativeSelectMousedown,
-        { capture: true }
-      )
+      this.select.removeEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true })
       this.preventNativeSelectMousedown = null
     }
     if (this.preventNativeSelectFocus) {
@@ -239,6 +226,10 @@ export default class Select {
     }
 
     // If optgroup or option has changed then call the select change function
+    if (optgroupOptionChanged) {
+      this.clearLeftoverHiddenDisplay(mutations)
+    }
+
     if (optgroupOptionChanged && this.onOptionsChange) {
       // If we're currently updating, queue this change to process after update completes
       if (this.isUpdating) {
@@ -275,9 +266,7 @@ export default class Select {
     let data = []
 
     // Loop through nodes and get data
-    const nodes = this.select.childNodes as any as
-      | HTMLOptGroupElement[]
-      | HTMLOptionElement[]
+    const nodes = this.select.childNodes as any as HTMLOptGroupElement[] | HTMLOptionElement[]
     for (const n of nodes) {
       // Optgroup
       if (n.nodeName === 'OPTGROUP') {
@@ -297,9 +286,7 @@ export default class Select {
     let data = {
       id: optgroup.id,
       label: optgroup.label,
-      selectAll: optgroup.dataset
-        ? optgroup.dataset.selectall === 'true'
-        : false,
+      selectAll: optgroup.dataset ? optgroup.dataset.selectall === 'true' : false,
       closable: optgroup.dataset ? optgroup.dataset.closable : 'off',
       options: []
     } as Optgroup
@@ -312,6 +299,23 @@ export default class Select {
     }
 
     return data
+  }
+
+  /**
+   * Clearing `hidden` must also drop leftover `style.display = none` from
+   * earlier rebuilds, or getDataFromOption still treats the option as hidden.
+   */
+  private clearLeftoverHiddenDisplay(mutations: MutationRecord[]): void {
+    for (const mutation of mutations) {
+      if (mutation.target.nodeName !== 'OPTION' || mutation.attributeName !== 'hidden') {
+        continue
+      }
+
+      const option = mutation.target as HTMLOptionElement
+      if (!option.hidden && option.style.display === 'none') {
+        option.style.display = ''
+      }
+    }
   }
 
   // From passed in option pull pieces of usable information
@@ -341,10 +345,7 @@ export default class Select {
     let options = []
 
     // Loop through options and set selected
-    const opts = this.select.childNodes as any as (
-      | HTMLOptGroupElement
-      | HTMLOptionElement
-    )[]
+    const opts = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
     for (const o of opts) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroupOptions = o.childNodes as any as HTMLOptionElement[]
@@ -379,9 +380,7 @@ export default class Select {
       return true
     }
 
-    const nativeValues = new Set(
-      Array.from(this.select.options).map((option) => option.value)
-    )
+    const nativeValues = new Set(Array.from(this.select.options).map((option) => option.value))
     return values.every((value) => nativeValues.has(value))
   }
 
@@ -390,15 +389,11 @@ export default class Select {
     this.changeListen(false)
 
     // Loop through options and set selected
-    const options = this.select.childNodes as any as (
-      | HTMLOptGroupElement
-      | HTMLOptionElement
-    )[]
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
     for (const o of options) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroup = o as HTMLOptGroupElement
-        const optgroupOptions =
-          optgroup.childNodes as any as HTMLOptionElement[]
+        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
         for (const oo of optgroupOptions) {
           if (oo.nodeName === 'OPTION') {
             const option = oo as HTMLOptionElement
@@ -435,15 +430,11 @@ export default class Select {
     this.changeListen(false)
 
     // Loop through options and set selected
-    const options = this.select.childNodes as any as (
-      | HTMLOptGroupElement
-      | HTMLOptionElement
-    )[]
+    const options = this.select.childNodes as any as (HTMLOptGroupElement | HTMLOptionElement)[]
     for (const o of options) {
       if (o.nodeName === 'OPTGROUP') {
         const optgroup = o as HTMLOptGroupElement
-        const optgroupOptions =
-          optgroup.childNodes as any as HTMLOptionElement[]
+        const optgroupOptions = optgroup.childNodes as any as HTMLOptionElement[]
         for (const oo of optgroupOptions) {
           if (oo.nodeName === 'OPTION') {
             const option = oo as HTMLOptionElement
@@ -588,7 +579,6 @@ export default class Select {
       optionEl.disabled = true
     }
     if (!info.display) {
-      optionEl.style.display = 'none'
       optionEl.hidden = true
     } else {
       optionEl.hidden = false
@@ -620,9 +610,7 @@ export default class Select {
     // Find labels that point to this select via 'for' attribute
     const selectId = this.select.id
     if (selectId) {
-      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(
-        `label[for="${selectId}"]`
-      )
+      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(`label[for="${selectId}"]`)
       labelsByFor.forEach((label) => labels.push(label))
     }
 
@@ -650,10 +638,7 @@ export default class Select {
         const target = e.target as HTMLElement
 
         // Check if click is on SlimSelect UI elements (main div or content)
-        const isSlimSelectElement = hasClassInTree(
-          target,
-          this.select.dataset.id!
-        )
+        const isSlimSelectElement = hasClassInTree(target, this.select.dataset.id!)
 
         // Prevent default label behavior (focusing the select)
         // This needs to happen for all clicks on the label or its children
@@ -684,9 +669,7 @@ export default class Select {
     // Find labels that point to this select via 'for' attribute
     const selectId = this.select.id
     if (selectId) {
-      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(
-        `label[for="${selectId}"]`
-      )
+      const labelsByFor = document.querySelectorAll<HTMLLabelElement>(`label[for="${selectId}"]`)
       labelsByFor.forEach((label) => labels.push(label))
     }
 
@@ -726,11 +709,7 @@ export default class Select {
       this.preventNativeSelect = null
     }
     if (this.preventNativeSelectMousedown) {
-      this.select.removeEventListener(
-        'mousedown',
-        this.preventNativeSelectMousedown,
-        { capture: true }
-      )
+      this.select.removeEventListener('mousedown', this.preventNativeSelectMousedown, { capture: true })
       this.preventNativeSelectMousedown = null
     }
     if (this.preventNativeSelectFocus) {

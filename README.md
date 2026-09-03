@@ -139,7 +139,7 @@ const option = {
   value: 'value', // Optional — defaults to text
   html: '<b>Html</b>', // Optional — used for display when set
   selected: false,
-  display: true,
+  display: true, // Optional — false if native option is hidden or display:none
   disabled: false,
   mandatory: false,
   placeholder: false,

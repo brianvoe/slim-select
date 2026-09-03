@@ -154,9 +154,7 @@ describe('select module', () => {
 
       expect(data[0].data).toEqual({ placeholder: 'true', custom: 'value' })
       expect(String(data[0].data)).not.toBe('[object DOMStringMap]')
-      expect(JSON.stringify(data[0].data)).toBe(
-        '{"placeholder":"true","custom":"value"}'
-      )
+      expect(JSON.stringify(data[0].data)).toBe('{"placeholder":"true","custom":"value"}')
       expect(data[1].data).toEqual({ foo: 'bar' })
     })
 
@@ -175,6 +173,29 @@ describe('select module', () => {
       expect(data[0].display).toBe(false)
       expect(data[1].id).toBe('visible')
       expect(data[1].display).toBe(true)
+    })
+
+    test('removing hidden restores display when leftover style.display is none', async () => {
+      document.body.innerHTML = `<select id="test">
+        <option id="option2" value="2">Two</option>
+      </select>`
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+      select.onOptionsChange = vi.fn()
+
+      const option = document.getElementById('option2') as HTMLOptionElement
+      option.hidden = true
+      option.style.display = 'none'
+
+      await new Promise((r) => setTimeout(r, 50))
+      expect(select.getDataFromOption(option).display).toBe(false)
+
+      option.hidden = false
+
+      await new Promise((r) => setTimeout(r, 50))
+      expect(option.style.display).not.toBe('none')
+      expect(select.getDataFromOption(option).display).toBe(true)
     })
 
     test('get data from select optgroups', () => {
@@ -222,32 +243,19 @@ describe('select module', () => {
   describe('setSelected', () => {
     test('single option gets selected correctly', () => {
       // get id of the first option in the first optgroup
-      const id =
-        select.select.querySelector<HTMLOptionElement>('optgroup option')?.id
+      const id = select.select.querySelector<HTMLOptionElement>('optgroup option')?.id
       expect(id).toBe('111')
 
       select.setSelected([id as string])
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="1"]')
-          ?.selected
-      ).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="1"]')?.selected).toBe(true)
     })
 
     test('mix of options get selected correctly', () => {
       select.setSelected(['111', '222', '333'])
 
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="1"]')
-          ?.selected
-      ).toBe(true)
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="2"]')
-          ?.selected
-      ).toBe(true)
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="3"]')
-          ?.selected
-      ).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="1"]')?.selected).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="2"]')?.selected).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="3"]')?.selected).toBe(true)
     })
   })
 
@@ -255,36 +263,21 @@ describe('select module', () => {
     test('single value get selected correctly', () => {
       select.setSelectedByValue(['6'])
 
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="6"]')
-          ?.selected
-      ).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="6"]')?.selected).toBe(true)
     })
 
     test('opt group value gets selected correctly', () => {
       select.setSelectedByValue(['4'])
 
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="4"]')
-          ?.selected
-      ).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="4"]')?.selected).toBe(true)
     })
 
     test('mix of options get selected correctly', () => {
       select.setSelectedByValue(['2', '3', '6'])
 
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="2"]')
-          ?.selected
-      ).toBe(true)
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="3"]')
-          ?.selected
-      ).toBe(true)
-      expect(
-        select.select.querySelector<HTMLOptionElement>('option[value="6"]')
-          ?.selected
-      ).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="2"]')?.selected).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="3"]')?.selected).toBe(true)
+      expect(select.select.querySelector<HTMLOptionElement>('option[value="6"]')?.selected).toBe(true)
     })
   })
 
@@ -359,12 +352,10 @@ describe('select module', () => {
 
     select.updateOptions(store.getData())
 
-    const hiddenOption = selectElement.querySelector(
-      'option[id="1"]'
-    ) as HTMLOptionElement
+    const hiddenOption = selectElement.querySelector('option[id="1"]') as HTMLOptionElement
     expect(hiddenOption).toBeTruthy()
     expect(hiddenOption.hidden).toBe(true)
-    expect(hiddenOption.style.display).toBe('none')
+    expect(hiddenOption.style.display).not.toBe('none')
   })
 
   test('updateOptions does not dispatch change when selection is unchanged', () => {
@@ -493,8 +484,7 @@ describe('select module', () => {
       const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
-      selectElement.innerHTML =
-        '<option value="1">One</option><option value="2">Two</option>'
+      selectElement.innerHTML = '<option value="1">One</option><option value="2">Two</option>'
 
       await new Promise((r) => setTimeout(r, 50))
       expect(onOptionsMock).toHaveBeenCalled()
@@ -525,11 +515,8 @@ describe('select module', () => {
       const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
-      const selectOptgroup = document.getElementById(
-        'test_optgroup'
-      ) as HTMLOptGroupElement
-      selectOptgroup.innerHTML =
-        '<option value="8">Eight</option><option value="9">Nine</option>'
+      const selectOptgroup = document.getElementById('test_optgroup') as HTMLOptGroupElement
+      selectOptgroup.innerHTML = '<option value="8">Eight</option><option value="9">Nine</option>'
 
       await new Promise((r) => setTimeout(r, 50))
       expect(onOptionsMock).toHaveBeenCalled()
@@ -591,9 +578,7 @@ describe('select module', () => {
       const onOptionsMock = vi.fn()
       select.onOptionsChange = onOptionsMock
 
-      let selectOption = document.getElementById(
-        'test_option'
-      ) as HTMLOptionElement
+      let selectOption = document.getElementById('test_option') as HTMLOptionElement
       selectOption.text = 'New One'
 
       await new Promise((r) => setTimeout(r, 50))
@@ -614,9 +599,7 @@ describe('select module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const select = new Select(selectElement)
       select.hideUI()
 
@@ -625,15 +608,11 @@ describe('select module', () => {
 
       select.setupLabelHandlers()
 
-      const label = document.querySelector(
-        'label[for="test-select"]'
-      ) as HTMLLabelElement
+      const label = document.querySelector('label[for="test-select"]') as HTMLLabelElement
       expect(label).toBeTruthy()
 
       // Click the label
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       // Wait for setTimeout in the label handler
       await new Promise((r) => setTimeout(r, 10))
@@ -653,9 +632,7 @@ describe('select module', () => {
         </label>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const select = new Select(selectElement)
       select.hideUI()
 
@@ -668,9 +645,7 @@ describe('select module', () => {
       expect(label.tagName).toBe('LABEL')
 
       // Click the label
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       // Wait for setTimeout in the label handler
       await new Promise((r) => setTimeout(r, 10))
@@ -688,9 +663,7 @@ describe('select module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const select = new Select(selectElement)
       select.hideUI()
 
@@ -703,16 +676,12 @@ describe('select module', () => {
       expect(labels).toHaveLength(2)
 
       // Click first label
-      labels[0].dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      labels[0].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(onLabelClickMock).toHaveBeenCalledTimes(1)
 
       // Click second label
-      labels[1].dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      labels[1].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(onLabelClickMock).toHaveBeenCalledTimes(2)
     })
@@ -725,9 +694,7 @@ describe('select module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const select = new Select(selectElement)
       select.hideUI()
 
@@ -737,9 +704,7 @@ describe('select module', () => {
       select.setupLabelHandlers()
       select.removeLabelHandlers()
 
-      const label = document.querySelector(
-        'label[for="test-select"]'
-      ) as HTMLLabelElement
+      const label = document.querySelector('label[for="test-select"]') as HTMLLabelElement
       label.dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
       // Should not have been called after removal
@@ -747,8 +712,7 @@ describe('select module', () => {
     })
 
     test('hideUI prevents native select from opening on click', () => {
-      document.body.innerHTML =
-        '<select id="test"><option value="1">One</option></select>'
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
 
       const selectElement = document.getElementById('test') as HTMLSelectElement
       const select = new Select(selectElement)
@@ -765,8 +729,7 @@ describe('select module', () => {
     })
 
     test('hideUI prevents native select from opening on focus', () => {
-      document.body.innerHTML =
-        '<select id="test"><option value="1">One</option></select>'
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
 
       const selectElement = document.getElementById('test') as HTMLSelectElement
       const select = new Select(selectElement)
@@ -783,8 +746,7 @@ describe('select module', () => {
     })
 
     test('hideUI prevents native select from opening on mousedown', () => {
-      document.body.innerHTML =
-        '<select id="test"><option value="1">One</option></select>'
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
 
       const selectElement = document.getElementById('test') as HTMLSelectElement
       const select = new Select(selectElement)
@@ -801,8 +763,7 @@ describe('select module', () => {
     })
 
     test('showUI removes event handlers that prevent native select', () => {
-      document.body.innerHTML =
-        '<select id="test"><option value="1">One</option></select>'
+      document.body.innerHTML = '<select id="test"><option value="1">One</option></select>'
 
       const selectElement = document.getElementById('test') as HTMLSelectElement
       const select = new Select(selectElement)
@@ -829,9 +790,7 @@ describe('select module', () => {
         </select>
       `
 
-      const selectElement = document.getElementById(
-        'test-select'
-      ) as HTMLSelectElement
+      const selectElement = document.getElementById('test-select') as HTMLSelectElement
       const select = new Select(selectElement)
       select.hideUI()
 
@@ -841,12 +800,8 @@ describe('select module', () => {
       select.setupLabelHandlers()
 
       // Verify handler works
-      const label = document.querySelector(
-        'label[for="test-select"]'
-      ) as HTMLLabelElement
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      const label = document.querySelector('label[for="test-select"]') as HTMLLabelElement
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(onLabelClickMock).toHaveBeenCalledTimes(1)
 
@@ -854,9 +809,7 @@ describe('select module', () => {
       select.destroy()
       onLabelClickMock.mockClear()
 
-      label.dispatchEvent(
-        new MouseEvent('click', { bubbles: true, cancelable: true })
-      )
+      label.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
       await new Promise((r) => setTimeout(r, 10))
       expect(onLabelClickMock).not.toHaveBeenCalled()
     })
@@ -870,9 +823,7 @@ describe('select module', () => {
         </div>
       `
 
-      const selectElement = document.querySelector(
-        'select'
-      ) as HTMLSelectElement
+      const selectElement = document.querySelector('select') as HTMLSelectElement
       const select = new Select(selectElement)
       select.hideUI()
 

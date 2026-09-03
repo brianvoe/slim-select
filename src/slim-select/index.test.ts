@@ -1618,6 +1618,28 @@ describe('SlimSelect Module', () => {
     })
   })
 
+  describe('native option hidden attribute', () => {
+    test('toggling option.hidden hides and shows the option in the dropdown', async () => {
+      document.body.innerHTML = `<select id="myselect">
+        <option id="option1" value="1">One</option>
+        <option id="option2" value="2">Two</option>
+      </select>`
+
+      const slim = new SlimSelect({ select: '#myselect' })
+      const hideClass = slim.render.classes.getFirst('hide')
+
+      const optionEl = () => slim.render.content.list.querySelector('[data-id="option2"]') as HTMLDivElement
+
+      document.getElementById('option2')!.hidden = true
+      await new Promise((r) => setTimeout(r, 50))
+      expect(optionEl()?.classList.contains(hideClass)).toBe(true)
+
+      document.getElementById('option2')!.hidden = false
+      await new Promise((r) => setTimeout(r, 50))
+      expect(optionEl()?.classList.contains(hideClass)).toBe(false)
+    })
+  })
+
   describe('option changes race condition scenarios', () => {
     test('options should persist when added to select and value is set immediately', async () => {
       // Reproduce the issue: empty select, init SlimSelect, add options, set value

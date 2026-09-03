@@ -63,7 +63,7 @@ export default defineComponent({
             value: 'value',      // Optional - value will be set by text if not set
             html: '&lt;b&gt;Html&lt;/b&gt;', // Optional - will be used for display purposes if set
             selected: false,     // Optional - default is false
-            display: true,       // Optional - default is true
+            display: true,       // Optional - default is true (false if native option is hidden or display:none)
             disabled: false,     // Optional - default is false
             mandatory: false,    // Optional - default is false
             placeholder: false,  // Optional - default is false
