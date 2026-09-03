@@ -1600,6 +1600,7 @@ var B = class {
 		return t;
 	}
 	getDataFromOption(e) {
+		let t = e.hidden || e.hasAttribute("hidden");
 		return {
 			id: e.id,
 			value: e.value,
@@ -1607,7 +1608,7 @@ var B = class {
 			html: e.dataset && e.dataset.html ? e.dataset.html : "",
 			defaultSelected: e.defaultSelected,
 			selected: e.selected,
-			display: e.style.display !== "none",
+			display: e.style.display !== "none" && !t,
 			disabled: e.disabled,
 			mandatory: e.dataset ? e.dataset.mandatory === "true" : !1,
 			placeholder: e.dataset.placeholder === "true",
@@ -1702,7 +1703,7 @@ var B = class {
 	}
 	createOption(e) {
 		let t = document.createElement("option");
-		return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), e.display || (t.style.display = "none"), e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((e) => {
+		return t.id = e.id, t.value = e.value, t.textContent = e.text, e.html !== "" && t.setAttribute("data-html", e.html), t.defaultSelected = e.defaultSelected, t.selected = e.selected, e.disabled && (t.disabled = !0), e.display ? t.hidden = !1 : (t.style.display = "none", t.hidden = !0), e.placeholder && t.setAttribute("data-placeholder", "true"), e.mandatory && t.setAttribute("data-mandatory", "true"), e.class && e.class.split(" ").forEach((e) => {
 			t.classList.add(e);
 		}), e.data && typeof e.data == "object" && Object.keys(e.data).forEach((n) => {
 			t.setAttribute("data-" + j(n), e.data[n]);
