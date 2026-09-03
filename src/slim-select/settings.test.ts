@@ -263,11 +263,12 @@ describe('Settings module', () => {
       expect(optionElement.disabled).toBe(true)
     })
 
-    test('display false sets inline style correctly', () => {
+    test('display false sets hidden on the native option', () => {
       const option = new Option({ text: 'opt', display: false })
       const optionElement = select.createOption(option)
 
-      expect(optionElement.style.display).toBe('none')
+      expect(optionElement.hidden).toBe(true)
+      expect(optionElement.style.display).not.toBe('none')
     })
 
     test('placeholder and mandatory set data attributes correctly', () => {
