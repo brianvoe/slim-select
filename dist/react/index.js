@@ -1963,7 +1963,7 @@ var U = class {
 		}), this.select.onValueChange = (e) => {
 			this.sync.enqueue({
 				type: "selection",
-				values: e.map((e) => e.id),
+				values: e.map((e) => e.id || e.value),
 				source: "native"
 			});
 		}, this.select.onOptionsChange = (e) => {
