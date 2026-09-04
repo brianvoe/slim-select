@@ -1929,6 +1929,30 @@ describe('SlimSelect Module', () => {
       expect(slim.getSelected()).toEqual(['2'])
     })
 
+    test('synthetic native change syncs when options have no ids', async () => {
+      document.body.innerHTML = `
+        <select id="myselect">
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
+      `
+
+      const selectElement = document.getElementById('myselect') as HTMLSelectElement
+      const slim = new SlimSelect({ select: selectElement })
+
+      expect(Array.from(selectElement.options).every((option) => option.id === '')).toBe(true)
+      expect(slim.getSelected()).toEqual(['1'])
+
+      selectElement.value = '2'
+      selectElement.dispatchEvent(new Event('change', { bubbles: true }))
+
+      await new Promise<void>((resolve) => queueMicrotask(resolve))
+
+      expect(slim.getSelected()).toEqual(['2'])
+      expect(selectElement.value).toBe('2')
+    })
+
     test('native select change event fires on UI selection', () => {
       document.body.innerHTML = `
         <select id="change-event-select">

@@ -29,20 +29,11 @@ export interface Events {
     searchValue: string,
     selected: Option[],
     catalog?: (Option | Optgroup)[]
-  ) =>
-    | Promise<(Partial<Option> | Partial<Optgroup>)[]>
-    | (Partial<Option> | Partial<Optgroup>)[]
+  ) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[]
   searchFilter?: (option: Option, search: string) => boolean
   addable?: (
     value: string
-  ) =>
-    | Promise<Partial<Option> | string>
-    | Partial<Option>
-    | string
-    | false
-    | null
-    | undefined
-    | Error
+  ) => Promise<Partial<Option> | string> | Partial<Option> | string | false | null | undefined | Error
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
   afterChange?: (newVal: Option[]) => void
   beforeOpen?: () => void
@@ -85,9 +76,7 @@ export default class SlimSelect {
   constructor(config: Config) {
     // Make sure you get the right element
     this.selectEl = (
-      typeof config.select === 'string'
-        ? document.querySelector(config.select)
-        : config.select
+      typeof config.select === 'string' ? document.querySelector(config.select) : config.select
     ) as HTMLSelectElement
     if (!this.selectEl) {
       if (config.events && config.events.error) {
@@ -111,10 +100,7 @@ export default class SlimSelect {
     this.settings = new Settings(config.settings)
 
     // Allow data-selectall on the <select> when settings.selectAll is unset
-    if (
-      config.settings?.selectAll === undefined &&
-      this.selectEl.dataset.selectall === 'true'
-    ) {
+    if (config.settings?.selectAll === undefined && this.selectEl.dataset.selectall === 'true') {
       this.settings.selectAll = true
     }
 
@@ -131,21 +117,14 @@ export default class SlimSelect {
 
       // Check if key is in debounceEvents
       if (debounceEvents.indexOf(key) !== -1) {
-        ;(this.events as { [key: string]: any })[key] = debounce(
-          (config.events as { [key: string]: any })[key],
-          100
-        )
+        ;(this.events as { [key: string]: any })[key] = debounce((config.events as { [key: string]: any })[key], 100)
       } else {
-        ;(this.events as { [key: string]: any })[key] = (
-          config.events as { [key: string]: any }
-        )[key]
+        ;(this.events as { [key: string]: any })[key] = (config.events as { [key: string]: any })[key]
       }
     }
 
     // Upate settings with type, style and classname
-    this.settings.disabled = config.settings?.disabled
-      ? config.settings.disabled
-      : this.selectEl.disabled
+    this.settings.disabled = config.settings?.disabled ? config.settings.disabled : this.selectEl.disabled
     this.settings.isMultiple = this.selectEl.multiple
     this.settings.style = this.selectEl.style.cssText
     this.settings.class = this.selectEl.className.split(' ')
@@ -156,11 +135,7 @@ export default class SlimSelect {
     if (!this.selectEl.id) {
       this.selectEl.id = this.settings.id
     }
-    this.select.updateSelect(
-      this.settings.id,
-      this.settings.style,
-      this.settings.class
-    )
+    this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class)
     this.select.hideUI() // Hide the original select element
 
     this.select.onClassChange = (classes: string[]) => {
@@ -182,18 +157,13 @@ export default class SlimSelect {
     // This allows clicking the label to open/close, matching the main div behavior
     this.select.onLabelClick = () => {
       if (!this.settings.disabled) {
-        this.settings.isOpen
-          ? this.close({ source: 'toggle', selectionChanged: false })
-          : this.open()
+        this.settings.isOpen ? this.close({ source: 'toggle', selectionChanged: false }) : this.open()
       }
     }
 
     // Set store class
     const data = config.data ? config.data : this.select.getData()
-    this.store = new Store(
-      this.settings.isMultiple ? 'multiple' : 'single',
-      data
-    )
+    this.store = new Store(this.settings.isMultiple ? 'multiple' : 'single', data)
 
     // If data is passed update the original select element
     if (config.data) {
@@ -227,21 +197,12 @@ export default class SlimSelect {
     }
 
     // Setup render class
-    this.settings.modalTitle =
-      config.settings?.modalTitle ?? getAssociatedLabelText(this.selectEl)
+    this.settings.modalTitle = config.settings?.modalTitle ?? getAssociatedLabelText(this.selectEl)
 
-    this.render = new Render(
-      this.settings,
-      this.cssClasses,
-      this.store,
-      renderCallbacks
-    )
+    this.render = new Render(this.settings, this.cssClasses, this.store, renderCallbacks)
 
     // Align JS timeout with --ss-animation-timing (CSS is source of truth)
-    this.settings.timeoutDelay = getAnimationTimeout(
-      this.render.content.main,
-      config.settings?.timeoutDelay
-    )
+    this.settings.timeoutDelay = getAnimationTimeout(this.render.content.main, config.settings?.timeoutDelay)
 
     // Single coordinator batches native + API + UI updates (see sync.ts)
     this.sync = new SyncCoordinator({
@@ -253,9 +214,12 @@ export default class SlimSelect {
     })
 
     this.select.onValueChange = (options: Option[]) => {
+      // Native <option> ids are often empty; store ids are generated at init
+      // and not written back unless updateOptions() runs. Prefer id, fall back
+      // to value so synthetic `select.value = x` + `change` still syncs.
       this.sync.enqueue({
         type: 'selection',
-        values: options.map((option) => option.id),
+        values: options.map((option) => option.id || option.value),
         source: 'native'
       })
     }
@@ -286,8 +250,7 @@ export default class SlimSelect {
       },
       {
         timeoutDelay: this.settings.timeoutDelay,
-        waitForAnimation: (phase, signal) =>
-          this.render.waitForAnimation(phase, signal)
+        waitForAnimation: (phase, signal) => this.render.waitForAnimation(phase, signal)
       }
     )
 
@@ -324,10 +287,7 @@ export default class SlimSelect {
       this.render.main.main.setAttribute('aria-label', selectAriaLabel)
     } else if (selectAriaLabelledBy) {
       this.render.main.main.removeAttribute('aria-label')
-      this.render.main.main.setAttribute(
-        'aria-labelledby',
-        selectAriaLabelledBy
-      )
+      this.render.main.main.setAttribute('aria-labelledby', selectAriaLabelledBy)
     } else if (this.selectEl.labels && this.selectEl.labels.length > 0) {
       const labelledByIds = Array.from(this.selectEl.labels).map((label, i) => {
         if (!label.id) {
@@ -336,18 +296,12 @@ export default class SlimSelect {
         return label.id
       })
       this.render.main.main.removeAttribute('aria-label')
-      this.render.main.main.setAttribute(
-        'aria-labelledby',
-        labelledByIds.join(' ')
-      )
+      this.render.main.main.setAttribute('aria-labelledby', labelledByIds.join(' '))
     }
 
     // Add render after original select element
     if (this.selectEl.parentNode) {
-      this.selectEl.parentNode.insertBefore(
-        this.render.main.main,
-        this.selectEl.nextSibling
-      )
+      this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling)
     }
 
     this.globalEvents.attach({
@@ -458,10 +412,7 @@ export default class SlimSelect {
     })
 
     // Reposition when trigger or ancestors resize (absolute content only)
-    if (
-      this.settings.contentPosition === 'absolute' &&
-      !this.render.isModalViewActive()
-    ) {
+    if (this.settings.contentPosition === 'absolute' && !this.render.isModalViewActive()) {
       this.render.startPositionTracking()
     }
 
@@ -471,9 +422,7 @@ export default class SlimSelect {
     }
   }
 
-  public close(
-    info: CloseInfo = { source: 'api', selectionChanged: false }
-  ): void {
+  public close(info: CloseInfo = { source: 'api', selectionChanged: false }): void {
     // Dont do anything if the content is already closed
     // Dont do anything if alwaysOpen is true
     if (!this.settings.isOpen || this.settings.alwaysOpen) {
@@ -501,17 +450,13 @@ export default class SlimSelect {
     this.render.close()
 
     // Clear search only if not empty and keepSearch is false
-    if (
-      !this.settings.keepSearch &&
-      this.render.content.search.input.value !== ''
-    ) {
+    if (!this.settings.keepSearch && this.render.content.search.input.value !== '') {
       this.sync.flush()
       this.search('') // Clear search
     }
 
     // If we arent tabbing focus back on the main element
-    const skipRefocus =
-      info.source === 'outside' || info.source === 'toggle'
+    const skipRefocus = info.source === 'outside' || info.source === 'toggle'
     this.render.mainFocus(skipRefocus ? 'click' : null)
 
     // Update settings
@@ -576,15 +521,9 @@ export default class SlimSelect {
     const generation = ++this.searchGeneration
     this.render.renderSearching()
 
-    const searchResp = this.events.search!(
-      value,
-      this.store.getSelectedOptions(),
-      this.store.getCatalogData()
-    )
+    const searchResp = this.events.search!(value, this.store.getSelectedOptions(), this.store.getCatalogData())
 
-    const applyResults = (
-      data: (Partial<Option> | Partial<Optgroup>)[]
-    ): void => {
+    const applyResults = (data: (Partial<Option> | Partial<Optgroup>)[]): void => {
       if (generation !== this.searchGeneration) {
         return
       }
@@ -617,9 +556,7 @@ export default class SlimSelect {
       return
     }
 
-    this.render.renderError(
-      'Search event must return a promise or an array of data'
-    )
+    this.render.renderError('Search event must return a promise or an array of data')
   }
 
   public destroy(): void {
@@ -651,10 +588,7 @@ export default class SlimSelect {
     }
 
     // Check if the click was on the content by looking at the parents
-    if (
-      e.target &&
-      !hasClassInTree(e.target as HTMLElement, this.settings.id)
-    ) {
+    if (e.target && !hasClassInTree(e.target as HTMLElement, this.settings.id)) {
       this.close({ source: 'outside', selectionChanged: false })
     }
   }
