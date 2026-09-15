@@ -151,7 +151,7 @@ var u = 768, d = class {
 	modal;
 	modalTitle;
 	constructor(e) {
-		e ||= {}, this.id = "ss-" + h(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 && e.disabled, this.alwaysOpen = e.alwaysOpen !== void 0 && e.alwaysOpen, this.showSearch = e.showSearch === void 0 || e.showSearch, this.focusSearch = e.focusSearch === void 0 || e.focusSearch, this.keepSearch = e.keepSearch !== void 0 && e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight !== void 0 && e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 || e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect !== void 0 && e.allowDeselect, this.hideSelected = e.hideSelected !== void 0 && e.hideSelected, this.multiString = e.multiString !== void 0 && e.multiString, this.keepOrder = e.keepOrder !== void 0 && e.keepOrder, this.showOptionTooltips = e.showOptionTooltips !== void 0 && e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.selectAll = e.selectAll !== void 0 && e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.unselectAllText = e.unselectAllText || "Unselect All", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
+		e ||= {}, this.id = "ss-" + h(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 && e.disabled, this.alwaysOpen = e.alwaysOpen !== void 0 && e.alwaysOpen, this.showSearch = e.showSearch === void 0 || e.showSearch, this.focusSearch = e.focusSearch === void 0 ? typeof window > "u" || window.innerWidth >= 768 : e.focusSearch, this.keepSearch = e.keepSearch !== void 0 && e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight !== void 0 && e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 || e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect !== void 0 && e.allowDeselect, this.hideSelected = e.hideSelected !== void 0 && e.hideSelected, this.multiString = e.multiString !== void 0 && e.multiString, this.keepOrder = e.keepOrder !== void 0 && e.keepOrder, this.showOptionTooltips = e.showOptionTooltips !== void 0 && e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.selectAll = e.selectAll !== void 0 && e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.unselectAllText = e.unselectAllText || "Unselect All", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
 	}
 };
 //#endregion
@@ -598,6 +598,7 @@ var O = class {
 	classes;
 	positionObserver = null;
 	positionObserverRaf = 0;
+	lastObservedContentHeight = -1;
 	overflowShiftRaf = 0;
 	modalElements = null;
 	modalSessionActive = null;
@@ -942,6 +943,9 @@ var O = class {
 	announce(e) {
 		this.settings.showSearch && (this.content.status.textContent = e);
 	}
+	repositionOpenContent() {
+		!this.settings.isOpen || this.isModalViewActive() || this.settings.contentPosition !== "relative" && this.content.main.classList.contains(this.classes.getFirst("dirAbove")) && this.moveContentAbove();
+	}
 	moveContent() {
 		if (!this.isModalViewActive()) {
 			if (this.settings.contentPosition === "relative") {
@@ -960,21 +964,27 @@ var O = class {
 		}
 	}
 	startPositionTracking() {
-		this.settings.contentPosition !== "absolute" || this.isModalViewActive() || (this.stopPositionTracking(), !(typeof ResizeObserver > "u") && (this.positionObserver = new ResizeObserver(() => {
-			this.settings.isOpen && (cancelAnimationFrame(this.positionObserverRaf), this.positionObserverRaf = requestAnimationFrame(() => {
-				this.moveContent();
+		this.settings.contentPosition !== "absolute" || this.isModalViewActive() || (this.stopPositionTracking(), !(typeof ResizeObserver > "u") && (this.lastObservedContentHeight = -1, this.positionObserver = new ResizeObserver((e) => {
+			if (!this.settings.isOpen) return;
+			let t = !1, n = !1;
+			for (let r of e) if (r.target === this.content.main) {
+				let e = r.contentRect.height;
+				e !== this.lastObservedContentHeight && (this.lastObservedContentHeight = e, t = !0);
+			} else n = !0;
+			!t && !n || (cancelAnimationFrame(this.positionObserverRaf), this.positionObserverRaf = requestAnimationFrame(() => {
+				n ? this.moveContent() : this.repositionOpenContent();
 			}));
 		}), this.observePositionTargets()));
 	}
 	stopPositionTracking() {
-		cancelAnimationFrame(this.positionObserverRaf), this.positionObserver?.disconnect(), this.positionObserver = null, this.cancelOverflowShift();
+		cancelAnimationFrame(this.positionObserverRaf), this.positionObserver?.disconnect(), this.positionObserver = null, this.lastObservedContentHeight = -1, this.cancelOverflowShift();
 	}
 	observePositionTargets() {
 		if (!this.positionObserver) return;
 		let e = /* @__PURE__ */ new Set(), t = (t) => {
 			!t || e.has(t) || (e.add(t), this.positionObserver.observe(t));
 		};
-		t(this.main.main);
+		t(this.main.main), t(this.content.main);
 		let n = this.main.main.parentElement, r = this.settings.contentLocation;
 		for (let e = 0; n && e < 8 && (t(n), n !== r); e++) n = n.parentElement;
 	}
@@ -1103,12 +1113,12 @@ var O = class {
 	renderError(e) {
 		this.optionsListIsFullData = !1, this.content.list.innerHTML = "";
 		let t = document.createElement("div");
-		this.addClasses(t, this.classes.error), t.textContent = e, this.content.list.appendChild(t);
+		this.addClasses(t, this.classes.error), t.textContent = e, this.content.list.appendChild(t), this.repositionOpenContent();
 	}
 	renderSearching() {
 		this.optionsListIsFullData = !1, this.content.list.innerHTML = "";
 		let e = document.createElement("div");
-		this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e), this.announce(this.settings.searchingText);
+		this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e), this.announce(this.settings.searchingText), this.repositionOpenContent();
 	}
 	renderOptions(e) {
 		if (this.lastSearchFilterTerm = "", this.lastRenderedOptions = e.map((e) => e instanceof A ? [e] : e.options.map((e) => new A(e))).flat(), this.content.list.innerHTML = "", e.length === 0) {
@@ -1118,7 +1128,7 @@ var O = class {
 				let t = this.settings.addableText.replace("{value}", this.content.search.input.value);
 				e.innerHTML = t, this.announce(t);
 			} else e.innerHTML = this.settings.searchText, this.announce(this.settings.searchText);
-			this.content.list.appendChild(e);
+			this.content.list.appendChild(e), this.repositionOpenContent();
 			return;
 		}
 		this.settings.allowDeselect && !this.settings.isMultiple && (this.store.filter((e) => e.placeholder, !1, !1).length || this.store.addOption(new A({
@@ -1164,7 +1174,7 @@ var O = class {
 					i.setAttribute("viewBox", "0 0 100 100"), this.addClasses(i, this.classes.arrow), t.appendChild(i);
 					let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
 					i.appendChild(o), n.options.some((e) => e.selected) || this.content.search.input.value.trim() !== "" ? (this.addClasses(t, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "open" ? (this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "close" && (this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)), r.addEventListener("click", (n) => {
-						n.preventDefault(), n.stopPropagation(), this.isClosableOptgroupOpen(e, t) ? (this.removeClasses(e, this.classes.mainOpen), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)) : (this.closeOtherClosableOptgroups(e), this.removeClasses(e, this.classes.close), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen));
+						n.preventDefault(), n.stopPropagation(), this.isClosableOptgroupOpen(e, t) ? (this.removeClasses(e, this.classes.mainOpen), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)) : (this.closeOtherClosableOptgroups(e), this.removeClasses(e, this.classes.close), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)), this.repositionOpenContent();
 					}), a.appendChild(t);
 				}
 				e.appendChild(r);
@@ -1172,7 +1182,7 @@ var O = class {
 			}
 			n instanceof A && t.appendChild(this.option(n));
 		}
-		this.content.list.appendChild(t), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length))), this.updateGlobalSelectAllState();
+		this.content.list.appendChild(t), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length))), this.updateGlobalSelectAllState(), this.repositionOpenContent();
 	}
 	canFilterOptionsInPlace() {
 		return this.optionsListIsFullData ? this.content.list.querySelector("." + this.classes.getFirst("option")) !== null : !1;
@@ -1193,7 +1203,7 @@ var O = class {
 			let o = a.placeholder || !a.display || a.selected && this.settings.hideSelected, s = t(a, n);
 			o || !s ? (this.addClasses(e, this.classes.hide), this.removeClasses(e, this.classes.highlighted)) : (this.removeClasses(e, this.classes.hide), this.setOptionElementContent(e, a, n), r.push(a)), a.selected ? (this.addClasses(e, this.classes.selected), e.setAttribute("aria-selected", "true")) : (this.removeClasses(e, this.classes.selected), e.setAttribute("aria-selected", "false"));
 		}
-		this.lastRenderedOptions = r, this.updateOptgroupVisibilityAfterSearch(n), r.length === 0 ? this.updateSearchResultsMessage(0, n) : (this.removeListSearchMessage(), this.announce(this.settings.resultsText.replace("{count}", String(r.length)))), this.updateOptgroupSelectAllStates(), this.updateGlobalSelectAllState();
+		this.lastRenderedOptions = r, this.updateOptgroupVisibilityAfterSearch(n), r.length === 0 ? this.updateSearchResultsMessage(0, n) : (this.removeListSearchMessage(), this.announce(this.settings.resultsText.replace("{count}", String(r.length)))), this.updateOptgroupSelectAllStates(), this.updateGlobalSelectAllState(), this.repositionOpenContent();
 	}
 	setOptionsListFullData(e) {
 		let t = this.store.getDataOptions(!1), n = e.map((e) => e instanceof A ? [e] : e.options.map((e) => new A(e))).flat();
@@ -1265,7 +1275,7 @@ var O = class {
 			let a = e.has(t);
 			a ? (this.addClasses(r, this.classes.selected), r.setAttribute("aria-selected", "true"), n = r) : (this.removeClasses(r, this.classes.selected), r.setAttribute("aria-selected", "false")), this.settings.hideSelected && (a ? this.addClasses(r, this.classes.hide) : (this.removeClasses(r, this.classes.hide), i.display || this.addClasses(r, this.classes.hide)));
 		}
-		!this.settings.isMultiple && n ? this.main.main.setAttribute("aria-activedescendant", n.id) : !this.settings.isMultiple && e.size === 0 && this.main.main.removeAttribute("aria-activedescendant"), this.updateOptgroupSelectAllStates(), this.updateGlobalSelectAllState();
+		!this.settings.isMultiple && n ? this.main.main.setAttribute("aria-activedescendant", n.id) : !this.settings.isMultiple && e.size === 0 && this.main.main.removeAttribute("aria-activedescendant"), this.updateOptgroupSelectAllStates(), this.updateGlobalSelectAllState(), this.repositionOpenContent();
 	}
 	createSelectAllControl(e, t = !1) {
 		let n = document.createElement("div");

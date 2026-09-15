@@ -65,6 +65,7 @@ export default class Render {
     classes: CssClasses;
     private positionObserver;
     private positionObserverRaf;
+    private lastObservedContentHeight;
     private overflowShiftRaf;
     private modalElements;
     private modalSessionActive;
@@ -118,6 +119,12 @@ export default class Render {
     multipleValue(option: Option): HTMLDivElement;
     contentDiv(): Content;
     private announce;
+    /**
+     * After list height changes (search, results, optgroup toggle), keep an
+     * already-open "above" panel attached. Does not re-run auto up/down so
+     * filtering cannot flip the list while the user is typing.
+     */
+    private repositionOpenContent;
     moveContent(): void;
     /** Track trigger/content layout changes and reposition the dropdown panel. */
     startPositionTracking(): void;
