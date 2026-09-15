@@ -92,6 +92,7 @@ export default class Render {
 
   private positionObserver: ResizeObserver | null = null
   private positionObserverRaf = 0
+  private lastObservedContentHeight = -1
   private overflowShiftRaf = 0
 
   private modalElements: ModalElements | null = null
@@ -1169,6 +1170,27 @@ export default class Render {
     this.content.status.textContent = message
   }
 
+  /**
+   * After list height changes (search, results, optgroup toggle), keep an
+   * already-open "above" panel attached. Does not re-run auto up/down so
+   * filtering cannot flip the list while the user is typing.
+   */
+  private repositionOpenContent(): void {
+    if (!this.settings.isOpen || this.isModalViewActive()) {
+      return
+    }
+
+    if (this.settings.contentPosition === 'relative') {
+      return
+    }
+
+    if (!this.content.main.classList.contains(this.classes.getFirst('dirAbove'))) {
+      return
+    }
+
+    this.moveContentAbove()
+  }
+
   public moveContent(): void {
     if (this.isModalViewActive()) {
       return
@@ -1206,14 +1228,40 @@ export default class Render {
       return
     }
 
-    this.positionObserver = new ResizeObserver(() => {
+    this.lastObservedContentHeight = -1
+    this.positionObserver = new ResizeObserver((entries) => {
       if (!this.settings.isOpen) {
+        return
+      }
+
+      let contentHeightChanged = false
+      let layoutChanged = false
+
+      for (const entry of entries) {
+        if (entry.target === this.content.main) {
+          const height = entry.contentRect.height
+          if (height !== this.lastObservedContentHeight) {
+            this.lastObservedContentHeight = height
+            contentHeightChanged = true
+          }
+        } else {
+          layoutChanged = true
+        }
+      }
+
+      if (!contentHeightChanged && !layoutChanged) {
         return
       }
 
       cancelAnimationFrame(this.positionObserverRaf)
       this.positionObserverRaf = requestAnimationFrame(() => {
-        this.moveContent()
+        // Trigger/ancestor changes may need auto up/down. Content height
+        // changes should keep the current direction so search does not flip.
+        if (layoutChanged) {
+          this.moveContent()
+        } else {
+          this.repositionOpenContent()
+        }
       })
     })
 
@@ -1224,6 +1272,7 @@ export default class Render {
     cancelAnimationFrame(this.positionObserverRaf)
     this.positionObserver?.disconnect()
     this.positionObserver = null
+    this.lastObservedContentHeight = -1
     this.cancelOverflowShift()
   }
 
@@ -1243,8 +1292,9 @@ export default class Render {
     }
 
     observe(this.main.main)
-    // Do not observe content — our own overflow/position updates resize the panel
-    // and would re-enter moveContent() causing horizontal jitter at the viewport edge.
+    // Observe content height only (width-only overflow/position updates are ignored
+    // in the observer callback so we do not re-enter and jitter horizontally).
+    observe(this.content.main)
 
     let parent: HTMLElement | null = this.main.main.parentElement
     const stopAt = this.settings.contentLocation
@@ -1630,6 +1680,7 @@ export default class Render {
     this.addClasses(errorDiv, this.classes.error)
     errorDiv.textContent = error
     this.content.list.appendChild(errorDiv)
+    this.repositionOpenContent()
   }
 
   public renderSearching() {
@@ -1642,6 +1693,7 @@ export default class Render {
     searchingDiv.textContent = this.settings.searchingText
     this.content.list.appendChild(searchingDiv)
     this.announce(this.settings.searchingText)
+    this.repositionOpenContent()
   }
 
   // Take in data and add options to
@@ -1670,6 +1722,7 @@ export default class Render {
         this.announce(this.settings.searchText)
       }
       this.content.list.appendChild(noResults)
+      this.repositionOpenContent()
       return
     }
 
@@ -1718,43 +1771,46 @@ export default class Render {
         // If selectByGroup is true and isMultiple then add click event to label
         if (this.settings.isMultiple && d.selectAll) {
           // Create select all control with shared checkbox markup
-          const selectAll = this.createSelectAllControl(() => {
-            // Get the store current selected values
-            const currentSelected = this.store.getSelected()
-            const allSelectedNow = this.isOptgroupAllSelected(d.options as Option[], new Set(currentSelected))
+          const selectAll = this.createSelectAllControl(
+            () => {
+              // Get the store current selected values
+              const currentSelected = this.store.getSelected()
+              const allSelectedNow = this.isOptgroupAllSelected(d.options as Option[], new Set(currentSelected))
 
-            // If all selected, remove all options from selected
-            if (allSelectedNow) {
-              // Put together new list minus all options in this optgroup
-              const newSelected = currentSelected.filter((s) => {
+              // If all selected, remove all options from selected
+              if (allSelectedNow) {
+                // Put together new list minus all options in this optgroup
+                const newSelected = currentSelected.filter((s) => {
+                  for (const o of d.options) {
+                    if (s === o.id) {
+                      return false
+                    }
+                  }
+
+                  return true
+                })
+
+                this.callbacks.setSelected(newSelected, true)
+                return
+              } else {
+                // Put together new list with all options in this optgroup
+                let optionIds = d.options.map((o) => o.id).filter((id) => id !== undefined)
+                const newSelected = currentSelected.concat(optionIds)
+
+                // Loop through options and if they don't exist in the store
+                // run addOption callback
                 for (const o of d.options) {
-                  if (s === o.id) {
-                    return false
+                  if (o.id && !this.store.getOptionByID(o.id)) {
+                    this.callbacks.addOption(new Option(o))
                   }
                 }
 
-                return true
-              })
-
-              this.callbacks.setSelected(newSelected, true)
-              return
-            } else {
-              // Put together new list with all options in this optgroup
-              let optionIds = d.options.map((o) => o.id).filter((id) => id !== undefined)
-              const newSelected = currentSelected.concat(optionIds)
-
-              // Loop through options and if they don't exist in the store
-              // run addOption callback
-              for (const o of d.options) {
-                if (o.id && !this.store.getOptionByID(o.id)) {
-                  this.callbacks.addOption(new Option(o))
-                }
+                this.callbacks.setSelected(newSelected, true)
+                return
               }
-
-              this.callbacks.setSelected(newSelected, true)
-              return
-            }
-          }, this.isOptgroupAllSelected(d.options as Option[]))
+            },
+            this.isOptgroupAllSelected(d.options as Option[])
+          )
 
           // Append select all to label
           optgroupActions.appendChild(selectAll)
@@ -1807,6 +1863,8 @@ export default class Render {
               this.addClasses(optgroupEl, this.classes.close)
               optgroupClosableArrow.setAttribute('d', this.classes.arrowClose)
             }
+
+            this.repositionOpenContent()
           })
 
           // Append close to label
@@ -1834,6 +1892,7 @@ export default class Render {
     this.setOptionsListFullData(data)
     this.announce(this.settings.resultsText.replace('{count}', String(this.lastRenderedOptions.length)))
     this.updateGlobalSelectAllState()
+    this.repositionOpenContent()
   }
 
   /** True when the list DOM contains every store option (local search can show/hide in place). */
@@ -1908,6 +1967,7 @@ export default class Render {
 
     this.updateOptgroupSelectAllStates()
     this.updateGlobalSelectAllState()
+    this.repositionOpenContent()
   }
 
   private setOptionsListFullData(data: (Option | Optgroup)[]): void {
@@ -2107,6 +2167,7 @@ export default class Render {
 
     this.updateOptgroupSelectAllStates()
     this.updateGlobalSelectAllState()
+    this.repositionOpenContent()
   }
 
   private createSelectAllControl(onClick: () => void, allSelected = false): HTMLDivElement {

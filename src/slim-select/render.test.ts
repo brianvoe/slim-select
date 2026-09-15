@@ -643,7 +643,7 @@ describe('render module', () => {
 
       expect(ResizeObserverConstructor).toHaveBeenCalled()
       expect(observeMock).toHaveBeenCalledWith(render.main.main)
-      expect(observeMock).not.toHaveBeenCalledWith(render.content.main)
+      expect(observeMock).toHaveBeenCalledWith(render.content.main)
     })
 
     test('stopPositionTracking disconnects observer', () => {
@@ -867,13 +867,18 @@ describe('render module', () => {
     test('global select all shows in ss-search when showSearch is true', () => {
       const settings = new Settings({ selectAll: true, showSearch: true, modal: 'off' })
       settings.isMultiple = true
-      const selectAllRender = new Render(settings, new CssClasses(), new Store('multiple', [{ text: 'A', value: 'a' }]), {
-        open: openMock as () => void,
-        close: closeMock as (info?: CloseInfo) => void,
-        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
-        addOption: addOptionMock as (option: Option) => void,
-        search: searchMock as (search: string) => void
-      })
+      const selectAllRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('multiple', [{ text: 'A', value: 'a' }]),
+        {
+          open: openMock as () => void,
+          close: closeMock as (info?: CloseInfo) => void,
+          setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+          addOption: addOptionMock as (option: Option) => void,
+          search: searchMock as (search: string) => void
+        }
+      )
 
       const search = selectAllRender.content.search
       expect(search.main.classList.contains(selectAllRender.classes.getFirst('search'))).toBe(true)
@@ -887,13 +892,18 @@ describe('render module', () => {
     test('global select all shows in ss-search when showSearch is false', () => {
       const settings = new Settings({ selectAll: true, showSearch: false, modal: 'off' })
       settings.isMultiple = true
-      const selectAllRender = new Render(settings, new CssClasses(), new Store('multiple', [{ text: 'A', value: 'a' }]), {
-        open: openMock as () => void,
-        close: closeMock as (info?: CloseInfo) => void,
-        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
-        addOption: addOptionMock as (option: Option) => void,
-        search: searchMock as (search: string) => void
-      })
+      const selectAllRender = new Render(
+        settings,
+        new CssClasses(),
+        new Store('multiple', [{ text: 'A', value: 'a' }]),
+        {
+          open: openMock as () => void,
+          close: closeMock as (info?: CloseInfo) => void,
+          setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+          addOption: addOptionMock as (option: Option) => void,
+          search: searchMock as (search: string) => void
+        }
+      )
 
       const search = selectAllRender.content.search
       expect(search.main.classList.contains(selectAllRender.classes.getFirst('search'))).toBe(true)
@@ -1777,6 +1787,45 @@ describe('render module', () => {
 
       expect(render.content.list.innerHTML).toBe(htmlAfterFilter)
     })
+
+    test('repositions an open above list after filtering', () => {
+      render.settings.isOpen = true
+      render.renderOptions(render.store.getData())
+      render.moveContentAbove()
+      const spy = vi.spyOn(render, 'moveContentAbove')
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(spy).toHaveBeenCalled()
+    })
+
+    test('does not reposition when the list is closed', () => {
+      render.settings.isOpen = false
+      render.renderOptions(render.store.getData())
+      render.moveContentAbove()
+      const spy = vi.spyOn(render, 'moveContentAbove')
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(spy).not.toHaveBeenCalled()
+    })
+
+    test('does not reposition a below-open list after filtering', () => {
+      render.settings.isOpen = true
+      render.renderOptions(render.store.getData())
+      render.moveContentBelow()
+      const spy = vi.spyOn(render, 'moveContentAbove')
+
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(spy).not.toHaveBeenCalled()
+    })
   })
 
   describe('updateOptionSelection', () => {
@@ -2596,6 +2645,22 @@ describe('render module', () => {
       expect(render.main.main.classList.contains(render.classes.dirBelow)).toBe(false)
       expect(render.content.main.classList.contains(render.classes.dirAbove)).toBe(true)
       expect(render.content.main.classList.contains(render.classes.dirBelow)).toBe(false)
+    })
+
+    test('recalculates pull-up margin when content height changes', () => {
+      Object.defineProperty(render.main.main, 'offsetHeight', { configurable: true, get: () => 40 })
+      Object.defineProperty(render.content.main, 'offsetHeight', { configurable: true, get: () => 300 })
+
+      render.moveContentAbove()
+      expect(render.content.main.style.marginTop).toBe('-339px')
+
+      Object.defineProperty(render.content.main, 'offsetHeight', { configurable: true, get: () => 80 })
+      render.settings.isOpen = true
+      render.filterOptionsInPlace('test1', (opt, search) => {
+        return opt.text.toLowerCase().includes(search.toLowerCase())
+      })
+
+      expect(render.content.main.style.marginTop).toBe('-119px')
     })
   })
 

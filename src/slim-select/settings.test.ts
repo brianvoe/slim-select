@@ -1,6 +1,6 @@
 'use strict'
 
-import { describe, expect, test, beforeEach } from 'vitest'
+import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest'
 import { shouldUseModalView } from './helpers'
 import Settings, { MODAL_MOBILE_BREAKPOINT } from './settings'
 import Select from './select'
@@ -82,13 +82,30 @@ describe('Settings module', () => {
     })
 
     test('uses mobile breakpoint', () => {
-      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT - 1)).toBe(
-        true
-      )
+      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT - 1)).toBe(true)
       expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT)).toBe(false)
-      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT + 1)).toBe(
-        false
-      )
+      expect(shouldUseModalView('mobile', MODAL_MOBILE_BREAKPOINT + 1)).toBe(false)
+    })
+  })
+
+  describe('focusSearch default', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    test('defaults to false below 768px', () => {
+      vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(MODAL_MOBILE_BREAKPOINT - 1)
+      expect(new Settings().focusSearch).toBe(false)
+    })
+
+    test('defaults to true at 768px and above', () => {
+      vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(MODAL_MOBILE_BREAKPOINT)
+      expect(new Settings().focusSearch).toBe(true)
+    })
+
+    test('explicit true is kept on a mobile viewport', () => {
+      vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(320)
+      expect(new Settings({ focusSearch: true }).focusSearch).toBe(true)
     })
   })
 

@@ -163,7 +163,7 @@ new SlimSelect({
     disabled: false,
     alwaysOpen: false,
     showSearch: true,
-    focusSearch: true,
+    focusSearch: true, // false below 768px unless set
     keepSearch: false,
     ariaLabel: 'Combobox',
     searchPlaceholder: 'Search...',

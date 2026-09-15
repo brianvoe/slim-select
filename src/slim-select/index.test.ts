@@ -1,7 +1,7 @@
 'use strict'
 
 import { afterEach, beforeEach, describe, expect, test, vi, type Mock } from 'vitest'
-import SlimSelect from '@/slim-select'
+import SlimSelect, { MODAL_MOBILE_BREAKPOINT } from '@/slim-select'
 
 /** Destroy every SlimSelect still attached to a select in the document. */
 function destroyAllSlimSelects(): void {
@@ -111,6 +111,56 @@ describe('SlimSelect Module', () => {
 
       expect(slim.settings.selectAll).toBe(true)
       expect(slim.render.content.search.selectAll).toBeTruthy()
+    })
+  })
+
+  describe('focusSearch', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    test('true focuses the search input on open', () => {
+      document.body.innerHTML = '<select id="focus-true"><option>One</option></select>'
+      const instance = new SlimSelect({
+        select: '#focus-true',
+        settings: { focusSearch: true }
+      })
+
+      instance.open()
+
+      expect(document.activeElement).toBe(instance.render.content.search.input)
+    })
+
+    test('false does not focus the search input on open', () => {
+      document.body.innerHTML = '<select id="focus-false"><option>One</option></select>'
+      const instance = new SlimSelect({
+        select: '#focus-false',
+        settings: { focusSearch: false }
+      })
+
+      instance.open()
+
+      expect(document.activeElement).not.toBe(instance.render.content.search.input)
+    })
+
+    test('defaults to focusing on desktop viewports', () => {
+      vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(MODAL_MOBILE_BREAKPOINT)
+      document.body.innerHTML = '<select id="focus-desktop"><option>One</option></select>'
+      const instance = new SlimSelect({ select: '#focus-desktop' })
+
+      instance.open()
+
+      expect(document.activeElement).toBe(instance.render.content.search.input)
+    })
+
+    test('defaults to not focusing on mobile viewports', () => {
+      vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(MODAL_MOBILE_BREAKPOINT - 1)
+      document.body.innerHTML = '<select id="focus-mobile"><option>One</option></select>'
+      const instance = new SlimSelect({ select: '#focus-mobile' })
+
+      instance.open()
+
+      expect(document.activeElement).not.toBe(instance.render.content.search.input)
     })
   })
 

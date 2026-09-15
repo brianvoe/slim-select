@@ -5,24 +5,37 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.4]
+
+### Fixed
+
+- Search is no longer auto-focused by default below 768px viewport width (same breakpoint as `modal: 'mobile'`); set
+  `focusSearch: true` to keep the old mobile behavior ([#712](https://github.com/brianvoe/slim-select/issues/712))
+
+- Dropdowns opened above the select now stay attached after search changes the list height
+  ([#711](https://github.com/brianvoe/slim-select/issues/711))
+
 ## [4.2.3]
 
 ### Fixed
 
-- Native `change` after `select.value = …` now updates SlimSelect when options have no `id` ([#710](https://github.com/brianvoe/slim-select/issues/710))
+- Native `change` after `select.value = …` now updates SlimSelect when options have no `id`
+  ([#710](https://github.com/brianvoe/slim-select/issues/710))
 
 ## [4.2.2]
 
 ### Fixed
 
-- Toggling native `<option hidden>` off after hiding now shows the option again ([#709](https://github.com/brianvoe/slim-select/issues/709))
+- Toggling native `<option hidden>` off after hiding now shows the option again
+  ([#709](https://github.com/brianvoe/slim-select/issues/709))
 - Relative dropdown panels (`contentPosition: 'relative'`, including `alwaysOpen`) no longer overlay sticky page headers
 
 ## [4.2.1]
 
 ### Fixed
 
-- Native `<option hidden>` is now preserved and respected when SlimSelect rebuilds options ([#709](https://github.com/brianvoe/slim-select/issues/709))
+- Native `<option hidden>` is now preserved and respected when SlimSelect rebuilds options
+  ([#709](https://github.com/brianvoe/slim-select/issues/709))
 
 ## [4.2.0]
 

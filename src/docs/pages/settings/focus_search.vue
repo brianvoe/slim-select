@@ -38,9 +38,9 @@ export default defineComponent({
       first.
     </p>
     <p>
-      This feature improves the user experience by reducing the number of clicks required to search through options.
-      However, you might want to disable it in certain scenarios where automatic focusing could interfere with other UI
-      interactions or accessibility requirements.
+      Default is <b>true</b> from 768px viewport width up, and <b>false</b> below that — the same breakpoint as
+      <code>modal: 'mobile'</code> — so a phone keyboard does not cover the list unless the user taps search. Pass
+      <code>true</code> or <code>false</code> to force either behavior on all viewports.
     </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">

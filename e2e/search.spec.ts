@@ -1,13 +1,5 @@
 import { test, expect } from '@playwright/test'
-import {
-  closeWithEscape,
-  content,
-  getSelected,
-  gotoFixture,
-  openContent,
-  openSelect,
-  option
-} from './helpers'
+import { closeWithEscape, content, gotoFixture, main, openSelect, option } from './helpers'
 
 test.describe('search', () => {
   test.beforeEach(async ({ page }) => {
@@ -28,9 +20,7 @@ test.describe('search', () => {
     await openSelect(page, 'basic')
     await content(page, 'basic').locator('.ss-search input').fill('zzzzz')
     await page.waitForTimeout(150)
-    await expect(content(page, 'basic').locator('.ss-list')).toContainText(
-      'No Results'
-    )
+    await expect(content(page, 'basic').locator('.ss-list')).toContainText('No Results')
   })
 
   test('clears search input when dropdown closes', async ({ page }) => {
@@ -49,24 +39,36 @@ test.describe('search', () => {
     await expect(search).toHaveValue('cat')
   })
 
-  test('highlights matching text when searchHighlight is on', async ({
-    page
-  }) => {
+  test('highlights matching text when searchHighlight is on', async ({ page }) => {
     await openSelect(page, 'searchHighlight')
-    await content(page, 'searchHighlight')
-      .locator('.ss-search input')
-      .fill('Type')
+    await content(page, 'searchHighlight').locator('.ss-search input').fill('Type')
     await page.waitForTimeout(150)
-    await expect(
-      content(page, 'searchHighlight').locator('.ss-search-highlight')
-    ).not.toHaveCount(0)
+    await expect(content(page, 'searchHighlight').locator('.ss-search-highlight')).not.toHaveCount(0)
   })
 
   test('no-search config hides the search bar', async ({ page }) => {
     await openSelect(page, 'noSearch')
-    await expect(
-      content(page, 'noSearch').locator('.ss-search')
-    ).toHaveClass(/ss-hide/)
+    await expect(content(page, 'noSearch').locator('.ss-search')).toHaveClass(/ss-hide/)
     await expect(option(page, 'noSearch', 'Apple')).toBeVisible()
+  })
+
+  test('upward list stays attached after search shrinks it', async ({ page }) => {
+    await openSelect(page, 'openUp')
+    await expect(content(page, 'openUp')).toHaveClass(/ss-dir-above/)
+
+    const gapAfterSearch = async () => {
+      const panel = await content(page, 'openUp').boundingBox()
+      const trigger = await main(page, 'openUp').boundingBox()
+      if (!panel || !trigger) {
+        throw new Error('missing bounding boxes')
+      }
+      return trigger.y - (panel.y + panel.height)
+    }
+
+    await content(page, 'openUp').locator('.ss-search input').fill('Zebra')
+    await expect(option(page, 'openUp', 'Zebra')).toBeVisible()
+    await expect(option(page, 'openUp', 'One')).toBeHidden()
+
+    expect(await gapAfterSearch()).toBeLessThan(8)
   })
 })
