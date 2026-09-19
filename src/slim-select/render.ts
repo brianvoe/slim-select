@@ -2711,7 +2711,9 @@ export default class Render {
       return
     }
 
-    if (cw.startsWith('>')) {
+    if (cw == '>trigger'){
+      this.content.main.style.minWidth = containerRect.width + 'px';
+    } else if (cw.startsWith('>')) {
       this.content.main.style.minWidth = cw.slice(1)
     } else if (cw.startsWith('<')) {
       this.content.main.style.maxWidth = cw.slice(1)
