@@ -15,6 +15,7 @@ export default defineComponent({
       exactWidth: null as SlimSelect | null,
       minWidth: null as SlimSelect | null,
       maxWidth: null as SlimSelect | null,
+      minTriggerWidth: null as SlimSelect | null
       overflowDemo: null as SlimSelect | null
     }
   },
@@ -48,6 +49,14 @@ export default defineComponent({
       }
     })
 
+    // minTriggerWidth: at least as wide as the trigger, can grow to fit content
+    this.minTriggerWidth = new SlimSelect({
+      select: this.$refs.minTriggerWidth as HTMLSelectElement,
+      settings: {
+        contentWidth: '>trigger'
+      }
+    })
+
     // Wide dropdown aligned right — resize window narrow and open to see it shift left
     this.overflowDemo = new SlimSelect({
       select: this.$refs.overflowDemo as HTMLSelectElement,
@@ -61,6 +70,7 @@ export default defineComponent({
     this.exactWidth?.destroy()
     this.minWidth?.destroy()
     this.maxWidth?.destroy()
+    this.minTriggerWidth?.destroy()
     this.overflowDemo?.destroy()
   }
 })
@@ -127,6 +137,7 @@ export default defineComponent({
         <code>"300px"</code> = exact width,
         <code>"&gt;300px"</code> = min-width (can grow),
         <code>"&lt;300px"</code> = max-width (can shrink).
+        <code>"&gt;trigger"</code> = at least trigger width, but can grow.
         Omit the setting for default behavior (match trigger width).
       </p>
     </div>
@@ -180,6 +191,20 @@ export default defineComponent({
         <div class="w-100">
           <div class="form-group">
             <select ref="maxWidth">
+              <option>Option 1</option>
+              <option>Option 2 with a long description from backend</option>
+              <option>Option 3</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-box">
+        <h3>contentWidth: "&gt;trigger"</h3>
+        <p>At least as wide as the trigger, can grow to fit content.</p>
+        <div class="w-100">
+          <div class="form-group">
+            <select ref="minTriggerWidth">
               <option>Option 1</option>
               <option>Option 2 with a long description from backend</option>
               <option>Option 3</option>
