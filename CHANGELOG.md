@@ -5,6 +5,13 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.0]
+
+### Added
+
+- `contentWidth: 'auto'` keeps the dropdown at least as wide as the select, but lets it grow to fit longer options
+  instead of wrapping them ([#713](https://github.com/brianvoe/slim-select/pull/713))
+
 ## [4.2.4]
 
 ### Fixed

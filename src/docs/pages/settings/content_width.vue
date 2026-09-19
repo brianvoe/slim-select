@@ -15,7 +15,7 @@ export default defineComponent({
       exactWidth: null as SlimSelect | null,
       minWidth: null as SlimSelect | null,
       maxWidth: null as SlimSelect | null,
-      minTriggerWidth: null as SlimSelect | null
+      autoWidth: null as SlimSelect | null,
       overflowDemo: null as SlimSelect | null
     }
   },
@@ -49,11 +49,11 @@ export default defineComponent({
       }
     })
 
-    // minTriggerWidth: at least as wide as the trigger, can grow to fit content
-    this.minTriggerWidth = new SlimSelect({
-      select: this.$refs.minTriggerWidth as HTMLSelectElement,
+    // auto: at least as wide as the select, can grow to fit content
+    this.autoWidth = new SlimSelect({
+      select: this.$refs.autoWidth as HTMLSelectElement,
       settings: {
-        contentWidth: '>trigger'
+        contentWidth: 'auto'
       }
     })
 
@@ -70,7 +70,7 @@ export default defineComponent({
     this.exactWidth?.destroy()
     this.minWidth?.destroy()
     this.maxWidth?.destroy()
-    this.minTriggerWidth?.destroy()
+    this.autoWidth?.destroy()
     this.overflowDemo?.destroy()
   }
 })
@@ -125,20 +125,18 @@ export default defineComponent({
   <div id="contentWidth" class="content">
     <h2 class="header">contentWidth</h2>
     <p>
-      The <code>contentWidth</code> setting controls how the dropdown content width is determined.
-      By default the dropdown matches the trigger width exactly, which can cause long option text to
-      wrap. Use the <code>&gt;</code> and <code>&lt;</code> prefixes to set min or max widths
-      instead.
+      The <code>contentWidth</code> setting controls how the dropdown content width is determined. By default the
+      dropdown matches the trigger width exactly, which can cause long option text to wrap. Use the
+      <code>&gt;</code> and <code>&lt;</code> prefixes to set min or max widths instead, or <code>auto</code> to let the
+      dropdown grow past the trigger width.
     </p>
 
     <div class="alert info">
       <p>
         <strong>Syntax:</strong>
-        <code>"300px"</code> = exact width,
-        <code>"&gt;300px"</code> = min-width (can grow),
-        <code>"&lt;300px"</code> = max-width (can shrink).
-        <code>"&gt;trigger"</code> = at least trigger width, but can grow.
-        Omit the setting for default behavior (match trigger width).
+        <code>"300px"</code> = exact width, <code>"&gt;300px"</code> = min-width (can grow), <code>"&lt;300px"</code> =
+        max-width (can shrink), <code>"auto"</code> = at least the trigger width, can grow. Omit the setting for default
+        behavior (match trigger width).
       </p>
     </div>
 
@@ -149,6 +147,20 @@ export default defineComponent({
         <div class="w-100">
           <div class="form-group">
             <select ref="defaultWidth">
+              <option>Option 1</option>
+              <option>Option 2 with a long description from backend</option>
+              <option>Option 3</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-box">
+        <h3>contentWidth: "auto"</h3>
+        <p>At least the trigger width, grows to fit longer options.</p>
+        <div class="w-100">
+          <div class="form-group">
+            <select ref="autoWidth">
               <option>Option 1</option>
               <option>Option 2 with a long description from backend</option>
               <option>Option 3</option>
@@ -198,20 +210,6 @@ export default defineComponent({
           </div>
         </div>
       </div>
-
-      <div class="demo-box">
-        <h3>contentWidth: "&gt;trigger"</h3>
-        <p>At least as wide as the trigger, can grow to fit content.</p>
-        <div class="w-100">
-          <div class="form-group">
-            <select ref="minTriggerWidth">
-              <option>Option 1</option>
-              <option>Option 2 with a long description from backend</option>
-              <option>Option 3</option>
-            </select>
-          </div>
-        </div>
-      </div>
     </div>
 
     <h3>Right-edge overflow: dropdown shifts left</h3>
@@ -238,21 +236,27 @@ export default defineComponent({
 // Default: dropdown width matches trigger (no setting needed)
 new SlimSelect({ select: '#select1' })
 
-// Exact width: always 300px
+// Auto: at least the trigger width, grows to fit longer options
 new SlimSelect({
   select: '#select2',
+  settings: { contentWidth: 'auto' }
+})
+
+// Exact width: always 300px
+new SlimSelect({
+  select: '#select3',
   settings: { contentWidth: '300px' }
 })
 
 // Min-width: at least 300px, grows to fit content
 new SlimSelect({
-  select: '#select3',
+  select: '#select4',
   settings: { contentWidth: '>300px' }
 })
 
 // Max-width: no wider than 300px
 new SlimSelect({
-  select: '#select4',
+  select: '#select5',
   settings: { contentWidth: '&lt;300px' }
 })
       </pre>

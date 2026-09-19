@@ -2853,6 +2853,37 @@ describe('render module', () => {
         expect(render.content.main.style.maxWidth).toBe('')
       })
 
+      test('auto: sets min-width to trigger width and no fixed width', () => {
+        render.settings.contentWidth = 'auto'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.minWidth).toBe('200px')
+        expect(render.content.main.style.width).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('auto: clears min-width when switching to an exact width', () => {
+        render.settings.contentWidth = 'auto'
+        render.moveContentBelow()
+        expect(render.content.main.style.minWidth).toBe('200px')
+
+        render.settings.contentWidth = '500px'
+        render.moveContentBelow()
+        expect(render.content.main.style.width).toBe('500px')
+        expect(render.content.main.style.minWidth).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
+      test('auto with relative contentPosition sets min-width only', () => {
+        render.settings.contentPosition = 'relative'
+        render.settings.contentWidth = 'auto'
+        render.moveContentBelow()
+
+        expect(render.content.main.style.minWidth).toBe('200px')
+        expect(render.content.main.style.width).toBe('')
+        expect(render.content.main.style.maxWidth).toBe('')
+      })
+
       test('exact value: sets width to given value', () => {
         render.settings.contentWidth = '500px'
         render.moveContentBelow()
