@@ -944,7 +944,7 @@ var O = class {
 		this.settings.showSearch && (this.content.status.textContent = e);
 	}
 	repositionOpenContent() {
-		!this.settings.isOpen || this.isModalViewActive() || this.settings.contentPosition !== "relative" && this.content.main.classList.contains(this.classes.getFirst("dirAbove")) && this.moveContentAbove();
+		this.settings.isOpen && !this.isModalViewActive() && this.settings.contentPosition !== "relative" && this.content.main.classList.contains(this.classes.getFirst("dirAbove")) && this.moveContentAbove();
 	}
 	moveContent() {
 		if (!this.isModalViewActive()) {
@@ -964,14 +964,14 @@ var O = class {
 		}
 	}
 	startPositionTracking() {
-		this.settings.contentPosition !== "absolute" || this.isModalViewActive() || (this.stopPositionTracking(), !(typeof ResizeObserver > "u") && (this.lastObservedContentHeight = -1, this.positionObserver = new ResizeObserver((e) => {
+		this.settings.contentPosition !== "absolute" || this.isModalViewActive() || (this.stopPositionTracking(), typeof ResizeObserver < "u" && (this.lastObservedContentHeight = -1, this.positionObserver = new ResizeObserver((e) => {
 			if (!this.settings.isOpen) return;
 			let t = !1, n = !1;
 			for (let r of e) if (r.target === this.content.main) {
 				let e = r.contentRect.height;
 				e !== this.lastObservedContentHeight && (this.lastObservedContentHeight = e, t = !0);
 			} else n = !0;
-			!t && !n || (cancelAnimationFrame(this.positionObserverRaf), this.positionObserverRaf = requestAnimationFrame(() => {
+			(t || n) && (cancelAnimationFrame(this.positionObserverRaf), this.positionObserverRaf = requestAnimationFrame(() => {
 				n ? this.moveContent() : this.repositionOpenContent();
 			}));
 		}), this.observePositionTargets()));
@@ -982,7 +982,7 @@ var O = class {
 	observePositionTargets() {
 		if (!this.positionObserver) return;
 		let e = /* @__PURE__ */ new Set(), t = (t) => {
-			!t || e.has(t) || (e.add(t), this.positionObserver.observe(t));
+			t && !e.has(t) && (e.add(t), this.positionObserver.observe(t));
 		};
 		t(this.main.main), t(this.content.main);
 		let n = this.main.main.parentElement, r = this.settings.contentLocation;
@@ -1448,7 +1448,7 @@ var O = class {
 			this.settings.contentPosition !== "relative" && (this.content.main.style.width = e.width + "px");
 			return;
 		}
-		t.startsWith(">") ? this.content.main.style.minWidth = t.slice(1) : t.startsWith("<") ? this.content.main.style.maxWidth = t.slice(1) : this.content.main.style.width = t;
+		t === "auto" ? this.content.main.style.minWidth = e.width + "px" : t.startsWith(">") ? this.content.main.style.minWidth = t.slice(1) : t.startsWith("<") ? this.content.main.style.maxWidth = t.slice(1) : this.content.main.style.width = t;
 	}
 	cancelOverflowShift() {
 		this.overflowShiftRaf &&= (cancelAnimationFrame(this.overflowShiftRaf), 0);
@@ -1489,7 +1489,7 @@ var O = class {
 	updateDeselectAll() {
 		if (!this.store || !this.settings) return;
 		let e = this.store.getSelectedOptions(), t = e && e.length > 0, n = this.settings.isMultiple, r = this.settings.allowDeselect, i = this.isAtMinSelected(), a = this.main.deselect.main, o = this.classes.hide;
-		r && !(n && !t) && !i ? this.removeClasses(a, o) : this.addClasses(a, o);
+		r && (!n || t) && !i ? this.removeClasses(a, o) : this.addClasses(a, o);
 	}
 };
 //#endregion
@@ -1996,10 +1996,10 @@ var R = class {
 		}), this.globalEvents = new O({
 			onDocumentClick: this.documentClick.bind(this),
 			onWindowResize: () => {
-				!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
+				(this.settings.isOpen || this.settings.isFullOpen) && this.render.moveContent();
 			},
 			onWindowScroll: () => {
-				!this.settings.isOpen && !this.settings.isFullOpen || this.render.moveContent();
+				(this.settings.isOpen || this.settings.isFullOpen) && this.render.moveContent();
 			},
 			onVisibilityChange: () => {
 				document.hidden && this.close({
@@ -2064,7 +2064,7 @@ var R = class {
 		source: "api",
 		selectionChanged: !1
 	}) {
-		!this.settings.isOpen || this.settings.alwaysOpen || this.lifecycle.requestClose(e).then((e) => {
+		this.settings.isOpen && !this.settings.alwaysOpen && this.lifecycle.requestClose(e).then((e) => {
 			e && (this.settings.isOpen || (this.settings.isOpen = this.lifecycle.isOpen, this.settings.isFullOpen = this.lifecycle.isFullOpen));
 		});
 	}
