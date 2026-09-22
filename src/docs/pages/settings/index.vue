@@ -34,6 +34,7 @@ import SearchHighlight from './search_highlight.vue'
 import Select from './select.vue'
 import SelectAll from './select_all.vue'
 import ShowTooltip from './show_tooltip.vue'
+import AllowEmptySearch from './allow_empty_search.vue'
 
 export default defineComponent({
   name: 'Settings',
@@ -45,6 +46,7 @@ export default defineComponent({
     MultiString,
     AdSlot,
     AlwaysOpen,
+    AllowEmptySearch,
     ContentLocation,
     ContentPosition,
     ContentWidth,
@@ -131,6 +133,7 @@ export default defineComponent({
     <Closable />
     <AdSlot ad-slot="1270131515" />
 
+    <AllowEmptySearch />
     <HideSelected />
     <MaxValuesShown />
     <AdSlot ad-slot="1270131515" />

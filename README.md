@@ -194,7 +194,8 @@ new SlimSelect({
     selectAllText: 'Select All',
     unselectAllText: 'Unselect All',
     modal: 'mobile', // 'off' | 'on' | 'mobile'
-    modalTitle: '' // Header above the option list in modal view
+    modalTitle: '', // Header above the option list in modal view,
+    allowEmptySearch: false
   }
 })
 ```
