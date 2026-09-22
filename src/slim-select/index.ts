@@ -470,7 +470,7 @@ export default class SlimSelect {
   public search(value: string): void {
     const trimmed = value.trim()
 
-    if (trimmed === '') {
+    if (trimmed === '' && !this.settings.allowEmptySearch) {
       this.render.content.search.input.value = ''
       this.clearSearch()
       return

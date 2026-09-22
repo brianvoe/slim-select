@@ -45,7 +45,8 @@ const defaultSettings: { [key: string]: any } = {
   selectAll: false,
   selectAllText: 'Select All',
   unselectAllText: 'Unselect All',
-  modal: 'mobile'
+  modal: 'mobile',
+  allowEmptySearch: false
 }
 
 describe('Settings module', () => {
@@ -121,7 +122,8 @@ describe('Settings module', () => {
       hideSelected: true,
       multiString: true,
       keepOrder: true,
-      showOptionTooltips: true
+      showOptionTooltips: true,
+      allowEmptySearch: true
     }
 
     const settingsWithOverride = {

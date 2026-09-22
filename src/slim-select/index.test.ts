@@ -1308,6 +1308,23 @@ describe('SlimSelect Module', () => {
       expect(slim.render.content.search.input.value).toBe('')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(3)
     })
+
+    test('allows empty search when allowEmptySearch is true', () => {
+      document.body.innerHTML = `
+        <select id="local-search-allow-empty">
+          <option value="1">Apple</option>
+          <option value="2">Banana</option>
+          <option value="3">Cherry</option>
+        </select>
+      `
+
+      const slim = new SlimSelect({ select: '#local-search-allow-empty', settings: { allowEmptySearch: true } })
+      slim.open()
+      slim.search('   ')
+
+      expect(slim.render.content.search.input.value).toBe('   ')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(3)
+    })
   })
 
   describe('search whitespace', () => {
@@ -1363,6 +1380,26 @@ describe('SlimSelect Module', () => {
       expect(searchMock).not.toHaveBeenCalled()
       expect(slim.render.content.search.input.value).toBe('')
       expect(slim.render.content.list.querySelectorAll('.ss-option')).toHaveLength(2)
+    })
+
+    test('allow empty search when allowEmptySearch is true', () => {
+      destroyAllSlimSelects()
+      document.body.innerHTML = '<select id="allowEmptySearch"></select>'
+
+      const slim = new SlimSelect({
+        select: '#allowEmptySearch',
+        settings: { allowEmptySearch: true },
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ]
+      })
+
+      slim.open()
+      slim.search('   ')
+
+      expect(slim.render.content.search.input.value).toBe('   ')
+      expect(slim.render.getOptions(true, true, true)).toHaveLength(2)
     })
   })
 

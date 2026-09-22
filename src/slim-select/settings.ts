@@ -50,6 +50,7 @@ export default class Settings {
   public unselectAllText: string
   public modal: ModalSetting
   public modalTitle: string
+  public allowEmptySearch: boolean
 
   constructor(settings?: Partial<Settings>) {
     if (!settings) {
@@ -98,5 +99,6 @@ export default class Settings {
     this.unselectAllText = settings.unselectAllText || 'Unselect All'
     this.modal = settings.modal || 'mobile'
     this.modalTitle = settings.modalTitle || ''
+    this.allowEmptySearch = settings.allowEmptySearch !== undefined ? settings.allowEmptySearch : false
   }
 }
