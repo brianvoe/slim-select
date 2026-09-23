@@ -1322,7 +1322,7 @@ describe('SlimSelect Module', () => {
       slim.open()
       slim.search('   ')
 
-      expect(slim.render.content.search.input.value).toBe('   ')
+      expect(slim.render.content.search.input.value).toBe('')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(3)
     })
   })
@@ -1398,7 +1398,7 @@ describe('SlimSelect Module', () => {
       slim.open()
       slim.search('   ')
 
-      expect(slim.render.content.search.input.value).toBe('   ')
+      expect(slim.render.content.search.input.value).toBe('')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(2)
     })
   })

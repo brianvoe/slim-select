@@ -470,14 +470,17 @@ export default class SlimSelect {
   public search(value: string): void {
     const trimmed = value.trim()
 
-    if (trimmed === '' && !this.settings.allowEmptySearch) {
+    if (trimmed === '') {
       this.render.content.search.input.value = ''
-      this.clearSearch()
-      return
+
+      if (!this.settings.allowEmptySearch) {
+        this.clearSearch()
+        return
+      }
     }
 
-    // Sync programmatic search calls, but never strip spaces from user input
-    if (this.render.content.search.input.value !== value) {
+    // Sync programmatic search calls, but never strip spaces from nonempty user input.
+    if (trimmed !== '' && this.render.content.search.input.value !== value) {
       this.render.content.search.input.value = value
     }
 
