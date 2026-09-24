@@ -14,6 +14,7 @@ describe('render module', () => {
   let setSelectedMock: ReturnType<typeof vi.fn>
   let addOptionMock: ReturnType<typeof vi.fn>
   let searchMock: ReturnType<typeof vi.fn>
+  let clearSearchMock: ReturnType<typeof vi.fn>
   let afterChangeMock: ReturnType<typeof vi.fn>
   let beforeChangeMock: ReturnType<typeof vi.fn>
 
@@ -44,6 +45,7 @@ describe('render module', () => {
     setSelectedMock = vi.fn(() => {})
     addOptionMock = vi.fn(() => {})
     searchMock = vi.fn(() => {})
+    clearSearchMock = vi.fn(() => {})
     afterChangeMock = vi.fn(() => {})
     beforeChangeMock = vi.fn(() => true)
 
@@ -54,6 +56,7 @@ describe('render module', () => {
       setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
       addOption: addOptionMock as (option: Option) => void,
       search: searchMock as (search: string) => void,
+      clearSearch: clearSearchMock as () => void,
       afterChange: afterChangeMock as (newVal: Option[]) => void,
       beforeChange: beforeChangeMock as (newVal: Option[], oldVal: Option[]) => boolean | void
     }
@@ -81,6 +84,7 @@ describe('render module', () => {
         setSelected: () => {},
         addOption: () => {},
         search: () => {},
+        clearSearch: () => {},
         beforeChange: () => {
           return true
         }
@@ -677,7 +681,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       const overlay = document.querySelector('.ss-modal-overlay')
@@ -695,7 +700,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
@@ -710,7 +716,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       expect(document.querySelectorAll('.ss-modal-overlay').length).toBe(beforeCount)
@@ -728,7 +735,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       modalRender.open()
@@ -745,7 +753,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       modalRender.open()
@@ -769,7 +778,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       modalRender.open()
@@ -795,7 +805,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       Object.defineProperty(window, 'innerWidth', {
@@ -831,7 +842,8 @@ describe('render module', () => {
         close: vi.fn(),
         setSelected: vi.fn(),
         addOption: vi.fn(),
-        search: vi.fn()
+        search: vi.fn(),
+        clearSearch: vi.fn()
       })
 
       modalRender.open()
@@ -876,7 +888,8 @@ describe('render module', () => {
           close: closeMock as (info?: CloseInfo) => void,
           setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
           addOption: addOptionMock as (option: Option) => void,
-          search: searchMock as (search: string) => void
+          search: searchMock as (search: string) => void,
+          clearSearch: clearSearchMock as () => void
         }
       )
 
@@ -901,7 +914,8 @@ describe('render module', () => {
           close: closeMock as (info?: CloseInfo) => void,
           setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
           addOption: addOptionMock as (option: Option) => void,
-          search: searchMock as (search: string) => void
+          search: searchMock as (search: string) => void,
+          clearSearch: clearSearchMock as () => void
         }
       )
 
@@ -1681,7 +1695,8 @@ describe('render module', () => {
         close: closeMock as (info?: CloseInfo) => void,
         setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
         addOption: addOptionMock as (option: Option) => void,
-        search: searchMock as (search: string) => void
+        search: searchMock as (search: string) => void,
+        clearSearch: clearSearchMock as () => void
       })
       selectAllRender.settings.isMultiple = true
       selectAllRender.renderOptions(store.getData())
@@ -1706,7 +1721,8 @@ describe('render module', () => {
         close: closeMock as (info?: CloseInfo) => void,
         setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
         addOption: addOptionMock as (option: Option) => void,
-        search: searchMock as (search: string) => void
+        search: searchMock as (search: string) => void,
+        clearSearch: clearSearchMock as () => void
       })
     }
 
@@ -2240,6 +2256,7 @@ describe('render module', () => {
         },
         addOption: () => {},
         search: () => {},
+        clearSearch: () => {},
         afterChange: afterChangeMock
       } as Callbacks
 

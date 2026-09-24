@@ -5,6 +5,15 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.0]
+
+### Changed
+
+- Empty searches now reach the `events.search` callback instead of being swallowed. This makes it possible to load
+  results as soon as the dropdown opens (`beforeOpen: () => select.search('')`) or when the field is cleared, and lets
+  the callback decide what "no search" means. Return the `catalog` argument (`if (searchValue === '') return catalog`)
+  to reproduce the previous reset-to-baseline behavior ([#716](https://github.com/brianvoe/slim-select/pull/716))
+
 ## [4.3.0]
 
 ### Added

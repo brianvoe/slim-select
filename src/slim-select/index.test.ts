@@ -499,6 +499,10 @@ describe('SlimSelect Module', () => {
       document.body.innerHTML = '<select id="searchTest"></select>'
 
       searchMock = vi.fn((searchValue: string, selected: any[], catalog?: any[]) => {
+        // Empty query: the consumer decides what "no search" means (here, the catalog baseline)
+        if (searchValue === '') {
+          return catalog ?? []
+        }
         // Mock search results based on search value
         if (searchValue.length >= 2) {
           return [
@@ -1336,7 +1340,7 @@ describe('SlimSelect Module', () => {
       expect(searchMock).toHaveBeenCalledWith('te', expect.any(Array), expect.any(Array))
     })
 
-    test('whitespace-only input clears API search without calling search callback', () => {
+    test('whitespace-only input forwards an empty query to the search callback', () => {
       destroyAllSlimSelects()
       document.body.innerHTML = '<select id="searchWhitespace"></select>'
 
@@ -1360,9 +1364,35 @@ describe('SlimSelect Module', () => {
       searchMock.mockClear()
       slim.search('   ')
 
+      expect(searchMock).toHaveBeenCalledWith('', expect.any(Array), expect.any(Array))
+      expect(slim.render.content.search.input.value).toBe('')
+    })
+
+    test('closing after typing does not re-fire the search callback', () => {
+      destroyAllSlimSelects()
+      document.body.innerHTML = '<select id="searchCloseNoRefire"></select>'
+
+      const searchMock = vi.fn().mockReturnValue([{ value: 'x', text: 'X' }])
+
+      const slim = new SlimSelect({
+        select: '#searchCloseNoRefire',
+        data: [
+          { value: 'a', text: 'A' },
+          { value: 'b', text: 'B' }
+        ],
+        events: {
+          search: searchMock
+        }
+      })
+
+      slim.open()
+      slim.search('te')
+      searchMock.mockClear()
+
+      slim.close()
+
       expect(searchMock).not.toHaveBeenCalled()
       expect(slim.render.content.search.input.value).toBe('')
-      expect(slim.render.content.list.querySelectorAll('.ss-option')).toHaveLength(2)
     })
   })
 

@@ -44,7 +44,7 @@ export default defineComponent({
     </p>
     <p>
       With <code>events.search</code> (API search), reopening the dropdown while <code>keepSearch</code> is enabled
-      re-runs the saved search query. Clearing the search field still restores the catalog baseline.
+      re-runs the saved search query. Clearing the search field calls your search callback with an empty string.
     </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">

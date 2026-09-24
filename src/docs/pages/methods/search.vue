@@ -51,7 +51,9 @@ export default defineComponent({
     <p>
       If <code>events.search</code> is configured, this method triggers your API search callback with
       <code>searchValue</code>, <code>selected</code>, and <code>catalog</code> instead of filtering local options.
-      Leading and trailing whitespace is trimmed; whitespace-only values clear the search.
+      Leading and trailing whitespace is trimmed. An empty or whitespace-only value is forwarded to your callback as an
+      empty string, which is useful for triggering a search when the dropdown opens; without
+      <code>events.search</code> it clears the search and restores the catalog.
     </p>
 
     <div class="row">

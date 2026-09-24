@@ -27,6 +27,8 @@ export interface Callbacks {
   setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
+  /** Internal reset that must not fire the consumer search event. */
+  clearSearch: () => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
   afterChange?: (newVal: Option[]) => void
 }
@@ -1484,8 +1486,8 @@ export default class Render {
             this.callbacks.setSelected([newOption.id], true)
           }
 
-          // Clear search
-          this.callbacks.search('')
+          // Clear search (internal reset — must not fire the consumer search event)
+          this.callbacks.clearSearch()
 
           // Close it only if closeOnSelect = true
           if (this.settings.closeOnSelect) {

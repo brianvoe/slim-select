@@ -102,17 +102,21 @@ export default defineComponent({
     </p>
     <p>
       When <code>events.search</code> is set, Slim Select uses your callback for remote search instead of filtering
-      local options with <code>searchFilter</code>. API search results are temporary — clearing the search field or
-      closing the dropdown (when <code>keepSearch</code> is false) restores the catalog baseline while preserving the
-      current selection.
+      local options with <code>searchFilter</code>. API search results are temporary — closing the dropdown (when
+      <code>keepSearch</code> is false) restores the catalog baseline while preserving the current selection.
+    </p>
+    <p>
+      Your callback is invoked on <strong>every</strong> search, including empty queries. Clearing the search field
+      calls it with an empty string, which lets you decide what "no search" means — return the catalog baseline to
+      reproduce the old reset behavior, or return something else (for example a default list from your API).
     </p>
 
     <h3 class="header">Callback parameters</h3>
-    <p>Your callback is invoked on each non-empty search with three arguments:</p>
+    <p>Your callback receives three arguments:</p>
     <ul>
       <li>
-        <code>searchValue</code> (<code>string</code>) — The current search input text, trimmed. Whitespace-only
-        input clears the search.
+        <code>searchValue</code> (<code>string</code>) — The current search input text, trimmed. An empty or
+        whitespace-only query is passed through as an empty string.
       </li>
       <li>
         <code>selected</code> (<code>Option[]</code>) — Options currently selected in the control. Use this to exclude
@@ -124,6 +128,33 @@ export default defineComponent({
         <code>getData()</code>, which reflects temporary search results shown in the dropdown.
       </li>
     </ul>
+
+    <h3 class="header">Empty queries and search on open</h3>
+    <p>
+      Since empty queries reach your callback, you can load options as soon as the dropdown opens by searching with an
+      empty string. Use <code>beforeOpen</code> and return the catalog (or any default list) for the empty case.
+    </p>
+
+    <HighlightStyle language="javascript">
+      <pre>
+        const select = new SlimSelect({
+          select: '#selectElement',
+          events: {
+            // Trigger an empty search when the dropdown is opened
+            beforeOpen: () => select.search(''),
+            search: (searchValue, selected, catalog) => {
+              // Empty query: show the local baseline instead of fetching
+              if (searchValue === '') {
+                return catalog ?? []
+              }
+
+              // Otherwise fetch remote results
+              return fetch(`/api/users?q=${encodeURIComponent(searchValue)}`).then((r) => r.json())
+            }
+          }
+        })
+      </pre>
+    </HighlightStyle>
 
     <h3 class="header">Return value</h3>
     <p>

@@ -54,7 +54,8 @@ describe('SyncCoordinator', () => {
       close: vi.fn(),
       setSelected: vi.fn(),
       addOption: vi.fn(),
-      search: vi.fn()
+      search: vi.fn(),
+      clearSearch: vi.fn()
     }
 
     const render = new Render(settings, cssClasses, store, renderCallbacks)

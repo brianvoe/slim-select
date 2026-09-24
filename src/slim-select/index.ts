@@ -192,6 +192,7 @@ export default class SlimSelect {
         })
       },
       search: this.search.bind(this),
+      clearSearch: this.clearSearch.bind(this),
       beforeChange: this.events.beforeChange,
       afterChange: this.events.afterChange
     }
@@ -452,7 +453,7 @@ export default class SlimSelect {
     // Clear search only if not empty and keepSearch is false
     if (!this.settings.keepSearch && this.render.content.search.input.value !== '') {
       this.sync.flush()
-      this.search('') // Clear search
+      this.clearSearch() // Internal reset — must not fire the consumer search event
     }
 
     // If we arent tabbing focus back on the main element
@@ -471,13 +472,13 @@ export default class SlimSelect {
     const trimmed = value.trim()
 
     if (trimmed === '') {
+      // Empty queries are forwarded to the consumer's search event, letting the
+      // callback decide what "no search" means (e.g. return the catalog baseline).
+      // Without a search event there is nothing to forward to, so local search
+      // resets to the catalog baseline via clearSearch() below.
       this.render.content.search.input.value = ''
-      this.clearSearch()
-      return
-    }
-
-    // Sync programmatic search calls, but never strip spaces from user input
-    if (this.render.content.search.input.value !== value) {
+    } else if (this.render.content.search.input.value !== value) {
+      // Sync programmatic search calls, but never strip spaces from user input
       this.render.content.search.input.value = value
     }
 
@@ -486,10 +487,17 @@ export default class SlimSelect {
       return
     }
 
+    if (trimmed === '') {
+      this.clearSearch()
+      return
+    }
+
     this.runLocalSearch(trimmed)
   }
 
+  /** Reset search state without invoking the consumer search event. */
   private clearSearch(): void {
+    this.render.content.search.input.value = ''
     this.searchGeneration++
 
     if (!this.events.search && this.render.canFilterOptionsInPlace()) {
