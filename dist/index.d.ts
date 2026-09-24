@@ -53,6 +53,7 @@ export default class SlimSelect {
     /** Sync close — invoked by lifecycle after beforeClose approves. */
     private applyClose;
     search(value: string): void;
+    /** Reset search state without invoking the consumer search event. */
     private clearSearch;
     private runLocalSearch;
     private runApiSearch;

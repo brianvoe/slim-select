@@ -1037,7 +1037,7 @@ var P = class {
 						let e = this.store.getSelected();
 						e.push(t.id), this.callbacks.setSelected(e, !0);
 					} else this.callbacks.setSelected([t.id], !0);
-					if (this.callbacks.search(""), this.settings.closeOnSelect) {
+					if (this.callbacks.clearSearch(), this.settings.closeOnSelect) {
 						let e = d(this.content.main);
 						setTimeout(() => {
 							this.requestClose("select", { selectionChanged: !0 });
@@ -1958,6 +1958,7 @@ var W = class {
 				});
 			},
 			search: this.search.bind(this),
+			clearSearch: this.clearSearch.bind(this),
 			beforeChange: this.events.beforeChange,
 			afterChange: this.events.afterChange
 		};
@@ -2068,24 +2069,24 @@ var W = class {
 		});
 	}
 	applyClose(e) {
-		this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && (this.sync.flush(), this.search(""));
+		this.render.close(), !this.settings.keepSearch && this.render.content.search.input.value !== "" && (this.sync.flush(), this.clearSearch());
 		let t = e.source === "outside" || e.source === "toggle";
 		this.render.mainFocus(t ? "click" : null), this.settings.isOpen = !1, this.settings.isFullOpen = !1, this.render.stopPositionTracking();
 	}
 	search(e) {
 		let t = e.trim();
-		if (t === "") {
-			this.render.content.search.input.value = "", this.clearSearch();
+		if (t === "" ? this.render.content.search.input.value = "" : this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), this.events.search) {
+			this.runApiSearch(t);
 			return;
 		}
-		if (this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), this.events.search) {
-			this.runApiSearch(t);
+		if (t === "") {
+			this.clearSearch();
 			return;
 		}
 		this.runLocalSearch(t);
 	}
 	clearSearch() {
-		if (this.searchGeneration++, !this.events.search && this.render.canFilterOptionsInPlace()) {
+		if (this.render.content.search.input.value = "", this.searchGeneration++, !this.events.search && this.render.canFilterOptionsInPlace()) {
 			this.render.filterOptionsInPlace("", this.events.searchFilter), this.render.resetSearchFilterState();
 			return;
 		}
