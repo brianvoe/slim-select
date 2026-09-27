@@ -97,6 +97,13 @@ export default class Render {
     /** Remove open-direction classes after close animation (lifecycle afterClose). */
     clearDirectionClasses(): void;
     updateClassStyles(): void;
+    /**
+     * Mirror the native select's title attribute onto the rendered control so
+     * browser tooltips keep working after the select is swapped for the div UI.
+     * Tooltips are inherited by descendants, so setting it on ss-main covers
+     * ss-values and ss-single as well.
+     */
+    updateTitle(title: string | null): void;
     updateAriaAttributes(): void;
     mainDiv(): Main;
     mainFocus(eventType: string | null): void;

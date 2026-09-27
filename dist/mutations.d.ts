@@ -9,6 +9,8 @@
 export interface MutationFlags {
     /** Native select class attribute changed — sync to render styles only. */
     classChanged: boolean;
+    /** Native select title attribute changed — sync the tooltip onto the rendered control. */
+    titleChanged: boolean;
     /** Native select disabled attribute changed — enable/disable SlimSelect. */
     disabledChanged: boolean;
     /**

@@ -3,6 +3,7 @@ export default class Select {
     select: HTMLSelectElement;
     onValueChange?: (value: Option[]) => void;
     onClassChange?: (classes: string[]) => void;
+    onTitleChange?: (title: string) => void;
     onDisabledChange?: (disabled: boolean) => void;
     onOptionsChange?: (data: (Option | Optgroup)[]) => void;
     onLabelClick?: () => void;

@@ -717,6 +717,9 @@ var N = class {
 		if (this.main.main.className = "", this.main.main.removeAttribute("style"), this.content.main.className = "", this.content.main.removeAttribute("style"), this.addClasses(this.main.main, this.classes.main), this.addClasses(this.content.main, this.classes.content), this.settings.style !== "" && (this.main.main.style.cssText = this.settings.style, this.content.main.style.cssText = this.settings.style), this.settings.class.length) for (let e of this.settings.class) e.trim() !== "" && (this.main.main.classList.add(e.trim()), this.content.main.classList.add(e.trim()));
 		(this.settings.contentPosition === "relative" || this.settings.contentPosition === "fixed") && this.content.main.classList.add("ss-" + this.settings.contentPosition);
 	}
+	updateTitle(e) {
+		e ? this.main.main.setAttribute("title", e) : this.main.main.removeAttribute("title");
+	}
 	updateAriaAttributes() {
 		let e = this.content.list.id;
 		this.main.main.role = "combobox", this.main.main.setAttribute("aria-haspopup", "listbox"), this.main.main.setAttribute("aria-controls", e), this.main.main.setAttribute("aria-expanded", "false"), this.content.list.setAttribute("role", "listbox"), this.content.list.setAttribute("aria-label", this.settings.ariaLabel + " listbox"), this.settings.isMultiple && this.content.list.setAttribute("aria-multiselectable", "true"), this.content.search.input.setAttribute("aria-controls", e);
@@ -1497,12 +1500,13 @@ var N = class {
 function z(e, t) {
 	let n = {
 		classChanged: !1,
+		titleChanged: !1,
 		disabledChanged: !1,
 		optgroupOptionChanged: !1,
 		selectionChanged: !1
 	};
 	for (let r of e) {
-		if (r.target === t && (r.attributeName === "disabled" && (n.disabledChanged = !0), r.attributeName === "class" && (n.classChanged = !0), r.type === "childList")) {
+		if (r.target === t && (r.attributeName === "disabled" && (n.disabledChanged = !0), r.attributeName === "class" && (n.classChanged = !0), r.attributeName === "title" && (n.titleChanged = !0), r.type === "childList")) {
 			for (let e of Array.from(r.addedNodes)) if (e.nodeName === "OPTION" && e.value === t.value) {
 				n.selectionChanged = !0;
 				break;
@@ -1519,6 +1523,7 @@ var B = class {
 	select;
 	onValueChange;
 	onClassChange;
+	onTitleChange;
 	onDisabledChange;
 	onOptionsChange;
 	onLabelClick;
@@ -1577,19 +1582,19 @@ var B = class {
 	}
 	observeCall(e) {
 		if (!this.listen) return;
-		let { classChanged: t, disabledChanged: n, optgroupOptionChanged: r, selectionChanged: i } = z(e, this.select), a = i;
-		if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), n && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), r && this.clearLeftoverHiddenDisplay(e), r && this.onOptionsChange) {
+		let { classChanged: t, titleChanged: n, disabledChanged: r, optgroupOptionChanged: i, selectionChanged: a } = z(e, this.select), o = a;
+		if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), n && this.onTitleChange && this.onTitleChange(this.select.getAttribute("title") || ""), r && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), i && this.clearLeftoverHiddenDisplay(e), i && this.onOptionsChange) {
 			if (this.isUpdating) {
 				if (this.select.options.length > 0) {
 					let e = this.getData();
 					e.length > 0 && (this.pendingOptionsChange = e);
 				}
-				a && this.select.dispatchEvent(new Event("change"));
+				o && this.select.dispatchEvent(new Event("change"));
 				return;
 			}
-			this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0), a = !1;
+			this.changeListen(!1), this.onOptionsChange(this.getData()), this.changeListen(!0), o = !1;
 		}
-		a && this.select.dispatchEvent(new Event("change"));
+		o && this.select.dispatchEvent(new Event("change"));
 	}
 	getData() {
 		let e = [], t = this.select.childNodes;
@@ -1929,6 +1934,8 @@ var U = class {
 		for (let n in e.events) e.events.hasOwnProperty(n) && (t.indexOf(n) === -1 ? this.events[n] = e.events[n] : this.events[n] = S(e.events[n], 100));
 		this.settings.disabled = e.settings?.disabled ? e.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new B(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onClassChange = (e) => {
 			this.settings.class = e, this.render.updateClassStyles();
+		}, this.select.onTitleChange = (e) => {
+			this.render.updateTitle(e);
 		}, this.select.onDisabledChange = (e) => {
 			e ? this.disable() : this.enable();
 		}, this.select.onLabelClick = () => {
@@ -2016,7 +2023,7 @@ var U = class {
 			let e = Array.from(this.selectEl.labels).map((e, t) => (e.id ||= `${this.settings.id}-label-${t}`, e.id));
 			this.render.main.main.removeAttribute("aria-label"), this.render.main.main.setAttribute("aria-labelledby", e.join(" "));
 		}
-		this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), this.globalEvents.attach({ listenScroll: this.settings.openPosition === "auto" }), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
+		this.render.updateTitle(this.selectEl.getAttribute("title")), this.selectEl.parentNode && this.selectEl.parentNode.insertBefore(this.render.main.main, this.selectEl.nextSibling), this.globalEvents.attach({ listenScroll: this.settings.openPosition === "auto" }), this.settings.disabled && this.disable(), this.settings.alwaysOpen && this.open(), this.select.setupLabelHandlers(), this.selectEl.slim = this;
 	}
 	enable() {
 		this.settings.disabled = !1, this.select.enable(), this.render.enable();
