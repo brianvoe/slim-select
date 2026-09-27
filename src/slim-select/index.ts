@@ -145,6 +145,10 @@ export default class SlimSelect {
       // Run render updateClassStyles
       this.render.updateClassStyles()
     }
+    this.select.onTitleChange = (title: string) => {
+      // Keep the rendered control's tooltip in sync with the native select
+      this.render.updateTitle(title)
+    }
     this.select.onDisabledChange = (disabled: boolean) => {
       if (disabled) {
         this.disable()
@@ -299,6 +303,10 @@ export default class SlimSelect {
       this.render.main.main.removeAttribute('aria-label')
       this.render.main.main.setAttribute('aria-labelledby', labelledByIds.join(' '))
     }
+
+    // Carry the native select's title attribute over to the rendered control so
+    // browser tooltips keep working (the original select is visually hidden)
+    this.render.updateTitle(this.selectEl.getAttribute('title'))
 
     // Add render after original select element
     if (this.selectEl.parentNode) {

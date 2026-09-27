@@ -83,6 +83,11 @@ export default defineComponent({
       select: this.$refs.singleOptgroup as HTMLSelectElement
     })
 
+    // Native attributes
+    new SlimSelect({
+      select: this.$refs.nativeAttributes as HTMLSelectElement
+    })
+
     // Multiple
     new SlimSelect({
       select: this.$refs.multiple as HTMLSelectElement
@@ -209,6 +214,44 @@ export default defineComponent({
               &lt;option value="value 22"&gt;Value 2&lt;/option&gt;
               &lt;option value="value 23"&gt;Value 3&lt;/option&gt;
             &lt;/optgroup&gt;
+          &lt;/select&gt;
+        </pre>
+      </HighlightStyle>
+    </div>
+
+    <div id="native-attributes" class="content">
+      <h2 class="header">Native attributes</h2>
+      <p>
+        SlimSelect visually hides the original <code>&lt;select&gt;</code> and renders its own markup, so a handful of
+        native attributes are carried over to the rendered control automatically:
+      </p>
+      <ul>
+        <li><code>class</code> and <code>style</code> — applied to the main container</li>
+        <li><code>disabled</code> and <code>multiple</code> — control behavior</li>
+        <li><code>title</code> — copied to the main container so browser tooltips keep working</li>
+        <li><code>aria-label</code> / <code>aria-labelledby</code> — used for accessibility</li>
+      </ul>
+      <p>
+        Tooltips are inherited by child elements, so a <code>title</code> on the select also shows when hovering the
+        selected value. Changing the title on the original select is reflected automatically.
+      </p>
+      <div class="row">
+        <div>
+          <h4>Hover to see the tooltip</h4>
+          <select ref="nativeAttributes" title="This tooltip comes from the select's title attribute">
+            <option value="1">Value 1</option>
+            <option value="2">Value 2</option>
+            <option value="3">Value 3</option>
+          </select>
+        </div>
+      </div>
+
+      <HighlightStyle language="html">
+        <pre>
+          &lt;select id="native-attributes" title="This tooltip comes from the select's title attribute"&gt;
+            &lt;option value="1"&gt;Value 1&lt;/option&gt;
+            &lt;option value="2"&gt;Value 2&lt;/option&gt;
+            &lt;option value="3"&gt;Value 3&lt;/option&gt;
           &lt;/select&gt;
         </pre>
       </HighlightStyle>

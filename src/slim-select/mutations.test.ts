@@ -18,9 +18,29 @@ describe('classifyMutations', () => {
     )
 
     expect(flags.classChanged).toBe(true)
+    expect(flags.titleChanged).toBe(false)
     expect(flags.disabledChanged).toBe(false)
     expect(flags.optgroupOptionChanged).toBe(false)
     expect(flags.selectionChanged).toBe(false)
+  })
+
+  test('detects title attribute change on select', () => {
+    document.body.innerHTML = '<select id="s"><option value="a">A</option></select>'
+    const select = document.getElementById('s') as HTMLSelectElement
+
+    const flags = classifyMutations(
+      [
+        {
+          type: 'attributes',
+          target: select,
+          attributeName: 'title'
+        } as unknown as MutationRecord
+      ],
+      select
+    )
+
+    expect(flags.titleChanged).toBe(true)
+    expect(flags.classChanged).toBe(false)
   })
 
   test('detects disabled attribute change on select', () => {

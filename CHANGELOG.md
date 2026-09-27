@@ -5,6 +5,14 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.0]
+
+### Added
+
+- The native `<select>` `title` attribute is now carried over to the rendered control, so browser tooltips keep working
+  after SlimSelect replaces the select. Changes to the title are picked up and reflected automatically
+  ([#717](https://github.com/brianvoe/slim-select/issues/717))
+
 ## [4.4.0]
 
 ### Changed

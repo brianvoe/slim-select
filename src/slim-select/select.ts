@@ -8,6 +8,7 @@ export default class Select {
   // Mutation observer fields
   public onValueChange?: (value: Option[]) => void
   public onClassChange?: (classes: string[]) => void
+  public onTitleChange?: (title: string) => void
   public onDisabledChange?: (disabled: boolean) => void
   public onOptionsChange?: (data: (Option | Optgroup)[]) => void
   public onLabelClick?: () => void
@@ -207,6 +208,7 @@ export default class Select {
     // Pure classifier — separates class/disabled/structure/selection mutations
     const {
       classChanged,
+      titleChanged,
       disabledChanged,
       optgroupOptionChanged,
       selectionChanged: initialSelectionChanged
@@ -216,6 +218,11 @@ export default class Select {
     // If class has changed then call the class change function
     if (classChanged && this.onClassChange) {
       this.onClassChange(this.select.className.split(' '))
+    }
+
+    // If title has changed then call the title change function
+    if (titleChanged && this.onTitleChange) {
+      this.onTitleChange(this.select.getAttribute('title') || '')
     }
 
     // If disabled has changed then call the disabled change function

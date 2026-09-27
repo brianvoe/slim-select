@@ -10,6 +10,8 @@
 export interface MutationFlags {
   /** Native select class attribute changed — sync to render styles only. */
   classChanged: boolean
+  /** Native select title attribute changed — sync the tooltip onto the rendered control. */
+  titleChanged: boolean
   /** Native select disabled attribute changed — enable/disable SlimSelect. */
   disabledChanged: boolean
   /**
@@ -36,6 +38,7 @@ export function classifyMutations(
 ): MutationFlags {
   const flags: MutationFlags = {
     classChanged: false,
+    titleChanged: false,
     disabledChanged: false,
     optgroupOptionChanged: false,
     selectionChanged: false
@@ -50,6 +53,10 @@ export function classifyMutations(
 
       if (m.attributeName === 'class') {
         flags.classChanged = true
+      }
+
+      if (m.attributeName === 'title') {
+        flags.titleChanged = true
       }
 
       if (m.type === 'childList') {

@@ -589,6 +589,42 @@ describe('select module', () => {
     })
   })
 
+  describe('onTitleChange', () => {
+    test('listener is triggered when the select title changes', async () => {
+      document.body.innerHTML = `<select id="test">
+        <option value="1">One</option>
+      </select>`
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+
+      const onTitleMock = vi.fn()
+      select.onTitleChange = onTitleMock
+
+      selectElement.setAttribute('title', 'Pick one')
+
+      await new Promise((r) => setTimeout(r, 50))
+      expect(onTitleMock).toHaveBeenCalledWith('Pick one')
+    })
+
+    test('listener receives an empty string when the title is removed', async () => {
+      document.body.innerHTML = `<select id="test" title="Pick one">
+        <option value="1">One</option>
+      </select>`
+
+      const selectElement = document.getElementById('test') as HTMLSelectElement
+      const select = new Select(selectElement)
+
+      const onTitleMock = vi.fn()
+      select.onTitleChange = onTitleMock
+
+      selectElement.removeAttribute('title')
+
+      await new Promise((r) => setTimeout(r, 50))
+      expect(onTitleMock).toHaveBeenCalledWith('')
+    })
+  })
+
   describe('label handling', () => {
     test('setupLabelHandlers finds label with for attribute and adds click handler', async () => {
       document.body.innerHTML = `

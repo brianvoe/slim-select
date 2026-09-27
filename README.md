@@ -37,7 +37,7 @@ Full docs, live demos, and copy-paste examples: **[slimselectjs.com](https://sli
 **Looks like your product**
 
 - Theme entirely with `--ss-*` CSS custom properties — no fighting class specificity
-- Import plain CSS or SCSS; inherit styles and classes from the native `<select>`
+- Import plain CSS or SCSS; inherit styles, classes, and the `title` tooltip from the native `<select>`
 
 **Built to ship**
 

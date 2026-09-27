@@ -114,6 +114,36 @@ describe('SlimSelect Module', () => {
     })
   })
 
+  describe('native title attribute', () => {
+    test('title is copied onto the main container', () => {
+      document.body.innerHTML = '<select id="title-test" title="Pick a value"><option value="1">One</option></select>'
+      const slim = new SlimSelect({ select: '#title-test' })
+
+      expect(slim.render.main.main.getAttribute('title')).toBe('Pick a value')
+    })
+
+    test('main container has no title when the select has none', () => {
+      document.body.innerHTML = '<select id="title-test"><option value="1">One</option></select>'
+      const slim = new SlimSelect({ select: '#title-test' })
+
+      expect(slim.render.main.main.hasAttribute('title')).toBe(false)
+    })
+
+    test('title stays in sync when the native select title changes', async () => {
+      document.body.innerHTML = '<select id="title-test"><option value="1">One</option></select>'
+      const slim = new SlimSelect({ select: '#title-test' })
+      const selectEl = document.getElementById('title-test') as HTMLSelectElement
+
+      selectEl.setAttribute('title', 'New tooltip')
+      await new Promise((r) => setTimeout(r, 50))
+      expect(slim.render.main.main.getAttribute('title')).toBe('New tooltip')
+
+      selectEl.removeAttribute('title')
+      await new Promise((r) => setTimeout(r, 50))
+      expect(slim.render.main.main.hasAttribute('title')).toBe(false)
+    })
+  })
+
   describe('focusSearch', () => {
     afterEach(() => {
       vi.restoreAllMocks()

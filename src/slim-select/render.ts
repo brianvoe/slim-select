@@ -466,6 +466,20 @@ export default class Render {
     }
   }
 
+  /**
+   * Mirror the native select's title attribute onto the rendered control so
+   * browser tooltips keep working after the select is swapped for the div UI.
+   * Tooltips are inherited by descendants, so setting it on ss-main covers
+   * ss-values and ss-single as well.
+   */
+  public updateTitle(title: string | null): void {
+    if (title) {
+      this.main.main.setAttribute('title', title)
+    } else {
+      this.main.main.removeAttribute('title')
+    }
+  }
+
   public updateAriaAttributes() {
     const listboxId = this.content.list.id
 
