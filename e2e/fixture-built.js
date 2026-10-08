@@ -132,6 +132,12 @@ init('keyboard', '#keyboard', {
   }
 })
 
+init('typeahead', '#typeahead', {
+  settings: {
+    showSearch: false
+  }
+})
+
 init('apiSearch', '#api-search', {
   data: [
     { value: 'a', text: 'Catalog A' },

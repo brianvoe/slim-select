@@ -11,7 +11,8 @@ export default defineComponent({
   },
   data() {
     return {
-      instance: null as SlimSelect | null
+      instance: null as SlimSelect | null,
+      typeahead: null as SlimSelect | null
     }
   },
   mounted() {
@@ -22,10 +23,19 @@ export default defineComponent({
         closeOnSelect: false
       }
     })
+
+    this.typeahead = new SlimSelect({
+      select: this.$refs.typeahead as HTMLSelectElement,
+      settings: {
+        showSearch: false
+      }
+    })
   },
   unmounted() {
     this.instance?.destroy()
     this.instance = null
+    this.typeahead?.destroy()
+    this.typeahead = null
   }
 })
 </script>
@@ -108,6 +118,37 @@ export default defineComponent({
             }
           })
         &lt;/script&gt;
+      </pre>
+    </HighlightStyle>
+
+    <h3>Type to jump</h3>
+    <p>
+      Turn search off and the control behaves like a native <code>&lt;select&gt;</code>. Type a letter or digit to open
+      the list and highlight the matching option. Keep typing within about a second to narrow it (<kbd>h</kbd> then
+      <kbd>a</kbd> moves from Horse to Hamster). The same letter again cycles through matches. <kbd>Enter</kbd> or
+      <kbd>Space</kbd> selects the highlight.
+    </p>
+
+    <div class="form-group">
+      <label for="keyboard-typeahead">Animals</label>
+      <select id="keyboard-typeahead" ref="typeahead">
+        <option value="apple">Apple</option>
+        <option value="apricot">Apricot</option>
+        <option value="banana">Banana</option>
+        <option value="blueberry">Blueberry</option>
+        <option value="horse">Horse</option>
+        <option value="hamster">Hamster</option>
+      </select>
+    </div>
+
+    <HighlightStyle language="javascript">
+      <pre>
+        new SlimSelect({
+          select: '#animals',
+          settings: {
+            showSearch: false
+          }
+        })
       </pre>
     </HighlightStyle>
   </div>

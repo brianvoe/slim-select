@@ -171,13 +171,12 @@ export default defineComponent({
     <div id="overview" class="content">
       <h2 class="header">Get started</h2>
       <p>
-        SlimSelect upgrades a native <code>&lt;select&gt;</code> in one line of
-        JavaScript — no framework required. You keep your existing markup, form
-        submission, and accessibility; SlimSelect handles the UI.
+        SlimSelect upgrades a native <code>&lt;select&gt;</code> in one line of JavaScript — no framework required. You
+        keep your existing markup, form submission, and accessibility; SlimSelect handles the UI.
       </p>
       <p>
-        This page covers the smallest path from zero to working dropdown. For
-        package managers, CDN tags, and build options, see
+        This page covers the smallest path from zero to working dropdown. For package managers, CDN tags, and build
+        options, see
         <router-link to="/install">Install</router-link>.
       </p>
     </div>
@@ -185,9 +184,8 @@ export default defineComponent({
     <div id="first-select" class="content">
       <h2 class="header">Your first select</h2>
       <p>
-        Add a <code>&lt;select&gt;</code> to your page, include the SlimSelect
-        script and stylesheet, then pass a CSS selector or element reference to
-        the constructor.
+        Add a <code>&lt;select&gt;</code> to your page, include the SlimSelect script and stylesheet, then pass a CSS
+        selector or element reference to the constructor.
       </p>
 
       <div class="demo-block">
@@ -217,8 +215,7 @@ export default defineComponent({
 
       <p class="see-also">
         Using npm or a bundler?
-        <code>import SlimSelect from 'slim-select'</code> and
-        <code>import 'slim-select/styles'</code> — details on the
+        <code>import SlimSelect from 'slim-select'</code> and <code>import 'slim-select/styles'</code> — details on the
         <router-link to="/install">Install</router-link> page.
       </p>
     </div>
@@ -227,8 +224,7 @@ export default defineComponent({
       <h2 class="header">Single &amp; multiple</h2>
       <p>
         Single selects work out of the box. For multi-select, add the
-        <code>multiple</code> attribute to your <code>&lt;select&gt;</code> —
-        the same constructor handles both.
+        <code>multiple</code> attribute to your <code>&lt;select&gt;</code> — the same constructor handles both.
       </p>
 
       <div class="row">
@@ -270,9 +266,8 @@ export default defineComponent({
     <div id="data" class="content">
       <h2 class="header">Options from JavaScript</h2>
       <p>
-        Instead of writing <code>&lt;option&gt;</code> tags, pass a
-        <code>data</code> array. This is useful for dynamic lists, API
-        responses, and placeholders.
+        Instead of writing <code>&lt;option&gt;</code> tags, pass a <code>data</code> array. This is useful for dynamic
+        lists, API responses, and placeholders.
       </p>
 
       <div class="demo-block">
@@ -303,14 +298,12 @@ export default defineComponent({
     <div id="settings" class="content">
       <h2 class="header">Customize behavior</h2>
       <p>
-        Pass a <code>settings</code> object to tune placeholders, search, modal
-        mode, and dozens of other behaviors without touching the DOM structure.
+        Pass a <code>settings</code> object to tune placeholders, search, modal mode, and dozens of other behaviors
+        without touching the DOM structure.
       </p>
 
       <div class="demo-block">
-        <label class="demo-label" for="get-started-settings"
-          >Team (searchable)</label
-        >
+        <label class="demo-label" for="get-started-settings">Team (searchable)</label>
         <select id="get-started-settings" ref="settingsSelect"></select>
       </div>
 
@@ -333,13 +326,10 @@ export default defineComponent({
           — empty-state label
         </li>
         <li>
-          <router-link to="/settings#showSearch">showSearch</router-link> —
-          filter long lists
+          <router-link to="/settings#showSearch">showSearch</router-link> — filter long lists, or type-ahead like a
+          native select when off
         </li>
-        <li>
-          <router-link to="/settings#modal">modal</router-link> — full-screen
-          picker (new in v4)
-        </li>
+        <li><router-link to="/settings#modal">modal</router-link> — full-screen picker (new in v4)</li>
         <li>
           <router-link to="/settings">All settings →</router-link>
         </li>
@@ -369,9 +359,7 @@ export default defineComponent({
         </router-link>
         <router-link class="next-card" to="/methods">
           <span class="next-card-title">Methods</span>
-          <span class="next-card-desc"
-            >Programmatic open, setSelected, destroy</span
-          >
+          <span class="next-card-desc">Programmatic open, setSelected, destroy</span>
         </router-link>
         <router-link class="next-card" to="/vue">
           <span class="next-card-title">Vue &amp; React</span>

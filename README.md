@@ -45,6 +45,7 @@ Full docs, live demos, and copy-paste examples: **[slimselectjs.com](https://sli
 - ~66KB JS (~16KB gzip) · ~12KB CSS (~2KB gzip)
 - TypeScript types included
 - WCAG 2.1 Level AA accessibility (ARIA, keyboard, screen reader support)
+- Keyboard type-ahead when search is turned off — type a letter to jump to a matching option
 - `prefers-reduced-motion` respected
 - 477 unit tests + 46 Playwright E2E tests
 
@@ -162,7 +163,7 @@ new SlimSelect({
   settings: {
     disabled: false,
     alwaysOpen: false,
-    showSearch: true,
+    showSearch: true, // false: type letters or digits to jump to a matching option
     focusSearch: true, // false below 768px unless set
     keepSearch: false,
     ariaLabel: 'Combobox',

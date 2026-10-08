@@ -341,6 +341,202 @@ describe('render module', () => {
     })
   })
 
+  describe('typeahead', () => {
+    const animals = [
+      { text: 'Apple', value: 'apple' },
+      { text: 'Apricot', value: 'apricot' },
+      { text: 'Banana', value: 'banana' },
+      { text: 'Blueberry', value: 'blueberry' },
+      { text: 'Horse', value: 'horse' },
+      { text: 'Hamster', value: 'hamster', html: '<b>Hamster</b>' },
+      { text: 'Cherry', value: 'cherry', disabled: true },
+      { text: 'Zebra', value: 'zebra', display: false },
+      { text: '3rd place', value: 'third' },
+      { text: 'Éclair', value: 'eclair' }
+    ]
+
+    function press(key: string, init: KeyboardEventInit = {}): KeyboardEvent {
+      const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init })
+      render.main.main.dispatchEvent(event)
+      return event
+    }
+
+    function highlighted(): HTMLElement | null {
+      return render.content.list.querySelector('.' + render.classes.getFirst('highlighted'))
+    }
+
+    beforeEach(() => {
+      render.settings.showSearch = false
+      render.store.setData(animals)
+      render.renderOptions(render.store.getData())
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    test('opens and highlights the first option that starts with the typed letter', () => {
+      const event = press('b')
+
+      expect(event.defaultPrevented).toBe(true)
+      expect(openMock).toHaveBeenCalled()
+      expect(highlighted()?.textContent).toBe('Banana')
+      expect(render.main.main.getAttribute('aria-activedescendant')).toBe(highlighted()?.id)
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('matches case-insensitively', () => {
+      press('B')
+
+      expect(highlighted()?.textContent).toBe('Banana')
+    })
+
+    test('extends the prefix while keys arrive quickly', () => {
+      vi.useFakeTimers()
+      press('h')
+      expect(highlighted()?.textContent).toBe('Horse')
+
+      vi.advanceTimersByTime(999)
+      press('a')
+
+      expect(highlighted()?.textContent).toBe('Hamster')
+    })
+
+    test('starts a new search after the prefix times out', () => {
+      vi.useFakeTimers()
+      press('h')
+      vi.advanceTimersByTime(1000)
+      press('a')
+
+      expect(highlighted()?.textContent).toBe('Apple')
+    })
+
+    test('repeating the same letter cycles to the next match', () => {
+      press('b')
+      expect(highlighted()?.textContent).toBe('Banana')
+
+      press('b')
+      expect(highlighted()?.textContent).toBe('Blueberry')
+
+      press('b')
+      expect(highlighted()?.textContent).toBe('Banana')
+    })
+
+    test('repeating the selected option letter moves off it on the second press', () => {
+      press('a')
+      expect(highlighted()?.textContent).toBe('Apple')
+
+      press('a')
+      expect(highlighted()?.textContent).toBe('Apricot')
+    })
+
+    test('matches html option text and digits', () => {
+      press('3')
+      expect(highlighted()?.textContent).toBe('3rd place')
+    })
+
+    test('matches accented letters', () => {
+      press('é')
+      expect(highlighted()?.textContent).toBe('Éclair')
+    })
+
+    test('skips disabled and hidden options', () => {
+      press('c')
+      expect(highlighted()).toBeNull()
+
+      press('Escape')
+      press('z')
+      expect(highlighted()).toBeNull()
+    })
+
+    test('does not select until enter confirms the highlight', () => {
+      press('b')
+      expect(setSelectedMock).not.toHaveBeenCalled()
+
+      press('Enter')
+
+      expect(setSelectedMock).toHaveBeenCalled()
+    })
+
+    test('space still selects the highlight instead of joining the prefix', () => {
+      press('b')
+      press(' ')
+
+      expect(setSelectedMock).toHaveBeenCalled()
+      expect(highlighted()?.textContent).toBe('Banana')
+    })
+
+    test('arrow keys clear the prefix so the next letter starts over', () => {
+      vi.useFakeTimers()
+      press('h')
+      expect(highlighted()?.textContent).toBe('Horse')
+
+      press('ArrowDown')
+      press('a')
+
+      expect(highlighted()?.textContent).toBe('Apple')
+    })
+
+    test('ignores modifier shortcuts', () => {
+      press('b', { ctrlKey: true })
+
+      expect(highlighted()).toBeNull()
+      expect(openMock).toHaveBeenCalled()
+    })
+
+    test('does nothing when the control is disabled', () => {
+      render.settings.disabled = true
+
+      press('b')
+
+      expect(highlighted()).toBeNull()
+      expect(openMock).toHaveBeenCalled()
+    })
+
+    test('search stays a filter when showSearch is on', () => {
+      render.settings.showSearch = true
+
+      const event = press('b')
+
+      expect(event.defaultPrevented).toBe(false)
+      expect(highlighted()).toBeNull()
+      expect(openMock).toHaveBeenCalled()
+    })
+
+    test('opens a collapsed optgroup that holds the match', () => {
+      const store = new Store('single', [
+        { text: 'Apple', value: 'apple' },
+        {
+          label: 'Pets',
+          closable: 'close',
+          options: [{ text: 'Hamster', value: 'hamster' }]
+        }
+      ])
+      render.store = store
+      render.renderOptions(store.getData())
+
+      press('h')
+
+      const group = render.content.list.querySelector('.' + render.classes.getFirst('optgroup')) as HTMLElement
+      expect(highlighted()?.textContent).toBe('Hamster')
+      expect(group.classList.contains(render.classes.getFirst('close'))).toBe(false)
+      expect(group.classList.contains(render.classes.getFirst('mainOpen'))).toBe(true)
+    })
+
+    test('skips a placeholder option', () => {
+      const store = new Store('single', [
+        { text: 'Pick one', value: '', placeholder: true },
+        { text: 'Pear', value: 'pear' }
+      ])
+      render.store = store
+      render.renderOptions(store.getData())
+
+      press('p')
+
+      expect(highlighted()?.textContent).toBe('Pear')
+    })
+  })
+
   describe('mainFocus', () => {
     let focusMock: (options?: FocusOptions | undefined) => void
 

@@ -10,6 +10,9 @@ import Settings from './settings'
 import Store, { Optgroup, Option } from './store'
 import CssClasses from './classes'
 
+/** How long typed characters stay one prefix before the next key starts a new search. */
+const TYPEAHEAD_RESET_MS = 1000
+
 export type CloseSource = 'select' | 'deselect' | 'outside' | 'toggle' | 'escape' | 'tab' | 'modal' | 'api'
 
 export interface CloseInfo {
@@ -96,6 +99,10 @@ export default class Render {
   private positionObserverRaf = 0
   private lastObservedContentHeight = -1
   private overflowShiftRaf = 0
+
+  /** Characters typed in quick succession when search is off. */
+  private typeaheadQuery = ''
+  private typeaheadTimer: ReturnType<typeof setTimeout> | null = null
 
   private modalElements: ModalElements | null = null
   private modalSessionActive: boolean | null = null
@@ -515,22 +522,31 @@ export default class Render {
     // Set tabable to allow tabbing to the element
     main.tabIndex = 0
 
-    // Deal with keyboard events on the main div
-    // This is to allow for normal selecting
-    // when you may not have a search bar
+    // Deal with keyboard events on the main div.
+    // With search off, letters and digits jump to a matching option.
+    // With search on, printable keys still open so focus can move to the field.
     main.onkeydown = (e: KeyboardEvent): boolean => {
-      // Convert above if else statemets to switch
+      if (this.isTypeaheadKey(e)) {
+        e.preventDefault()
+        this.callbacks.open()
+        this.typeahead(e.key)
+        return false
+      }
+
       switch (e.key) {
         case 'ArrowUp':
         case 'ArrowDown':
+          this.clearTypeahead()
           this.callbacks.open()
           e.key === 'ArrowDown' ? this.highlight('down') : this.highlight('up')
           return false
         case 'Tab':
+          this.clearTypeahead()
           this.requestClose('tab')
           return true // Continue doing normal tabbing
         case 'Enter':
         case ' ':
+          this.clearTypeahead()
           this.callbacks.open()
           const highlighted = this.content.list.querySelector(
             '.' + this.classes.getFirst('highlighted')
@@ -540,6 +556,7 @@ export default class Render {
           }
           return false
         case 'Escape':
+          this.clearTypeahead()
           this.requestClose('escape')
           return false
       }
@@ -1674,6 +1691,105 @@ export default class Render {
     this.ensureElementInView(this.content.list, firstHighlight)
   }
 
+  /**
+   * Letters and digits when search is hidden. Builds a short prefix and highlights
+   * the matching option without selecting it. Repeating the same character cycles.
+   */
+  private isTypeaheadKey(e: KeyboardEvent): boolean {
+    if (this.settings.showSearch || this.settings.disabled) {
+      return false
+    }
+
+    if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) {
+      return false
+    }
+
+    return e.key.length === 1 && /[\p{L}\p{N}]/u.test(e.key)
+  }
+
+  private typeahead(char: string): void {
+    const options = this.getOptions(true, true, true)
+    if (options.length === 0) {
+      return
+    }
+
+    const key = char.toLowerCase()
+    const repeating = this.typeaheadQuery.length > 0 && [...this.typeaheadQuery].every((c) => c === key)
+
+    if (this.typeaheadTimer !== null) {
+      clearTimeout(this.typeaheadTimer)
+    }
+    this.typeaheadTimer = setTimeout(() => {
+      this.typeaheadQuery = ''
+      this.typeaheadTimer = null
+    }, TYPEAHEAD_RESET_MS)
+
+    const highlightedClass = this.classes.getFirst('highlighted')
+    const selectedClass = this.classes.getFirst('selected')
+    let origin = options.findIndex((option) => option.classList.contains(highlightedClass))
+    if (origin < 0) {
+      origin = options.findIndex((option) => option.classList.contains(selectedClass))
+    }
+
+    let startIndex: number
+    if (repeating) {
+      this.typeaheadQuery = key
+      startIndex = origin >= 0 ? (origin + 1) % options.length : 0
+    } else {
+      this.typeaheadQuery += key
+      startIndex = origin >= 0 ? origin : 0
+    }
+
+    const match = this.findTypeaheadOption(options, this.typeaheadQuery, startIndex)
+    if (match) {
+      this.highlightOption(match)
+    }
+  }
+
+  private findTypeaheadOption(options: HTMLDivElement[], query: string, startIndex: number): HTMLDivElement | null {
+    for (let i = 0; i < options.length; i++) {
+      const option = options[(startIndex + i) % options.length]
+      const label = (option.textContent || '').trim().toLowerCase()
+      if (label.startsWith(query)) {
+        return option
+      }
+    }
+
+    return null
+  }
+
+  private highlightOption(optionEl: HTMLDivElement): void {
+    const highlightedClass = this.classes.getFirst('highlighted')
+    const current = this.content.list.querySelectorAll('.' + highlightedClass)
+    current.forEach((el) => {
+      if (el !== optionEl) {
+        this.removeClasses(el as HTMLElement, this.classes.highlighted)
+      }
+    })
+
+    this.addClasses(optionEl, this.classes.highlighted)
+
+    if (optionEl.id) {
+      this.main.main.setAttribute('aria-activedescendant', optionEl.id)
+    }
+
+    const parent = optionEl.parentElement
+    if (parent && parent.classList.contains(this.classes.getFirst('close'))) {
+      const label = parent.querySelector('.' + this.classes.getFirst('optgroupLabel')) as HTMLDivElement | null
+      label?.click()
+    }
+
+    this.ensureElementInView(this.content.list, optionEl)
+  }
+
+  private clearTypeahead(): void {
+    this.typeaheadQuery = ''
+    if (this.typeaheadTimer !== null) {
+      clearTimeout(this.typeaheadTimer)
+      this.typeaheadTimer = null
+    }
+  }
+
   // Create main container that options will reside
   public listDiv(): HTMLDivElement {
     const options = document.createElement('div')
@@ -2564,6 +2680,7 @@ export default class Render {
   }
 
   public destroy(): void {
+    this.clearTypeahead()
     this.stopPositionTracking()
 
     if (this.modalElements) {

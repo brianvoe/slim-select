@@ -41,12 +41,20 @@ export default defineComponent({
       allowing users to quickly locate and select the desired option without scrolling through the entire list. The
       default value is true, but you can disable it for simple dropdowns with few options.
     </p>
+    <p>
+      With <code>showSearch</code> off, typing still jumps to an option, like a native <code>&lt;select&gt;</code>. A
+      letter or digit opens the list and highlights the first match. Characters typed within about a second build a
+      prefix (<kbd>h</kbd> then <kbd>a</kbd> moves from Horse to Hamster), and repeating a letter cycles through options
+      that start with it. <kbd>Enter</kbd> or <kbd>Space</kbd> selects the highlight. Try it on the single select below.
+    </p>
 
     <div class="row" style="padding: 0 0 var(--spacing-half) 0">
       <select ref="showSearchSingle">
-        <option value="dog">Dog</option>
-        <option value="cat">Cat</option>
-        <option value="bird">Bird</option>
+        <option value="apple">Apple</option>
+        <option value="apricot">Apricot</option>
+        <option value="banana">Banana</option>
+        <option value="horse">Horse</option>
+        <option value="hamster">Hamster</option>
       </select>
 
       <select ref="showSearchMulti" multiple>

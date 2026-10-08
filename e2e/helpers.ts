@@ -16,6 +16,7 @@ export type E2EInstanceKey =
   | 'searchHighlight'
   | 'disabledOption'
   | 'keyboard'
+  | 'typeahead'
   | 'apiSearch'
   | 'apiSearchMulti'
   | 'apiSearchAddable'
@@ -52,28 +53,19 @@ export function option(page: Page, key: E2EInstanceKey, text: string): Locator {
   return content(page, key).locator('.ss-option', { hasText: text })
 }
 
-export async function openSelect(
-  page: Page,
-  key: E2EInstanceKey
-): Promise<void> {
+export async function openSelect(page: Page, key: E2EInstanceKey): Promise<void> {
   await main(page, key).click()
   await expect(openContent(page, key)).toBeVisible()
   await waitForFullyOpen(page, key)
 }
 
-export async function closeWithEscape(
-  page: Page,
-  key: E2EInstanceKey
-): Promise<void> {
+export async function closeWithEscape(page: Page, key: E2EInstanceKey): Promise<void> {
   await main(page, key).focus()
   await page.keyboard.press('Escape')
   await expect(openContent(page, key)).toHaveCount(0)
 }
 
-export async function waitForFullyOpen(
-  page: Page,
-  key: E2EInstanceKey
-): Promise<void> {
+export async function waitForFullyOpen(page: Page, key: E2EInstanceKey): Promise<void> {
   await expect
     .poll(async () => {
       return page.evaluate((k) => {
@@ -83,21 +75,13 @@ export async function waitForFullyOpen(
     .toBe(true)
 }
 
-export async function getSelected(
-  page: Page,
-  key: E2EInstanceKey
-): Promise<string[]> {
+export async function getSelected(page: Page, key: E2EInstanceKey): Promise<string[]> {
   return page.evaluate((k) => {
     return (window as any).e2e.instances[k].getSelected()
   }, key)
 }
 
-export async function instanceCall<T>(
-  page: Page,
-  key: E2EInstanceKey,
-  fn: string,
-  ...args: unknown[]
-): Promise<T> {
+export async function instanceCall<T>(page: Page, key: E2EInstanceKey, fn: string, ...args: unknown[]): Promise<T> {
   return page.evaluate(
     ({ k, fn, args }) => {
       const instance = (window as any).e2e.instances[k]
@@ -107,10 +91,7 @@ export async function instanceCall<T>(
   )
 }
 
-export async function expectClosed(
-  page: Page,
-  key: E2EInstanceKey
-): Promise<void> {
+export async function expectClosed(page: Page, key: E2EInstanceKey): Promise<void> {
   await expect(main(page, key)).toHaveAttribute('aria-expanded', 'false')
 }
 
