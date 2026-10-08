@@ -69,6 +69,9 @@ export default class Render {
     private positionObserverRaf;
     private lastObservedContentHeight;
     private overflowShiftRaf;
+    /** Characters typed in quick succession when search is off. */
+    private typeaheadQuery;
+    private typeaheadTimer;
     private modalElements;
     private modalSessionActive;
     private bodyScrollLocked;
@@ -143,6 +146,15 @@ export default class Render {
     searchFocus(): void;
     getOptions(notPlaceholder?: boolean, notDisabled?: boolean, notHidden?: boolean): HTMLDivElement[];
     highlight(dir: 'up' | 'down'): void;
+    /**
+     * Letters and digits when search is hidden. Builds a short prefix and highlights
+     * the matching option without selecting it. Repeating the same character cycles.
+     */
+    private isTypeaheadKey;
+    private typeahead;
+    private findTypeaheadOption;
+    private highlightOption;
+    private clearTypeahead;
     listDiv(): HTMLDivElement;
     renderError(error: string): void;
     renderSearching(): void;

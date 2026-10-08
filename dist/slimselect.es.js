@@ -267,9 +267,7 @@ function T(e, t) {
 		if (a !== S(i)) return !1;
 		if (a) {
 			if (!w(r, i)) return !1;
-			continue;
-		}
-		if (!C(r, i)) return !1;
+		} else if (!C(r, i)) return !1;
 	}
 	return !0;
 }
@@ -330,11 +328,7 @@ var O = class {
 		if (this.state === "opening" || this.state === "open") return;
 		this.cancelPending();
 		let e = ++this.generation;
-		if (this.handlers.beforeOpen && this.handlers.beforeOpen(), this.state = "opening", await this.waitForPhase("open", e), e !== this.generation) {
-			this.state === "opening" && (this.state = "closed");
-			return;
-		}
-		this.state = "open", this.handlers.afterOpen && this.handlers.afterOpen(), this.handlers.onOpenReady && this.handlers.onOpenReady();
+		this.handlers.beforeOpen && this.handlers.beforeOpen(), this.state = "opening", await this.waitForPhase("open", e), e === this.generation ? (this.state = "open", this.handlers.afterOpen && this.handlers.afterOpen(), this.handlers.onOpenReady && this.handlers.onOpenReady()) : this.state === "opening" && (this.state = "closed");
 	}
 	async requestClose(e = {
 		source: "api",
@@ -459,13 +453,9 @@ var O = class {
 		return e.id === t.id || t.value !== "" && e.value !== "" && e.value === t.value;
 	}
 	findOptionInData(e, t) {
-		for (let n of e) {
-			if (n instanceof A) {
-				if (this.optionMatchesSelected(n, t)) return n;
-				continue;
-			}
-			for (let e of n.options) if (this.optionMatchesSelected(e, t)) return e;
-		}
+		for (let n of e) if (n instanceof A) {
+			if (this.optionMatchesSelected(n, t)) return n;
+		} else for (let e of n.options) if (this.optionMatchesSelected(e, t)) return e;
 		return null;
 	}
 	setData(e, t = !1) {
@@ -578,14 +568,11 @@ var O = class {
 		}), e.forEach((e) => {
 			let n = !1;
 			t.forEach((t) => {
-				if (e.id === t.id) {
-					n = !0;
-					return;
-				}
+				e.id === t.id && (n = !0);
 			}), n || t.push(e);
 		}), t;
 	}
-}, N = class {
+}, N = 1e3, P = class {
 	settings;
 	store;
 	callbacks;
@@ -600,6 +587,8 @@ var O = class {
 	positionObserverRaf = 0;
 	lastObservedContentHeight = -1;
 	overflowShiftRaf = 0;
+	typeaheadQuery = "";
+	typeaheadTimer = null;
 	modalElements = null;
 	modalSessionActive = null;
 	bodyScrollLocked = !1;
@@ -727,16 +716,17 @@ var O = class {
 	mainDiv() {
 		let e = document.createElement("div");
 		e.dataset.id = this.settings.id, e.setAttribute("aria-label", this.settings.ariaLabel), e.tabIndex = 0, e.onkeydown = (e) => {
+			if (this.isTypeaheadKey(e)) return e.preventDefault(), this.callbacks.open(), this.typeahead(e.key), !1;
 			switch (e.key) {
 				case "ArrowUp":
-				case "ArrowDown": return this.callbacks.open(), e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
-				case "Tab": return this.requestClose("tab"), !0;
+				case "ArrowDown": return this.clearTypeahead(), this.callbacks.open(), e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
+				case "Tab": return this.clearTypeahead(), this.requestClose("tab"), !0;
 				case "Enter":
 				case " ":
-					this.callbacks.open();
+					this.clearTypeahead(), this.callbacks.open();
 					let t = this.content.list.querySelector("." + this.classes.getFirst("highlighted"));
 					return t && t.click(), !1;
-				case "Escape": return this.requestClose("escape"), !1;
+				case "Escape": return this.clearTypeahead(), this.requestClose("escape"), !1;
 			}
 			return e.key.length === 1 && this.callbacks.open(), !0;
 		}, e.onclick = (e) => {
@@ -798,11 +788,7 @@ var O = class {
 		return this.addClasses(n, this.classes.placeholder), n.innerHTML = t, n;
 	}
 	renderValues() {
-		if (!this.settings.isMultiple) {
-			this.renderSingleValue();
-			return;
-		}
-		this.renderMultipleValues(), this.updateDeselectAll();
+		this.settings.isMultiple ? (this.renderMultipleValues(), this.updateDeselectAll()) : this.renderSingleValue();
 	}
 	renderSingleValue() {
 		let e = this.store.filter((e) => e.selected && !e.placeholder, !1, !1), t = e.length > 0 ? e[0] : null;
@@ -950,21 +936,7 @@ var O = class {
 		this.settings.isOpen && !this.isModalViewActive() && this.settings.contentPosition !== "relative" && this.content.main.classList.contains(this.classes.getFirst("dirAbove")) && this.moveContentAbove();
 	}
 	moveContent() {
-		if (!this.isModalViewActive()) {
-			if (this.settings.contentPosition === "relative") {
-				this.moveContentBelow();
-				return;
-			}
-			if (this.settings.openPosition === "down") {
-				this.moveContentBelow();
-				return;
-			}
-			if (this.settings.openPosition === "up") {
-				this.moveContentAbove();
-				return;
-			}
-			this.putContent() === "up" ? this.moveContentAbove() : this.moveContentBelow();
-		}
+		this.isModalViewActive() || (this.settings.contentPosition === "relative" || this.settings.openPosition === "down" ? this.moveContentBelow() : this.settings.openPosition === "up" || this.putContent() === "up" ? this.moveContentAbove() : this.moveContentBelow());
 	}
 	startPositionTracking() {
 		this.settings.contentPosition !== "absolute" || this.isModalViewActive() || (this.stopPositionTracking(), typeof ResizeObserver < "u" && (this.lastObservedContentHeight = -1, this.positionObserver = new ResizeObserver((e) => {
@@ -1107,6 +1079,41 @@ var O = class {
 		let r = t[e === "down" ? 0 : t.length - 1];
 		this.addClasses(r, this.classes.highlighted), r.id && this.main.main.setAttribute("aria-activedescendant", r.id), this.ensureElementInView(this.content.list, r);
 	}
+	isTypeaheadKey(e) {
+		return this.settings.showSearch || this.settings.disabled || e.ctrlKey || e.metaKey || e.altKey || e.isComposing ? !1 : e.key.length === 1 && /[\p{L}\p{N}]/u.test(e.key);
+	}
+	typeahead(e) {
+		let t = this.getOptions(!0, !0, !0);
+		if (t.length === 0) return;
+		let n = e.toLowerCase(), r = this.typeaheadQuery.length > 0 && [...this.typeaheadQuery].every((e) => e === n);
+		this.typeaheadTimer !== null && clearTimeout(this.typeaheadTimer), this.typeaheadTimer = setTimeout(() => {
+			this.typeaheadQuery = "", this.typeaheadTimer = null;
+		}, N);
+		let i = this.classes.getFirst("highlighted"), a = this.classes.getFirst("selected"), o = t.findIndex((e) => e.classList.contains(i));
+		o < 0 && (o = t.findIndex((e) => e.classList.contains(a)));
+		let s;
+		r ? (this.typeaheadQuery = n, s = o >= 0 ? (o + 1) % t.length : 0) : (this.typeaheadQuery += n, s = o >= 0 ? o : 0);
+		let c = this.findTypeaheadOption(t, this.typeaheadQuery, s);
+		c && this.highlightOption(c);
+	}
+	findTypeaheadOption(e, t, n) {
+		for (let r = 0; r < e.length; r++) {
+			let i = e[(n + r) % e.length];
+			if ((i.textContent || "").trim().toLowerCase().startsWith(t)) return i;
+		}
+		return null;
+	}
+	highlightOption(e) {
+		let t = this.classes.getFirst("highlighted");
+		this.content.list.querySelectorAll("." + t).forEach((t) => {
+			t !== e && this.removeClasses(t, this.classes.highlighted);
+		}), this.addClasses(e, this.classes.highlighted), e.id && this.main.main.setAttribute("aria-activedescendant", e.id);
+		let n = e.parentElement;
+		n && n.classList.contains(this.classes.getFirst("close")) && n.querySelector("." + this.classes.getFirst("optgroupLabel"))?.click(), this.ensureElementInView(this.content.list, e);
+	}
+	clearTypeahead() {
+		this.typeaheadQuery = "", this.typeaheadTimer !== null && (clearTimeout(this.typeaheadTimer), this.typeaheadTimer = null);
+	}
 	listDiv() {
 		let e = document.createElement("div");
 		this.addClasses(e, this.classes.list);
@@ -1159,9 +1166,7 @@ var O = class {
 								return !0;
 							});
 							this.callbacks.setSelected(t, !0);
-							return;
-						}
-						{
+						} else {
 							let t = n.options.map((e) => e.id).filter((e) => e !== void 0), r = e.concat(t);
 							for (let e of n.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new A(e));
 							this.callbacks.setSelected(r, !0);
@@ -1239,11 +1244,7 @@ var O = class {
 				r = !0;
 				break;
 			}
-			if (!r) {
-				this.addClasses(n, this.classes.hide);
-				continue;
-			}
-			this.removeClasses(n, this.classes.hide), e !== "" && (this.removeClasses(n, this.classes.close), this.addClasses(n, this.classes.mainOpen));
+			r ? (this.removeClasses(n, this.classes.hide), e !== "" && (this.removeClasses(n, this.classes.close), this.addClasses(n, this.classes.mainOpen))) : this.addClasses(n, this.classes.hide);
 		}
 	}
 	updateSearchResultsMessage(e, t) {
@@ -1309,9 +1310,7 @@ var O = class {
 		if (this.isGlobalAllSelected(t)) {
 			let t = new Set(e.map((e) => e.id)), n = this.store.getSelected().filter((e) => !t.has(e));
 			this.callbacks.setSelected(n, !0);
-			return;
-		}
-		this.callbacks.setSelected(e.map((e) => e.id), !0);
+		} else this.callbacks.setSelected(e.map((e) => e.id), !0);
 	}
 	updateGlobalSelectAllState() {
 		let e = this.content.search.selectAll;
@@ -1360,11 +1359,7 @@ var O = class {
 			t.preventDefault(), t.stopPropagation();
 			let n = this.store.getSelected(), r = t.currentTarget, i = String(r.dataset.id), a = this.store.getOptionByID(i) ?? e, o = n.includes(i), s = t.ctrlKey || t.metaKey;
 			if (e.disabled) return;
-			if (!this.settings.isMultiple && o && !this.settings.allowDeselect) {
-				this.closeOnSingleSelectReclick(a);
-				return;
-			}
-			if (o && a.mandatory) {
+			if (!this.settings.isMultiple && o && !this.settings.allowDeselect || o && a.mandatory) {
 				this.closeOnSingleSelectReclick(a);
 				return;
 			}
@@ -1391,7 +1386,7 @@ var O = class {
 		}), t;
 	}
 	destroy() {
-		this.stopPositionTracking(), this.modalElements ? (this.unlockBodyScroll(), this.content.main.parentElement === this.modalElements.dialog && this.restoreContentOffscreen(), this.modalElements.overlay.remove(), this.modalElements = null) : this.bodyScrollLocked && this.unlockBodyScroll(), this.main.main.remove(), this.content.main.remove(), this.removeDetachedInstanceDom();
+		this.clearTypeahead(), this.stopPositionTracking(), this.modalElements ? (this.unlockBodyScroll(), this.content.main.parentElement === this.modalElements.dialog && this.restoreContentOffscreen(), this.modalElements.overlay.remove(), this.modalElements = null) : this.bodyScrollLocked && this.unlockBodyScroll(), this.main.main.remove(), this.content.main.remove(), this.removeDetachedInstanceDom();
 	}
 	removeDetachedInstanceDom() {
 		let e = this.settings.id, t = this.classes.getFirst("main"), n = this.classes.getFirst("content"), r = this.classes.getFirst("modalOverlay");
@@ -1437,21 +1432,13 @@ var O = class {
 		let t, n;
 		this.settings.contentPosition === "fixed" ? (t = e.top + e.height, n = e.left) : (t = e.top + window.scrollY + e.height, n = e.left + window.scrollX), this.content.main.style.top = t + "px", this.content.main.style.left = n + "px", this.applyContentWidth(e);
 		let r = this.getKnownContentWidth(e);
-		if (r !== null) {
-			this.content.main.style.left = this.adjustLeftForOverflow(n, e.left, r) + "px";
-			return;
-		}
-		this.overflowShiftRaf = requestAnimationFrame(() => {
+		r === null ? this.overflowShiftRaf = requestAnimationFrame(() => {
 			this.overflowShiftRaf = 0, this.applyOverflowShiftFromMeasure();
-		});
+		}) : this.content.main.style.left = this.adjustLeftForOverflow(n, e.left, r) + "px";
 	}
 	applyContentWidth(e) {
 		let t = this.settings.contentWidth;
-		if (this.content.main.style.width = "", this.content.main.style.minWidth = "", this.content.main.style.maxWidth = "", !t) {
-			this.settings.contentPosition !== "relative" && (this.content.main.style.width = e.width + "px");
-			return;
-		}
-		t === "auto" ? this.content.main.style.minWidth = e.width + "px" : t.startsWith(">") ? this.content.main.style.minWidth = t.slice(1) : t.startsWith("<") ? this.content.main.style.maxWidth = t.slice(1) : this.content.main.style.width = t;
+		this.content.main.style.width = "", this.content.main.style.minWidth = "", this.content.main.style.maxWidth = "", t ? t === "auto" ? this.content.main.style.minWidth = e.width + "px" : t.startsWith(">") ? this.content.main.style.minWidth = t.slice(1) : t.startsWith("<") ? this.content.main.style.maxWidth = t.slice(1) : this.content.main.style.width = t : this.settings.contentPosition !== "relative" && (this.content.main.style.width = e.width + "px");
 	}
 	cancelOverflowShift() {
 		this.overflowShiftRaf &&= (cancelAnimationFrame(this.overflowShiftRaf), 0);
@@ -1497,7 +1484,7 @@ var O = class {
 };
 //#endregion
 //#region src/slim-select/mutations.ts
-function P(e, t) {
+function F(e, t) {
 	let n = {
 		classChanged: !1,
 		titleChanged: !1,
@@ -1519,7 +1506,7 @@ function P(e, t) {
 }
 //#endregion
 //#region src/slim-select/select.ts
-var F = class {
+var I = class {
 	select;
 	onValueChange;
 	onClassChange;
@@ -1582,7 +1569,7 @@ var F = class {
 	}
 	observeCall(e) {
 		if (!this.listen) return;
-		let { classChanged: t, titleChanged: n, disabledChanged: r, optgroupOptionChanged: i, selectionChanged: a } = P(e, this.select), o = a;
+		let { classChanged: t, titleChanged: n, disabledChanged: r, optgroupOptionChanged: i, selectionChanged: a } = F(e, this.select), o = a;
 		if (t && this.onClassChange && this.onClassChange(this.select.className.split(" ")), n && this.onTitleChange && this.onTitleChange(this.select.getAttribute("title") || ""), r && this.onDisabledChange && (this.changeListen(!1), this.onDisabledChange(this.select.disabled), this.changeListen(!0)), i && this.clearLeftoverHiddenDisplay(e), i && this.onOptionsChange) {
 			if (this.isUpdating) {
 				if (this.select.options.length > 0) {
@@ -1774,21 +1761,16 @@ var F = class {
 };
 //#endregion
 //#region src/slim-select/sync.ts
-function I(e, t) {
+function L(e, t) {
 	return T(e.getData(!1), t);
 }
-function L(e, t) {
+function R(e, t) {
 	let n = Array.isArray(t) ? t : [t], r = e.getDataOptions(!1), i = [];
-	for (let e of n) {
-		if (r.find((t) => t.id == e)) {
-			i.push(e);
-			continue;
-		}
-		for (let t of r.filter((t) => t.value == e)) i.push(t.id);
-	}
+	for (let e of n) if (r.find((t) => t.id == e)) i.push(e);
+	else for (let t of r.filter((t) => t.value == e)) i.push(t.id);
 	return i;
 }
-var R = class {
+var z = class {
 	deps;
 	queue = [];
 	flushScheduled = !1;
@@ -1797,11 +1779,7 @@ var R = class {
 		this.deps = e;
 	}
 	enqueue(e) {
-		if (this.queue.push(e), e.source === "native") {
-			this.flushScheduled || (this.flushScheduled = !0, queueMicrotask(() => this.flush()));
-			return;
-		}
-		this.isSyncing || this.flush();
+		this.queue.push(e), e.source === "native" ? this.flushScheduled || (this.flushScheduled = !0, queueMicrotask(() => this.flush())) : this.isSyncing || this.flush();
 	}
 	flush() {
 		if (this.flushScheduled = !1, this.queue.length === 0) return;
@@ -1835,7 +1813,7 @@ var R = class {
 	}
 	applyStructure(e, t, n = !1, r = !1) {
 		let { store: i, select: a, render: o, events: s } = this.deps;
-		if (!r && I(i, e)) return;
+		if (!r && L(i, e)) return;
 		let c = i.getSelected(), l = i.validateDataArray(e);
 		if (l) {
 			s.error ? s.error(l) : this.deps.onError && this.deps.onError(l);
@@ -1864,7 +1842,7 @@ var R = class {
 		t.setSelectedByValue(r);
 	}
 	applySelection(e, t, n) {
-		let { store: r, select: i, render: a, events: o } = this.deps, s = r.getSelected(), c = L(r, e);
+		let { store: r, select: i, render: a, events: o } = this.deps, s = r.getSelected(), c = R(r, e);
 		if (v(s, c)) return;
 		r.setSelectedBy("id", c), this.syncNativeSelection(), a.renderValues();
 		let l = a.content.search.input.value.trim();
@@ -1872,13 +1850,9 @@ var R = class {
 	}
 	applyAddOption(e) {
 		let { store: t, select: n, render: r, events: i } = this.deps, a = t.getSelected(), o = r.content.search.input.value.trim() !== "" && !!this.deps.search, s = e.value ?? e.text ?? "", c = (e) => {
-			for (let t of e) {
-				if (t instanceof j) {
-					if (t.options.some((e) => (e.value ?? e.text) === s)) return !0;
-					continue;
-				}
-				if ((t.value ?? t.text) === s) return !0;
-			}
+			for (let t of e) if (t instanceof j) {
+				if (t.options.some((e) => (e.value ?? e.text) === s)) return !0;
+			} else if ((t.value ?? t.text) === s) return !0;
 			return !1;
 		};
 		if (!c(t.getData(!1))) {
@@ -1894,7 +1868,7 @@ var R = class {
 		} else n.updateOptions(l);
 		r.renderValues(), r.renderOptions(l), i.afterChange && !v(a, t.getSelected()) && i.afterChange(t.getSelectedOptions());
 	}
-}, z = class {
+}, B = class {
 	selectEl;
 	settings;
 	cssClasses;
@@ -1932,7 +1906,7 @@ var R = class {
 			"afterClose"
 		];
 		for (let e in t.events) t.events.hasOwnProperty(e) && (n.indexOf(e) === -1 ? this.events[e] = t.events[e] : this.events[e] = _(t.events[e], 100));
-		this.settings.disabled = t.settings?.disabled ? t.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new F(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onClassChange = (e) => {
+		this.settings.disabled = t.settings?.disabled ? t.settings.disabled : this.selectEl.disabled, this.settings.isMultiple = this.selectEl.multiple, this.settings.style = this.selectEl.style.cssText, this.settings.class = this.selectEl.className.split(" "), this.select = new I(this.selectEl), this.selectEl.id || (this.selectEl.id = this.settings.id), this.select.updateSelect(this.settings.id, this.settings.style, this.settings.class), this.select.hideUI(), this.select.onClassChange = (e) => {
 			this.settings.class = e, this.render.updateClassStyles();
 		}, this.select.onTitleChange = (e) => {
 			this.render.updateTitle(e);
@@ -1970,7 +1944,7 @@ var R = class {
 			beforeChange: this.events.beforeChange,
 			afterChange: this.events.afterChange
 		};
-		this.settings.modalTitle = t.settings?.modalTitle ?? m(this.selectEl), this.render = new N(this.settings, this.cssClasses, this.store, i), this.settings.timeoutDelay = a(this.render.content.main, t.settings?.timeoutDelay), this.sync = new R({
+		this.settings.modalTitle = t.settings?.modalTitle ?? m(this.selectEl), this.render = new P(this.settings, this.cssClasses, this.store, i), this.settings.timeoutDelay = a(this.render.content.main, t.settings?.timeoutDelay), this.sync = new z({
 			select: this.select,
 			store: this.store,
 			render: this.render,
@@ -2083,27 +2057,15 @@ var R = class {
 	}
 	search(e) {
 		let t = e.trim();
-		if (t === "" ? this.render.content.search.input.value = "" : this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), this.events.search) {
-			this.runApiSearch(t);
-			return;
-		}
-		if (t === "") {
-			this.clearSearch();
-			return;
-		}
-		this.runLocalSearch(t);
+		t === "" ? this.render.content.search.input.value = "" : this.render.content.search.input.value !== e && (this.render.content.search.input.value = e), this.events.search ? this.runApiSearch(t) : t === "" ? this.clearSearch() : this.runLocalSearch(t);
 	}
 	clearSearch() {
-		if (this.render.content.search.input.value = "", this.searchGeneration++, !this.events.search && this.render.canFilterOptionsInPlace()) {
-			this.render.filterOptionsInPlace("", this.events.searchFilter), this.render.resetSearchFilterState();
-			return;
-		}
-		this.render.resetSearchFilterState(), this.sync.enqueue({
+		this.render.content.search.input.value = "", this.searchGeneration++, !this.events.search && this.render.canFilterOptionsInPlace() ? (this.render.filterOptionsInPlace("", this.events.searchFilter), this.render.resetSearchFilterState()) : (this.render.resetSearchFilterState(), this.sync.enqueue({
 			type: "structure",
 			data: this.store.getCatalogData(),
 			source: "api",
 			preserveSelection: !0
-		});
+		}));
 	}
 	runLocalSearch(e) {
 		if (this.render.canFilterOptionsInPlace()) {
@@ -2125,17 +2087,9 @@ var R = class {
 				isSearchResult: !0
 			});
 		};
-		if (n instanceof Promise) {
-			n.then(r).catch((e) => {
-				t === this.searchGeneration && this.render.renderError(typeof e == "string" ? e : e.message);
-			});
-			return;
-		}
-		if (Array.isArray(n)) {
-			r(n);
-			return;
-		}
-		this.render.renderError("Search event must return a promise or an array of data");
+		n instanceof Promise ? n.then(r).catch((e) => {
+			t === this.searchGeneration && this.render.renderError(typeof e == "string" ? e : e.message);
+		}) : Array.isArray(n) ? r(n) : this.render.renderError("Search event must return a promise or an array of data");
 	}
 	destroy() {
 		this.lifecycle.destroy(), this.render.stopPositionTracking(), this.globalEvents.detach({ listenScroll: this.settings.openPosition === "auto" }), this.store.setData([]), this.render.destroy(), this.select.destroy(), delete this.selectEl.slim;
@@ -2148,6 +2102,6 @@ var R = class {
 	}
 };
 //#endregion
-export { u as MODAL_MOBILE_BREAKPOINT, j as Optgroup, A as Option, d as Settings, z as default };
+export { u as MODAL_MOBILE_BREAKPOINT, j as Optgroup, A as Option, d as Settings, B as default };
 
 //# sourceMappingURL=slimselect.es.js.map
