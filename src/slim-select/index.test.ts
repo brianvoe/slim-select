@@ -1342,6 +1342,46 @@ describe('SlimSelect Module', () => {
       expect(slim.render.content.search.input.value).toBe('')
       expect(slim.render.getOptions(true, true, true)).toHaveLength(3)
     })
+
+    test('addOption during a search keeps every option on the native select', () => {
+      document.body.innerHTML = `
+        <select id="local-search-add" multiple>
+          <option value="1" selected>Banking</option>
+          <option value="2">Energy</option>
+          <option value="3">Mining</option>
+        </select>
+      `
+
+      const selectEl = document.getElementById('local-search-add') as HTMLSelectElement
+      const slim = new SlimSelect({ select: selectEl })
+      slim.open()
+      slim.search('Aquaculture')
+      slim.addOption({ text: 'Aquaculture', value: '4' })
+
+      expect(Array.from(selectEl.options, (option) => option.value)).toEqual(['1', '2', '3', '4'])
+    })
+
+    test('addable keeps every option on the native select', () => {
+      document.body.innerHTML = `
+        <select id="local-search-addable" multiple>
+          <option value="1" selected>Banking</option>
+          <option value="2">Energy</option>
+          <option value="3">Mining</option>
+        </select>
+      `
+
+      const selectEl = document.getElementById('local-search-addable') as HTMLSelectElement
+      const slim = new SlimSelect({
+        select: selectEl,
+        events: { addable: (value: string) => value }
+      })
+      slim.open()
+      slim.search('Aquaculture')
+      slim.render.content.search.addable!.main.click()
+
+      expect(Array.from(selectEl.options, (option) => option.value)).toEqual(['1', '2', '3', 'Aquaculture'])
+      expect(Array.from(selectEl.selectedOptions, (option) => option.value)).toEqual(['1', 'Aquaculture'])
+    })
   })
 
   describe('search whitespace', () => {
