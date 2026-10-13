@@ -22,6 +22,14 @@ export type ChangeSource = 'native' | 'ui' | 'api'
 export interface SyncEvents {
   afterChange?: (newVal: Option[]) => void
   error?: (err: Error) => void
+  /** Consumer API search. When set, the store holds search hits while a search is active. */
+  search?: (
+    searchValue: string,
+    selected: Option[],
+    catalog?: (Option | Optgroup)[]
+  ) =>
+    | Promise<(Partial<Option> | Partial<Optgroup>)[]>
+    | (Partial<Option> | Partial<Optgroup>)[]
 }
 
 /**
@@ -333,7 +341,8 @@ export default class SyncCoordinator {
     const { store, select, render, events } = this.deps
     const selected = store.getSelected()
     const searchValue = render.content.search.input.value.trim()
-    const isApiSearchOverlay = searchValue !== '' && !!this.deps.search
+    // deps.search is always wired; only a consumer search event puts hits in the store
+    const isApiSearchOverlay = searchValue !== '' && !!events.search
     const optionValue = option.value ?? option.text ?? ''
 
     const optionExists = (data: (Option | Optgroup)[]): boolean => {
