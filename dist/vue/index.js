@@ -1848,7 +1848,7 @@ var G = class {
 		l === "" ? a.canUpdateOptionSelectionInPlace() ? a.updateOptionSelection() : a.renderOptions(r.getData(!1)) : a.hasRenderedOptions() ? a.updateOptionSelection() : this.deps.search && this.deps.search(l), n && o.afterChange && !w(s, r.getSelected()) && o.afterChange(r.getSelectedOptions());
 	}
 	applyAddOption(e) {
-		let { store: t, select: n, render: r, events: i } = this.deps, a = t.getSelected(), o = r.content.search.input.value.trim() !== "" && !!this.deps.search, s = e.value ?? e.text ?? "", c = (e) => {
+		let { store: t, select: n, render: r, events: i } = this.deps, a = t.getSelected(), o = r.content.search.input.value.trim() !== "" && !!i.search, s = e.value ?? e.text ?? "", c = (e) => {
 			for (let t of e) if (t instanceof L) {
 				if (t.options.some((e) => (e.value ?? e.text) === s)) return !0;
 			} else if ((t.value ?? t.text) === s) return !0;

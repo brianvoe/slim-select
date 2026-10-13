@@ -6,6 +6,8 @@ export type ChangeSource = 'native' | 'ui' | 'api';
 export interface SyncEvents {
     afterChange?: (newVal: Option[]) => void;
     error?: (err: Error) => void;
+    /** Consumer API search. When set, the store holds search hits while a search is active. */
+    search?: (searchValue: string, selected: Option[], catalog?: (Option | Optgroup)[]) => Promise<(Partial<Option> | Partial<Optgroup>)[]> | (Partial<Option> | Partial<Optgroup>)[];
 }
 /**
  * A single unit of work in the sync queue.
