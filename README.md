@@ -181,6 +181,7 @@ new SlimSelect({
     openPosition: 'auto', // 'auto' | 'up' | 'down'
     placeholderText: 'Select Value',
     allowDeselect: false,
+    removeLastSelectedOnBackspace: true, // Backspace with an empty search removes the last selected value
     hideSelected: false,
     multiString: false,
     keepOrder: false,

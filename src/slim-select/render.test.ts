@@ -1372,6 +1372,23 @@ describe('render module', () => {
       expect(setSelectedMock.mock.calls[0][0]).toEqual(['a', 'b'])
     })
 
+    test('Backspace without highlight preserves values when removal is disabled', () => {
+      render.settings.removeLastSelectedOnBackspace = false
+
+      press('Backspace')
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
+    test('Backspace still deletes a highlighted value when last-value removal is disabled', () => {
+      render.settings.removeLastSelectedOnBackspace = false
+      press('ArrowLeft')
+      press('Backspace')
+
+      expect(setSelectedMock).toHaveBeenCalledTimes(1)
+      expect(setSelectedMock.mock.calls[0][0]).toEqual(['a', 'b'])
+    })
+
     test('Backspace deletes the highlighted value', () => {
       press('ArrowLeft')
       press('ArrowLeft')

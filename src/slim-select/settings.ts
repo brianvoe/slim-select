@@ -35,6 +35,7 @@ export default class Settings {
   public openPosition: 'auto' | 'up' | 'down'
   public placeholderText: string
   public allowDeselect: boolean
+  public removeLastSelectedOnBackspace: boolean
   public hideSelected: boolean
   public multiString: boolean
   public keepOrder: boolean
@@ -83,6 +84,8 @@ export default class Settings {
     this.openPosition = settings.openPosition || 'auto' // options: auto, up, down
     this.placeholderText = settings.placeholderText !== undefined ? settings.placeholderText : 'Select Value'
     this.allowDeselect = settings.allowDeselect !== undefined ? settings.allowDeselect : false
+    this.removeLastSelectedOnBackspace =
+      settings.removeLastSelectedOnBackspace !== undefined ? settings.removeLastSelectedOnBackspace : true
     this.hideSelected = settings.hideSelected !== undefined ? settings.hideSelected : false
     this.multiString = settings.multiString !== undefined ? settings.multiString : false
     this.keepOrder = settings.keepOrder !== undefined ? settings.keepOrder : false

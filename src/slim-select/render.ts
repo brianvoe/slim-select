@@ -1413,6 +1413,9 @@ export default class Render {
           if (input.value !== '') {
             return true
           }
+          if (!this.settings.removeLastSelectedOnBackspace && !this.getHighlightedValueChip()) {
+            return true
+          }
           if (this.deleteValueChip()) {
             e.preventDefault()
             return false
