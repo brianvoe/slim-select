@@ -5,14 +5,20 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.6.1]
+
+### Changed
+
+- Multi-select: Backspace in an empty search field highlights the last selected value. A second Backspace removes it
+  ([#722](https://github.com/brianvoe/slim-select/pull/722))
+
 ## [4.6.0]
 
 ### Added
 
 - With `showSearch: false`, typing a letter or digit jumps to the matching option, the same way a native `<select>`
   does. Characters typed within about a second build a prefix, and repeating a letter cycles through matches. Enter or
-  Space still confirms the highlight
-  ([#718](https://github.com/brianvoe/slim-select/issues/718))
+  Space still confirms the highlight ([#718](https://github.com/brianvoe/slim-select/issues/718))
 
 ## [4.5.0]
 

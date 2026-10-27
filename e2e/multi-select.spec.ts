@@ -55,6 +55,25 @@ test.describe('multi select', () => {
     await expect(main(page, 'multi').locator('.ss-value.ss-highlighted .ss-value-text')).toHaveText('Blue')
   })
 
+  test('Backspace on an empty search highlights before removing', async ({ page }) => {
+    await openSelect(page, 'multi')
+    await option(page, 'multi', 'Red').click({ modifiers: ['ControlOrMeta'] })
+    await option(page, 'multi', 'Green').click({ modifiers: ['ControlOrMeta'] })
+    await option(page, 'multi', 'Blue').click({ modifiers: ['ControlOrMeta'] })
+
+    await content(page, 'multi').locator('.ss-search input').fill('')
+    await content(page, 'multi').locator('.ss-search input').focus()
+    await page.keyboard.press('Backspace')
+
+    expect(await getSelected(page, 'multi')).toEqual(['red', 'green', 'blue'])
+    await expect(main(page, 'multi').locator('.ss-value.ss-highlighted .ss-value-text')).toHaveText('Blue')
+
+    await page.keyboard.press('Backspace')
+
+    expect(await getSelected(page, 'multi')).toEqual(['red', 'green'])
+    await expect(main(page, 'multi').locator('.ss-value.ss-highlighted .ss-value-text')).toHaveText('Green')
+  })
+
   test('Backspace removes highlighted selected value', async ({ page }) => {
     await openSelect(page, 'multi')
     await option(page, 'multi', 'Red').click({ modifiers: ['ControlOrMeta'] })

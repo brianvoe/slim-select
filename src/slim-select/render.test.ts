@@ -1365,11 +1365,22 @@ describe('render module', () => {
       expect(highlightedChips()).toHaveLength(0)
     })
 
-    test('Backspace without highlight deletes the last selected value', () => {
+    test('Backspace without highlight highlights the last selected value', () => {
+      press('Backspace')
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+      expect(highlightedChips()).toHaveLength(1)
+      expect(highlightedChips()[0].dataset.id).toBe('c')
+    })
+
+    test('a second Backspace removes the highlighted value', () => {
+      press('Backspace')
       press('Backspace')
 
       expect(setSelectedMock).toHaveBeenCalledTimes(1)
       expect(setSelectedMock.mock.calls[0][0]).toEqual(['a', 'b'])
+      expect(highlightedChips()).toHaveLength(1)
+      expect(highlightedChips()[0].dataset.id).toBe('b')
     })
 
     test('Backspace deletes the highlighted value', () => {

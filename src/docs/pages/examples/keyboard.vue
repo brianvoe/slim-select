@@ -73,9 +73,9 @@ export default defineComponent({
     <h2 class="header">Keyboard values</h2>
     <p>
       With the dropdown open, focus stays in the search field so you can keep adding matches. When the search box is
-      empty, <kbd>Left</kbd> and <kbd>Right</kbd> move a highlight across the selected values. <kbd>Backspace</kbd> or
-      <kbd>Delete</kbd> removes the highlighted value. Typing or <kbd>Up</kbd> / <kbd>Down</kbd> returns to the options
-      list.
+      empty, <kbd>Left</kbd> and <kbd>Right</kbd> move a highlight across the selected values. The first
+      <kbd>Backspace</kbd> highlights the last value, and another <kbd>Backspace</kbd> or <kbd>Delete</kbd> removes the
+      highlighted value. Typing or <kbd>Up</kbd> / <kbd>Down</kbd> returns to the options list.
     </p>
 
     <div class="form-group">
@@ -96,7 +96,10 @@ export default defineComponent({
         Press <kbd>Left</kbd> / <kbd>Right</kbd> to move between values. <kbd>Right</kbd> from the last value returns to
         the search field.
       </li>
-      <li>Press <kbd>Backspace</kbd> to remove the highlighted value, or the last value if none is highlighted.</li>
+      <li>
+        Press <kbd>Backspace</kbd> on an empty search to highlight the last value. Press it again, or press
+        <kbd>Delete</kbd>, to remove the highlighted value.
+      </li>
       <li>If the search field has text, <kbd>Left</kbd> and <kbd>Right</kbd> move the caret as usual.</li>
     </ul>
 

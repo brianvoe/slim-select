@@ -123,7 +123,7 @@ export default class Render {
     /** Returns true when Left/Right were used to move among selected value chips. */
     private navigateValueChips;
     /**
-     * Remove the highlighted chip, or the last chip when none is highlighted.
+     * Remove the highlighted chip.
      * Returns true when a delete was triggered.
      */
     private deleteValueChip;

@@ -1009,32 +1009,27 @@ export default class Render {
   }
 
   /**
-   * Remove the highlighted chip, or the last chip when none is highlighted.
+   * Remove the highlighted chip.
    * Returns true when a delete was triggered.
    */
-  private deleteValueChip(onlyHighlighted = false): boolean {
+  private deleteValueChip(): boolean {
     const chips = this.getValueChips()
-    if (chips.length === 0) {
-      return false
-    }
-
     const current = this.getHighlightedValueChip()
-    if (onlyHighlighted && !current) {
+    if (!current) {
       return false
     }
 
-    const target = current ?? chips[chips.length - 1]
-    const deleteButton = target.querySelector('.' + this.classes.getFirst('valueDelete')) as HTMLElement | null
+    const deleteButton = current.querySelector('.' + this.classes.getFirst('valueDelete')) as HTMLElement | null
     if (!deleteButton) {
       return false
     }
 
-    const index = chips.indexOf(target)
-    const next = current ? (chips[index - 1] ?? chips[index + 1] ?? null) : null
+    const index = chips.indexOf(current)
+    const next = chips[index - 1] ?? chips[index + 1] ?? null
 
     deleteButton.click()
 
-    if (next && next !== target && this.main.values.contains(next)) {
+    if (next && next !== current && this.main.values.contains(next)) {
       this.highlightValueChip(next)
     } else {
       this.clearValueChipHighlight()
@@ -1413,16 +1408,24 @@ export default class Render {
           if (input.value !== '') {
             return true
           }
+          // First press highlights the last chip. A second press removes it.
+          if (!this.getHighlightedValueChip()) {
+            if (this.navigateValueChips('left')) {
+              e.preventDefault()
+              return false
+            }
+            return true
+          }
           if (this.deleteValueChip()) {
             e.preventDefault()
             return false
           }
           return true
         case 'Delete':
-          if (input.value !== '' || !this.getHighlightedValueChip()) {
+          if (input.value !== '') {
             return true
           }
-          if (this.deleteValueChip(true)) {
+          if (this.deleteValueChip()) {
             e.preventDefault()
             return false
           }

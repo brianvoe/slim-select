@@ -872,15 +872,13 @@ var O = class {
 		let n = this.getHighlightedValueChip(), r = n ? t.indexOf(n) : -1;
 		return e === "left" ? (r === -1 ? this.highlightValueChip(t[t.length - 1]) : r > 0 && this.highlightValueChip(t[r - 1]), !0) : r !== -1 && (r < t.length - 1 ? this.highlightValueChip(t[r + 1]) : this.clearValueChipHighlight(), !0);
 	}
-	deleteValueChip(e = !1) {
-		let t = this.getValueChips();
-		if (t.length === 0) return !1;
-		let n = this.getHighlightedValueChip();
-		if (e && !n) return !1;
-		let r = n ?? t[t.length - 1], i = r.querySelector("." + this.classes.getFirst("valueDelete"));
-		if (!i) return !1;
-		let a = t.indexOf(r), o = n ? t[a - 1] ?? t[a + 1] ?? null : null;
-		return i.click(), o && o !== r && this.main.values.contains(o) ? this.highlightValueChip(o) : this.clearValueChipHighlight(), !0;
+	deleteValueChip() {
+		let e = this.getValueChips(), t = this.getHighlightedValueChip();
+		if (!t) return !1;
+		let n = t.querySelector("." + this.classes.getFirst("valueDelete"));
+		if (!n) return !1;
+		let r = e.indexOf(t), i = e[r - 1] ?? e[r + 1] ?? null;
+		return n.click(), i && i !== t && this.main.values.contains(i) ? this.highlightValueChip(i) : this.clearValueChipHighlight(), !0;
 	}
 	updateMultipleValueDeleteVisibility() {
 		if (!this.settings.isMultiple || this.settings.multiString) return;
@@ -982,8 +980,8 @@ var O = class {
 				case "ArrowDown": return this.clearValueChipHighlight(), e.key === "ArrowDown" ? this.highlight("down") : this.highlight("up"), !1;
 				case "ArrowLeft":
 				case "ArrowRight": return t.value !== "" || !this.navigateValueChips(e.key === "ArrowLeft" ? "left" : "right") || (e.preventDefault(), !1);
-				case "Backspace": return t.value !== "" || !this.deleteValueChip() || (e.preventDefault(), !1);
-				case "Delete": return t.value !== "" || !this.getHighlightedValueChip() || !this.deleteValueChip(!0) || (e.preventDefault(), !1);
+				case "Backspace": return t.value === "" ? this.getHighlightedValueChip() ? !this.deleteValueChip() || (e.preventDefault(), !1) : !this.navigateValueChips("left") || (e.preventDefault(), !1) : !0;
+				case "Delete": return t.value !== "" || !this.deleteValueChip() || (e.preventDefault(), !1);
 				case "Tab": return this.requestClose("tab"), !0;
 				case "Escape": return this.requestClose("escape"), !1;
 				case "Enter":

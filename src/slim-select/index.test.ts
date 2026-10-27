@@ -2279,12 +2279,21 @@ describe('SlimSelect Module', () => {
       expect(highlightedChipText()).toBe('Green')
     })
 
-    test('Backspace with no highlight removes the last selected value', () => {
+    test('Backspace on an empty search highlights the last selected value', () => {
       slim.open()
       press('Backspace')
 
+      expect(slim.getSelected()).toEqual(['red', 'green', 'blue'])
+      expect(highlightedChipText()).toBe('Blue')
+    })
+
+    test('a second Backspace removes that highlighted value', () => {
+      slim.open()
+      press('Backspace')
+      press('Backspace')
+
       expect(slim.getSelected()).toEqual(['red', 'green'])
-      expect(highlightedChipText()).toBeNull()
+      expect(highlightedChipText()).toBe('Green')
     })
 
     test('does not steal Left/Right while the search field has text', () => {
