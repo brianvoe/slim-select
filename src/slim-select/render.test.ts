@@ -2228,6 +2228,16 @@ describe('render module', () => {
       expect(setSelectedMock).not.toHaveBeenCalled()
     })
 
+    test('an existing option cannot select after the control becomes disabled', () => {
+      const option = render.option(new Option({ text: 'opt 1' }))
+
+      render.settings.disabled = true
+      option.dispatchEvent(new MouseEvent('click'))
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+      expect(afterChangeMock).not.toHaveBeenCalled()
+    })
+
     test('click does nothing when max count of selected options is reached', () => {
       render.settings.isMultiple = true
       render.settings.maxSelected = 1
