@@ -1834,15 +1834,15 @@ export default class Render {
   // Take in data and add options to
   public renderOptions(data: (Option | Optgroup)[]): void {
     this.lastSearchFilterTerm = ''
-    this.lastRenderedOptions = data
-      .map((o) => (o instanceof Option ? [o] : o.options.map((po) => new Option(po))))
-      .flat()
+    const renderedOptions = data.map((o) => (o instanceof Option ? [o] : o.options.map((po) => new Option(po)))).flat()
+    // Placeholders are drawn hidden and are not results (#719).
+    this.lastRenderedOptions = renderedOptions.filter((option) => !option.placeholder)
 
     // Clear out innerHtml
     this.content.list.innerHTML = ''
 
     // If no results show no results text
-    if (data.length === 0) {
+    if (this.lastRenderedOptions.length === 0) {
       this.optionsListIsFullData = false
       const noResults = document.createElement('div')
       this.addClasses(noResults, this.classes.search)

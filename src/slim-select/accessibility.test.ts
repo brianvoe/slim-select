@@ -701,6 +701,83 @@ describe('SlimSelect Accessibility', () => {
       expect(status.textContent).toBe('1 results available')
     })
 
+    test('a placeholder option is left out of the results announcement', () => {
+      select.innerHTML = `
+        <option data-placeholder="true" value=""></option>
+        <option value="1">Apple</option>
+        <option value="2">Banana</option>
+        <option value="3">Cherry</option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true,
+          resultsText: '{count} results available'
+        }
+      })
+
+      slim.open()
+
+      const status = document.querySelector('.ss-status') as HTMLDivElement
+      expect(status.textContent).toBe('3 results available')
+      expect(document.querySelectorAll('.ss-list .ss-option:not(.ss-hide)')).toHaveLength(3)
+    })
+
+    test('remote search with only a placeholder announces no results', () => {
+      select.innerHTML = `
+        <option data-placeholder="true" value=""></option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true,
+          searchText: 'No Results'
+        },
+        events: {
+          search: () => []
+        }
+      })
+
+      slim.open()
+      slim.search('zz')
+
+      const status = document.querySelector('.ss-status')
+      expect(status?.textContent).toBe('No Results')
+      expect(document.querySelector('.ss-list .ss-search')?.textContent).toBe('No Results')
+      expect(document.querySelectorAll('.ss-list .ss-option:not(.ss-hide)')).toHaveLength(0)
+    })
+
+    test('remote search does not count the selected placeholder', () => {
+      select.innerHTML = `
+        <option data-placeholder="true" value=""></option>
+      `
+
+      slim = new SlimSelect({
+        select: select,
+        settings: {
+          showSearch: true,
+          resultsText: '{count} results available'
+        },
+        events: {
+          search: () => [
+            { text: 'Apple', value: 'apple' },
+            { text: 'Banana', value: 'banana' },
+            { text: 'Cherry', value: 'cherry' },
+            { text: 'Date', value: 'date' }
+          ]
+        }
+      })
+
+      slim.open()
+      slim.search('a')
+
+      const status = document.querySelector('.ss-status')
+      expect(status?.textContent).toBe('4 results available')
+      expect(document.querySelectorAll('.ss-list .ss-option:not(.ss-hide)')).toHaveLength(4)
+    })
+
     test('no results message is announced in the live region', () => {
       select.innerHTML = `
         <option value="1">Apple</option>

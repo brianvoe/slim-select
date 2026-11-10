@@ -5,6 +5,13 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.6.3]
+
+### Fixed
+
+- The results announcement no longer counts a hidden placeholder. A search that returns nothing but that placeholder now
+  shows the no-results message ([#719](https://github.com/brianvoe/slim-select/issues/719))
+
 ## [4.6.2]
 
 ### Changed

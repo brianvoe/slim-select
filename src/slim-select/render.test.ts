@@ -1769,6 +1769,64 @@ describe('render module', () => {
     })
   })
 
+  describe('renderOptions', () => {
+    test('does not count a placeholder in the results announcement', () => {
+      render.settings.resultsText = '{count} results available'
+      render.renderOptions(
+        render.store.partialToFullData([
+          { text: 'Pick one', value: '', placeholder: true },
+          { text: 'Apple', value: 'apple' },
+          { text: 'Banana', value: 'banana' },
+          { text: 'Cherry', value: 'cherry' }
+        ])
+      )
+
+      expect(render.content.status.textContent).toBe('3 results available')
+      expect(render.getOptions(false, false, true)).toHaveLength(3)
+    })
+
+    test('does not count a placeholder inside an optgroup', () => {
+      render.settings.resultsText = '{count} results available'
+      render.renderOptions(
+        render.store.partialToFullData([
+          {
+            label: 'Fruit',
+            options: [
+              { text: 'Pick one', value: '', placeholder: true },
+              { text: 'Apple', value: 'apple' },
+              { text: 'Banana', value: 'banana' }
+            ]
+          }
+        ])
+      )
+
+      expect(render.content.status.textContent).toBe('2 results available')
+      expect(render.getOptions(false, false, true)).toHaveLength(2)
+    })
+
+    test('shows the no-results message when only a placeholder is left', () => {
+      render.content.search.input.value = 'zz'
+      render.renderOptions(render.store.partialToFullData([{ text: '', value: '', placeholder: true }]))
+
+      expect(render.content.status.textContent).toBe(render.settings.searchText)
+      expect(render.content.list.querySelector('.' + render.classes.getFirst('search'))?.textContent).toBe(
+        render.settings.searchText
+      )
+      expect(render.getOptions()).toHaveLength(0)
+    })
+
+    test('shows the addable message when only a placeholder is left', () => {
+      render.callbacks.addable = () => false
+      render.content.search.input.value = 'pear'
+      render.renderOptions(render.store.partialToFullData([{ text: '', value: '', placeholder: true }]))
+
+      expect(render.content.status.textContent).toBe('Press "Enter" to add pear')
+      expect(render.content.list.querySelector('.' + render.classes.getFirst('search'))?.textContent).toBe(
+        'Press "Enter" to add pear'
+      )
+    })
+  })
+
   describe('renderSearching', () => {
     test('search text is rendered correctly', () => {
       expect(render.content.list.children).toHaveLength(0)
