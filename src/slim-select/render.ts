@@ -2534,8 +2534,8 @@ export default class Render {
       const isCurrentlySelected = selectedOptions.includes(elementID)
       const isCmd = e.ctrlKey || e.metaKey // Cmd (Mac) or Ctrl (Windows/Linux)
 
-      // If the option is disabled, do nothing
-      if (option.disabled) {
+      // The control can become disabled after this option was rendered.
+      if (this.settings.disabled || option.disabled) {
         return
       }
 
