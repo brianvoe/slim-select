@@ -1490,8 +1490,8 @@ export default class Render {
         e.preventDefault()
         e.stopPropagation()
 
-        // Do nothing if addable is not set
-        if (!this.callbacks.addable) {
+        // The control can become disabled after this button was rendered.
+        if (this.settings.disabled || !this.callbacks.addable) {
           return
         }
 
@@ -2337,6 +2337,12 @@ export default class Render {
     selectAll.addEventListener('click', (e: MouseEvent) => {
       e.preventDefault()
       e.stopPropagation()
+
+      // The control can become disabled after this control was rendered.
+      if (this.settings.disabled) {
+        return
+      }
+
       onClick()
     })
 

@@ -5,6 +5,14 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.6.4]
+
+### Fixed
+
+- Clicking an option in an already-open list no longer changes the selection after the control is disabled
+  ([#725](https://github.com/brianvoe/slim-select/pull/725))
+- Select all and addable no longer change the selection after the control is disabled
+
 ## [4.6.3]
 
 ### Fixed

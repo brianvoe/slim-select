@@ -1247,6 +1247,24 @@ describe('render module', () => {
       expect(addableMock).not.toHaveBeenCalled()
     })
 
+    test('addable does nothing after the control is disabled', () => {
+      const addableMock = vi.fn((s: string) => ({
+        text: s,
+        value: s.toLowerCase()
+      }))
+
+      render.callbacks.addable = addableMock
+      render.content.search = render.searchDiv()
+      render.content.search.input.value = 'pear'
+      render.settings.disabled = true
+
+      render.content.search.addable?.main.dispatchEvent(new MouseEvent('click'))
+      render.content.search.input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }))
+
+      expect(addableMock).not.toHaveBeenCalled()
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
+
     test('enter calls addable when no option is highlighted', () => {
       const addableMock = vi.fn((s: string) => ({
         text: s,
@@ -1974,6 +1992,38 @@ describe('render module', () => {
 
       expect(setSelectedMock).toHaveBeenCalledWith([], true)
     })
+
+    test('clicking Select All does nothing after the control is disabled', () => {
+      const store = new Store('multiple', [
+        {
+          label: 'Group',
+          selectAll: true,
+          options: [
+            { text: 'A', value: 'a' },
+            { text: 'B', value: 'b' }
+          ]
+        }
+      ])
+      const selectAllRender = new Render(new Settings({ modal: 'off' }), new CssClasses(), store, {
+        open: openMock as () => void,
+        close: closeMock as (info?: CloseInfo) => void,
+        setSelected: setSelectedMock as (value: string | string[], runAfterChange: boolean) => void,
+        addOption: addOptionMock as (option: Option) => void,
+        search: searchMock as (search: string) => void,
+        clearSearch: clearSearchMock as () => void
+      })
+      selectAllRender.settings.isMultiple = true
+      selectAllRender.renderOptions(store.getData())
+      selectAllRender.settings.disabled = true
+
+      const selectAll = selectAllRender.content.list.querySelector(
+        '.' + selectAllRender.classes.getFirst('optgroupSelectAll')
+      ) as HTMLDivElement
+
+      selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
+    })
   })
 
   describe('global select all', () => {
@@ -2022,6 +2072,20 @@ describe('render module', () => {
       selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
       expect(setSelectedMock).toHaveBeenCalledWith([], true)
+    })
+
+    test('clicking Select All does nothing after the control is disabled', () => {
+      const selectAllRender = createGlobalSelectAllRender([
+        { text: 'A', value: 'a' },
+        { text: 'B', value: 'b' }
+      ])
+      selectAllRender.renderOptions(selectAllRender.store.getData())
+      selectAllRender.settings.disabled = true
+
+      const selectAll = selectAllRender.content.search.selectAll as HTMLDivElement
+      selectAll.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+      expect(setSelectedMock).not.toHaveBeenCalled()
     })
   })
 
