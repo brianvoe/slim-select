@@ -996,7 +996,7 @@ var O = class {
 			t.setAttribute("viewBox", "0 0 100 100");
 			let a = document.createElementNS("http://www.w3.org/2000/svg", "path");
 			a.setAttribute("d", this.classes.addablePath), t.appendChild(a), n.appendChild(t), n.onclick = (e) => {
-				if (e.preventDefault(), e.stopPropagation(), !this.callbacks.addable) return;
+				if (e.preventDefault(), e.stopPropagation(), this.settings.disabled || !this.callbacks.addable) return;
 				let t = this.content.search.input.value.trim();
 				if (t === "") {
 					this.content.search.input.focus();
@@ -1289,7 +1289,7 @@ var O = class {
 		a.setAttribute("d", this.classes.optgroupSelectAllBox), i.appendChild(a);
 		let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
 		return o.setAttribute("d", this.classes.optgroupSelectAllCheck), i.appendChild(o), n.addEventListener("click", (t) => {
-			t.preventDefault(), t.stopPropagation(), e();
+			t.preventDefault(), t.stopPropagation(), this.settings.disabled || e();
 		}), n;
 	}
 	getSelectableOptions() {
@@ -1355,7 +1355,7 @@ var O = class {
 		}), e.style && (t.style.cssText = e.style), this.setOptionElementContent(t, e, this.content.search.input.value), e.display || this.addClasses(t, this.classes.hide), e.disabled && this.addClasses(t, this.classes.disabled), e.selected && this.settings.hideSelected && this.addClasses(t, this.classes.hide), e.selected ? (this.addClasses(t, this.classes.selected), t.setAttribute("aria-selected", "true"), this.main.main.setAttribute("aria-activedescendant", t.id)) : (this.removeClasses(t, this.classes.selected), t.setAttribute("aria-selected", "false")), t.addEventListener("click", (t) => {
 			t.preventDefault(), t.stopPropagation();
 			let n = this.store.getSelected(), r = t.currentTarget, i = String(r.dataset.id), a = this.store.getOptionByID(i) ?? e, o = n.includes(i), s = t.ctrlKey || t.metaKey;
-			if (e.disabled) return;
+			if (this.settings.disabled || e.disabled) return;
 			if (!this.settings.isMultiple && o && !this.settings.allowDeselect || o && a.mandatory) {
 				this.closeOnSingleSelectReclick(a);
 				return;
