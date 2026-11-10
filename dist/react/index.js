@@ -1,6 +1,6 @@
 import { forwardRef as e, useEffect as t, useImperativeHandle as n, useRef as r, useState as i } from "react";
 import { jsx as a } from "react/jsx-runtime";
-//#region src/slim-select/classes.ts
+// src/slim-select/classes.ts
 var o = class {
 	main;
 	placeholder;
@@ -154,8 +154,7 @@ var g = class {
 		e ||= {}, this.id = "ss-" + b(), this.style = e.style || "", this.class = e.class || [], this.disabled = e.disabled !== void 0 && e.disabled, this.alwaysOpen = e.alwaysOpen !== void 0 && e.alwaysOpen, this.showSearch = e.showSearch === void 0 || e.showSearch, this.focusSearch = e.focusSearch === void 0 ? typeof window > "u" || window.innerWidth >= 768 : e.focusSearch, this.keepSearch = e.keepSearch !== void 0 && e.keepSearch, this.ariaLabel = e.ariaLabel || "Combobox", this.searchPlaceholder = e.searchPlaceholder || "Search...", this.searchText = e.searchText || "No Results", this.searchingText = e.searchingText || "Searching...", this.resultsText = e.resultsText || "{count} results available", this.deselectText = e.deselectText || "Clear", this.removeText = e.removeText || "Remove", this.searchHighlight = e.searchHighlight !== void 0 && e.searchHighlight, this.closeOnSelect = e.closeOnSelect === void 0 || e.closeOnSelect, this.contentLocation = e.contentLocation || document.body, this.contentPosition = e.contentPosition || "absolute", this.contentWidth = e.contentWidth || "", this.openPosition = e.openPosition || "auto", this.placeholderText = e.placeholderText === void 0 ? "Select Value" : e.placeholderText, this.allowDeselect = e.allowDeselect !== void 0 && e.allowDeselect, this.hideSelected = e.hideSelected !== void 0 && e.hideSelected, this.multiString = e.multiString !== void 0 && e.multiString, this.keepOrder = e.keepOrder !== void 0 && e.keepOrder, this.showOptionTooltips = e.showOptionTooltips !== void 0 && e.showOptionTooltips, this.minSelected = e.minSelected || 0, this.maxSelected = e.maxSelected || 1e3, this.timeoutDelay = e.timeoutDelay || 200, this.maxValuesShown = e.maxValuesShown || 20, this.maxValuesMessage = e.maxValuesMessage || "{number} selected", this.addableText = e.addableText || "Press \"Enter\" to add {value}", this.selectAll = e.selectAll !== void 0 && e.selectAll, this.selectAllText = e.selectAllText || "Select All", this.unselectAllText = e.unselectAllText || "Unselect All", this.modal = e.modal || "mobile", this.modalTitle = e.modalTitle || "";
 	}
 };
-//#endregion
-//#region src/slim-select/helpers.ts
+// src/slim-select/helpers.ts
 function _(e) {
 	if (!e) return {};
 	let t = {};
@@ -278,8 +277,7 @@ function j(e) {
 function M(e, t = typeof window < "u" ? window.innerWidth : 768) {
 	return e === "on" || e === "mobile" && t < 768;
 }
-//#endregion
-//#region src/slim-select/events.ts
+// src/slim-select/events.ts
 var N = class {
 	handlers;
 	attached = !1;
@@ -1129,7 +1127,9 @@ var N = class {
 		this.addClasses(e, this.classes.searching), e.textContent = this.settings.searchingText, this.content.list.appendChild(e), this.announce(this.settings.searchingText), this.repositionOpenContent();
 	}
 	renderOptions(e) {
-		if (this.lastSearchFilterTerm = "", this.lastRenderedOptions = e.map((e) => e instanceof F ? [e] : e.options.map((e) => new F(e))).flat(), this.content.list.innerHTML = "", e.length === 0) {
+		this.lastSearchFilterTerm = "";
+		let t = e.map((e) => e instanceof F ? [e] : e.options.map((e) => new F(e))).flat();
+		if (this.lastRenderedOptions = t.filter((e) => !e.placeholder), this.content.list.innerHTML = "", this.lastRenderedOptions.length === 0) {
 			this.optionsListIsFullData = !1;
 			let e = document.createElement("div");
 			if (this.addClasses(e, this.classes.search), this.callbacks.addable) {
@@ -1145,50 +1145,50 @@ var N = class {
 			selected: !1,
 			placeholder: !0
 		}), !0));
-		let t = document.createDocumentFragment();
-		for (let n of e) {
-			if (n instanceof I) {
+		let n = document.createDocumentFragment();
+		for (let t of e) {
+			if (t instanceof I) {
 				let e = document.createElement("div");
 				this.addClasses(e, this.classes.optgroup);
 				let r = document.createElement("div");
 				this.addClasses(r, this.classes.optgroupLabel), e.appendChild(r);
 				let i = document.createElement("div");
-				this.addClasses(i, this.classes.optgroupLabelText), i.textContent = n.label, r.appendChild(i);
+				this.addClasses(i, this.classes.optgroupLabelText), i.textContent = t.label, r.appendChild(i);
 				let a = document.createElement("div");
-				if (this.addClasses(a, this.classes.optgroupActions), r.appendChild(a), this.settings.isMultiple && n.selectAll) {
+				if (this.addClasses(a, this.classes.optgroupActions), r.appendChild(a), this.settings.isMultiple && t.selectAll) {
 					let e = this.createSelectAllControl(() => {
 						let e = this.store.getSelected();
-						if (this.isOptgroupAllSelected(n.options, new Set(e))) {
-							let t = e.filter((e) => {
-								for (let t of n.options) if (e === t.id) return !1;
+						if (this.isOptgroupAllSelected(t.options, new Set(e))) {
+							let n = e.filter((e) => {
+								for (let n of t.options) if (e === n.id) return !1;
 								return !0;
 							});
-							this.callbacks.setSelected(t, !0);
+							this.callbacks.setSelected(n, !0);
 						} else {
-							let t = n.options.map((e) => e.id).filter((e) => e !== void 0), r = e.concat(t);
-							for (let e of n.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new F(e));
+							let n = t.options.map((e) => e.id).filter((e) => e !== void 0), r = e.concat(n);
+							for (let e of t.options) e.id && !this.store.getOptionByID(e.id) && this.callbacks.addOption(new F(e));
 							this.callbacks.setSelected(r, !0);
 							return;
 						}
-					}, this.isOptgroupAllSelected(n.options));
+					}, this.isOptgroupAllSelected(t.options));
 					a.appendChild(e);
 				}
-				if (n.closable !== "off") {
-					let t = document.createElement("div");
-					this.addClasses(t, this.classes.optgroupClosable);
+				if (t.closable !== "off") {
+					let n = document.createElement("div");
+					this.addClasses(n, this.classes.optgroupClosable);
 					let i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-					i.setAttribute("viewBox", "0 0 100 100"), this.addClasses(i, this.classes.arrow), t.appendChild(i);
+					i.setAttribute("viewBox", "0 0 100 100"), this.addClasses(i, this.classes.arrow), n.appendChild(i);
 					let o = document.createElementNS("http://www.w3.org/2000/svg", "path");
-					i.appendChild(o), n.options.some((e) => e.selected) || this.content.search.input.value.trim() !== "" ? (this.addClasses(t, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "open" ? (this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : n.closable === "close" && (this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)), r.addEventListener("click", (n) => {
-						n.preventDefault(), n.stopPropagation(), this.isClosableOptgroupOpen(e, t) ? (this.removeClasses(e, this.classes.mainOpen), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)) : (this.closeOtherClosableOptgroups(e), this.removeClasses(e, this.classes.close), this.removeClasses(t, this.classes.mainOpen), this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)), this.repositionOpenContent();
-					}), a.appendChild(t);
+					i.appendChild(o), t.options.some((e) => e.selected) || this.content.search.input.value.trim() !== "" ? (this.addClasses(n, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : t.closable === "open" ? (this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)) : t.closable === "close" && (this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)), r.addEventListener("click", (t) => {
+						t.preventDefault(), t.stopPropagation(), this.isClosableOptgroupOpen(e, n) ? (this.removeClasses(e, this.classes.mainOpen), this.removeClasses(n, this.classes.mainOpen), this.addClasses(e, this.classes.close), o.setAttribute("d", this.classes.arrowClose)) : (this.closeOtherClosableOptgroups(e), this.removeClasses(e, this.classes.close), this.removeClasses(n, this.classes.mainOpen), this.addClasses(e, this.classes.mainOpen), o.setAttribute("d", this.classes.arrowOpen)), this.repositionOpenContent();
+					}), a.appendChild(n);
 				}
 				e.appendChild(r);
-				for (let r of n.options) e.appendChild(this.option(new F(r))), t.appendChild(e);
+				for (let r of t.options) e.appendChild(this.option(new F(r))), n.appendChild(e);
 			}
-			n instanceof F && t.appendChild(this.option(n));
+			t instanceof F && n.appendChild(this.option(t));
 		}
-		this.content.list.appendChild(t), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length))), this.updateGlobalSelectAllState(), this.repositionOpenContent();
+		this.content.list.appendChild(n), this.setOptionsListFullData(e), this.announce(this.settings.resultsText.replace("{count}", String(this.lastRenderedOptions.length))), this.updateGlobalSelectAllState(), this.repositionOpenContent();
 	}
 	canFilterOptionsInPlace() {
 		return this.optionsListIsFullData ? this.content.list.querySelector("." + this.classes.getFirst("option")) !== null : !1;
@@ -1480,8 +1480,7 @@ var N = class {
 		r && (!n || t) && !i ? this.removeClasses(a, o) : this.addClasses(a, o);
 	}
 };
-//#endregion
-//#region src/slim-select/mutations.ts
+// src/slim-select/mutations.ts
 function B(e, t) {
 	let n = {
 		classChanged: !1,
@@ -1502,8 +1501,7 @@ function B(e, t) {
 	}
 	return n;
 }
-//#endregion
-//#region src/slim-select/select.ts
+// src/slim-select/select.ts
 var V = class {
 	select;
 	onValueChange;
@@ -1757,8 +1755,7 @@ var V = class {
 		this.changeListen(!1), this.select.removeEventListener("change", this.valueChange), this.preventNativeSelect &&= (this.select.removeEventListener("click", this.preventNativeSelect, { capture: !0 }), null), this.preventNativeSelectMousedown &&= (this.select.removeEventListener("mousedown", this.preventNativeSelectMousedown, { capture: !0 }), null), this.preventNativeSelectFocus &&= (this.select.removeEventListener("focus", this.preventNativeSelectFocus, { capture: !0 }), null), this.restoreAriaHiddenOnBlur &&= (this.select.removeEventListener("blur", this.restoreAriaHiddenOnBlur, { capture: !0 }), null), this.observer &&= (this.observer.disconnect(), null), this.removeLabelHandlers(), delete this.select.dataset.id, this.showUI();
 	}
 };
-//#endregion
-//#region src/slim-select/sync.ts
+// src/slim-select/sync.ts
 function H(e, t) {
 	return A(e.getData(!1), t);
 }
@@ -2151,8 +2148,6 @@ var W = class {
 	});
 });
 K.displayName = "SlimSelect";
-//#endregion
-//#region src/slim-select/react/index.tsx
+// src/slim-select/react/index.tsx
 var q = K;
-//#endregion
 export { I as Optgroup, F as Option, g as Settings, q as default };
