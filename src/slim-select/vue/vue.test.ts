@@ -522,6 +522,83 @@ describe('SlimSelect Vue Component', () => {
     })
   })
 
+  describe('Conditional rendering and attributes', () => {
+    const ToggleComponent = {
+      components: { SlimSelectVue },
+      template: `
+        <div>
+          <SlimSelectVue v-if="menu" v-model="value" :data="options" />
+          <input v-else class="typed" :value="value" />
+          <span class="after">after</span>
+        </div>`,
+      data() {
+        return { menu: true, value: 'opt1', options: THREE_OPTIONS }
+      }
+    }
+
+    test('swaps out for a v-else element and back without errors', async () => {
+      const errorHandler = vi.fn()
+      const parent = mount(ToggleComponent, {
+        attachTo: document.body,
+        global: { config: { errorHandler } }
+      })
+      await nextTick()
+      expect(parent.find('.ss-main').exists()).toBe(true)
+
+      ;(parent.vm as any).menu = false
+      await nextTick()
+      expect(parent.find('.ss-main').exists()).toBe(false)
+      expect(parent.find('input.typed').exists()).toBe(true)
+
+      ;(parent.vm as any).menu = true
+      await nextTick()
+      expect(parent.find('.ss-main').exists()).toBe(true)
+      expect(parent.find('input.typed').exists()).toBe(false)
+      expect(parent.find('.after').exists()).toBe(true)
+      expect(errorHandler).not.toHaveBeenCalled()
+      parent.unmount()
+    })
+
+    test('keeps each dropdown with its select when a keyed list reorders', async () => {
+      const ListComponent = {
+        components: { SlimSelectVue },
+        template: `
+          <div>
+            <SlimSelectVue v-for="id in ids" :key="id" :id="id" :data="options" />
+          </div>`,
+        data() {
+          return { ids: ['a', 'b', 'c'], options: THREE_OPTIONS }
+        }
+      }
+      const parent = mount(ListComponent, { attachTo: document.body })
+      await nextTick()
+
+      ;(parent.vm as any).ids = ['c', 'a', 'b']
+      await nextTick()
+
+      const boxes = parent.findAll('.ss-vue')
+      expect(boxes.map((b) => b.find('select').attributes('id'))).toEqual(['c', 'a', 'b'])
+      for (const box of boxes) {
+        expect(box.findAll('.ss-main')).toHaveLength(1)
+      }
+      parent.unmount()
+    })
+
+    test('passes attributes to the select, not the box', () => {
+      wrapper = mount(SlimSelectVue, {
+        props: { data: [] },
+        attrs: { id: 'pick', name: 'color', class: 'my-select', 'aria-label': 'Color' }
+      })
+      const select = wrapper.find('select')
+      expect(select.attributes('id')).toBe('pick')
+      expect(select.attributes('name')).toBe('color')
+      expect(select.attributes('aria-label')).toBe('Color')
+      expect(select.classes()).toContain('my-select')
+      expect(wrapper.element.classList.contains('my-select')).toBe(false)
+      expect((wrapper.element as HTMLElement).style.display).toBe('contents')
+    })
+  })
+
   describe('Value Type Handling', () => {
     test('handles empty string as modelValue for single select', async () => {
       wrapper = mount(SlimSelectVue, {

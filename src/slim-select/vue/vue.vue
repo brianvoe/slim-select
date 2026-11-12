@@ -7,6 +7,13 @@
  *
  * Options always come from the required `data` prop (not slot children).
  * Selection is driven by `modelValue`; user changes flow back via afterChange.
+ *
+ * The root is a box around the <select>, not the select itself. SlimSelect
+ * inserts its main element right after the select and removes it on destroy,
+ * outside Vue's vnode tree. With the select as the root, Vue would anchor a
+ * v-if/v-else replacement on that element and then find it gone, and a keyed
+ * move would leave it behind. The box (display: contents, so layout is
+ * unchanged) keeps it inside nodes Vue owns. Attributes still go to the select.
  */
 import { defineComponent, PropType, toRaw } from 'vue'
 import SlimSelect, {
@@ -21,6 +28,7 @@ import { deepToRaw } from './helpers'
 
 export default defineComponent({
   name: 'SlimSelect',
+  inheritAttrs: false,
   props: {
     // v-model: string for single, string[] for multiple, undefined = uncontrolled
     modelValue: {
@@ -240,6 +248,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- Empty native select — SlimSelect replaces it on mount; options come from :data -->
-  <select :multiple="multiple" ref="slim"></select>
+  <div class="ss-vue" style="display: contents">
+    <!-- Empty native select — SlimSelect replaces it on mount; options come from :data -->
+    <select v-bind="$attrs" :multiple="multiple" ref="slim"></select>
+  </div>
 </template>

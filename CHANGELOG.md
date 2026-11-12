@@ -5,6 +5,22 @@ All notable changes to Slim Select are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.7.0]
+
+### Fixed
+
+- Vue: a `<SlimSelect>` under `v-if` or `v-else` no longer breaks the page when it's removed or swapped
+  (`NotFoundError: Failed to execute 'insertBefore' on 'Node'`, then a cascade of null errors). Slim Select's dropdown
+  sat beside the `<select>`, outside Vue's tree, and was gone before Vue placed the replacement. It only showed in
+  production builds, where the template comment that made the root a fragment is stripped
+- Vue: in a keyed `v-for`, each dropdown now moves with its select when the list reorders
+
+### Changed
+
+- Vue: the component's root is now a `<div class="ss-vue" style="display: contents">` around the `<select>`, so layout
+  is unchanged. Attributes (`class`, `id`, `name`, `aria-*`) still land on the `<select>`. Code that read the
+  component's `$el` as the `<select>` should use `getSlimSelect()` or query for the `select` inside it
+
 ## [4.6.4]
 
 ### Fixed

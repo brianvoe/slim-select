@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [vue(), react()],
+  // Templates compile without comments, as the published build does: a comment
+  // beside a root element turns it into a fragment, which hides root-node bugs.
+  plugins: [vue({ template: { compilerOptions: { comments: false } } }), react()],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, 'src')
